@@ -56,7 +56,14 @@ public class PurchaseScheduleController : Controller
     {
         try
         {
-            IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid);
+            //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid);
+
+            string modelJson = HttpContext.Session.GetString("KeyPurchaseScheduleGrid");
+            List<PurchaseScheduleGrid> PurchaseScheduleGrid = new List<PurchaseScheduleGrid>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PurchaseScheduleGrid = JsonConvert.DeserializeObject<List<PurchaseScheduleGrid>>(modelJson);
+            }
 
             var MainModel = new PurchaseSubScheduleModel();
             var PurchSchGrid = new List<PurchaseScheduleGrid>();
@@ -94,7 +101,10 @@ public class PurchaseScheduleController : Controller
                     Size = 1024,
                 };
 
-                IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+                //IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.PurchaseScheduleList);
+                HttpContext.Session.SetString("KeyPurchaseScheduleGrid", serializedGrid);
             }
             else
             {
@@ -170,7 +180,9 @@ public class PurchaseScheduleController : Controller
     }
     public IActionResult ClearGrid()
     {
-        IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        //IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        HttpContext.Session.Remove("KeyPurchaseScheduleGrid");
+
         var MainModel = new PurchaseSubScheduleModel();
         return PartialView("_PurchaseScheduleGrid", MainModel);
     }
@@ -178,9 +190,11 @@ public class PurchaseScheduleController : Controller
     public async Task<IActionResult> Dashboard()
     { 
         try
-        { 
-        IMemoryCache.Remove("KeyPurchaseScheduleGrid");
-        var model = new PSDashboard();
+        {
+            //IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+            HttpContext.Session.Remove("KeyPurchaseScheduleGrid");
+
+            var model = new PSDashboard();
             model.ToDate = HttpContext.Session.GetString("ToDate");
 
             var Result = await IPurchaseSchedule.GetDashboardData(model.ToDate).ConfigureAwait(true);
@@ -263,7 +277,14 @@ public class PurchaseScheduleController : Controller
     public IActionResult DeleteItemRow(int SeqNo)
     {
         var MainModel = new PurchaseSubScheduleModel();
-        IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out List<PurchaseScheduleGrid> PurchaseScheduleGrid);
+        //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out List<PurchaseScheduleGrid> PurchaseScheduleGrid);
+
+        string modelJson = HttpContext.Session.GetString("KeyPurchaseScheduleGrid");
+        List<PurchaseScheduleGrid> PurchaseScheduleGrid = new List<PurchaseScheduleGrid>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            PurchaseScheduleGrid = JsonConvert.DeserializeObject<List<PurchaseScheduleGrid>>(modelJson);
+        }
         int Indx = Convert.ToInt32(SeqNo) - 1;
 
         if (PurchaseScheduleGrid != null && PurchaseScheduleGrid.Count > 0)
@@ -286,7 +307,11 @@ public class PurchaseScheduleController : Controller
                 Size = 1024,
             };
 
-            IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+            //IMemoryCache.Set("KeyPurchaseScheduleGrid" +
+            //    "", MainModel.PurchaseScheduleList, cacheEntryOptions);
+
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.PurchaseScheduleList);
+            HttpContext.Session.SetString("KeyPurchaseScheduleGrid", serializedGrid);
         }
         return PartialView("_PurchaseScheduleGrid", MainModel);
     }
@@ -378,7 +403,9 @@ public class PurchaseScheduleController : Controller
 
         TempData.Clear();
         var MainModel = new PurchaseSubScheduleModel();
-        IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        //IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        HttpContext.Session.Remove("KeyPurchaseScheduleGrid");
+
         MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
         MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
         MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -400,7 +427,10 @@ public class PurchaseScheduleController : Controller
                 Size = 1024,
             };
 
-            IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+            //IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+            // set purchaseScheduleGRid
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.PurchaseScheduleList);
+            HttpContext.Session.SetString("KeyPurchaseScheduleGrid", serializedGrid);
         }
         else
         {
@@ -440,7 +470,14 @@ public class PurchaseScheduleController : Controller
         {
             //ViewBag.isSuccess = false;
             var DTSSGrid = new DataTable();
-            IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid);
+            //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid);
+
+            string modelJson = HttpContext.Session.GetString("KeyPurchaseScheduleGrid");
+            List<PurchaseScheduleGrid> PurchaseScheduleGrid = new List<PurchaseScheduleGrid>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PurchaseScheduleGrid = JsonConvert.DeserializeObject<List<PurchaseScheduleGrid>>(modelJson);
+            }
 
             if (PurchaseScheduleGrid == null)
             {
@@ -699,7 +736,10 @@ public class PurchaseScheduleController : Controller
                 Size = 1024,
             };
 
-            IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+            //IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.PurchaseScheduleList);
+            HttpContext.Session.SetString("KeyPurchaseScheduleGrid", serializedGrid);
 
             return PartialView("_PurchaseScheduleGrid", MainModel);
         }
@@ -849,7 +889,15 @@ public class PurchaseScheduleController : Controller
     public IActionResult EditItemRow(PurchaseSubScheduleModel model)
     {
         var MainModel = new PurchaseSubScheduleModel();
-        IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out List<PurchaseScheduleGrid> PurchaseScheduleGrid);
+        //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out List<PurchaseScheduleGrid> PurchaseScheduleGrid);
+
+        string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+        List<PurchaseScheduleGrid> PurchaseScheduleGrid = new List<PurchaseScheduleGrid>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            PurchaseScheduleGrid = JsonConvert.DeserializeObject<List<PurchaseScheduleGrid>>(modelJson);
+        }
+
         var SSGrid = PurchaseScheduleGrid.Where(x => x.SeqNo == model.SeqNo);
         string JsonString = JsonConvert.SerializeObject(SSGrid);
         return Json(JsonString);
@@ -858,7 +906,9 @@ public class PurchaseScheduleController : Controller
     [HttpGet]
     public async Task<IActionResult> PSAmendmentList()
     {
-        IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        //IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        HttpContext.Session.Remove("KeyPurchaseScheduleGrid");
+
         var model = new PSDashboard();
 
         //model.Mode = "Pending";
@@ -1001,15 +1051,23 @@ public class PurchaseScheduleController : Controller
             Size = 1024,
         };
         var seqNo = 0;
-        IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        //IMemoryCache.Remove("KeyPurchaseScheduleGrid");
+        HttpContext.Session.Remove("KeyPurchaseScheduleGrid");
 
         foreach (var item in data)
         {
             if (item != null)
             {
-                IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid);
+                //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid);
 
-                if (PurchaseScheduleGrid == null)
+                string modelJson1 = HttpContext.Session.GetString("KeyPurchaseScheduleGrid");
+                List<PurchaseScheduleGrid> PurchaseScheduleGrid1 = new List<PurchaseScheduleGrid>();
+                if (!string.IsNullOrEmpty(modelJson1))
+                {
+                    PurchaseScheduleGrid1 = JsonConvert.DeserializeObject<List<PurchaseScheduleGrid>>(modelJson1);
+                }
+
+                if (PurchaseScheduleGrid1 == null)
                 {
                     item.SeqNo += seqNo + 1;
                     purchaseSchedules.Add(item);
@@ -1017,14 +1075,14 @@ public class PurchaseScheduleController : Controller
                 }
                 else
                 {
-                    if (PurchaseScheduleGrid.Where(x => x.ItemCode == item.ItemCode).Any())
+                    if (PurchaseScheduleGrid1.Where(x => x.ItemCode == item.ItemCode).Any())
                     {
                         return StatusCode(207, "Duplicate");
                     }
                     else
                     {
-                        item.SeqNo = PurchaseScheduleGrid.Count + 1;
-                        purchaseSchedules = PurchaseScheduleGrid.Where(x => x != null).ToList();
+                        item.SeqNo = PurchaseScheduleGrid1.Count + 1;
+                        purchaseSchedules = PurchaseScheduleGrid1.Where(x => x != null).ToList();
                         SSGrid.AddRange(purchaseSchedules);
                         purchaseSchedules.Add(item);
                     }
@@ -1032,11 +1090,21 @@ public class PurchaseScheduleController : Controller
                 }
                 MainModel.PurchaseScheduleList = purchaseSchedules;
 
-                IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+                //IMemoryCache.Set("KeyPurchaseScheduleGrid", MainModel.PurchaseScheduleList, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.PurchaseScheduleList);
+                HttpContext.Session.SetString("KeyPurchaseScheduleGrid", serializedGrid);
 
             }
         }
-        IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid1);
+        //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid1);
+
+        string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+        List<PurchaseScheduleGrid> PSDetail = new List<PurchaseScheduleGrid>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            PSDetail = JsonConvert.DeserializeObject<List<PurchaseScheduleGrid>>(modelJson);
+        }
 
         return PartialView("_PurchaseScheduleGrid", MainModel);
     }

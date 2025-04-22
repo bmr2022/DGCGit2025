@@ -671,6 +671,8 @@
                 debugger
                 $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val()));
                 $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val()));
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#PODate').val()));
                 $('#SchAmendmentDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $('#SchAmendmentDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
                 $('#DeliveryDate')
