@@ -1989,12 +1989,50 @@ public class TaxController : Controller
                     }
                 }
             }
+            //if (SessionName == "JobWorkIssue")
+            //{
+            //    _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> JobWorkGrid);
+            //    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> JobWorkGridEdit);
+
+            //    ItemModel = JobWorkGrid ?? JobWorkGridEdit;
+            //    if (ItemModel != null && ItemModel?.Count > 0)
+            //    {
+            //        foreach (var item in ItemModel)
+            //        {
+            //            PartCode.Add(new TextValue
+            //            {
+            //                Text = item.PartCode,
+            //                Value = item.ItemCode.ToString()
+            //            });
+            //            ItemCode.Add(new TextValue
+            //            {
+            //                Text = item.ItemName,
+            //                Value = item.ItemCode.ToString()
+            //            });
+            //        }
+            //    }
+            //}
+
             if (SessionName == "JobWorkIssue")
             {
-                _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> JobWorkGrid);
-                _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> JobWorkGridEdit);
-                ItemModel = JobWorkGrid ?? JobWorkGridEdit;
-                if (ItemModel != null && ItemModel?.Count > 0)
+                List<JobWorkGridDetail> JobWorkGrid = new();
+                List<JobWorkGridDetail> JobWorkGridEdit = new();
+
+                string jobWorkGridJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                if (!string.IsNullOrEmpty(jobWorkGridJson))
+                {
+                    JobWorkGrid = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(jobWorkGridJson);
+                }
+
+                string jobWorkGridEditJson = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                if (!string.IsNullOrEmpty(jobWorkGridEditJson))
+                {
+                    JobWorkGridEdit = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(jobWorkGridEditJson);
+                }
+
+                ItemModel = JobWorkGrid?.Count > 0 ? JobWorkGrid : JobWorkGridEdit;
+
+                if (ItemModel != null && ItemModel.Count > 0)
                 {
                     foreach (var item in ItemModel)
                     {

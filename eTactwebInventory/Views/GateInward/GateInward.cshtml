@@ -830,7 +830,12 @@
 
         $(document).ready(function () {
 
-            GetServerDate();
+            
+
+
+
+
+
             $(':input:visible').each(function () {
                 $(this).attr('tabindex', '0');
             });
@@ -846,17 +851,26 @@
                 var address = $('#hiddenAddress').val();
                 $('#Address').val(address);
                 fillPONumber();
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                /* ar EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
-
+ */
                 if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
                     $(".ChallanElements").show();
                 } else {
                     $(".ChallanElements").css("display", "none");
                 }
 
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
             }
             else {
+                GetServerDate();
                 fillEntryandGate();
                 $(".ChallanElements").css("display", "none");
                 //SetFields();
@@ -889,8 +903,8 @@
 
                 console.log(formattedDate1);
                 console.log(formattedDate2);
-                //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+               /*  //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
 /* 
                 $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
                 $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2)); */
@@ -990,7 +1004,7 @@
                             $('#BiltyDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         }
                         else {
-                            ;
+                            
                             var poDate;
                             var biltyDt;
                             $("#ShowPOTillDate").datepicker({
@@ -1014,10 +1028,8 @@
                                 }
                             });
 
-                            var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
-                            var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split("-").join("/"));
-                            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
-                            $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDt));
+
+                           
 
                         }
                         $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo));
