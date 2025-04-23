@@ -485,9 +485,7 @@
             event.preventDefault();
             if ($('#FromStoreId').val() == null) {
                 $.notify('Please select From StoreName.', 'error');
-            } else if ($('#ToStoreId').val() == null) {
-                $.notify('Please select To StoreName.', 'error');
-            }
+            } 
             else {
                 $("form").submit();
             }
