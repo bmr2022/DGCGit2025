@@ -242,6 +242,9 @@ namespace eTactWeb.Controllers
                 _MemoryCache.TryGetValue("KeyPendingToIssue", out IList<IssueWithoutBomDetail> grid);
                 _MemoryCache.Set("KeyIssWOBom", MainModel.ItemDetailGrid, cacheEntryOptions);
 
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssWOBom", serializedGrid);
+
 
                 return Json("done");
             }
