@@ -846,9 +846,9 @@
                 var address = $('#hiddenAddress').val();
                 $('#Address').val(address);
                 fillPONumber();
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                v/* ar EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
-
+ */
                 if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
                     $(".ChallanElements").show();
                 } else {
@@ -889,8 +889,8 @@
 
                 console.log(formattedDate1);
                 console.log(formattedDate2);
-                //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+               /*  //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
 /* 
                 $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
                 $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2)); */
@@ -1014,8 +1014,12 @@
                                 }
                             });
 
-                            var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
-                            var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split("-").join("/"));
+
+                            var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                            var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+
+                            /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                            var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
                             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                             $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
 
