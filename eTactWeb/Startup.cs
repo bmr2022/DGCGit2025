@@ -228,6 +228,7 @@ namespace eTactWeb
             services.TryAddScoped<IMinimumMaximaumLevel, MinimumMaximaumLevelBLL>();
             services.TryAddScoped<IUserRightReport, UserRightReportBLL>();
             services.TryAddScoped<IDayBook, DayBookBLL>();
+            services.TryAddScoped<IRecChallanReport, RecChallanReportBLL>();
             services.TryAddScoped<IConsumptionReport, ConsumptionReportBLL>();
             services.TryAddScoped<IStockValuation, StockValuationBLL>();
             services.TryAddScoped<ICancelSaleBillrequisition, CancelSaleBillrequisitionBLL>();
@@ -263,6 +264,7 @@ namespace eTactWeb
             services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
+           
             services.TryAddTransient<IPurchaseOrder, PurchaseOrderBLL>();
             services.TryAddTransient<IPurchaseSchedule, PurchaseScheduleBLL>();
             services.TryAddTransient<IGateInward, GateInwardBLL>();
