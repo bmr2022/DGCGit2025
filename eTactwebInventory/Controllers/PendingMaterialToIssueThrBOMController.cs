@@ -248,6 +248,10 @@ namespace eTactWeb.Controllers
                 _MemoryCache.Set("KeyIssThrBom", MainModel.ItemDetailGrid, cacheEntryOptions);
 
 
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssThrBom", serializedGrid);
+
+
                 return Json("done");
             }
             catch (Exception ex)
