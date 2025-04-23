@@ -18,17 +18,14 @@ namespace eTactwebAccounts.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IBankPayment _IBankPayment { get; }
-
         private readonly ILogger<BankPaymentController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public BankPaymentController(ILogger<BankPaymentController> logger, IDataLogic iDataLogic, IBankPayment iBankPayment, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public BankPaymentController(ILogger<BankPaymentController> logger, IDataLogic iDataLogic, IBankPayment iBankPayment, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBankPayment = iBankPayment;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -36,8 +33,8 @@ namespace eTactwebAccounts.Controllers
         [HttpGet]
         public async Task<ActionResult> BankPayment(int ID, string Mode, int YearCode, string VoucherNo)
         {
-            _MemoryCache.Remove("KeyBankPaymentGrid");
-            _MemoryCache.Remove("KeyBankPaymentGridEdit");
+            HttpContext.Session.Remove("KeyBankPaymentGrid");
+            HttpContext.Session.Remove("KeyBankPaymentGridEdit");
             TempData.Clear();
             var MainModel = new BankPaymentModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
@@ -58,13 +55,8 @@ namespace eTactwebAccounts.Controllers
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
             }
 
             return View(MainModel);
@@ -78,8 +70,18 @@ namespace eTactwebAccounts.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> BankPaymentGrid);
-                _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out List<BankPaymentModel> BankPaymentGridEdit);
+                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                }
+                string modelEditJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                List<BankPaymentModel> BankPaymentGridEdit = new List<BankPaymentModel>();
+                if (!string.IsNullOrEmpty(modelEditJson))
+                {
+                    BankPaymentGridEdit = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelEditJson);
+                }
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 if (model.Mode == "U")
@@ -98,15 +100,15 @@ namespace eTactwebAccounts.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyBankPaymentGrid");
-                        _MemoryCache.Remove("KeyBankPaymentGridEdit");
+                        HttpContext.Session.Remove("KeyBankPaymentGrid");
+                        HttpContext.Session.Remove("KeyBankPaymentGridEdit");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        _MemoryCache.Remove("KeyBankPaymentGrid");
-                        _MemoryCache.Remove("KeyBankPaymentGridEdit");
+                        HttpContext.Session.Remove("KeyBankPaymentGrid");
+                        HttpContext.Session.Remove("KeyBankPaymentGridEdit");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -116,9 +118,7 @@ namespace eTactwebAccounts.Controllers
                         return View("Error", Result);
                     }
                 }
-
                 return RedirectToAction(nameof(BankPayment));
-
             }
             catch (Exception ex)
             {
@@ -323,7 +323,6 @@ namespace eTactwebAccounts.Controllers
                 throw;
             }
         }
-
         public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
             var JSON = await _IBankPayment.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
@@ -408,8 +407,12 @@ namespace eTactwebAccounts.Controllers
             {
                 if (model.Mode == "U" || model.Mode == "V")
                 {
-
-                    _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out IList<BankPaymentModel> BankPaymentGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                    List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                    }
 
                     var MainModel = new BankPaymentModel();
                     var WorkOrderPGrid = new List<BankPaymentModel>();
@@ -490,14 +493,8 @@ namespace eTactwebAccounts.Controllers
 
                         MainModel.BankPaymentGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                        HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
                     }
                     else
                     {
@@ -507,8 +504,12 @@ namespace eTactwebAccounts.Controllers
                 }
                 else
                 {
-
-                    _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> BankPaymentGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                    List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                    }
 
                     var MainModel = new BankPaymentModel();
                     var WorkOrderPGrid = new List<BankPaymentModel>();
@@ -588,14 +589,8 @@ namespace eTactwebAccounts.Controllers
 
                         MainModel.BankPaymentGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                        HttpContext.Session.SetString("KeyBankPaymentGrid", serializedGrid);
                     }
                     else
                     {
@@ -617,16 +612,12 @@ namespace eTactwebAccounts.Controllers
                 var ProductionEntryDetail = new List<BankPaymentModel>();
                 if (Mode != "U" && Mode != "V")
                 {
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                    List<BankPaymentModel> ProductionEntryItemDetail = new List<BankPaymentModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
                     {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    // Retrieve existing cached data
-                    _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> ProductionEntryItemDetail);
-
+                        ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                    }
                     // If cache exists, use it; otherwise, initialize a new list
                     if (ProductionEntryItemDetail != null)
                     {
@@ -642,14 +633,7 @@ namespace eTactwebAccounts.Controllers
                             {
                                 ProductionEntryDetail.Remove(existingItem);
                             }
-
-                            // Assign sequence number correctly
-                            //item.SrNO = ProductionEntryDetail.Count + 1;
-
-                            // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
-
-                            // Add new item to list
                             ProductionEntryDetail.Add(item);
                         }
                     }
@@ -657,23 +641,20 @@ namespace eTactwebAccounts.Controllers
                     {
                         ProductionEntryDetail[i].SrNO = i + 1; // Ensure proper sequence numbers
                     }
-                    // Update the main model and cache
                     MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
-                    _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
+
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                    HttpContext.Session.SetString("KeyBankPaymentGrid", serializedGrid);
                 }
                 else
                 {
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                    List<BankPaymentModel> ProductionEntryItemDetail = new List<BankPaymentModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
                     {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
+                        ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                    }
 
-                    // Retrieve existing cached data
-                    _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out List<BankPaymentModel> ProductionEntryItemDetail);
-
-                    // If cache exists, use it; otherwise, initialize a new list
                     if (ProductionEntryItemDetail != null)
                     {
                         ProductionEntryDetail = ProductionEntryItemDetail;
@@ -689,13 +670,7 @@ namespace eTactwebAccounts.Controllers
                                 ProductionEntryDetail.Remove(existingItem);
                             }
 
-                            // Assign sequence number correctly
-                            //item.SrNO = ProductionEntryDetail.Count + 1;
-
-                            // Swap Type values
                             item.Type = item.Type.ToLower() == "dr" ? "CR" : "DR";
-
-                            // Add new item to list
                             ProductionEntryDetail.Add(item);
                         }
                     }
@@ -705,7 +680,9 @@ namespace eTactwebAccounts.Controllers
                     }
                     // Update the main model and cache
                     MainModel.BankPaymentGrid = ProductionEntryDetail.OrderBy(x => x.SrNO).ToList();
-                    _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
+
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                    HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
                 }
                 return PartialView("_BankPaymentGrid", MainModel);
             }
@@ -719,8 +696,12 @@ namespace eTactwebAccounts.Controllers
             if (Mode != "U" && Mode != "V")
             {
                 var MainModel = new BankPaymentModel();
-                _MemoryCache.TryGetValue("KeyBankPaymentGrid", out IList<BankPaymentModel> GridDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                List<BankPaymentModel> GridDetail = new List<BankPaymentModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                }
 
                 IEnumerable<BankPaymentModel> SSGrid = GridDetail;
                 if (GridDetail != null)
@@ -733,8 +714,12 @@ namespace eTactwebAccounts.Controllers
             else
             {
                 var MainModel = new BankPaymentModel();
-                _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out IList<BankPaymentModel> GridDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                List<BankPaymentModel> GridDetail = new List<BankPaymentModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                }
 
                 IEnumerable<BankPaymentModel> SSGrid = GridDetail;
                 if (GridDetail != null)
@@ -750,7 +735,13 @@ namespace eTactwebAccounts.Controllers
             if (PopUpData == "PopUpData")
             {
                 var MainModel = new BankPaymentModel();
-                _MemoryCache.TryGetValue("KeyBankPaymentGridPopUpData", out List<BankPaymentModel> BankPaymentGrid);
+                string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridPopUpData");
+                List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                }
+               
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
@@ -765,14 +756,9 @@ namespace eTactwebAccounts.Controllers
                     }
                     MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
 
-                    _MemoryCache.Set("KeyBankPaymentGridPopUpData", MainModel.BankPaymentGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                    HttpContext.Session.SetString("KeyBankPaymentGridPopUpData", serializedGrid);
                 }
                 return PartialView("_DisplayPopupForPendingVouchers", MainModel);
             }
@@ -781,7 +767,13 @@ namespace eTactwebAccounts.Controllers
                 var MainModel = new BankPaymentModel();
                 if (Mode != "U" && Mode != "V")
                 {
-                    _MemoryCache.TryGetValue("KeyBankPaymentGrid", out List<BankPaymentModel> BankPaymentGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGrid");
+                    List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                    }
+                    
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
                     if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
@@ -796,19 +788,20 @@ namespace eTactwebAccounts.Controllers
                         }
                         MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
 
-                        _MemoryCache.Set("KeyBankPaymentGrid", MainModel.BankPaymentGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                        HttpContext.Session.SetString("KeyBankPaymentGrid", serializedGrid);
                     }
                 }
                 else
                 {
-                    _MemoryCache.TryGetValue("KeyBankPaymentGridEdit", out List<BankPaymentModel> BankPaymentGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyBankPaymentGridEdit");
+                    List<BankPaymentModel> BankPaymentGrid = new List<BankPaymentModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        BankPaymentGrid = JsonConvert.DeserializeObject<List<BankPaymentModel>>(modelJson);
+                    }
+                    
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
                     if (BankPaymentGrid != null && BankPaymentGrid.Count > 0)
@@ -823,14 +816,8 @@ namespace eTactwebAccounts.Controllers
                         }
                         MainModel.BankPaymentGrid = BankPaymentGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyBankPaymentGridEdit", MainModel.BankPaymentGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
+                        HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
                     }
                 }   
                 return PartialView("_BankPaymentGrid", MainModel);
@@ -840,8 +827,8 @@ namespace eTactwebAccounts.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyBankPaymentGrid");
-                _MemoryCache.Remove("KeyBankPaymentGridEdit");
+                HttpContext.Session.Remove("KeyBankPaymentGrid");
+                HttpContext.Session.Remove("KeyBankPaymentGridEdit");
                 var model = new BankPaymentModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");
@@ -876,15 +863,10 @@ namespace eTactwebAccounts.Controllers
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
-            _MemoryCache.Remove("KeyBankPaymentGridPopUpData");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
+            HttpContext.Session.Remove("KeyBankPaymentGridPopUpData");
             var model = await _IBankPayment.PopUpForPendingVouchers(DataTable);
-            _MemoryCache.Set("KeyBankPaymentGridPopUpData", model.BankPaymentGrid, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(model.BankPaymentGrid);
+            HttpContext.Session.SetString("KeyBankPaymentGridPopUpData", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
         public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
