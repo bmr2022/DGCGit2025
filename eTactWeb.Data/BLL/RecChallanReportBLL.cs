@@ -21,9 +21,9 @@ namespace eTactWeb.Data.BLL
             _RecChallanReportDAL = new RecChallanReportDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<RecChallanReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate, int EntryId, int YearCode)
+        public async Task<RecChallanReportModel> GetRecChallanReportGridData(string fromDate, string toDate, int EntryId, int YearCode)
         {
-            return await _RecChallanReportDAL.GetInventoryAgingReportDetailsData( fromDate,  toDate,  EntryId,  YearCode);
+            return await _RecChallanReportDAL.GetRecChallanReportGridData( fromDate,  toDate,  EntryId,  YearCode);
         }
     }
    

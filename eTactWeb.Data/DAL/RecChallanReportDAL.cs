@@ -24,7 +24,7 @@ namespace eTactWeb.Data.DAL
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
         }
-        public async Task<RecChallanReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate, int EntryId, int YearCode)
+        public async Task<RecChallanReportModel> GetRecChallanReportGridData(string fromDate, string toDate, int EntryId, int YearCode)
         {
             var resultList = new RecChallanReportModel();
             DataSet oDataSet = new DataSet();
