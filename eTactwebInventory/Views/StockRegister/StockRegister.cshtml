@@ -382,7 +382,7 @@
                 type: "GET",
                 url: "@Url.Action("GetStockRegisterData")",
                 async: false,
-                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "PartCode": $('#PartCode').val(), "ItemName": $('#ItemName').val(), "ItemGroup": $('#ItemGroupName').val(), "ItemType": $('#ItemType').val(), "StoreId": $('#StoreId').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
+                data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), PartCode: $('#PartCode option:selected').text().trim(), "ItemName": $('#ItemName').val(), "ItemGroup": $('#ItemGroupName').val(), "ItemType": $('#ItemType').val(), "StoreId": $('#StoreId').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
                 success: function (result, status, error) {
 
                     $('#divStockMainRegister').empty();
