@@ -990,7 +990,7 @@
                             $('#BiltyDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         }
                         else {
-                            ;
+                            
                             var poDate;
                             var biltyDt;
                             $("#ShowPOTillDate").datepicker({
@@ -1016,8 +1016,8 @@
 
                             var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
                             var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split("-").join("/"));
-                            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
-                            $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDt));
+                            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                            $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
 
                         }
                         $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo));
