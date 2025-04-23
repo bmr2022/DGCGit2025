@@ -10,14 +10,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly ISSApproval _ISSApproval;
         private readonly ILogger<PSApprovalController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public SSApprovalController(ILogger<PSApprovalController> logger, IDataLogic iDataLogic, ISSApproval iSSApproval, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public SSApprovalController(ILogger<PSApprovalController> logger, IDataLogic iDataLogic, ISSApproval iSSApproval, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ISSApproval = iSSApproval;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         public IActionResult SSApproval(string type = "")
@@ -63,7 +61,7 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> ShowSSDetail(int ID, int YC, string SchNo, string TypeOfApproval, string VendorName, string SONO)
         {
-            _MemoryCache.Remove("KeySSApprovalDetail");
+            HttpContext.Session.Remove("KeySSApprovalDetail");
             var MainModel = new List<SSApprovalDetail>();
             MainModel = await _ISSApproval.ShowSSDetail(ID, YC, SchNo).ConfigureAwait(true);
             return View(MainModel);

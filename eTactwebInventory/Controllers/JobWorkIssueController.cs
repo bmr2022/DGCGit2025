@@ -28,18 +28,14 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IJobWorkIssue _IJobWorkIssue;
         private readonly ILogger<JobWorkIssueController> _logger;
-        private readonly IMemoryCache _MemoryCache;
- 
         private readonly IIssueWithoutBom _IIssueWOBOM;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM)
+        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IJobWorkIssue = iJobWorkIssue;
-            _MemoryCache = iMemoryCache;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this._iconfiguration = iconfiguration;
             _IIssueWOBOM = IIssueWOBOM;
@@ -48,16 +44,6 @@ namespace eTactWeb.Controllers
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
-            //string my_connection_string;
-            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            //string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //var webReport = new WebReport();
-            //webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
-            //webReport.Report.SetParameterValue("entryid", EntryId);
-            //webReport.Report.SetParameterValue("yearcode", YearCode);
-            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //return View(webReport);
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
@@ -74,21 +60,7 @@ namespace eTactWeb.Controllers
             {
                 webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
             }
-            //webReport.Report.SetParameterValue("entryparam", EntryId);
-            //webReport.Report.SetParameterValue("yearparam", YearCode);      
-            //my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            //webReport.Report.Prepare();
-            //foreach (var dataSource in webReport.Report.Dictionary.DataSources)
-            //{
-            //    if (dataSource is TableDataSource tableDataSource)
-            //    {
-            //        tableDataSource.Enabled = true;
-            //        tableDataSource.Init(); // Refresh the data source
-            //    }
-            //}
-            //return View(webReport);
+           
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
@@ -162,9 +134,9 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Job Work Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyJobWorkIssue");
-            _MemoryCache.Remove("JobWorkIssue");
-            _MemoryCache.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyJobWorkIssue");
+            HttpContext.Session.Remove("JobWorkIssue");
+            HttpContext.Session.Remove("KeyTaxGrid");
             var MainModel = new JobWorkIssueModel();
             var TaxModel = new TaxModel();
             MainModel = await BindModel(MainModel);
@@ -172,17 +144,14 @@ namespace eTactWeb.Controllers
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.EnterByMachineName = Environment.MachineName;
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
+            MainModel.EnterByMachineName = Environment.MachineName;;
 
-            _MemoryCache.Set("KeyJobWorkIssue", MainModel, cacheEntryOptions);
-            _MemoryCache.Set("JobWorkIssue", MainModel, cacheEntryOptions);
-            _MemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd, cacheEntryOptions);
+            string serializedIssueGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("KeyJobWorkIssue", serializedIssueGrid);
+            string serializedGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("JobWorkIssue", serializedGrid);
+            string serializedTaxGrid = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
+            HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
             
             HttpContext.Session.SetString("JobWorkIssue", JsonConvert.SerializeObject(MainModel));
             return View(MainModel);
@@ -197,17 +166,26 @@ namespace eTactWeb.Controllers
                 var JWGrid = new DataTable();
                 DataTable TaxDetailDT = null;
 
-                _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> JobWorkGridDetail);
-                _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> JobWorkGridDetailEdit);
-                _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+                string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                List<JobWorkGridDetail> JobWorkGridDetail = new List<JobWorkGridDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    JobWorkGridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+                }
 
-                //else if (TaxGrid == null)
-                //{
-                //    ModelState.Clear();
-                //    //ModelState.TryAddModelError("JobWorkGridDetail", "Tax Grid Should Have Atleast 1 Item...!");
-                //    model = await BindModel(model);
-                //    return View("JobWorkIssue", model);
-                //}
+                string modelEditJson = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                List<JobWorkGridDetail> JobWorkGridDetailEdit = new List<JobWorkGridDetail>();
+                if (!string.IsNullOrEmpty(modelEditJson))
+                {
+                    JobWorkGridDetailEdit = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelEditJson);
+                }
+
+                string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
+                List<TaxModel> TaxGrid = new List<TaxModel>();
+                if (!string.IsNullOrEmpty(modelTaxJson))
+                {
+                    TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+                }
 
                 if (model.CC == null)
                 {
@@ -215,7 +193,6 @@ namespace eTactWeb.Controllers
                 }
                 model.EnteredByEmpid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.EnterByMachineName = Environment.MachineName;
-                //model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 if (model.Mode == "U")
                 {
@@ -255,9 +232,7 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = false;
                         TempData["500"] = "500";
                         _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                        //return View("Error", Result);
                         var MainModel = new JobWorkIssueModel();
-                        //MainModel = model;
                         MainModel = await BindModel(MainModel);
                         MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                         MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -282,12 +257,15 @@ namespace eTactWeb.Controllers
                             SlidingExpiration = TimeSpan.FromMinutes(55),
                             Size = 1024,
                         };
-                        _MemoryCache.Remove("KeyJobWorkIssue");
-                        _MemoryCache.Remove("KeyJobWorkIssueEdit");
-                        _MemoryCache.Remove("KeyTaxGrid");
-                        _MemoryCache.Set("KeyJobWorkIssueEdit", MainModel.JobDetailGrid, cacheEntryOptions);
-                        _MemoryCache.Set("KeyJobWorkIssue", MainModel.JobDetailGrid, cacheEntryOptions);
-                        _MemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd, cacheEntryOptions);
+                        HttpContext.Session.Remove("KeyJobWorkIssue");
+                        HttpContext.Session.Remove("KeyJobWorkIssueEdit");
+                        HttpContext.Session.Remove("KeyTaxGrid");
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                        HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedGrid);
+                        string serializedJobWorkGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                        HttpContext.Session.SetString("KeyJobWorkIssue", serializedJobWorkGrid);
+                        string serializedTaxGrid = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
+                        HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
 
                         return View(MainModel);
                     }
@@ -331,9 +309,9 @@ namespace eTactWeb.Controllers
                 SlidingExpiration = TimeSpan.FromMinutes(55),
                 Size = 1024,
             };
-            _MemoryCache.Remove("KeyJobWorkIssue");
-            _MemoryCache.Remove("KeyJobWorkIssueEdit");
-            _MemoryCache.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyJobWorkIssue");  
+            HttpContext.Session.Remove("KeyJobWorkIssueEdit");
+            HttpContext.Session.Remove("KeyTaxGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IJobWorkIssue.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -341,17 +319,16 @@ namespace eTactWeb.Controllers
                 MainModel.ID = ID;
                 MainModel.ChangeEventTriggered = "Y";
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
-                //AddTaxDetail(TaxModell.TaxDetailGridd);
-                //MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 MainModel.YearCode = YC;
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel.CC = HttpContext.Session.GetString("Branch");
                 MainModel.EntryDate = ParseDate(MainModel.EntryDate).ToString();
                 MainModel.ChallanDate = ParseDate(MainModel.ChallanDate).ToString();
-                //_MemoryCache.Set("KeyJobWorkIssue", MainModel.JobDetailGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyJobWorkIssueEdit", MainModel.JobDetailGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd, cacheEntryOptions);
+                string serializedEditGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedEditGrid);
+                string sTaxGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                HttpContext.Session.SetString("KeyTaxGrid", sTaxGrid);
             }
             else
             {
@@ -370,9 +347,11 @@ namespace eTactWeb.Controllers
                 MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
                 MainModel.UpdatedOn = DateTime.Now;
             }
-            _MemoryCache.Set("JobWorkIssue", MainModel, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("JobWorkIssue", serializedGrid);
             HttpContext.Session.SetString("JobWorkIssue", JsonConvert.SerializeObject(MainModel));
-            _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            string serializedTaxGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.VendorNameBack = VendorName;
@@ -383,19 +362,11 @@ namespace eTactWeb.Controllers
             return View(MainModel);
         }
 
-        //public IActionResult AddTaxDetail(IList<TaxModel> TaxDetailGridd)
-        //{
-        //    var txModel = new TaxModel();
-        //    txModel
-        //    return PartialView("_TaxGrid", );
-
-        //}
-
         public async Task<IActionResult> JobworkDashboard(string FromDate = "", string ToDate = "", string Flag = "True", string DashboardType = "", string VendorName = "", string ChallanNo = "", string ItemName = "", string PartCode = "")
         {
             try
             {
-                _MemoryCache.Remove("KeyJobWorkIssue");
+                HttpContext.Session.Remove("KeyJobWorkIssue");
                 var model = new JWIssQDashboard();
                 var Result = await _IJobWorkIssue.GetDashboardData().ConfigureAwait(true);
                 if (Result != null)
@@ -429,8 +400,6 @@ namespace eTactWeb.Controllers
                         model.PartCode = PartCode;
                         model.ItemName = ItemName;
                     }
-                    //model.FromDate = new DateTime(DateTime.Today.Year, 4, 1); // 1st Feb this year
-                    //model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31);//.AddDays(-1); // Last day in January next year
                 }
                 return View(model);
             }
@@ -438,14 +407,11 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
-
         }
 
         public async Task<JsonResult> GetDefaultBranch()
         {
             var username = HttpContext.Session.GetString("Branch");
-
-            // Render profile page with username
             return Json(username);
         }
 
@@ -455,7 +421,12 @@ namespace eTactWeb.Controllers
             {
                 if (model.Mode == "U")
                 {
-                    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out IList<JobWorkGridDetail> GridDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                    List<JobWorkGridDetail> GridDetail = new List<JobWorkGridDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        GridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+                    }
 
                     var MainModel = new JobWorkIssueModel();
                     var JobWorkGrid = new List<JobWorkGridDetail>();
@@ -493,7 +464,9 @@ namespace eTactWeb.Controllers
                             Size = 1024,
                         };
 
-                        _MemoryCache.Set("KeyJobWorkIssueEdit", MainModel.JobDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                        HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedGrid);
+                        
                     }
                     else
                     {
@@ -504,7 +477,12 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    _MemoryCache.TryGetValue("KeyJobWorkIssue", out IList<JobWorkGridDetail> GridDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                    List<JobWorkGridDetail> GridDetail = new List<JobWorkGridDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        GridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+                    }
 
                     var MainModel = new JobWorkIssueModel();
                     var JobWorkGrid = new List<JobWorkGridDetail>();
@@ -535,14 +513,9 @@ namespace eTactWeb.Controllers
                         JobGrid = JobGrid.OrderBy(item => item.ItemCode).ThenBy(item=>item.SeqForBatch).ToList();
                         MainModel.JobDetailGrid = JobGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyJobWorkIssue", MainModel.JobDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                        HttpContext.Session.SetString("KeyJobWorkIssue", serializedGrid);
+                        
                     }
                     else
                     {
@@ -651,16 +624,16 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> ClearJobWorkGrid(int AccountCode)
         {
-            _MemoryCache.Remove("KeyJobWorkIssue");
-            _MemoryCache.Remove("KeyJobWorkIssueEdit");
-            _MemoryCache.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyJobWorkIssue");
+            HttpContext.Session.Remove("KeyJobWorkIssueEdit");
+            HttpContext.Session.Remove("KeyTaxGrid");
             var JSON = await _IJobWorkIssue.GetAddressDetails(AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> ClearTaxGrid(int AccountCode)
         {
-            _MemoryCache.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyTaxGrid");
             var JSON = await _IJobWorkIssue.GetAddressDetails(AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -668,8 +641,18 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetAmtAfterDiscount()
         {
             decimal amtAftrDiscount = 0;
-            _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> JobWorkGridDetail);
-            _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> JobWorkEditGridDetail);
+            string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+            List<JobWorkGridDetail> JobWorkGridDetail = new List<JobWorkGridDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                JobWorkGridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+            }
+            string modelEditJson = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+            List<JobWorkGridDetail> JobWorkEditGridDetail = new List<JobWorkGridDetail>();
+            if (!string.IsNullOrEmpty(modelEditJson))
+            {
+                JobWorkEditGridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelEditJson);
+            }
             if (JobWorkGridDetail != null)
             {
                 if (JobWorkGridDetail != null && JobWorkGridDetail.Count > 0)
@@ -709,7 +692,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetSumofTaxGrid()
         {
             decimal NetTotal = 0;
-            _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> TaxGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson);
+            }
             if (TaxGrid != null && TaxGrid.Count > 0)
             {
                 foreach (var item in TaxGrid)
@@ -724,10 +712,25 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteItemRow(int SeqNo, string Mode,int ItemCode,string BatchNo,int Index=0)
         {
             var MainModel = new JobWorkIssueModel();
-            
-            _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> JobWorkGridDetail);
-            _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> JobWorkEditGridDetail);
-            _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+            List<JobWorkGridDetail> JobWorkGridDetail = new List<JobWorkGridDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                JobWorkGridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+            }
+            string modelEditJson = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+            List<JobWorkGridDetail> JobWorkEditGridDetail = new List<JobWorkGridDetail>();
+            if (!string.IsNullOrEmpty(modelEditJson))
+            {
+                JobWorkEditGridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelEditJson);
+            }
+            string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> TaxGrid = new List<TaxModel>();
+            if (!string.IsNullOrEmpty(modelTaxJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+            }
+
             if (TaxGrid != null)
             {
                 int ItemCodeCheck = 0;
@@ -772,7 +775,8 @@ namespace eTactWeb.Controllers
                                 SlidingExpiration = TimeSpan.FromMinutes(55),
                                 Size = 1024,
                             };
-                            _MemoryCache.Set("KeyJobWorkIssueEdit", MainModel.JobDetailGrid, cacheEntryOptions);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                            HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedGrid);
 
                         }
                     }
@@ -798,8 +802,8 @@ namespace eTactWeb.Controllers
                                 SlidingExpiration = TimeSpan.FromMinutes(55),
                                 Size = 1024,
                             };
-                            _MemoryCache.Set("KeyJobWorkIssue", MainModel.JobDetailGrid, cacheEntryOptions);
-
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                            HttpContext.Session.SetString("KeyJobWorkIssue", serializedGrid);
                         }
                     }
                 }
@@ -831,14 +835,8 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.JobDetailGrid = JobWorkEditGridDetail;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyJobWorkIssueEdit", MainModel.JobDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                        HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedGrid);
                     }
                 }
                 else
@@ -858,14 +856,8 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.JobDetailGrid = JobWorkGridDetail;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyJobWorkIssue", MainModel.JobDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                        HttpContext.Session.SetString("KeyJobWorkIssue", serializedGrid);
                     }
                 }
             }
@@ -877,9 +869,19 @@ namespace eTactWeb.Controllers
         {
             var MainModel = new JobWorkIssueModel();
             var _List = new List<JobWorkGridDetail>();
-            _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out _List);
+            string modelJson = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                _List = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+            }
             if (_List == null)
-                _MemoryCache.TryGetValue("KeyJobWorkIssue", out _List);
+            {
+                string modelEditJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                if (!string.IsNullOrEmpty(modelEditJson))
+                {
+                    _List = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelEditJson);
+                }
+            }
 
             var JobGrid = _List.Where(x => x.SeqForBatch == SeqNo && x.ItemCode == ItemCode && x.BatchNo == BatchNo);
             string JsonString = JsonConvert.SerializeObject(JobGrid);
@@ -1358,7 +1360,13 @@ namespace eTactWeb.Controllers
                 {
                     foreach (var item in model)
                     {
-                        _MemoryCache.TryGetValue("KeyIssWOBomScannedGrid", out IList<JobWorkGridDetail> JobWorkGridDetail);
+                        string modelJson = HttpContext.Session.GetString("KeyIssWOBomScannedGrid");
+                        List<JobWorkGridDetail> JobWorkGridDetail = new List<JobWorkGridDetail>();
+                        if (!string.IsNullOrEmpty(modelJson))
+                        {
+                            JobWorkGridDetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelJson);
+                        }
+                        
                         if (item != null)
                         {
                             //if(item.LotStock < item.ReqQty)
@@ -1395,7 +1403,8 @@ namespace eTactWeb.Controllers
                             }
                             MainModel.ItemDetailGrid = IssueGrid;
 
-                            _MemoryCache.Set("KeyIssWOBomScannedGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("KeyIssWOBomScannedGrid", serializedGrid);
                         }
                     }
                 }

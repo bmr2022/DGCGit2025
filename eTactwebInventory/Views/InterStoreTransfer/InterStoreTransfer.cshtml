@@ -433,8 +433,7 @@
                 var rowCount = $('#divISTGrid tr').length;
                 for (var i = 1; i <= rowCount; i++) {
                     var itemCodee = parseInt($('#GridItemCode-' + i).val());
-                    var 
-                    o = $('#GridBatchNo-' + i).text();
+                    var batchNoo = $('#GridBatchNo-' + i).text();
                     var uniquebatchnoo = $('#GridUniqueBatchno-' + i).text();
                     var Seqno = $('#SeqNo-' + i).val();
                     itemBatchArray.push({
@@ -486,9 +485,7 @@
             event.preventDefault();
             if ($('#FromStoreId').val() == null) {
                 $.notify('Please select From StoreName.', 'error');
-            } else if ($('#ToStoreId').val() == null) {
-                $.notify('Please select To StoreName.', 'error');
-            }
+            } 
             else {
                 $("form").submit();
             }
@@ -503,7 +500,8 @@
                 FillRecStoreStock();
             } else {
                 //FillWIPStock();
-                FillCurrentWIPBatchINStore();
+                /* FillCurrentWIPBatchINStore(); */
+                FillStockBatchNo();
                 GetWIPStockBatchWise();
             }
         }
@@ -515,7 +513,8 @@
                 FillRecStoreStock();
             } else {
                 // FillWIPStock();
-                FillCurrentWIPBatchINStore();
+                /* FillCurrentWIPBatchINStore(); */
+                FillStockBatchNo();
                 GetWIPStockBatchWise();
             }
         }
@@ -1026,7 +1025,8 @@
                 FillLotStock();
                 FillRecStoreStock();
             } else {
-                FillCurrentWIPUniqueBatchINStore();
+                /* FillCurrentWIPUniqueBatchINStore(); */
+                FillStockUniqueBatchNo();
                 GetWIPStockBatchWise();
                 FillLotStock();
             }
@@ -1628,9 +1628,9 @@
                 async: false,
                 success: function (result, status, error) {
 
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    $('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
 
 
 

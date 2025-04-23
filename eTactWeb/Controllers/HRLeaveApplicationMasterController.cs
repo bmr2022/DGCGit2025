@@ -13,14 +13,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IHRLeaveApplicationMaster _IHRLeaveApplicationMaster;
         private readonly ILogger<HRLeaveApplicationMasterController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public HRLeaveApplicationMasterController(ILogger<HRLeaveApplicationMasterController> logger, IDataLogic iDataLogic, IHRLeaveApplicationMaster iHRLeaveApplicationMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public HRLeaveApplicationMasterController(ILogger<HRLeaveApplicationMasterController> logger, IDataLogic iDataLogic, IHRLeaveApplicationMaster iHRLeaveApplicationMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IHRLeaveApplicationMaster = iHRLeaveApplicationMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         [Route("{controller}/Index")]
@@ -28,18 +26,12 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Leave Application Master";
             TempData.Clear();
-            _MemoryCache.Remove("KeyLeaveApplicationGrid");
+            HttpContext.Session.Remove("KeyLeaveApplicationGrid");
             var model = new HRLeaveApplicationMasterModel();
         
             model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             model.LeaveAppYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.BranchCC = Convert.ToString(HttpContext.Session.GetString("Branch"));
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024
-            };
 
             return View(model);
         }
@@ -51,7 +43,7 @@ namespace eTactWeb.Controllers
             TempData.Clear();
             var MainModel = new HRLeaveApplicationMasterModel();
             
-            _MemoryCache.Remove("KeyLeaveApplicationGrid");
+            HttpContext.Session.Remove("KeyLeaveApplicationGrid");
             MainModel.Mode = Mode;
            year= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.LeaveAppEntryId = ID;
@@ -66,7 +58,8 @@ namespace eTactWeb.Controllers
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024,
                 };
-                _MemoryCache.Set("KeyLeaveApplicationGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyLeaveApplicationGrid", serializedGrid);
             }
             else
             {
@@ -137,7 +130,12 @@ namespace eTactWeb.Controllers
             {
                 if (model.Mode == "U")
                 {
-                    _MemoryCache.TryGetValue("KeyLeaveApplicationGrid", out IList<HRLeaveApplicationDetail> HRLeaveApplicationDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyLeaveApplicationGrid");
+                    List<HRLeaveApplicationDetail> HRLeaveApplicationDetail = new List<HRLeaveApplicationDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        HRLeaveApplicationDetail = JsonConvert.DeserializeObject<List<HRLeaveApplicationDetail>>(modelJson);
+                    }                    
 
                     var MainModel = new HRLeaveApplicationMasterModel();
                     var ProductionEntryGrid = new List<HRLeaveApplicationDetail>();
@@ -168,14 +166,8 @@ namespace eTactWeb.Controllers
 
                         MainModel.ItemDetailGrid = ProductionGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyLeaveApplicationGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                        HttpContext.Session.SetString("KeyLeaveApplicationGrid", serializedGrid);
                     }
                     else
                     {
@@ -186,7 +178,12 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    _MemoryCache.TryGetValue("KeyLeaveApplicationGrid", out IList<HRLeaveApplicationDetail> HRLeaveApplicationDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyLeaveApplicationGrid");
+                    List<HRLeaveApplicationDetail> HRLeaveApplicationDetail = new List<HRLeaveApplicationDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        HRLeaveApplicationDetail = JsonConvert.DeserializeObject<List<HRLeaveApplicationDetail>>(modelJson);
+                    }
 
                     var MainModel = new HRLeaveApplicationMasterModel();
                     var ProductionEntryGrid = new List<HRLeaveApplicationDetail>();
@@ -218,14 +215,8 @@ namespace eTactWeb.Controllers
 
                         MainModel.ItemDetailGrid = ProductionGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyLeaveApplicationGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                        HttpContext.Session.SetString("KeyLeaveApplicationGrid", serializedGrid);
                     }
                     else
                     {
@@ -245,7 +236,12 @@ namespace eTactWeb.Controllers
             var MainModel = new HRLeaveApplicationMasterModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyLeaveApplicationGrid", out IList<HRLeaveApplicationDetail> ItemDetailGrid);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveApplicationGrid");
+                List<HRLeaveApplicationDetail> ItemDetailGrid = new List<HRLeaveApplicationDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ItemDetailGrid = JsonConvert.DeserializeObject<List<HRLeaveApplicationDetail>>(modelJson);
+                }
 
                 //_MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out List<ItemDetailGrid> ItemDetailGrid);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
@@ -263,19 +259,18 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = ItemDetailGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyLeaveApplicationGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyLeaveApplicationGrid", serializedGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyLeaveApplicationGrid", out IList<HRLeaveApplicationDetail> HRLeaveApplicationDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveApplicationGrid");
+                List<HRLeaveApplicationDetail> HRLeaveApplicationDetail = new List<HRLeaveApplicationDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveApplicationDetail = JsonConvert.DeserializeObject<List<HRLeaveApplicationDetail>>(modelJson);
+                }
 
                 //_MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out List<ItemDetailGrid> ItemDetailGrid);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
@@ -299,8 +294,8 @@ namespace eTactWeb.Controllers
                         SlidingExpiration = TimeSpan.FromMinutes(55),
                         Size = 1024,
                     };
-
-                    _MemoryCache.Set("KeyLeaveApplicationGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyLeaveApplicationGrid", serializedGrid);
                 }
             }
 
@@ -311,11 +306,19 @@ namespace eTactWeb.Controllers
             IList<HRLeaveApplicationDetail> HRLeaveApplicationDetail = new List<HRLeaveApplicationDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyLeaveApplicationGrid", out HRLeaveApplicationDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveApplicationGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveApplicationDetail = JsonConvert.DeserializeObject<List<HRLeaveApplicationDetail>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyLeaveApplicationGrid", out HRLeaveApplicationDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveApplicationGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveApplicationDetail = JsonConvert.DeserializeObject<List<HRLeaveApplicationDetail>>(modelJson);
+                }
             }
             IEnumerable<HRLeaveApplicationDetail> SSGrid = HRLeaveApplicationDetail;
             if (HRLeaveApplicationDetail != null)
@@ -384,8 +387,12 @@ namespace eTactWeb.Controllers
             try
             {
                 var GIGrid = new DataTable();
-
-                _MemoryCache.TryGetValue("KeyLeaveApplicationGrid", out IList<HRLeaveApplicationDetail> HRLeaveApplicationDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveApplicationGrid");
+                List<HRLeaveApplicationDetail> HRLeaveApplicationDetail = new List<HRLeaveApplicationDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveApplicationDetail = JsonConvert.DeserializeObject<List<HRLeaveApplicationDetail>>(modelJson);
+                }
 
                 var MainModel = new HRLeaveApplicationMasterModel();
                 var ProductionEntryGrid = new List<HRLeaveApplicationDetail>();
@@ -418,7 +425,7 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove(GIGrid);
+                            HttpContext.Session.Remove("KeyLeaveApplicationGrid");
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -427,34 +434,10 @@ namespace eTactWeb.Controllers
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
-                            //var errNum = Result.Result.Message.ToString().Split(":")[1];
-                            //if (errNum == " 2627")
-                            //{
-                            //    ViewBag.isSuccess = false;
-                            //    TempData["2627"] = "2627";
-                            //    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            //    var model2 = new HRLeaveApplicationMasterModel();
-
-                            //    //model2.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                            //    //model2.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                            //    model2.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            //    return View(model2);
-                            //}
-                            //else
-                            //{
-                            //    TempData["500"] = "500";
-                            //    //model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                            //    //model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                            //    model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            //    model.ItemDetailGrid = HRLeaveApplicationDetail;
-                            //    return View(model);
-                            //}
+                           
                         }
                     }
                     var model1 = new HRLeaveApplicationMasterModel();
-
-                    //model1.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                    //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                     model1.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
                     return RedirectToAction(nameof(HRLeaveApplicationMasterDashBoard));
@@ -549,7 +532,5 @@ namespace eTactWeb.Controllers
             return RedirectToAction("HRLeaveApplicationMasterDashBoard");
 
         }
-
-
     }
 }

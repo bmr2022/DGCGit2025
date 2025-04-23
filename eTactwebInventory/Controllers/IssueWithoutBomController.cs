@@ -18,14 +18,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IIssueWithoutBom _IIssueWOBOM;
         private readonly ILogger<IssueWithoutBomController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public IssueWithoutBomController(ILogger<IssueWithoutBomController> logger, IDataLogic iDataLogic, IIssueWithoutBom IIssueWOBOM, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public IssueWithoutBomController(ILogger<IssueWithoutBomController> logger, IDataLogic iDataLogic, IIssueWithoutBom IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueWOBOM = IIssueWOBOM;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
 
@@ -34,19 +32,13 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Issue Without BOM Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyIssWOBomGrid");
+            HttpContext.Session.Remove("KeyIssWOBomGrid");
             var MainModel = new IssueWithoutBom();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            //MainModel = await BindModel(MainModel);
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyIssWOBomGrid", MainModel, cacheEntryOptions);
-            //MainModel.DateIntact = "N";
+
+            string serializedGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("KeyIssWOBomGrid", serializedGrid);
             return View(MainModel);
         }
 
@@ -64,22 +56,17 @@ namespace eTactWeb.Controllers
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             MainModel.MachineCode = HttpContext.Session.GetString("MachineName");
 
-            _MemoryCache.Remove("KeyIssWOBomGrid");
-            _MemoryCache.Remove("KeyIssWOBomScannedGrid");
+            HttpContext.Session.Remove("KeyIssWOBomGrid");
+            HttpContext.Session.Remove("KeyIssWOBomScannedGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IIssueWOBOM.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 MainModel = await BindModel(MainModel);
-                //MainModel = await BindModel(MainModel).ConfigureAwait(false);
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyIssWOBomGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssWOBomGrid", serializedGrid);
             }
             else
             {
@@ -124,13 +111,17 @@ namespace eTactWeb.Controllers
             try
             {
                 var MRGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyIssWOBomGrid", out List<IssueWithoutBomDetail> IssueGrid);
-                
+                string modelJson = HttpContext.Session.GetString("KeyIssWOBomGrid");
+                List<IssueWithoutBomDetail> IssueGrid = new List<IssueWithoutBomDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+                }
+
                 if (IssueGrid == null)
                 {
                     ModelState.Clear();
-                    ModelState.TryAddModelError("Issue Without BOM", "Issue Without BOM Grid Should Have At least 1 Item...!");
-                    
+                    ModelState.TryAddModelError("Issue Without BOM", "Issue Without BOM Grid Should Have At least 1 Item...!");                  
                     return View("IssueWithoutBom", model);
                 }
                 else
@@ -151,13 +142,13 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove("KeyIssWOBomGrid");
+                            HttpContext.Session.Remove("KeyIssWOBomGrid");
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
-                            _MemoryCache.Remove("KeyIssWOBomGrid");
+                            HttpContext.Session.Remove("KeyIssWOBomGrid");
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -188,20 +179,19 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyIssWOBom", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                string modelJson = HttpContext.Session.GetString("KeyIssWOBom");
+                List<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = new List<IssueWithoutBomDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+                }
+
                 var MainModel = new IssueWithoutBom();
                 var IssueGrid = new List<IssueWithoutBomDetail>();
                 var SSGrid = new List<IssueWithoutBomDetail>();
                 MainModel.FromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-                //MainModel.IssueDate = HttpContext.Session.GetString("IssueDate");
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 var seqNo = 1;
                 if (IssueWithoutBomDetailGrid != null)
                 {
@@ -217,7 +207,8 @@ namespace eTactWeb.Controllers
 
                             MainModel.ItemDetailGrid = IssueGrid;
 
-                            _MemoryCache.Set("KeyIssWOBom", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("KeyIssWOBom", serializedGrid);
                         }
                     }
                 }
@@ -280,13 +271,14 @@ namespace eTactWeb.Controllers
 
                         var isStockable = _IIssueWOBOM.GetIsStockable(item.ItemCode);
                         var stockable = isStockable.Result.Result.Rows[0].ItemArray[0];
-                        _MemoryCache.TryGetValue("KeyIssWOBomGrid", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                        string modelJson = HttpContext.Session.GetString("KeyIssWOBomGrid");
+                        List<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = new List<IssueWithoutBomDetail>();
+                        if (!string.IsNullOrEmpty(modelJson))
+                        {
+                            IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+                        }
                         if (item != null)
                         {
-                            //if(item.LotStock < item.ReqQty)
-                            //{
-                            //    return StatusCode(203, "Stock can't be zero");
-                            //}
                             if (IssueWithoutBomDetailGrid == null)
                             {
                                 if (stockable == "Y")
@@ -323,11 +315,12 @@ namespace eTactWeb.Controllers
                             }
                             MainModel.ItemDetailGrid = IssueGrid;
 
-                            _MemoryCache.Set("KeyIssWOBomGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("KeyIssWOBomGrid", serializedGrid);
                         }
                     }
                 }
-                _MemoryCache.Remove("KeyIssWOBom");
+                HttpContext.Session.Remove("KeyIssWOBom");
                 return PartialView("_IssueWithoutBomGrid", MainModel);
             }
             catch (Exception ex)
@@ -338,7 +331,12 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new IssueWithoutBom();
-            _MemoryCache.TryGetValue("KeyIssWOBomGrid", out List<IssueWithoutBomDetail> IssueWithoutBomGrid);
+            string modelJson = HttpContext.Session.GetString("KeyIssWOBomGrid");
+            List<IssueWithoutBomDetail> IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueWithoutBomGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IssueWithoutBomGrid != null && IssueWithoutBomGrid.Count > 0)
@@ -354,26 +352,25 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ItemDetailGrid = IssueWithoutBomGrid;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (IssueWithoutBomGrid.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyIssWOBomGrid");
+                    HttpContext.Session.Remove("KeyIssWOBomGrid");
                 }
-                _MemoryCache.Set("KeyIssWOBomGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssWOBomGrid", serializedGrid);
             }
             return PartialView("_IssueWithoutBomGrid", MainModel);
         }
         public IActionResult DeleteFromMemoryGrid(int SeqNo)
         {
             var MainModel = new IssueWithoutBom();
-            _MemoryCache.TryGetValue("KeyIssWOBom", out List<IssueWithoutBomDetail> IssueWithoutBomGrid);
+            string modelJson = HttpContext.Session.GetString("KeyIssWOBom");
+            List<IssueWithoutBomDetail> IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueWithoutBomGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+            }
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IssueWithoutBomGrid != null && IssueWithoutBomGrid.Count > 0)
@@ -389,26 +386,25 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ItemDetailGrid = IssueWithoutBomGrid;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (IssueWithoutBomGrid.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyIssWOBom");
+                    HttpContext.Session.Remove("KeyIssWOBom");
                 }
-                _MemoryCache.Set("KeyIssWOBom", MainModel.ItemDetailGrid, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssWOBom", serializedGrid);
             }
             return PartialView("_IssueWOMainBomGrid", MainModel);
         }
         public IActionResult DeleteScannedItemRow(int SeqNo)
         {
             var MainModel = new IssueWithoutBom();
-            _MemoryCache.TryGetValue("KeyIssWOBomScannedGrid", out List<IssueWithoutBomDetail> IssueWithoutBomGrid);
+            string modelJson = HttpContext.Session.GetString("KeyIssWOBomScannedGrid");
+            List<IssueWithoutBomDetail> IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueWithoutBomGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+            }
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IssueWithoutBomGrid != null && IssueWithoutBomGrid.Count > 0)
@@ -424,19 +420,12 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ItemDetailGrid = IssueWithoutBomGrid;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (IssueWithoutBomGrid.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyIssWOBomScannedGrid");
+                    HttpContext.Session.Remove("KeyIssWOBomScannedGrid");
                 }
-                _MemoryCache.Set("KeyIssWOBomScannedGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssWOBomScannedGrid", serializedGrid);
             }
             return PartialView("_IssueByScanningGrid", MainModel);
         }
@@ -455,9 +444,6 @@ namespace eTactWeb.Controllers
             {
                 return DateTime.Parse(dateString);
             }
-
-            //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
-
         }
         private static DataTable GetDetailTable(IList<IssueWithoutBomDetail> DetailList)
         {
@@ -559,7 +545,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyIssWOBomGrid");
+                HttpContext.Session.Remove("KeyIssWOBomGrid");
                 var model = new IssueWithoutBomDashboard();
                 var Result = await _IIssueWOBOM.GetDashboardData(FromDate, Todate, Flag).ConfigureAwait(true);
 
@@ -742,8 +728,6 @@ namespace eTactWeb.Controllers
                 {
                     return StatusCode(203, "Invalid barcode this item " + ItemDetailData.Result.Rows[0].ItemArray[0] + " do not exist in this requisition");
                 }
-                //var t = StockData.
-                //string JsonString = JsonConvert.SerializeObject(JSON);
 
                 var ItemList = new List<IssueWithoutBomDetail>();
 
@@ -784,13 +768,15 @@ namespace eTactWeb.Controllers
                 {
                     foreach (var item in model)
                     {
-                        _MemoryCache.TryGetValue("KeyIssWOBomScannedGrid", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                        string modelJson = HttpContext.Session.GetString("KeyIssWOBomScannedGrid");
+                        List<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = new List<IssueWithoutBomDetail>();
+                        if (!string.IsNullOrEmpty(modelJson))
+                        {
+                            IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+                        }
+                        
                         if (item != null)
                         {
-                            //if(item.LotStock < item.ReqQty)
-                            //{
-                            //    return StatusCode(203, "Stock can't be zero");
-                            //}
                             if (IssueWithoutBomDetailGrid == null)
                             {
                                 if (item.LotStock <= 0 || item.TotalStock <= 0)
@@ -821,7 +807,8 @@ namespace eTactWeb.Controllers
                             }
                             MainModel.ItemDetailGrid = IssueGrid;
 
-                            _MemoryCache.Set("KeyIssWOBomScannedGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("KeyIssWOBomScannedGrid", serializedGrid);
                         }
                     }
                 }
@@ -835,7 +822,12 @@ namespace eTactWeb.Controllers
 
         public IActionResult EditItemRow(int SeqNo)
         {
-            _MemoryCache.TryGetValue("KeyIssWOBomGrid", out List<IssueWithoutBomDetail> IssueGrid);
+            string modelJson = HttpContext.Session.GetString("KeyIssWOBomGrid");
+            List<IssueWithoutBomDetail> IssueGrid = new List<IssueWithoutBomDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+            }
 
             var SSGrid = IssueGrid.Where(x => x.seqno == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);

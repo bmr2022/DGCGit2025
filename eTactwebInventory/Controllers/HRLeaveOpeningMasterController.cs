@@ -18,18 +18,15 @@ namespace eTactwebInventory.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IHRLeaveOpeningMaster _IHRLeaveOpeningMaster;
         private readonly ILogger<HRLeaveOpeningMasterController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IConfiguration iconfiguration;
         private readonly IIssueWithoutBom _IIssueWOBOM;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public HRLeaveOpeningMasterController(ILogger<HRLeaveOpeningMasterController> logger, IDataLogic iDataLogic, IHRLeaveOpeningMaster iHRLeaveOpeningMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM)
+        public HRLeaveOpeningMasterController(ILogger<HRLeaveOpeningMasterController> logger, IDataLogic iDataLogic, IHRLeaveOpeningMaster iHRLeaveOpeningMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IHRLeaveOpeningMaster = iHRLeaveOpeningMaster;
-            _MemoryCache = iMemoryCache;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
             _IIssueWOBOM = IIssueWOBOM;
@@ -39,7 +36,7 @@ namespace eTactwebInventory.Controllers
         public async Task<IActionResult> HRLeaveOpeningMaster(int Id,int year,string Mode)
         {
             TempData.Clear();
-            _MemoryCache.Remove("KeyLeaveOpeningGrid");
+            HttpContext.Session.Remove("KeyLeaveOpeningGrid");
             var MainModel = new HRLeaveOpeningMasterModel();
            
             MainModel.LeaveOpnYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -50,19 +47,11 @@ namespace eTactwebInventory.Controllers
             {
                 MainModel = await _IHRLeaveOpeningMaster.GetViewByID(Id,year).ConfigureAwait(false);
                 MainModel.Mode = Mode;
-               
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyLeaveOpeningGrid", MainModel.HRLeaveOpeningDetailGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.HRLeaveOpeningDetailGrid);
+                HttpContext.Session.SetString("KeyLeaveOpeningGrid", serializedGrid);
             }
 
-           
-
-           
             HttpContext.Session.SetString("HRLeaveOpeningMaster", JsonConvert.SerializeObject(MainModel));
             return View(MainModel);
         }
@@ -122,8 +111,12 @@ namespace eTactwebInventory.Controllers
             {
                 if (model.Mode == "U")
                 {
-
-                    _MemoryCache.TryGetValue("KeyLeaveOpeningGrid", out IList<HRLeaveOpeningDetail> LeaveOpeningDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyLeaveOpeningGrid");
+                    List<HRLeaveOpeningDetail> LeaveOpeningDetail = new List<HRLeaveOpeningDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        LeaveOpeningDetail = JsonConvert.DeserializeObject<List<HRLeaveOpeningDetail>>(modelJson);
+                    }
 
                     var MainModel = new HRLeaveOpeningMasterModel();
                     var WorkOrderPGrid = new List<HRLeaveOpeningDetail>();
@@ -153,19 +146,12 @@ namespace eTactwebInventory.Controllers
                                 OrderGrid.Add(model);
 
                             }
-
                         }
 
                         MainModel.HRLeaveOpeningDetailGrid = OrderGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyLeaveOpeningGrid", MainModel.HRLeaveOpeningDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.HRLeaveOpeningDetailGrid);
+                        HttpContext.Session.SetString("KeyLeaveOpeningGrid", serializedGrid);
                     }
                     else
                     {
@@ -175,14 +161,17 @@ namespace eTactwebInventory.Controllers
                 }
                 else
                 {
-
-                    _MemoryCache.TryGetValue("KeyLeaveOpeningGrid", out IList<HRLeaveOpeningDetail> LeaveOpeningDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyLeaveOpeningGrid");
+                    List<HRLeaveOpeningDetail> LeaveOpeningDetail = new List<HRLeaveOpeningDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        LeaveOpeningDetail = JsonConvert.DeserializeObject<List<HRLeaveOpeningDetail>>(modelJson);
+                    }
 
                     var MainModel = new HRLeaveOpeningMasterModel();
                     var WorkOrderPGrid = new List<HRLeaveOpeningDetail>();
                     var OrderGrid = new List<HRLeaveOpeningDetail>();
                     var ssGrid = new List<HRLeaveOpeningDetail>();
-
 
                     if (model != null)
                     {
@@ -211,14 +200,8 @@ namespace eTactwebInventory.Controllers
 
                         MainModel.HRLeaveOpeningDetailGrid = OrderGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyLeaveOpeningGrid", MainModel.HRLeaveOpeningDetailGrid, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.HRLeaveOpeningDetailGrid);
+                        HttpContext.Session.SetString("KeyLeaveOpeningGrid", serializedGrid);
                     }
                     else
                     {
@@ -235,8 +218,8 @@ namespace eTactwebInventory.Controllers
 
         public IActionResult ClearGrid()
         {
-            _MemoryCache.Remove("KeyLeaveOpeningGrid");
-            _MemoryCache.Remove("HRLeaveOpeningMasterModel");
+            HttpContext.Session.Remove("KeyLeaveOpeningGrid");
+            HttpContext.Session.Remove("HRLeaveOpeningMasterModel");
             var MainModel = new HRLeaveOpeningMasterModel();
             return PartialView("_HRLeaveOpeningDetailGrid", MainModel);
         }
@@ -246,11 +229,19 @@ namespace eTactwebInventory.Controllers
             IList<HRLeaveOpeningDetail> HRLeaveOpeningDetail = new List<HRLeaveOpeningDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyLeaveOpeningGrid", out HRLeaveOpeningDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveOpeningGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveOpeningDetail = JsonConvert.DeserializeObject<List<HRLeaveOpeningDetail>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyLeaveOpeningGrid", out HRLeaveOpeningDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveOpeningGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveOpeningDetail = JsonConvert.DeserializeObject<List<HRLeaveOpeningDetail>>(modelJson);
+                }
             }
             IEnumerable<HRLeaveOpeningDetail> SSBreakdownGrid = HRLeaveOpeningDetail;
             if (HRLeaveOpeningDetail != null)
@@ -267,9 +258,13 @@ namespace eTactwebInventory.Controllers
             var MainModel = new HRLeaveOpeningMasterModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyLeaveOpeningGrid", out IList<HRLeaveOpeningDetail> ItemDetailGrid);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveOpeningGrid");
+                List<HRLeaveOpeningDetail> ItemDetailGrid = new List<HRLeaveOpeningDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ItemDetailGrid = JsonConvert.DeserializeObject<List<HRLeaveOpeningDetail>>(modelJson);
+                }
 
-                //_MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out List<ItemDetailGrid> ItemDetailGrid);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (ItemDetailGrid != null && ItemDetailGrid.Count > 0)
@@ -292,14 +287,19 @@ namespace eTactwebInventory.Controllers
                         Size = 1024,
                     };
 
-                    _MemoryCache.Set("KeyLeaveOpeningGrid", MainModel.HRLeaveOpeningDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.HRLeaveOpeningDetailGrid);
+                    HttpContext.Session.SetString("KeyLeaveOpeningGrid", serializedGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyLeaveOpeningGrid", out IList<HRLeaveOpeningDetail> HRLeaveOpeningDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLeaveOpeningGrid");
+                List<HRLeaveOpeningDetail> HRLeaveOpeningDetail = new List<HRLeaveOpeningDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveOpeningDetail = JsonConvert.DeserializeObject<List<HRLeaveOpeningDetail>>(modelJson);
+                }
 
-                //_MemoryCache.TryGetValue("KeyPartCodePartyWiseGrid", out List<ItemDetailGrid> ItemDetailGrid);
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (HRLeaveOpeningDetail != null && HRLeaveOpeningDetail.Count > 0)
@@ -315,21 +315,12 @@ namespace eTactwebInventory.Controllers
                     }
                     MainModel.HRLeaveOpeningDetailGrid = HRLeaveOpeningDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyLeaveOpeningGrid", MainModel.HRLeaveOpeningDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.HRLeaveOpeningDetailGrid);
+                    HttpContext.Session.SetString("KeyLeaveOpeningGrid", serializedGrid);
                 }
             }
-
             return PartialView("_HRLeaveOpeningDetailGrid", MainModel);
         }
-
-
 
         private static System.Data.DataTable GetDetailTable(IList<HRLeaveOpeningDetail> DetailList)
         {
@@ -396,8 +387,12 @@ namespace eTactwebInventory.Controllers
             try
             {
                 var GIGrid = new System.Data.DataTable();
-                _MemoryCache.TryGetValue("KeyLeaveOpeningGrid", out List<HRLeaveOpeningDetail> HRLeaveOpeningDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyLeaveOpeningGrid");
+                List<HRLeaveOpeningDetail> HRLeaveOpeningDetail = new List<HRLeaveOpeningDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    HRLeaveOpeningDetail = JsonConvert.DeserializeObject<List<HRLeaveOpeningDetail>>(modelJson);
+                }
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 if (model.Mode == "U")
@@ -416,7 +411,7 @@ namespace eTactwebInventory.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyLeaveOpeningGrid");
+                        HttpContext.Session.Remove("KeyLeaveOpeningGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -437,8 +432,6 @@ namespace eTactwebInventory.Controllers
             }
             catch (Exception ex)
             {
-                // Log and return the error
-                //LogException<LedgerPartyWiseOpeningController>.WriteException(_logger, ex);
                 var ResponseResult = new ResponseResult
                 {
                     StatusCode = HttpStatusCode.InternalServerError,
@@ -448,8 +441,6 @@ namespace eTactwebInventory.Controllers
                 return View("Error", ResponseResult);
             }
         }
-
-
 
         [HttpGet]
         [Route("HRLeaveOpeningMasterDashBoard")]

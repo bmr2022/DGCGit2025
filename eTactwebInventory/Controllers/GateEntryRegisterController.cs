@@ -13,18 +13,15 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IGateEntryRegister _IGateEntryRegister { get; }
-
         private readonly ILogger<GateEntryRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public GateEntryRegisterController(ILogger<GateEntryRegisterController> logger, IDataLogic iDataLogic, IGateEntryRegister iGateEntryRegister, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public GateEntryRegisterController(ILogger<GateEntryRegisterController> logger, IDataLogic iDataLogic, IGateEntryRegister iGateEntryRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IGateEntryRegister = iGateEntryRegister;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

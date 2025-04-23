@@ -14,17 +14,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ICancelSaleBillrequisition _ICancelSaleBillrequisition { get; }
-
         private readonly ILogger<CancelSaleBillrequisitionController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public CancelSaleBillrequisitionController(ILogger<CancelSaleBillrequisitionController> logger, IDataLogic iDataLogic, ICancelSaleBillrequisition iCancelSaleBillrequisition, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public CancelSaleBillrequisitionController(ILogger<CancelSaleBillrequisitionController> logger, IDataLogic iDataLogic, ICancelSaleBillrequisition iCancelSaleBillrequisition, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ICancelSaleBillrequisition = iCancelSaleBillrequisition;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

@@ -14,15 +14,13 @@ namespace eTactWeb.Controllers
 
         private readonly ILogger<VendJWRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public VendJWRegisterController(ILogger<VendJWRegisterController> logger, IDataLogic iDataLogic, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IVendJWRegister VendJWRegister)
+        public VendJWRegisterController(ILogger<VendJWRegisterController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IVendJWRegister VendJWRegister)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IVendJWRegister = VendJWRegister;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

@@ -264,7 +264,7 @@
             }
             GetSearchData();
             GetFormRights();
-            $("#search-box").val($('#search-box').val()).trigger('keyup');
+            //$("#search-box").val($('#search-box').val()).trigger('keyup');
 
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
@@ -373,11 +373,31 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
-                    $('#totalRows').text($('#gateDashboardtable tr').length - 1);
+                    $('#totalRows').text($('#gateDashboardtable tr').length );
                     //countAllTotal();
                 }
             });
         }
+         $("#search-box").on("input", function () {
+             debugger
+            var searchString = $(this).val().trim();
+
+            $.ajax({
+                url: "/GateInward/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
         function GetServerDate() {
             $.ajax({
                 type: "GET",
@@ -500,24 +520,24 @@
 
         var currentSearchColumn = null;
 
-        $("#search-box").on("keyup", function () {
+        // $("#search-box").on("keyup", function () {
 
-            var value = $(this).val().toLowerCase();
-            $("#gateDashboardtable tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
-        });
+        //     var value = $(this).val().toLowerCase();
+        //     $("#gateDashboardtable tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
 
 
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        // });
 
 
         $('#sendToExcel').click(function () {

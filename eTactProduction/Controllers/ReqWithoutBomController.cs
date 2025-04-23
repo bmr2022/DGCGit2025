@@ -26,36 +26,18 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IReqWithoutBOM _IReqWithoutBOM;
         private readonly ILogger<ReqWithoutBomController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
 
-        public ReqWithoutBomController(ILogger<ReqWithoutBomController> logger, IDataLogic iDataLogic, IReqWithoutBOM iReqWithoutBOM, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+        public ReqWithoutBomController(ILogger<ReqWithoutBomController> logger, IDataLogic iDataLogic, IReqWithoutBOM iReqWithoutBOM, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IReqWithoutBOM = iReqWithoutBOM;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
         }
 
-
-        //public IActionResult PrintReport(int EntryId, int YearCode = 0,string Type="")
-        //{
-        //    string my_connection_string;
-        //    string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-        //    string webRootPath = _IWebHostEnvironment.WebRootPath;
-        //    var webReport = new WebReport();
-        //    webReport.Report.Load(webRootPath + "\\ReqWithoutBom4.frx");
-        //    //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
-        //    webReport.Report.SetParameterValue("entryparam", EntryId);
-        //    webReport.Report.SetParameterValue("yearparam", YearCode);
-        //    my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-        //    webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-        //    return View(webReport);
-        //}
         public IActionResult PrintReport(int EntryId, int YearCode = 0, string Type = "")
         {
             try
@@ -143,7 +125,7 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Requisition Without BOM Detail";
             TempData.Clear();
-            _MemoryCache.Remove("KeyReqWithoutBOMGrid");
+            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
             var MainModel = new RequisitionWithoutBOMModel();
            
 
@@ -152,14 +134,9 @@ namespace eTactWeb.Controllers
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.Mode = "F";
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
 
-            _MemoryCache.Set("KeyReqWithoutBOMGrid", MainModel, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("KeyReqWithoutBOMGrid", serializedGrid);
             return View(MainModel);
         }
 
@@ -174,20 +151,16 @@ namespace eTactWeb.Controllers
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode")); 
-            _MemoryCache.Remove("KeyReqWithoutBOMGrid");
+            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IReqWithoutBOM.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyReqWithoutBOMGrid", MainModel.ReqDetailGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
+                HttpContext.Session.SetString("KeyReqWithoutBOMGrid", serializedGrid);
             }
             else
             {
@@ -228,7 +201,13 @@ namespace eTactWeb.Controllers
             {
                 var ReqGrid = new DataTable();
                 var mainmodel2 = model;
-                _MemoryCache.TryGetValue("KeyReqWithoutBOMGrid", out List<RequisitionDetail> RequisitionDetail);
+                string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+                List<RequisitionDetail> RequisitionDetail = new List<RequisitionDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    RequisitionDetail = JsonConvert.DeserializeObject<List<RequisitionDetail>>(modelJson);
+                }
+
                 mainmodel2.ReqDetailGrid = RequisitionDetail;
                 if (RequisitionDetail == null)
                 {
@@ -256,7 +235,7 @@ namespace eTactWeb.Controllers
                             TempData["200"] = "200";
                             var MainModel = new RequisitionWithoutBOMModel();
                             MainModel = await BindModel(MainModel);
-                            _MemoryCache.Remove("KeyReqWithoutBOMGrid");
+                            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
                             return RedirectToAction(nameof(ReqWithoutBom));
                         }
                         if ((Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted) || (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted))
@@ -265,7 +244,7 @@ namespace eTactWeb.Controllers
                             TempData["202"] = "202";
                             var MainModel = new RequisitionWithoutBOMModel();
                             MainModel = await BindModel(MainModel);
-                            _MemoryCache.Remove("KeyReqWithoutBOMGrid");
+                            HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
                             return RedirectToAction(nameof(ReqWithoutBom));
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -312,7 +291,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyReqWithoutBOMGrid");
+                HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
                 var model = new ReqMainDashboard();
                 model.Mode = "Summary";
                 model.CC = HttpContext.Session.GetString("Branch");
@@ -374,7 +353,6 @@ namespace eTactWeb.Controllers
             string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
             DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
             string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
-
 
             return RedirectToAction("Dashboard", new { FromDate = formattedFromDate,ToDate = formattedToDate,Flag = "False", REQNo=REQNo, WCName=WCName, WONo=WONo, DepName=DepName, PartCode=PartCode, ItemName=ItemName, BranchName=CC});
         }
@@ -446,7 +424,13 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteItemRow(int SeqNo)
         {
             var MainModel = new RequisitionWithoutBOMModel();
-            _MemoryCache.TryGetValue("KeyReqWithoutBOMGrid", out List<RequisitionDetail> RequisitionDetail);
+            string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+            List<RequisitionDetail> RequisitionDetail = new List<RequisitionDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                RequisitionDetail = JsonConvert.DeserializeObject<List<RequisitionDetail>>(modelJson);
+            }
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (RequisitionDetail != null && RequisitionDetail.Count > 0)
@@ -472,7 +456,7 @@ namespace eTactWeb.Controllers
 
                 if (RequisitionDetail.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyReqWithoutBOMGrid");
+                    HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
                 }
             }
             return PartialView("_ReqWithoutBomGrid", MainModel);
@@ -481,7 +465,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyReqWithoutBOMGrid", out IList<RequisitionDetail> GridDetail);
+                string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+                List<RequisitionDetail> GridDetail = new List<RequisitionDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<RequisitionDetail>>(modelJson);
+                }
 
                 var MainModel = new RequisitionWithoutBOMModel();
                 var ReqWithoutBOMGrid = new List<RequisitionDetail>();
@@ -533,8 +522,8 @@ namespace eTactWeb.Controllers
                         SlidingExpiration = TimeSpan.FromMinutes(55),
                         Size = 1024,
                     };
-
-                    _MemoryCache.Set("KeyReqWithoutBOMGrid", MainModel.ReqDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
+                    HttpContext.Session.SetString("KeyReqWithoutBOMGrid", serializedGrid);
                 }
                 else
                 {
@@ -705,7 +694,13 @@ namespace eTactWeb.Controllers
         public IActionResult EditItemRow(int SeqNo)
         {
             var model = new RequisitionWithoutBOMModel();
-            _MemoryCache.TryGetValue("KeyReqWithoutBOMGrid", out List<RequisitionDetail> RequisitionDetail);
+            string modelJson = HttpContext.Session.GetString("KeyReqWithoutBOMGrid");
+            List<RequisitionDetail> RequisitionDetail = new List<RequisitionDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                RequisitionDetail = JsonConvert.DeserializeObject<List<RequisitionDetail>>(modelJson);
+            }
+            
             var SSGrid = RequisitionDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);

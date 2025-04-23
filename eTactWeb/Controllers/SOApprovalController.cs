@@ -9,14 +9,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly ISOApproval _ISOApproval;
         private readonly ILogger<SOApprovalController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public SOApprovalController(ILogger<SOApprovalController> logger, IDataLogic iDataLogic, ISOApproval iSOApproval, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public SOApprovalController(ILogger<SOApprovalController> logger, IDataLogic iDataLogic, ISOApproval iSOApproval, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ISOApproval = iSOApproval;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
 

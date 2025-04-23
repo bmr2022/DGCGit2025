@@ -19,17 +19,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ICompanyDetail _ICompanyDetail { get; }
-
         private readonly ILogger<CompanyDetailController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public CompanyDetailController(ILogger<CompanyDetailController> logger, IDataLogic iDataLogic, ICompanyDetail iCompanyDetail, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public CompanyDetailController(ILogger<CompanyDetailController> logger, IDataLogic iDataLogic, ICompanyDetail iCompanyDetail, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ICompanyDetail = iCompanyDetail;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -113,13 +110,6 @@ namespace eTactWeb.Controllers
                   
 
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                
             }
 
             // If not in "Update" mode, bind new model data
@@ -151,7 +141,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("CompanyGrid");
+                        HttpContext.Session.Remove("CompanyGrid");   
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {

@@ -16,14 +16,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IIssueAgainstProdSchedule _IIssueAgainstProdSchedule;
         private readonly ILogger<IssueAgainstProdScheduleController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public IssueAgainstProdScheduleController(ILogger<IssueAgainstProdScheduleController> logger, IDataLogic iDataLogic, IIssueAgainstProdSchedule IIssueAgainstProdSchedule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public IssueAgainstProdScheduleController(ILogger<IssueAgainstProdScheduleController> logger, IDataLogic iDataLogic, IIssueAgainstProdSchedule IIssueAgainstProdSchedule, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueAgainstProdSchedule = IIssueAgainstProdSchedule;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         [Route("{controller}/Index")]
@@ -31,8 +29,8 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Issue Against Production Schedule";
             TempData.Clear();
-            _MemoryCache.Remove("KeyIssueAgainstProdScheduleGrid");
-            _MemoryCache.Remove("KeyIssueAgainstProdScheduleDetail");
+            HttpContext.Session.Remove("KeyIssueAgainstProdScheduleGrid");
+            HttpContext.Session.Remove("KeyIssueAgainstProdScheduleDetail");
             var MainModel = new IssueAgainstProdSchedule();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
@@ -42,14 +40,9 @@ namespace eTactWeb.Controllers
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = HttpContext.Session.GetString("EntryDate");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
 
-            _MemoryCache.Set("KeyIssueAgainstProdScheduleGrid", MainModel, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("KeyIssueAgainstProdScheduleGrid", serializedGrid);
             return View(MainModel);
         }
         [Route("{controller}/Index")]
@@ -63,19 +56,15 @@ namespace eTactWeb.Controllers
             MainModel.IssAgtProdSchYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            _MemoryCache.Remove("KeyIssueAgainstProdScheduleGrid");
+            HttpContext.Session.Remove("KeyIssueAgainstProdScheduleGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IIssueAgainstProdSchedule.GetViewByID(ID, YC,ProdSchSlipNo).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyIssueAgainstProdScheduleGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssueAgainstProdScheduleGrid", serializedGrid);
             }
             else
             {
@@ -96,18 +85,6 @@ namespace eTactWeb.Controllers
                 MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
                 MainModel.LastUpdatedDate = HttpContext.Session.GetString("LastUpdatedDate");
             }
-            //MainModel.FromDateBack = FromDate;
-            //MainModel.ToDateBack = ToDate;
-            //MainModel.TransferSlipNoBack = TransferSlipNo;
-            //MainModel.PartCodeBack = PartCode;
-            //MainModel.ItemNameBack = ItemName;
-            //MainModel.FromWorkCenterBack = FromWorkCenter;
-            //MainModel.ToWorkCenterBack = ToWorkCenter;
-            //MainModel.StoreNameBack = StoreName;
-            //MainModel.ProdSlipNoBack=ProdSlipNo;
-            //MainModel.ProdSchNoBack=ProdSchNo;
-            //MainModel.GlobalSearchBack = Searchbox;
-            //MainModel.DashboardTypeBack = DashboardType;
             return View(MainModel);
         }
         [HttpPost]
@@ -119,7 +96,12 @@ namespace eTactWeb.Controllers
             {
                 var IssueAgainstProductionSchedule = new DataTable();
 
-                _MemoryCache.TryGetValue("KeyIssueAgainstProdScheduleGrid", out List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail);
+                string modelJson = HttpContext.Session.GetString("KeyIssueAgainstProdScheduleGrid");
+                List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+                }
 
                 if (IssueAgainstProdScheduleDetail == null)
                 {
@@ -153,7 +135,7 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove(IssueAgainstProdScheduleDetail);
+                            HttpContext.Session.Remove("KeyIssueAgainstProdScheduleGrid");
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -375,18 +357,18 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyIssAgainstProduction", out IList<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail);
+                string modelJson = HttpContext.Session.GetString("KeyIssAgainstProduction");
+                List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+                }
                 var MainModel = new IssueAgainstProdSchedule();
                 var IssueGrid = new List<IssueAgainstProdScheduleDetail>();
                 var SSGrid = new List<IssueAgainstProdScheduleDetail>();
                 MainModel.FromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+
                 var seqNo = 1;
                 if (IssueAgainstProdScheduleDetail != null)
                 {
@@ -403,7 +385,9 @@ namespace eTactWeb.Controllers
                             MainModel.ItemDetailGrid = IssueGrid;
                             MainModel.StoreId=IssueAgainstProdScheduleDetail[i].StoreId;
                             MainModel.StoreName=IssueAgainstProdScheduleDetail[i].StoreName;
-                            _MemoryCache.Set("KeyIssAgainstProduction", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("KeyIssAgainstProduction", serializedGrid);
                         }
                     }
                 }
@@ -420,11 +404,19 @@ namespace eTactWeb.Controllers
             IList<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyIssueAgainstProdScheduleGrid", out IssueAgainstProdScheduleDetail);
+                string modelJson = HttpContext.Session.GetString("KeyIssueAgainstProdScheduleGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyIssueAgainstProdScheduleGrid", out IssueAgainstProdScheduleDetail);
+                string modelJson = HttpContext.Session.GetString("KeyIssueAgainstProdScheduleGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+                }
             }
             IEnumerable<IssueAgainstProdScheduleDetail> SSGrid = IssueAgainstProdScheduleDetail;
             if (IssueAgainstProdScheduleDetail != null)
@@ -439,7 +431,13 @@ namespace eTactWeb.Controllers
             var MainModel = new IssueAgainstProdSchedule();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyIssueAgainstProdScheduleGrid", out List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail);
+                string modelJson = HttpContext.Session.GetString("KeyIssueAgainstProdScheduleGrid");
+                List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+                }
+                
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (IssueAgainstProdScheduleDetail != null && IssueAgainstProdScheduleDetail.Count > 0)
@@ -455,19 +453,19 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = IssueAgainstProdScheduleDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyIssueAgainstProdScheduleGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyIssueAgainstProdScheduleGrid", serializedGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyIssueAgainstProdScheduleGrid", out List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail);
+                string modelJson = HttpContext.Session.GetString("KeyIssueAgainstProdScheduleGrid");
+                List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+                }
+               
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (IssueAgainstProdScheduleDetail != null && IssueAgainstProdScheduleDetail.Count > 0)
@@ -483,14 +481,8 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = IssueAgainstProdScheduleDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyIssueAgainstProdScheduleGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    HttpContext.Session.SetString("KeyIssueAgainstProdScheduleGrid", serializedGrid);
                 }
             }
 
@@ -499,7 +491,12 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteFromMemoryGrid(int SeqNo)
         {
             var MainModel = new IssueAgainstProdSchedule();
-            _MemoryCache.TryGetValue("KeyIssAgainstProduction", out List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail);
+            string modelJson = HttpContext.Session.GetString("KeyIssAgainstProduction");
+            List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IssueAgainstProdScheduleDetail != null && IssueAgainstProdScheduleDetail.Count > 0)
@@ -515,19 +512,13 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ItemDetailGrid = IssueAgainstProdScheduleDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (IssueAgainstProdScheduleDetail.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyIssAgainstProduction");
+                    HttpContext.Session.Remove("KeyIssAgainstProduction");
                 }
-                _MemoryCache.Set("KeyIssAgainstProduction", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyIssAgainstProduction", serializedGrid);
             }
             return PartialView("_IssueAgainstProductionSchedule", MainModel);
         }
@@ -579,7 +570,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyIssueAgainstProdScheduleGrid");
+                HttpContext.Session.Remove("KeyIssueAgainstProdScheduleGrid");
 
                 var model = new IssueAgainstProdScheduleDashboard();
                 var Result = await _IIssueAgainstProdSchedule.GetSummaryDetail(FromDate, ToDate, IssAgtProdSchSlipNo, IssueFromStore, PartCode, ItemName, ProdPlanNo, ProdSchNo, "SUMMARY").ConfigureAwait(true);
@@ -604,16 +595,6 @@ namespace eTactWeb.Controllers
                     }
                     if (Flag != "True")
                     {
-                        //model.FromDate1 = FromDate;
-                        //model.ToDate1 = ToDate;
-                        //model.TransferMatSlipNo=TransferSlipNo;
-                        //model.ItemName=ItemName;
-                        //model.PartCode=PartCode;
-                        //model.TransferFromWC=FromWorkCenter;
-                        //model.TransferToWC=ToWorkCenter;
-                        //model.TransferToStore=StoreName;
-                        //model.ProdSlipNo=ProdSlipNo;
-                        //model.ProdSchNo=ProdSchNo;
                         model.Searchbox=Searchbox;
                         model.DashboardType=DashboardType;
                         return View(model);
@@ -654,7 +635,13 @@ namespace eTactWeb.Controllers
 
                         var isStockable = _IIssueAgainstProdSchedule.GetIsStockable(item.ProdPlanFGItemCode);
                         var stockable = isStockable.Result.Result.Rows[0].ItemArray[0];
-                        _MemoryCache.TryGetValue("KeyIssueAgainstProdScheduleGrid", out IList<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail);
+                        string modelJson = HttpContext.Session.GetString("KeyIssueAgainstProdScheduleGrid");
+                        List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+                        if (!string.IsNullOrEmpty(modelJson))
+                        {
+                            IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+                        }
+
                         if (item != null)
                         {
                             if (IssueAgainstProdScheduleDetail == null)
@@ -686,11 +673,12 @@ namespace eTactWeb.Controllers
                             }
                             MainModel.ItemDetailGrid = IssueGrid;
 
-                            _MemoryCache.Set("KeyIssueAgainstProdScheduleGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("KeyIssueAgainstProdScheduleGrid", serializedGrid);
                         }
                     }
                 }
-                _MemoryCache.Remove("KeyIssueAgainstProdSchedule");
+                HttpContext.Session.Remove("KeyIssueAgainstProdSchedule");
                 return PartialView("_IssueAgainstProductionScheduleGrid", MainModel);
             }
             catch (Exception ex)

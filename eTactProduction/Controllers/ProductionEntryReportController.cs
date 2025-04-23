@@ -14,14 +14,12 @@ namespace eTactWeb.Controllers
         public IProductionEntryReport _IProductionEntryReport { get; }
         private readonly ILogger<ProductionEntryReportController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public ProductionEntryReportController(ILogger<ProductionEntryReportController> logger, IDataLogic iDataLogic, IProductionEntryReport IProductionEntryReport, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public ProductionEntryReportController(ILogger<ProductionEntryReportController> logger, IDataLogic iDataLogic, IProductionEntryReport IProductionEntryReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IProductionEntryReport = IProductionEntryReport;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

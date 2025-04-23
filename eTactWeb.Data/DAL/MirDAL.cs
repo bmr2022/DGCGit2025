@@ -333,7 +333,7 @@ namespace eTactWeb.Data.DAL
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString().Trim();
             model.MRNNo = DS.Tables[0].Rows[0]["MRNNO"].ToString().Trim();
             model.MRNJWCustJW = DS.Tables[0].Rows[0]["MRNJWCustJW"].ToString().Trim();
-            model.MIRDate = DS.Tables[0].Rows[0]["MIRDate"].ToString().Trim();
+            model.MIRDate = DS.Tables[0].Rows[0]["MIREntryDate"].ToString();
             model.MRNYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MRNYearcode"].ToString());
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["MRNDate"].ToString()))
             {

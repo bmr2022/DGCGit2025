@@ -18,15 +18,13 @@ namespace eTactWeb.Controllers
         private readonly IMachineMaster _IMachineMaster;
         private readonly ILogger<MachineMasterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public MachineMasterController(ILogger<MachineMasterController> logger, IDataLogic iDataLogic, IMachineMaster iMachineMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public MachineMasterController(ILogger<MachineMasterController> logger, IDataLogic iDataLogic, IMachineMaster iMachineMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMachineMaster = iMachineMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
 
@@ -189,98 +187,5 @@ namespace eTactWeb.Controllers
             return RedirectToAction("MachineMasterDashboard");
 
         }
-
-
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> MachineMaster(MachineMasterModel model)
-        //{
-        //    if (model.Mode == "Update")
-        //    {
-
-        //    }
-        //        //var model = new MachineMasterModel();
-        //        var Result = await _IMachineMaster.SaveData(model).ConfigureAwait(true);
-
-        //    if (Result == null)
-        //    {
-        //        ViewBag.isSuccess = false;
-        //        TempData["Message"] = "Something Went Wrong, Please Try Again while saveing Item Category.";
-        //    }
-        //    else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-        //    {
-        //        ViewBag.isSuccess = true;
-        //        TempData["200"] = "200";
-        //        return RedirectToAction(nameof(DashBoard));
-        //    }
-
-        //   return View(model);
-        //}
-
-        ////[Route("{controller}/Index")]
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<ActionResult> MachineMaster(MachineMasterModel model)
-        //{
-        //    if (model.Mode == "U")
-        //    {
-
-        //        // Fetch the existing record from the database using EntryId or another unique identifier
-        //        var existingRecord = await _IMachineMaster.ViewByID(model.ID);
-        //        if (existingRecord != null)
-        //        {
-        //            //existingRecord.MachineId = model.MachineId;
-        //            existingRecord.MachGroupId = model.MachGroupId;
-        //            existingRecord.MachineCode = model.MachineCode;
-        //            existingRecord.MachineName = model.MachineName;
-        //            existingRecord.Mode = model.Mode;
-        //            //existingRecord.MachineId = model.MachineId;
-
-
-        //            // Save the updated record back to the database
-        //            var updateResult = await _IMachineMaster.SaveData(existingRecord).ConfigureAwait(true);
-
-        //            if (updateResult.StatusText == "Success")
-        //            {
-        //                return RedirectToAction("Dashboard", "MachineMaster");
-        //            }
-        //        }
-        //        else
-        //        {
-
-        //            ModelState.AddModelError("", "Record not found for updating.");
-        //        }
-        //    }
-        //    else
-        //    {
-        //        // Handle insert case if mode is not "U"
-        //        var result = await _IMachineMaster.SaveData(model).ConfigureAwait(true);
-        //        if (result.StatusText == "Success")
-        //        {
-        //            return RedirectToAction("Dashboard");
-        //        }
-        //    }
-
-        //    // If something goes wrong, return the model back to the view
-        //    return View(model);
-        //}
-
-        //public async Task<IActionResult> Delete(int id)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var result = await _IMachineMaster.DeleteMachine(id);
-        //        if (result.StatusText == "Success")
-        //        {
-        //            return RedirectToAction("Dashboard", "MachineMaster");
-
-        //        }
-
-        //    }
-        //    return RedirectToAction("Dashboard", "MachineMaster");
-
-        //}
-
-
     }
 }

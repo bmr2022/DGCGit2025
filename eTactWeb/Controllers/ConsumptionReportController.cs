@@ -11,17 +11,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IConsumptionReport _IConsumptionReport { get; }
-
         private readonly ILogger<ConsumptionReportController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public ConsumptionReportController(ILogger<ConsumptionReportController> logger, IDataLogic iDataLogic, IConsumptionReport iConsumptionReport, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public ConsumptionReportController(ILogger<ConsumptionReportController> logger, IDataLogic iDataLogic, IConsumptionReport iConsumptionReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IConsumptionReport = iConsumptionReport;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

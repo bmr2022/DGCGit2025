@@ -15,32 +15,17 @@ namespace eTactWeb.Controllers
     public class ProductionScheduleController : Controller
     {
         private readonly IDataLogic _IDataLogic;
-        //private readonly IGateInward _IGateInward;
         public IProductionSchedule _IProductionSchedule { get; }
-
         private readonly ILogger<ProductionScheduleController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment IWebHostEnvironment { get; }
 
-        public ProductionScheduleController(ILogger<ProductionScheduleController> logger, IDataLogic iDataLogic, IProductionSchedule iProductionSchedule, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public ProductionScheduleController(ILogger<ProductionScheduleController> logger, IDataLogic iDataLogic, IProductionSchedule iProductionSchedule, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IProductionSchedule = iProductionSchedule;
-            _MemoryCache = iMemoryCache;
             IWebHostEnvironment = iWebHostEnvironment;
         }
-
-           //<input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
-           //                 <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-           //                 <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
-           //                 <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
-           //                 <input asp-for="AccountNameBack" type="hidden" value="@Model.AccountNameBack" />
-           //                 <input asp-for="ProdSchNoBack" type="hidden" value="@Model.ProdSchNoBack" />
-           //                 <input asp-for="WONOBack" type="hidden" value="@Model.WONOBack" />
-           //                 <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
-           //                 <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
-
         [HttpGet]
         [Route("{controller}/Index")]
         public async Task<IActionResult> ProductionSchedule(int ID, string Mode, int YC,string fromDate="",string toDate="",string partCode = "",string itemName="",string accountName="",string prodSchNo ="",string wono="",string summaryDetail = "",string searchBox ="")
@@ -48,13 +33,11 @@ namespace eTactWeb.Controllers
             ProductionScheduleModel model = new ProductionScheduleModel();
             ViewData["Title"] = "Production Schdeule Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyProductionScheduleGrid");
-            _MemoryCache.Remove("KeyProdPlanGrid");
-            _MemoryCache.Remove("KeyBomChildDetailGrid");
-            _MemoryCache.Remove("KeyBomChildSummaryGrid");
-            _MemoryCache.Remove("KeyAdjustedQty");
-
-            // var model = await BindModel(MainModel);
+            HttpContext.Session.Remove("KeyProductionScheduleGrid");
+            HttpContext.Session.Remove("KeyProdPlanGrid");
+            HttpContext.Session.Remove("KeyBomChildDetailGrid");
+            HttpContext.Session.Remove("KeyBomChildSummaryGrid");
+            HttpContext.Session.Remove("KeyAdjustedQty");
 
             if (model.Mode != "U")
             {
@@ -73,20 +56,18 @@ namespace eTactWeb.Controllers
                 
             }
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
             model.FinFromDate = HttpContext.Session.GetString("FromDate");
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
-            _MemoryCache.Set("KeyProductionScheduleGrid", model.ProductionScheduleDetails, cacheEntryOptions);
-            _MemoryCache.Set("KeyProdPlanGrid", model.prodPlanDetails, cacheEntryOptions);
-            _MemoryCache.Set("KeyBomChildDetailGrid", model.BomDatamodel?.BomDetails, cacheEntryOptions);
-            _MemoryCache.Set("KeyBomChildSummaryGrid", model.BomDatamodel?.BomSummaries, cacheEntryOptions);
+            string serializedProductionScheduleGrid = JsonConvert.SerializeObject(model.ProductionScheduleDetails);
+            HttpContext.Session.SetString("KeyProductionScheduleGrid", serializedProductionScheduleGrid);
+            string serializedProdPlanGrid = JsonConvert.SerializeObject(model.prodPlanDetails);
+            HttpContext.Session.SetString("KeyProdPlanGrid", serializedProdPlanGrid);
+            string serializedBomDataModelGrid = JsonConvert.SerializeObject(model.BomDatamodel?.BomDetails);
+            HttpContext.Session.SetString("KeyBomChildDetailGrid", serializedBomDataModelGrid);
+            string serializedBomChildSummaryGrid = JsonConvert.SerializeObject(model.BomDatamodel?.BomSummaries);
+            HttpContext.Session.SetString("KeyBomChildSummaryGrid", serializedBomChildSummaryGrid);
             //int ID, string Mode, int YC,string fromDate = "",string toDate = "",string partCode = "",string itemName = "",string accountName = "",string prodSchNo = "",string wono = "",string summaryDetail = "",string searchBox = ""
             model.PartCodeBack = partCode;
             model.ItemNameBack = itemName;
@@ -113,12 +94,6 @@ namespace eTactWeb.Controllers
                 schTillDate = ParseFormattedDate(schTillDate);
 
                 var model = await _IProductionSchedule.AddPendingProdPlans(yearCode, schFromDate, schTillDate, displayFlag, noOfDays, PendingProdPlans);
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 List<ProductionScheduleProdPlanDetail> prodPlans = new();
                 foreach (var item in prodPlanList)
                 {
@@ -144,8 +119,10 @@ namespace eTactWeb.Controllers
                 }
 
                 model.prodPlanDetails = prodPlans;
-                _MemoryCache.Set("KeyProdPlanGrid", model.prodPlanDetails, cacheEntryOptions);
-                _MemoryCache.Set("KeyProductionScheduleGrid", model.ProductionScheduleDetails, cacheEntryOptions);
+                string serializedProdPlanGrid = JsonConvert.SerializeObject(model.prodPlanDetails);
+                HttpContext.Session.SetString("KeyProdPlanGrid", serializedProdPlanGrid);
+                string serializedProductionScheduleGrid = JsonConvert.SerializeObject(model.ProductionScheduleDetails);
+                HttpContext.Session.SetString("KeyProductionScheduleGrid", serializedProductionScheduleGrid);
                 return PartialView("_ProductionScheduleGrid", model);
             }
             catch (Exception ex)
@@ -153,11 +130,6 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-
-        //public async Task<IActionResult> DeleteByID(int ID, int YC, int createdBy, string entryByMachineName)
-        //{
-        //    return View();
-        //}
 
         public async Task<JsonResult> GetFormRights()
         {
@@ -186,14 +158,24 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> ReloadDelete()
         {
-            _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out List<ProductionScheduleDetail> PSDetailGrid);
+            string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+            List<ProductionScheduleDetail> PSDetailGrid = new List<ProductionScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PSDetailGrid = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+            }
             var model = new ProductionScheduleModel();
             model.ProductionScheduleDetails = PSDetailGrid;
             return Json(model);
         }
         public async Task<IActionResult> PSBomDetail(int YearCode)
         {
-            _MemoryCache.TryGetValue("KeyAdjustedQty", out List<ProductionScheduleDetail> PSDetailGrid);
+            string modelJson = HttpContext.Session.GetString("KeyAdjustedQty");
+            List<ProductionScheduleDetail> PSDetailGrid = new List<ProductionScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PSDetailGrid = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+            }
             DataTable? itemGrid = new();
             if (PSDetailGrid != null)
             {
@@ -202,19 +184,20 @@ namespace eTactWeb.Controllers
             var mainModel = new ProductionScheduleModel();
             var model = _IProductionSchedule.PSBomDetail(YearCode, itemGrid);
             mainModel = model.Result;
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            
-            _MemoryCache.Set("KeyBomChildDetailGrid", mainModel.BomDatamodel?.BomDetails, cacheEntryOptions);
+
+            string serializedScrapGrid = JsonConvert.SerializeObject(mainModel.BomDatamodel?.BomDetails);
+            HttpContext.Session.SetString("KeyBomChildDetailGrid", serializedScrapGrid);
             return PartialView("_PSBOMDetail", mainModel);
         }
         public async Task<IActionResult> PSBomSummary(int YearCode)
         {
-            _MemoryCache.TryGetValue("KeyAdjustedQty", out List<ProductionScheduleDetail> PSDetailGrid);
+            string modelJson = HttpContext.Session.GetString("KeyAdjustedQty");
+            List<ProductionScheduleDetail> PSDetailGrid = new List<ProductionScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PSDetailGrid = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+            }
+
             DataTable? itemGrid = new();
             if (PSDetailGrid != null) {
                 itemGrid = GetDetailTable(PSDetailGrid);
@@ -222,18 +205,19 @@ namespace eTactWeb.Controllers
             var mainModel = new ProductionScheduleModel();
             var model = _IProductionSchedule.PSBomDetail(YearCode, itemGrid);
             mainModel = model.Result;
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyBomChildSummaryGrid", mainModel.BomDatamodel?.BomSummaries, cacheEntryOptions);
+
+            string serializedScrapGrid = JsonConvert.SerializeObject(mainModel.BomDatamodel?.BomSummaries);
+            HttpContext.Session.SetString("KeyBomChildSummaryGrid", serializedScrapGrid);
             return PartialView("_PSBomSummary", mainModel);
         }
         public async Task<JsonResult> GetPendProduction()
         {
-            _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out IList<ProductionScheduleDetail> PSDetail);
+            string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+            List<ProductionScheduleDetail> PSDetail = new List<ProductionScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PSDetail = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+            }
             string JsonString = JsonConvert.SerializeObject(PSDetail);
             return Json(JsonString);
         }
@@ -249,12 +233,40 @@ namespace eTactWeb.Controllers
                 var BomChildDetailDT = new DataTable();
                 var BomSummaryDetailDT = new DataTable();
                 var prodPlanDetail = new DataTable();
+                string productionScheduleDetail = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+                List<ProductionScheduleDetail> PSDetailGrid = new List<ProductionScheduleDetail>();
+                if (!string.IsNullOrEmpty(productionScheduleDetail))
+                {
+                    PSDetailGrid = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(productionScheduleDetail);
+                }
 
-                _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out List<ProductionScheduleDetail> PSDetailGrid);
-                _MemoryCache.TryGetValue("KeyBomChildDetailGrid", out List<ProductionScheduleBomDetail> bomChildDetail);
-                _MemoryCache.TryGetValue("KeyBomChildSummaryGrid", out List<ProductionScheduleBomSummary> bomSummaryDetail);
-                _MemoryCache.TryGetValue("KeyProdPlanGrid", out List<ProductionScheduleProdPlanDetail> prodPlanGrid);
-                _MemoryCache.TryGetValue("KeyAdjustedQty", out List<ProductionScheduleDetail> AdjustedDetails);
+                string bomChild = HttpContext.Session.GetString("KeyBomChildDetailGrid");
+                List<ProductionScheduleBomDetail> bomChildDetail = new List<ProductionScheduleBomDetail>();
+                if (!string.IsNullOrEmpty(bomChild))
+                {
+                    bomChildDetail = JsonConvert.DeserializeObject<List<ProductionScheduleBomDetail>>(bomChild);
+                }
+
+                string bomSummary = HttpContext.Session.GetString("KeyBomChildSummaryGrid");
+                List<ProductionScheduleBomSummary> bomSummaryDetail = new List<ProductionScheduleBomSummary>();
+                if (!string.IsNullOrEmpty(bomSummary))
+                {
+                    bomSummaryDetail = JsonConvert.DeserializeObject<List<ProductionScheduleBomSummary>>(bomSummary);
+                }
+
+                string prodPlan = HttpContext.Session.GetString("KeyProdPlanGrid");
+                List<ProductionScheduleProdPlanDetail> prodPlanGrid = new List<ProductionScheduleProdPlanDetail>();
+                if (!string.IsNullOrEmpty(prodPlan))
+                {
+                    prodPlanGrid = JsonConvert.DeserializeObject<List<ProductionScheduleProdPlanDetail>>(prodPlan);
+                }
+
+                string adjustDetail = HttpContext.Session.GetString("KeyAdjustedQty");
+                List<ProductionScheduleDetail> AdjustedDetails = new List<ProductionScheduleDetail>();
+                if (!string.IsNullOrEmpty(adjustDetail))
+                {
+                    AdjustedDetails = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(adjustDetail);
+                }
                 if (prodPlanDetail == null)
                 {
                     ModelState.Clear();
@@ -304,13 +316,6 @@ namespace eTactWeb.Controllers
                             var modelUpdate = new ProductionScheduleModel();
                             return RedirectToAction("ProductionSchedule", modelUpdate);
                         }
-                        //if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                        //{
-                        //    ViewBag.isSuccess = false;
-                        //    TempData["500"] = "500";
-                        //    _logger.LogError("\n \n ******** LogError ******** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                        //    return View("Error", Result);
-                        //}
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             ViewBag.isSuccess = false;
@@ -336,13 +341,23 @@ namespace eTactWeb.Controllers
                             }
 
                             _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out List<ProductionScheduleDetail> PSGridDetails);
+                            string psGrid = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+                            List<ProductionScheduleDetail> PSGridDetails = new List<ProductionScheduleDetail>();
+                            if (!string.IsNullOrEmpty(psGrid))
+                            {
+                                PSGridDetails = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(psGrid);
+                            }
                             model.ProductionScheduleDetails = AdjustedDetails;
                             ModelState.Clear();
                             return View(model);
                         }
                     }
-                    _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out List<ProductionScheduleDetail> PSDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+                    List<ProductionScheduleDetail> PSDetail = new List<ProductionScheduleDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        PSDetail = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+                    }
                     model.ProductionScheduleDetails = PSDetail;
                     ModelState.Clear();
                     return View(model);
@@ -365,15 +380,15 @@ namespace eTactWeb.Controllers
         }
         public IActionResult ClearProductionSchGrid()
         {
-            _MemoryCache.Remove("KeyProdPlanGrid");
-            _MemoryCache.Remove("KeyProductionScheduleGrid");
+            HttpContext.Session.Remove("KeyProdPlanGrid");
+            HttpContext.Session.Remove("KeyProductionScheduleGrid");
             var MainModel = new ProductionScheduleModel();
             return PartialView("_ProductionScheduleGrid", MainModel);
         }
         public IActionResult ClearBomGrid()
         {
-            _MemoryCache.Remove("KeyBomChildSummaryGrid");
-            _MemoryCache.Remove("KeyBomChildDetailGrid");
+            HttpContext.Session.Remove("KeyBomChildSummaryGrid");
+            HttpContext.Session.Remove("KeyBomChildDetailGrid");
             var MainModel = new ProductionScheduleModel();
             return PartialView("_PSBomSummary", MainModel);
         }
@@ -417,7 +432,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyProductionScheduleGrid");
+                HttpContext.Session.Remove("KeyProductionScheduleGrid");
                 var model = new ProductionScheduleDashboard();
 
                 var FromDt = HttpContext.Session.GetString("FromDate");
@@ -727,18 +742,11 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                //_MemoryCache.Remove("KeyProductionScheduleGrid");
-                _MemoryCache.Remove("KeyAdjustedQty");
+                HttpContext.Session.Remove("KeyAdjustedQty");
                 var PSDetails = new ProductionScheduleModel();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 PSDetails.ProductionScheduleDetails = model;
-                //_MemoryCache.Set("KeyProductionScheduleGrid", PSDetails.ProductionScheduleDetails, cacheEntryOptions);
-                _MemoryCache.Set("KeyAdjustedQty", PSDetails.ProductionScheduleDetails, cacheEntryOptions);
+                string serializedScrapGrid = JsonConvert.SerializeObject(PSDetails.ProductionScheduleDetails);
+                HttpContext.Session.SetString("KeyAdjustedQty", serializedScrapGrid);
                 return Json("Ok");
             }
             catch (Exception ex)
@@ -756,19 +764,13 @@ namespace eTactWeb.Controllers
             }
             try
             {
-                _MemoryCache.Remove("KeyProductionScheduleGrid");
+                HttpContext.Session.Remove("KeyProductionScheduleGrid");
                 var PSDetails = new ProductionScheduleModel
                 {
                     ProductionScheduleDetails = model
                 };
-
-                var cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyProductionScheduleGrid", PSDetails.ProductionScheduleDetails, cacheEntryOptions);
+                string serializedScrapGrid = JsonConvert.SerializeObject(PSDetails.ProductionScheduleDetails);
+                HttpContext.Session.SetString("KeyProductionScheduleGrid", serializedScrapGrid);
 
                 return Json(PSDetails);
             }
@@ -794,7 +796,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> GetNewProductionList()
         {
             var model = new ProductionScheduleModel();
-            _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out List<ProductionScheduleDetail> PSDetail);
+            string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+            List<ProductionScheduleDetail> PSDetail = new List<ProductionScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PSDetail = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+            }
             string JsonString = JsonConvert.SerializeObject(PSDetail);
             return Json(JsonString);
         }
@@ -828,7 +835,12 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo, int itemCode)
         {
             var MainModel = new ProductionScheduleModel();
-            _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out List<ProductionScheduleDetail> PSDetail);
+            string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+            List<ProductionScheduleDetail> PSDetail = new List<ProductionScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                PSDetail = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (PSDetail != null && PSDetail.Count > 0)
@@ -851,14 +863,8 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ProductionScheduleDetails = PSDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                _MemoryCache.Set("KeyProductionScheduleGrid", MainModel.ProductionScheduleDetails, cacheEntryOptions);
+                string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ProductionScheduleDetails);
+                HttpContext.Session.SetString("KeyProductionScheduleGrid", serializedScrapGrid);
             }
             return PartialView("_ProductionScheduleGrid", MainModel);
         }
@@ -866,13 +872,13 @@ namespace eTactWeb.Controllers
         public IActionResult GetViewQty()
         {
             ProductionScheduleModel model = new();
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+
+            string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+            List<ProductionScheduleDetail> PSDetail = new List<ProductionScheduleDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.TryGetValue("KeyProductionScheduleGrid", out IList<ProductionScheduleDetail> PSDetail);
+                PSDetail = JsonConvert.DeserializeObject<List<ProductionScheduleDetail>>(modelJson);
+            }
             model.ProductionScheduleDetails = PSDetail.ToList();
             string JsonString = JsonConvert.SerializeObject(model);
             return Json(JsonString);
@@ -915,43 +921,6 @@ namespace eTactWeb.Controllers
             PPGrid.Dispose();
             return PPGrid;
         }
-        //private static DataTable GetProdInputDetailTable(IList<ProductionScheduleInputData> DetailList)
-        //{
-        //    var PPGrid = new DataTable();
-
-        //    PPGrid.Columns.Add("PlanNo", typeof(string));
-        //    PPGrid.Columns.Add("PLanEntryId", typeof(int));
-        //    PPGrid.Columns.Add("PlanYearCode", typeof(int));
-        //    PPGrid.Columns.Add("PlanDate", typeof(string));
-        //    PPGrid.Columns.Add("SOEntryId", typeof(int));
-        //    PPGrid.Columns.Add("SONo", typeof(string));
-        //    PPGrid.Columns.Add("CustOrderNo", typeof(string));
-        //    PPGrid.Columns.Add("SOYearCode", typeof(string));
-        //    PPGrid.Columns.Add("SODate", typeof(string));
-        //    PPGrid.Columns.Add("itemCode", typeof(int));
-        //    PPGrid.Columns.Add("AccountCode", typeof(int));
-
-        //    foreach (var Item in DetailList)
-        //    {
-        //        PPGrid.Rows.Add(
-        //            new object[]
-        //            {
-        //            Item.WONo,
-        //            Item.WOEntryId,
-        //            Item.WOYearCode,
-        //            Item.WODate == null ? string.Empty : ParseDate(Item.WODate),
-        //            Item.SOEntryId,
-        //            Item.SONo,
-        //            Item.CustOrderNo,
-        //            Item.SOYearCode,
-        //            Item.SODate == null ? string.Empty : ParseDate(Item.SODate),
-        //            Item.ItemCode,
-        //            Item.AccountCode
-        //            });
-        //    }
-        //    PPGrid.Dispose();
-        //    return PPGrid;
-        //}
     }
 
     public class Prod

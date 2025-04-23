@@ -21,17 +21,15 @@ namespace eTactWeb.Controllers
     {
         public WebReport webReport;
         public IDataLogic IDataLogic { get; }
-        public IMemoryCache IMemoryCache { get; }
         public IInterStoreTransfer IInterStore { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<InterStoreTransferController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration iconfiguration;
-        public InterStoreTransferController(IInterStoreTransfer iInterStore, IConfiguration configuration, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<InterStoreTransferController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public InterStoreTransferController(IInterStoreTransfer iInterStore, IConfiguration configuration, IDataLogic iDataLogic, ILogger<InterStoreTransferController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             IInterStore = iInterStore;
             IDataLogic = iDataLogic;
-            IMemoryCache = iMemoryCache;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
@@ -45,7 +43,7 @@ namespace eTactWeb.Controllers
             //RoutingModel model = new RoutingModel();  
             ViewData["Title"] = "InterStoreTransfer Details";
             TempData.Clear();
-            IMemoryCache.Remove("KeyInterStoreTransferGrid");
+            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
             var MainModel = new InterStoreTransferModel();
 
             MainModel.FinFromDate = ParseDate(HttpContext.Session.GetString("FromDate")).ToString().Replace("-", "/");
@@ -86,8 +84,9 @@ namespace eTactWeb.Controllers
                 Size = 1024,
             };
 
-            IMemoryCache.Set("KeyInterStoreTransferGrid", MainModel.InterStoreDetails, cacheEntryOptions);
-            //IMemoryCache.Set("KeyInterStoreTransferGrid", model, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
+            HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
+
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.SlipNoBack = SlipNo;
@@ -100,10 +99,6 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId , int YearCode , string PONO = "")
         {
-          
-
-
-
             string my_connection_string;
             string contentRootPath = IWebHostEnvironment.ContentRootPath;
             string webRootPath = IWebHostEnvironment.WebRootPath;
@@ -121,9 +116,6 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
             return View(webReport);
-
-
-            return View(webReport);
         }
         public async Task<JsonResult> GetFormRights()
         {
@@ -138,7 +130,13 @@ namespace eTactWeb.Controllers
             if (Mode == "U")
             {
                 int Indx = Convert.ToInt32(SeqNo) - 1;
-                IMemoryCache.TryGetValue("KeyInterStoreTransferGrid", out List<InterStoreTransferDetail> ISTDetail);
+
+                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<InterStoreTransferDetail>>(modelJson);
+                }
 
                 if (ISTDetail != null && ISTDetail.Count > 0)
                 {
@@ -153,19 +151,19 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.InterStoreDetails = ISTDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyInterStoreTransferGrid", MainModel.InterStoreDetails, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
+                    HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
                 }
             }
             else
             {
-                IMemoryCache.TryGetValue("KeyInterStoreTransferGrid", out List<InterStoreTransferDetail> ISTDetail);
+                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<InterStoreTransferDetail>>(modelJson);
+                }
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (ISTDetail != null && ISTDetail.Count > 0)
@@ -181,24 +179,22 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.InterStoreDetails = ISTDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyInterStoreTransferGrid", MainModel.InterStoreDetails, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
+                    HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
                 }
             }
-
             return PartialView("_InterStoreTransferDetail", MainModel);
         }
         public IActionResult AddInterStoreTransferDetail(InterStoreTransferDetail model)
         {
             try
             {
-                IMemoryCache.TryGetValue("KeyInterStoreTransferGrid", out IList<InterStoreTransferDetail> ISTDetail);
+                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<InterStoreTransferDetail>>(modelJson);
+                }
 
                 var MainModel = new InterStoreTransferModel();
                 var ISTGrid = new List<InterStoreTransferDetail>();
@@ -219,12 +215,7 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            //if (ISTDetail.Any(x => x.ItemCode == model.ItemCode && x.Wcid == model.Wcid && x.batchno == model.batchno /*&& x.uniqbatchno == model.uniqbatchno*/))
-                            //{
-                            //    return StatusCode(207, "Duplicate");
-                            //}
 
-                           // model.SeqNo = ISTDetail.Count + 1;
                             ISTGrid = ISTDetail.Where(x => x != null).ToList();
                             ISTList.AddRange(ISTGrid);
                             ISTGrid.Add(model);
@@ -233,15 +224,9 @@ namespace eTactWeb.Controllers
 
                     ISTGrid = ISTGrid.OrderBy(item => item.SeqNo).ToList();
                     MainModel.InterStoreDetails = ISTGrid;
-                    
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
 
-                    IMemoryCache.Set("KeyInterStoreTransferGrid", MainModel.InterStoreDetails, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.InterStoreDetails);
+                    HttpContext.Session.SetString("KeyInterStoreTransferGrid", serializedGrid);
                 }
                 else
                 {
@@ -264,7 +249,12 @@ namespace eTactWeb.Controllers
             {
                 var ISTGrid = new DataTable();
 
-                IMemoryCache.TryGetValue("KeyInterStoreTransferGrid", out IList<InterStoreTransferDetail> ISTDetail);
+                string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+                List<InterStoreTransferDetail> ISTDetail = new List<InterStoreTransferDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<InterStoreTransferDetail>>(modelJson);
+                }
 
                 if (ISTDetail == null)
                 {
@@ -293,16 +283,13 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            IMemoryCache.Remove(ISTGrid);
                             var model1 = new InterStoreTransferModel();
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
                             model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                             model1.CC = HttpContext.Session.GetString("Branch");
-                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyInterStoreTransferGrid");
-                            //return View(model1);
+                            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
                             return RedirectToAction(nameof(ISTDashboard));
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -314,10 +301,8 @@ namespace eTactWeb.Controllers
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
                             model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                             model1.CC = HttpContext.Session.GetString("Branch");
-                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyInterStoreTransferGrid");
-                            //return View(model1);
+                            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
                             return RedirectToAction(nameof(ISTDashboard));
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -333,7 +318,6 @@ namespace eTactWeb.Controllers
                                 model2.FinToDate = HttpContext.Session.GetString("ToDate");
                                 model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                                 model2.CC = HttpContext.Session.GetString("Branch");
-                                // model2.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                                 model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                                 return View(model2);
                             }
@@ -341,7 +325,6 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            // return View("Error", Result);
                             return RedirectToAction(nameof(ISTDashboard));
                         }
                     }
@@ -368,7 +351,7 @@ namespace eTactWeb.Controllers
         [Route("{controller}/Dashboard")]
         public async Task<IActionResult> ISTDashboard(string SlipNo,string PartCode,string ItemName,string BatchNo,string SummaryDetail, string Flag = "True", string FromDate = "", string ToDate = "")
         {
-            IMemoryCache.Remove("KeyInterStoreTransferGrid");
+            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
             var model = new ISTDashboard();
             var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             DateTime now = DateTime.Now;
@@ -501,14 +484,19 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new InterStoreTransferModel();
-            IMemoryCache.TryGetValue("KeyInterStoreTransferGrid", out List<InterStoreTransferDetail> InterStoreGrid);
+            string modelJson = HttpContext.Session.GetString("KeyInterStoreTransferGrid");
+            List<InterStoreTransferDetail> InterStoreGrid = new List<InterStoreTransferDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                InterStoreGrid = JsonConvert.DeserializeObject<List<InterStoreTransferDetail>>(modelJson);
+            }
             var ISTGrid = InterStoreGrid.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(ISTGrid);
             return Json(JsonString);
         }
         public IActionResult ClearGrid()
         {
-            IMemoryCache.Remove("KeyInterStoreTransferGrid");
+            HttpContext.Session.Remove("KeyInterStoreTransferGrid");
             var MainModel = new InterStoreTransferModel();
             return PartialView("_InterStoreTransferDetail", MainModel);
         }
@@ -527,9 +515,6 @@ namespace eTactWeb.Controllers
             {
                 return DateTime.Parse(dateString);
             }
-
-            //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
-
         }
         public async Task<JsonResult> FillStore()
         {

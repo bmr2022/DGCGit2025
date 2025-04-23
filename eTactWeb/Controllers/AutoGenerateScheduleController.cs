@@ -11,17 +11,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IAutoGenerateSchedule _IAutoGenerateSchedule { get; }
-
         private readonly ILogger<AutoGenerateScheduleController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public AutoGenerateScheduleController(ILogger<AutoGenerateScheduleController> logger, IDataLogic iDataLogic, IAutoGenerateSchedule iAutoGenerateSchedule, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public AutoGenerateScheduleController(ILogger<AutoGenerateScheduleController> logger, IDataLogic iDataLogic, IAutoGenerateSchedule iAutoGenerateSchedule, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IAutoGenerateSchedule = iAutoGenerateSchedule;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;   
         }

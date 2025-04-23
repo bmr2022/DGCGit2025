@@ -149,6 +149,9 @@ public class ProductionEntryDashboard
     public string ResFactor { get; set; }
     public string? RMPartCode {  get; set; }
     public string? RMItemName {  get; set; }
+    public int TotalRecords { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
     public IList<ProductionEntryDashboard>? ProductionDashboard { get; set; }
 }
 [Serializable]

@@ -16,17 +16,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IMaterialConversion _IMaterialConversion { get; }
-
         private readonly ILogger<MaterialConversionController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MaterialConversionController(ILogger<MaterialConversionController> logger, IDataLogic iDataLogic, IMaterialConversion iMaterialConversion, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public MaterialConversionController(ILogger<MaterialConversionController> logger, IDataLogic iDataLogic, IMaterialConversion iMaterialConversion, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMaterialConversion = iMaterialConversion;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -47,12 +44,9 @@ namespace eTactWeb.Controllers
             MainModel.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.cc = HttpContext.Session.GetString("Branch");
-            //model.ActualEntryDate = DateTime.Now.ToString("dd/MM/yyyy");
-            _MemoryCache.Remove("KeyMaterialConversionGrid");
+            HttpContext.Session.Remove("KeyMaterialConversionGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-
-                //Retrieve the old data by AccountCode and populate the model with existing values
                 MainModel = await _IMaterialConversion.GetViewByID(ID, YC,FromDate,ToDate).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.EntryId = ID;
@@ -65,7 +59,6 @@ namespace eTactWeb.Controllers
                 MainModel.OriginalQty = OriginalQty;
                 MainModel.Unit = Unit;
                 MainModel.WorkCenterName = WorkCenterName;
-
                 MainModel.AltStoreId = AltStoreId;
                 MainModel.AltStoreName = AltStoreName;
                 MainModel.OrginalWCID = OrginalWCID;
@@ -76,12 +69,10 @@ namespace eTactWeb.Controllers
                 MainModel.AltOriginalQty = AltOriginalQty;
                 MainModel.AltUnit = AltUnit;
                 MainModel.AltStock = AltStock;
-
                 MainModel.BatchNo = BatchNo;
                 MainModel.UniqueBatchNo = UniqueBatchNo;
                 MainModel.BatchStock = BatchStock;
                 MainModel.TotalStock = TotalStock;
-
                 MainModel.OrigItemRate = OrigItemRate;
                 MainModel.Remark = Remark;
                 MainModel.ActualEntryByEmpid = ActualEntryByEmpid;
@@ -89,14 +80,12 @@ namespace eTactWeb.Controllers
                 MainModel.UpdatedByEmpId = UpdatedByEmpId;
                 MainModel.UpdationDate = UpdationDate;
                 MainModel.EntryByMachine = EntryByMachine;
-
                 MainModel.PlanNo = PlanNo;
                 MainModel.PlanYearCode = PlanYearCode;
                 MainModel.PlanDate = PlanDate;
                 MainModel.ProdSchNo = ProdSchNo;
                 MainModel.ProdSchYearCode = ProdSchYearCode;
                 MainModel.ProdSchDatetime = ProdSchDatetime;
-
 
                 if (Mode == "U")
                 {
@@ -108,13 +97,9 @@ namespace eTactWeb.Controllers
                     MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
                     MainModel.cc = HttpContext.Session.GetString("Branch");
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.MaterialConversionGrid);
+                HttpContext.Session.SetString("KeyMaterialConversionGrid", serializedGrid);
             }
 
             return View(MainModel);
@@ -135,32 +120,14 @@ namespace eTactWeb.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                //_MemoryCache.TryGetValue("MaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid);
-                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid);
+                string modelJson = HttpContext.Session.GetString("KeyMaterialConversionGrid");
+                List<MaterialConversionModel> MaterialConversionGrid = new List<MaterialConversionModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MaterialConversionGrid = JsonConvert.DeserializeObject<List<MaterialConversionModel>>(modelJson);
+                }
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                //        if (model.Mode == "U")
-                //        {
-                //            GIGrid = GetDetailTable(AlternateItemMasterGrid);
-                //            var mainItemCodes = AlternateItemMasterGrid
-                //.Select(item => item.MainItemCode)
-                //.ToList();
-                //            var altItemCode = AlternateItemMasterGrid
-                //.Select(item => item.AlternateItemCode)
-                //.ToList();
-                //            foreach (var maincode in mainItemCodes)
-                //            {
-                //                model.MainItemCode = maincode;
-                //            }
-                //            foreach (var code in altItemCode)
-                //            {
-                //                model.AlternateItemCode = code;
-                //            }
-                //        }
-                //        else
-                //        {
-                //            GIGrid = GetDetailTable(AlternateItemMasterGrid);
-                //        }
                 GIGrid = GetDetailTable(MaterialConversionGrid);
                 var Result = await _IMaterialConversion.SaveMaterialConversion(model, GIGrid);
                 if (Result != null)
@@ -169,7 +136,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("AlternateItemMasterGrid");
+                        HttpContext.Session.Remove("AlternateItemMasterGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -206,7 +173,6 @@ namespace eTactWeb.Controllers
             try
             {
                 var GIGrid = new DataTable();
-
                 GIGrid.Columns.Add("OriginalItemCode", typeof(long));
                 GIGrid.Columns.Add("Unit", typeof(string));
                 GIGrid.Columns.Add("OriginalQty", typeof(float));
@@ -319,7 +285,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out IList<MaterialConversionModel> MaterialConversionGrid);
+                string modelJson = HttpContext.Session.GetString("KeyMaterialConversionGrid");
+                List<MaterialConversionModel> MaterialConversionGrid = new List<MaterialConversionModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MaterialConversionGrid = JsonConvert.DeserializeObject<List<MaterialConversionModel>>(modelJson);
+                }
 
                 var MainModel = new MaterialConversionModel();
                 var WorkOrderPGrid = new List<MaterialConversionModel>();
@@ -360,7 +331,8 @@ namespace eTactWeb.Controllers
                         Size = 1024,
                     };
 
-                    _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.MaterialConversionGrid);
+                    HttpContext.Session.SetString("KeyMaterialConversionGrid", serializedGrid);
                 }
                 else
                 {
@@ -380,11 +352,19 @@ namespace eTactWeb.Controllers
             IList<MaterialConversionModel> MaterialConversionModelGrid = new List<MaterialConversionModel>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out MaterialConversionModelGrid);
+                string modelJson = HttpContext.Session.GetString("KeyMaterialConversionGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MaterialConversionModelGrid = JsonConvert.DeserializeObject<List<MaterialConversionModel>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out MaterialConversionModelGrid);
+                string modelJson = HttpContext.Session.GetString("KeyMaterialConversionGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MaterialConversionModelGrid = JsonConvert.DeserializeObject<List<MaterialConversionModel>>(modelJson);
+                }
             }
             IEnumerable<MaterialConversionModel> SSBreakdownGrid = MaterialConversionModelGrid;
             if (MaterialConversionModelGrid != null)
@@ -400,7 +380,13 @@ namespace eTactWeb.Controllers
             var MainModel = new MaterialConversionModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyMaterialConversionGrid", out List<MaterialConversionModel> MaterialConversionGrid);
+                string modelJson = HttpContext.Session.GetString("KeyMaterialConversionGrid");
+                List<MaterialConversionModel> MaterialConversionGrid = new List<MaterialConversionModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MaterialConversionGrid = JsonConvert.DeserializeObject<List<MaterialConversionModel>>(modelJson);
+                }
+
                 int Indx = SrNO - 1;
 
                 if (MaterialConversionGrid != null && MaterialConversionGrid.Count > 0)
@@ -416,14 +402,8 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.MaterialConversionGrid = MaterialConversionGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyMaterialConversionGrid", MainModel.MaterialConversionGrid, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.MaterialConversionGrid);
+                    HttpContext.Session.SetString("KeyMaterialConversionGrid", serializedGrid);
                 }
             }
            
