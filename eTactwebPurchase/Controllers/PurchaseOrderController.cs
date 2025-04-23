@@ -896,24 +896,36 @@ public class PurchaseOrderController : Controller
             IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 
             string modelJson = HttpContext.Session.GetString("PurchaseOrder");
-            List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
+            //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
             if (!string.IsNullOrEmpty(modelJson))
             {
-                PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
+                 //PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
+
+                PurchaseOrderModel PSDetail = string.IsNullOrEmpty(modelJson)
+        ? new PurchaseOrderModel()
+        : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
             }
 
             string modelPendingIndentJson = HttpContext.Session.GetString("KeyPendingIndentDetail");
-            List<PurchaseOrderModel> PendingIndentDetail = new List<PurchaseOrderModel>();
+            //List<PurchaseOrderModel> PendingIndentDetail = new List<PurchaseOrderModel>();
             if (!string.IsNullOrEmpty(modelPendingIndentJson))
             {
-                PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelPendingIndentJson);
+                //PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelPendingIndentJson);
+
+                PurchaseOrderModel PendingIndentDetail = string.IsNullOrEmpty(modelPendingIndentJson)
+       ? new PurchaseOrderModel()
+       : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelPendingIndentJson);
             }
             
             string modelTaxJson = HttpContext.Session.GetString("KeyPendingIndentDetail");
-            List<TaxModel> TaxDetail = new List<TaxModel>();
+            //List<TaxModel> TaxDetail = new List<TaxModel>();
             if (!string.IsNullOrEmpty(modelTaxJson))
             {
-                TaxDetail = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+                //TaxDetail = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+                TaxModel TaxDetail = string.IsNullOrEmpty(modelTaxJson)
+      ? new PurchaseOrderModel()
+      : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelTaxJson);
+
             }
 
             var cc = stat.CurrentEntryCount;
@@ -1366,10 +1378,12 @@ public class PurchaseOrderController : Controller
         IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
 
         string modelJson = HttpContext.Session.GetString("PurchaseOrder");
-        List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
+        //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
         if (!string.IsNullOrEmpty(modelJson))
         {
-            PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
+            PurchaseOrderModel PSDetail = string.IsNullOrEmpty(modelJson)
+        ? new PurchaseOrderModel()
+        : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
         }
 
         //var SeqNo = 0;
