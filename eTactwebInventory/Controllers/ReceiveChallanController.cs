@@ -13,6 +13,8 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using System.Data;
 using System.Net;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
 
 namespace eTactWeb.Controllers
 {
@@ -24,7 +26,8 @@ namespace eTactWeb.Controllers
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<ReceiveChallanController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
-        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IConfiguration iconfiguration;
+        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IConfiguration configuration, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             IReceiveChallan = iReceiveChallan;
             IDataLogic = iDataLogic;
@@ -32,6 +35,7 @@ namespace eTactWeb.Controllers
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
+            iconfiguration = configuration;
         }
 
         [HttpGet]
@@ -489,15 +493,18 @@ namespace eTactWeb.Controllers
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
         {
+            string my_connection_string;
             string contentRootPath = IWebHostEnvironment.ContentRootPath;
             string webRootPath = IWebHostEnvironment.WebRootPath;
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
 
-            webReport.Report.Load(webRootPath + "\\IndentPrint.frx"); // summary report
+            webReport.Report.Load(webRootPath + "\\RecChallanReport.frx"); 
 
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             return View(webReport);
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
