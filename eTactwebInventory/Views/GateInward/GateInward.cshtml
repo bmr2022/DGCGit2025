@@ -841,7 +841,7 @@
             });
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
+                debugger
                 $('#AC1').prop("checked", true);
                 fillAccount();
                 var selectElement = $("#AccountCode");
@@ -859,17 +859,22 @@
                 } else {
                     $(".ChallanElements").css("display", "none");
                 }
+                console.log($('#EntryDate').val());
+              
 
 
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+                console.log(EntryDate);
+                console.log(InvoiceDt);
 
                 /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
                 var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
             }
-            else {
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
+                debugger
                 GetServerDate();
                 fillEntryandGate();
                 $(".ChallanElements").css("display", "none");
@@ -984,7 +989,7 @@
         });
 
         function GetServerDate() {
-
+            debugger
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate")",
@@ -1004,7 +1009,7 @@
                             $('#BiltyDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         }
                         else {
-                            
+                            debugger
                             var poDate;
                             var biltyDt;
                             $("#ShowPOTillDate").datepicker({
@@ -1030,7 +1035,6 @@
 
 
                            
-
                         }
                         $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo));
                         $("#InvoiceDate").datepicker("option", "maxDate", formatDate(today));
