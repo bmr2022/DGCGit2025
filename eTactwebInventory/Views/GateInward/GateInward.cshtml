@@ -870,8 +870,8 @@
 
                 /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
                 var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#InvoiceDate').datepicker("setDate", InvoiceDt);
             }
             if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
                 debugger
