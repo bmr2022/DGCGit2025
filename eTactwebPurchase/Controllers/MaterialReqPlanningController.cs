@@ -76,6 +76,11 @@ namespace eTactwebPurchase.Controllers
                {
                    return PartialView("_MaterialReqPlanningMRPDataonlyGrid", model);
                }
+               if(ReportType== "MRPCONSOLIDATE (With PO + Party)")
+               {
+                   return PartialView("_MaterialReqPlanningMRPCONSOLIDATE(WithPO+Party)Grid", model);
+               }
+
                return null;
             
         }
