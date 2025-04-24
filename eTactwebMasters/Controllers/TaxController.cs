@@ -505,10 +505,30 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "JobWorkIssue")
             {
-                _MemoryCache.TryGetValue("KeyJobWorkIssue", out MainModel);
-                if (MainModel == null)
-                    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out MainModel);
-                ItemDetailGrid = MainModel;
+                //MainModel= HttpContext.Session.GetString("KeyJobWorkIssue");
+                //if (MainModel == null)
+                //{
+                //    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out MainModel);
+                //    MainModel = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                //}
+
+                string? sessionData = HttpContext.Session.GetString("KeyJobWorkIssue");
+
+                if (string.IsNullOrEmpty(sessionData))
+                {
+                    sessionData = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                }
+
+                // Deserialize JSON into list of JobWorkGridDetail
+                List<JobWorkGridDetail> ItemDetailGrid1 = !string.IsNullOrEmpty(sessionData)
+                    ? JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(sessionData)
+                    : new List<JobWorkGridDetail>();
+
+
+
+
+
+                ItemDetailGrid = ItemDetailGrid1;
                 var _ItemGrid = new List<JobWorkGridDetail>();
                 _ItemGrid = ItemDetailGrid;
                 var Amount = 0.0;
@@ -1192,24 +1212,22 @@ public class TaxController : Controller
 
 
                 //string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
-                List<JobWorkGridDetail> GridDetail = new List<JobWorkGridDetail>();
-
-                string serializedGrid = JsonConvert.SerializeObject(GridDetail);
-                HttpContext.Session.SetString("KeyJobWorkIssue", serializedGrid);
+                var jobdetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(HttpContext.Session.GetString("KeyJobWorkIssue") ?? string.Empty);
 
 
-                if (MainModel == null)
+                if (jobdetail == null)
                 {
                     _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> MainModel1);
 
-                    
-                    HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedGrid);
-                    ListOfItems = serializedGrid;
+
+                    var jobdetail1 = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(HttpContext.Session.GetString("KeyJobWorkIssueEdit") ?? string.Empty);
+
+                    ListOfItems = jobdetail1;
 
                 }
                 else
                 {
-                    ListOfItems = serializedGrid;
+                    ListOfItems = jobdetail;
                 }
             }
             try
