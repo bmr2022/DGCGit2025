@@ -180,7 +180,7 @@ namespace eTactWeb.Controllers
                     JobWorkGridDetailEdit = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(modelEditJson);
                 }
 
-                string modelTaxJson = HttpContext.Session.GetString("JobWorkIssue");
+                string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
                 List<TaxModel> TaxGrid = new List<TaxModel>();
                 if (!string.IsNullOrEmpty(modelTaxJson))
                 {
