@@ -243,6 +243,22 @@ namespace eTactWeb.Data.DAL
 
                                                                }).ToList();
                     }
+                    else if (ReportType == "MRPCONSOLIDATE (With PO + Party)")
+                    {
+                        resultList.DayWiseMRPDataGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                               select new DayWiseMRPData
+                                                               {
+                                                                   Part_code = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                                   Item_Name = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                                   PONos = row["PONos"] == DBNull.Value ? string.Empty : row["PONos"].ToString(),
+                                                                   Vendors = row["Vendors"] == DBNull.Value ? string.Empty : row["Vendors"].ToString(),
+                                                                   TotalMRPReqQty = row["TotalMRPReqQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalMRPReqQty"]),
+                                                                   TotalStoreStock = row["TotalStoreStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalStoreStock"]),
+                                                                   TotalWipStock = row["TotalWipStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWipStock"]),
+                                                                   TotalMRPOrderQty = row["TotalMRPOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalMRPOrderQty"])
+
+                                                               }).ToList();
+                    }
                 }
                  
 
