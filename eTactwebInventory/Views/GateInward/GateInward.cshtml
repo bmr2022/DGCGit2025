@@ -1592,7 +1592,7 @@
                             $('#SchYearCode').empty();
                             $('#SchYearCode').append('<option disabled selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + formatJSONDate(val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
+                                    $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + formatJSONDate(val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
                                 if ($("#SchYearCode option[value='" + val.YearCode + "']").length == 0) {
                                     $('#SchYearCode').append('<option value="' + val.YearCode + '" >' + val.YearCode + '</option>');
 
@@ -2147,7 +2147,7 @@
             var day = newDate.getDate();
             var month = newDate.getUTCMonth() + 1;
             var year = newDate.getFullYear();
-            finaldate = day + "-" + ("0" + (month)) + "-" + year;
+            finaldate = day + "-" + ( month) + "-" + year;
             return finaldate;
         }
 
