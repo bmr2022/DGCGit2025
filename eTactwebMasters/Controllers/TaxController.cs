@@ -192,7 +192,18 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "JobWorkIssue")
             {
+                 var jobmodel = new JobWorkIssueModel(); 
                 _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                string serializedGrid = JsonConvert.SerializeObject(jobmodel.JobDetailGrid);
+                HttpContext.Session.SetString("JobWorkIssue", serializedGrid);
+                MainModel = jobmodel;
+
+
+
+
+
+
+
                 //MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(model.TxPageName));
             }
             if (TaxGrid != null && TaxGrid.Count > 0)
@@ -1180,15 +1191,25 @@ public class TaxController : Controller
                 _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> MainModel);
 
 
+                //string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                List<JobWorkGridDetail> GridDetail = new List<JobWorkGridDetail>();
+
+                string serializedGrid = JsonConvert.SerializeObject(GridDetail);
+                HttpContext.Session.SetString("KeyJobWorkIssue", serializedGrid);
+
+
                 if (MainModel == null)
                 {
                     _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> MainModel1);
-                    ListOfItems = MainModel1;
+
+                    
+                    HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedGrid);
+                    ListOfItems = serializedGrid;
 
                 }
                 else
                 {
-                    ListOfItems = MainModel;
+                    ListOfItems = serializedGrid;
                 }
             }
             try
