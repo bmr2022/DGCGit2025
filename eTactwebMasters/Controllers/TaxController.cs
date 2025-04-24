@@ -192,7 +192,18 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "JobWorkIssue")
             {
+                 var jobmodel = new JobWorkIssueModel(); 
                 _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                string serializedGrid = JsonConvert.SerializeObject(jobmodel.JobDetailGrid);
+                HttpContext.Session.SetString("JobWorkIssue", serializedGrid);
+                MainModel = jobmodel;
+
+
+
+
+
+
+
                 //MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(model.TxPageName));
             }
             if (TaxGrid != null && TaxGrid.Count > 0)
@@ -494,10 +505,30 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "JobWorkIssue")
             {
-                _MemoryCache.TryGetValue("KeyJobWorkIssue", out MainModel);
-                if (MainModel == null)
-                    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out MainModel);
-                ItemDetailGrid = MainModel;
+                //MainModel= HttpContext.Session.GetString("KeyJobWorkIssue");
+                //if (MainModel == null)
+                //{
+                //    _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out MainModel);
+                //    MainModel = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                //}
+
+                string? sessionData = HttpContext.Session.GetString("KeyJobWorkIssue");
+
+                if (string.IsNullOrEmpty(sessionData))
+                {
+                    sessionData = HttpContext.Session.GetString("KeyJobWorkIssueEdit");
+                }
+
+                // Deserialize JSON into list of JobWorkGridDetail
+                List<JobWorkGridDetail> ItemDetailGrid1 = !string.IsNullOrEmpty(sessionData)
+                    ? JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(sessionData)
+                    : new List<JobWorkGridDetail>();
+
+
+
+
+
+                ItemDetailGrid = ItemDetailGrid1;
                 var _ItemGrid = new List<JobWorkGridDetail>();
                 _ItemGrid = ItemDetailGrid;
                 var Amount = 0.0;
@@ -1180,15 +1211,23 @@ public class TaxController : Controller
                 _MemoryCache.TryGetValue("KeyJobWorkIssue", out List<JobWorkGridDetail> MainModel);
 
 
-                if (MainModel == null)
+                //string modelJson = HttpContext.Session.GetString("KeyJobWorkIssue");
+                var jobdetail = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(HttpContext.Session.GetString("KeyJobWorkIssue") ?? string.Empty);
+
+
+                if (jobdetail == null)
                 {
                     _MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> MainModel1);
-                    ListOfItems = MainModel1;
+
+
+                    var jobdetail1 = JsonConvert.DeserializeObject<List<JobWorkGridDetail>>(HttpContext.Session.GetString("KeyJobWorkIssueEdit") ?? string.Empty);
+
+                    ListOfItems = jobdetail1;
 
                 }
                 else
                 {
-                    ListOfItems = MainModel;
+                    ListOfItems = jobdetail;
                 }
             }
             try

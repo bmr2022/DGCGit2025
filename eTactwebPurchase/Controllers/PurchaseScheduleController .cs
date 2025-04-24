@@ -891,7 +891,7 @@ public class PurchaseScheduleController : Controller
         var MainModel = new PurchaseSubScheduleModel();
         //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out List<PurchaseScheduleGrid> PurchaseScheduleGrid);
 
-        string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+        string modelJson = HttpContext.Session.GetString("KeyPurchaseScheduleGrid");
         List<PurchaseScheduleGrid> PurchaseScheduleGrid = new List<PurchaseScheduleGrid>();
         if (!string.IsNullOrEmpty(modelJson))
         {
@@ -1099,7 +1099,7 @@ public class PurchaseScheduleController : Controller
         }
         //IMemoryCache.TryGetValue("KeyPurchaseScheduleGrid", out IList<PurchaseScheduleGrid> PurchaseScheduleGrid1);
 
-        string modelJson = HttpContext.Session.GetString("KeyProductionScheduleGrid");
+        string modelJson = HttpContext.Session.GetString("KeyPurchaseScheduleGrid");
         List<PurchaseScheduleGrid> PSDetail = new List<PurchaseScheduleGrid>();
         if (!string.IsNullOrEmpty(modelJson))
         {

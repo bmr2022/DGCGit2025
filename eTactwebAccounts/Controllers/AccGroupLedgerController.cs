@@ -11,17 +11,14 @@ namespace eTactwebAccounts.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IAccGroupLedger _IAccGroupLedger { get; }
-
         private readonly ILogger<AccGroupLedgerController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public AccGroupLedgerController(ILogger<AccGroupLedgerController> logger, IDataLogic iDataLogic, IAccGroupLedger iAccGroupLedger, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public AccGroupLedgerController(ILogger<AccGroupLedgerController> logger, IDataLogic iDataLogic, IAccGroupLedger iAccGroupLedger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IAccGroupLedger = iAccGroupLedger;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -32,10 +29,8 @@ namespace eTactwebAccounts.Controllers
             var MainModel = new AccGroupLedgerModel();
             MainModel.AccGroupLedgerGrid = new List<AccGroupLedgerModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            
-
-            return View(MainModel); // Pass the model with old data to the view
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate");            
+            return View(MainModel);
         }
         public async Task<JsonResult> FillGroupName(string FromDate, string ToDate)
         {
