@@ -541,7 +541,7 @@
         });
 
         function showDetail() {
-            debugger
+             
             $('#checkLabel,#TryAltItem').hide();
             $('#TryAltItem').prop("checked", false);
             if ($('#FromStore').val() == null) {
@@ -591,7 +591,7 @@
                 async: false,
                 data: { FromDate: fromDate, ToDate: toDate, ReqNo: ReqNo, YearCode: YearCode, ItemCode: ItemCode, WoNo: wono, WorkCenter: WorkCenter, DeptName: DeptName, ReqYear: reqYearCode, IssueDate: issuedDate, GlobalSearch: GlobalSearch, FromStore: FromStore, StoreId: storeId },
                 success: function (data) {
-                    debugger
+                     
                     if (data != null) {
                         $('#divPendIssueGrid').empty();
                         var obj = $.parseJSON(data);
@@ -787,7 +787,7 @@
         });
 
         function showToTransfer(i) {
-            debugger
+             
 
             $('#ReqNo').val();
 
@@ -878,7 +878,7 @@
         }
 
         function TransferToIssueWithDblClick(k) {
-            debugger
+             
             var rowCount = $('#divPendIssueGrid tr').length;
 
             var ItemData = [];

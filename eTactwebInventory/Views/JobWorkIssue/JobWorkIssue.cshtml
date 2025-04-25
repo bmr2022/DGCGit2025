@@ -1576,7 +1576,7 @@
                 url: "@Url.Action("CheckFeatureOption")",
                 dataType: "json",
                 success: function (result, status, error) {
-                    debugger 
+                      
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackDateJOBWorkIssue;

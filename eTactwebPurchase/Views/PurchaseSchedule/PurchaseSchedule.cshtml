@@ -663,12 +663,12 @@
 
             }
             else if ($('#Mode').val() == "PSA" || $('#Mode').val() == "PSU") {
-                debugger
+                 
                 $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ScheduleDate').val()));
                 $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffTillDate').val()));
                 $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchAmendmentDate').val()));
-                debugger
+                 
                 $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val()));
                 $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val()));
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
@@ -924,7 +924,7 @@
 
         $('#SchEffFromDate').change(function () {
             ClearGrid();
-            debugger
+             
             var effFromDate = $('#SchEffFromDate').datepicker('getDate');
             $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
             $('#SchEffTillDate').datepicker("option", "minDate", effFromDate);
@@ -933,7 +933,7 @@
 
         $('#SchEffTillDate').change(function () {
             ClearGrid();
-            debugger
+             
             var effToDate = $('#SchEffTillDate').datepicker('getDate');
             $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
             /*     //$('#SchEffTillDate').datepicker("option","minDate",effFromDate); */
@@ -1093,10 +1093,10 @@
         }
 
         function FillEntryDate() {
-            debugger
+             
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
-            debugger
+             
             var dateParts1 = finFromDate.split("/");
             var monthNames = {
                 "Jan": "01",
@@ -1619,7 +1619,7 @@
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
                     if (obj != null && obj.length == 1) {
-                        debugger
+                         
                         $('#PartCode').val(obj[0].ItemCode).change();
                         $('#Unit').val(obj[0].Unit);
                         $('#SchQty').val(obj[0].SchQty);

@@ -841,7 +841,7 @@
             });
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                debugger
+                 
                 $('#AC1').prop("checked", true);
                 fillAccount();
                 var selectElement = $("#AccountCode");
@@ -874,7 +874,7 @@
                 $('#InvoiceDate').datepicker("setDate", InvoiceDt);
             }
             if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
-                debugger
+                 
                 GetServerDate();
                 fillEntryandGate();
                 $(".ChallanElements").css("display", "none");
@@ -989,7 +989,7 @@
         });
 
         function GetServerDate() {
-            debugger
+             
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate")",
@@ -1009,7 +1009,7 @@
                             $('#BiltyDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         }
                         else {
-                            debugger
+                             
                             var poDate;
                             var biltyDt;
                             $("#ShowPOTillDate").datepicker({

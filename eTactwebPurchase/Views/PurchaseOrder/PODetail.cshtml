@@ -566,7 +566,7 @@
             }
             else if ($('#Mode').val() == "POA") {
                 $('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                debugger
+                 
                 $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
                 $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#WEF').val()));
                 $('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
@@ -990,7 +990,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#AccountCode').empty();
@@ -2371,7 +2371,7 @@
             var poGrid = $('#divPOItemList tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
-            debugger
+             
             // GST Registered Vendor
             if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
                 if ($('#POFor').val() != 'For Purchase(Sample)') {
@@ -2401,7 +2401,7 @@
                     $.notify("Vendor Name is required", "error");
                     return;
                 }
-                debugger
+                 
                 // Extra validation for "not sample"
                 if ($('#POFor').val() != 'For Purchase(Sample)') {
                     for (var i = 1; i <= txRowCount; i++) {
