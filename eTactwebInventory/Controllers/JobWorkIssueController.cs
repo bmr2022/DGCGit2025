@@ -350,8 +350,8 @@ namespace eTactWeb.Controllers
             string serializedGrid = JsonConvert.SerializeObject(MainModel);
             HttpContext.Session.SetString("JobWorkIssue", serializedGrid);
             //HttpContext.Session.SetString("JobWorkIssue", JsonConvert.SerializeObject(MainModel));
-            string serializedTaxGrid = JsonConvert.SerializeObject(MainModel);
-            HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
+            //string serializedTaxGrid = JsonConvert.SerializeObject(MainModel);
+            //HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.VendorNameBack = VendorName;
