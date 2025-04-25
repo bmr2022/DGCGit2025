@@ -759,6 +759,8 @@ public class TaxController : Controller
                 //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
 
                 StoreInCache("KeyTaxGrid", TaxGrid);
+                string serializedData = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
+                HttpContext.Session.SetString("KeyTaxGrid", serializedData);
             }
         }
         return PartialView("_TaxGrid", MainModel);

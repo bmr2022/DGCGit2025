@@ -258,6 +258,7 @@ namespace eTactWeb.Controllers
                         HttpContext.Session.Remove("KeyJobWorkIssue");
                         HttpContext.Session.Remove("KeyJobWorkIssueEdit");
                         HttpContext.Session.Remove("KeyTaxGrid");
+                        HttpContext.Session.Remove("JobWorkIssue");
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
                         HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedGrid);
                         string serializedJobWorkGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
@@ -310,6 +311,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyJobWorkIssue");  
             HttpContext.Session.Remove("KeyJobWorkIssueEdit");
             HttpContext.Session.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("JobWorkIssue");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IJobWorkIssue.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -347,9 +349,9 @@ namespace eTactWeb.Controllers
             }
             string serializedGrid = JsonConvert.SerializeObject(MainModel);
             HttpContext.Session.SetString("JobWorkIssue", serializedGrid);
-            HttpContext.Session.SetString("JobWorkIssue", JsonConvert.SerializeObject(MainModel));
-            string serializedTaxGrid = JsonConvert.SerializeObject(MainModel);
-            HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
+            //HttpContext.Session.SetString("JobWorkIssue", JsonConvert.SerializeObject(MainModel));
+            //string serializedTaxGrid = JsonConvert.SerializeObject(MainModel);
+            //HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.VendorNameBack = VendorName;
