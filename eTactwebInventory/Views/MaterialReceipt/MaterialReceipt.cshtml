@@ -788,12 +788,31 @@
                 }
                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                    var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                    var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
-                    var GateDate = parseDateToFormat($('#GateDate').val().split(" ")[0]);
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                    $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
-                    $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDate);
+                    // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                    // var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+                    // var GateDate = parseDateToFormat($('#GateDate').val().split(" ")[0]);
+                    // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                    // $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
+                    // $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDate);
+
+
+
+                console.log($('#EntryDate').val());
+
+
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+                var gatedate = parseDateToFormat($('#GateDate').val().split(" ")[0]);
+                console.log(EntryDate);
+                console.log(InvoiceDt);
+                console.log(gatedate);
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#InvoiceDate').datepicker("setDate", InvoiceDt);
+                $('#GateDate').datepicker("setDate", gatedate);
                 }
                 if ($('#Mode').val() == "I") {
                     $('#GateDate,#InvoiceNo,#InvoiceDate,#DocType,#AccountCode,#Address,#RecInStore,#CurrencyName').val("");
