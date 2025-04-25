@@ -45,6 +45,7 @@ namespace eTactWeb.DOM.Models
         public string? EntryDate { get; set; }
         public string? VendorName { get; set; }
         public string? InvoiceNo { get; set; }
+        public string? Account_Name { get; set; }
         public string? InvoiceDate { get; set; }
         public string? DocNo { get; set; } 
         public string? PartCode { get; set; }
@@ -80,6 +81,7 @@ namespace eTactWeb.DOM.Models
         public decimal?BillQty { get; set;}
         public decimal? RecQty { get; set; } 
         public decimal TotalBillQty {  get; set; }
+        public decimal ShortExcessQty {  get; set; }
         public string? Unit { get; set; }
         public decimal? Rate { get; set;}
         public decimal? AcceptedQty {  get; set; }
@@ -105,6 +107,7 @@ namespace eTactWeb.DOM.Models
         public string? LastUpdatedDate { get; set; }
         public string? ToDate { get; set; }
         public decimal? Amount { get; set; } 
+        public decimal? AltQty { get; set; } 
         public string? UpdatedByEMp { get; set; }
         public string? AltUnit { get; set; }
         public decimal? NetAmout { get; set; }

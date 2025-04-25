@@ -422,6 +422,49 @@ namespace eTactWeb.Data.DAL
                                                        Reworkqty = Convert.ToDecimal(dr["Reworkqty"].ToString()),
                                                    }).ToList();
                     }
+
+                }
+                else if (ReportType.ToString().ToUpper() == "Short Excess Register".ToUpper()) //done&working
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.MRNRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                   select new MRNRegisterDetail
+                                                   {
+                                                       MRNNo = string.IsNullOrEmpty(dr["MRNNo"].ToString()) ? "" : dr["MRNNo"].ToString(),
+                                                       MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
+                                                       MRNType = string.IsNullOrEmpty(dr["MRNTypes"].ToString()) ? "" : dr["MRNTypes"].ToString(),
+                                                       GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
+                                                       GDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? "" : Convert.ToDateTime(dr["GateDate"]).ToString("dd/MM/yyyy"),
+
+                                                       InvoiceNo = string.IsNullOrEmpty(dr["InvNo"].ToString()) ? "" : dr["InvNo"].ToString(),
+                                                       InvoiceDate = string.IsNullOrEmpty(dr["InvDate"].ToString()) ? "" : Convert.ToDateTime(dr["InvDate"]).ToString("dd/MM/yyyy"),
+
+                                                       Account_Name = string.IsNullOrEmpty(dr["Account_Name"].ToString()) ? "" : dr["Account_Name"].ToString(),
+                                                       PONo = string.IsNullOrEmpty(dr["pono"].ToString()) ? "" : dr["pono"].ToString(),
+                                                      
+                                                       SchNo = string.IsNullOrEmpty(dr["SchNo"].ToString()) ? "" : dr["SchNo"].ToString(),
+                                                       PartCode = string.IsNullOrEmpty(dr["partcode"].ToString()) ? "" : dr["partcode"].ToString(),
+                                                       ItemName = string.IsNullOrEmpty(dr["item_name"].ToString()) ? "" : dr["item_name"].ToString(),
+                                                       BillQty = string.IsNullOrEmpty(dr["BillQty"].ToString()) ? 0 : Convert.ToDecimal(dr["BillQty"]),
+                                                       RecQty = string.IsNullOrEmpty(dr["RecQty"].ToString()) ? 0 : Convert.ToDecimal(dr["RecQty"]),
+                                                       Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"]),
+                                                       TotalAmt = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"]),
+                                                       NetAmout = string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["NetAmt"]),
+                                                       AltQty = string.IsNullOrEmpty(dr["AltRecQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltRecQty"]),
+                                                       ShortExcessQty = string.IsNullOrEmpty(dr["ShortExcessQty"].ToString()) ? 0 : Convert.ToDecimal(dr["ShortExcessQty"]),
+                                                       PODate = string.IsNullOrEmpty(dr["PoDate"].ToString()) ? "" : Convert.ToDateTime(dr["PoDate"]).ToString("dd/MM/yyyy"),
+
+                                                       Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
+                                                       Currency = string.IsNullOrEmpty(dr["Currency"].ToString()) ? "" : dr["Currency"].ToString(),
+                                                       DepName = string.IsNullOrEmpty(dr["DeptName"].ToString()) ? "" : dr["DeptName"].ToString(),
+                                                       AltUnit = string.IsNullOrEmpty(dr["AltUnit"].ToString()) ? "" : dr["AltUnit"].ToString(),
+                                                       Batchno = string.IsNullOrEmpty(dr["Batchno"].ToString()) ? "" : dr["Batchno"].ToString(),
+                                                       Uniquebatchno = string.IsNullOrEmpty(dr["Uniquebatchno"].ToString()) ? "" : dr["Uniquebatchno"].ToString(),
+
+                                                   }).ToList();
+                    }
+
                 }
             }
             catch (Exception ex)

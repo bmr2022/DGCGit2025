@@ -45,6 +45,16 @@
                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
+                               
+                                    <a class="table-link link-dark" id="printData-@Cntr" asp-action="PrintReport" asp-route-FGPartCode="@item.FGPartCode"
+                                        asp-route-FGItemName="@item.FGItemName"  asp-route-ForTheStore="@item.ForTheStore" asp-route-ForWorkCeneter="@item.ForWorkCeneter">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a> 
+                                 
+                             
                             </td>
                             <th>@Cntr</th>
                             <td style="background-color: #e09ef0;">@item.FGItemName</td>

@@ -6,6 +6,9 @@ using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 using eTactWeb.DOM.Models;
 using System.Collections.Generic;
+using FastReport.Data;
+using FastReport.Web;
+using FastReport;
 
 namespace eTactWeb.Controllers
 {
@@ -16,13 +19,14 @@ namespace eTactWeb.Controllers
         private readonly ILogger<BOMReportController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
+       
         public BOMReportController(ILogger<BOMReportController> logger, IDataLogic iDataLogic, IBOMReport iBOMReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBOMReport = iBOMReport;
             _IWebHostEnvironment = iWebHostEnvironment;
-            this.iconfiguration = iconfiguration;
+            iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
         public async Task<ActionResult> BOMReport()
@@ -31,6 +35,28 @@ namespace eTactWeb.Controllers
             model.BOMReportGrid = new List<BOMReportModel>();
             model.YearCode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             return View(model);
+        }
+        public IActionResult PrintReport(string FGPartCode = "", string FGItemName = "",string ForTheStore = "",string ForWorkCeneter = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+           
+                webReport.Report.Load(webRootPath + "\\BOMPrintReportForDirectBOMStockShortExcess.frx"); // default report
+           
+            webReport.Report.SetParameterValue("FGPartCode", FGPartCode);
+            webReport.Report.SetParameterValue("FGItemName ", FGItemName);
+            webReport.Report.SetParameterValue("StoreName  ", ForTheStore);
+            webReport.Report.SetParameterValue("WcName ", ForWorkCeneter);
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+           
+            return View(webReport);
         }
         public async Task<JsonResult> GetBOMTree()
         {
