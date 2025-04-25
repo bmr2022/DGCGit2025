@@ -1,5 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.MRNRegisterModel
-
+<script>
+    console.log("ReportMode:", "@Model.ReportMode");
+</script>
 
 @if (Model.ReportMode == "vendorItemWiseSummary")
 {
@@ -40,6 +42,11 @@ else if (Model.ReportMode == "PENDMRNFORQC(SUMMARY)")
 else if (Model.ReportMode == "PENDMRNFORQC(DEATIL)")
 {
     <partial name="_MRNRegisterPendMRNForQCDetail" />
+}
+
+else if (Model.ReportMode == "Short Excess Register")
+{
+    <partial name="_MRNRegisterShortExcess1" />
 }
 
 else

@@ -6,6 +6,9 @@ using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 using eTactWeb.DOM.Models;
 using System.Collections.Generic;
+using FastReport.Data;
+using FastReport.Web;
+using FastReport;
 
 namespace eTactWeb.Controllers
 {
@@ -16,13 +19,14 @@ namespace eTactWeb.Controllers
         private readonly ILogger<BOMReportController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
+       
         public BOMReportController(ILogger<BOMReportController> logger, IDataLogic iDataLogic, IBOMReport iBOMReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBOMReport = iBOMReport;
             _IWebHostEnvironment = iWebHostEnvironment;
-            this.iconfiguration = iconfiguration;
+            iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
         public async Task<ActionResult> BOMReport()
@@ -31,6 +35,34 @@ namespace eTactWeb.Controllers
             model.BOMReportGrid = new List<BOMReportModel>();
             model.YearCode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             return View(model);
+        }
+        public IActionResult PrintReport(string FGPartCode = "", string FGName = "",int StoreId = 0,int WCID = 0,string CurrentDate="",int YearCode=0,int CalForQty=0)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+           
+                webReport.Report.Load(webRootPath + "\\BOMPrintReportForDirectBOMStockShortExcess.frx"); // default report
+           
+            webReport.Report.SetParameterValue("FGPartCode", FGPartCode);
+            webReport.Report.SetParameterValue("FGName ", FGName);
+            webReport.Report.SetParameterValue("StoreId  ", StoreId);
+            webReport.Report.SetParameterValue("WCID ", WCID);
+            webReport.Report.SetParameterValue("CurrentDate ", CurrentDate);
+            webReport.Report.SetParameterValue("YearCode ", YearCode);
+            webReport.Report.SetParameterValue("CalForQty ", CalForQty);
+            //webReport.Report.SetParameterValue("WcName ", WCID);
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
         }
         public async Task<JsonResult> GetBOMTree()
         {
