@@ -36,7 +36,7 @@ namespace eTactWeb.Controllers
             model.YearCode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             return View(model);
         }
-        public IActionResult PrintReport(string FGPartCode = "", string FGItemName = "",string ForTheStore = "",string ForWorkCeneter = "")
+        public IActionResult PrintReport(string FGPartCode = "", string FGName = "",int StoreId = 0,int WCID = 0,string CurrentDate="",int YearCode=0,int CalForQty=0)
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -50,12 +50,18 @@ namespace eTactWeb.Controllers
                 webReport.Report.Load(webRootPath + "\\BOMPrintReportForDirectBOMStockShortExcess.frx"); // default report
            
             webReport.Report.SetParameterValue("FGPartCode", FGPartCode);
-            webReport.Report.SetParameterValue("FGItemName ", FGItemName);
-            webReport.Report.SetParameterValue("StoreName  ", ForTheStore);
-            webReport.Report.SetParameterValue("WcName ", ForWorkCeneter);
+            webReport.Report.SetParameterValue("FGName ", FGName);
+            webReport.Report.SetParameterValue("StoreId  ", StoreId);
+            webReport.Report.SetParameterValue("WCID ", WCID);
+            webReport.Report.SetParameterValue("CurrentDate ", CurrentDate);
+            webReport.Report.SetParameterValue("YearCode ", YearCode);
+            webReport.Report.SetParameterValue("CalForQty ", CalForQty);
+            //webReport.Report.SetParameterValue("WcName ", WCID);
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-           
+            webReport.Report.Refresh();
             return View(webReport);
         }
         public async Task<JsonResult> GetBOMTree()

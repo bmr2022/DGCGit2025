@@ -46,13 +46,7 @@
                                     </span>
                                 </a>
                                
-                                    <a class="table-link link-dark" id="printData-@Cntr" asp-action="PrintReport" asp-route-FGPartCode="@item.FGPartCode"
-                                        asp-route-FGItemName="@item.FGItemName"  asp-route-ForTheStore="@item.ForTheStore" asp-route-ForWorkCeneter="@item.ForWorkCeneter">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a> 
+                                     
                                  
                              
                             </td>
@@ -71,8 +65,8 @@
                             <td id="ShortExcess-@Cntr" style="background-color:#ADD8E6">@item.ShortExcess</td>
                             
                             <td>@item.BomRevNo</td>
-                            <td>@item.ForTheStore</td>
-                            <td>@item.ForWorkCeneter</td>
+                            <td>@item.ForTheStore<input type="hidden" asp-for="@item.Storeid" value="@item.Storeid"/></td>
+                            <td>@item.ForWorkCeneter<input type="hidden" asp-for="@item.WCID" value="@item.WCID" /></td>
 
 
 

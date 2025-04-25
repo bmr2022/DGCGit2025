@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/24/2025 17:15:26" ReportInfo.Modified="04/24/2025 23:16:21" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/24/2025 17:15:26" ReportInfo.Modified="04/25/2025 14:17:54" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSy9d6EtOU/pFjFcLU2rxY7w==">
-      <TableDataSource Name="Table" Alias="SPBOMPrintReportForDirectBOMStockShortExcess" DataType="System.Int32" Enabled="true" SelectCommand="exec SPBOMPrintReportForDirectBOMStockShortExcess   @FGPartcode =  @FGPartCode  , @FGName = @FGItemName, @StoreName = @StoreName">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtaSLHA59q3saMka5STqryBa9R1JI9qexYxRt7J3gULnXIIAHWDlabO5Mctt/Z/6+gkweAp1sctV/K01pGpwWAUBZqI0P1ioumvKPgUDa/qsWubYRO1JAEWAWv7tdNIoc5w==">
+      <TableDataSource Name="Table" Alias="SPBOMPrintReportForDirectBOMStockShortExcess" DataType="System.Int32" Enabled="true" SelectCommand="exec SPBOMPrintReportForDirectBOMStockShortExcess @CurrentDate= @CurrentDate , @WCID=@WCID&#13;&#10;,@Storeid= @StoreId,@Yearcode= @YearCode ,@CalForQty= @CalForQty,@FGPartcode= @FGPartCode, @FGName = @FGName">
         <Column Name="FGItemName" DataType="System.String"/>
         <Column Name="FGPartCode" DataType="System.String"/>
         <Column Name="FGUnit" DataType="System.String"/>
@@ -21,8 +21,13 @@
         <Column Name="ForTheStore" DataType="System.String"/>
         <Column Name="ForWorkCeneter" DataType="System.String"/>
         <CommandParameter Name="FGPartCode" DataType="22" Size="200" Expression="FGPartCode"/>
-        <CommandParameter Name="FGItemName " DataType="22" Size="200" Expression="FGItemName "/>
-        <CommandParameter Name="StoreName" DataType="22" Size="200" Expression="StoreName"/>
+        <CommandParameter Name="FGName" DataType="22" Size="200" Expression="FGName"/>
+        <CommandParameter Name="WCID" Expression="WCID"/>
+        <CommandParameter Name="StoreId" Expression="StoreId"/>
+        <CommandParameter Name="CurrentDate" DataType="22" Size="200" Expression="CurrentDate"/>
+        <CommandParameter Name="YearCode" Expression="YearCode"/>
+        <CommandParameter Name="CalForQty" Expression="CalForQty"/>
+        <CommandParameter Name="WcName" DataType="22" Size="200" Expression="WcName"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Parameter Name="MyParameter" DataType="System.String" AsString=""/>
@@ -68,8 +73,8 @@
       <TextObject Name="Text12" Left="472.5" Width="56.7" Height="37.8" Text="WIP&#13;&#10;Stock" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
       <LineObject Name="Line13" Left="415.8" Height="37.8"/>
       <LineObject Name="Line14" Left="472.5" Height="37.8"/>
-      <TextObject Name="Text14" Left="529.2" Width="47.25" Height="37.8" Text="Amt" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
-      <LineObject Name="Line15" Left="529.2" Height="37.8"/>
+      <TextObject Name="Text14" Left="548.1" Width="28.35" Height="37.8" Text="Amt" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
+      <LineObject Name="Line15" Left="548.1" Height="37.8"/>
       <TextObject Name="Text15" Left="576.45" Width="47.25" Height="37.8" Text="Rate" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
       <LineObject Name="Line16" Left="576.45" Height="37.8"/>
       <LineObject Name="Line17" Left="623.7" Height="37.8"/>
@@ -77,7 +82,7 @@
       <LineObject Name="Line10" Left="311.85" Height="37.8"/>
       <TextObject Name="Text19" Left="311.85" Width="56.7" Height="37.8" Text="Net&#13;&#10;ReqQty" HorzAlign="Center" Font="Arial, 9pt, style=Bold"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="194.33" Width="718.2" Height="37.8" Condition="[SPBOMPrintReportForDirectBOMStockShortExcess.FGPartCode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="194.33" Width="718.2" Height="37.8" Condition="[SPBOMPrintReportForDirectBOMStockShortExcess.RMPartCode]">
       <LineObject Name="Line21" Left="18.9" Height="37.8"/>
       <LineObject Name="Line22" Left="699.3" Height="37.8"/>
       <LineObject Name="Line23" Left="37.8" Height="37.8"/>
@@ -86,47 +91,47 @@
       <LineObject Name="Line26" Left="368.55" Height="37.8"/>
       <LineObject Name="Line27" Left="415.8" Height="37.8"/>
       <LineObject Name="Line28" Left="472.5" Height="37.8"/>
-      <LineObject Name="Line29" Left="529.2" Height="37.8"/>
+      <LineObject Name="Line29" Left="548.1" Height="37.8"/>
       <LineObject Name="Line30" Left="576.45" Height="37.8"/>
       <LineObject Name="Line31" Left="623.7" Height="37.8"/>
       <LineObject Name="Line33" Left="311.85" Height="37.8"/>
       <LineObject Name="Line20" Left="18.9" Top="37.8" Width="680.4"/>
       <TextObject Name="Text24" Left="18.9" Width="18.9" Height="37.8" CanGrow="true" CanBreak="false" Text="[Row#]" Font="Arial, 7pt"/>
-      <TextObject Name="Text26" Left="170.1" Width="85.05" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.RMPartCode]" Font="Arial, 7pt"/>
-      <TextObject Name="Text27" Left="255.15" Width="56.7" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.TotalReqQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text28" Left="311.85" Width="56.7" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.NetReqQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text29" Left="368.55" Width="47.25" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.RMUnit]" Font="Arial, 7pt"/>
-      <TextObject Name="Text30" Left="415.8" Width="56.7" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.StoreStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text31" Left="472.5" Width="47.25" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.WIPStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text32" Left="529.2" Width="47.25" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.Amount]" Font="Arial, 7pt"/>
-      <TextObject Name="Text33" Left="576.45" Width="47.25" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.Rate]" Font="Arial, 7pt"/>
-      <TextObject Name="Text34" Left="623.7" Width="75.6" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.ShortExcess]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
-      <TextObject Name="Text25" Left="37.8" Width="132.3" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.RMItemName]" Font="Arial, 7pt"/>
+      <TextObject Name="Text26" Left="170.1" Top="9.45" Width="85.05" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.RMPartCode]" Font="Arial, 7pt"/>
+      <TextObject Name="Text27" Left="255.15" Top="9.45" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.TotalReqQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text28" Left="311.85" Top="9.45" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.NetReqQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text29" Left="368.55" Top="9.45" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.RMUnit]" Font="Arial, 7pt"/>
+      <TextObject Name="Text30" Left="415.8" Top="9.45" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.StoreStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text31" Left="472.5" Top="9.45" Width="75.6" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.WIPStock]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text32" Left="548.1" Top="9.45" Width="28.35" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.Amount]" Font="Arial, 7pt"/>
+      <TextObject Name="Text33" Left="576.45" Top="9.45" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.Rate]" Font="Arial, 7pt"/>
+      <TextObject Name="Text34" Left="623.7" Top="9.45" Width="75.6" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.ShortExcess]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text25" Left="37.8" Top="9.45" Width="132.3" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPBOMPrintReportForDirectBOMStockShortExcess.RMItemName]" Font="Arial, 7pt"/>
       <DataBand Name="Data1" Top="234.8" Width="718.2" DataSource="Table"/>
       <GroupFooterBand Name="GroupFooter1" Top="237.47" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="280.6" Width="718.2" Height="66.15">
-      <LineObject Name="Line47" Left="18.9" Top="18.9" Width="680.4"/>
-      <LineObject Name="Line48" Left="18.9" Top="47.25" Width="680.4"/>
-      <LineObject Name="Line50" Left="699.3" Top="47.25" Height="-47.25"/>
-      <LineObject Name="Line51" Left="18.9" Top="47.25" Height="-47.25"/>
-      <LineObject Name="Line52" Left="255.15" Height="18.9"/>
-      <LineObject Name="Line53" Left="311.85" Height="18.9"/>
-      <LineObject Name="Line54" Left="368.55" Height="18.9"/>
-      <LineObject Name="Line55" Left="415.8" Height="18.9"/>
-      <LineObject Name="Line56" Left="472.5" Height="18.9"/>
-      <LineObject Name="Line57" Left="529.2" Height="18.9"/>
-      <LineObject Name="Line58" Left="576.45" Height="18.9"/>
-      <LineObject Name="Line59" Left="623.7" Height="18.9"/>
-      <TextObject Name="Text35" Left="217.35" Width="37.8" Height="18.9" Text="Total:" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text36" Left="576.45" Width="47.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalRate]" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text37" Left="529.2" Width="47.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalAmt]" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text38" Left="472.5" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalWIPStock]" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text39" Left="415.8" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalStoreStock]" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text40" Left="311.85" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalNetQty]" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text41" Left="255.15" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalRecQty]" Font="Arial, 8pt, style=Bold"/>
-      <TextObject Name="Text42" Left="28.35" Top="28.35" Width="85.05" Height="18.9" Text="PreparedBy:" Font="Arial, 8pt"/>
-      <TextObject Name="Text43" Left="340.2" Top="47.25" Width="47.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[Page#]" Font="Arial, 8pt"/>
+    <ReportSummaryBand Name="ReportSummary1" Top="280.6" Width="718.2" Height="85.05">
+      <LineObject Name="Line47" Left="18.9" Top="28.35" Width="680.4"/>
+      <LineObject Name="Line48" Left="18.9" Top="66.15" Width="680.4"/>
+      <LineObject Name="Line50" Left="699.3" Top="66.15" Height="-66.15"/>
+      <LineObject Name="Line51" Left="18.9" Top="66.15" Height="-66.15"/>
+      <LineObject Name="Line52" Left="255.15" Height="28.35"/>
+      <LineObject Name="Line53" Left="311.85" Height="28.35"/>
+      <LineObject Name="Line54" Left="368.55" Height="28.35"/>
+      <LineObject Name="Line55" Left="415.8" Height="28.35"/>
+      <LineObject Name="Line56" Left="472.5" Height="28.35"/>
+      <LineObject Name="Line57" Left="548.1" Height="28.35"/>
+      <LineObject Name="Line58" Left="576.45" Height="28.35"/>
+      <LineObject Name="Line59" Left="623.7" Height="28.35"/>
+      <TextObject Name="Text35" Left="217.35" Width="37.8" Height="28.35" Text="Total:" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text36" Left="576.45" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalRate]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text37" Left="548.1" Width="28.35" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalAmt]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text38" Left="472.5" Width="75.6" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalWIPStock]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text39" Left="415.8" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalStoreStock]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text40" Left="311.85" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalNetQty]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text41" Left="255.15" Width="56.7" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalRecQty]" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text42" Left="28.35" Top="37.8" Width="85.05" Height="18.9" Text="PreparedBy:" Font="Arial, 8pt"/>
+      <TextObject Name="Text43" Left="340.2" Top="66.15" Width="47.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[Page#]" Font="Arial, 8pt"/>
       <ChildBand Name="Child1" Top="240.13" Width="718.2" Height="37.8" FillUnusedSpace="true">
         <LineObject Name="Line46" Left="18.9" Top="37.8" Width="680.4"/>
         <LineObject Name="Line34" Left="18.9" Height="37.8"/>
@@ -136,7 +141,7 @@
         <LineObject Name="Line39" Left="368.55" Height="37.8"/>
         <LineObject Name="Line40" Left="415.8" Height="37.8"/>
         <LineObject Name="Line41" Left="472.5" Height="37.8"/>
-        <LineObject Name="Line42" Left="529.2" Height="37.8"/>
+        <LineObject Name="Line42" Left="548.1" Height="37.8"/>
         <LineObject Name="Line43" Left="576.45" Height="37.8"/>
         <LineObject Name="Line44" Left="623.7" Height="37.8"/>
         <LineObject Name="Line45" Left="311.85" Height="37.8"/>
