@@ -207,8 +207,6 @@ namespace eTactWeb.Controllers
                 if (TaxGrid != null)
                 {
                     TaxDetailDT = GetTaxDetailTable(TaxGrid);
-
-                    
                 }
                 Result = await _IJobWorkIssue.SaveJobWorkIssue(model, JWGrid, TaxDetailDT);
                 if (Result != null)
