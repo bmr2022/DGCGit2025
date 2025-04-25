@@ -386,138 +386,145 @@ namespace eTactWeb.Data.DAL
         }
         private static JobWorkIssueModel PrepareView(DataSet DS, ref JobWorkIssueModel? model)
         {
-            var ItemList = new List<JobWorkGridDetail>();
-            var TaxList = new List<TaxModel>();
-            DS.Tables[0].TableName = "SSMain";
-            DS.Tables[1].TableName = "SSDetail";
-            DS.Tables[2].TableName = "TaxDetail";
-            int cnt = 1;
-
-
-            model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryID"].ToString());
-            model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
-            model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
-            model.JWChallanNo = DS.Tables[0].Rows[0]["JWChallanNo"].ToString().Trim();
-            model.JobWorkNewRework = DS.Tables[0].Rows[0]["JobWorkNewRework"].ToString().Trim();
-            model.ChallanDate = DS.Tables[0].Rows[0]["ChallanDate"].ToString().Trim();
-            model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString());
-            model.DeliveryAdd = DS.Tables[0].Rows[0]["DeliveryAdd"].ToString();
-            model.VendorStateCode = DS.Tables[0].Rows[0]["VendorStateCode"].ToString();
-            model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString().Trim();
-            model.TolApprVal = Convert.ToDecimal(DS.Tables[0].Rows[0]["TolApprVal"]);
-            model.TotalWt = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalWt"]);
-            model.BomStatus = DS.Tables[0].Rows[0]["BomStatus"].ToString();
-            model.Types = DS.Tables[0].Rows[0]["Types"].ToString();
-            model.GstType = DS.Tables[0].Rows[0]["Gsttype"].ToString().Trim();
-            model.EnteredByEmpid = Convert.ToInt32(DS.Tables[0].Rows[0]["EnterdByEmpid"]);
-            model.CompletlyReceive = DS.Tables[0].Rows[0]["CompletlyReceive"].ToString();
-            model.timeofremoval = DS.Tables[0].Rows[0]["timeofremoval"].ToString();
-            model.Processdays = Convert.ToInt16(DS.Tables[0].Rows[0]["Processdays"]);
-            model.TransporterName = DS.Tables[0].Rows[0]["transpoterName"].ToString();
-            model.Distance = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["Distance"].ToString()) ? 0 : Convert.ToSingle(DS.Tables[0].Rows[0]["Distance"]);
-            model.VehicleNo = DS.Tables[0].Rows[0]["vehicleno"].ToString();
-            model.DispatchTo = DS.Tables[0].Rows[0]["Dispatchto"].ToString().Trim();
-            model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]);
-            model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
-            model.CC = DS.Tables[0].Rows[0]["CC"].ToString().Trim();
-            model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["UID"].ToString());
-            model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
-
-            model.CreatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
-            model.CreatedByName = DS.Tables[0].Rows[0]["CreatedByName"].ToString();
-            model.CreatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
-
-            if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
+            try
             {
-                model.UpdatedByName = DS.Tables[0].Rows[0]["UpdatedByName"].ToString();
+                var ItemList = new List<JobWorkGridDetail>();
+                var TaxList = new List<TaxModel>();
+                DS.Tables[0].TableName = "SSMain";
+                DS.Tables[1].TableName = "SSDetail";
+                DS.Tables[2].TableName = "TaxDetail";
+                int cnt = 1;
 
-                model.UpdatedBy = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"]);
-                model.UpdatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["UpdatedOn"]);
-            }
 
+                model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryID"].ToString());
+                model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
+                model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
+                model.JWChallanNo = DS.Tables[0].Rows[0]["JWChallanNo"].ToString().Trim();
+                model.JobWorkNewRework = DS.Tables[0].Rows[0]["JobWorkNewRework"].ToString().Trim();
+                model.ChallanDate = DS.Tables[0].Rows[0]["ChallanDate"].ToString().Trim();
+                model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString());
+                model.DeliveryAdd = DS.Tables[0].Rows[0]["DeliveryAdd"].ToString();
+                model.VendorStateCode = DS.Tables[0].Rows[0]["VendorStateCode"].ToString();
+                model.Remark = DS.Tables[0].Rows[0]["Remark"].ToString().Trim();
+                model.TolApprVal = Convert.ToDecimal(DS.Tables[0].Rows[0]["TolApprVal"]);
+                model.TotalWt = Convert.ToInt32(DS.Tables[0].Rows[0]["TotalWt"]);
+                model.BomStatus = DS.Tables[0].Rows[0]["BomStatus"].ToString();
+                model.Types = DS.Tables[0].Rows[0]["Types"].ToString();
+                model.GstType = DS.Tables[0].Rows[0]["Gsttype"].ToString().Trim();
+                model.EnteredByEmpid = Convert.ToInt32(DS.Tables[0].Rows[0]["EnterdByEmpid"]);
+                model.CompletlyReceive = DS.Tables[0].Rows[0]["CompletlyReceive"].ToString();
+                model.timeofremoval = DS.Tables[0].Rows[0]["timeofremoval"].ToString();
+                model.Processdays = Convert.ToInt16(DS.Tables[0].Rows[0]["Processdays"]);
+                model.TransporterName = DS.Tables[0].Rows[0]["transpoterName"].ToString();
+                model.Distance = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["Distance"].ToString()) ? 0 : Convert.ToSingle(DS.Tables[0].Rows[0]["Distance"]);
+                model.VehicleNo = DS.Tables[0].Rows[0]["vehicleno"].ToString();
+                model.DispatchTo = DS.Tables[0].Rows[0]["Dispatchto"].ToString().Trim();
+                model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]);
+                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
+                model.CC = DS.Tables[0].Rows[0]["CC"].ToString().Trim();
+                model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["UID"].ToString());
+                model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
 
-            if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
-            {
-                foreach (DataRow row in DS.Tables[1].Rows)
+                model.CreatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"].ToString());
+                model.CreatedByName = DS.Tables[0].Rows[0]["CreatedByName"].ToString();
+                model.CreatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
+
+                if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
                 {
-                    ItemList.Add(new JobWorkGridDetail
-                    {
-                        SeqNo = Convert.ToInt32(row["seqno"]),
-                        SeqForBatch = Convert.ToInt32(row["seqno"]),
-                        PartCode = row["partcode"].ToString().Trim(),
-                        ItemName = row["ItemNamePartCode"].ToString().Trim(),
-                        PONO = row["PONo"].ToString().Trim(),
-                        POYear = Convert.ToInt32(row["PoYear"].ToString()),
-                        SchNo = row["schno"].ToString().Trim(),
-                        SchYear = Convert.ToInt32(row["SchYear"]),
-                        SchDate = row["SchDate"].ToString(),
-                        OtherInstruction = row["OtherInstruction"].ToString(),
-                        PODate = row["PODate"].ToString(),
-                        Unit = row["unit"].ToString().Trim(),
-                        Rate = Convert.ToDecimal(row["Rate"].ToString()),
-                        ItemCode = Convert.ToInt32(row["ItemCode"].ToString()),
-                        HSNNo = Convert.ToInt32(row["HSNNO"].ToString()),
-                        IssQty = Convert.ToDecimal(row["IssQty"].ToString()),
-                        Amount = Convert.ToDecimal(row["Amount"].ToString()),
-                        RemarkDetail = row["RemarkDetail"].ToString().Trim(),
-                        PurchasePrice = Convert.ToDecimal(row["PurchasePrice"]),
-                        ProcessId = Convert.ToInt32(row["ProcessId"].ToString()),
-                        BatchNo = row["BatchNo"].ToString().Trim(),
-                        UniqueBatchNo = row["uniquebatchno"].ToString().Trim(),
-                        StockQty = Convert.ToDecimal(row["StockQty"]),
-                        BatchStockQty = Convert.ToDecimal(row["BatchStockQty"]),
-                        StoreId = Convert.ToInt32(row["StoreId"].ToString().Trim()),
-                        StoreName = row["Store"].ToString().Trim(),
-                        Closed = row["Closed"].ToString(),
-                        pendqty = Convert.ToDecimal(row["pendqty"]),
-                        RecScrapCode = Convert.ToInt32(row["RecSrapCode"]),
-                        RecScrapPartCode = row["ScrapPartCode"].ToString().Trim(),
-                        RecScrapItemName = row["ScrapItemNamePartCode"].ToString(),
-                        RecScrapQty = Convert.ToDecimal(row["RecScrapQty"].ToString()),
-                        AltQTy = Convert.ToDecimal(row["AltQty"]),
-                        AltUnit = row["altUnit"].ToString().Trim(),
-                        PendAltQty = Convert.ToDecimal(row["PendAltQty"]),
-                        PendScrapQty = Convert.ToDecimal(row["PendScrapQty"]),
-                        RecItemCode = string.IsNullOrEmpty(row["RecItemCode"].ToString()) ? 0 : Convert.ToInt32(row["RecItemCode"].ToString()),
-                        RecItemName = string.IsNullOrEmpty(row["RecItemName"].ToString()) ? "" : row["RecItemName"].ToString(),
-                        RecPartCode = string.IsNullOrEmpty(row["RecPartCode"].ToString()) ? "" : row["RecPartCode"].ToString(),
-                        RecQty = string.IsNullOrEmpty(row["RecQty"].ToString()) ? 0 : Convert.ToDecimal(row["RecQty"].ToString()),
-                    });
+                    model.UpdatedByName = DS.Tables[0].Rows[0]["UpdatedByName"].ToString();
+
+                    model.UpdatedBy = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()) ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"]);
+                    model.UpdatedOn = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["UpdatedOn"]);
                 }
-                model.JobDetailGrid = ItemList;
-                model.JobDetailGrid = ItemList.OrderBy(item => item.ItemCode).ThenBy(item => item.SeqNo).ToList();
 
-            }
 
-            if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
-            {
-                foreach (DataRow row in DS.Tables[2].Rows)
+                if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
                 {
-                    TaxList.Add(new TaxModel
+                    foreach (DataRow row in DS.Tables[1].Rows)
                     {
-                        TxSeqNo = Convert.ToInt32(row["SeqNo"]),
-                        TxType = row["Type"].ToString(),
-                        TxItemCode = Convert.ToInt32(row["ItemCode"]),
-                        TxTaxType = Convert.ToInt32(row["taxtypeid"]),
-                        TxAccountName =row["TxAccountName"].ToString(),
-                        TxAccountCode = Convert.ToInt32(row["TaxAccountCode"]),
-                        TxItemName = row["ItemName"].ToString(),
-                        TxPartName = row["PartCode"].ToString(),
-                        TxTaxTypeName = row["TaxType"].ToString(),
-                        //tx= row["Type"].ToString(),
-                        TxPercentg = Convert.ToDecimal(row["TaxPer"]),
-                        TxAdInTxable = row["AddInTaxable"].ToString(),
-                        TxRoundOff = row["RoundOff"].ToString(),
-                        TxAmount = Convert.ToDecimal(row["Amount"]),
-                        TxRefundable = row["TaxRefundable"].ToString(),
-                        TxOnExp = Convert.ToDecimal(row["TaxonExp"]),
-                        TxRemark = row["Remarks"].ToString()
-                    });
-                }
-                model.TaxDetailGridd = TaxList;
-            }
+                        ItemList.Add(new JobWorkGridDetail
+                        {
+                            SeqNo = Convert.ToInt32(row["seqno"]),
+                            SeqForBatch = Convert.ToInt32(row["seqno"]),
+                            PartCode = row["partcode"].ToString().Trim(),
+                            ItemName = row["ItemNamePartCode"].ToString().Trim(),
+                            PONO = row["PONo"].ToString().Trim(),
+                            POYear = Convert.ToInt32(row["PoYear"].ToString()),
+                            SchNo = row["schno"].ToString().Trim(),
+                            SchYear = Convert.ToInt32(row["SchYear"]),
+                            SchDate = row["SchDate"].ToString(),
+                            OtherInstruction = row["OtherInstruction"].ToString(),
+                            PODate = row["PODate"].ToString(),
+                            Unit = row["unit"].ToString().Trim(),
+                            Rate = Convert.ToDecimal(row["Rate"].ToString()),
+                            ItemCode = Convert.ToInt32(row["ItemCode"].ToString()),
+                            HSNNo = Convert.ToInt32(row["HSNNO"].ToString()),
+                            IssQty = Convert.ToDecimal(row["IssQty"].ToString()),
+                            Amount = Convert.ToDecimal(row["Amount"].ToString()),
+                            RemarkDetail = row["RemarkDetail"].ToString().Trim(),
+                            PurchasePrice = Convert.ToDecimal(row["PurchasePrice"]),
+                            ProcessId = Convert.ToInt32(row["ProcessId"].ToString()),
+                            BatchNo = row["BatchNo"].ToString().Trim(),
+                            UniqueBatchNo = row["uniquebatchno"].ToString().Trim(),
+                            StockQty = Convert.ToDecimal(row["StockQty"]),
+                            BatchStockQty = Convert.ToDecimal(row["BatchStockQty"]),
+                            StoreId = Convert.ToInt32(row["StoreId"].ToString().Trim()),
+                            StoreName = row["Store"].ToString().Trim(),
+                            Closed = row["Closed"].ToString(),
+                            pendqty = Convert.ToDecimal(row["pendqty"]),
+                            RecScrapCode = Convert.ToInt32(row["RecSrapCode"]),
+                            RecScrapPartCode = row["ScrapPartCode"].ToString().Trim(),
+                            RecScrapItemName = row["ScrapItemNamePartCode"].ToString(),
+                            RecScrapQty = Convert.ToDecimal(row["RecScrapQty"].ToString()),
+                            AltQTy = Convert.ToDecimal(row["AltQty"]),
+                            AltUnit = row["altUnit"].ToString().Trim(),
+                            PendAltQty = Convert.ToDecimal(row["PendAltQty"]),
+                            PendScrapQty = Convert.ToDecimal(row["PendScrapQty"]),
+                            RecItemCode = string.IsNullOrEmpty(row["RecItemCode"].ToString()) ? 0 : Convert.ToInt32(row["RecItemCode"].ToString()),
+                            RecItemName = string.IsNullOrEmpty(row["RecItemName"].ToString()) ? "" : row["RecItemName"].ToString(),
+                            RecPartCode = string.IsNullOrEmpty(row["RecPartCode"].ToString()) ? "" : row["RecPartCode"].ToString(),
+                            RecQty = string.IsNullOrEmpty(row["RecQty"].ToString()) ? 0 : Convert.ToDecimal(row["RecQty"].ToString()),
+                        });
+                    }
+                    model.JobDetailGrid = ItemList;
+                    model.JobDetailGrid = ItemList.OrderBy(item => item.ItemCode).ThenBy(item => item.SeqNo).ToList();
 
-            return model;
+                }
+
+                if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[2].Rows)
+                    {
+                        TaxList.Add(new TaxModel
+                        {
+                            TxSeqNo = Convert.ToInt32(row["SeqNo"]),
+                            TxType = row["Type"].ToString(),
+                            TxItemCode = Convert.ToInt32(row["ItemCode"]),
+                            TxTaxType = Convert.ToInt32(row["taxtypeid"]),
+                            TxAccountName = row["TxAccountName"].ToString(),
+                            TxAccountCode = Convert.ToInt32(row["TaxAccountCode"]),
+                            TxItemName = row["ItemName"].ToString(),
+                            TxPartName = row["PartCode"].ToString(),
+                            TxTaxTypeName = row["TaxType"].ToString(),
+                            //tx= row["Type"].ToString(),
+                            TxPercentg = Convert.ToDecimal(row["TaxPer"]),
+                            TxAdInTxable = row["AddInTaxable"].ToString(),
+                            TxRoundOff = row["RoundOff"].ToString(),
+                            TxAmount = Convert.ToDecimal(row["Amount"]),
+                            TxRefundable = row["TaxRefundable"].ToString(),
+                            TxOnExp = Convert.ToDecimal(row["TaxonExp"]),
+                            TxRemark = row["Remarks"].ToString()
+                        });
+                    }
+                    model.TaxDetailGridd = TaxList;
+                }
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         internal async Task<ResponseResult> GetSearchData(JWIssQDashboard model)
         {
