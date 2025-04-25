@@ -555,7 +555,7 @@
             BasicTotal();
             BasicPopUpItemGrid();
             BasicItemGridTotal();
-            //GetCostCenter();
+            GetCostCenter();
             DueDateCalculation();
 
             $('#GstRegUnreg').rules("remove", "required");
@@ -659,7 +659,7 @@
                             $('#CostCenterId').append('<option value="0">-Select-</option>');
                             if (obj.StatusCode != 500) {
                                 $.each(obj.Result.Table, function (index, val) {
-                                    $('#CostCenterId').append("<option value=" + val.CostcenterId + ">" + val.CostCenterName + "</option>");
+                                    $('#CostCenterId').append("<option value=" + val.CostCenterId + ">" + val.costcentername + "</option>");
                                 });
                             }
                         }
@@ -1746,6 +1746,9 @@
                                     $('#AccountCode').append("<option value=" + val.account_code + ">" + val.account_name/* val.CustomerName */ + "</option>");
                                 });
                             }
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                               $('#AccountCode').val('@Model.AccountCode');
+                            }
                         }
                     }
                 }
@@ -1769,6 +1772,9 @@
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#SubVoucherName').append("<option value=" + val.PrefixEntryId + ">" + val.SubVoucherName/* val.CustomerName */ + "</option>");
                                 });
+                            }
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                               $('#SubVoucherName').val('@Model.SubVoucherName');
                             }
                         }
                     }
