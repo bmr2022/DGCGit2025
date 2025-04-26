@@ -1088,7 +1088,7 @@
                                 $('#MainGridUniqueBatchNo-' + i).empty();
                                 $('#MainGridUniqueBatchNo-' + i).append('<option value="0" selected disabled>-Select-</option>');
                                 $.each(obj.Result, function (index, val) {
-                                    $('#MainGridUniqueBatchNo-' + i).append('<option value ="' + val.UniqueBatchNo + '"> ' + val.UniqueBatchNo + ' </option>');
+                                    $('#MainGridUniqueBatchNo-' + i).append('<option value =' + val.UniqueBatchNo + '> ' + val.UniqueBatchNo + ' </option>');
                                 });
                             }
                         }
