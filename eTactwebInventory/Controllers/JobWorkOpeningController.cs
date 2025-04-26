@@ -186,9 +186,9 @@ namespace eTactWeb.Controllers
             JOGrid.Columns.Add("IssJWChallanNo", typeof(string));
             JOGrid.Columns.Add("IssChalanEntryId", typeof(int));
             JOGrid.Columns.Add("IssChallanYearcode", typeof(int));
-            JOGrid.Columns.Add("Isschallandate", typeof(DateTime));
+            JOGrid.Columns.Add("Isschallandate", typeof(string));
             JOGrid.Columns.Add("Accountcode", typeof(int));
-            JOGrid.Columns.Add("EntryDate", typeof(DateTime));
+            JOGrid.Columns.Add("EntryDate", typeof(string));
             JOGrid.Columns.Add("ItemCode", typeof(int));
             JOGrid.Columns.Add("OpnIssQty", typeof(decimal));
             JOGrid.Columns.Add("Rate", typeof(decimal));
@@ -201,7 +201,7 @@ namespace eTactWeb.Controllers
             JOGrid.Columns.Add("PendScrapToRec", typeof(decimal));
             JOGrid.Columns.Add("BomStatus", typeof(string));
             JOGrid.Columns.Add("BOMNO", typeof(int));
-            JOGrid.Columns.Add("Bomdate", typeof(DateTime));
+            JOGrid.Columns.Add("Bomdate", typeof(string));
             JOGrid.Columns.Add("RecItemCode", typeof(int));
             JOGrid.Columns.Add("ProcessId", typeof(int));
             JOGrid.Columns.Add("ChallanQty", typeof(decimal));
@@ -225,9 +225,12 @@ namespace eTactWeb.Controllers
                     Item.IssJWChallanNo,
                     Item.IssChalanEntryId,
                     Item.IssChallanYearcode,
-                    Item.Isschallandate,
+                    //Item.Isschallandate,
+                      Item.Isschallandate == null ? string.Empty : ParseFormattedDate(Item.Isschallandate.Split(" ")[0]),
+
                     Item.Accountcode,
-                    Item.EntryDate,
+                    //Item.EntryDate,
+                    Item.EntryDate == null ? string.Empty : ParseFormattedDate(Item.EntryDate.Split(" ")[0]),
                     Item.ItemCode,
                     Item.OpnIssQty,
                     Item.Rate,
@@ -240,7 +243,7 @@ namespace eTactWeb.Controllers
                     Item.PendScrapToRec,
                     Item.BomType == null ? "" : Item.BomType,
                     Item.BomNo,
-                    Item.BomDate,
+                    Item.BomDate == null ? string.Empty : ParseFormattedDate(Item.BomDate.Split(" ")[0]),
                     Item.RecItemCode,
                     Item.ProcessId,
                     Item.ChallanQty,
