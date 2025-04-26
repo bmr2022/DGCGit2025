@@ -44,6 +44,7 @@ namespace eTactWeb.DOM.Models
         public string? EntryDate { get; set; }
         public string? VendorName { get; set; }
         public string? InvoiceNo { get; set; }
+        public string? Account_Name { get; set; }
         public string? InvoiceDate { get; set; }
         public string? DocNo { get; set; } 
         public string? PartCode { get; set; }

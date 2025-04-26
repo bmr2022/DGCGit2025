@@ -76,6 +76,7 @@
                                         <option value="DAYWISEMRNENTRYLIST">DAY WISE MRN ENTRY</option>
                                         <option value="PENDMRNFORQC(SUMMARY)">PENDING MRN FOR QC (SUMMARY)</option>
                                         <option value="PENDMRNFORQC(DEATIL)">PENDING MRN FOR QC (DETAIL) </option>
+                                        <option value="Short Excess Register">Short Excess Register </option>
 
                                         <option value="mrnqcdetail">MRN QC DETAIL </option>
                                     </select>
@@ -311,6 +312,7 @@
         }
 
         function GetMRNRegisterData() {
+            debugger
             var inputValue = $('#gateno').val();
              $.ajax({
                 type: "POST",

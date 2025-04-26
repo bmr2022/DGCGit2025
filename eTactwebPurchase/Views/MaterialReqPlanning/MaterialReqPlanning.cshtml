@@ -74,6 +74,7 @@
                                         <option value="DAYWISEMRPDATA" selected>Day Wise Data</option>
                                         <option value="MRPCONSOLIDATED">Consolidated Data</option>
                                         <option value="MRPDataonly">Only MRP Data</option>
+                                        <option value="MRPCONSOLIDATE (With PO + Party)">MRPCONSOLIDATE (With PO + Party)</option>
                                        
                                     </select>
                                 </div>
@@ -203,7 +204,7 @@
 
         $(document).ready(function () {
             console.log("Ready");
-            GetServerDate();
+            //GetServerDate();
 
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -269,6 +270,9 @@
                     else if (reportType == "MRPDataonly") {
                         $(this).css("background-color", "#ccffcc");
                      }
+                    else if (reportType == "MRPCONSOLIDATE (With PO + Party)") {
+                        $(this).css("background-color", "#ccf2ff");
+                     }
 
                     else {
                         $(this).css("background-color", "antiquewhite");
@@ -290,6 +294,9 @@
                     }
                     else if (reportType == "MRPDataonly") {
                         $(this).css("background-color", "#ccffcc");
+                    }
+                     else if (reportType == "MRPDataonly") {
+                        $(this).css("background-color", "#ccf2ff");
                     }
 
                 });
@@ -367,6 +374,26 @@
                                                                        <input id="totTotalStock" class="form-control" readonly/>
                                                                  </div>
                                                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">Total OrderQty</label>
+                                                                               <input id="totOrderQty" class="form-control" readonly/>
+                                                                         </div>
+                                        `;
+                } else if (reportType === "MRPCONSOLIDATE (With PO + Party)") {
+                    html = `
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
+                                                                               <label class="form-label">Total ReqQty</label>
+                                                                               <input id="totReqQty" class="form-control" readonly/>
+                                                                         </div>
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">TotalStoretStock</label>
+                                                                               <input id="totStoreStock" class="form-control" readonly/>
+                                                                         </div>
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">Total WipStock</label>
+                                                                               <input id="totWipStock" class="form-control" readonly/>
+                                                                         </div>
+                                                                        
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
                                                                                <label class="form-label">Total OrderQty</label>
                                                                                <input id="totOrderQty" class="form-control" readonly/>
                                                                          </div>

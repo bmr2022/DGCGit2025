@@ -25,6 +25,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using FastReport.Export.PdfSimple;
+using System.Reflection;
 
 namespace eTactWeb.Controllers;
 
@@ -1759,18 +1760,20 @@ public class PurchaseOrderController : Controller
                 MainModel.ItemDetailGrid = POItemGrid;
 
                 IMemoryCache.Set("PurchaseOrder", MainModel, cacheEntryOptions);
-                HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+
+                HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
+                //HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 
             }
         }
         IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel1);
 
-        string modelJson = HttpContext.Session.GetString("PurchaseOrder");
-        List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
-        if (!string.IsNullOrEmpty(modelJson))
-        {
-            PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
-        }
+        //string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+        //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
+        //if (!string.IsNullOrEmpty(modelJson))
+        //{
+        //    PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
+        //}
 
         return PartialView("_POItemGrid", MainModel);
     }

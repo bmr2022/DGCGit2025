@@ -864,7 +864,7 @@
             $('#YearCode').rules("remove", "required");
             $('#EntryId').rules("remove", "required");
 
-            if ('@Model.Mode' == "U") {
+            if ('@Model.Mode' == "U" || '@Model.Mode' == "V") {
 
                 //const inputDate = $('#IssueDate').val();
                 ////const entryDate = $('#EntryDate').val();
@@ -889,14 +889,38 @@
 
                 //EnableOrDisableIssueDate();
 
+
+                //------------------------------
+                // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+
+                // var issueDate = parseDateToFormat($('#IssueDate').val().split(" ")[0]);
+                // $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", issueDate);
+
+                // var reqDate = parseDateToFormat($('#ReqDate').val().split(" ")[0]);
+                // $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", reqDate);
+
+                console.log($('#EntryDate').val());
+
+
+
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                var IssueDate = parseDateToFormat($('#IssueDate').val().split(" ")[0]);
+                var ReqDate = parseDateToFormat($('#ReqDate').val().split(" ")[0]);
+                console.log(EntryDate);
+                console.log(IssueDate);
 
-                var issueDate = parseDateToFormat($('#IssueDate').val().split(" ")[0]);
-                $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", issueDate);
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#IssueDate').datepicker("setDate", IssueDate);
+                $('#ReqDate').datepicker("setDate", ReqDate);
 
-                var reqDate = parseDateToFormat($('#ReqDate').val().split(" ")[0]);
-                $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", reqDate);
+
+
+
+
+
             }
 
             var FormattedDate = $('#ReqDate').val().split("T")[0].split("-").reverse().join("/");

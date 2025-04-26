@@ -70,6 +70,14 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("PurchaseRejection", JsonConvert.SerializeObject(model));
             return View(model);
         }
+
+        public async Task<JsonResult> GetCostCenter()
+        {
+            var JSON = await _purchRej.GetCostCenter();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [HttpPost]
         [Route("{controller}/Index")]
         public async Task<IActionResult> PurchaseRejection(AccPurchaseRejectionModel model)

@@ -45,6 +45,10 @@
                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
+                               
+                                     
+                                 
+                             
                             </td>
                             <th>@Cntr</th>
                             <td style="background-color: #e09ef0;">@item.FGItemName</td>
@@ -61,8 +65,8 @@
                             <td id="ShortExcess-@Cntr" style="background-color:#ADD8E6">@item.ShortExcess</td>
                             
                             <td>@item.BomRevNo</td>
-                            <td>@item.ForTheStore</td>
-                            <td>@item.ForWorkCeneter</td>
+                            <td>@item.ForTheStore<input type="hidden" asp-for="@item.Storeid" value="@item.Storeid"/></td>
+                            <td>@item.ForWorkCeneter<input type="hidden" asp-for="@item.WCID" value="@item.WCID" /></td>
 
 
 

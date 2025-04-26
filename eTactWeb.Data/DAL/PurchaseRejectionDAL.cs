@@ -334,6 +334,25 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetCostCenter()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "CostCenter"));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillDocument(string ShowAllDoc)
         {
             var _ResponseResult = new ResponseResult();
@@ -618,7 +637,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerm ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@PaymentTerm", Convert.ToInt32(!string.IsNullOrEmpty(model.PaymentTerm) ? 1 : 0)));
-                //SqlParams.Add(new SqlParameter("@PaymentCreditDay", model.PaymentCreditDay));
+                SqlParams.Add(new SqlParameter("@PaymentCreditDay", model.PaymentCreditDay));
                 SqlParams.Add(new SqlParameter("@GSTNO", model.GSTNO ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", model.DomesticExportNEPZ ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@GSTRegistered", model.GSTRegistered ?? string.Empty));
