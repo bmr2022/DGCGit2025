@@ -12,12 +12,9 @@ namespace eTactWeb.Controllers
 {
     public class PendingSaleRejectionController : Controller
     {
-        private readonly IMemoryCache _MemoryCache;
         private readonly IPendingSaleRejection _IPendingSaleRejection;
-
-        public PendingSaleRejectionController(IMemoryCache memoryCache, IPendingSaleRejection iPendingSaleRejection)
+        public PendingSaleRejectionController(IPendingSaleRejection iPendingSaleRejection)
         {
-            _MemoryCache = memoryCache;
             _IPendingSaleRejection = iPendingSaleRejection;
         }
 
@@ -25,20 +22,12 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Pending Requisition to Issue Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyPendingSaleRejection");
+            HttpContext.Session.Remove("KeyPendingSaleRejection");     
             var MainModel = new PendingSaleRejectionModel();
-            //var model = new IssueWithoutBomDetail();
-            //MainModel = await BindModel(MainModel);
-            //MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyPendingSaleRejection", MainModel, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("KeyPendingSaleRejection", serializedGrid);
             return View(MainModel);
         }
 
