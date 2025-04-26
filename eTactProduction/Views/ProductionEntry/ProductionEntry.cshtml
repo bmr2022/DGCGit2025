@@ -4345,15 +4345,19 @@
                         secondColumnValues[partCode] = secondColumnValue;
                     }
                     sums[partCode] += thirdColumnValue;
+                    console.log("sum" + sums[partCode]);
                 }
                 for (var partCode in sums) {
+                    console.log(sums);
                     if (sums.hasOwnProperty(partCode)) {
                         var sumThirdColumn = sums[partCode];
                         var secondColumnValue = secondColumnValues[partCode];
+                        console.log(sumThirdColumn);
+                        console.log(secondColumnValue);
                         if (Number(sumThirdColumn.toFixed(6)) !== Number(secondColumnValue.toFixed(6))) {
                             AddErrorCls('IssueQty');
                             Err = 1;
-                            $.notify(`For part code ${partCode},is not consumed TotalQty`, 'error');
+                            $.notify(`For part code ${partCode},is not consumed TotalQty :Cons Qty ${sumThirdColumn} and reqqty ${secondColumnValue}`, 'error');
                         }
                     }
                 }
