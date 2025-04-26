@@ -618,7 +618,7 @@
 
 
         $('.submitBTN').click(function (e) {
-            debugger
+             
            e.preventDefault();
             if (!ValidateTransfer_SubmitGrid()) return;
             ChkWIPStockBeforeSaving(function (isValid) {
@@ -860,7 +860,7 @@
                     if (result != null) {
                         var today = new Date();
                         var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
-                        debugger
+                         
                         if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                             $('#TransferMatEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                             $('#TransferMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));

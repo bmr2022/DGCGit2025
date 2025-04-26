@@ -1001,6 +1001,7 @@
 
 
         $(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
+            debugger
             var cntId = e.target.id;
 
             if (cntId == 'ItemCode') {
@@ -1009,6 +1010,7 @@
             else {
                 PartCodeChange(cntId);
             }
+            fillBomRevNo();
             if ($('#StoreId').prop('selectedIndex') > 0 && parseInt($('#Qty').val()) > 0) {
                 $('.Display').show();
             }
@@ -1087,8 +1089,6 @@
             $.when(SetPartCodeItemName(ID)).done(function () {
                 GetItemPartCode(ID)
             });
-
-            fillBomRevNo();
         }
         function SetPartCodeItemName(ID) {
             if (!ID) return;
@@ -1118,7 +1118,7 @@
             }
             SetPartCodeItemName(ID);
             GetItemPartCode(ID);
-            fillBomRevNo();
+            
         }
 
         function fillBomRevNo() {
@@ -1134,6 +1134,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BomRevNo').empty();
+                            $('#BomRevNo').append('<option disabled selected>-Select-</option>');
                             $('#BOMEffDate').val('');
                             $.each(obj.Result, function (index, val) {
                                 var EffDate = "";
@@ -1445,11 +1446,13 @@
         }
 
         async function EditItemRow(SeqNo) {
+             
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
                 data: { SeqNo: SeqNo },
                 success: await function (data, status, xhr) {
+                     
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                     }
@@ -1459,8 +1462,8 @@
                         DeleteItemRow(SeqNo);
 
                         if (obj != null && obj.length == 1) {
-                            $('#PartCode').val(obj[0].ItemCode).change();
-                            $('#ItemCode').val(obj[0].ItemCode).change();
+                            $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                            $('#ItemCode').val(obj[0].ItemCode).trigger('change');
                             $('#Unit').val(obj[0].Unit);
                             $('#Qty').val(obj[0].Qty);
                             $('#AltUnit').val(obj[0].AltUnit);
@@ -1477,6 +1480,7 @@
                             $('#CostCenterId').val(obj[0].CostCenterId);
                             $('#ItemLocation').val(obj[0].ItemLocation);
                             $('#ItemBinRackNo').val(obj[0].ItemBinRackNo);
+                            fillBomRevNo();
                             $('#BomRevNo').val(obj[0].BomRevNo);
                             $('#BOMEffDate ').val(obj[0].BOMEffDate);
 
