@@ -634,6 +634,21 @@
         $('#submitBTN').click(function (e) {
             e.preventDefault();
 
+            var finfromdate=parseDateToFormat($("#FinFromDate").val());
+            var fintodate=parseDateToFormat($("#FinToDate").val());
+            var entrydate=parseDateToFormat($("#EntryDate").val());
+
+            if (finfromdate > entrydate) {
+                $.notify('Entrydate should be in financial year...!', "error");
+                return;
+            }
+            if (fintodate < entrydate)
+            {
+                $.notify('Entrydate should be in financial year...!', "error");
+                return;
+            }
+
+
             if (!ValidateSubmit()) return;
             var CheckTaxFileds = false;
             var TaxRow = $('#divTaxGrid tr').length;

@@ -106,9 +106,9 @@ namespace eTactWeb.Controllers
 
             model.ActualEnteredEMpBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             model.ActualEnteredEmpByName = HttpContext.Session.GetString("EmpName");
-            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
+            model.FinFromDate =  CommonFunc.ParseFormattedDate( HttpContext.Session.GetString("FromDate"));
+            model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+            //model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.CC = HttpContext.Session.GetString("Branch");
             MemoryCacheEntryOptions cacheEntryOptions = new()
             {
