@@ -644,6 +644,31 @@
             var Entrydate = $('#EntryDate').val();
             var FinfromDate = $('#FinFromDate').val();
             var FinToDate = $('#FinToDate').val();
+
+            var finfromdate = parseDateToFormat($("#FinFromDate").val());
+            var fintodate = parseDateToFormat($("#FinToDate").val());
+            var entrydate = parseDateToFormat($("#EntryDate").val());
+            var InvoiceDate = parseDateToFormat($("#InvoiceDate").val());
+
+            if (parseDate(finfromdate) > parseDate(entrydate)) {
+                $.notify('Entrydate should be in financial year...!', "error");
+                return;
+            }
+            if (parseDate(fintodate) < parseDate(entrydate)) {
+                $.notify('Entrydate should be in financial year...!', "error");
+                return;
+            }
+
+            if (parseDate(finfromdate) > parseDate(InvoiceDate)) {
+                $.notify('challanDate should be in financial year...!', "error");
+                return;
+            }
+            if (parseDate(fintodate) < parseDate(InvoiceDate)) {
+                $.notify('InvoiceDate should be in financial year...!', "error");
+                return;
+            }
+
+
             if ($('#divSaleItemGrid tr td').length <= 1) {
                 $.notify('Grid Should Have Atleast 1 Item...!', "error");
             }
