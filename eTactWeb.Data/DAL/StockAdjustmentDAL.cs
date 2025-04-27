@@ -780,7 +780,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@FinStartDate", finStDt.ToString("yyyy/MM/dd").Replace("-", "/")));
                 SqlParams.Add(new SqlParameter("@transDate", transDt.ToString("yyyy/MM/dd").Replace("-", "/")));
                 SqlParams.Add(new SqlParameter("@batchno", batchno));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStoreWithNegativeStock", SqlParams);
             }
             catch (Exception ex)
             {

@@ -756,7 +756,7 @@
             FillItemName();
             FillPartCode();
             FillWorkCenter();
-            FillToWorkCenter();
+            /* FillToWorkCenter(); */
             FillIssueByEmp();
             FillRecByEmp();
             FillProcessName();
@@ -781,21 +781,39 @@
             $('#Remark').rules("remove", "required");
             $('.AF').fadeOut();
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
-
-                $('.AF').fadeOut();
-                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                var TransferMatEntrydate = $('#TransferMatEntrydate').val().split(" ")[0];
-                $('#TransferMatEntrydate').val(parseDateToFormat(TransferMatEntrydate));
-                var TransferMatSlipDate = $('#TransferMatSlipDate').val().split(" ")[0];
-                $('#TransferMatSlipDate').val(parseDateToFormat(TransferMatSlipDate));
-                var ProdStatus = "@Model.PRODSTATUSProdUnProdRej";
-                $('#PRODSTATUSProdUnProdRej').val(ProdStatus).trigger("change");
-                if ($('#IssueToStoreWC').val() == "S") {
+                var IssueToStoreWC = $('#IssueToStoreWC').val();
+                console.log("s/W" + IssueToStoreWC);
+                /* if ($('#IssueToStoreWC').val() == "S") {
                     FillStoreName();
                 }
                 else if ($('#IssueToStoreWC').val() == "W") {
                     FillToWorkCenter();
+                } */
+                if (IssueToStoreWC == 'S') {
+                    FillStoreName();
                 }
+                else if (IssueToStoreWC == 'W') {
+                    FillToWorkCenter();
+                }
+                $('.AF').fadeOut();
+                $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+                /* monika */
+               /*  var TransferMatEntrydate = $('#TransferMatEntrydate').val().split(" ")[0];
+                $('#TransferMatEntrydate').val(parseDateToFormat(TransferMatEntrydate));
+                var TransferMatSlipDate = $('#TransferMatSlipDate').val().split(" ")[0];
+                $('#TransferMatSlipDate').val(parseDateToFormat(TransferMatSlipDate)); */
+
+                var TransferMatEntrydate = parseDateToFormat($('#v').val().split(" ")[0]);
+                var TransferMatSlipDate = parseDateToFormat($('#TransferMatSlipDate').val().split(" ")[0]);
+               
+                $('#TransferMatEntrydate').datepicker("setDate", TransferMatEntrydate);
+                $('#TransferMatSlipDate').datepicker("setDate", TransferMatSlipDate);
+                /* -------------- */
+
+                var ProdStatus = "@Model.PRODSTATUSProdUnProdRej";
+                $('#PRODSTATUSProdUnProdRej').val(ProdStatus).trigger("change");
+               
             }
             else {
                 GetEntryId();

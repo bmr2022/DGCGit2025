@@ -1012,8 +1012,21 @@
                 $('#RGPNRGP').val($('#hiddenRGPNRGP').val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                  var ChallanDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+
+
+
+                 /* monika */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#ChallanDate').datepicker("setDate", ChallanDt);
+
+
+
+                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                  $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ChallanDt);
+
+                 --------------------
+ */
+
                 $('#ChallanNo').val($('#hiddenChallanNo').val());
                 var rowCount = $('#divIssueNRGPGrid tr').length;
                 for (var i = 1; i <= rowCount; i++) {
