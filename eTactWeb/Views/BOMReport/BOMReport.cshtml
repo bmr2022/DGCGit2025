@@ -297,7 +297,7 @@
             var CalForQty = document.getElementById('calculateQty').value;
             //var FGItemName = document.querySelector('[name="FGItemName"]').value;
 
-            var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=WCID${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
+            var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
 
             window.location.href = url;
         });
