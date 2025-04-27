@@ -299,7 +299,58 @@
                             Dashboard
                         </a>
 
-                        <partial name="_FormsButton" />
+                        @* <partial name="_FormsButton" /> *@
+
+                        <div class="row justify-content-between g-2">
+                            <div class="col-auto">
+                                @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="BackButtonData();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACk
+                                </a>
+                            </div>
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                            {
+                                <div class="col-auto">
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
+                                </div>
+                                @if (Model.Mode == "U" || Model.Mode == "SAU" || Model.Mode == "PAU" || Model.Mode == "PSU")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+                                else if (Model.Mode == "SOA" || Model.Mode == "POA" || Model.Mode == "PSA" || Model.Mode == "SSA")
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient POAAmendButton">
+                                            <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            AMEND
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
+                            }
+                        </div>
                     </span>
                 </h5>
             </div>
@@ -473,6 +524,7 @@
             $('#AccountCode').select2();
             $('#PartCode').select2();
             $('#ItemCode').select2();
+        
             FillVendors();
             GetFormRights();
             LockedFinancialYear();
@@ -566,7 +618,7 @@
             }
             else if ($('#Mode').val() == "POA") {
                 $('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                debugger
+                 
                 $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
                 $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#WEF').val()));
                 $('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
@@ -646,6 +698,10 @@
                     // }).datepicker("setDate", formattedDate11);
                 
             }
+
+            $('#POAAmendButton').click(function () {
+                $('form').submit();
+            });
 
             function checkedIndentDetail() {
                 var modelIndentCount = parseInt($('#hiddenPendingIndentDetailTotalCount').val(), 10);
@@ -990,7 +1046,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                    debugger
+                     
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#AccountCode').empty();
@@ -1492,6 +1548,7 @@
         }
 
         function SetPartCodeItemName(ID) {
+            debugger
             if (!ID) return;
             else {
                 var v = $('#' + ID).select2('val');
@@ -1535,7 +1592,7 @@
 
         function ItemNameChange(ID) {
             // $('#POQty,#AltPOQty').val(0);
-
+            debugger
             const sumItemwiseQty = Array.from(
                 itemDataArray
                     .filter(item => item.ItemCode == $('#ItemCode').val())
@@ -1825,7 +1882,7 @@
                         $('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0'), $('#TotalAmtAftrDiscount').val('0.00');
                 }
             }).done(function (data) {
-
+                debugger
                 $('#divTaxGrid').empty();
                 $('#TxPartCode,TxItemCode').empty();
                 $('#TxPartCode,TxItemCode').append("<option value='' selected disabled>-Select-</option>");
@@ -2177,6 +2234,7 @@
                 dataType: "json",
                 async: false,
                 success: await function (data, status, error) {
+                    debugger
                     $('#TxPartCode').empty();
                     $('#TxPartCode').append('<option>-Select-</option>');
                     $.each(data.partCode, function (key, val) {
@@ -2371,7 +2429,7 @@
             var poGrid = $('#divPOItemList tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
-            debugger
+             
             // GST Registered Vendor
             if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
                 if ($('#POFor').val() != 'For Purchase(Sample)') {
@@ -2401,7 +2459,7 @@
                     $.notify("Vendor Name is required", "error");
                     return;
                 }
-                debugger
+                 
                 // Extra validation for "not sample"
                 if ($('#POFor').val() != 'For Purchase(Sample)') {
                     for (var i = 1; i <= txRowCount; i++) {
@@ -2594,8 +2652,6 @@
                 RemoveErrorCls('DiscPer');
             }
 
-
-
             if (IsError == 1) {
                 $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 return;
@@ -2636,7 +2692,9 @@
                     'TolLimitQty': $('#TolLimitQty').val(),
                     'Unit': $('#Unit').val(),
                     'UnitRate': $('#UnitRate').val(),
-                    'Mode': $('#Mode').val() == "U" ? "U" : "INSERT"
+                    'Mode': $('#Mode').val() == "U" ? "U" : "INSERT",
+                    'AmendmentNo': $('#AmmNo').val(),
+                    'AmendmentDate': $('#AmmDate').val()
                 }
 
                 $.ajax({

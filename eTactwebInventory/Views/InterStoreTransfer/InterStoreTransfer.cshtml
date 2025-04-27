@@ -410,14 +410,31 @@
             }
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+               /*  var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 var SlipDate = parseDateToFormat($('#SlipDate').val().split(" ")[0]);
                 var ActualEntryDate = parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]);
                 //var GateDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SlipDate);
                 $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate);
-                //$('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDt);
+                //$('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDt); */
+
+
+                console.log($('#EntryDate').val());
+
+
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var SlipDate = parseDateToFormat($('#SlipDate').val().split(" ")[0]);
+                var ActualEntryDate = parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]);
+                console.log(EntryDate);
+                console.log(SlipDate);
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#SlipDate').datepicker("setDate", SlipDate);
+                $('#ActualEntryDate').datepicker("setDate", ActualEntryDate);
             }
             else {
                 GetServerDate();

@@ -315,7 +315,7 @@ namespace eTactWeb.Controllers
                     model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                     model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     return View(model1);
-                    
+
                 }
             }
             catch (Exception ex)
@@ -356,7 +356,7 @@ namespace eTactWeb.Controllers
             model.DashboardType = "Summary";
             var modelList = model?.GateDashboard ?? new List<GateInwardDashboard>();
 
-            
+
             if (string.IsNullOrWhiteSpace(SearchBox))
             {
                 model.TotalRecords = modelList.Count();
@@ -575,7 +575,7 @@ namespace eTactWeb.Controllers
 
                 var dt = time.ToString(format);
                 return Json(formattedDate);
-                
+
             }
             catch (HttpRequestException ex)
             {
@@ -639,14 +639,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPOYearList(string accountCode, string yearCode, string poNo, int docTypeId, string invoiceDate,string ItemService)
+        public async Task<JsonResult> GetPOYearList(string accountCode, string yearCode, string poNo, int docTypeId, string invoiceDate, string ItemService)
         {
-            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PENDINGPOLIST", accountCode, yearCode, poNo,  docTypeId, invoiceDate, ItemService);
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PENDINGPOLIST", accountCode, yearCode, poNo, docTypeId, invoiceDate, ItemService);
             _logger.LogError(JsonConvert.SerializeObject(JSON));
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetItems(int DocType, string Check,int AccountCode)
+        public async Task<JsonResult> GetItems(int DocType, string Check, int AccountCode)
         {
             var JSON = await _IGateInward.GetItems("GETITEMS", DocType, Check, AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -777,9 +777,9 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> GetScheDuleByYearCodeandAccountCode(string accountCode, string Year, string poNo, int docTypeId, string InvoiceDate,string ItemService)
+        public async Task<JsonResult> GetScheDuleByYearCodeandAccountCode(string accountCode, string Year, string poNo, int docTypeId, string InvoiceDate, string ItemService)
         {
-            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PURCHSCHEDULE", accountCode, Year, poNo,  docTypeId,  InvoiceDate, ItemService);
+            var JSON = await _IGateInward.GetScheDuleByYearCodeandAccountCode("PURCHSCHEDULE", accountCode, Year, poNo, docTypeId, InvoiceDate, ItemService);
             _logger.LogError(JsonConvert.SerializeObject(JSON));
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -843,7 +843,7 @@ namespace eTactWeb.Controllers
                 {
                     GateInwardItemDetail = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(modelJson);
                 }
-                
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (GateInwardItemDetail != null && GateInwardItemDetail.Count > 0)
@@ -983,76 +983,78 @@ namespace eTactWeb.Controllers
         }
         private static DataTable GetDetailTable(IList<GateInwardItemDetail> DetailList)
         {
-            var GIGrid = new DataTable();
-
-            GIGrid.Columns.Add("SeqNo", typeof(int));
-            GIGrid.Columns.Add("PONo", typeof(string));
-            GIGrid.Columns.Add("POYearCode", typeof(int));
-            GIGrid.Columns.Add("PODate", typeof(string));
-            GIGrid.Columns.Add("POEntryId", typeof(int));
-            GIGrid.Columns.Add("SchNo", typeof(string));
-            GIGrid.Columns.Add("SchYearCode", typeof(int));
-            GIGrid.Columns.Add("SchDate", typeof(string));
-            GIGrid.Columns.Add("SchEntryId", typeof(int));
-            GIGrid.Columns.Add("ItemCode", typeof(int));
-            GIGrid.Columns.Add("Unit", typeof(string));
-            GIGrid.Columns.Add("Qty", typeof(decimal));
-            GIGrid.Columns.Add("Rate", typeof(decimal));
-            GIGrid.Columns.Add("altqty", typeof(decimal));
-            GIGrid.Columns.Add("altunit", typeof(string));
-            GIGrid.Columns.Add("SaleBillNo", typeof(string));
-            GIGrid.Columns.Add("SaleBillYearCode", typeof(int));
-            GIGrid.Columns.Add("SaleBillQty", typeof(float));
-            GIGrid.Columns.Add("Remarks", typeof(string));
-            GIGrid.Columns.Add("AgainstChallanNo", typeof(string));
-            GIGrid.Columns.Add("AgainstChallanYearcode", typeof(int));
-            GIGrid.Columns.Add("ChallanQty", typeof(float));
-            GIGrid.Columns.Add("processid", typeof(int));
-            GIGrid.Columns.Add("Size", typeof(string));
-            GIGrid.Columns.Add("Color", typeof(string));
-            GIGrid.Columns.Add("SupplierBatchNo", typeof(string));
-            GIGrid.Columns.Add("ShelfLife", typeof(decimal));
-            GIGrid.Columns.Add("potype", typeof(string));
-            GIGrid.Columns.Add("PendPOQty", typeof(decimal));
-            GIGrid.Columns.Add("AltPendQty", typeof(float));
-            GIGrid.Columns.Add("NoOfBoxes", typeof(int));
-            foreach (var Item in DetailList)
+            try
             {
-                if (Item.PoNo == null || Item.PoNo == "null" || Item.PoNo == "")
+                var GIGrid = new DataTable();
+
+                GIGrid.Columns.Add("SeqNo", typeof(int));
+                GIGrid.Columns.Add("PONo", typeof(string));
+                GIGrid.Columns.Add("POYearCode", typeof(int));
+                GIGrid.Columns.Add("PODate", typeof(string));
+                GIGrid.Columns.Add("POEntryId", typeof(int));
+                GIGrid.Columns.Add("SchNo", typeof(string));
+                GIGrid.Columns.Add("SchYearCode", typeof(int));
+                GIGrid.Columns.Add("SchDate", typeof(string));
+                GIGrid.Columns.Add("SchEntryId", typeof(int));
+                GIGrid.Columns.Add("ItemCode", typeof(int));
+                GIGrid.Columns.Add("Unit", typeof(string));
+                GIGrid.Columns.Add("Qty", typeof(decimal));
+                GIGrid.Columns.Add("Rate", typeof(decimal));
+                GIGrid.Columns.Add("altqty", typeof(decimal));
+                GIGrid.Columns.Add("altunit", typeof(string));
+                GIGrid.Columns.Add("SaleBillNo", typeof(string));
+                GIGrid.Columns.Add("SaleBillYearCode", typeof(int));
+                GIGrid.Columns.Add("SaleBillQty", typeof(float));
+                GIGrid.Columns.Add("Remarks", typeof(string));
+                GIGrid.Columns.Add("AgainstChallanNo", typeof(string));
+                GIGrid.Columns.Add("AgainstChallanYearcode", typeof(int));
+                GIGrid.Columns.Add("ChallanQty", typeof(float));
+                GIGrid.Columns.Add("processid", typeof(int));
+                GIGrid.Columns.Add("Size", typeof(string));
+                GIGrid.Columns.Add("Color", typeof(string));
+                GIGrid.Columns.Add("SupplierBatchNo", typeof(string));
+                GIGrid.Columns.Add("ShelfLife", typeof(decimal));
+                GIGrid.Columns.Add("potype", typeof(string));
+                GIGrid.Columns.Add("PendPOQty", typeof(decimal));
+                GIGrid.Columns.Add("AltPendQty", typeof(float));
+                GIGrid.Columns.Add("NoOfBoxes", typeof(int));
+                foreach (var Item in DetailList)
                 {
-                    Item.PoNo = "";
-                }
-                if (Item.PoYear == null || Item.PoYear == 0)
-                {
-                    Item.PoYear = 0;
-                }
-                if (Item.PoEntryId == null || Item.PoEntryId == 0)
-                {
-                    Item.PoEntryId = 0;
-                }
-                if (Item.SchYearCode == null || Item.SchYearCode == 0)
-                {
-                    Item.SchYearCode = 0;
-                }
-                if (Item.SchEntryId == null || Item.SchEntryId == 0)
-                {
-                    Item.SchEntryId = 0;
-                }
-                if (Item.Qty == null || Item.Qty == 0)
-                {
-                    Item.Qty = 0;
-                }
-                if (Item.SchNo == null || Item.SchNo == "null" || Item.SchNo == "")
-                {
-                    Item.SchNo = "";
-                }
-                if (Item.Unit == null || Item.Unit == "null" || Item.Unit == "")
-                {
-                    Item.Unit = "";
-                }
-                GIGrid.Rows.Add(
-                    new object[]
+                    if (Item.PoNo == null || Item.PoNo == "null" || Item.PoNo == "")
                     {
+                        Item.PoNo = "";
+                    }
+                    if (Item.PoYear == null || Item.PoYear == 0)
+                    {
+                        Item.PoYear = 0;
+                    }
+                    if (Item.PoEntryId == null || Item.PoEntryId == 0)
+                    {
+                        Item.PoEntryId = 0;
+                    }
+                    if (Item.SchYearCode == null || Item.SchYearCode == 0)
+                    {
+                        Item.SchYearCode = 0;
+                    }
+                    if (Item.SchEntryId == null || Item.SchEntryId == 0)
+                    {
+                        Item.SchEntryId = 0;
+                    }
+                    if (Item.Qty == null || Item.Qty == 0)
+                    {
+                        Item.Qty = 0;
+                    }
+                    if (Item.SchNo == null || Item.SchNo == "null" || Item.SchNo == "")
+                    {
+                        Item.SchNo = "";
+                    }
+                    if (Item.Unit == null || Item.Unit == "null" || Item.Unit == "")
+                    {
+                        Item.Unit = "";
+                    }
+                    GIGrid.Rows.Add(
+                        new object[]
+                        {
                     Item.SeqNo,
                     Item.PoNo??"",
                     Item.PoYear,
@@ -1084,14 +1086,19 @@ namespace eTactWeb.Controllers
                     Item.PendQty == null ? 0.0 : Item.PendQty,
                     Item.AltPendQty == null ? 0.0 : Item.AltPendQty,
                     Item.NoOfBoxes== null ? 0.0 : Item.NoOfBoxes,
-                    });
+                        });
+                }
+                GIGrid.Dispose();
+                return GIGrid;
             }
-            GIGrid.Dispose();
-            return GIGrid;
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
-        public async Task<JsonResult> FillSaleBillRate(int AccountCode, int ItemCode,string SaleBillNo,int SaleBillYearCode)
+        public async Task<JsonResult> FillSaleBillRate(int AccountCode, int ItemCode, string SaleBillNo, int SaleBillYearCode)
         {
-            var JSON = await _IGateInward.FillSaleBillRate(AccountCode, ItemCode,SaleBillNo,SaleBillYearCode);
+            var JSON = await _IGateInward.FillSaleBillRate(AccountCode, ItemCode, SaleBillNo, SaleBillYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

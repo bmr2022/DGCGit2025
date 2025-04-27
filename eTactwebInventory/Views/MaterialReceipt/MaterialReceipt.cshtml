@@ -28,6 +28,15 @@
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
+
+                    </div>
+                    <div class="col-auto">
+                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReportShortExcess" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo" asp-route-AccountCode="@Model.AccountID">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            Short & Excess
+                        </a>
+
                     </div>
                     <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
@@ -788,12 +797,31 @@
                 }
                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                    var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                    var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
-                    var GateDate = parseDateToFormat($('#GateDate').val().split(" ")[0]);
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                    $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
-                    $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDate);
+                    // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                    // var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+                    // var GateDate = parseDateToFormat($('#GateDate').val().split(" ")[0]);
+                    // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                    // $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDt);
+                    // $('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDate);
+
+
+
+                console.log($('#EntryDate').val());
+
+
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+                var gatedate = parseDateToFormat($('#GateDate').val().split(" ")[0]);
+                console.log(EntryDate);
+                console.log(InvoiceDt);
+                console.log(gatedate);
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#InvoiceDate').datepicker("setDate", InvoiceDt);
+                $('#GateDate').datepicker("setDate", gatedate);
                 }
                 if ($('#Mode').val() == "I") {
                     $('#GateDate,#InvoiceNo,#InvoiceDate,#DocType,#AccountCode,#Address,#RecInStore,#CurrencyName').val("");

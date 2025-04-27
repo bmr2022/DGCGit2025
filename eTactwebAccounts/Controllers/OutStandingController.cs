@@ -14,17 +14,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IOutStanding _OutStanding { get; }
-
         private readonly ILogger<OutStandingController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public OutStandingController(ILogger<OutStandingController> logger, IDataLogic iDataLogic, IOutStanding iOutStanding, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public OutStandingController(ILogger<OutStandingController> logger, IDataLogic iDataLogic, IOutStanding iOutStanding, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _OutStanding = iOutStanding;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

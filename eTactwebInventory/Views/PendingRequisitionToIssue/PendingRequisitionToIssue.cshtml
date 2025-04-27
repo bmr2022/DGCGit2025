@@ -238,7 +238,7 @@
         $(function () 
         {
 
-            /* debugger */
+            /*   */
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             var REQNoBack = sessionStorage.getItem('REQNoBack');
@@ -808,7 +808,7 @@
         // }
 
         function showDetail() {
-            /* debugger */
+            /*   */
             $('#checkLabel,#TryAltItem').hide();
             $('#TryAltItem').prop("checked", false);
             if ($('#FromStore').val() == null) {
@@ -869,7 +869,7 @@
                                 html1 += '<tr onclick= "selection(this)" style="white-space:nowrap;" id="PendingGrid' + i + '">'
                                     + '<td class="styled-cell"><a style="" onclick="showToTransfer(' + i + ')">' + obj.Result.Table[i].ReqNo + '</a></td>'
                                     + '<td class="styled-cell"><input type="hidden" id="ReqDept' + i + '" value="' + obj.Result.Table[i].ReqDepartment + '" /><input type="hidden" id="ReqDept' + i + '" value="' + obj.Result.Table[i].ReqDepartmentID + '" /><input class="styled-input"type="hidden" id="ReqNo' + i + '" value=' + obj.Result.Table[i].ReqNo + ' /><input class="styled-input" type="hidden" id="ItemCode' + i + '" value=' + obj.Result.Table[i].itemcode + ' /><input type="hidden" id="IssuedAlternateItem' + i + '" value="N" /><input readonly size="7%" class="styled-input" id="PartCode' + i + '" value=' + obj.Result.Table[i].PartCode + ' ></td>'
-                                    + '<td class="styled-cell"><input size="60%" readonly class="styled-input" id="ItemName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].ItemName) + '></td>'
+                                    + '<td class="styled-cell"><input size="60%" readonly class="styled-input" id="ItemName' + i + '" value=' + escapeHtml(obj.Result.Table[i].ItemName) + '></td>'
                                     + '<td class="styled-cell" style="width:30px !important;"><input readonly class="styled-input styled-qty" id="ReqQty' + i + '" value=' + obj.Result.Table[i].ReqQty + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="PendQty' + i + '" value=' + obj.Result.Table[i].PendQty + '></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="PQty' + i + '" value=' + obj.Result.Table[i].PQtyAfterIssue + '  ></td>'
@@ -879,8 +879,8 @@
                                     + '<td class="styled-cell"><input class="styled-input styled-qty" readonly id="BatchStock' + i + '" value=' + obj.Result.Table[i].BatchStock + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input" type="hidden" id="StoreId' + i + '" value=' + obj.Result.Table[i].storeid + ' /><input readonly class="styled-input" style="width:100px !important" id="StoreName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].StoreName) + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="IssueQty' + i + '" value=' + obj.Result.Table[i].IssueQty + ' ></td>'
-                                    + '<td class="styled-cell"><input readonly class="styled-input"id="BatchNo' + i + '" value=' + obj.Result.Table[i].BatchNo + ' ></td>'
-                                    + '<td class="styled-cell"><input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + obj.Result.Table[i].UniqueBatchNo + ' ></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
+                                    + '<td class="styled-cell"><input readonly class="styled-input"id="BatchNo' + i + '" value=' + escapeHtml(obj.Result.Table[i].BatchNo) + ' ></td>'
+                                    + '<td class="styled-cell"><input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + ' ></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="ReqYearCode' + i + '"  value=' + obj.Result.Table[i].ReqYearCode + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input"id="ReqDate' + i + '" value=' + obj.Result.Table[i].ReqDate.split("T")[0] + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="AltQty' + i + '" value=' + obj.Result.Table[i].AltQty + ' ></td>'
@@ -925,14 +925,14 @@
             showToTransfer(i);
         }
 
-        //function BackButtonData(event) {
-        //
-        //    event.preventDefault();
-        //    var urlHref = $(event.currentTarget).attr("href");
-        //    var linkUrl = urlHref;
-        //    linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&REQNo=" + $('#ReqNo').val() + "&WCName=" + $('#WorkCenterDescription').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#Item_Name').val() + "&search-box=" + $('#search-box').val() + "&ItemName=" + $('#Item_Name').val() + "&DashboardType=" + $('#DashboardType').val();
-        //    window.location.href = linkUrl;
-        //}
+           function escapeHtml(value) {
+            return String(value)
+                .replace(/&/g, '&amp;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#39;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;');
+        }
 
         function showToTransfer(i) {
 
@@ -989,7 +989,7 @@
                                 html1 += '<tr onclick= "selection(this)" style="white-space:nowrap;" id="PendingGrid' + i + '">'
                                     + '<td class="styled-cell"><a style="" onclick="showToTransfer(' + i + ')">' + obj.Result.Table[i].ReqNo + '</a></td>'
                                     + '<td class="styled-cell"><input type="hidden" id="ReqDept' + i + '" value="' + obj.Result.Table[i].ReqDepartment + '" /><input type="hidden" id="ReqDept' + i + '" value="' + obj.Result.Table[i].ReqDepartmentID + '" /><input class="styled-input"type="hidden" id="ReqNo' + i + '" value=' + obj.Result.Table[i].ReqNo + ' /><input class="styled-input" type="hidden" id="ItemCode' + i + '" value=' + obj.Result.Table[i].itemcode + ' /><input type="hidden" id="IssuedAlternateItem' + i + '" value="N" /><input readonly size="7%" class="styled-input" id="PartCode' + i + '" value=' + obj.Result.Table[i].PartCode + ' ></td>'
-                                    + '<td class="styled-cell"><input size="60%" readonly class="styled-input" id="ItemName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].ItemName) + '></td>'
+                                    + '<td class="styled-cell"><input size="60%" readonly class="styled-input" id="ItemName' + i + '" value=' + escapeHtml(obj.Result.Table[i].ItemName) + '></td>'
                                     + '<td class="styled-cell" style="width:30px !important;"><input readonly class="styled-input styled-qty" id="ReqQty' + i + '" value=' + obj.Result.Table[i].ReqQty + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="PendQty' + i + '" value=' + obj.Result.Table[i].PendQty + '></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="PQty' + i + '" value=' + obj.Result.Table[i].PQtyAfterIssue + '  ></td>'
@@ -999,8 +999,8 @@
                                     + '<td class="styled-cell"><input class="styled-input styled-qty" readonly id="BatchStock' + i + '" value=' + obj.Result.Table[i].BatchStock + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input" type="hidden" id="StoreId' + i + '" value=' + obj.Result.Table[i].storeid + ' /><input readonly class="styled-input" style="width:100px !important" id="StoreName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].StoreName) + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="IssueQty' + i + '" value=' + obj.Result.Table[i].IssueQty + ' ></td>'
-                                    + '<td class="styled-cell"><input readonly class="styled-input"id="BatchNo' + i + '" value=' + obj.Result.Table[i].BatchNo + ' ></td>'
-                                    + '<td class="styled-cell"><input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + obj.Result.Table[i].UniqueBatchNo + ' ></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
+                                    + '<td class="styled-cell"><input readonly class="styled-input"id="BatchNo' + i + '" value=' + escapeHtml(obj.Result.Table[i].BatchNo) + ' ></td>'
+                                    + '<td class="styled-cell"><input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + ' ></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="ReqYearCode' + i + '"  value=' + obj.Result.Table[i].ReqYearCode + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input"id="ReqDate' + i + '" value=' + obj.Result.Table[i].ReqDate.split("T")[0] + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="AltQty' + i + '" value=' + obj.Result.Table[i].AltQty + ' ></td>'

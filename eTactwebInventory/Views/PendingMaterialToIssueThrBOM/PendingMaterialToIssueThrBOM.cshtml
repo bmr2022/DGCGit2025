@@ -541,7 +541,7 @@
         });
 
         function showDetail() {
-            debugger
+             
             $('#checkLabel,#TryAltItem').hide();
             $('#TryAltItem').prop("checked", false);
             if ($('#FromStore').val() == null) {
@@ -591,7 +591,7 @@
                 async: false,
                 data: { FromDate: fromDate, ToDate: toDate, ReqNo: ReqNo, YearCode: YearCode, ItemCode: ItemCode, WoNo: wono, WorkCenter: WorkCenter, DeptName: DeptName, ReqYear: reqYearCode, IssueDate: issuedDate, GlobalSearch: GlobalSearch, FromStore: FromStore, StoreId: storeId },
                 success: function (data) {
-                    debugger
+                     
                     if (data != null) {
                         $('#divPendIssueGrid').empty();
                         var obj = $.parseJSON(data);
@@ -642,7 +642,7 @@
                                     + '<input readonly class="styled-input"id="BatchNo' + i + '" value="' + escapeHtml(obj.Result.Table[i].BatchNo) + '">'
                                     + '</td>'
                                     + '<td class="styled-cell">'
-                                    + '<input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value="' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + '">'
+                                    + '<input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + '>'
                                     + '</td>'
                                     + '<input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
                                     + '<td class="styled-cell">'
@@ -787,7 +787,7 @@
         });
 
         function showToTransfer(i) {
-            debugger
+             
 
             $('#ReqNo').val();
 
@@ -842,7 +842,7 @@
                                     + '<td class="styled-cell"><input readonly class="styled-input" type="hidden" id="StoreId' + i + '" value=' + obj.Result.Table[i].storeid + ' /><input readonly class="styled-input" style="width:100px !important" id="StoreName' + i + '" value=' + JSON.stringify(obj.Result.Table[i].StoreName) + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="IssueQty' + i + '" value=' + obj.Result.Table[i].IssueQty + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input"id="BatchNo' + i + '" value="' + escapeHtml(obj.Result.Table[i].BatchNo) + '"></td>'
-                                    + '<td class="styled-cell"><input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value="' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + '"></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
+                                    + '<td class="styled-cell"><input size="40%" readonly class="styled-input"id="UniqueBatchNo' + i + '" value=' + escapeHtml(obj.Result.Table[i].UniqueBatchNo) + '></td><input type="hidden" class="styled-input"id="Batchdate' + i + '" value=' + obj.Result.Table[i].Batchdate + ' >'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="ReqYearCode' + i + '"  value=' + obj.Result.Table[i].ReqYearCode + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input"id="ReqDate' + i + '" value=' + obj.Result.Table[i].ReqDate.split("T")[0] + ' ></td>'
                                     + '<td class="styled-cell"><input readonly class="styled-input styled-qty" id="AltQty' + i + '" value=' + obj.Result.Table[i].AltQty + ' ></td>'
@@ -878,7 +878,7 @@
         }
 
         function TransferToIssueWithDblClick(k) {
-            debugger
+             
             var rowCount = $('#divPendIssueGrid tr').length;
 
             var ItemData = [];

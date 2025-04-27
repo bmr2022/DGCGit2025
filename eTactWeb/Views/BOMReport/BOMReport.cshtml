@@ -31,7 +31,7 @@
             <strong>BOM Report</strong>
             <span class="d-flex float-end" style="margin-top:-2px;">
                 @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-
+               
             </span>
         </h5>
     </div>
@@ -137,6 +137,13 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="BOMReport" asp-action="BOMReport">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
+                                  
+
+                                    <a href="#" id="printBtn" class="btn btn-sm btn-outline-light bg-gradient">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        PRINT
+                                    </a>
+
                                 </div>
                             </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
@@ -268,7 +275,33 @@
             // }
             handleReportType();
         });
-         
+         $('#StoreName').change(function () {
+
+            $('#Storeid').val($('#StoreName').val());
+            
+         });
+        $('#WorkCenterName').change(function () {
+
+            $('#WCID').val($('#WorkCenterName').val());
+            
+         });
+        document.getElementById('printBtn').addEventListener('click', function () {
+            debugger
+            var FGPartCode = document.querySelector('[name="FGPartCode"]').value;
+            var FGName = document.querySelector('[name="FGItemName"]').value;
+            var Storeid = document.querySelector('[name="Storeid"]').value;
+            var WCID = document.querySelector('[name="WCID"]').value;
+           // var WCID = document.getElementById('WCID').value;
+           // var Storeid = document.getElementById('Storeid').value;
+            var toDate = document.getElementById('ToDate').value;
+            var CalForQty = document.getElementById('calculateQty').value;
+            //var FGItemName = document.querySelector('[name="FGItemName"]').value;
+
+            var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
+
+            window.location.href = url;
+        });
+
         $('#ReportType').change(function () {
             handleReportType(); // Reuse the function to handle report type changes
         });
@@ -287,7 +320,8 @@
 
         // When StoreName dropdown value changes
         $('#StoreName').change(function () {
-            GetBomTreeDetailsData(); // Call details function when StoreName is selected
+            GetBomTreeDetailsData(); 
+
             $('#divStockRegisterBody tr').each(function () {
                 let $row = $(this);
                 let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID

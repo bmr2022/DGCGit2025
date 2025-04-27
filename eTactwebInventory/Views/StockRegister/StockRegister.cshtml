@@ -262,7 +262,7 @@
         });
 
         function loadPage(pageNumber) {
-            debugger
+             
             const data = {
                 FromDate: $('#FromDate').val(),
                 ToDate: $('#ToDate').val(),
@@ -377,7 +377,7 @@
         }
 
         function GetStockRegisterData() {
-            debugger
+             
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetStockRegisterData")",
@@ -439,7 +439,7 @@
         }
 
         function FillItemType() {
-            debugger
+             
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetAllItemTypes")",

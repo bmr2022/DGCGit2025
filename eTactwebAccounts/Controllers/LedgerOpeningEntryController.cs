@@ -19,17 +19,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ILedgerOpeningEntry _ILedgerOpeningEntry { get; }
-
         private readonly ILogger<LedgerOpeningEntryController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public LedgerOpeningEntryController(ILogger<LedgerOpeningEntryController> logger, IDataLogic iDataLogic, ILedgerOpeningEntry iLedgerOpeningEntry, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public LedgerOpeningEntryController(ILogger<LedgerOpeningEntryController> logger, IDataLogic iDataLogic, ILedgerOpeningEntry iLedgerOpeningEntry, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ILedgerOpeningEntry = iLedgerOpeningEntry;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -55,7 +52,7 @@ namespace eTactWeb.Controllers
             int financialYearStart = (currentMonth < 4) ? currentYear - 1 : currentYear;
             MainModel.ClosingYearCode = financialYearStart - 1;
             //MainModel.ClosingYearCode = DateTime.Now.Year - 1;
-            _MemoryCache.Remove("KeyLedgerOpeningEntryGrid");
+            HttpContext.Session.Remove("KeyLedgerOpeningEntryGrid");
 
             // Check if Mode is "Update" (U) and the ID is valid
             if (!string.IsNullOrEmpty(Mode) && AccountCode > 0 && Mode == "U")
@@ -74,12 +71,6 @@ namespace eTactWeb.Controllers
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
             }
 
             // If not in "Update" mode, bind new model data
@@ -105,9 +96,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-
-                _MemoryCache.TryGetValue("KeyLedgerOpeningEntryGrid", out List<LedgerOpeningEntryGridModel> LedgerOpeningEntryGrid);
-
+                string modelJson = HttpContext.Session.GetString("KeyLedgerOpeningEntryGrid");
+                List<LedgerOpeningEntryGridModel> LedgerOpeningEntryGrid = new List<LedgerOpeningEntryGridModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    LedgerOpeningEntryGrid = JsonConvert.DeserializeObject<List<LedgerOpeningEntryGridModel>>(modelJson);
+                }
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
@@ -119,7 +113,7 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
                         TempData.Keep("200");
-                        _MemoryCache.Remove("KeyLedgerOpeningEntryGrid");
+                        HttpContext.Session.Remove("KeyLedgerOpeningEntryGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -239,8 +233,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyLedgerOpeningEntryGrid");
-
+                HttpContext.Session.Remove("KeyLedgerOpeningEntryGrid");
                 var model = new LedgerOpeningEntryDashBoardModel();
                 model.OpeningForYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 //model.DashboardType = "SUMMARY";

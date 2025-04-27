@@ -115,7 +115,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<MaterialReqPlanningModel> GetDetailData(string ReportType,string mrpno, string Month, int YearCode, string FromDate, string ToDate)
+        public async Task<MaterialReqPlanningModel> GetDetailData(string ReportType,string mrpno, string Month, int YearCode, string FromDate, string ToDate, string ItemName, string PartCode)
         {
             var resultList = new MaterialReqPlanningModel();
             DataSet oDataSet = new DataSet();
@@ -141,12 +141,14 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@year_code", YearCode);
                     command.Parameters.AddWithValue("@FromDate", fromDt);
                     command.Parameters.AddWithValue("@ToDate", toDt);
+                    command.Parameters.AddWithValue("@ItemName", ItemName);
+                    command.Parameters.AddWithValue("@PartCode", PartCode);
                    
 
                     await connection.OpenAsync();
 
                     using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
-                    {
+                     {
                         dataAdapter.Fill(oDataSet);
                     }
                 }
@@ -243,6 +245,47 @@ namespace eTactWeb.Data.DAL
 
                                                                }).ToList();
                     }
+                    else if (ReportType == "MRPCONSOLIDATE (With PO + Party)")
+                    {
+                        resultList.DayWiseMRPDataGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                               select new DayWiseMRPData
+                                                               {
+                                                                   Part_code = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                                   Item_Name = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                                   PONos = row["PONos"] == DBNull.Value ? string.Empty : row["PONos"].ToString(),
+                                                                   Vendors = row["Vendors"] == DBNull.Value ? string.Empty : row["Vendors"].ToString(),
+                                                                   TotalMRPReqQty = row["TotalMRPReqQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalMRPReqQty"]),
+                                                                   TotalStoreStock = row["TotalStoreStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalStoreStock"]),
+                                                                   TotalWipStock = row["TotalWipStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalWipStock"]),
+                                                                   TotalMRPOrderQty = row["TotalMRPOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalMRPOrderQty"])
+
+                                                               }).ToList();
+                    }
+                    else if (ReportType == "MRP DATA WITH PARTY And SOB")
+                    {
+                        resultList.DayWiseMRPDataGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                               select new DayWiseMRPData
+                                                               {
+                                                                   Part_code = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
+                                                                   Item_Name = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                                   MRP_No = row["MRPNo"] == DBNull.Value ? string.Empty : row["MRPNo"].ToString(),
+                                                                   MRPDate = row["MRPDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["MRPDate"]).ToString("dd/MM/yyyy"),
+                                                                   PODate = row["PODate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["PODate"]).ToString("dd/MM/yyyy"),
+
+                                                                   Months = row["months"] == DBNull.Value ? string.Empty : row["months"].ToString(),
+                                                                   TotalMRPReqQty = row["MRPReqQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MRPReqQty"]),
+                                                                   StoreStock = row["storestock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["storestock"]),
+                                                                   TotalWipStock = row["WIPStock"] == DBNull.Value ? 0 : Convert.ToDecimal(row["WIPStock"]),
+                                                                   TotalMRPOrderQty = row["MRPOrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["MRPOrderQty"]),
+                                                                   OrderQty = row["OrderQty"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OrderQty"]),
+                                                                   PONos = row["PONO"] == DBNull.Value ? string.Empty : row["PONO"].ToString(),
+                                                                  
+                                                                   Vendors = row["VendorName"] == DBNull.Value ? string.Empty : row["VendorName"].ToString(),
+                                                                   SOB = row["SOB"] == DBNull.Value ? 0 : Convert.ToInt32(row["SOB"]),
+
+                                                               }).ToList();
+                    }
+
                 }
                  
 

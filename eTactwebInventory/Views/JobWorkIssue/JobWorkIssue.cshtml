@@ -1031,8 +1031,14 @@
 
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 var ChallanDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ChallanDt);
+
+                /* monika */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#ChallanDate').datepicker("setDate", ChallanDt);
+
+               /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ChallanDt); */
+                /* --------------- */
             }
             else {
                 $('#EntryDate,#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -1082,6 +1088,7 @@
 
             //GetDefaultBranch();
             $('#JobWorkNewRework').rules("remove", "required");
+            $('#EnteredByEmpid').rules("remove", "required");
             $('#JWChallanNo').rules("remove", "required");
             $('#VendorStateCode').rules("remove", "required");
             $('#GstType').rules("remove", "required");
@@ -1576,7 +1583,7 @@
                 url: "@Url.Action("CheckFeatureOption")",
                 dataType: "json",
                 success: function (result, status, error) {
-                    debugger 
+                      
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var allowOption = obj.Result.Table[0].AllowBackDateJOBWorkIssue;
@@ -2311,7 +2318,7 @@
         var SeqForBatch = 1;
 
         $('.GridButton').click(function (e) {
-
+            debugger
             e.preventDefault();
 
             if (!ValidateJW_Grid()) return;
@@ -2329,6 +2336,7 @@
             }
 
             var lengthGridJob = $('#divJobWorkGrid tr').length;
+            SeqForBatch = lengthGridJob + 1;
             var maxRowCount = 0;
 
             for (var i = 1; i <= lengthGridJob; i++) {
@@ -2336,6 +2344,7 @@
                 var GridItemCode = $('#GridIC-' + i).val();
                 if (GridItemCode == parseInt($('#ItemCode').val())) {
                     maxRowCount = Math.max(maxRowCount, i);
+
                 }
             }
             for (var i = 1; i <= lengthGridJob; i++) {
@@ -2343,11 +2352,12 @@
                 var GridItemCode = parseInt($('#GridIC-' + i).val());
                 if (GridItemCode == parseInt($('#ItemCode').val())) {
                     var NewSeqNo = parseInt($('#SeqForBatch-' + maxRowCount).val());
-                    SeqForBatch = NewSeqNo + 1;
+                   /*  SeqForBatch = NewSeqNo + 1;
+                    console.log(SeqForBatch); */
                     break;
                 }
                 else {
-                    SeqForBatch = 1;
+                   /*  SeqForBatch = 1; */
                 }
             }
 
