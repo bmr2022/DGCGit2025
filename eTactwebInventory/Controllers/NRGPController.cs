@@ -131,8 +131,8 @@ namespace eTactWeb.Controllers
 
                 model.Mode = Mode;
                 model.YearCode = YC;
-                model.EntryDate = ParseDate(model.EntryDate).ToString();
-                model.ChallanDate = ParseDate(model.ChallanDate).ToString();
+                //model.EntryDate = ParseDate(model.EntryDate).ToString();
+                //model.ChallanDate = ParseDate(model.ChallanDate).ToString();
                 model.EntryTime = model.EntryTime;
                 model = await BindModel(model);
 
@@ -164,7 +164,7 @@ namespace eTactWeb.Controllers
             {
                 // model = await BindModels(null);
                 model = await BindModel(model);
-                model.EntryDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
+                //model.EntryDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
                 model.ChallanDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
                 model.EntryTime = DateTime.Now.ToString("hh:mm:ss tt");
                 //_MemoryCache.Remove("KeyIssueNRGPGrid");
