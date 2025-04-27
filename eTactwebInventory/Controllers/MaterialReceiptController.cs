@@ -67,7 +67,8 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
             if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
-                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+                //webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); 
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
             }
             else
             {
@@ -83,6 +84,43 @@ namespace eTactWeb.Controllers
             webReport.Report.Refresh();
             return View(webReport);
         }
+         public IActionResult PrintReportShortExcess(int EntryId = 0, int YearCode = 0, string MrnNo = "",int AccountCode=0)
+         {
+            //string my_connection_string;
+            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            //string webRootPath = _IWebHostEnvironment.WebRootPath;
+            //var webReport = new WebReport();
+            //webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
+            //webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
+            //webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //return View(webReport);
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+           // var ReportName = _IMaterialReceipt.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            
+            webReport.Report.Load(webRootPath + "\\MRN_JWMRN.frx"); // default report
+          
+          
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+            webReport.Report.SetParameterValue("MrnYearcodeparam",YearCode );
+            webReport.Report.SetParameterValue("entryidparam",EntryId );
+            webReport.Report.SetParameterValue("accountcodeparam", AccountCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
+
+
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string MrnNo = "")
         {
             using (Report report = new Report())

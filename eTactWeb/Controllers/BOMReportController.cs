@@ -17,7 +17,7 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         public IBOMReport _IBOMReport { get; }
         private readonly ILogger<BOMReportController> _logger;
-        private readonly IConfiguration iconfiguration;
+        private readonly IConfiguration _iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
        
         public BOMReportController(ILogger<BOMReportController> logger, IDataLogic iDataLogic, IBOMReport iBOMReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
@@ -26,7 +26,7 @@ namespace eTactWeb.Controllers
             _IDataLogic = iDataLogic;
             _IBOMReport = iBOMReport;
             _IWebHostEnvironment = iWebHostEnvironment;
-            iconfiguration = iconfiguration;
+            _iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
         public async Task<ActionResult> BOMReport()
@@ -49,15 +49,15 @@ namespace eTactWeb.Controllers
            
                 webReport.Report.Load(webRootPath + "\\BOMPrintReportForDirectBOMStockShortExcess.frx"); // default report
            
-            webReport.Report.SetParameterValue("FGPartCode", FGPartCode);
-            webReport.Report.SetParameterValue("FGName ", FGName);
-            webReport.Report.SetParameterValue("StoreId  ", StoreId);
-            webReport.Report.SetParameterValue("WCID ", WCID);
-            webReport.Report.SetParameterValue("CurrentDate ", CurrentDate);
-            webReport.Report.SetParameterValue("YearCode ", YearCode);
-            webReport.Report.SetParameterValue("CalForQty ", CalForQty);
+            webReport.Report.SetParameterValue("FGPartcode", FGPartCode);
+            webReport.Report.SetParameterValue("FGName", FGName);
+            webReport.Report.SetParameterValue("Storeid", StoreId);
+            webReport.Report.SetParameterValue("WCID", WCID);
+            webReport.Report.SetParameterValue("CurrentDate", CurrentDate);
+            webReport.Report.SetParameterValue("Yearcode", YearCode);
+            webReport.Report.SetParameterValue("CalForQty", CalForQty);
             //webReport.Report.SetParameterValue("WcName ", WCID);
-            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
