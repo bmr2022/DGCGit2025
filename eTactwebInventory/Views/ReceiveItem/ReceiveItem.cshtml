@@ -411,8 +411,13 @@
 
                 var RecMatEntryDate = parseDateToFormat($('#RecMatEntryDate').val().split(" ")[0]);
                 var RecMatSlipDate = parseDateToFormat($('#RecMatSlipDate').val().split(" ")[0]);
-                $('#RecMatEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", RecMatEntryDate);
-                $('#RecMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", RecMatSlipDate);
+
+                // monika
+                $('#RecMatEntryDate').datepicker("setDate", RecMatEntryDate);
+                $('#RecMatSlipDate').datepicker("setDate", RecMatSlipDate);
+                // $('#RecMatEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", RecMatEntryDate);
+                // $('#RecMatSlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", RecMatSlipDate);
+                ////////////////
             }
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
                 $('#UpdatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
