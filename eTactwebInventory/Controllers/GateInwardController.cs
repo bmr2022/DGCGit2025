@@ -569,12 +569,14 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                DateTime time = DateTime.Now;
-                string format = "MMM ddd d HH:mm yyyy";
-                string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime time = DateTime.Now;
+                //string format = "MMM ddd d HH:mm yyyy";
+                //string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                var dt = time.ToString(format);
-                return Json(formattedDate);
+                //var dt = time.ToString(format);
+                var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
+                return Json(DateTime.Now.ToString("yyyy-MM-dd"));
+               // return Json(formattedDate);
 
             }
             catch (HttpRequestException ex)
