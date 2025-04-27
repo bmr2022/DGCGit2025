@@ -830,18 +830,13 @@
 
         $(document).ready(function () {
 
-            
-
-
-
-
-
+            GetServerDate();
             $(':input:visible').each(function () {
                 $(this).attr('tabindex', '0');
             });
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                 
+
                 $('#AC1').prop("checked", true);
                 fillAccount();
                 var selectElement = $("#AccountCode");
@@ -851,31 +846,18 @@
                 var address = $('#hiddenAddress').val();
                 $('#Address').val(address);
                 fillPONumber();
-                /* ar EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                        alert("first entrydate" + EntryDate);
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
- */
+
                 if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
                     $(".ChallanElements").show();
                 } else {
                     $(".ChallanElements").css("display", "none");
                 }
-                console.log($('#EntryDate').val());
-              
 
-
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
-                console.log(EntryDate);
-                console.log(InvoiceDt);
-
-                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
-                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
-                $('#EntryDate').datepicker("setDate", EntryDate);
-                $('#InvoiceDate').datepicker("setDate", InvoiceDt);
             }
-            if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
-                 
-                GetServerDate();
+            else {
                 fillEntryandGate();
                 $(".ChallanElements").css("display", "none");
                 //SetFields();
@@ -908,8 +890,8 @@
 
                 console.log(formattedDate1);
                 console.log(formattedDate2);
-               /*  //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
+                //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 /* 
                 $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
                 $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2)); */
@@ -989,7 +971,7 @@
         });
 
         function GetServerDate() {
-             
+
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate")",
@@ -1003,13 +985,14 @@
                         var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
 
                         if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                            alert("result"+result);
                             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                             $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                             $('#ShowPOTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",parseDateToFormat(result));
                             $('#BiltyDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         }
                         else {
-                             
+                            ;
                             var poDate;
                             var biltyDt;
                             $("#ShowPOTillDate").datepicker({
@@ -1033,8 +1016,12 @@
                                 }
                             });
 
+                            var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
+                            var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split("-").join("/"));
+                                    alert("second entrydate"+EntryDate );
+                            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
+                            $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDt));
 
-                           
                         }
                         $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo));
                         $("#InvoiceDate").datepicker("option", "maxDate", formatDate(today));
@@ -1592,7 +1579,7 @@
                             $('#SchYearCode').empty();
                             $('#SchYearCode').append('<option disabled selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                    $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + formatJSONDate(val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
+                                $('#SchNo').append('<option value="' + val.ScheduleNo + '" data-sch-date="' + formatJSONDate(val.ScheduleDate) + '" data-sch-entryid="' + val.SchEntryID + '">' + val.ScheduleNo + '</option>');
                                 if ($("#SchYearCode option[value='" + val.YearCode + "']").length == 0) {
                                     $('#SchYearCode').append('<option value="' + val.YearCode + '" >' + val.YearCode + '</option>');
 
@@ -1844,14 +1831,6 @@
             else {
                 $('#AltQty').prop("disabled", false);
             }
-            /* monika */
-            if ($('#Rate').val() == 0 ) {
-                $('#Rate').prop("disabled", false);
-            }
-            else {
-                $('#Rate').prop("disabled", true);
-            }
-            /* ---- */
             $('#ItemName').focus();
 
         }
@@ -1892,16 +1871,6 @@
             else {
                 $('#AltQty').prop("disabled", false);
             }
-
-            /* monika */
-            if ($('#Rate').val() == 0) {
-                $('#Rate').prop("disabled", false);
-            }
-            else {
-                $('#Rate').prop("disabled", true);
-            }
-            /* --- */
-
             $('#Unit').focus();
         }
 
@@ -2147,7 +2116,7 @@
             var day = newDate.getDate();
             var month = newDate.getUTCMonth() + 1;
             var year = newDate.getFullYear();
-            finaldate = day + "-" + ( month) + "-" + year;
+            finaldate = day + "-" + ("0" + (month)) + "-" + year;
             return finaldate;
         }
 
@@ -2479,14 +2448,12 @@
                                                 $('#SchYearCode').removeAttr("disabled");
                                                 $("#SaleBillNumber,#SaleBillYear,#SaleBillQnty").css("display", "none");
                                             }
-
                                             if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
                                                 $(".ChallanElements").css("display", "block");
 
                                             } else {
                                                 $(".ChallanElements").css("display", "none");
                                             }
-                                           
                                             updateFormFields(obj);
 
                                             resolve();

@@ -62,12 +62,8 @@ namespace eTactWeb.Controllers
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
-            webReport.Report.Clear();
-            // var ReportName = _Indent.GetReportName();
-            webReport.Report.Dispose();
-
+    
             webReport.Report.Load(webRootPath + "\\IssueThrBom.frx"); // default report
-
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
@@ -77,15 +73,7 @@ namespace eTactWeb.Controllers
             webReport.Report.Refresh();
             return View(webReport);
 
-            //    webReport.Report.SetParameterValue("entryparam", EntryId);
-            //    webReport.Report.SetParameterValue("yearparam", YearCode);
-            //    my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
-            //    webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //    webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-            //    webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
-            //    webReport.Report.Prepare();
-            //    webReport.Report.Refresh();
-            //    return View(webReport);
+           
             }
             [Route("{controller}/Index")]
         [HttpGet]
