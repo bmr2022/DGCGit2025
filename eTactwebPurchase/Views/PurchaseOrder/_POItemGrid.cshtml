@@ -75,7 +75,7 @@ else
             <td>@item.FirstMonthTentQty</td>
             <td>@item.SecMonthTentQty</td>
             <td>@item.AmendmentNo</td>
-            <td>@item.AmendmentDate</td>
+            <td>@(item.AmendmentDate == null ? string.Empty : (item.AmendmentDate).Split(" ")[0])</td>
             <td>@item.AmendmentReason</td>
         </tr>
     }

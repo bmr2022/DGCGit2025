@@ -14,17 +14,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IBankReconciliation _IBackReconciliation { get; }
-
         private readonly ILogger<BankReconciliationController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public BankReconciliationController(ILogger<BankReconciliationController> logger, IDataLogic iDataLogic, IBankReconciliation iBackReconciliation, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public BankReconciliationController(ILogger<BankReconciliationController> logger, IDataLogic iDataLogic, IBankReconciliation iBackReconciliation, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBackReconciliation = iBackReconciliation;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

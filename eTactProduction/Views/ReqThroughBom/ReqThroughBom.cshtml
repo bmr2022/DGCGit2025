@@ -563,23 +563,85 @@
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                fillWC();
+               
+                $('#PartCode').rules("remove", "required");
+                $('#ItemCode').rules("remove", "required");
+                $('#Unit').rules("remove", "required");
+                $('#BomRevNo').rules("remove", "required");
+                $('#BOMEffDate').rules("remove", "required");
+                $('#StoreId').rules("remove", "required");
+                $('#CostCenterId').rules("remove", "required");
+                $('#Prefix').rules("remove", "required");
+                $('#Remarks').rules("remove", "required");
+                $('#Completed').rules("remove", "required");
+                $('#Cancel').rules("remove", "required");
+                $('#CancelReason').rules("remove", "required");
+                $('#NeedApproval').rules("remove", "required");
+                $('#Approved').rules("remove", "required");
+                $('#ApproveDate').rules("remove", "required");
+                $('#ItemModel').rules("remove", "required");
+                $('#ItemSize').rules("remove", "required");
+                $('#ExpectedDate').rules("remove", "required");
+                $('#ItemLocation').rules("remove", "required");
+                $('#ItemBinRackNo').rules("remove", "required");
+                $('#FromDepartmentId').rules("remove", "required");
+
+                $('#Prefix').rules("remove", "required");
+                $('#Remarks').rules("remove", "required");
+                $('#Completed').rules("remove", "required");
+                $('#Cancel').rules("remove", "required");
+                $('#CancelReason').rules("remove", "required");
+                $('#NeedApproval').rules("remove", "required");
+                $('#Approved').rules("remove", "required");
+                $('#ApproveDate').rules("remove", "required");
+                $('#ItemModel').rules("remove", "required");
+                $('#ItemSize').rules("remove", "required");
+                $('#ExpectedDate').rules("remove", "required");
+                $('#ItemLocation').rules("remove", "required");
+                $('#ItemBinRackNo').rules("remove", "required");
+                $('#Remark').rules("remove", "required");
+                $('#ProjectNo').rules("remove", "required");
+                $('#ProjectYearCode').rules("remove", "required");
+                $('#REQNo').rules("remove", "required");
+                $('#CostCenterId').rules("remove", "required");
+                $('#ReqReason').rules("remove", "required");
+                $('#AltUnit').rules("remove", "required");
+                $('#WONo').rules("remove", "required");
+                $('#WoYearCode').rules("remove", "required");
+                $('.Display').hide();
+                $('#YearCode').val();
+               /*  var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 var PlanDt = parseDateToFormat($('#WODate').val().split(" ")[0]);
-                var ReqDt = parseDateToFormat($('#hiddenReqDate').val().split(" ")[0]);
+                var ReqDt = parseDateToFormat($('#hiddenReqDate').val().split(" ")[0]); */
                 var ExpectedDate = "@Model.ExpectedDate";
                 var ReqTime = "@Model.ReqTime";
                 var CancelDate = "@Model.CancelDate";
                 var ApproveDate = "@Model.ApproveDate";
                 var DeptId = "@Model.FromDepartmentId";
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var PlanDt = parseDateToFormat($('#WODate').val().split(" ")[0]);
+                var ReqDt = parseDateToFormat($('#hiddenReqDate').val().split(" ")[0]);
+                console.log(EntryDate);
+                console.log(InvoiceDt);
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#ReqDate').datepicker("setDate", ReqDt);
+                $('#WODate').datepicker("setDate", PlanDt);
+
+
                 $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#ExpectedDate').datepicker("option", "minDate", 'now');
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate); */
                 $('#ReqDate').datepicker("option", "minDate", formattedDate1);
                 $('#ReqDate').datepicker("option", "maxDate", formattedDate2);
                 $('#ExpectedDate').datepicker("option", "maxDate", formattedDate2);
                 $('#ExpectedDate').datepicker("option", "minDate", 'now');
-                $('#WODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PlanDt);
-                $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ReqDt);
+                /* $('#WODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PlanDt);
+                $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ReqDt); */
                 $('#ReqTime').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ReqTime);
                 $('#ApproveDate').datepicker("option", "minDate", formattedDate1);
                 $('#ApproveDate').datepicker("option", "maxDate", formattedDate2);
@@ -643,7 +705,7 @@
                 $('form').submit();
             });
 
-            if ($('#Mode').val() != '') {
+           
                 $('#PartCode').rules("remove", "required");
                 $('#ItemCode').rules("remove", "required");
                 $('#Unit').rules("remove", "required");
@@ -665,7 +727,7 @@
                 $('#ItemLocation').rules("remove", "required");
                 $('#ItemBinRackNo').rules("remove", "required");
                 $('#FromDepartmentId').rules("remove", "required");
-            }
+            
             $('#Prefix').rules("remove", "required");
             $('#Remarks').rules("remove", "required");
             $('#Completed').rules("remove", "required");
@@ -1001,6 +1063,7 @@
 
 
         $(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
+            debugger
             var cntId = e.target.id;
 
             if (cntId == 'ItemCode') {
@@ -1009,6 +1072,7 @@
             else {
                 PartCodeChange(cntId);
             }
+            fillBomRevNo();
             if ($('#StoreId').prop('selectedIndex') > 0 && parseInt($('#Qty').val()) > 0) {
                 $('.Display').show();
             }
@@ -1087,8 +1151,6 @@
             $.when(SetPartCodeItemName(ID)).done(function () {
                 GetItemPartCode(ID)
             });
-
-            fillBomRevNo();
         }
         function SetPartCodeItemName(ID) {
             if (!ID) return;
@@ -1118,7 +1180,7 @@
             }
             SetPartCodeItemName(ID);
             GetItemPartCode(ID);
-            fillBomRevNo();
+            
         }
 
         function fillBomRevNo() {
@@ -1134,6 +1196,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BomRevNo').empty();
+                            $('#BomRevNo').append('<option disabled selected>-Select-</option>');
                             $('#BOMEffDate').val('');
                             $.each(obj.Result, function (index, val) {
                                 var EffDate = "";
@@ -1445,11 +1508,13 @@
         }
 
         async function EditItemRow(SeqNo) {
+             
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
                 type: "POST",
                 data: { SeqNo: SeqNo },
                 success: await function (data, status, xhr) {
+                     
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                     }
@@ -1459,8 +1524,8 @@
                         DeleteItemRow(SeqNo);
 
                         if (obj != null && obj.length == 1) {
-                            $('#PartCode').val(obj[0].ItemCode).change();
-                            $('#ItemCode').val(obj[0].ItemCode).change();
+                            $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                            $('#ItemCode').val(obj[0].ItemCode).trigger('change');
                             $('#Unit').val(obj[0].Unit);
                             $('#Qty').val(obj[0].Qty);
                             $('#AltUnit').val(obj[0].AltUnit);
@@ -1477,6 +1542,7 @@
                             $('#CostCenterId').val(obj[0].CostCenterId);
                             $('#ItemLocation').val(obj[0].ItemLocation);
                             $('#ItemBinRackNo').val(obj[0].ItemBinRackNo);
+                            fillBomRevNo();
                             $('#BomRevNo').val(obj[0].BomRevNo);
                             $('#BOMEffDate ').val(obj[0].BOMEffDate);
 

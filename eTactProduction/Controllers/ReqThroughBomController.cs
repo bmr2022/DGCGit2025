@@ -423,6 +423,8 @@ namespace eTactWeb.Controllers
                 {
                     HttpContext.Session.Remove("KeyReqThroughBOMGrid");
                 }
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.ReqDetailGrid);
+                HttpContext.Session.SetString("KeyReqThroughBOMGrid", serializedGrid);
                 //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             return PartialView("_ReqThruBomGrid", MainModel);
