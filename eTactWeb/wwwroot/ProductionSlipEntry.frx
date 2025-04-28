@@ -1,0 +1,51 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/27/2025 15:25:55" ReportInfo.Modified="04/27/2025 15:32:48" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSFjEGQQ4ICFG8sauZAIU3/Q==">
+      <TableDataSource Name="Table" Alias="SPReportPringProductionSlipEntry" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPringProductionSlipEntry">
+        <Column Name="ProdSlipNo" DataType="System.String"/>
+        <Column Name="ProdDate" DataType="System.DateTime"/>
+        <Column Name="Prodplanno" DataType="System.String"/>
+        <Column Name="ProdPlanDate" DataType="System.DateTime"/>
+        <Column Name="ProdPlanSchNo" DataType="System.String"/>
+        <Column Name="ProdPlanSchDate" DataType="System.DateTime"/>
+        <Column Name="Reqno" DataType="System.String"/>
+        <Column Name="ReqDate" DataType="System.DateTime"/>
+        <Column Name="FGPartCode" DataType="System.String"/>
+        <Column Name="FGItemName" DataType="System.String"/>
+        <Column Name="ProdSchQty" DataType="System.Double"/>
+        <Column Name="ProdSchQty1" DataType="System.Double"/>
+        <Column Name="FGProdQty" DataType="System.Double"/>
+        <Column Name="PendQtyForProd" DataType="System.Double"/>
+        <Column Name="PendQtyForQC" DataType="System.Double"/>
+        <Column Name="unit" DataType="System.String"/>
+        <Column Name="BOMNO" DataType="System.Int64"/>
+        <Column Name="MachineName" DataType="System.String"/>
+        <Column Name="ProcessName" DataType="System.String"/>
+        <Column Name="ProdInWC" DataType="System.String"/>
+        <Column Name="TransferTO" DataType="System.String"/>
+        <Column Name="TRansfToWorkCenter" DataType="System.String"/>
+        <Column Name="TransToStore" DataType="System.String"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <Column Name="UniqueBatchNo" DataType="System.String"/>
+        <Column Name="operator" DataType="System.String"/>
+        <Column Name="supervisior" DataType="System.String"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="245.7">
+      <LineObject Name="Line1" Left="18.9" Top="18.9" Width="680.4"/>
+      <LineObject Name="Line2" Left="18.9" Top="18.9" Height="151.2"/>
+      <LineObject Name="Line3" Left="699.3" Top="18.9" Height="151.2"/>
+      <TextObject Name="Text1" Left="255.15" Top="56.7" Width="207.9" Height="18.9" Text="Production Slip Entry" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text2" Left="236.25" Top="28.35" Width="349.65" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.CompanyName]" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text3" Left="28.35" Top="85.05" Width="56.7" Height="18.9" Text="Slip No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="85.05" Top="85.05" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdSlipNo]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="248.37" Width="718.2" Height="28.35"/>
+    <DataBand Name="Data1" Top="279.38" Width="718.2" Height="75.6"/>
+    <PageFooterBand Name="PageFooter1" Top="357.65" Width="718.2" Height="18.9"/>
+  </ReportPage>
+</Report>
