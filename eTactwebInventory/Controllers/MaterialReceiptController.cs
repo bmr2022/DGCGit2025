@@ -117,7 +117,7 @@ namespace eTactWeb.Controllers
             webReport.Report.SetParameterValue("accountcodeparam", AccountCode);
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
-            return View(webReport);h
+            return View(webReport);
         }
 
 
