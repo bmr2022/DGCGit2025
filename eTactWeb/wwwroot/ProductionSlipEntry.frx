@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/27/2025 15:25:55" ReportInfo.Modified="04/27/2025 15:32:48" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/27/2025 15:25:55" ReportInfo.Modified="04/28/2025 15:29:31" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSFjEGQQ4ICFG8sauZAIU3/Q==">
-      <TableDataSource Name="Table" Alias="SPReportPringProductionSlipEntry" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPringProductionSlipEntry">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RS+1IYd2epAkKwDoA2lD4y5Q==">
+      <TableDataSource Name="Table" Alias="SPReportPringProductionSlipEntry" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPringProductionSlipEntry @EntryId=  @entryidparam ,@YearCode= @yearcodeparam">
         <Column Name="ProdSlipNo" DataType="System.String"/>
         <Column Name="ProdDate" DataType="System.DateTime"/>
         <Column Name="Prodplanno" DataType="System.String"/>
@@ -31,21 +31,109 @@
         <Column Name="operator" DataType="System.String"/>
         <Column Name="supervisior" DataType="System.String"/>
         <Column Name="CompanyName" DataType="System.String"/>
+        <CommandParameter Name="entryidparam" Expression="entryidparam"/>
+        <CommandParameter Name="yearcodeparam" Expression="yearcodeparam"/>
       </TableDataSource>
     </MsSqlDataConnection>
+    <Total Name="TotalSchQty" Expression="[SPReportPringProductionSlipEntry.ProdSchQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalFGQty" Expression="[SPReportPringProductionSlipEntry.FGProdQty]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalPendProd" Expression="[SPReportPringProductionSlipEntry.PendQtyForProd]" Evaluator="Data1" PrintOn="ReportSummary1"/>
+    <Total Name="TotalPendQc" Expression="[SPReportPringProductionSlipEntry.PendQtyForQC]" Evaluator="Data1" PrintOn="ReportSummary1"/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="245.7">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="189">
       <LineObject Name="Line1" Left="18.9" Top="18.9" Width="680.4"/>
-      <LineObject Name="Line2" Left="18.9" Top="18.9" Height="151.2"/>
-      <LineObject Name="Line3" Left="699.3" Top="18.9" Height="151.2"/>
+      <LineObject Name="Line2" Left="18.9" Top="18.9" Height="170.1"/>
+      <LineObject Name="Line3" Left="699.3" Top="18.9" Height="170.1"/>
       <TextObject Name="Text1" Left="255.15" Top="56.7" Width="207.9" Height="18.9" Text="Production Slip Entry" Font="Arial, 12pt, style=Bold"/>
       <TextObject Name="Text2" Left="236.25" Top="28.35" Width="349.65" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.CompanyName]" Font="Arial, 12pt, style=Bold"/>
       <TextObject Name="Text3" Left="28.35" Top="85.05" Width="56.7" Height="18.9" Text="Slip No:" Font="Arial, 10pt"/>
-      <TextObject Name="Text4" Left="85.05" Top="85.05" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdSlipNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="85.05" Top="85.05" Width="264.6" Height="18.9" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdSlipNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="349.65" Top="85.05" Width="75.6" Height="18.9" Text="Slip Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Left="425.25" Top="85.05" Width="274.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="28.35" Top="103.95" Width="66.15" Height="18.9" Text="Plan No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="94.5" Top="103.95" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.Prodplanno]" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="349.65" Top="103.95" Width="75.6" Height="18.9" Text="Plan Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="425.25" Top="103.95" Width="274.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdPlanDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="28.35" Top="122.85" Width="85.05" Height="18.9" Text="Plan SchNo:" Font="Arial, 10pt"/>
+      <TextObject Name="Text12" Left="113.4" Top="122.85" Width="236.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdPlanSchNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text13" Left="349.65" Top="122.85" Width="103.95" Height="18.9" Text="Plan SchDate:" Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="453.6" Top="122.85" Width="245.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdPlanSchDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="28.35" Top="141.75" Width="66.15" Height="18.9" Text="Req No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text16" Left="94.5" Top="141.75" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.Reqno]" Font="Arial, 10pt"/>
+      <TextObject Name="Text17" Left="349.65" Top="141.75" Width="75.6" Height="18.9" Text="Req Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text18" Left="425.25" Top="141.75" Width="274.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ReqDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text29" Left="28.35" Top="160.65" Width="94.5" Height="18.9" Text="TransToStore:" Font="Arial, 10pt"/>
+      <TextObject Name="Text30" Left="113.4" Top="160.65" Width="236.25" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.TransToStore]" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="349.65" Top="160.65" Width="141.75" Height="18.9" Text="TransToWorkCenter:" Font="Arial, 10pt"/>
+      <TextObject Name="Text32" Left="481.95" Top="160.65" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.TRansfToWorkCenter]" Font="Arial, 10pt"/>
+      <LineObject Name="Line55" Left="18.9" Top="189" Width="680.4"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="248.37" Width="718.2" Height="28.35"/>
-    <DataBand Name="Data1" Top="279.38" Width="718.2" Height="75.6"/>
-    <PageFooterBand Name="PageFooter1" Top="357.65" Width="718.2" Height="18.9"/>
+    <PageHeaderBand Name="PageHeader1" Top="191.67" Width="718.2" Height="56.7">
+      <LineObject Name="Line4" Left="18.9" Top="47.25" Width="680.4"/>
+      <LineObject Name="Line5" Left="18.9" Height="47.25"/>
+      <LineObject Name="Line6" Left="699.3" Height="47.25"/>
+      <TextObject Name="Text19" Left="18.9" Top="9.45" Width="28.35" Height="37.8" Text="Sr&#13;&#10;No" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Left="47.25" Top="9.45" Width="151.2" Height="37.8" Text="FG&#13;&#10;ItmName" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text21" Left="198.45" Top="9.45" Width="113.4" Height="37.8" Text="FG&#13;&#10;PartCode" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text23" Left="311.85" Top="9.45" Width="75.6" Height="37.8" Text="Prod&#13;&#10;Qty" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text26" Left="387.45" Top="9.45" Width="66.15" Height="37.8" Text="Unit" HorzAlign="Center" Font="Arial, 9pt"/>
+      <TextObject Name="Text27" Left="453.6" Top="9.45" Width="75.6" Height="37.8" Text="Prod&#13;&#10;InWC" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text28" Left="529.2" Top="9.45" Width="75.6" Height="37.8" Text="Trans&#13;&#10;To" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text33" Left="604.8" Top="9.45" Width="94.5" Height="37.8" Text="BatchNo" HorzAlign="Center" Font="Arial, 10pt"/>
+      <LineObject Name="Line7" Left="47.25" Height="47.25"/>
+      <LineObject Name="Line8" Left="198.45" Height="47.25"/>
+      <LineObject Name="Line11" Left="311.85" Height="47.25"/>
+      <LineObject Name="Line12" Left="387.45" Height="47.25"/>
+      <LineObject Name="Line14" Left="453.6" Height="47.25"/>
+      <LineObject Name="Line15" Left="529.2" Height="47.25"/>
+      <LineObject Name="Line16" Left="604.8" Height="47.25"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader1" Top="251.03" Width="718.2" Height="66.15" Condition="[SPReportPringProductionSlipEntry.ProdSlipNo]" ResetPageNumber="true">
+      <LineObject Name="Line19" Left="18.9" Height="66.15"/>
+      <LineObject Name="Line20" Left="699.3" Height="66.15"/>
+      <LineObject Name="Line21" Left="47.25" Height="66.15"/>
+      <LineObject Name="Line22" Left="198.45" Height="66.15"/>
+      <LineObject Name="Line25" Left="311.85" Height="66.15"/>
+      <LineObject Name="Line26" Left="387.45" Height="66.15"/>
+      <LineObject Name="Line28" Left="453.6" Height="66.15"/>
+      <LineObject Name="Line29" Left="529.2" Height="66.15"/>
+      <LineObject Name="Line30" Left="604.8" Height="66.15"/>
+      <LineObject Name="Line18" Left="18.9" Top="66.15" Width="680.4"/>
+      <TextObject Name="Text35" Left="18.9" Top="9.45" Width="28.35" Height="56.7" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text36" Left="47.25" Top="9.45" Width="151.2" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.FGItemName]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text37" Left="198.45" Top="9.45" Width="113.4" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.FGPartCode]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="311.85" Top="9.45" Width="75.6" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.FGProdQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text42" Left="387.45" Top="9.45" Width="66.15" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.unit]" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text43" Left="453.6" Top="9.45" Width="75.6" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.ProdInWC]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text44" Left="529.2" Top="9.45" Width="75.6" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.TransferTO]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text45" Left="604.8" Top="9.45" Width="94.5" Height="56.7" CanGrow="true" CanBreak="false" Text="[SPReportPringProductionSlipEntry.BatchNo]" HorzAlign="Center" Font="Arial, 10pt"/>
+      <DataBand Name="Data1" Top="319.85" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="322.52" Width="718.2"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary1" Top="375.1" Width="718.2" Height="66.15">
+      <LineObject Name="Line46" Left="18.9" Top="47.25" Width="680.4"/>
+      <LineObject Name="Line47" Left="18.9" Top="47.25" Height="-47.25"/>
+      <LineObject Name="Line48" Left="699.3" Top="47.25" Height="-47.25"/>
+      <LineObject Name="Line49" Left="18.9" Top="28.35" Width="680.4"/>
+      <LineObject Name="Line52" Left="311.85" Height="28.35"/>
+      <LineObject Name="Line54" Left="387.45" Height="28.35"/>
+      <TextObject Name="Text47" Left="245.7" Top="9.45" Width="66.15" Height="18.9" Text="Total:" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text49" Left="311.85" Width="75.6" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalFGQty]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <TextObject Name="Text52" Left="18.9" Top="28.35" Width="94.5" Height="18.9" Text="PreparedBy:" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text53" Left="311.85" Top="47.25" Width="94.5" Height="18.9" Text="[Page#]" HorzAlign="Center" Font="Arial, 8pt"/>
+      <ChildBand Name="Child1" Top="325.18" Width="718.2" Height="47.25" FillUnusedSpace="true">
+        <LineObject Name="Line32" Left="18.9" Height="47.25"/>
+        <LineObject Name="Line33" Left="699.3" Height="47.25"/>
+        <LineObject Name="Line34" Left="47.25" Height="47.25"/>
+        <LineObject Name="Line36" Left="198.45" Height="47.25"/>
+        <LineObject Name="Line38" Left="311.85" Height="47.25"/>
+        <LineObject Name="Line39" Left="387.45" Height="47.25"/>
+        <LineObject Name="Line41" Left="453.6" Height="47.25"/>
+        <LineObject Name="Line43" Left="529.2" Height="47.25"/>
+        <LineObject Name="Line44" Left="604.8" Height="47.25"/>
+        <LineObject Name="Line45" Left="18.9" Top="47.25" Width="680.4"/>
+      </ChildBand>
+    </ReportSummaryBand>
   </ReportPage>
 </Report>
