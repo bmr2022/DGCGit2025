@@ -68,7 +68,7 @@ namespace eTactWeb.Controllers
             if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
                 //webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); 
-                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() );
             }
             else
             {
@@ -105,7 +105,7 @@ namespace eTactWeb.Controllers
             webReport.Report.Dispose();
             webReport.Report = new Report();
             
-            webReport.Report.Load(webRootPath + "\\MRN_JWMRN.frx"); // default report
+            webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default report
           
           
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");

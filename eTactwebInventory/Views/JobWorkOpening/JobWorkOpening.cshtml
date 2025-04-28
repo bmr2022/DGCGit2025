@@ -1512,12 +1512,15 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     
-                    var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
-                    var BomDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
-                    $('#BomDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", BomDate);
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    $('#BomDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                     
+                    // var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
+                    // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+
+                    // var BomDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
+                    // $('#BomDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", BomDate);
                     // $('#Isschallandate').css("pointer-events", 'none');
                     var originalDate = $('#FinStartDate').val()
                     if (originalDate != "") {
