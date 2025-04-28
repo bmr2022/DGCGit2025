@@ -657,6 +657,22 @@
                 showHead: 'everyPage'
             });
 
+            // Footer section (ISSUE BY, QC MANAGER, RECEIVE BY, REMARKS)
+            const finalY = doc.lastAutoTable.finalY + 30;
+            doc.setFontSize(10);
+            doc.text('ISSUE BY', 40, finalY);
+            doc.text('Q.C. MANAGER', 340, finalY);
+            doc.text('RECEIVE BY', 540, finalY);
+
+            // Signature lines
+            doc.line(40, finalY + 5, 150, finalY + 5);
+            doc.line(240, finalY + 5, 350, finalY + 5);
+            doc.line(440, finalY + 5, 550, finalY + 5);
+
+            // Remarks section
+            doc.setFontSize(9).text('REMARKS', 40, finalY + 35);
+            doc.line(40, finalY + 40, 550, finalY + 40);
+
             // Save the PDF
             doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
         });
