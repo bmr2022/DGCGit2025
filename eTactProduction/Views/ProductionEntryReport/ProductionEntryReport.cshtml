@@ -559,7 +559,7 @@
             var UniqueBatchNo = $('#UniqueBatchNo').val();
 
             // Report Title
-            doc.setFontSize(16).text(reportTypeText, 40, 40);
+            doc.setFontSize(16).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 40);
 
             // Date Range
             doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
@@ -664,10 +664,7 @@
             doc.text('Q.C. MANAGER', 340, finalY);
             doc.text('RECEIVE BY', 540, finalY);
 
-            // Signature lines
-            doc.line(40, finalY + 5, 150, finalY + 5);
-            doc.line(240, finalY + 5, 350, finalY + 5);
-            doc.line(440, finalY + 5, 550, finalY + 5);
+            
 
             // Remarks section
             doc.setFontSize(9).text('REMARKS', 40, finalY + 35);
