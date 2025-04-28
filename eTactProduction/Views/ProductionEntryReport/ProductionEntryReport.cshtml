@@ -136,6 +136,9 @@
                                         <button class="btn btn-sm btn-outline-success me-2" style="padding:3px;height:30px;width:100px;" type="button" id="sendToExcel">
                                             <i class="fa-solid fa-upload fa-fw fa-lg"></i>EXCEL
                                         </button>
+                                        <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToPDF">
+                                            <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                        </button>
                                         <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;" asp-controller="ProductionEntryReport" asp-action="ProductionEntryReport">
                                             <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                         </a>
@@ -450,6 +453,224 @@
                 }
             });
         });
+
+        // document.getElementById('sendToPDF').addEventListener('click', async () => {
+        //     const { jsPDF } = window.jspdf;
+        //     const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+        //     // Title
+        //     doc.setFontSize(16).text('Production Entry Report', 40, 40);
+
+        //     // Fetch data
+        //     const resp = await fetch('/ProductionEntryReport/GetDataForPDF');
+        //     if (!resp.ok) {
+        //         alert('Failed to fetch data');
+        //         return;
+        //     }
+
+        //     const rows = await resp.json();
+        //     if (!Array.isArray(rows) || rows.length === 0) {
+        //         alert('No data found to export.');
+        //         return;
+        //     }
+
+        //     console.log('PDF Data:', rows);
+
+        //     // Build table rows
+        //     const body = rows.map((r, i) => ([
+        //         i + 1,
+        //         r.ProdDate || '',
+        //         r.NewProdRework || '',
+        //         r.FGPartCode || '',
+        //         r.FGItemName || '',
+        //         r.Workcenter || '',
+        //         r.StageDescription || '',
+        //         r.FGProdQty || '',
+        //         r.FGOKQty || '',
+        //         r.FGRejQty || '',
+        //         r.TransferToWCStr || '',
+        //         r.RejQtyDuetoTrail || '',
+        //         r.PendQtyForProd || '',
+        //         r.PendQtyForQC || '',
+        //         r.PendingQtyToTransfer || ''
+        //     ]));
+
+        //     const headers = [
+        //         "Sr#", "Entrydate", "NewProdRework", "FGPartCode", "FGItemName", "ProdInWC", "Process",
+        //         "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCStr", "RejQtyDuetoTrail", "PendQtyForProd",
+        //         "PendQtyForQC", "PendingQtyToTransfer"
+        //     ];
+
+        //     // Render table
+        //     doc.autoTable({
+        //         startY: 60,
+        //         head: [headers],
+        //         body: body,
+        //         theme: 'grid',
+        //         margin: { left: 40, right: 40 },
+        //         styles: {
+        //             fontSize: 8,
+        //             cellPadding: 3,
+        //             overflow: 'linebreak',
+        //             halign: 'center',
+        //             valign: 'middle'
+        //         },
+        //         headStyles: {
+        //             fillColor: [41, 128, 185],
+        //             textColor: 255,
+        //             fontStyle: 'bold'
+        //         },
+        //         tableWidth: 'wrap',
+        //         columnStyles: {
+        //             0: { cellWidth: 30 }, // Sr#
+        //             1: { cellWidth: 70 }, // Entrydate
+        //             2: { cellWidth: 70 },
+        //             3: { cellWidth: 80 },
+        //             4: { cellWidth: 100 }
+        //             // Let remaining columns auto-size
+        //         },
+        //         showHead: 'everyPage'
+        //     });
+
+        //     // Save the PDF
+        //     doc.save('ProductionEntryReport.pdf');
+        // });
+
+
+
+
+
+        $('#sendToPDF').click(async function () {
+            debugger
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            // Get dynamic values
+            var reportTypeText = $('#ReportType').find(":selected").text();
+            var reportTypeValue = $('#ReportType').val();
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var WorkCenter = $('#WCID').find(":selected").text();
+            var PartCode = $('#PartCode').val();
+            var ItemName = $('#ItemName').val();
+            var ItemGroup = $('#ItemGroup').val();
+            var ItemType = $('#ItemType').val();
+            var BatchNo = $('#BatchNo').val();
+            var UniqueBatchNo = $('#UniqueBatchNo').val();
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+                { label: 'Work Center', value: (WorkCenter && WorkCenter !== '-Select-') ? WorkCenter : '' },
+                { label: 'Part Code', value: PartCode || '' },
+                { label: 'Item Name', value: ItemName || '' },
+                { label: 'Item Group', value: ItemGroup || '' },
+                { label: 'Item Type', value: ItemType || '' },
+                { label: 'Batch No', value: BatchNo || '' },
+                { label: 'Unique BatchNo', value: UniqueBatchNo || '' },
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+            // Fetch data
+            var resp = await fetch('/ProductionEntryReport/GetDataForPDF');
+            var rows = await resp.json();
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+               
+                case 'Date Wise FG Consolidated':
+                    console.log(`First FGPartCode: ${rows[0].fgPartCode}`, 40, currentY + 20);
+                    console.log(rows);
+
+                    headers = [
+                        "Sr#", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
+                        "StageDescription", "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr", "RejQtyDuetoTrail",
+                        "PendQtyForProd", "PendQtyForQC", "PendingQtyToTransfer", "TransferFGToWCorSTORE"
+                    ];
+                    body = rows.map((r, i) => [
+                        i + 1,
+                        r.prodDate ?? '',
+                        r.newProdRework ?? '',
+                        r.fgPartCode ?? '',
+                        r.fgItemName ?? '',
+                        r.workcenter ?? '',
+                        r.stageDescription ?? '',
+                        r.fgProdQty ?? '',
+                        r.fgokQty ?? '',
+                        r.fgRejQty ?? '',
+                        r.transferToWCSTr ?? '',
+                        r.rejQtyDuetoTrail ?? '',
+                        r.pendQtyForProd ?? '',
+                        r.pendQtyForQC ?? '',
+                        r.pendingQtyToTransfer ?? '',
+                        r.transferFGToWCorSTORE ?? ''
+                    ]);
+                    break;
+
+                // Add more cases for different report types here if needed
+                default:
+                    headers = ["Sr#", "Item Name", "Total Stock"];
+                    body = rows.map((r, i) => [i + 1, r.FGItemName, r.FGProdQty]);
+                    break;
+            }
+
+            // Generate table
+            doc.autoTable({
+                startY: 75,
+                head: [headers],
+                body: body,
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 3,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: {
+                    0: { cellWidth: 24 },
+                    1: { cellWidth: 80 },
+                    2: { cellWidth: 60 },
+                    3: { cellWidth: 90 },
+                    // Extend more if needed
+                },
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+        });
+
+
+
+
+
 
         var currentSearchColumn = null;
         $(document).on("click", "th[data-columnno]", function () {
@@ -851,6 +1072,8 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 }
 
 <style>
