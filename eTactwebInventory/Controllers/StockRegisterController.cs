@@ -1,12 +1,9 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using eTactWeb.DOM.Models;
 using System.Globalization;
-using System.Drawing.Printing;
 using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
@@ -264,7 +261,6 @@ namespace eTactWeb.Controllers
                 row++;
             }
         }
-
         private void ExportStockDetail(IXLWorksheet sheet, IList<StockRegisterDetail> list)
         {
             string[] headers = {
@@ -309,6 +305,17 @@ namespace eTactWeb.Controllers
                 sheet.Cell(row, 27).Value = item.package;
                 row++;
             }
+        }
+        public IActionResult GetStockDataForPDF()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyStockList");
+            List<StockRegisterDetail> stockRegisterList = new List<StockRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<StockRegisterDetail>>(modelJson);
+            }
+
+            return Json(stockRegisterList);
         }
     }
 }
