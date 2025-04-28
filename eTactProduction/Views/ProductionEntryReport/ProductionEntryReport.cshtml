@@ -603,8 +603,7 @@
 
                     headers = [
                         "Sr#", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
-                        "StageDescription", "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr", "RejQtyDuetoTrail",
-                        "PendQtyForProd", "PendQtyForQC", "PendingQtyToTransfer", "TransferFGToWCorSTORE"
+                         "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr"
                     ];
                     body = rows.map((r, i) => [
                         i + 1,
@@ -612,17 +611,12 @@
                         r.newProdRework ?? '',
                         r.fgPartCode ?? '',
                         r.fgItemName ?? '',
-                        r.workcenter ?? '',
-                        r.stageDescription ?? '',
+                        r.workcenter ?? '',                        
                         r.fgProdQty ?? '',
                         r.fgokQty ?? '',
                         r.fgRejQty ?? '',
-                        r.transferToWCSTr ?? '',
-                        r.rejQtyDuetoTrail ?? '',
-                        r.pendQtyForProd ?? '',
-                        r.pendQtyForQC ?? '',
-                        r.pendingQtyToTransfer ?? '',
-                        r.transferFGToWCorSTORE ?? ''
+                        r.transferToWCSTr ?? ''
+                        
                     ]);
                     break;
 

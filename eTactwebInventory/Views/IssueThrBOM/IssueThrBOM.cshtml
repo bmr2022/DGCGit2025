@@ -1125,7 +1125,7 @@
             $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).val() },
+                data: { ItemCode: $('#MainGridItemCode-' + i).val(), StoreId: $('#MainGridStoreId-' + i).val(), TillDate: $('#IssueDate').val(), BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).find(":selected").text().trim() },
                 async: false,
                 success: function (data) {
                      
