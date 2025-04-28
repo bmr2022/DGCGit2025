@@ -18,14 +18,12 @@ namespace eTactwebAccounts.Controllers
         public IJournalVoucher _IJournalVoucher { get; }
         private readonly ILogger<JournalVoucherController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public JournalVoucherController(ILogger<JournalVoucherController> logger, IDataLogic iDataLogic, IJournalVoucher IJournalVoucher, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public JournalVoucherController(ILogger<JournalVoucherController> logger, IDataLogic iDataLogic, IJournalVoucher IJournalVoucher, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IJournalVoucher = IJournalVoucher;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -33,8 +31,8 @@ namespace eTactwebAccounts.Controllers
         [HttpGet]
         public async Task<ActionResult> JournalVoucher(int ID, string Mode, int YearCode, string VoucherNo)
         {
-            _MemoryCache.Remove("KeyJournalVoucherGrid");
-            _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+            HttpContext.Session.Remove("KeyJournalVoucherGrid");
+            HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
             TempData.Clear();
             var MainModel = new JournalVoucherModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
@@ -49,13 +47,9 @@ namespace eTactwebAccounts.Controllers
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.ID = ID;
                 MainModel.VoucherNo = VoucherNo;
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                HttpContext.Session.SetString("KeyJournalVoucherGridEdit", serializedGrid);
             }
             return View(MainModel);
         }
@@ -67,14 +61,23 @@ namespace eTactwebAccounts.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out List<JournalVoucherModel> JournalVoucherGrid);
-                _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out List<JournalVoucherModel> JournalVoucherGridEdit);
+                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                }
+                string modelEditJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                List<JournalVoucherModel> JournalVoucherGridEdit = new List<JournalVoucherModel>();
+                if (!string.IsNullOrEmpty(modelEditJson))
+                {
+                    JournalVoucherGridEdit = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelEditJson);
+                }
 
                 model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEntryBy = HttpContext.Session.GetString("UID");
                 if (model.Mode == "U")
                 {
-                    //model.UpdatedOn = DateTime.Now;
                     GIGrid = GetDetailTable(JournalVoucherGridEdit);
                 }
                 else
@@ -88,15 +91,15 @@ namespace eTactwebAccounts.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyJournalVoucherGrid");
-                        _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+                        HttpContext.Session.Remove("KeyJournalVoucherGrid");
+                        HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        _MemoryCache.Remove("KeyJournalVoucherGrid");
-                        _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+                        HttpContext.Session.Remove("KeyJournalVoucherGrid");
+                        HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -399,8 +402,12 @@ namespace eTactwebAccounts.Controllers
             {
                 if (model.Mode == "U" || model.Mode == "V")
                 {
-
-                    _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out IList<JournalVoucherModel> JournalVoucherGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                    List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                    }
 
                     var MainModel = new JournalVoucherModel();
                     var JournalVchGrid = new List<JournalVoucherModel>();
@@ -482,14 +489,8 @@ namespace eTactwebAccounts.Controllers
 
                         MainModel.JournalVoucherList = JournalGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                        HttpContext.Session.SetString("KeyJournalVoucherGridEdit", serializedGrid);
                     }
                     else
                     {
@@ -499,8 +500,12 @@ namespace eTactwebAccounts.Controllers
                 }
                 else
                 {
-
-                    _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out IList<JournalVoucherModel> JournalVoucherGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                    List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                    }
 
                     var MainModel = new JournalVoucherModel();
                     var JournalVchGrid = new List<JournalVoucherModel>();
@@ -580,14 +585,8 @@ namespace eTactwebAccounts.Controllers
 
                         MainModel.JournalVoucherList = JournalGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyJournalVoucherGrid", MainModel.JournalVoucherList, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                        HttpContext.Session.SetString("KeyJournalVoucherGrid", serializedGrid);
                     }
                     else
                     {
@@ -610,17 +609,13 @@ namespace eTactwebAccounts.Controllers
 
                 if (Mode != "U" && Mode != "V")
                 {
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                    List<JournalVoucherModel> JournalVoucherItemDetail = new List<JournalVoucherModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
                     {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
+                        JournalVoucherItemDetail = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                    }
 
-                    // Retrieve existing cached data
-                    _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out List<JournalVoucherModel> JournalVoucherItemDetail);
-
-                    // If cache exists, use it; otherwise, initialize a new list
                     if (JournalVoucherItemDetail != null)
                     {
                         JournalVoucherDetail = JournalVoucherItemDetail;
@@ -652,19 +647,17 @@ namespace eTactwebAccounts.Controllers
                     }
                     // Update the main model and cache
                     MainModel.JournalVoucherList = JournalVoucherDetail.OrderBy(x => x.SrNO).ToList();
-                    _MemoryCache.Set("KeyJournalVoucherGrid", MainModel.JournalVoucherList, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                    HttpContext.Session.SetString("KeyJournalVoucherGrid", serializedGrid);
                 }
                 else
                 {
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                    List<JournalVoucherModel> JournalVoucherItemDetail = new List<JournalVoucherModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
                     {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    // Retrieve existing cached data
-                    _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out List<JournalVoucherModel> JournalVoucherItemDetail);
+                        JournalVoucherItemDetail = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                    }
 
                     // If cache exists, use it; otherwise, initialize a new list
                     if (JournalVoucherItemDetail != null)
@@ -699,7 +692,8 @@ namespace eTactwebAccounts.Controllers
 
                     // Update the main model and cache
                     MainModel.JournalVoucherList = JournalVoucherDetail.OrderBy(x => x.SrNO).ToList();
-                    _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                    HttpContext.Session.SetString("KeyJournalVoucherGridEdit", serializedGrid);
                 }
                 return PartialView("_JournalVoucherGrid", MainModel);
             }
@@ -713,7 +707,12 @@ namespace eTactwebAccounts.Controllers
             if (Mode != "U" && Mode != "V")
             {
                 var MainModel = new JournalVoucherModel();
-                _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out IList<JournalVoucherModel> GridDetail);
+                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                List<JournalVoucherModel> GridDetail = new List<JournalVoucherModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                }
                 var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
                 string JsonString = JsonConvert.SerializeObject(SAGrid);
                 return Json(JsonString);
@@ -721,7 +720,12 @@ namespace eTactwebAccounts.Controllers
             else
             {
                 var MainModel = new JournalVoucherModel();
-                _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out IList<JournalVoucherModel> GridDetail);
+                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                List<JournalVoucherModel> GridDetail = new List<JournalVoucherModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                }
                 var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
                 string JsonString = JsonConvert.SerializeObject(SAGrid);
                 return Json(JsonString);
@@ -732,7 +736,13 @@ namespace eTactwebAccounts.Controllers
             if (PopUpData == "PopUpData")
             {
                 var MainModel = new JournalVoucherModel();
-                _MemoryCache.TryGetValue("KeyJournalVoucherGridPopUpData", out List<JournalVoucherModel> JournalVoucherGrid);
+                string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridPopUpData");
+                List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                }
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (JournalVoucherGrid != null && JournalVoucherGrid.Count > 0)
@@ -746,15 +756,8 @@ namespace eTactwebAccounts.Controllers
                         // item.SequenceNo = Indx;
                     }
                     MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
-
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyJournalVoucherGridPopUpData", MainModel.JournalVoucherList, cacheEntryOptions);
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                    HttpContext.Session.SetString("KeyJournalVoucherGridPopUpData", serializedGrid);
                 }
                 return PartialView("_DisplayPopupForPendingVouchers", MainModel);
             }
@@ -763,7 +766,13 @@ namespace eTactwebAccounts.Controllers
                 var MainModel = new JournalVoucherModel();
                 if (Mode != "U" && Mode != "V")
                 {
-                    _MemoryCache.TryGetValue("KeyJournalVoucherGrid", out List<JournalVoucherModel> JournalVoucherGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGrid");
+                    List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                    }
+
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
                     if (JournalVoucherGrid != null && JournalVoucherGrid.Count > 0)
@@ -778,20 +787,19 @@ namespace eTactwebAccounts.Controllers
                         }
                         MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyJournalVoucherGrid", MainModel.JournalVoucherList, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                        HttpContext.Session.SetString("KeyJournalVoucherGrid", serializedGrid);
                     }
                 }
                 else
                 {
+                    string modelJson = HttpContext.Session.GetString("KeyJournalVoucherGridEdit");
+                    List<JournalVoucherModel> JournalVoucherGrid = new List<JournalVoucherModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        JournalVoucherGrid = JsonConvert.DeserializeObject<List<JournalVoucherModel>>(modelJson);
+                    }
 
-                    _MemoryCache.TryGetValue("KeyJournalVoucherGridEdit", out List<JournalVoucherModel> JournalVoucherGrid);
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
                     if (JournalVoucherGrid != null && JournalVoucherGrid.Count > 0)
@@ -806,14 +814,8 @@ namespace eTactwebAccounts.Controllers
                         }
                         MainModel.JournalVoucherList = JournalVoucherGrid.OrderBy(x => x.SrNO).ToList();
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyJournalVoucherGridEdit", MainModel.JournalVoucherList, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
+                        HttpContext.Session.SetString("KeyJournalVoucherGridEdit", serializedGrid);
                     }
                 }
                 return PartialView("_JournalVoucherGrid", MainModel);
@@ -823,8 +825,8 @@ namespace eTactwebAccounts.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyJournalVoucherGrid");
-                _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+                HttpContext.Session.Remove("KeyJournalVoucherGrid");
+                HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
                 var model = new JournalVoucherModel();
                 FromDate = HttpContext.Session.GetString("FromDate");
                 ToDate = HttpContext.Session.GetString("ToDate");
@@ -847,31 +849,27 @@ namespace eTactwebAccounts.Controllers
         }
         public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate)
         {
-            _MemoryCache.Remove("KeyJournalVoucherGrid");
-            _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+            HttpContext.Session.Remove("KeyJournalVoucherGrid");
+            HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
             var model = new JournalVoucherModel();
             model = await _IJournalVoucher.GetDashBoardDetailData(FromDate, ToDate);
             return PartialView("_JournalVoucherDashBoardDetailGrid", model);
         }
         public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate)
         {
-            _MemoryCache.Remove("KeyJournalVoucherGrid");
-            _MemoryCache.Remove("KeyJournalVoucherGridEdit");
+            HttpContext.Session.Remove("KeyJournalVoucherGrid");
+            HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
             var model = new JournalVoucherModel();
             model = await _IJournalVoucher.GetDashBoardSummaryData(FromDate, ToDate);
             return PartialView("_JournalVoucherDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
         {
-            _MemoryCache.Remove("KeyJournalVoucherGridPopUpData");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
+            HttpContext.Session.Remove("KeyJournalVoucherGridPopUpData");
+
             var model = await _IJournalVoucher.PopUpForPendingVouchers(DataTable);
-            _MemoryCache.Set("KeyJournalVoucherGridPopUpData", model.JournalVoucherList, cacheEntryOptions);
+            string serializedGrid = JsonConvert.SerializeObject(model.JournalVoucherList);
+            HttpContext.Session.SetString("KeyJournalVoucherGridPopUpData", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
         public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)

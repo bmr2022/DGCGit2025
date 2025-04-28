@@ -24,7 +24,7 @@ using System.Drawing.Drawing2D;
 
 namespace eTactWeb.Controllers
 {
-  
+
     public class DirectPurchaseBillController : Controller
     {
         private readonly IMemoryCacheService _iMemoryCacheService;
@@ -34,16 +34,13 @@ namespace eTactWeb.Controllers
         public CultureInfo CI { get; private set; }
         public EncryptDecrypt EncryptDecrypt { get; private set; }
         public IDataLogic IDataLogic { get; private set; }
-        public IMemoryCache IMemoryCache { get; private set; }
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        
-        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
         {
             _iMemoryCacheService = iMemoryCacheService;
             IDirectPurchaseBill = iDirectPurchaseBill;
             IDataLogic = iDataLogic;
-            IMemoryCache = iMemoryCache;
             _Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             CI = new CultureInfo("en-GB");
@@ -52,16 +49,12 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public  async Task <IActionResult> DirectPurchaseBill(int ID, int YC, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "", string DashboardType = "", string DocumentType     = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
+        public async Task<IActionResult> DirectPurchaseBill(int ID, int YC, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "", string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
         {
-            //IMemoryCache.Remove("PBTaxGrid");
-            IMemoryCache.Remove("KeyTaxGrid");
-            //IMemoryCache.Remove("PBTDSGrid");
-            IMemoryCache.Remove("KeyTDSGrid");
-            IMemoryCache.Remove("DirectPurchaseBill");
-            IMemoryCache.Remove("KeyAdjGrid");
-            //var model = new DirectPurchaseBillModel();
-            //sumu extracode starts
+            HttpContext.Session.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyTDSGrid");
+            HttpContext.Session.Remove("DirectPurchaseBill");
+            HttpContext.Session.Remove("KeyAdjGrid");
             var MainModel = new DirectPurchaseBillModel();
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
@@ -80,22 +73,19 @@ namespace eTactWeb.Controllers
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                //    SlidingExpiration = TimeSpan.FromMinutes(55),
-                //    Size = 1024,
-                //};
-                IMemoryCache.Set("DirectPurchaseBill", MainModel, DateTimeOffset.Now.AddMinutes(60));
-                IMemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
+                string serializedGrid = JsonConvert.SerializeObject(MainModel);
+                HttpContext.Session.SetString("DirectPurchaseBill", serializedGrid);
+                var taxGrid = MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd;
+                string serializedKeyTaxGrid = JsonConvert.SerializeObject(taxGrid);
+                HttpContext.Session.SetString("KeyTaxGrid", serializedKeyTaxGrid);
             }
             else
             {
                 if (string.IsNullOrEmpty(Mode) && ID == 0)
-            {
-                MainModel = await BindModels(MainModel).ConfigureAwait(false);
-                MainModel.EID = EncryptDecrypt.Encrypt(ID.ToString(CI));
-                MainModel.Mode = "INSERT";
+                {
+                    MainModel = await BindModels(MainModel).ConfigureAwait(false);
+                    MainModel.EID = EncryptDecrypt.Encrypt(ID.ToString(CI));
+                    MainModel.Mode = "INSERT";
                     MainModel.TDSMode = "INSERT";
                 }
                 else
@@ -131,32 +121,29 @@ namespace eTactWeb.Controllers
             MainModel.HSNNoBack = HSNNo != null && HSNNo != "0" && HSNNo != "undefined" ? HSNNo : "";
             MainModel.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
 
-            IMemoryCache.Set("DirectPurchaseBill", MainModel, DateTimeOffset.Now.AddMinutes(60));
-            IMemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
-            IMemoryCache.Set("KeyTDSGrid", MainModel.TDSDetailGridd == null ? new List<TDSModel>() : MainModel.TDSDetailGridd, DateTimeOffset.Now.AddMinutes(60));
-            IMemoryCache.Set("KeyAdjGrid", MainModel.adjustmentModel == null ? new AdjustmentModel() : MainModel.adjustmentModel, DateTimeOffset.Now.AddMinutes(60));
+            string serializedDirectPurchaseBill = JsonConvert.SerializeObject(MainModel);
+            HttpContext.Session.SetString("DirectPurchaseBill", serializedDirectPurchaseBill);
+
+            var taxGridList = MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd;
+            string serializedTaxGrid = JsonConvert.SerializeObject(taxGridList);
+            HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
+
+            var tdsGridList = MainModel.TDSDetailGridd == null ? new List<TDSModel>() : MainModel.TDSDetailGridd;
+            string serializedTDSGrid = JsonConvert.SerializeObject(tdsGridList);
+            HttpContext.Session.SetString("KeyTDSGrid", serializedTDSGrid);
+
+            var adjGrid = MainModel.adjustmentModel == null ? new AdjustmentModel() : MainModel.adjustmentModel;
+            string serializedAdjGrid = JsonConvert.SerializeObject(adjGrid);
+            HttpContext.Session.SetString("KeyAdjGrid", serializedAdjGrid);
+
             HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(MainModel));
             MainModel.adjustmentModel = (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null) ? MainModel.adjustmentModel : new AdjustmentModel();
-
-            //extra codes end
-
-
             return View(MainModel);
-            //return View(model);
         }
 
         [HttpPost]
-        public async Task <IActionResult> DirectPurchaseBill(DirectPurchaseBillModel model)
+        public async Task<IActionResult> DirectPurchaseBill(DirectPurchaseBillModel model)
         {
-            //if (ModelState.IsValid)
-            //{
-
-            //    ViewBag.Message = $"Textbox1: {model.TextBox1Value}, Textbox2: {model.TextBox2Value}"; // Store to display in the View.
-
-            //    return View(model);  
-            //}
-            //return View(model);  
-
             try
             {
                 bool isError = true;
@@ -172,12 +159,30 @@ namespace eTactWeb.Controllers
                 string modePOA = "data";
                 var stat = new MemoryCacheStatistics();
 
-                IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
+                // 1. Get DirectPurchaseBill
+                string directPurchaseBillJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                DirectPurchaseBillModel MainModel = string.IsNullOrEmpty(directPurchaseBillJson)
+                    ? new DirectPurchaseBillModel()
+                    : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(directPurchaseBillJson);
 
-                IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-                IMemoryCache.TryGetValue("KeyTDSGrid", out List<TDSModel> TdsGrid);
-                IMemoryCache.TryGetValue("KeyDrCrGrid", out List<DbCrModel> DrCrGrid);
-                //IMemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid);
+                // 2. Get TaxGrid
+                string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+                List<TaxModel> TaxGrid = string.IsNullOrEmpty(taxGridJson)
+                    ? new List<TaxModel>()
+                    : JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson);
+
+                // 3. Get TdsGrid
+                string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+                List<TDSModel> TdsGrid = string.IsNullOrEmpty(tdsGridJson)
+                    ? new List<TDSModel>()
+                    : JsonConvert.DeserializeObject<List<TDSModel>>(tdsGridJson);
+
+                // 4. Get DrCrGrid
+                string drCrGridJson = HttpContext.Session.GetString("KeyDrCrGrid");
+                List<DbCrModel> DrCrGrid = string.IsNullOrEmpty(drCrGridJson)
+                    ? new List<DbCrModel>()
+                    : JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson);
+
 
                 var cc = stat.CurrentEntryCount;
                 var pp = stat.CurrentEstimatedSize;
@@ -328,37 +333,34 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            IMemoryCache.Remove("KeyTaxGrid");
-                            IMemoryCache.Remove("KeyTDSGrid");
-                            IMemoryCache.Remove(ItemDetailDT);
-                            IMemoryCache.Remove("DirectPurchaseBill");
+                            HttpContext.Session.Remove("KeyTaxGrid");
+                            HttpContext.Session.Remove("KeyTDSGrid");
+                            HttpContext.Session.Remove("DirectPurchaseBill");
                         }
                         else if (Result.StatusText == "Inserted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            IMemoryCache.Remove("KeyTaxGrid");
-                            IMemoryCache.Remove("KeyTDSGrid");
-                            IMemoryCache.Remove(ItemDetailDT);
-                            IMemoryCache.Remove("DirectPurchaseBill");
+                            HttpContext.Session.Remove("KeyTaxGrid");
+                            HttpContext.Session.Remove("KeyTDSGrid");
+                            HttpContext.Session.Remove("DirectPurchaseBill");
                         }
                         else if (Result.StatusText == "Updated Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
-                            IMemoryCache.Remove("KeyTaxGrid");
-                            IMemoryCache.Remove("KeyTDSGrid");
-                            IMemoryCache.Remove(ItemDetailDT);
-                            IMemoryCache.Remove("DirectPurchaseBill");
+                            HttpContext.Session.Remove("KeyTaxGrid");
+                            HttpContext.Session.Remove("KeyTDSGrid");
+                            HttpContext.Session.Remove("DirectPurchaseBill");
                             return RedirectToAction(nameof(DirectPurchaseBill));
                         }
                         else if (Result.StatusText == "Deleted Successfully" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["410"] = "410";
-                            IMemoryCache.Remove("KeyTaxGrid");
-                            IMemoryCache.Remove("KeyTDSGrid");
-                            IMemoryCache.Remove("DirectPurchaseBill");
+                            HttpContext.Session.Remove("KeyTaxGrid");
+                            HttpContext.Session.Remove("KeyTDSGrid");
+                            HttpContext.Session.Remove("DirectPurchaseBill");
                         }
                         else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -413,16 +415,17 @@ namespace eTactWeb.Controllers
                             {
                                 ViewBag.isSuccess = true;
                                 TempData["202"] = "202";
-                                IMemoryCache.Remove("KeyTaxGrid");
-                                IMemoryCache.Remove("KeyTDSGrid");
-                                IMemoryCache.Remove("DirectPurchaseBill");
+                                HttpContext.Session.Remove("KeyTaxGrid");
+                                HttpContext.Session.Remove("KeyTDSGrid");
+                                HttpContext.Session.Remove("DirectPurchaseBill");
                                 return RedirectToAction(nameof(DirectPurchaseBill));
                             }
                             else
                             {
                                 TempData["ErrorMessage"] = Result.StatusText;
-                                IMemoryCache.Remove("KeyTaxGrid");
-                                IMemoryCache.Remove("KeyTDSGrid");
+                                HttpContext.Session.Remove("KeyTaxGrid");
+                                HttpContext.Session.Remove("KeyTDSGrid");
+                                HttpContext.Session.Remove("DirectPurchaseBill");
                                 return View("DirectPurchaseBill", model);
                             }
                         }
@@ -471,10 +474,6 @@ namespace eTactWeb.Controllers
             return View("DirectPurchaseBill", model);
 
         }
-
-
-
-
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
@@ -575,14 +574,23 @@ namespace eTactWeb.Controllers
         {
             bool TF = false;
 
-            IMemoryCache.TryGetValue("KeyTaxGrid", out IList<TaxModel> DPBTaxdetail);
-            IMemoryCache.TryGetValue("KeyTDSGrid", out IList<TDSModel> DPBTDSdetail);
-            IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
+            // 1. Get DirectPurchaseBill
+            string mainModelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+            DirectPurchaseBillModel MainModel = string.IsNullOrEmpty(mainModelJson)
+                ? new DirectPurchaseBillModel()
+                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
 
-            //if (POTaxGrid != null && POTaxGrid.Count > 0)
-            //{
-            //    return StatusCode(205, "Reset Tax Detail");
-            //}
+            // 2. Get Tax Details
+            string taxDetailJson = HttpContext.Session.GetString("KeyTaxGrid");
+            IList<TaxModel> DPBTaxdetail = string.IsNullOrEmpty(taxDetailJson)
+                ? new List<TaxModel>()
+                : JsonConvert.DeserializeObject<IList<TaxModel>>(taxDetailJson);
+
+            // 3. Get TDS Details
+            string tdsDetailJson = HttpContext.Session.GetString("KeyTDSGrid");
+            IList<TDSModel> DPBTDSdetail = string.IsNullOrEmpty(tdsDetailJson)
+                ? new List<TDSModel>()
+                : JsonConvert.DeserializeObject<IList<TDSModel>>(tdsDetailJson);
 
             if (MainModel != null && MainModel.ItemDetailGrid != null)
             {
@@ -596,8 +604,9 @@ namespace eTactWeb.Controllers
             else
             {
                 model = BindItem4Grid(model);
-                IMemoryCache.Remove("DirectPurchaseBill");
-                IMemoryCache.Set("DirectPurchaseBill", model, DateTimeOffset.Now.AddMinutes(60));
+                HttpContext.Session.Remove("DirectPurchaseBill");
+                string serializedModel = JsonConvert.SerializeObject(model);
+                HttpContext.Session.SetString("DirectPurchaseBill", serializedModel);
             }
 
             return PartialView("_DPBItemGrid", model);
@@ -644,14 +653,6 @@ namespace eTactWeb.Controllers
         {
             var JSONString = await IDirectPurchaseBill.GetItemServiceFORPO(ItemService);
 
-            //var Dlist = JsonConvert.DeserializeObject<Dictionary<object, object>>(JSONString);
-            //JObject json = JObject.Parse(JSONString);
-            //object obj = JsonConvert.DeserializeObject(JSONString, typeof(object));
-            //JToken jToken = (JToken)json;
-
-            //object value = "";
-            //Dlist.TryGetValue(key: "Result", out value);
-
             return Json(JSONString);
         }
 
@@ -696,14 +697,10 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DashBoard()
         {
             HttpContext.Session.Remove("DirectPurchaseBill");
-            IMemoryCache.Remove("DirectPurchaseBill");
             HttpContext.Session.Remove("TaxGrid");
-            IMemoryCache.Remove("KeyTaxGrid");
-
+            HttpContext.Session.Remove("KeyTaxGrid");
             var _List = new List<TextValue>();
-
             var MainModel = await IDirectPurchaseBill.GetDashBoardData();
-
             MainModel.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/");
             MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
 
@@ -783,9 +780,23 @@ namespace eTactWeb.Controllers
         {
             bool exists = false;
 
-            IMemoryCache.TryGetValue("KeyTDSGrid", out List<TDSModel> TDSGrid);
-            IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-            IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
+            // 1. Get TDSGrid
+            string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+            List<TDSModel> TDSGrid = string.IsNullOrEmpty(tdsGridJson)
+                ? new List<TDSModel>()
+                : JsonConvert.DeserializeObject<List<TDSModel>>(tdsGridJson);
+
+            // 2. Get TaxGrid
+            string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> TaxGrid = string.IsNullOrEmpty(taxGridJson)
+                ? new List<TaxModel>()
+                : JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson);
+
+            // 3. Get DirectPurchaseBill
+            string mainModelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+            DirectPurchaseBillModel MainModel = string.IsNullOrEmpty(mainModelJson)
+                ? new DirectPurchaseBillModel()
+                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
 
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
@@ -816,23 +827,21 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ItemNetAmount = MainModel.ItemDetailGrid.Sum(x => x.Amount);
 
-                //if (MainModel.ItemDetailGrid.Count <= 0)
-                //{
-                //    IMemoryCache.Remove("DirectPurchaseBill");
-                //}
-                //else
-                //{
-                //    IMemoryCache.Set("DirectPurchaseBill", MainModel, DateTimeOffset.Now.AddMinutes(60));
-                //}
-
-                IMemoryCache.Set("DirectPurchaseBill", MainModel, DateTimeOffset.Now.AddMinutes(60));
+                string serializedMainModel = JsonConvert.SerializeObject(MainModel);
+                HttpContext.Session.SetString("DirectPurchaseBill", serializedMainModel);
             }
             return PartialView("_DPBItemGrid", MainModel);
         }
 
         public IActionResult EditItemRow(DirectPurchaseBillModel model)
         {
-            IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
+            // Read JSON string from session
+            string mainModelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+
+            // Deserialize back into object
+            DirectPurchaseBillModel MainModel = string.IsNullOrEmpty(mainModelJson)
+                ? new DirectPurchaseBillModel()  // if not found, create new
+                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
             var SSGrid = MainModel.ItemDetailGrid.Where(x => x.SeqNo == model.SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
@@ -866,14 +875,14 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> ClearTaxGrid(int YearCode, string VODate)
         {
-            IMemoryCache.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyTaxGrid");
             var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> ClearTDSGrid(int YearCode, string VODate)
         {
-            IMemoryCache.Remove("KeyTDSGrid");
+            HttpContext.Session.Remove("KeyTDSGrid");
             var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -955,8 +964,6 @@ namespace eTactWeb.Controllers
             return PartialView("_DashBoardGrid", model);
         }
 
-
-
         public async Task<IActionResult> GetAmmCompSearchData(DPBDashBoard model)
         {
             model = await IDirectPurchaseBill.GetSearchCompData(model);
@@ -967,9 +974,9 @@ namespace eTactWeb.Controllers
         public JsonResult ResetGridItems()
         {
             HttpContext.Session.Remove("POItemList");
-            IMemoryCache.Remove("DirectPurchaseBill");
-            IMemoryCache.Remove("KeyTaxGrid");
-            IMemoryCache.Remove("KeyTDSGrid");
+            HttpContext.Session.Remove("DirectPurchaseBill");
+            HttpContext.Session.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyTDSGrid");
 
             var MainModel = new DirectPurchaseBillModel();
             List<TaxModel> taxList = new List<TaxModel>();
@@ -982,13 +989,37 @@ namespace eTactWeb.Controllers
             MainModel.PreparedByName = HttpContext.Session.GetString("EmpName");
             MainModel.Branch = HttpContext.Session.GetString("Branch");
 
-            IMemoryCache.Set("DirectPurchaseBill", MainModel, DateTimeOffset.Now.AddMinutes(60));
-            IMemoryCache.Set("KeyTaxGrid", taxList, DateTimeOffset.Now.AddMinutes(60));
-            IMemoryCache.Set("KeyTDSGrid", tdsList, DateTimeOffset.Now.AddMinutes(60));
+            // 1. Serialize the objects
+            string serializedMainModel = JsonConvert.SerializeObject(MainModel);
+            string serializedTaxList = JsonConvert.SerializeObject(taxList);
+            string serializedTdsList = JsonConvert.SerializeObject(tdsList);
+
+            // 2. Store in Session
+            HttpContext.Session.SetString("DirectPurchaseBill", serializedMainModel);
+            HttpContext.Session.SetString("KeyTaxGrid", serializedTaxList);
+            HttpContext.Session.SetString("KeyTDSGrid", serializedTdsList);
+
             HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(MainModel));
-            IMemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
-            IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-            IMemoryCache.TryGetValue("KeyTDSGrid", out List<TDSModel> TdsGrid);
+            List<TaxModel> TaxGrid;
+            List<TDSModel> TdsGrid;
+            // 1. Get DirectPurchaseBill from Session
+            string mainModelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+            MainModel = string.IsNullOrEmpty(mainModelJson)
+                ? new DirectPurchaseBillModel()  // Default if not found
+                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
+
+            // 2. Get KeyTaxGrid from Session
+            string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            TaxGrid = string.IsNullOrEmpty(taxGridJson)
+                ? new List<TaxModel>()  // Default if not found
+                : JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson);
+
+            // 3. Get KeyTDSGrid from Session
+            string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+            TdsGrid = string.IsNullOrEmpty(tdsGridJson)
+                ? new List<TDSModel>()  // Default if not found
+                : JsonConvert.DeserializeObject<List<TDSModel>>(tdsGridJson);
+
 
             return new(StatusCodes.Status200OK);
         }
@@ -1290,7 +1321,7 @@ namespace eTactWeb.Controllers
 
             return Table;
         }
-        
+
 
         private static DataTable GetDbCrDetailTable(DirectPurchaseBillModel MainModel)
         {
@@ -1341,9 +1372,24 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetDbCrDataGrid()
         {
-            IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
-            IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-            IMemoryCache.TryGetValue("KeyTDSGrid", out List<TDSModel> TdsGrid);
+            // 1. Get "DirectPurchaseBill" from Session
+            string mainModelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+            DirectPurchaseBillModel MainModel = string.IsNullOrEmpty(mainModelJson)
+                ? new DirectPurchaseBillModel()  // Default if not found
+                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
+
+            // 2. Get "KeyTaxGrid" from Session
+            string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            List<TaxModel> TaxGrid = string.IsNullOrEmpty(taxGridJson)
+                ? new List<TaxModel>()  // Default if not found
+                : JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson);
+
+            // 3. Get "KeyTDSGrid" from Session
+            string tdsGridJson = HttpContext.Session.GetString("KeyTDSGrid");
+            List<TDSModel> TdsGrid = string.IsNullOrEmpty(tdsGridJson)
+                ? new List<TDSModel>()  // Default if not found
+                : JsonConvert.DeserializeObject<List<TDSModel>>(tdsGridJson);
+
             DataTable DbCrGridd = new DataTable();
             DataTable TaxGridd = new DataTable();
             DataTable TdsGridd = new DataTable();
@@ -1360,12 +1406,14 @@ namespace eTactWeb.Controllers
         {
             var _List = new List<DPBItemDetail>();
 
-            IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
-            //var SeqNo = 0;
-            //if(MainModel == null)
-            //{
-            //    SeqNo++;
-            //}
+            // Retrieve DirectPurchaseBill from Session
+            string mainModelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+
+            // Deserialize it back to DirectPurchaseBillModel
+            DirectPurchaseBillModel MainModel = string.IsNullOrEmpty(mainModelJson)
+                ? new DirectPurchaseBillModel()  // If not found, return new object
+                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
+
             _List.Add(
                 new DPBItemDetail
                 {
@@ -1443,33 +1491,44 @@ namespace eTactWeb.Controllers
 
                 if (model.ItemDetailGrid?.Count != 0 && model.ItemDetailGrid != null)
                 {
-                    IMemoryCache.Set("DirectPurchaseBill", model.ItemDetailGrid, cacheEntryOptions);
+                    // 1. Serialize model.ItemDetailGrid to a JSON string
+                    string serializedItemDetailGrid = JsonConvert.SerializeObject(model.ItemDetailGrid);
 
+                    // 2. Store the serialized string in Session
+                    HttpContext.Session.SetString("DirectPurchaseBill", serializedItemDetailGrid);
                 }
 
                 if (model.TaxDetailGridd != null)
                 {
-                    IMemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd, cacheEntryOptions);
+                    // 1. Serialize model.TaxDetailGridd to a JSON string
+                    string serializedTaxGrid = JsonConvert.SerializeObject(model.TaxDetailGridd);
+
+                    // 2. Store the serialized string in Session
+                    HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
                 }
                 if (model.TDSDetailGridd != null)
                 {
-                    IMemoryCache.Set("KeyTDSGrid", model.TDSDetailGridd, cacheEntryOptions);
+                    // 1. Serialize model.TDSDetailGridd to a JSON string
+                    string serializedTDSGrid = JsonConvert.SerializeObject(model.TDSDetailGridd);
+
+                    // 2. Store the serialized string in Session
+                    HttpContext.Session.SetString("KeyTDSGrid", serializedTDSGrid);
+
                 }
             }
             else
             {
                 model = await BindModels(null);
-                IMemoryCache.Remove("POTaxGrid");
-                IMemoryCache.Remove("KeyTaxGrid");
-                IMemoryCache.Remove("KeyTDSGrid");
-                IMemoryCache.Remove("DirectPurchaseBill");
+                HttpContext.Session.Remove("POTaxGrid");
+                HttpContext.Session.Remove("KeyTaxGrid");
+                HttpContext.Session.Remove("KeyTDSGrid");
+                HttpContext.Session.Remove("DirectPurchaseBill");
             }
-
 
             return View("DirectPurchaseBill", model);
         }
 
-        
+
         public async Task<JsonResult> NewAmmEntryId()
         {
             var JSON = await IDirectPurchaseBill.NewAmmEntryId();
@@ -1580,13 +1639,19 @@ namespace eTactWeb.Controllers
                 Size = 1024,
             };
             var seqNo = 0;
-            IMemoryCache.Remove("DirectPurchaseBill");
+            HttpContext.Session.Remove("DirectPurchaseBill");
 
             foreach (var item in data)
             {
                 if (item != null)
                 {
-                    IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel Model);
+                    // 1. Get the serialized string from session
+                    string serializedModel = HttpContext.Session.GetString("DirectPurchaseBill");
+
+                    // 2. Deserialize the string back into the original object (DirectPurchaseBillModel)
+                    DirectPurchaseBillModel Model = string.IsNullOrEmpty(serializedModel)
+                        ? new DirectPurchaseBillModel()  // Default if not found
+                        : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedModel);
 
                     if (Model == null)
                     {
@@ -1610,17 +1675,25 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = POItemGrid;
 
-                    IMemoryCache.Set("DirectPurchaseBill", MainModel, cacheEntryOptions);
+                    // 1. Serialize MainModel to a JSON string
+                    string serializedMainModel = JsonConvert.SerializeObject(MainModel);
+
+                    // 2. Store the serialized string in Session
+                    HttpContext.Session.SetString("DirectPurchaseBill", serializedMainModel);
+
 
                 }
             }
-            IMemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel1);
+            // 1. Get the serialized string from Session
+            string serializedMainModelFromSession = HttpContext.Session.GetString("DirectPurchaseBill");
+
+            // 2. Deserialize the string back to DirectPurchaseBillModel
+            DirectPurchaseBillModel MainModel1 = string.IsNullOrEmpty(serializedMainModelFromSession)
+                ? new DirectPurchaseBillModel()  // Default if not found
+                : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(serializedMainModelFromSession);
 
             return PartialView("_POItemGrid", MainModel);
         }
-
-
-
     }
 }
 

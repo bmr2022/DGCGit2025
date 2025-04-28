@@ -567,7 +567,11 @@
                 ViewDetailSection();
                 $('#TypesBOMIND').val($('#hiddenBomInd').val() == "I" ? "Individual" : "BOM");
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+
+                // monika
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                /////////////////////
                 CheckAutoOrManual();
                 $('#displaylistbutton').show();
                 var dataParams = {

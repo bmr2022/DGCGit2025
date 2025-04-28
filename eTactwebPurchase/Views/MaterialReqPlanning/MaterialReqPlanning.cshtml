@@ -75,6 +75,7 @@
                                         <option value="MRPCONSOLIDATED">Consolidated Data</option>
                                         <option value="MRPDataonly">Only MRP Data</option>
                                         <option value="MRPCONSOLIDATE (With PO + Party)">MRPCONSOLIDATE (With PO + Party)</option>
+                                        <option value="MRP DATA WITH PARTY And SOB">MRP DATA WITH PARTY And SOB</option>
                                        
                                     </select>
                                 </div>
@@ -399,6 +400,32 @@
                                                                          </div>
                                         `;
                 }
+                else if (reportType === "MRP DATA WITH PARTY And SOB") {
+                    html = `
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px; ">
+                                                                               <label class="form-label">Total ReqQty</label>
+                                                                               <input id="totReqQty" class="form-control" readonly/>
+                                                                         </div>
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">TotalStoretStock</label>
+                                                                               <input id="totStoreStock" class="form-control" readonly/>
+                                                                         </div>
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">Total WipStock</label>
+                                                                               <input id="totWipStock" class="form-control" readonly/>
+                                                                         </div>
+                                                                        
+                                                                         <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">Total MRPOrderQty</label>
+                                                                               <input id="totMRPOrderQty" class="form-control" readonly/>
+                                                                         </div>
+                                                                          <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px; margin-left:10px;">
+                                                                               <label class="form-label">Total OrderQty</label>
+                                                                               <input id="totOrderQty" class="form-control" readonly/>
+                                                                         </div>
+
+                                        `;
+                }
 
                 $("#reportFields").html(html);
             }
@@ -583,6 +610,8 @@
             var Month = $('#months').val();
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
+            var ItemName = $('#ItemName').val();
+            var PartCode = $('#PartCode').val();
            /*  var MrpEntryId = $('#MrpEntryId').val();
             var CreatedBy = $('#CreatedBy').val();
             var CC = $('#CC').val();
@@ -606,7 +635,9 @@
                     mrpno: mrpno,
                     Month: Month,
                     FromDate:FromDate,
-                    ToDate: ToDate
+                    ToDate: ToDate,
+                    ItemName:ItemName,
+                    PartCode: PartCode
 
                 },
                 success: function (response) {
@@ -764,7 +795,7 @@
                 table.children('#divStockRegisterBody').append(row);
             });
         }
-        function countAllTotal() {
+      /*   function countAllTotal() {
 
             var rowCount = $('#divStockRegisterBody tr').length;
 
@@ -772,6 +803,7 @@
             var TotCurrentStock = 0;
             var TotalWipQty= 0;
             var TotalOrderQty = 0;
+            var TotalMRPOrderQty = 0;
             var TotalWipStock = 0;
             var TotalSchQty = 0;
             var TotalStock = 0;
@@ -784,6 +816,7 @@
                 TotCurrentStock += $('#totCurStockG-' + i).text() == '' ? 0 : parseFloat($('#totCurStockG-' + i).text());
                 TotalWipQty += $('#totWipQtyG-' + i).text() == '' ? 0 : parseFloat($('#totWipQtyG-' + i).text());
                 TotalOrderQty += $('#totOrderQtyG-' + i).text() == '' ? 0 : parseFloat($('#totOrderQtyG-' + i).text());
+                TotalMRPOrderQty += $('#totMRPOrderQtyG-' + i).text() == '' ? 0 : parseFloat($('#totMRPOrderQtyG-' + i).text());
                 TotalWipStock += $('#totWipStockG-' + i).text() == '' ? 0 : parseFloat($('#totWipStockG-' + i).text());
                 TotalSchQty += $('#totSchOrderQtyG-' + i).text() == '' ? 0 : parseFloat($('#totSchOrderQtyG-' + i).text());
                 TotalStoreStock += $('#totStoreStockG-' + i).text() == '' ? 0 : parseFloat($('#totStoreStockG-' + i).text());
@@ -798,11 +831,49 @@
             $('#toCurrentStock').val(isNaN(TotCurrentStock) ? 0 : TotCurrentStock.toFixed(2));
             $('#totWipQty').val(isNaN(TotalWipQty) ? 0 : TotalWipQty.toFixed(2));
             $('#totOrderQty').val(isNaN(TotalOrderQty) ? 0 : TotalOrderQty.toFixed(2));
+            $('#totMRPOrderQty').val(isNaN(TotalMRPOrderQty) ? 0 : TotalMRPOrderQty.toFixed(2));
+            $('#totWipStock').val(isNaN(TotalWipStock) ? 0 : TotalWipStock.toFixed(2));
+            $('#totSchQty').val(isNaN(TotalSchQty) ? 0 : TotalSchQty.toFixed(2));
+            $('#totStoreStock').val(isNaN(TotalStoreStock) ? 0 : TotalStoreStock.toFixed(2));
+            $('#totTotalStock').val(isNaN(TotalStock) ? 0 : TotalStock.toFixed(2));
+        } */
+
+        function countAllTotal() {
+            var TotReqQty = 0;
+            var TotCurrentStock = 0;
+            var TotalWipQty = 0;
+            var TotalOrderQty = 0;
+            var TotalMRPOrderQty = 0;
+            var TotalWipStock = 0;
+            var TotalSchQty = 0;
+            var TotalStock = 0;
+            var TotalStoreStock = 0;
+
+            $('#divStockRegisterBody tr').each(function () {
+                var row = $(this);
+
+                TotReqQty += row.find('[id^="totReqQtyG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totReqQtyG-"]').text());
+                TotCurrentStock += row.find('[id^="totCurStockG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totCurStockG-"]').text());
+                TotalWipQty += row.find('[id^="totWipQtyG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totWipQtyG-"]').text());
+                TotalOrderQty += row.find('[id^="totOrderQtyG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totOrderQtyG-"]').text());
+                TotalMRPOrderQty += row.find('[id^="totMRPOrderQtyG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totMRPOrderQtyG-"]').text());
+                TotalWipStock += row.find('[id^="totWipStockG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totWipStockG-"]').text());
+                TotalSchQty += row.find('[id^="totSchOrderQtyG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totSchOrderQtyG-"]').text());
+                TotalStoreStock += row.find('[id^="totStoreStockG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totStoreStockG-"]').text());
+                TotalStock += row.find('[id^="totTotalStockG-"]').text() == '' ? 0 : parseFloat(row.find('[id^="totTotalStockG-"]').text());
+            });
+
+            $('#totReqQty').val(isNaN(TotReqQty) ? 0 : TotReqQty.toFixed(2));
+            $('#toCurrentStock').val(isNaN(TotCurrentStock) ? 0 : TotCurrentStock.toFixed(2));
+            $('#totWipQty').val(isNaN(TotalWipQty) ? 0 : TotalWipQty.toFixed(2));
+            $('#totOrderQty').val(isNaN(TotalOrderQty) ? 0 : TotalOrderQty.toFixed(2));
+            $('#totMRPOrderQty').val(isNaN(TotalMRPOrderQty) ? 0 : TotalMRPOrderQty.toFixed(2));
             $('#totWipStock').val(isNaN(TotalWipStock) ? 0 : TotalWipStock.toFixed(2));
             $('#totSchQty').val(isNaN(TotalSchQty) ? 0 : TotalSchQty.toFixed(2));
             $('#totStoreStock').val(isNaN(TotalStoreStock) ? 0 : TotalStoreStock.toFixed(2));
             $('#totTotalStock').val(isNaN(TotalStock) ? 0 : TotalStock.toFixed(2));
         }
+
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {

@@ -148,7 +148,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="StockAdjustmentDate" class="form-label" style="color: blue;">StockAdj Date</label>
-                                    <input asp-for="StockAdjustmentDate" class="form-control" disabled />
+                                    <input asp-for="StockAdjustmentDate" class="form-control" readonly />
                                 </div>
                                 <div class="col-auto">
                                     <button type="button" class="MultiBatchno btn btn-sm btn-outline-success mt-3" onclick="MultipleBatchno();">
@@ -476,8 +476,17 @@
             } else {
                  
                 $('#StoreWorkCenter').val('@Model.StoreWorkCenter');
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
-                $('#StockAdjustmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#StockAdjustmentDate').val().split(" ")[0]));
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var StockAdjustmentDate = parseDateToFormat($('#StockAdjustmentDate').val().split(" ")[0]);
+                
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#StockAdjustmentDate').datepicker("setDate", StockAdjustmentDate);
+               /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
+                $('#StockAdjustmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#StockAdjustmentDate').val().split(" ")[0])); */
             }
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();

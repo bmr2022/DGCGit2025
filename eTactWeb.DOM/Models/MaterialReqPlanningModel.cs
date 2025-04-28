@@ -29,8 +29,12 @@ namespace eTactWeb.DOM.Models
         public string? Party_Name { get; set; }
         public string? Part_code { get; set; }
         public string? Item_Name { get; set; }
+        public string? Months { get; set; }
+        public string? MRPDate { get; set; }
+        public string? PODate { get; set; }
         public string? PONos { get; set; }
         public string? Vendors { get; set; }
+        public int? SOB { get; set; }
         public decimal  ? TotalMRPReqQty { get; set; }
         public decimal  ? TotalStoreStock { get; set; }
         public decimal  ? TotalWipStock { get; set; }

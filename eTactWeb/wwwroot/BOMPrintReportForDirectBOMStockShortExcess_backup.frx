@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/24/2025 17:15:26" ReportInfo.Modified="04/27/2025 12:44:33" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/24/2025 17:15:26" ReportInfo.Modified="04/27/2025 12:40:40" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
     <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtaSLHA59q3saMka5STqryBa9R1JI9qexYxRt7J3gULnXIIAHWDlabO5Mctt/Z/6+gkweAp1sctV/K01pGpwWAUBZqI0P1ioumvKPgUDa/qsWubYRO1JAEWAWv7tdNIoc5w==">
-      <TableDataSource Name="Table" Alias="SPBOMPrintReportForDirectBOMStockShortExcess" DataType="System.Int32" Enabled="true" SelectCommand="exec SPBOMPrintReportForDirectBOMStockShortExcess @CurrentDate= @CurrentDate , @WCID=@WCID&#13;&#10;,@Storeid= @Storeid ,@Yearcode= @YearCode ,@CalForQty= @CalForQty,@FGPartcode= @FGPartCode, @FGName = @FGName ">
+      <TableDataSource Name="Table" Alias="SPBOMPrintReportForDirectBOMStockShortExcess" DataType="System.Int32" Enabled="true" SelectCommand="exec SPBOMPrintReportForDirectBOMStockShortExcess @CurrentDate=N'27/Apr/2025',@Storeid=1,@Yearcode=2025,&#13;&#10;@CalForQty=1,@FGPartcode=N'TD-2007',@FGName='TD-2007',@WCID=2 ">
         <Column Name="FGItemName" DataType="System.String"/>
         <Column Name="FGPartCode" DataType="System.String"/>
         <Column Name="FGUnit" DataType="System.String"/>
@@ -20,13 +20,6 @@
         <Column Name="BomRevNo" DataType="System.Int64"/>
         <Column Name="ForTheStore" DataType="System.String"/>
         <Column Name="ForWorkCeneter" DataType="System.String"/>
-        <CommandParameter Name="FGPartCode" DataType="22" Size="200" Expression="FGPartCode"/>
-        <CommandParameter Name="FGName " DataType="22" Size="200" Expression="FGName "/>
-        <CommandParameter Name="WCID" Expression="WCID"/>
-        <CommandParameter Name="Storeid" Expression="Storeid"/>
-        <CommandParameter Name="CurrentDate" DataType="22" Size="200" Expression="CurrentDate"/>
-        <CommandParameter Name="YearCode" Expression="YearCode"/>
-        <CommandParameter Name="CalForQty" Expression="CalForQty"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Parameter Name="MyParameter" DataType="System.String" AsString=""/>

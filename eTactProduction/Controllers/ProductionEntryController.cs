@@ -50,12 +50,13 @@ namespace eTactWeb.Controllers
             //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
             var webReport = new WebReport();
 
-            webReport.Report.Load(webRootPath + "\\ProductionEntryPrint.frx"); // default report
+            webReport.Report.Load(webRootPath + "\\ProductionSlipEntry.frx"); // default report
+           // webReport.Report.Load(webRootPath + "\\ProductionEntryPrint.frx"); // default report
 
 
             //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
-            webReport.Report.SetParameterValue("entryid", EntryId);
-            webReport.Report.SetParameterValue("yearcode", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
 
 
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");

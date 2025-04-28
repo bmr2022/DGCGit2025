@@ -16,17 +16,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ILedgerPartyWiseOpening _ILedgerPartyWiseOpening { get; }
-
         private readonly ILogger<LedgerPartyWiseOpeningController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public LedgerPartyWiseOpeningController(ILogger<LedgerPartyWiseOpeningController> logger, IDataLogic iDataLogic, ILedgerPartyWiseOpening iLedgerPartyWiseOpening, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public LedgerPartyWiseOpeningController(ILogger<LedgerPartyWiseOpeningController> logger, IDataLogic iDataLogic, ILedgerPartyWiseOpening iLedgerPartyWiseOpening, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ILedgerPartyWiseOpening = iLedgerPartyWiseOpening;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -56,7 +53,7 @@ namespace eTactWeb.Controllers
             MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now;
             MainModel.InvoiceDate = DateTime.Now;
-            _MemoryCache.Remove("KeyLedgerPartyWiseOpeningGrid");
+            HttpContext.Session.Remove("KeyLedgerPartyWiseOpeningGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
                 
@@ -90,13 +87,8 @@ namespace eTactWeb.Controllers
                     MainModel.UpdationDate = DateTime.Now.ToString();
                  
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.LedgerPartyWiseOpeningDetails);
+                HttpContext.Session.SetString("KeyLedgerPartyWiseOpeningGrid", serializedGrid);
             }
             
             return View(MainModel);
@@ -108,8 +100,12 @@ namespace eTactWeb.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
+                List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail = new List<LedgerPartyWiseOpeningDetailModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
+                }
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 if (model.Mode == "U")
@@ -127,7 +123,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("KeyLedgerPartyWiseOpeningGrid");
+                        HttpContext.Session.Remove("KeyLedgerPartyWiseOpeningGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -159,7 +155,6 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
-
 		public async Task<JsonResult> FillEntryId()
 		{
 			var JSON = await _ILedgerPartyWiseOpening.FillEntryId();
@@ -208,8 +203,12 @@ namespace eTactWeb.Controllers
             {
                 if (model.Mode == "U")
                 {
-
-                    _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out IList<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
+                    List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail = new List<LedgerPartyWiseOpeningDetailModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
+                    }
 
                     var MainModel = new LedgerPartyWiseOpeningModel();
                     var WorkOrderPGrid = new List<LedgerPartyWiseOpeningDetailModel>();
@@ -244,14 +243,9 @@ namespace eTactWeb.Controllers
 
                         MainModel.LedgerPartyWiseOpeningDetails = OrderGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.LedgerPartyWiseOpeningDetails);
+                        HttpContext.Session.SetString("KeyLedgerPartyWiseOpeningGrid", serializedGrid);
 
-                        _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
                     }
                     else
                     {
@@ -261,8 +255,12 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-
-                    _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out IList<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
+                    List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail = new List<LedgerPartyWiseOpeningDetailModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
+                    }
 
                     var MainModel = new LedgerPartyWiseOpeningModel();
                     var WorkOrderPGrid = new List<LedgerPartyWiseOpeningDetailModel>();
@@ -296,14 +294,8 @@ namespace eTactWeb.Controllers
 
                         MainModel.LedgerPartyWiseOpeningDetails = OrderGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.LedgerPartyWiseOpeningDetails);
+                        HttpContext.Session.SetString("KeyLedgerPartyWiseOpeningGrid", serializedGrid);
                     }
                     else
                     {
@@ -319,8 +311,8 @@ namespace eTactWeb.Controllers
         }
         public IActionResult ClearGrid()
         {
-            _MemoryCache.Remove("KeyLedgerPartyWiseOpeningGrid");
-            _MemoryCache.Remove("LedgerPartyWiseOpeningModel");
+            HttpContext.Session.Remove("KeyLedgerPartyWiseOpeningGrid");  
+            HttpContext.Session.Remove("LedgerPartyWiseOpeningModel");
             var MainModel = new LedgerPartyWiseOpeningModel();
             return PartialView("_LedgerPartyWiseOpeningGrid", MainModel);
         }
@@ -329,11 +321,19 @@ namespace eTactWeb.Controllers
             IList<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail = new List<LedgerPartyWiseOpeningDetailModel>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out LedgerPartyWiseOpeningDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out LedgerPartyWiseOpeningDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
+                }
             }
             IEnumerable<LedgerPartyWiseOpeningDetailModel> SSBreakdownGrid = LedgerPartyWiseOpeningDetail;
             if (LedgerPartyWiseOpeningDetail != null)
@@ -344,13 +344,17 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
             return Json(JsonString);
         }
-
         public IActionResult DeleteItemRow(int SrNO, string Mode)
         {
             var MainModel = new LedgerPartyWiseOpeningModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
+                List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail = new List<LedgerPartyWiseOpeningDetailModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
+                }
 
                 int Indx = Convert.ToInt32(SrNO) - 1;
 
@@ -368,22 +372,19 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.LedgerPartyWiseOpeningDetails = LedgerPartyWiseOpeningDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
-
-
-                    
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.LedgerPartyWiseOpeningDetails);
+                    HttpContext.Session.SetString("KeyLedgerPartyWiseOpeningGrid", serializedGrid);
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
+                string modelJson = HttpContext.Session.GetString("KeyLedgerPartyWiseOpeningGrid");
+                List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail = new List<LedgerPartyWiseOpeningDetailModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    LedgerPartyWiseOpeningDetail = JsonConvert.DeserializeObject<List<LedgerPartyWiseOpeningDetailModel>>(modelJson);
+                }
+
                 int Indx = Convert.ToInt32(SrNO) - 1;
                 if (LedgerPartyWiseOpeningDetail != null && LedgerPartyWiseOpeningDetail.Count > 0)
                 {
@@ -398,86 +399,13 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.LedgerPartyWiseOpeningDetails = LedgerPartyWiseOpeningDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
-
-
-
-                   
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.LedgerPartyWiseOpeningDetails);
+                    HttpContext.Session.SetString("KeyLedgerPartyWiseOpeningGrid", serializedGrid);
                 }
             }
 
             return PartialView("_LedgerPartyWiseOpeningGrid", MainModel);
         }
-        //public IActionResult DeleteItemRow(int SrNO, string Mode)
-        //{
-        //    var MainModel = new LedgerPartyWiseOpeningModel();
-        //    if (Mode == "U")
-        //    {
-        //        _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
-        //        int Indx = SrNO - 1;
-
-        //        if (LedgerPartyWiseOpeningDetail != null && LedgerPartyWiseOpeningDetail.Count > 0)
-        //        {
-        //            LedgerPartyWiseOpeningDetail.RemoveAt(Convert.ToInt32(Indx));
-
-        //            Indx = 0;
-
-        //            foreach (var item in LedgerPartyWiseOpeningDetail)
-        //            {
-        //                Indx++;
-        //                item.SrNO = Indx;
-        //            }
-        //            MainModel.LedgerPartyWiseOpeningDetails  = LedgerPartyWiseOpeningDetail;
-
-        //            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //            {
-        //                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //                SlidingExpiration = TimeSpan.FromMinutes(55),
-        //                Size = 1024,
-        //            };
-
-        //            _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        _MemoryCache.TryGetValue("KeyLedgerPartyWiseOpeningGrid", out List<LedgerPartyWiseOpeningDetailModel> LedgerPartyWiseOpeningDetail);
-        //        int Indx = SrNO;
-
-        //        if (LedgerPartyWiseOpeningDetail != null && LedgerPartyWiseOpeningDetail.Count > 0)
-        //        {
-        //            LedgerPartyWiseOpeningDetail.RemoveAt(Indx);
-
-        //            Indx = 0;
-
-        //            foreach (var item in LedgerPartyWiseOpeningDetail)
-        //            {
-        //                Indx++;
-        //                item.SrNO = Indx;
-        //            }
-        //            MainModel.LedgerPartyWiseOpeningDetails = LedgerPartyWiseOpeningDetail;
-
-        //            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //            {
-        //                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //                SlidingExpiration = TimeSpan.FromMinutes(55),
-        //                Size = 1024,
-        //            };
-
-        //            _MemoryCache.Set("KeyLedgerPartyWiseOpeningGrid", MainModel.LedgerPartyWiseOpeningDetails, cacheEntryOptions);
-        //        }
-        //    }
-
-        //    return PartialView("_LedgerPartyWiseOpeningGrid", MainModel);
-        //}
-
         private static DataTable GetDetailTable(IList<LedgerPartyWiseOpeningDetailModel> DetailList)
         {
             try

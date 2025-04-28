@@ -818,10 +818,8 @@ public class BomController : Controller
     {
         BomModel model = new BomModel();
         model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-
         return View(model);
     }
-
     [HttpPost]
     public IActionResult UploadExcel(IFormFile excelFile)
     {
@@ -1000,7 +998,6 @@ public class BomController : Controller
         model.ExcelDataList = data;
         return PartialView("_DisplayExcelData", model);
     }
-
     public async Task<IActionResult> AddBomListData(List<BomViewModel> model)
     {
         try
@@ -1086,7 +1083,6 @@ public class BomController : Controller
             return View("Error", ResponseResult);
         }
     }
-
     private static System.Data.DataTable GetBomDetailTable(List<ImportBomData> DetailList)
     {
         var BOMGrid = new System.Data.DataTable();
@@ -1115,7 +1111,6 @@ public class BomController : Controller
         BOMGrid.Dispose();
         return BOMGrid;
     }
-
     private static DataTable GetDetailTable(IList<BomViewModel> DetailList, string CC, int Empid, int YearCode)
     {
         var MRGrid = new DataTable();
