@@ -10,6 +10,9 @@ using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using System.Data;
 using System.Globalization;
+using FastReport.Data;
+using FastReport.Web;
+using FastReport;
 
 namespace eTactWeb.Controllers
 {
@@ -21,8 +24,9 @@ namespace eTactWeb.Controllers
         private readonly ILogger<PendingMaterialToIssueThrBOMController> _logger;
         private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
+        private readonly IConfiguration _iconfiguration;
         public PendingMaterialToIssueThrBOMController(ILogger<PendingMaterialToIssueThrBOMController> logger, IDataLogic iDataLogic, 
-            IPendingMaterialToIssueThrBOM IPendingMaterialToIssueThrBOM, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IIssueThrBOM IIssueThrBom)
+           IConfiguration iconfiguration,  IPendingMaterialToIssueThrBOM IPendingMaterialToIssueThrBOM, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IIssueThrBOM IIssueThrBom)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -30,6 +34,7 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             _IssueThrBom = IIssueThrBom;
+            _iconfiguration = iconfiguration;
         }
 
         public async Task<IActionResult> PendingMaterialToIssueThrBOM()
@@ -52,7 +57,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyPendingToIssueThrBOM", model, cacheEntryOptions);
             return View(MainModel);
         }
-
+      
         private async Task<PendingMaterialToIssueThrBOMModel> BindModel(PendingMaterialToIssueThrBOMModel model)
         {
             var oDataSet = new DataSet();

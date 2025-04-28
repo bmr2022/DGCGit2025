@@ -1162,6 +1162,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new PurchaseBillModel();
             }
+            else if (SN == "PurchaseRejection")
+            {
+                MainModel = new AccPurchaseRejectionModel();
+            }
             else if (SN == "JobWorkIssue")
             {
                 MainModel = new JobWorkIssueModel();

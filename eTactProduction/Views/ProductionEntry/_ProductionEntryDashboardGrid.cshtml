@@ -201,7 +201,7 @@ else
                                 </td>
                                 <td class="partcode-@Cntr">@item.FGPartCode</td>
                                 <td class="itemname-@Cntr">@item.FGItemName</td>
-                                <td class="proddate-@Cntr">/* @item.ProdDate.Split(" ")[0] */
+                                <td class="proddate-@Cntr">
                                     @(string.IsNullOrEmpty(item.ProdDate) ? "" : item.ProdDate.Split(" ")[0])
                                 </td>
                                 <td class="prodslipno-@Cntr">@item.ProdSlipNo</td>

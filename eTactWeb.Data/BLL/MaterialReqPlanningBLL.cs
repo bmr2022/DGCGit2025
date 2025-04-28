@@ -40,9 +40,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialReqPlanningDAL.GetItemName( );
         }
-        public async Task<MaterialReqPlanningModel> GetDetailData(string ReportType, string mrpno, string Month, int YearCode, string FromDate, string ToDate)
+        public async Task<MaterialReqPlanningModel> GetDetailData(string ReportType, string mrpno, string Month, int YearCode, string FromDate, string ToDate, string ItemName, string PartCode)
         {
-            return await _MaterialReqPlanningDAL.GetDetailData( ReportType,  mrpno,  Month,  YearCode,  FromDate,  ToDate);
+            return await _MaterialReqPlanningDAL.GetDetailData( ReportType,  mrpno,  Month,  YearCode,  FromDate,  ToDate,  ItemName,  PartCode);
         }
     }
 }

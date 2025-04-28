@@ -576,17 +576,33 @@
                 $('#PN1').change().trigger("change");
                 $('#IN1').prop("checked", "true");
                 $('#IN1').trigger("change");
-                var EntryDate = $('#EntryDate').val().split("-").join("/");
-                EntryDate = parseDateToFormat(EntryDate.split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
 
-                var PODt = $('#PODate').val().split("-").join("/");
-                PODt = parseDateToFormat(PODt.split(" ")[0]);
-                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(PODt));
 
-                var WEFDt = $('#WEF').val().split("-").join("/");
-                WEFDt = parseDateToFormat(WEFDt.split(" ")[0]);
-                $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", WEFDt);
+                // var EntryDate = $('#EntryDate').val().split("-").join("/");
+                // EntryDate = parseDateToFormat(EntryDate.split(" ")[0]);
+                // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
+
+                // var PODt = $('#PODate').val().split("-").join("/");
+                // PODt = parseDateToFormat(PODt.split(" ")[0]);
+                // $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(PODt));
+
+                // var WEFDt = $('#WEF').val().split("-").join("/");
+                // WEFDt = parseDateToFormat(WEFDt.split(" ")[0]);
+                // $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", WEFDt);
+
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var PODate = parseDateToFormat($('#PODate').val().split(" ")[0]);
+                var WEF = parseDateToFormat($('#WEF').val().split(" ")[0]);
+
+                console.log(EntryDate);
+                console.log(InvoiceDt);
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#PODate').datepicker("setDate", PODate);
+                $('#WEF').datepicker("setDate", WEF);
 
                 // var POCloseDt = $('#POCloseDate').val().split("-").join("/");
                 // POCloseDt = parseDateToFormat(POCloseDt.split(" ")[0]);

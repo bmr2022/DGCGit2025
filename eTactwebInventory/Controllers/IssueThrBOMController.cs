@@ -3,8 +3,10 @@ using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using FastReport;
+using FastReport.Web;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
@@ -23,13 +25,14 @@ namespace eTactWeb.Controllers
         private readonly IIssueThrBOM _IIssueThrBOM;
         private readonly ILogger<IssueThrBOMController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-
-        public IssueThrBOMController(ILogger<IssueThrBOMController> logger, IDataLogic iDataLogic, IIssueThrBOM IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IConfiguration _iconfiguration;
+        public IssueThrBOMController(ILogger<IssueThrBOMController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueThrBOM IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueThrBOM = IIssueWOBOM;
             _IWebHostEnvironment = iWebHostEnvironment;
+            _iconfiguration = iconfiguration;
         }
 
         [Route("{controller}/Index")]
@@ -53,8 +56,38 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyIssThrBomGrid", serializedGrid);
             return View(MainModel);
         }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            // var ReportName = _Indent.GetReportName();
+            webReport.Report.Dispose();
 
-        [Route("{controller}/Index")]
+            webReport.Report.Load(webRootPath + "\\IssueThrBom.frx"); // default report
+
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+
+            //    webReport.Report.SetParameterValue("entryparam", EntryId);
+            //    webReport.Report.SetParameterValue("yearparam", YearCode);
+            //    my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            //    webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            //    webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            //    webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            //    webReport.Report.Prepare();
+            //    webReport.Report.Refresh();
+            //    return View(webReport);
+            }
+            [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> IssueThrBOM(int ID, string Mode, int YC, string REQNo = "", string ItemName = "", string PartCode = "", string WorkCenter = "", string DashboardType = "", string FromDate = "", string ToDate = "", string SearchBox = "")//, ILogger logger)
         {

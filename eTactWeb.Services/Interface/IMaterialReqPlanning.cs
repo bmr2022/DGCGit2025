@@ -14,7 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetMonthList(int YearCode);
         Task<ResponseResult> GetPartCode();
         Task<ResponseResult> GetItemName();
-        public Task<MaterialReqPlanningModel> GetDetailData(string ReportType,string mrpno, string Month, int YearCode,string FromDate,string ToDate);
+        public Task<MaterialReqPlanningModel> GetDetailData(string ReportType,string mrpno, string Month, int YearCode,string FromDate,string ToDate,string ItemName,string PartCode);
 
 
     }

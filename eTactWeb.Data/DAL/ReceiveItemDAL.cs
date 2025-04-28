@@ -94,7 +94,7 @@ namespace eTactWeb.Data.DAL
             model.RecMatEntryDate = DS.Tables[0].Rows[0]["RecMatEntryDate"].ToString();
             model.RecMatSlipNo = DS.Tables[0].Rows[0]["RecMatSlipNo"].ToString();
             model.RecMatSlipDate=DS.Tables[0].Rows[0]["RecMatSlipDate"].ToString();
-            model.RecMatEntryDate=DS.Tables[0].Rows[0]["ReceiveDate"].ToString();
+            //model.RecMatEntryDate=DS.Tables[0].Rows[0]["ReceiveDate"].ToString();
             model.EnteredbyMachineName = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryByEmpid"].ToString());
             model.ActualEntrydate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();

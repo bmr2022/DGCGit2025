@@ -60,10 +60,10 @@ namespace eTactwebPurchase.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetDetailData(string ReportType, string mrpno, string Month, int YearCode, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string ReportType, string mrpno, string Month, int YearCode, string FromDate, string ToDate, string ItemName, string PartCode)
         {
             var model = new MaterialReqPlanningModel();
-            model = await _IMaterialReqPlanning.GetDetailData( ReportType,mrpno, Month, YearCode,  FromDate,  ToDate);
+            model = await _IMaterialReqPlanning.GetDetailData( ReportType,mrpno, Month, YearCode,  FromDate,  ToDate,  ItemName,  PartCode);
                if(ReportType== "DAYWISEMRPDATA")
                {
                    return PartialView("_MaterialReqPlanningGrid", model);
@@ -79,6 +79,10 @@ namespace eTactwebPurchase.Controllers
                if(ReportType== "MRPCONSOLIDATE (With PO + Party)")
                {
                    return PartialView("_MaterialReqPlanningMRPCONSOLIDATE(WithPO+Party)Grid", model);
+               }
+               if(ReportType== "MRP DATA WITH PARTY And SOB")
+               {
+                   return PartialView("_MaterialReqPlanningPartyAndSOBGrid", model);
                }
 
                return null;
