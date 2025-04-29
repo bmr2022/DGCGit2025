@@ -17,7 +17,6 @@ namespace eTactWeb.Controllers
         private readonly ILogger<WIPStockRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
         public WIPStockRegisterController(ILogger<WIPStockRegisterController> logger, IDataLogic iDataLogic, IWIPStockRegister iWIPStockRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
@@ -33,7 +32,6 @@ namespace eTactWeb.Controllers
             model.WIPStockRegisterDetail = new List<WIPStockRegisterDetail>();
             return View(model);
         }
-
         public async Task<IActionResult> GetWIPRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter, int pageNumber = 1, int pageSize = 500, string SearchBox = "")
         {
             var model = new WIPStockRegisterModel();
@@ -147,7 +145,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> GetAllItemGroups()
         {
 
@@ -161,7 +158,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> GetServerDate()
         {
             try
@@ -211,8 +207,17 @@ namespace eTactWeb.Controllers
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
+        [HttpGet]
+        public IActionResult GetWIPStockRegisterData()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyWIPStockList");
+            List<WIPStockRegisterDetail> stockRegisterList = new List<WIPStockRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<WIPStockRegisterDetail>>(modelJson);
+            }
 
-
-
+            return Json(stockRegisterList);
+        }
     }
 }
