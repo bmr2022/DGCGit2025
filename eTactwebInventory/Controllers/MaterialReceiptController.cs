@@ -348,9 +348,9 @@ namespace eTactWeb.Controllers
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new MaterialReceiptModel();
-            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
             MainModel.EnteredByEmpname = HttpContext.Session.GetString("EmpName");
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.EmployeeList = await _IMaterialReceipt.GetEmployeeList();
