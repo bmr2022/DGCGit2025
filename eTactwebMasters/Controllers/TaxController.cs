@@ -1919,6 +1919,11 @@ public class TaxController : Controller
             if (SessionName == "PurchaseBill")
             {
                 _MemoryCache.TryGetValue("PurchaseBill", out PurchaseBillModel MainModel);
+                var modelJson = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+                }
                 ItemModel = MainModel.ItemDetailGridd;
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
@@ -1948,6 +1953,14 @@ public class TaxController : Controller
             {
                 _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
                 ItemModel = saleBillDetail;
+
+
+                var modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ItemModel = JsonConvert.DeserializeObject<SaleBillDetail>(modelJson);
+                }
+                //ItemModel = MainModel.ItemDetailGridd;
 
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
