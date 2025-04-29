@@ -268,12 +268,20 @@
                                         <select class="form-select" asp-for="CustomerOrderNo">
                                             <option value="">-Select-</option>
                                         </select>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <input type="hidden" value="@Model.CustomerOrderNo" id="hiddenCustOrderNo" />
+                                        }
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SONO" class="control-label" style="color:red">SO NO*</label>
                                         <select class="form-select" asp-for="SONO">
                                             <option value="0">-Select-</option>
                                         </select>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <input type="hidden" value="@Model.SONO" id="hiddenSONO" />
+                                        }
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOYearCode" class="control-label" style="color:red">SO Year*</label>
@@ -408,7 +416,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Rate" class="form-label" style="color:blue">Rate*</label>
-                                    <input asp-for="Rate" class="form-control Rate"  readonly disabled/>
+                                    <input asp-for="Rate" class="form-control Rate" readonly disabled />
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:130px">
@@ -857,11 +865,18 @@
                                     $('#SONO').append('<option value="' + val.SONo + '">' + val.SONo + '</option>');
                                     $('#CustomerOrderNo').append('<option value="' + val.CustOrderNo + '" data-sono="' + val.SONo + '">' + val.CustOrderNo + '</option>');
                                 });
+                                debugger
+                                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                    /* $('#CustomerOrderNo').val($('#hiddenCustOrderNo').val()).trigger("change"); */
+                                    $('#CustomerOrderNo').val('@Model.CustomerOrderNo').trigger("change");
+                                    $('#SONO').val($('#hiddenSONO').val());
+                                }
                             }
                         }
                     },
                 }).done(function () {
                     $('#SONO').val('@Model.SONO');
+                    debugger
                     $('#CustomerOrderNo').val('@Model.CustomerOrderNo');
                     $.ajax({
                         url: "@Url.Action("GetSOYear")",
@@ -918,14 +933,14 @@
             }
             else if ($('#Mode').val() == "SSA" && $('#Mode').val() != "SSC") {
                 NewAmmEntryId();
-                $('#Rate').prop("readonly",false);
-                $('#Rate').prop("disabled",false);
+                $('#Rate').prop("readonly", false);
+                $('#Rate').prop("disabled", false);
             }
             else {
-                  $('#Rate').prop("readonly",true);
-                   $('#Rate').prop("disabled",true);
+                $('#Rate').prop("readonly", true);
+                $('#Rate').prop("disabled", true);
             }
-             
+            debugger
 
             $('.input_container').fadeIn();
 
@@ -943,7 +958,7 @@
             TotalSchQty();
 
             $('#EnterByMachineName').val($('#machineName').text());
-             
+
             FillCustomer();
 
             //today = today.toLocaleString().substr(0, 10);
@@ -2300,29 +2315,29 @@
                             for (var i = 0; i < rows; i++) {
                                 $('#MonthlyEntryData').append("<tr id='appendRow-" + i + "'>");  // Use 'i' instead of 'rows'
                                 $('#appendRow-' + i).append(`
-                                                                                                        <td style='width:15px;'>
-                                                                                                            <a class='table-link link-danger removeMonthlyRow'>
-                                                                                                                <span class='fa-stack'>
-                                                                                                                    <i class='fa fa-square fa-stack-2x'></i>
-                                                                                                                    <i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i>
-                                                                                                                </span>
-                                                                                                            </a>
-                                                                                                        </td>
-                                                                                                        <td style='width:180px;'>
-                                                                                                            <input type="hidden" id="ImportExlData" value="ImportExlData" />
-                                                                                                            <input id='EditPartCode-${i}' value='${data.SaleGridList[i].PartCode}' class='SplitPC' onchange='ItemcodeChange(${i})' style='height:25px;width:250px;' readonly></input>
-                                                                                                        </td>
-                                                                                                        <td style='width:250px;'>
-                                                                                                            <input type='hidden' id='CountDate' value='${count}'/><input type="hidden" id='EditSplitItemCode-${i}' value='${data.SaleGridList[i].ItemCode}' />
-                                                                                                            <input id='EditSplitItemName-${i}' value='${data.SaleGridList[i].ItemName}' class='SplitIN' onchange='PartCodeChange(${i})' style='height:25px;width:250px;' readonly></input>
-                                                                                                        </td>
-                                                                                                        <td>
-                                                                                                            <input id='EditSplitUnit-${i}' value='${data.SaleGridList[i].Unit}' class='EditSplitUnitVal' type='text' style='width:50px;' readonly/>
-                                                                                                        </td>
-                                                                                                        <td>
-                                                                                                            <input id='EditSplitRate-${i}' value='${data.SaleGridList[i].Rate}' class='EditSplitRateVal' type='text' style='width:50px;' readonly/>
-                                                                                                        </td>
-                                                                                                    `);
+                                                                                                                                        <td style='width:15px;'>
+                                                                                                                                            <a class='table-link link-danger removeMonthlyRow'>
+                                                                                                                                                <span class='fa-stack'>
+                                                                                                                                                    <i class='fa fa-square fa-stack-2x'></i>
+                                                                                                                                                    <i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i>
+                                                                                                                                                </span>
+                                                                                                                                            </a>
+                                                                                                                                        </td>
+                                                                                                                                        <td style='width:180px;'>
+                                                                                                                                            <input type="hidden" id="ImportExlData" value="ImportExlData" />
+                                                                                                                                            <input id='EditPartCode-${i}' value='${data.SaleGridList[i].PartCode}' class='SplitPC' onchange='ItemcodeChange(${i})' style='height:25px;width:250px;' readonly></input>
+                                                                                                                                        </td>
+                                                                                                                                        <td style='width:250px;'>
+                                                                                                                                            <input type='hidden' id='CountDate' value='${count}'/><input type="hidden" id='EditSplitItemCode-${i}' value='${data.SaleGridList[i].ItemCode}' />
+                                                                                                                                            <input id='EditSplitItemName-${i}' value='${data.SaleGridList[i].ItemName}' class='SplitIN' onchange='PartCodeChange(${i})' style='height:25px;width:250px;' readonly></input>
+                                                                                                                                        </td>
+                                                                                                                                        <td>
+                                                                                                                                            <input id='EditSplitUnit-${i}' value='${data.SaleGridList[i].Unit}' class='EditSplitUnitVal' type='text' style='width:50px;' readonly/>
+                                                                                                                                        </td>
+                                                                                                                                        <td>
+                                                                                                                                            <input id='EditSplitRate-${i}' value='${data.SaleGridList[i].Rate}' class='EditSplitRateVal' type='text' style='width:50px;' readonly/>
+                                                                                                                                        </td>
+                                                                                                                                    `);
                             }
                             for (var k = 0; k < rows; k++) {
                                 for (var i = 0; i <= count; i++) {
@@ -2498,6 +2513,7 @@
                             $('#SONO').empty();
                             $('#SONO').append('<option>-Select-</option>');
                         } else {
+                            debugger
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                                 $('#CustomerOrderNo').empty();
                                 $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
@@ -2510,7 +2526,15 @@
                                 $.each(obj.Result, function (key, val) {
                                     $('#SONO').append('<option value="' + val.SONo + '" data-custorderno="' + val.CustOrderNo + '">' + val.SONo + '</option>');
                                 });
+                                debugger
+                                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                    $('#SONO').val($('#hiddenSONO').val());
+                                    /* $('#CustomerOrderNo')
+                                        .val($('#hiddenCustOrderNo').val())
+                                        .trigger("change"); */
 
+                                    $('#CustomerOrderNo').val('@Model.CustomerOrderNo').trigger("change");
+                                }
                             }
                             else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
                                 $('#SONO').empty();
@@ -2528,6 +2552,7 @@
                         }
                     }
                     else {
+                        debugger
                         $('#CustomerOrderNo').empty();
                         $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
                         $('#SONO').empty();
@@ -2587,6 +2612,7 @@
                             $.each(obj.Result, function (key, val) {
                                 $('#SOYearCode').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
                             });
+                            debugger
                             $('#CustomerOrderNo').val($('#SONO').find(':selected').data('custorderno'));
                             $('#CustomerOrderNo').change();
                         }
@@ -2620,7 +2646,7 @@
                             var formattedDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear();
                             var SOClosedate = new Date(obj.Result[0].SOCloseDate);
                             var formattedSoCloseDate = ('0' + SOClosedate.getDate()).slice(-2) + '/' + ('0' + (SOClosedate.getMonth() + 1)).slice(-2) + '/' + SOClosedate.getFullYear();
-
+                            debugger
                             $('#CustomerOrderNo').val(obj.Result[0].CustOrderNo), $('#SODate').val(formattedDate), $('#SOCloseDate').val(formattedSoCloseDate), $('#DeliveryAddress').val(obj.Result[0].DeliveryAddress);
                             $('#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
                             $("#SchEffFromDate,#SchAmendmentDate").datepicker("option", "maxDate", parseDateToFormat(obj.Result[0].SOCloseDate));
@@ -2983,7 +3009,7 @@
         });
 
         function FillCustomer() {
-             
+
             $.ajax({
                 url: '@Url.Action("FillCustomer")',
                 type: 'POST',
@@ -3009,7 +3035,7 @@
                         $('#AccountCode').val(LedgerName).trigger("change");
                         $('#AccountCode').val(LedgerName);
                     }
-                     
+
                     if ($('#Mode').val() == "SSA" || $('#Mode').val() == "SSC") {
                         $('#AccountCode').val($('#hiddenSSAccountCode').val());
                     }
@@ -3859,8 +3885,8 @@
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-            <<<<<<< HEAD
+                            <<<<<<< HEAD
 
-            =======
-            >>>>>>> b0e528798e1188143d18517cdd55be2877cad6d9
+                            =======
+                            >>>>>>> b0e528798e1188143d18517cdd55be2877cad6d9
 }
