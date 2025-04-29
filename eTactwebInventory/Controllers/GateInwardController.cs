@@ -134,8 +134,9 @@ namespace eTactWeb.Controllers
             TempData.Clear();
             HttpContext.Session.Remove("KeyGateInwardGrid");
             var model = await BindModels(null);
-            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
+            model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
             model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
@@ -569,12 +570,14 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                DateTime time = DateTime.Now;
-                string format = "MMM ddd d HH:mm yyyy";
-                string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime time = DateTime.Now;
+                //string format = "MMM ddd d HH:mm yyyy";
+                //string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                var dt = time.ToString(format);
-                return Json(formattedDate);
+                //var dt = time.ToString(format);
+                var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
+                return Json(DateTime.Now.ToString("yyyy-MM-dd"));
+               // return Json(formattedDate);
 
             }
             catch (HttpRequestException ex)

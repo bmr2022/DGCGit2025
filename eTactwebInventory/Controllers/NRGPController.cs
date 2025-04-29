@@ -106,9 +106,9 @@ namespace eTactWeb.Controllers
 
             model.ActualEnteredEMpBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             model.ActualEnteredEmpByName = HttpContext.Session.GetString("EmpName");
-            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
+            model.FinFromDate =  CommonFunc.ParseFormattedDate( HttpContext.Session.GetString("FromDate"));
+            model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+            //model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.CC = HttpContext.Session.GetString("Branch");
             MemoryCacheEntryOptions cacheEntryOptions = new()
             {
@@ -131,8 +131,8 @@ namespace eTactWeb.Controllers
 
                 model.Mode = Mode;
                 model.YearCode = YC;
-                model.EntryDate = ParseDate(model.EntryDate).ToString();
-                model.ChallanDate = ParseDate(model.ChallanDate).ToString();
+                //model.EntryDate = ParseDate(model.EntryDate).ToString();
+                //model.ChallanDate = ParseDate(model.ChallanDate).ToString();
                 model.EntryTime = model.EntryTime;
                 model = await BindModel(model);
 
@@ -164,7 +164,7 @@ namespace eTactWeb.Controllers
             {
                 // model = await BindModels(null);
                 model = await BindModel(model);
-                model.EntryDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
+                //model.EntryDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
                 model.ChallanDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
                 model.EntryTime = DateTime.Now.ToString("hh:mm:ss tt");
                 //_MemoryCache.Remove("KeyIssueNRGPGrid");
