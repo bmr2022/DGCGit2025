@@ -10,6 +10,8 @@ using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using FastReport.Web;
+using Microsoft.Extensions.Configuration;
 
 namespace eTactWeb.Controllers
 {
@@ -19,12 +21,14 @@ namespace eTactWeb.Controllers
         private readonly IIssueWithoutBom _IIssueWOBOM;
         private readonly ILogger<IssueWithoutBomController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public IssueWithoutBomController(ILogger<IssueWithoutBomController> logger, IDataLogic iDataLogic, IIssueWithoutBom IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IConfiguration _iconfiguration;
+        public IssueWithoutBomController(ILogger<IssueWithoutBomController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueWithoutBom IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueWOBOM = IIssueWOBOM;
             _IWebHostEnvironment = iWebHostEnvironment;
+            _iconfiguration = iconfiguration;
         }
 
         [Route("{controller}/Index")]
@@ -174,6 +178,25 @@ namespace eTactWeb.Controllers
 
                 return View("Error", ResponseResult);
             }
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+
+            webReport.Report.Load(webRootPath + "\\IssWithOutBOM.frx"); // default report
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+
+
         }
         public IActionResult FillGridFromMemoryCache()
         {

@@ -6,6 +6,8 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using eTactWeb.DOM.Models;
 using System.Globalization;
+using Microsoft.AspNetCore.Http;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace eTactWeb.Controllers
 {
@@ -53,11 +55,20 @@ namespace eTactWeb.Controllers
             { invoiceNo = ""; }
             if (string.IsNullOrEmpty(VendorName) || VendorName == "0")
             { VendorName = ""; }
-       
+
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
             model = await _IMRNRegister.GetMRNRegisterData(MRNType,ReportType,  FromDate,  ToDate,  gateno,  MRNno,docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName);
+            string serializedGrid = JsonConvert.SerializeObject(model.MRNRegisterDetail);
+            HttpContext.Session.SetString("KeyMRNList", serializedGrid);
             model.ReportMode= ReportType;
             return PartialView("_MRNRegisterGrid", model);
         }
+       
         public async Task<JsonResult> FillGateNo(string FromDate, string ToDate)
         {
             var JSON = await _IMRNRegister.FillGateNo(FromDate, ToDate);
@@ -127,6 +138,18 @@ namespace eTactWeb.Controllers
                 Console.WriteLine($"Unexpected Exception: {ex.Message}");
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
+        }
+        [HttpGet]
+        public IActionResult GetMRNRegisterData()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyMRNList");
+            List<MRNRegisterDetail> stockRegisterList = new List<MRNRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<MRNRegisterDetail>>(modelJson);
+            }
+
+            return Json(stockRegisterList);
         }
     }
 }
