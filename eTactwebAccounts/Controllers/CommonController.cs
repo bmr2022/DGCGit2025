@@ -914,7 +914,7 @@ namespace eTactWeb.Controllers
                 if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
                 {
                     MainModel.adjustmentModel = AdjGrid;
-                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjModeOfAdjstment == "NewRef") || (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjNewRefNo.Equals(model.AdjNewRefNo) && (a.AdjPurchOrderNo != null && a.AdjPurchOrderNo.Equals(model.AdjPurchOrderNo)) && (a.AdjPOYear != null && a.AdjPOYear.Equals(model.AdjPOYear)) && a.AdjAgnstAccEntryID.Equals(model.AdjAgnstAccEntryID) && a.AdjAgnstAccYearCode.Equals(model.AdjAgnstAccYearCode)));
+                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjModeOfAdjstment == "NewRef" && a.AdjNewRefNo.Equals(model.AdjNewRefNo)) || (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjNewRefNo.Equals(model.AdjNewRefNo) && (a.AdjPurchOrderNo != null && a.AdjPurchOrderNo.Equals(model.AdjPurchOrderNo)) && (a.AdjPOYear != null && a.AdjPOYear.Equals(model.AdjPOYear)) && a.AdjAgnstAccEntryID.Equals(model.AdjAgnstAccEntryID) && a.AdjAgnstAccYearCode.Equals(model.AdjAgnstAccYearCode)));
                 }
 
                 if (!isDuplicate)

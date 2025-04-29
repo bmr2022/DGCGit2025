@@ -1197,6 +1197,14 @@ public class TaxController : Controller
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
                 _MemoryCache.TryGetValue("PurchaseRejectionModel", out AccPurchaseRejectionModel MainModel);
+
+                string modelPRJson = HttpContext.Session.GetString("PurchaseRejectionModel");
+                AccPurchaseRejectionModel purchaseRejectionModel = new AccPurchaseRejectionModel();
+                if (!string.IsNullOrEmpty(modelPRJson) && MainModel == null && MainModel.ItemDetailGrid == null)
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelPRJson);
+                }
+
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "SaleRejection")
@@ -1753,6 +1761,12 @@ public class TaxController : Controller
             case "PurchaseRejection":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
+                string modelPRJson = HttpContext.Session.GetString("PurchaseRejectionModel");
+                AccPurchaseRejectionModel purchaseRejectionModel = new AccPurchaseRejectionModel();
+                if (!string.IsNullOrEmpty(modelPRJson) && MainModel == null && MainModel.ItemDetailGrid == null)
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelPRJson);
+                }
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
