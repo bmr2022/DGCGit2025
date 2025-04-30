@@ -225,6 +225,7 @@ namespace eTactWeb
             services.TryAddScoped<IPrimaryAccountGroupMaster, PrimaryAccountGroupMasterBLL>();
             services.TryAddScoped<IAlternateItemMaster, AlternateItemMasterBLL>();
             services.TryAddScoped<IBOMReport, BOMReportBLL>();
+            services.TryAddScoped<IIssueVSConsumptionReport, IssueVSConsumptionReportBLL>();
             services.TryAddScoped<IMinimumMaximaumLevel, MinimumMaximaumLevelBLL>();
             services.TryAddScoped<IUserRightReport, UserRightReportBLL>();
             services.TryAddScoped<IDayBook, DayBookBLL>();

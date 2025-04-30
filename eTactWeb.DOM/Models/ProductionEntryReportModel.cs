@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace eTactWeb.DOM.Models
@@ -60,7 +61,7 @@ namespace eTactWeb.DOM.Models
         public string? TransferToWCSTr { get; set; }
 
         public int? ProcessId { get; set; }
-        public string? TransferToWCStr { get; set; }
+        //public string? TransferToWCStr { get; set; }
 
         public string? MachineName { get; set; }
         public string? StageDescription { get; set; }
@@ -139,8 +140,11 @@ namespace eTactWeb.DOM.Models
         public decimal MachineCharges { get; set; }
         public string? ShiftName {  get; set; }
         public decimal TotProdQty { get; set; }
+
+        [JsonPropertyName("PendQtyForQcwithoutprint")]
         public decimal PendQtyForQc {  get; set; }
         public decimal QCOKQty {  get; set; }
+        [JsonPropertyName("RejQtywithoutprint")]
         public decimal RejQty {  get; set; }
         public decimal RewQty {  get; set; }
     }

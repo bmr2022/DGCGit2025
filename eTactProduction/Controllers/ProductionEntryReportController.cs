@@ -148,7 +148,25 @@ namespace eTactWeb.Controllers
             );
 
             model.ReportType = ReportType;
+
+            string serializedGrid = JsonConvert.SerializeObject(model.ProductionEntryReportDetail);
+            HttpContext.Session.SetString("keyproductionentry", serializedGrid);
             return PartialView("_ProductionReportDetailGrid", model);
+        }
+
+
+        public IActionResult GetDataForPDF()
+        {
+            string modelJson = HttpContext.Session.GetString("keyproductionentry");
+            List<ProductionEntryReportDetail> prodentrylist = new List<ProductionEntryReportDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                prodentrylist = JsonConvert.DeserializeObject<List<ProductionEntryReportDetail>>(modelJson);
+            }
+
+
+
+            return Json(prodentrylist);
         }
     }
 }
