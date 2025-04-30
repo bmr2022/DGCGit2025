@@ -9,6 +9,6 @@ namespace eTactWeb.Services.Interface
 {
     public interface IREQUISITIONRegister
     {
-        Task<REQUISITIONRegistermodel> GetREQUISITIONRegisterData(string Flag,string ReQType,string fromDate, string ToDate, string REQNo, string Partcode, string ItemName, string FromstoreId, string Toworkcenter, int ReqYearcode);
+        Task<REQUISITIONRegistermodel> GetREQUISITIONRegisterData(string Flag, string ReQType, string fromDate, string ToDate, string REQNo, string Partcode, string ItemName, string FromstoreId, string Toworkcenter, int ReqYearcode);
     }
 }

@@ -94,13 +94,13 @@
                                     <label class="color-box mt-3" style="background-color: rgb(158 225 149);margin-left:25px;"></label><label style="margin-left:5px;margin-top:-5px;">Pending Challan</label>
                                 </div>
                                 <div class=" d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetREQUISITIONRegisterData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="LedgerPartyWiseOpening" asp-action="LedgerPartyWiseOpeningDashBoard">
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="REQUISITIONRegister" asp-action="REQUISITIONRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
                                 </div>
@@ -182,7 +182,7 @@
 
 
         $(document).ready(function () {
-            GetServerDate();
+            //GetServerDate();
             $('#ReportMode').select2();
             AutoComplete('Account_Head_Master', 'PartyName', 'Account_Name', null);
             AutoComplete('VJobworkIssueMainDetail', 'IssueChallanNo', 'JWChallanNo', null);
@@ -200,7 +200,12 @@
             $('#ItemHeading').text('');
             $('#ItemHeading').text('Requisition Without Bom List Detail');
             GetREQUISITIONRegisterData();
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+          
             $('#ReportMode').change(function () {
                 var selectedValue = $(this).val();
                 if (selectedValue === 'REQUISITIONWITHOUTBOMLIST') {
@@ -255,7 +260,13 @@
             FillColorAccordingPendQty();
             $(Currentrow).css({ 'background-color': '#00bcd4' });
         }
-
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
         function countAllTotal() {
              
             var Rowcount = 0;
@@ -370,23 +381,23 @@
             });
         });
 
-        function GetServerDate() {
-            $.ajax({
-                type: "GET",
-                url: "@Url.Action("GetServerDate","SaleOrder")",
-                async: false,
-                success: function (result, status, error) {
-                    console.log(result);
-                    if (result != null) {
+        // function GetServerDate() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "@Url.Action("GetServerDate","SaleOrder")",
+        //         async: false,
+        //         success: function (result, status, error) {
+        //             console.log(result);
+        //             if (result != null) {
 
-                        var firstDayOfMonth = getFirstDayOfMonth(result);
-                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
-                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+        //                 var firstDayOfMonth = getFirstDayOfMonth(result);
+        //                 $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+        //                 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 
-                    }
-                }
-            });
-        }
+        //             }
+        //         }
+        //     });
+        // }
 
         function getFirstDayOfMonth(dateString) {
             const [day, month, year] = dateString.split('/');

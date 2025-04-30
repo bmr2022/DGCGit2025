@@ -33,7 +33,7 @@ namespace eTactWeb.Controllers
         {
             var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var model = new REQUISITIONRegistermodel();
-            model = await _IREQUISITIONRegister.GetREQUISITIONRegisterData(Flag,ReQType,fromDate, ToDate, Partcode, ItemName, REQNo, FromstoreId,Toworkcenter,ReqYearcode);
+            model = await _IREQUISITIONRegister.GetREQUISITIONRegisterData( Flag,  ReQType,  fromDate,  ToDate,  REQNo,  Partcode,  ItemName,  FromstoreId,  Toworkcenter,  ReqYearcode);
             model.ReportMode=Flag;
             model.ReqType = ReQType;
             if (ReQType == "REQUISITIONWITHOUTBOM")
