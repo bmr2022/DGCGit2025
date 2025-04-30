@@ -115,13 +115,6 @@
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
-                                @*<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                <label asp-for="Type" class="form-label">Type</label>
-                                <select asp-for="Type" class="form-select">
-                                <option value="Summary" selected>Summary</option>
-                                <option value="Detail">Detail</option>
-                                </select>
-                                </div>*@
                                 <div class=" d-flex justify-content-center mt-3" width="inherit">
 
                                     <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetStockRegisterData();">
@@ -129,6 +122,9 @@
                                     </button>
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
                                     </button>
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="StockRegister" asp-action="StockRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
@@ -332,41 +328,63 @@
             window.location.href = '/StockRegister/ExportStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
         });
 
-        //$(document).on('select2:select', '#ItemName,#PartCode', function (e) {
-        //    var cntId = e.target.id;
+                        document.getElementById('sendToPDF').addEventListener('click', async () => {
+          const { jsPDF } = window.jspdf;
+          const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
-        //    if (cntId == 'ItemName') {
-        //        ItemNameChange(cntId);
-        //    }
-        //    else {
-        //        PartCodeChange(cntId);
-        //    }
-        //});
+          // title
+          doc.setFontSize(16).text('Stock Register Report', 40, 40);
 
-        //function ItemNameChange(ID) {
+          // fetch data
+          const resp = await fetch('/StockRegister/GetStockDataForPDF');
+          const rows = await resp.json();
+          const body = rows.map((r,i) => ([
+            i+1, r.storeName, r.partCode, r.itemName, r.opnStk, r.recQty,
+            r.issQty, r.totStk, r.stdPacking, r.unit, r.avgRate,
+            r.amount, r.minLevel, r.altUnit, r.altStock,
+            r.groupName, r.binNo, r.maximumLevel, r.reorderLevel
+          ]));
 
-        //    SetPartCodeItemName(ID);
-        //}
+          const headers = [
+            "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty",
+            "Iss Qty", "Tot Stk", "Std Packing", "Unit", "Avg Rate", "Amount",
+            "Min Level", "Alt Unit", "Alt Stock", "Group Name", "Bin No",
+            "Max Level", "Reorder Level"
+          ];
 
-        //function PartCodeChange(ID) {
-        //    $.when(SetPartCodeItemName(ID)).done(function () {
-        //        //GetItemPartCode(ID)
-        //    });
-        //}
+          doc.autoTable({
+            startY: 60,
+            head: [headers],
+            body: body,
+            theme: 'grid',
+            margin: { left: 40, right: 40 },
+            styles: {
+              fontSize: 7,           // small font
+              cellPadding: 3,        // tight padding
+              overflow: 'linebreak', // allow header to wrap sensibly
+              halign: 'center',
+              valign: 'middle'
+            },
+            headStyles: {
+              fillColor: [41,128,185],
+              textColor: 255,
+              fontStyle: 'bold'
+            },
+            // either let tableWidth: 'auto' size them proportionally...
+            tableWidth: 'auto',
+            // ...or explicitly size the columns you know are wide
+            columnStyles: {
+              0: { cellWidth: 24 },  // Sr#
+              1: { cellWidth: 80 },  // Store Name
+              2: { cellWidth: 60 },  // Part Code
+              3: { cellWidth: 90 },  // Item Name
+              // you can continue for each column, or just let the rest auto-size
+            },
+            showHead: 'everyPage'
+          });
 
-        //function SetPartCodeItemName(ID) {
-        //    if (!ID) return;
-        //    else {
-        //        var v = $('#' + ID).select2('val');
-        //        if (ID == "PartCode") {
-        //            $("#ItemName").val(v).trigger("change");
-        //        }
-
-        //        if (ID == "ItemName") {
-        //            $("#PartCode").val(v).trigger("change");
-        //        }
-        //    }
-        //}
+          doc.save('StockRegisterReport.pdf');
+        });
 
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
@@ -709,6 +727,9 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
 }
 <style>
 

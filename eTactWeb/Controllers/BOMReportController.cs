@@ -49,13 +49,13 @@ namespace eTactWeb.Controllers
            
                 webReport.Report.Load(webRootPath + "\\BOMPrintReportForDirectBOMStockShortExcess.frx"); // default report
            
-            webReport.Report.SetParameterValue("FGPartcode", FGPartCode);
-            webReport.Report.SetParameterValue("FGName", FGName);
-            webReport.Report.SetParameterValue("Storeid", StoreId);
-            webReport.Report.SetParameterValue("WCID", WCID);
-            webReport.Report.SetParameterValue("CurrentDate", CurrentDate);
-            webReport.Report.SetParameterValue("Yearcode", YearCode);
-            webReport.Report.SetParameterValue("CalForQty", CalForQty);
+            webReport.Report.SetParameterValue("FGPartcodeparam", FGPartCode);
+            webReport.Report.SetParameterValue("FGNameparam", FGName);
+            webReport.Report.SetParameterValue("Storeidparam", StoreId);
+            webReport.Report.SetParameterValue("WCIDparam", WCID);
+            webReport.Report.SetParameterValue("CurrentDateparam", CommonFunc.ParseFormattedDate( CurrentDate));
+            webReport.Report.SetParameterValue("Yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("CalForQtyparam", CalForQty);
             //webReport.Report.SetParameterValue("WcName ", WCID);
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;

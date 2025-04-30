@@ -634,6 +634,31 @@
         $('#submitBTN').click(function (e) {
             e.preventDefault();
 
+            var finfromdate=parseDateToFormat($("#FinFromDate").val());
+            var fintodate=parseDateToFormat($("#FinToDate").val());
+            var entrydate=parseDateToFormat($("#EntryDate").val());
+            var challanDate = parseDateToFormat($("#ChallanDate").val());
+
+            if (parseDate(finfromdate) > parseDate(entrydate)) {
+                $.notify('Entrydate should be in financial year...!', "error");
+                return;
+            }
+            if (parseDate(fintodate) < parseDate(entrydate))
+            {
+                $.notify('Entrydate should be in financial year...!', "error");
+                return;
+            }
+
+            if (parseDate(finfromdate) > parseDate(challanDate)) {
+                $.notify('challanDate should be in financial year...!', "error");
+                return;
+            }
+            if (parseDate(fintodate) < parseDate(challanDate)) {
+                $.notify('challanDate should be in financial year...!', "error");
+                return;
+            }
+
+
             if (!ValidateSubmit()) return;
             var CheckTaxFileds = false;
             var TaxRow = $('#divTaxGrid tr').length;
@@ -1049,56 +1074,26 @@
             else
             {
 
-               // FillEntryandChallanNo("NRGP");
+              
 
 
                 GetServerDate();
-               // alert("after GetServerDate");
-
-                // var finFromDate = $('#FinFromDate').val();
-                // var finToDate = $('#FinToDate').val();
-
-                // var dateParts1 = finFromDate.split("/");
-                // var monthNames = {
-                //     "Jan": "01",
-                //     "Feb": "02",
-                //     "Mar": "03",
-                //     "Apr": "04",
-                //     "May": "05",
-                //     "Jun": "06",
-                //     "Jul": "07",
-                //     "Aug": "08",
-                //     "Sep": "09",
-                //     "Oct": "10",
-                //     "Nov": "11",
-                //     "Dec": "12"
-                // };
-
-                // var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                // var dateParts2 = finToDate.split("/");
-
-                // var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-
-
-                // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                // $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                // $('#ChallanDate').datepicker("option", "maxDate", 'now');
+              
 
             }
 
 
-            //FillChallanType();
+            
 
             FillCurrentBatchINStore();
-            //alert("after FillCurrentBatchINStore");
+           
 
             GetTxPartItem();
-                  //           alert("after GetTxPartItem");
+                 
             FillLoadItems();
-           // alert("after FillLoadItems");
-            //GetFormRights();
+           
             BasicTotal();
-             //alert("after BasicTotal");
+             
            var CurrentTime = new Date();
             var Hours = CurrentTime.getHours();
             var Mins = CurrentTime.getMinutes();
@@ -1271,11 +1266,12 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate", "SaleOrder")",
+                url: "@Url.Action("GetServerDate", "GateInward")",
                 async: false,
                 success: function (result, status, error) {
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                     $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    
                 }
             });
         }

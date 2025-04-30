@@ -384,13 +384,13 @@
                         <div class="row g-2 gx-3 justify-content-around">
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
-                                <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
+                                    <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList" onchange="onNetTotalChange()">
                                     <option value="">-Select-</option>
                                 </select>
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
-                                <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
+                                    <input asp-for="TotalDiscountPercentage" class="form-control" onchange="onNetTotalChange()" min="0" max="100" />
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
@@ -398,7 +398,7 @@
                             </div>
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="NetTotal" class="form-label">Net Total</label>
-                                <input asp-for="NetTotal" class="form-control" readonly />
+                                    <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
                             </div>
                         </div>
                         <div class="progress my-3" style="height: 4px;">
@@ -557,7 +557,14 @@
             BasicItemGridTotal();
             GetCostCenter();
             DueDateCalculation();
+            const myInput = document.getElementById("TotalDiscountPercentage");
 
+            myInput.addEventListener("input", function (event) {
+                const inputValue = parseInt(event.target.value);
+                if (isNaN(inputValue) || inputValue > 100) {
+                    event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
+                }
+            });
             $('#GstRegUnreg').rules("remove", "required");
             $('#Transporter').rules("remove", "required");
             $('#HSNNo').rules("remove", "required");
@@ -603,6 +610,10 @@
 
             $('#AdjNewRefNo').val($('#PurchaseRejectionInvoiceNo').val());
             $('#AdjDescription').val($('#PurchaseRejectionInvoiceNo').val());
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "INSERT") {
+                onInvoiceChange('PurchaseRejectionInvoiceNo');
+                setInterval(checkNetTotalChange, 500);
+            }
 
         });
 
@@ -1100,6 +1111,7 @@
             } else {
                 $('#ItemAmount').val(prRate * rejQty);
             }
+            onDiscountChange();
         }
 
         function FillItemsRelatedDetails() {
@@ -1274,6 +1286,20 @@
             });
             BasicPopUpItemGrid();
         });
+
+        let previousValue = document.getElementById('NetTotal').value;
+
+        function checkNetTotalChange() {
+            const netTotalInput = document.getElementById('NetTotal');
+            const currentValue = netTotalInput.value;
+
+            if (currentValue !== previousValue) {
+                previousValue = currentValue;
+
+                const netTotalValue = parseFloat(currentValue);
+                onNetTotalChange();
+            }
+        }
 
         function ValidateGrid() {
 
@@ -1631,7 +1657,7 @@
               var Amount = $('#ItemAmount').val() === "0" || $('#ItemAmount').val() === "" ? 0 : parseFloat($('#ItemAmount').val());
               const RejectedQty = $('#RejectedQty').val() == "0" || $('#RejectedQty').val() === "" ? 0 : parseInt($('#RejectedQty').val());
 
-               if (RejectedQty > 0 && Rate > 0) {
+               if (RejectedQty > 0 && PRRate > 0) {
                 Amount = RejectedQty * PRRate;
             }
             else {
@@ -1640,9 +1666,10 @@
 
             if (DP !== 0) {
                 const DA = ((Amount * DP) / 100);
-                $('#DiscRs').val(DA.toFixed(2));
+                $('#DiscountAmt').val(DA.toFixed(2));
                 Amount = Amount - DA;
             }
+            //$('#ItemAmount').val(Amount.toFixed(2))
         }
 
         function BasicItemGridTotal() {
@@ -2030,6 +2057,7 @@
             var Qty = $('#RejectedQty').val();
 
             $('#ItemAmount').val(rate * Qty);
+            onDiscountChange()
         }
         function FillAltQty() {
             var ItemCode = parseInt($('#ItemCode').val());

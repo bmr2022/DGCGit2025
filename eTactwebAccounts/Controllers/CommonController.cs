@@ -16,30 +16,21 @@ namespace eTactWeb.Controllers
 {
     public class CommonController : Controller
     {
-        private readonly IMemoryCacheService _iMemoryCacheService;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
-        public CommonController(IMemoryCache imemoryCache, ILogger<CommonController> logger, IDataLogic iDataLogic)
+        public CommonController(ILogger<CommonController> logger, IDataLogic iDataLogic)
         {
-            _MemoryCache = imemoryCache;
             Logger = logger;
             IDataLogic = iDataLogic;
         }
 
         public IDataLogic IDataLogic { get; }
         public ILogger<CommonController> Logger { get; }
-        private IMemoryCache _MemoryCache { get; }
 
-        private void StoreInCache(string CacheKey, object CacheObject)
+        public void StoreInSession(string sessionKey, object sessionObject)
         {
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            _MemoryCache.Set(CacheKey, CacheObject, cacheEntryOptions);
+            string serializedObject = JsonConvert.SerializeObject(sessionObject);
+            HttpContext.Session.SetString(sessionKey, serializedObject);
         }
 
         #region For Dbit Credit Grid
@@ -49,8 +40,18 @@ namespace eTactWeb.Controllers
             dynamic TaxGrid = new List<TaxModel>();
             dynamic TdsGrid = new List<TDSModel>();
 
-            _MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
-            _MemoryCache.TryGetValue("KeyTDSGrid", out TdsGrid);
+            string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTaxJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
+            }
+
+            string modelTDSJson = HttpContext.Session.GetString("KeyTDSGrid");
+            if (!string.IsNullOrEmpty(modelTDSJson))
+            {
+                TdsGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTDSJson);
+            }
+
             DataTable DbCrGridd = new DataTable();
             DataTable TaxGridd = new DataTable();
             DataTable TdsGridd = new DataTable();
@@ -100,46 +101,78 @@ namespace eTactWeb.Controllers
                 }
                 else if (PageName == "PurchaseOrder")
                 {
-                    _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+                    }
                 }
                 else if (PageName == "DirectPurchaseBill")
                 {
-                    _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
+                    }
                     DbCrGridd = GetDbCrDetailTable(MainModel);
                     TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
                 }
                 else if (PageName == "PurchaseBill")
                 {
-                    _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("PurchaseBill");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+                    }
                     DbCrGridd = GetPbDbCrDetailTable(MainModel);
                     TdsGridd = GetTDSDetailTableForPB(TdsGrid, MainModel);
                 }
                 else if (PageName == "SaleInvoice")
                 {
-                    _MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("SaleBillModel");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJson);
+                    }
                     DbCrGridd = GetSbDbCrDetailTable(MainModel);
                     //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
                 }
                 else if (PageName == "CreditNote")
                 {
-                    _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("CreditNoteModel");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJson);
+                    }
                     DbCrGridd = GetCNDbCrDetailTable(MainModel);
                     //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
                 }
                 else if (PageName == "PurchaseRejection")
                 {
-                    _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("PurchaseRejectionModel");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelJson);
+                    }
                     DbCrGridd = GetPRDbCrDetailTable(MainModel);
                     //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
                 }
                 else if (PageName == "SaleRejection")
                 {
-                    _MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson);
+                    }
                     DbCrGridd = GetSRDbCrDetailTable(MainModel);
                 }
                 else if (PageName == "JobWorkIssue")
                 {
-                    _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                    string modelJson = HttpContext.Session.GetString("JobWorkIssue");
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<JobWorkIssueModel>(modelJson);
+                    }
                 }
 
                 TaxGridd = GetTaxDetailTable(TaxGrid);
@@ -150,7 +183,7 @@ namespace eTactWeb.Controllers
             //var JSON = "success" + PageName + "_" + AccountCode + "_" + NetAmt + "_" + BillAmt;
             string JsonString = JsonConvert.SerializeObject(JSON);
             var DrCrGridd = TransformJsonToDbCrModel(JsonString);
-            _MemoryCache.Set("KeyDrCrGrid", DrCrGridd == null ? new List<DbCrModel>() : DrCrGridd, DateTimeOffset.Now.AddMinutes(60));
+            HttpContext.Session.SetString("KeyDrCrGrid", JsonConvert.SerializeObject(DrCrGridd));
             return Json(JsonString);
         }
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
@@ -801,8 +834,12 @@ namespace eTactWeb.Controllers
             }
 
             //var CgstSgst = ITDSModule.SgstCgst(model.TDSAccountCode);
-
-            _MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid);
+            string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
+            AdjustmentModel AdjGrid = new AdjustmentModel();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
+            }
 
             if (HttpContext.Session.GetString(model.AdjPageName) != null)
             {
@@ -812,40 +849,72 @@ namespace eTactWeb.Controllers
                 }
                 else if (model.AdjPageName == "PurchaseOrder")
                 {
-                    _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("PurchaseOrder");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJsonData);
+                    }
                 }
                 else if (model.AdjPageName == "DirectPurchaseBill")
                 {
-                    _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("DirectPurchaseBill");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJsonData);
+                    }
                 }
                 else if (model.AdjPageName == "PurchaseBill")
                 {
-                    _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("PurchaseBill");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJsonData);
+                    }
                 }
                 else if (model.AdjPageName == "SaleInvoice")
                 {
-                    _MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("SaleBillModel");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJsonData);
+                    }
                 }
                 else if (model.AdjPageName == "SaleRejection")
                 {
-                    _MemoryCache.TryGetValue("SaleRejectionModel", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("SaleRejectionModel");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJsonData);
+                    }
                 }
                 else if (model.AdjPageName == "CreditNote")
                 {
-                    _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("CreditNoteModel");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJsonData);
+                    }
                 }
                 else if (model.AdjPageName == "PurchaseRejection")
                 {
-                    _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("PurchaseRejectionModel");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelJsonData);
+                    }
                 }
                 else if (model.AdjPageName == "JobWorkIssue")
                 {
-                    _MemoryCache.TryGetValue("JobWorkIssue", out MainModel);
+                    string modelJsonData = HttpContext.Session.GetString("JobWorkIssue");
+                    if (!string.IsNullOrEmpty(modelJsonData))
+                    {
+                        MainModel = JsonConvert.DeserializeObject<JobWorkIssueModel>(modelJsonData);
+                    }
                 }
                 if (AdjGrid?.AdjAdjustmentDetailGrid != null && AdjGrid?.AdjAdjustmentDetailGrid?.Count > 0)
                 {
                     MainModel.adjustmentModel = AdjGrid;
-                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjModeOfAdjstment == "NewRef") || (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjNewRefNo.Equals(model.AdjNewRefNo) && (a.AdjPurchOrderNo != null && a.AdjPurchOrderNo.Equals(model.AdjPurchOrderNo)) && (a.AdjPOYear != null && a.AdjPOYear.Equals(model.AdjPOYear)) && a.AdjAgnstAccEntryID.Equals(model.AdjAgnstAccEntryID) && a.AdjAgnstAccYearCode.Equals(model.AdjAgnstAccYearCode)));
+                    isDuplicate = AdjGrid.AdjAdjustmentDetailGrid.Any(a => (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjModeOfAdjstment == "NewRef" && a.AdjNewRefNo.Equals(model.AdjNewRefNo)) || (a.AdjModeOfAdjstment.Equals(model.AdjModeOfAdjstment) && a.AdjNewRefNo.Equals(model.AdjNewRefNo) && (a.AdjPurchOrderNo != null && a.AdjPurchOrderNo.Equals(model.AdjPurchOrderNo)) && (a.AdjPOYear != null && a.AdjPOYear.Equals(model.AdjPOYear)) && a.AdjAgnstAccEntryID.Equals(model.AdjAgnstAccEntryID) && a.AdjAgnstAccYearCode.Equals(model.AdjAgnstAccYearCode)));
                 }
 
                 if (!isDuplicate)
@@ -871,7 +940,7 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
 
-                StoreInCache("KeyAdjGrid", MainModel.adjustmentModel);
+                StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
             }
             else
             {
@@ -1064,7 +1133,12 @@ namespace eTactWeb.Controllers
         }
         public IActionResult EditAdjRow(string SeqNo, string SN)
         {
-            _MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid);
+            string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
+            AdjustmentModel AdjGrid = new AdjustmentModel();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
+            }
             var SSGrid = AdjGrid.AdjAdjustmentDetailGrid.Where(x => x.AdjSeqNo.ToString() == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
@@ -1088,6 +1162,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new PurchaseBillModel();
             }
+            else if (SN == "PurchaseRejection")
+            {
+                MainModel = new AccPurchaseRejectionModel();
+            }
             else if (SN == "JobWorkIssue")
             {
                 MainModel = new JobWorkIssueModel();
@@ -1097,8 +1175,14 @@ namespace eTactWeb.Controllers
                 MainModel = new SaleBillModel();
             }
             //MainModel = SN == "ItemList" ? new SaleOrderModel() : new PurchaseOrderModel();
+            string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
+            AdjustmentModel AdjGrid = new AdjustmentModel();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
+            }
 
-            if (_MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid))
+            if (AdjGrid != null)
             {
                 bool canDelete = true;
 
@@ -1120,14 +1204,7 @@ namespace eTactWeb.Controllers
                         Indx++;
                         item.AdjSeqNo = Indx;
                     }
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(55),
-                        SlidingExpiration = TimeSpan.FromMinutes(60),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyAdjGrid", AdjGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(AdjGrid));
                 }
                 else
                 {
@@ -1160,8 +1237,12 @@ namespace eTactWeb.Controllers
             {
                 MainModel = new PurchaseBillModel();
             }
-
-            _MemoryCache.TryGetValue("KeyAdjGrid", out AdjustmentModel AdjGrid);
+            string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
+            AdjustmentModel AdjGrid = new AdjustmentModel();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
+            }
 
             if (model != null && model.AdjAdjustmentDetailGrid != null && model.AdjAdjustmentDetailGrid.Count > 0)
             {
@@ -1190,14 +1271,19 @@ namespace eTactWeb.Controllers
 
             MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
 
-            StoreInCache("KeyAdjGrid1", MainModel.adjustmentModel);
+            StoreInSession("KeyAdjGrid1", MainModel.adjustmentModel);
             string JsonString = JsonConvert.SerializeObject(_List);
             return Json(JsonString);
         }
         public IActionResult GetUpdatedAdjGridData()
         {
             // Retrieve the updated data from the cache
-            _MemoryCache.TryGetValue("KeyAdjGrid1", out AdjustmentModel AdjGrid);
+            string modelJson = HttpContext.Session.GetString("KeyAdjGrid");
+            AdjustmentModel AdjGrid = new AdjustmentModel();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelJson);
+            }
 
             if (AdjGrid != null)
             {
