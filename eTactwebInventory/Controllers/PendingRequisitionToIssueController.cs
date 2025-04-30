@@ -219,17 +219,18 @@ namespace eTactWeb.Controllers
                                 else
                                 {
                                     item.seqno = IssueWithoutBomDetailGrid.Count + 1;
-                                            IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
+                                            //IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
                                             SSGrid.AddRange(IssueGrid);
                                             IssueGrid.Add(item);
                                     }
                                 }
                             
-                            MainModel.ItemDetailGrid = IssueGrid;
-
-                            HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                            
                         }
                     }
+                    MainModel.ItemDetailGrid = IssueGrid;
+
+                    HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
                 string pendingToIssue = HttpContext.Session.GetString("KeyPendingToIssue");
                 IList<IssueWithoutBomDetail> grid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(pendingToIssue);

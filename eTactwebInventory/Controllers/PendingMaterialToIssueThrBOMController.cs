@@ -229,7 +229,7 @@ namespace eTactWeb.Controllers
                                 else
                                 {
                                     item.seqno = IssueThrBomDetailGrid.Count + 1;
-                                    IssueGrid = IssueThrBomDetailGrid.Where(x => x != null).ToList();
+                                    //IssueGrid = IssueThrBomDetailGrid.Where(x => x != null).ToList();
                                     SSGrid.AddRange(IssueGrid);
                                     IssueGrid.Add(item);
                                 }
