@@ -15,18 +15,15 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ISaleBillRegister _ISaleBillRegister { get; }
-
         private readonly ILogger<SaleBillRegisterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public SaleBillRegisterController(ILogger<SaleBillRegisterController> logger, IDataLogic iDataLogic, ISaleBillRegister iSaleBillRegister, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public SaleBillRegisterController(ILogger<SaleBillRegisterController> logger, IDataLogic iDataLogic, ISaleBillRegister iSaleBillRegister, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ISaleBillRegister = iSaleBillRegister;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

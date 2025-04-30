@@ -256,7 +256,8 @@
 			  });
 		  }
 
-		$('#sendToPDF').click(async function () {
+						 $('#sendToPDF').click(async function () {
+			debugger
 			const { jsPDF } = window.jspdf;
 			const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
@@ -273,34 +274,46 @@
 			var BatchNo = $('#BatchNo').val();
 			var UniqueBatchNo = $('#UniqueBatchNo').val();
 
-			// Report Title
-			doc.setFontSize(16).text(reportTypeText, 40, 40);
+			// Report Title (Bold and Color)
+			doc.setFontSize(16).setFont('helvetica', 'bold').setTextColor(41, 128, 185).text(reportTypeText, 40, 40);  // Blue color
 
-			// Date Range
-			doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+					doc.setFontSize(10);
+		doc.setTextColor(0, 0, 0);
+		doc.setFont('helvetica', 'bold');
+		doc.text('For the duration From:', 40, 58);
+		doc.setFont('helvetica', 'normal');
+		doc.text(fromDate, 160, 58);
+		doc.setFont('helvetica', 'bold');
+		doc.text('To:', 240, 58);
+		doc.setFont('helvetica', 'normal');
+		doc.text(toDate, 270, 58);
 
-			let currentY = 75;
-					const headerFields = [
-		  { label: 'Work Center',    value: (WorkCenter && WorkCenter !== '-Select-') ? WorkCenter : '' },
-		  { label: 'Part Code',      value: PartCode || '' },
-		  { label: 'Item Name',      value: ItemName || '' },
-		  { label: 'Item Group',     value: ItemGroup || '' },
-		  { label: 'Item Type',      value: ItemType || '' },
-		  { label: 'Batch No',       value: BatchNo || '' },
-		  { label: 'Unique BatchNo', value: UniqueBatchNo || '' },
-		];
+			// Header Fields
+			const headerFields = [
+				{ label: 'Work Center', value: (WorkCenter && WorkCenter !== '-Select-') ? WorkCenter : '' },
+				{ label: 'Part Code', value: PartCode || '' },
+				{ label: 'Item Name', value: ItemName || '' },
+				{ label: 'Item Group', value: ItemGroup || '' },
+				{ label: 'Item Type', value: ItemType || '' },
+				{ label: 'Batch No', value: BatchNo || '' },
+				{ label: 'Unique BatchNo', value: UniqueBatchNo || '' },
+			];
 
-		// Filter out any fields with empty values
-		const filled = headerFields.filter(field => field.value);
+			// Adding headerFields to PDF with bold labels
+							let yPosition = 75; // starting position for header fields
+		doc.setFontSize(10);
+		doc.setTextColor(0, 0, 0); // Set black color once before loop
 
-		// If there is at least one non-empty value, print the header
-		if (filled.length > 0) {
-		  filled.forEach(field => {
-			doc.setFontSize(10)
-			   .text(`${field.label}: ${field.value}`, 40, currentY);
-			currentY += 15;
-		  });
-		}
+		headerFields.forEach((field, index) => {
+		  if (field.value) {
+			doc.setFont('helvetica', 'bold');
+			doc.text(`${field.label}:`, 40, yPosition);
+			doc.setFont('helvetica', 'normal');
+			doc.text(field.value, 140, yPosition);
+			yPosition += 15;
+		  }
+		});
+
 			// Fetch data
 			var resp = await fetch('/WIPStockRegister/GetWIPStockRegisterData');
 			var rows = await resp.json();
@@ -311,61 +324,171 @@
 
 			// Handle report type logic
 			switch (reportTypeValue) {
-			  case 'WIPSTOCKSUMMARY':
-				headers = [
-				  "Sr#", "Work Center", "Part Code", "Item Name", "Opn Stk", "Rec Qty",
-				  "Iss Qty", "Total Stock", "Std Packing", "Unit", "Avg Rate", "Amount",
-				  "Min Level", "Alt Unit", "Alt Stock", "Group Name", "Bin No",
-				  "Maximum Level", "Reorder Level"
-				];
-				body = rows.map((r, i) => [
-				  i + 1, r.workCenterName, r.partCode, r.itemName, r.opnStk, r.recQty,
-				  r.issQty, r.totStk, r.stdPacking, r.unit, r.avgRate, r.amount,
-				  r.minLevel, r.altUnit, r.altStock, r.groupName, r.binNo,
-				  r.maximumLevel, r.reorderLevel
-				]);
-				break;
+				case 'WIPSTOCKSUMMARY':
+					headers = [
+						"Sr#", "Work Center", "Part Code", "Item Name", "Opn Stk", "Rec Qty",
+						"Iss Qty", "Total Stock", "Std Packing", "Unit", "Avg Rate", "Amount",
+						"Min Level", "Alt Unit", "Alt Stock", "Group Name", "Bin No",
+						"Maximum Level", "Reorder Level"
+					];
+					body = rows.map((r, i) => [
+						i + 1, r.workCenterName, r.partCode, r.itemName, r.opnStk, r.recQty,
+						r.issQty, r.totStk, r.stdPacking, r.unit, r.avgRate, r.amount,
+						r.minLevel, r.altUnit, r.altStock, r.groupName, r.binNo,
+						r.maximumLevel, r.reorderLevel
+					]);
+					break;
+				case 'WIPSTOCKDETAIL':
+					headers = [
+						"Sr#", "Work Center","Transaction Type","Trans Date","Slip No","Date" ,"Part Code", "Item Name", "Opn Stk", "Rec Qty",
+						"Iss Qty", "Total Stock", "Unit", "Alt Rec", "Alt Iss","Alt Stk","Alt Unit", "Rate", "Amount", "Batch No",
+						"Unique BatchNo", "Entry Id","From Wc","To Wc","To Store"
+					];
+					body = rows.map((r, i) => [
+						i + 1, r.workCenterName, r.transactionType, r.transDate, r.billNo, r.billDate,r.partCode,r.itemName,r.opnStk,r.recQty,
+						r.issQty, r.totStk, r.unit, r.altRecQty, r.altIssQty, r.altStock,r.altUnit,r.rate,r.amount,r.batchNo,
+						r.uniquebatchNo, r.entryId,r.fromWc,r.toWC,r.toStore
+					]);
+					break;
 
-			  // Add more cases for different report types here if needed
-			  default:
-				headers = ["Sr#", "Item Name", "Total Stock"];
-				body = rows.map((r, i) => [i + 1, r.itemName, r.totStk]);
-				break;
+				// Add more cases for different report types here if needed
+				default:
+					headers = ["Sr#", "Item Name", "Total Stock"];
+					body = rows.map((r, i) => [i + 1, r.itemName, r.totStk]);
+					break;
 			}
 
-			// Generate table
-			doc.autoTable({
-			  startY: 75,
-			  head: [headers],
-			  body: body,
-			  theme: 'grid',
-			  margin: { left: 40, right: 40 },
-			  styles: {
-				fontSize: 7,
-				cellPadding: 3,
-				overflow: 'linebreak',
-				halign: 'center',
-				valign: 'middle'
-			  },
-			  headStyles: {
-				fillColor: [41, 128, 185],
-				textColor: 255,
-				fontStyle: 'bold'
-			  },
-			  tableWidth: 'auto',
-			  columnStyles: {
-				0: { cellWidth: 24 },
-				1: { cellWidth: 80 },
-				2: { cellWidth: 60 },
-				3: { cellWidth: 90 },
-				// Extend more if needed
-			  },
-			  showHead: 'everyPage'
-			});
+			// Generate table with bold and colored header
+					doc.autoTable({
+		  startY: yPosition, // after headerFields
+		  head: [headers],
+		  body: body,
+		  theme: 'grid',
+		  margin: { left: 40, right: 40 },
+		  styles: {
+			fontSize: 7,
+			cellPadding: 3,
+			overflow: 'linebreak',
+			halign: 'center',
+			valign: 'middle'
+		  },
+		  headStyles: {
+			fillColor: [41, 128, 185],
+			textColor: [255, 255, 255],
+			fontStyle: 'bold'
+		  },
+		  columnStyles: getColumnStyles(reportTypeValue),
+		  tableWidth: 'auto',
+		  showHead: 'everyPage'
+				});
+
+								// 1. Calculate all totals
+		const totalOpnStk = rows.reduce((sum, r) => sum + (+r.opnStk  || 0), 0);
+		const totalRecQty = rows.reduce((sum, r) => sum + (+r.recQty  || 0), 0);
+		const totalIssQty = rows.reduce((sum, r) => sum + (+r.issQty  || 0), 0);
+		const totalTotStk = rows.reduce((sum, r) => sum + (+r.totStk  || 0), 0);
+		const totalAmount = rows.reduce((sum, r) => sum + (+r.amount  || 0), 0);
+
+		// 2. Build the one-line footer values string
+		const footerValues =
+		  `Total Open Stock: ${totalOpnStk.toFixed(2)}  |  ` +
+		  `Total Rec Stock: ${totalRecQty.toFixed(2)}  |  ` +
+		  `Total Issue Stock: ${totalIssQty.toFixed(2)}  |  ` +
+		  `Total Stock: ${totalTotStk.toFixed(2)}  |  ` +
+		  `Total Amount: ${totalAmount.toFixed(2)}`;
+
+		// 3. Determine where the table finished
+		const finalY = doc.lastAutoTable.finalY || yPosition;
+
+		// 4. Compute available width (pageWidth − margins)
+		const pageWidth   = doc.internal.pageSize.getWidth();
+		const marginLeft  = 40;
+		const marginRight = 40;
+		const availableW  = pageWidth - marginLeft - marginRight;
+
+		// 5. Draw a bold footer title
+		const titleY = finalY + 15;
+		doc.setFont('helvetica', 'bold')
+		   .setFontSize(11)
+		   .setTextColor(41, 128, 185)           // Optional: match your header color
+		   .text('Report Totals:', marginLeft, titleY);
+
+		// 6. Draw the footer values on the same line (normal weight)
+		const valuesY = titleY + 12;
+		doc.setFont('helvetica', 'normal')
+		   .setFontSize(10)
+		   .setTextColor(0, 0, 0)
+		   .text(footerValues, marginLeft, valuesY, {
+			 maxWidth: availableW,
+			 align: 'left'
+		   });
 
 			// Save the PDF
 			doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
-		  });
+		});
+
+				function getColumnStyles(reportTypeValue) {
+			switch (reportTypeValue) {
+				case 'WIPSTOCKSUMMARY':
+					return {
+						0: { cellWidth: 20 },   // Sr#
+						1: { cellWidth: 50 },   // Work Center
+						2: { cellWidth: 60 },   // Part Code
+						3: { cellWidth: 70 },   // Item Name
+						4: { cellWidth: 30 },   // Opn Stk
+						5: { cellWidth: 30 },   // Rec Qty
+						6: { cellWidth: 30 },   // Iss Qty
+						7: { cellWidth: 30 },   // Total Stock
+						8: { cellWidth: 30 },   // Std Packing
+						9: { cellWidth: 30 },   // Unit
+						10: { cellWidth: 30 },  // Avg Rate
+						11: { cellWidth: 35 },  // Amount
+						12: { cellWidth: 30 },  // Min Level
+						13: { cellWidth: 30 },  // Alt Unit
+						14: { cellWidth: 30 },  // Alt Stock
+						15: { cellWidth: 50 },  // Group Name
+						16: { cellWidth: 30 },  // Bin No
+						17: { cellWidth: 35 },  // Maximum Level
+						18: { cellWidth: 35 }   // Reorder Level
+					};
+
+				case 'WIPSTOCKDETAIL':
+					return {
+						0: { cellWidth: 20 },   // Sr#
+						1: { cellWidth: 50 },   // Work Center
+						2: { cellWidth: 50 },   // Transaction Type
+						3: { cellWidth: 50 },   // Trans Date
+						4: { cellWidth: 25 },   // Slip No
+						5: { cellWidth: 25 },   // Date
+						6: { cellWidth: 50 },   // Part Code
+						7: { cellWidth: 50 },   // Item Name
+						8: { cellWidth: 25 },   // Opn Stk
+						9: { cellWidth: 25 },   // Rec Qty
+						10: { cellWidth: 25 },  // Iss Qty
+						11: { cellWidth: 25 },  // Total Stock
+						12: { cellWidth: 25 },  // Unit
+						13: { cellWidth: 25 },  // Alt Rec
+						14: { cellWidth: 25 },  // Alt Iss
+						15: { cellWidth: 25 },  // Alt Stk
+						16: { cellWidth: 25 },  // Alt Unit
+						17: { cellWidth: 25 },  // Rate
+						18: { cellWidth: 25 },  // Amount
+						19: { cellWidth: 25 },  // Batch No
+						20: { cellWidth: 35 },  // Unique Batch No
+						21: { cellWidth: 25 },  // Entry Id
+						22: { cellWidth: 25 },  // From Wc
+						23: { cellWidth: 25 },  // To Wc
+						24: { cellWidth: 25 }   // To Store
+					};
+
+				default:
+					return {
+						0: { cellWidth: 20 },   // Sr#
+						1: { cellWidth: 80 },   // Item Name
+						2: { cellWidth: 30 }    // Total Stock
+					};
+			}
+		}
 
 		  $("#search-box").on("input", function () {
 

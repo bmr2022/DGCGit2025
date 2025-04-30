@@ -11,17 +11,14 @@ namespace eTactwebAccounts.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ITrailBalance _ITrailBalance { get; }
-
         private readonly ILogger<TrailBalanceController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public TrailBalanceController(ILogger<TrailBalanceController> logger, IDataLogic iDataLogic, ITrailBalance iTrailBalance, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public TrailBalanceController(ILogger<TrailBalanceController> logger, IDataLogic iDataLogic, ITrailBalance iTrailBalance, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ITrailBalance = iTrailBalance;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

@@ -21,15 +21,13 @@ namespace eTactWeb.Controllers
         public ISaleBill _SaleBill { get; }
         private readonly IConfiguration iconfiguration;
         private readonly ILogger<SaleBillController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public SaleBillController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IConfiguration configuration, IMemoryCache memoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public SaleBillController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _SaleBill = iSaleBill;
-            _MemoryCache = memoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
         }
@@ -43,9 +41,9 @@ namespace eTactWeb.Controllers
             var model = new SaleBillModel();
             ViewData["Title"] = "Sale Bill Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeySaleBillGrid");
-            _MemoryCache.Remove("SaleBillModel");
-            _MemoryCache.Remove("KeyAdjGrid");
+            HttpContext.Session.Remove("KeySaleBillGrid");
+            HttpContext.Session.Remove("SaleBillModel");
+            HttpContext.Session.Remove("KeyAdjGrid");
 
             // var model = await BindModel(MainModel);
 
@@ -74,10 +72,10 @@ namespace eTactWeb.Controllers
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
-            _MemoryCache.Set("KeySaleBillGrid", model.saleBillDetails, cacheEntryOptions);
-            _MemoryCache.Set("KeyAdjGrid", model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel, DateTimeOffset.Now.AddMinutes(60));
-            _MemoryCache.Set("SaleBillModel", model, cacheEntryOptions);
-            _MemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
+            HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(model.saleBillDetails));
+            HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel));
+            HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(model));
+            HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd));
             HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
 
             //, string fromDate = "", string toDate = "", string partCode = "", string itemName = "", string saleBillNo = "", string custName = "", string sono = "", string custOrderNo = "", string schNo = ""
@@ -137,7 +135,12 @@ namespace eTactWeb.Controllers
             if (Mode == "U")
             {
                 int Indx = Convert.ToInt32(SeqNo) - 1;
-                _MemoryCache.TryGetValue("KeySaleBillGrid", out List<SaleBillDetail> saleBillDetail);
+                string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                List<SaleBillDetail> saleBillDetail = new List<SaleBillDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    saleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+                }
 
                 if (saleBillDetail != null && saleBillDetail.Count > 0)
                 {
@@ -152,19 +155,17 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.saleBillDetails = saleBillDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeySaleBillGrid", MainModel.saleBillDetails, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeySaleBillGrid", out List<SaleBillDetail> saleBillGrid);
+                string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                List<SaleBillDetail> saleBillGrid = new List<SaleBillDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    saleBillGrid = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+                }
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (saleBillGrid != null && saleBillGrid.Count > 0)
@@ -180,14 +181,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.saleBillDetails = saleBillGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeySaleBillGrid", MainModel.saleBillDetails, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
                 }
             }
 
@@ -196,7 +190,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new SaleBillModel();
-            _MemoryCache.TryGetValue("KeySaleBillGrid", out List<SaleBillDetail> saleBillGrid);
+            string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+            List<SaleBillDetail> saleBillGrid = new List<SaleBillDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                saleBillGrid = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+            }
             var SAGrid = saleBillGrid.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SAGrid);
             return Json(JsonString);
@@ -205,8 +204,18 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> SaleBillDetail);
-                _MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel saleBillModel);
+                string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                List<SaleBillDetail> SaleBillDetail = new List<SaleBillDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    SaleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+                }
+                string SaleBillModelJson = HttpContext.Session.GetString("SaleBillModel");
+                SaleBillModel saleBillModel = new SaleBillModel();
+                if (!string.IsNullOrEmpty(SaleBillModelJson))
+                {
+                    saleBillModel = JsonConvert.DeserializeObject<SaleBillModel>(SaleBillModelJson);
+                }
 
                 var MainModel = new SaleBillModel();
                 var saleBillDetail = new List<SaleBillDetail>();
@@ -237,20 +246,12 @@ namespace eTactWeb.Controllers
                     MainModel.saleBillDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-
-                    _MemoryCache.Set("KeySaleBillGrid", MainModel.saleBillDetails, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
 
                     MainModel = BindItem4Grid(MainModel);
                     MainModel.saleBillDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
-                    _MemoryCache.Set("SaleBillModel", MainModel, cacheEntryOptions);
+                    HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(MainModel));
                 }
                 else
                 {
@@ -266,7 +267,7 @@ namespace eTactWeb.Controllers
 
         public IActionResult ClearDRCRGrid()
         {
-            _MemoryCache.Remove("KeyDrCrGrid");
+            HttpContext.Session.Remove("KeyDrCrGrid");
             return Json("Ok");
         }
 
@@ -274,13 +275,13 @@ namespace eTactWeb.Controllers
         private SaleBillModel BindItem4Grid(SaleBillModel model)
         {
             var _List = new List<DPBItemDetail>();
+            string SaleBillModelJson = HttpContext.Session.GetString("SaleBillModel");
+            SaleBillModel MainModel = new SaleBillModel();
+            if (!string.IsNullOrEmpty(SaleBillModelJson))
+            {
+                MainModel = JsonConvert.DeserializeObject<SaleBillModel>(SaleBillModelJson);
+            }
 
-            _MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
-            //var SeqNo = 0;
-            //if(MainModel == null)
-            //{
-            //    SeqNo++;
-            //}
             _List.Add(
                 new DPBItemDetail
                 {
@@ -393,15 +394,7 @@ namespace eTactWeb.Controllers
                 var adjustChallanDt = GetAdjustChallanDetailTable(model);
                 var result = await _SaleBill.GetAdjustedChallanDetailsData(adjustChallanDt, YearCode, EntryDate, ChallanDate, AccountCode);
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                _MemoryCache.Set("KeyAdjChallanGrid", result, cacheEntryOptions);
-
+                HttpContext.Session.SetString("KeyAdjChallanGrid", JsonConvert.SerializeObject(result));
                 return PartialView("_CustomerJwisschallanAdjustment", result);
             }
             catch (Exception ex)
@@ -412,8 +405,8 @@ namespace eTactWeb.Controllers
 
         public IActionResult ClearGrid()
         {
-            _MemoryCache.Remove("KeySaleBilllGrid");
-            _MemoryCache.Remove("SaleBillModel");
+            HttpContext.Session.Remove("KeySaleBilllGrid");
+            HttpContext.Session.Remove("SaleBillModel");
             var MainModel = new SaleBillModel();
             return PartialView("_SaleBillGrid", MainModel);
         }
@@ -511,8 +504,8 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeySaleBillGrid");
-                _MemoryCache.Remove("KeyTaxGrid");
+                HttpContext.Session.Remove("KeySaleBillGrid");
+                HttpContext.Session.Remove("KeyTaxGrid");
                 var model = new SaleBillDashboard();
 
                 var FromDt = HttpContext.Session.GetString("FromDate");
@@ -789,7 +782,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult ClearCustomerJWGrid()
         {
-            _MemoryCache.Remove("KeyAdjChallanGrid");
+            HttpContext.Session.Remove("KeyAdjChallanGrid");
             var MainModel = new AdjChallanDetail();
             return PartialView("_CustomerJwisschallanAdjustment", MainModel);
         }

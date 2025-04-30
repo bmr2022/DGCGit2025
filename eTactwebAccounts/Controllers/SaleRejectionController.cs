@@ -16,12 +16,10 @@ namespace eTactWeb.Controllers
 {
     public class SaleRejectionController : Controller
     {
-        private readonly IMemoryCache _MemoryCache;
         private readonly ISaleRejection _saleRejection;
         private readonly ILogger<SaleRejectionController> _logger;
-        public SaleRejectionController(IMemoryCache memoryCache, ISaleRejection saleRejection, ILogger<SaleRejectionController> logger)
+        public SaleRejectionController(ISaleRejection saleRejection, ILogger<SaleRejectionController> logger)
         {
-            _MemoryCache = memoryCache;
             _saleRejection = saleRejection;
             _logger = logger;
         }
@@ -33,11 +31,9 @@ namespace eTactWeb.Controllers
             SaleRejectionModel model = new SaleRejectionModel();
             ViewData["Title"] = "Sale Rejection";
             TempData.Clear();
-            _MemoryCache.Remove("KeySaleRejectionGrid");
-            _MemoryCache.Remove("SaleRejectionModel");
-            _MemoryCache.Remove("KeyAdjGrid");
-
-            // var model = await BindModel(MainModel);
+            HttpContext.Session.Remove("KeySaleRejectionGrid");
+            HttpContext.Session.Remove("SaleRejectionModel");
+            HttpContext.Session.Remove("KeyAdjGrid");
 
             model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -61,9 +57,9 @@ namespace eTactWeb.Controllers
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.SaleRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
-            _MemoryCache.Set("KeySaleRejectionGrid", model.SaleRejectionDetails, cacheEntryOptions);
-            _MemoryCache.Set("KeyAdjGrid", model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel, DateTimeOffset.Now.AddMinutes(60));
-            _MemoryCache.Set("SaleRejectionModel", model, cacheEntryOptions);
+            HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(model.SaleRejectionDetails));
+            HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
+            HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
             HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
             return View(model);
         }
@@ -82,11 +78,9 @@ namespace eTactWeb.Controllers
             SaleRejectionModel model = new SaleRejectionModel();
             ViewData["Title"] = "Sale Rejection";
             TempData.Clear();
-            _MemoryCache.Remove("KeySaleRejectionGrid");
-            _MemoryCache.Remove("SaleRejectionModel");
-            _MemoryCache.Remove("KeyAdjGrid");
-
-            // var model = await BindModel(MainModel);
+            HttpContext.Session.Remove("KeySaleRejectionGrid");
+            HttpContext.Session.Remove("SaleRejectionModel");
+            HttpContext.Session.Remove("KeyAdjGrid");
 
             if (model.Mode != "U")
             {
@@ -103,19 +97,14 @@ namespace eTactWeb.Controllers
                 model.ID = ID;
             }
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
+            
             model.FinFromDate = HttpContext.Session.GetString("FromDate");
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.SaleRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
-            _MemoryCache.Set("KeySaleRejectionGrid", model.SaleRejectionDetails, cacheEntryOptions);
-            _MemoryCache.Set("KeyAdjGrid", model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel, DateTimeOffset.Now.AddMinutes(60));
-            _MemoryCache.Set("SaleRejectionModel", model, cacheEntryOptions);
+            HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(model.SaleRejectionDetails));
+            HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
+            HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(model));
             HttpContext.Session.SetString("SaleRejection", JsonConvert.SerializeObject(model));
             return View("SaleRejection", model);
         }
@@ -123,8 +112,18 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> SaleRejectionDetail);
-                _MemoryCache.TryGetValue("SaleRejectionModel", out SaleRejectionModel saleRejectionnModel);
+                string modelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                List<SaleRejectionDetail> SaleRejectionDetail = new List<SaleRejectionDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    SaleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(modelJson);
+                }
+                string saleRejectionModelJson = HttpContext.Session.GetString("SaleRejectionModel");
+                SaleRejectionModel saleRejectionnModel = new SaleRejectionModel();
+                if (!string.IsNullOrEmpty(saleRejectionModelJson))
+                {
+                    saleRejectionnModel = JsonConvert.DeserializeObject<SaleRejectionModel>(saleRejectionModelJson);
+                }
 
                 var MainModel = new SaleRejectionModel();
                 var saleRejectionDetail = new List<SaleRejectionDetail>();
@@ -155,20 +154,12 @@ namespace eTactWeb.Controllers
                         MainModel.SaleRejectionDetails = saleRejectionDetail;
                         MainModel.ItemDetailGrid = saleRejectionDetail;
                     
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-
-                    _MemoryCache.Set("KeySaleRejectionGrid", MainModel.SaleRejectionDetails, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeySaleRejectionGrid", JsonConvert.SerializeObject(MainModel.SaleRejectionDetails));
 
                     MainModel = BindItem4Grid(MainModel);
                     MainModel.SaleRejectionDetails = saleRejectionDetail;
                     MainModel.ItemDetailGrid = saleRejectionDetail;
-                    _MemoryCache.Set("SaleRejectionModel", MainModel, cacheEntryOptions);
+                    HttpContext.Session.SetString("SaleRejectionModel", JsonConvert.SerializeObject(MainModel));
                 }
 
                 return PartialView("_AddSaleRejectionGrid", MainModel);
@@ -185,8 +176,8 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeySaleRejectionGrid");
-                _MemoryCache.Remove("KeyTaxGrid");
+                HttpContext.Session.Remove("KeySaleRejectionGrid");
+                HttpContext.Session.Remove("KeyTaxGrid");
                 var model = new SaleRejectionDashboard();
 
                 var FromDt = HttpContext.Session.GetString("FromDate");
@@ -281,12 +272,13 @@ namespace eTactWeb.Controllers
         {
             var _List = new List<DPBItemDetail>();
 
-            _MemoryCache.TryGetValue("SaleRejectionModel", out SaleRejectionModel MainModel);
-            //var SeqNo = 0;
-            //if(MainModel == null)
-            //{
-            //    SeqNo++;
-            //}
+            string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
+            SaleRejectionModel MainModel = new SaleRejectionModel();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson);
+            }
+
             _List.Add(
                 new DPBItemDetail
                 {
@@ -346,11 +338,30 @@ namespace eTactWeb.Controllers
                 DataTable TaxDetailDT = null;
                 DataTable AdjDetailDT = null;
                 DataTable DrCrDetailDT = null;
-                _MemoryCache.TryGetValue("SaleRejectionModel", out SaleRejectionModel MainModel);
-
-                _MemoryCache.TryGetValue("KeySaleRejectionGrid", out IList<SaleRejectionDetail> saleRejectionDetail);
-                _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-                _MemoryCache.TryGetValue("KeyDrCrGrid", out List<DbCrModel> DrCrGrid);
+                string modelJson = HttpContext.Session.GetString("SaleRejectionModel");
+                SaleRejectionModel MainModel = new SaleRejectionModel();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleRejectionModel>(modelJson);
+                }
+                string saleRejectionModelJson = HttpContext.Session.GetString("KeySaleRejectionGrid");
+                List<SaleRejectionDetail> saleRejectionDetail = new List<SaleRejectionDetail>();
+                if (!string.IsNullOrEmpty(saleRejectionModelJson))
+                {
+                    saleRejectionDetail = JsonConvert.DeserializeObject<List<SaleRejectionDetail>>(saleRejectionModelJson);
+                }
+                string taxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+                List<TaxModel> TaxGrid = new List<TaxModel>();
+                if (!string.IsNullOrEmpty(taxGridJson))
+                {
+                    TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(taxGridJson);
+                }
+                string drCrGridJson = HttpContext.Session.GetString("KeyDrCrGrid");
+                List<DbCrModel> DrCrGrid = new List<DbCrModel>();
+                if (!string.IsNullOrEmpty(drCrGridJson))
+                {
+                    DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson);
+                }
                 if (saleRejectionDetail == null)
                 {
                     ModelState.Clear();
@@ -404,7 +415,6 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove(SBGrid);
                             var model1 = new SaleRejectionModel();
                             model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
 
@@ -417,8 +427,8 @@ namespace eTactWeb.Controllers
                             model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            _MemoryCache.Remove("KeySaleRejectionGrid");
-                            _MemoryCache.Remove("SaleRejectionModel");
+                            HttpContext.Session.Remove("KeySaleRejectionGrid");
+                            HttpContext.Session.Remove("SaleRejectionModel");
                             return View(model1);
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -434,8 +444,8 @@ namespace eTactWeb.Controllers
                             model1.CC = HttpContext.Session.GetString("Branch");
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            _MemoryCache.Remove("KeySaleRejectionGrid");
-                            _MemoryCache.Remove("SaleRejectionModel");
+                            HttpContext.Session.Remove("KeySaleRejectionGrid");
+                            HttpContext.Session.Remove("SaleRejectionModel");
                             return View(model1);
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)

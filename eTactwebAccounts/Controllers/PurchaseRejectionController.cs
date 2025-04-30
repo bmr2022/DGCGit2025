@@ -14,14 +14,12 @@ namespace eTactWeb.Controllers
 {
     public class PurchaseRejectionController : Controller
     {
-        private readonly IMemoryCache _MemoryCache;
         private readonly IPurchaseRejection _purchRej;
         private readonly ILogger<PurchaseRejectionController> _logger;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public PurchaseRejectionController(IMemoryCache memoryCache, IPurchaseRejection purchRej, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger)
+        public PurchaseRejectionController(IPurchaseRejection purchRej, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger)
         {
-            _MemoryCache = memoryCache;
             _purchRej = purchRej;
             _IWebHostEnvironment = IWebHostEnvironment;
             _logger = logger;
@@ -204,7 +202,6 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove(PRGrid);
 
                             var model1 = new SaleBillModel();
                             model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
