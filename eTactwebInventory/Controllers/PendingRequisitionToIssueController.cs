@@ -185,10 +185,11 @@ namespace eTactWeb.Controllers
             {
                 HttpContext.Session.Remove("KeyPendingToIssue");
                 string modelJson = HttpContext.Session.GetString("KeyPendingToIssue");
-                IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
+                List<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = new List<IssueWithoutBomDetail>();
+                 //IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
+                    IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
                 }
                 TempData.Clear();
                 var MainModel = new IssueWithoutBom();
