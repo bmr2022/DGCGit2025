@@ -75,7 +75,7 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                var billDate = Common.CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
+                var billDate = Common.CommonFunc.ParseFormattedDate(DateTime.Now.ToString().Split(" ")[0]);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
