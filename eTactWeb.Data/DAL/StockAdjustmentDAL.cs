@@ -805,7 +805,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@WCID", WCid));
                 SqlParams.Add(new SqlParameter("@transDate", FormattedTransDate));
                 SqlParams.Add(new SqlParameter("@batchno", batchno));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINWIP", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINWIPWithNegativeStock", SqlParams);
+
+                //--FillCurrentBatchINWIP
+                //_ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINWIP", SqlParams);
             }
             catch (Exception ex)
             {
