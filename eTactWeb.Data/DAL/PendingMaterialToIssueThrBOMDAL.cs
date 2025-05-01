@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -131,24 +132,6 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
-        }
-        public static string ParseFormattedDate(string dateString)
-        {
-            if (string.IsNullOrEmpty(dateString))
-            {
-                return string.Empty;
-            }
-            DateTime date;
-            string[] formats = { "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "dd/MM/yy", "MM/dd/yyyy", "MM/dd/yy", "dd-MM-yy", "d-M-yy", "dd/MMM/yyyy", "dd/MMM/yyyy HH:mm:ss", "HH:mm:ss", "" };
-
-            if (DateTime.TryParseExact(dateString, formats, System.Globalization.CultureInfo.InvariantCulture, System.Globalization.DateTimeStyles.None, out date))
-            {
-                return date.ToString("yyyy/MM/dd");
-            }
-            else
-            {
-                return string.Empty;
-            }
         }
         public async Task<ResponseResult> CheckTransDate(int ItemCode, string IssueDate, string BatchNo, string UniqBatchNo, int YearCode)
         {

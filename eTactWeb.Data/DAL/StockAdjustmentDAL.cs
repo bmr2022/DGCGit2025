@@ -708,10 +708,10 @@ namespace eTactWeb.Data.DAL
             {
                 CultureInfo culture = new CultureInfo("en-US");
                 var TrDt = Convert.ToDateTime(TransDate);
-                var TransDt = TrDt.ToString("yyyy/MM/dd", culture);
+                //var TransDt = TrDt.ToString("yyyy/MM/dd", culture);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
-                SqlParams.Add(new SqlParameter("@TransDate", TransDt));
+                SqlParams.Add(new SqlParameter("@TransDate", ParseFormattedDate(TransDate)));
                 SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@SToreIdWCID", StoreWC));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
@@ -772,13 +772,13 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var finStDt = Convert.ToDateTime(FinStartDate);
-                var transDt= Convert.ToDateTime(TrDate);
+                //var transDt= Convert.ToDateTime(TrDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@FinStartDate", finStDt.ToString("yyyy/MM/dd").Replace("-", "/")));
-                SqlParams.Add(new SqlParameter("@transDate", transDt.ToString("yyyy/MM/dd").Replace("-", "/")));
+                SqlParams.Add(new SqlParameter("@FinStartDate", ParseFormattedDate(FinStartDate)));
+                SqlParams.Add(new SqlParameter("@transDate", ParseFormattedDate(TrDate)));
                 SqlParams.Add(new SqlParameter("@batchno", batchno));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStoreWithNegativeStock", SqlParams);
             }
@@ -798,14 +798,14 @@ namespace eTactWeb.Data.DAL
             {
                 if (ItemCode > 0 && WCid > 0 )
                     {
-                    var StrTransDate = Convert.ToDateTime(TransDate);
-                    var Date = DateTime.Now;
-                    var FormattedTransDate = DateTime.Now.ToString("yyyy/MM/dd");
+                    //var StrTransDate = Convert.ToDateTime(TransDate);
+                    //var Date = DateTime.Now;
+                    //var FormattedTransDate = DateTime.Now.ToString("yyyy/MM/dd");
                     var SqlParams = new List<dynamic>();
                     SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                     SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                     SqlParams.Add(new SqlParameter("@WCID", WCid));
-                    SqlParams.Add(new SqlParameter("@transDate", FormattedTransDate));
+                    SqlParams.Add(new SqlParameter("@transDate", ParseFormattedDate(TransDate)));
                     SqlParams.Add(new SqlParameter("@batchno", batchno));
                     _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINWIPWithNegativeStock", SqlParams);
                 }
