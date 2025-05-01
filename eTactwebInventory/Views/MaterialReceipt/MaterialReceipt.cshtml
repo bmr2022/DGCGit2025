@@ -680,10 +680,10 @@
                         console.log(result);
                         if (result != null) {
 
-                            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            $('#manufactureDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            $('#ExpiryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            $('#manufactureDate').datepicker("option", "maxDate", result);
+                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                        $('#manufactureDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                        $('#ExpiryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                        $('#manufactureDate').datepicker("option", "maxDate", result);
                         }
                     }
                 });
@@ -773,7 +773,7 @@
             GetFormRights();
 
                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                    GetServerDate();
+
                     fillEntryandMRN();
                     $('.BatchDetail').fadeOut();
                     var finFromDate = $('#FinFromDate').val();
@@ -803,6 +803,9 @@
 
                     $('#EntryDate').datepicker("option", "minDate", formattedDate1);
                     $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+                console.log("start");
+                GetServerDate();
+                console.log("after server date" + $('#EntryDate').val());
 
                 }
                 else {
@@ -860,13 +863,18 @@
                 };
 
                 var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            console.log("formattedDate1" + finFromDate);
                 var dateParts2 = finToDate.split("/");
 
                 var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
-                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
-                $('#FromDate').datepicker("option", "minDate", formattedDate1);
-                $('#ToDate').datepicker("option", "maxDate", formattedDate2);
+            console.log("formattedDate2" + finToDate);
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finFromDate));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finToDate));
+            $('#FromDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+            $('#ToDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+
+                console.log($('#FromDate').val());
+            console.log($('#ToDate').val());
                 //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 // $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
@@ -906,8 +914,10 @@
                 if ($('#DateIntact').val() == "Y") {
                     var fromDt = $('#FromDate').val();
                     var toDt = $('#ToDate').val();
-                    $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", fromDt);
-                    $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDt);
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finFromDate));
+                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finToDate));
+                console.log("inside if"+$('#ToDate').val());
+                
                     FillGateNo();
                     //$('#GateNo').val(@Model.GateNo);
                     //            $('#GateYearCode').val(@Model.GateYearCode);
@@ -916,10 +926,11 @@
                 else {
                     var fromDate;
                     var toDate;
-                    $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
-                    $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
-                    $('#FromDate').datepicker("option", "minDate", formattedDate1);
-                    $('#ToDate').datepicker("option", "maxDate", formattedDate2);
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finFromDate));
+                $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(finToDate));
+                $('#FromDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+                $('#ToDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+                console.log("else"+$('#ToDate').val());
                 }
 
                 bindDept();

@@ -559,7 +559,7 @@
             var UniqueBatchNo = $('#UniqueBatchNo').val();
 
             // Report Title
-            doc.setFontSize(16).text(reportTypeText, 40, 40);
+            doc.setFontSize(16).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 40);
 
             // Date Range
             doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
@@ -656,6 +656,19 @@
                 },
                 showHead: 'everyPage'
             });
+
+            // Footer section (ISSUE BY, QC MANAGER, RECEIVE BY, REMARKS)
+            const finalY = doc.lastAutoTable.finalY + 30;
+            doc.setFontSize(10);
+            doc.text('ISSUE BY', 40, finalY);
+            doc.text('Q.C. MANAGER', 340, finalY);
+            doc.text('RECEIVE BY', 540, finalY);
+
+            
+
+            // Remarks section
+            doc.setFontSize(9).text('REMARKS', 40, finalY + 35);
+            doc.line(40, finalY + 40, 550, finalY + 40);
 
             // Save the PDF
             doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);

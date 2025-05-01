@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/15/2025 15:02:17" ReportInfo.Modified="01/15/2025 16:49:39" ReportInfo.CreatorVersion="2024.1.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/15/2025 15:02:17" ReportInfo.Modified="04/30/2025 20:31:50" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSPQe8WXOBbl36jIrJCcPWOA==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RShlv4VQERuKE+1rziGDSBiA==">
       <TableDataSource Name="Company_Detail" DataType="System.Int32" Enabled="true" TableName="Company_Detail">
         <Column Name="EntryID" DataType="System.Int64"/>
         <Column Name="DispName" DataType="System.String"/>
@@ -116,25 +116,28 @@
     </MsSqlDataConnection>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="264.6">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="207.9">
       <TextObject Name="Text1" Left="217.35" Top="9.45" Width="292.95" Height="28.35" Text="Requisition Through Bom" Font="Arial, 16pt, style=Bold"/>
       <TextObject Name="Text4" Left="28.35" Top="132.3" Width="66.15" Height="18.9" Text="Req No:" Font="Arial, 10pt"/>
-      <TextObject Name="Text5" Left="85.05" Top="132.3" Width="255.15" Height="18.9" Text="[VRequisitionThrBOMMainDetail.REQNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Left="94.5" Top="132.3" Width="264.6" Height="18.9" Text="[VRequisitionThrBOMMainDetail.REQNo]" Font="Arial, 10pt"/>
       <TextObject Name="Text6" Left="28.35" Top="160.65" Width="122.85" Height="18.9" Text="From DepartMent:" Font="Arial, 10pt"/>
-      <TextObject Name="Text7" Left="28.35" Top="56.7" Width="245.7" Height="18.9" Text="[VRequisitionThrBOMMainDetail.Com_Name]" Font="Arial, 12pt"/>
-      <TextObject Name="Text8" Left="28.35" Top="85.05" Width="302.4" Height="18.9" Text="[VRequisitionThrBOMMainDetail.CompAddress]" Font="Arial, 12pt"/>
-      <TextObject Name="Text9" Left="141.75" Top="160.65" Width="207.9" Height="18.9" Text="[VRequisitionThrBOMMainDetail.DeptName]" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Left="236.25" Top="47.25" Width="340.2" Height="18.9" CanGrow="true" CanBreak="false" Text="[VRequisitionThrBOMMainDetail.Com_Name]" Font="Arial, 12pt"/>
+      <TextObject Name="Text8" Left="264.6" Top="75.6" Width="406.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[VRequisitionThrBOMMainDetail.CompAddress]" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="141.75" Top="160.65" Width="217.35" Height="18.9" Text="[VRequisitionThrBOMMainDetail.DeptName]" Font="Arial, 10pt"/>
       <TextObject Name="Text10" Left="28.35" Top="189" Width="75.6" Height="18.9" Text="Print Date:" Font="Arial, 10pt"/>
-      <TextObject Name="Text11" Left="94.5" Top="189" Width="122.85" Height="18.9" Text="[Date]" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="103.95" Top="189" Width="122.85" Height="18.9" Text="[Date]" Font="Arial, 10pt"/>
       <TextObject Name="Text12" Left="359.1" Top="132.3" Width="75.6" Height="18.9" Text="Req Date:" Font="Arial, 10pt"/>
-      <TextObject Name="Text13" Left="425.25" Top="132.3" Width="274.05" Height="18.9" Text="[VRequisitionThrBOMMainDetail.ReqDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
       <TextObject Name="Text14" Left="359.1" Top="160.65" Width="94.5" Height="18.9" Text="Work Center:" Font="Arial, 10pt"/>
-      <TextObject Name="Text15" Left="444.15" Top="160.65" Width="283.5" Height="18.9" Text="[VRequisitionThrBOMMainDetail.WorkCenter]" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="453.6" Top="160.65" Width="255.15" Height="18.9" Text="[VRequisitionThrBOMMainDetail.WorkCenter]" Font="Arial, 10pt"/>
       <TextObject Name="Text16" Left="359.1" Top="189" Width="66.15" Height="18.9" Text="Plan No:" Font="Arial, 10pt"/>
-      <TextObject Name="Text17" Left="434.7" Top="189" Width="264.6" Height="18.9" Text="[VRequisitionThrBOMMainDetail.WONo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text17" Left="425.25" Top="189" Width="264.6" Height="18.9" Text="[VRequisitionThrBOMMainDetail.WONo]" Font="Arial, 10pt"/>
+      <LineObject Name="Line35" Left="9.45" Top="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
+      <LineObject Name="Line36" Left="9.45" Top="9.45" Height="198.45" Border.Style="Dot"/>
+      <LineObject Name="Line37" Left="708.75" Top="9.45" Height="198.45" Border.Style="Dot"/>
+      <LineObject Name="Line1" Left="9.45" Top="207.9" Width="699.3" Border.Style="Dot" Diagonal="true"/>
+      <TextObject Name="Text44" Left="434.7" Top="132.3" Width="274.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[VRequisitionThrBOMMainDetail.ReqDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="267.7" Width="718.2" Height="47.25">
-      <LineObject Name="Line1" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
+    <PageHeaderBand Name="PageHeader1" Top="210.57" Width="718.2" Height="47.25">
       <LineObject Name="Line3" Left="9.45" Height="47.25" Border.Style="Dot" Diagonal="true"/>
       <LineObject Name="Line4" Left="708.75" Height="47.25" Border.Style="Dot" Diagonal="true"/>
       <TextObject Name="Text18" Left="9.45" Top="9.45" Width="28.35" Height="37.8" Text="SrNo" Font="Arial, 10pt"/>
@@ -155,7 +158,7 @@
       <LineObject Name="Line11" Left="500.85" Height="47.25" Border.Style="Dot" Diagonal="true"/>
       <LineObject Name="Line12" Left="604.8" Height="47.25" Border.Style="Dot" Diagonal="true"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="318.05" Width="718.2" Height="28.35" Condition="[VRequisitionThrBOMMainDetail.PartCode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="260.48" Width="718.2" Height="28.35" Condition="[VRequisitionThrBOMMainDetail.Item_Name]">
       <LineObject Name="Line14" Left="9.45" Height="28.35" Border.Style="Dot" Diagonal="true"/>
       <TextObject Name="Text27" Left="9.45" Top="9.45" Width="28.35" Height="18.9" Text="[Row#]" Font="Arial, 8pt"/>
       <TextObject Name="Text28" Left="45.36" Top="9.45" Width="75.6" Height="18.9" Text="[VRequisitionThrBOMMainDetail.PartCode]" Font="Arial, 8pt"/>
@@ -176,21 +179,24 @@
       <LineObject Name="Line22" Left="604.8" Height="28.35" Border.Style="Dot" Diagonal="true"/>
       <LineObject Name="Line23" Left="708.75" Height="28.35" Border.Style="Dot" Diagonal="true"/>
       <LineObject Name="Line2" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
-      <ChildBand Name="Child1" Top="349.5" Width="718.2">
+      <ChildBand Name="Child1" Top="291.5" Width="718.2">
         <LineObject Name="Line13" Left="9.45" Width="699.3" Border.Style="Dot" Diagonal="true"/>
       </ChildBand>
-      <DataBand Name="Data1" Top="352.6" Width="718.2" DataSource="VRequisitionThrBOMMainDetail"/>
-      <GroupFooterBand Name="GroupFooter1" Top="355.7" Width="718.2"/>
+      <DataBand Name="Data1" Top="294.17" Width="718.2" DataSource="VRequisitionThrBOMMainDetail"/>
+      <GroupFooterBand Name="GroupFooter1" Top="296.83" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="390.26" Width="718.2" Height="151.2">
+    <ReportSummaryBand Name="ReportSummary1" Top="330.52" Width="718.2" Height="151.2">
       <TextObject Name="Text36" Left="18.9" Top="28.35" Width="94.5" Height="18.9" Text="Store Name:" Font="Arial, 10pt"/>
-      <TextObject Name="Text37" Left="113.4" Top="28.35" Width="94.5" Height="18.9" Text="[VRequisitionThrBOMMainDetail.Store_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text37" Left="113.4" Top="28.35" Width="245.7" Height="18.9" Text="[VRequisitionThrBOMMainDetail.Store_Name]" Font="Arial, 10pt"/>
       <TextObject Name="Text38" Left="425.25" Top="113.4" Width="170.1" Height="18.9" Text="Requisition By EmpName" Font="Arial, 10pt"/>
       <TextObject Name="Text40" Left="18.9" Top="56.7" Width="94.5" Height="18.9" Text="Remark" Font="Arial, 10pt"/>
-      <TextObject Name="Text41" Left="434.7" Top="94.5" Width="151.2" Height="18.9" Text="[VRequisitionThrBOMMainDetail.RequistionByEmpName]" Font="Arial, 8pt"/>
+      <TextObject Name="Text41" Left="434.7" Top="94.5" Width="255.15" Height="18.9" Text="[VRequisitionThrBOMMainDetail.RequistionByEmpName]" Font="Arial, 8pt"/>
       <TextObject Name="Text42" Left="113.4" Top="113.4" Width="151.2" Height="18.9" Text="Entered By EmpName" Font="Arial, 10pt"/>
       <TextObject Name="Text43" Left="122.85" Top="94.5" Width="264.6" Height="18.9" Text="[VRequisitionThrBOMMainDetail.EnteredByEmpName]" Font="Arial, 8pt"/>
-      <ChildBand Name="Child2" Top="358.8" Width="718.2" Height="28.35" FillUnusedSpace="true">
+      <LineObject Name="Line38" Left="9.45" Top="141.75" Width="699.3" Border.Style="Dot" Diagonal="true"/>
+      <LineObject Name="Line39" Left="9.45" Top="141.75" Height="-141.75" Border.Style="Dot"/>
+      <LineObject Name="Line40" Left="708.75" Top="141.75" Height="-141.75" Border.Style="Dot"/>
+      <ChildBand Name="Child2" Top="299.5" Width="718.2" Height="28.35" FillUnusedSpace="true">
         <LineObject Name="Line24" Left="9.45" Height="28.35" Border.Style="Dot" Diagonal="true"/>
         <LineObject Name="Line25" Left="9.45" Top="28.35" Width="699.3" Border.Style="Dot" Diagonal="true"/>
         <LineObject Name="Line26" Left="37.8" Height="28.35" Border.Style="Dot" Diagonal="true"/>
