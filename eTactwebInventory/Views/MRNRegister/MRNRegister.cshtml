@@ -161,6 +161,9 @@
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="MRNRegister" asp-action="MRNRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
@@ -255,6 +258,317 @@
             FillSchNo();
 
             GetMRNRegisterData();//INITIAL - ON LOAD METHOD
+        });
+       /*  $('#sendToPDF').click(async function () {
+            debugger
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            // Get dynamic values
+            var reportTypeText = $('#ReportType').find(":selected").text();
+            var reportTypeValue = $('#ReportType').val();
+
+            var mrnTypeText = $('#MRNType').find(":selected").text();
+            var mrnTypeValue = $('#MRNType').val();
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+
+            var vendorName = $('#VendorName').val();
+            var gateNo = $('#gateno').val();
+            var mrnNo = $('#MRNno').val();
+            var invoiceNo = $('#invoiceNo').val();
+            var poNo = $('#PONo').val();
+            var schNo = $('#Schno').val();
+            var partCode = $('#PartCode').val();
+            var itemName = $('#ItemName').val();
+            var docName = $('#docname').val();
+
+            // Additional fields you mentioned:
+            var workCenter = $('#WCID').find(":selected").text();
+            var itemGroup = $('#ItemGroup').val();
+            var itemType = $('#ItemType').val();
+            var batchNo = $('#BatchNo').val();
+            var uniqueBatchNo = $('#UniqueBatchNo').val();
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+                { label: 'Report Type (Text)', value: reportTypeText || '' },
+                { label: 'Report Type (Value)', value: reportTypeValue || '' },
+                { label: 'MRN Type (Text)', value: mrnTypeText || '' },
+                { label: 'MRN Type (Value)', value: mrnTypeValue || '' },
+                { label: 'From Date', value: fromDate || '' },
+                { label: 'To Date', value: toDate || '' },
+                { label: 'Vendor Name', value: vendorName || '' },
+                { label: 'Gate Entry No', value: gateNo || '' },
+                { label: 'MRN No', value: mrnNo || '' },
+                { label: 'Invoice No', value: invoiceNo || '' },
+                { label: 'PO No', value: poNo || '' },
+                { label: 'Sch No', value: schNo || '' },
+                { label: 'Part Code', value: partCode || '' },
+                { label: 'Item Name', value: itemName || '' },
+                { label: 'Document Type', value: docName || '' },
+                { label: 'Work Center', value: (workCenter && workCenter !== '-Select-') ? workCenter : '' },
+                { label: 'Item Group', value: itemGroup || '' },
+                { label: 'Item Type', value: itemType || '' },
+                { label: 'Batch No', value: batchNo || '' },
+                { label: 'Unique Batch No', value: uniqueBatchNo || '' }
+            ];
+
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+            // Fetch data
+            var resp = await fetch('/MRNRegister/GetMRNRegisterData');
+            var rows = await resp.json();
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+                case 'vendorItemWiseSummary':
+                    const headers = [
+                        "Vendor Name", "MRN No", "MRN Date", "Gate No", "Gate Date", "Invoice No",
+                        "Invoice Date", "Document No", "Part Code", "Item Name", "Bill Quantity",
+                        "Received Quantity", "Short/Excess Quantity", "Unit", "Amount", "Total Amount",
+                        "Net Amount", "Remarks", "Actual Entry By Employee", "Actual Entry Date",
+                        "Updated By Employee", "Last Updated Date", "FOC", "Department Name",
+                        "Currency", "Received In Store", "MRN Type"
+                    ];
+                    body = rows.map((r, i) => [
+                        i + 1, r.VendorName, r.MRNNo, r.MRNDate, r.GateNo, r.GDate,
+                        r.InvoiceNo, r.InvoiceDate, r.DocNo, r.PartCode, r.ItemName,
+                        r.BillQty, r.RecQty, r.ShortExcessQty, r.Unit, r.Amount,
+                        r.TotalAmt, r.NetAmount, r.Remark, r.ActualEntryByEmp, r.ActualEntryDate,
+                        r.UpdatedByEmp, r.LastUpdatedDate, r.FOC, r.DepName, r.Currency,
+                        r.RecInStore, r.MRNType
+                    ]);
+
+                    break;
+
+                // Add more cases for different report types here if needed
+                default:
+                    headers = ["Sr#", "Item Name"];
+                    body = rows.map((r, i) => [i + 1, r.ItemName]);
+                    break;
+            }
+
+            // Generate table
+            doc.autoTable({
+                startY: 75,
+                head: [headers],
+                body: body,
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 3,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: {
+                    0: { cellWidth: 'auto' },    // Column 1: Sr#
+                    1: { cellWidth: 'auto' },    // Column 2: ProdDate
+                    2: { cellWidth: 'auto' },    // Column 3: NewProdRework
+                    3: { cellWidth: 'auto' },    // Column 4: FGPartCode
+                    4: { cellWidth: 'auto' },    // Column 5: FGItemName
+                    5: { cellWidth: 'auto' },    // Column 6: Workcenter
+                    6: { cellWidth: 'auto' },    // Column 7: FGProdQty
+                    7: { cellWidth: 'auto' },    // Column 8: FGOKQty
+                    8: { cellWidth: 'auto' },    // Column 9: FGRejQty
+                    9: { cellWidth: 'auto' },    // Column 10: TransferToWCSTr
+                },
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+        }); */
+
+        $('#sendToPDF').click(async function () {
+            debugger
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            // Get dynamic values
+            var reportTypeText = $('#ReportType').find(":selected").text();
+            var reportTypeValue = $('#ReportType').val();
+
+            var mrnTypeText = $('#MRNType').find(":selected").text();
+            var mrnTypeValue = $('#MRNType').val();
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+
+            var vendorName = $('#VendorName').val();
+            var gateNo = $('#gateno').val();
+            var mrnNo = $('#MRNno').val();
+            var invoiceNo = $('#invoiceNo').val();
+            var poNo = $('#PONo').val();
+            var schNo = $('#Schno').val();
+            var partCode = $('#PartCode').val();
+            var itemName = $('#ItemName').val();
+            var docName = $('#docname').val();
+
+            // Additional fields you mentioned:
+            var workCenter = $('#WCID').find(":selected").text();
+            var itemGroup = $('#ItemGroup').val();
+            var itemType = $('#ItemType').val();
+            var batchNo = $('#BatchNo').val();
+            var uniqueBatchNo = $('#UniqueBatchNo').val();
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+               /*  { label: 'Report Type (Text)', value: reportTypeText || '' },
+                { label: 'Report Type (Value)', value: reportTypeValue || '' },
+                { label: 'MRN Type (Text)', value: mrnTypeText || '' },
+                { label: 'MRN Type (Value)', value: mrnTypeValue || '' },
+                { label: 'From Date', value: fromDate || '' },
+                { label: 'To Date', value: toDate || '' },
+                { label: 'Vendor Name', value: vendorName || '' },
+                { label: 'Gate Entry No', value: gateNo || '' },
+                { label: 'MRN No', value: mrnNo || '' },
+                { label: 'Invoice No', value: invoiceNo || '' },
+                { label: 'PO No', value: poNo || '' },
+                { label: 'Sch No', value: schNo || '' },
+                { label: 'Part Code', value: partCode || '' },
+                { label: 'Item Name', value: itemName || '' },
+                { label: 'Document Type', value: docName || '' },
+                { label: 'Work Center', value: (workCenter && workCenter !== '-Select-') ? workCenter : '' },
+                { label: 'Item Group', value: itemGroup || '' },
+                { label: 'Item Type', value: itemType || '' },
+                { label: 'Batch No', value: batchNo || '' },
+                { label: 'Unique Batch No', value: uniqueBatchNo || '' } */
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            // Fetch data
+            var resp = await fetch('/MRNRegister/GetMRNRegisterData');
+            var rows = await resp.json();
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+                case 'vendorItemWiseSummary':
+                    headers = [
+                        "Sr#","Vendor Name", "MRN No", "MRN Date", "Gate No", "Gate Date", "Invoice No",
+                        "Invoice Date", "Document No", "Part Code", "Item Name", "Bill Quantity",
+                        "Received Quantity", "Short/Excess Quantity", "Unit",  
+                        "Actual Entry By Employee", "Actual Entry Date", 
+                        "Currency", "Received In Store", "MRN Type"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.mrnNo, r.mrnDate, r.gateNo, r.gDate,
+                        r.invoiceNo, r.invoiceDate, r.docNo, r.partCode, r.itemName,
+                        r.billQty, r.recQty, r.shortExcessQty, r.unit,
+                        r.actualEntryByEmp, r.actualEntryDate, r.currency,
+                        r.recInStore, r.mrnType
+                    ]);
+                    break;
+
+                // Add more cases for different report types here if needed
+                default:
+                    headers = ["Sr#", "Item Name"];
+                    body = rows.map((r, i) => [i + 1, r.ItemName]);
+                    break;
+            }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15, // Adjust the starting Y position
+                head: [headers],
+                body: body,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 5,           
+                    cellPadding: 1,        
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: {
+                    0: { cellWidth: 30 },   // Column 1: Sr#
+                    1: { cellWidth: 50 },   // Column 2: VendorName
+                    2: { cellWidth: 50 },   // Column 3: MRNNo
+                    3: { cellWidth: 30 },   // Column 4: MRNDate
+                    4: { cellWidth: 60 },   // Column 5: GateNo
+                    5: { cellWidth: 30 },   // Column 6: GDate
+                    6: { cellWidth: 40 },   // Column 7: InvoiceNo
+                    7: { cellWidth: 40 },   // Column 8: InvoiceDate
+                    8: { cellWidth: 60 },   // Column 9: DocNo
+                    9: { cellWidth: 50 },   // Column 10: PartCode
+                    10: { cellWidth: 60 },  // Column 11: ItemName
+                    11: { cellWidth: 20 },  // Column 12: BillQty
+                    12: { cellWidth: 20 },  // Column 13: RecQty
+                    13: { cellWidth: 20 },  // Column 14: ShortExcessQty
+                    14: { cellWidth: 20 },  // Column 15: Unit
+                    15: { cellWidth: 40 },  // Column 16: Amount
+                    16: { cellWidth: 40 },  // Column 17: TotalAmt
+                    17: { cellWidth: 40 },  // Column 18: NetAmount
+                    18: { cellWidth: 30 },  // Column 19: Remark
+                    19: { cellWidth: 30 },  // Column 20: ActualEntryByEmp
+                    20: { cellWidth: 40 },  // Column 21: ActualEntryDate
+                   
+                   
+                },
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
         });
 
         function GetServerDate() {
@@ -716,6 +1030,9 @@
         })
 
     </script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 }
 <style>
