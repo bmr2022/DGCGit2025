@@ -404,7 +404,7 @@ namespace eTactWeb.Controllers
                             else
                             {
                                 item.SeqNo = ReceiveItemDetail.Count + 1;
-                                ReceiveItemDetailGrid = ReceiveItemDetail.Where(x => x != null).ToList();
+                                //ReceiveItemDetailGrid = ReceiveItemDetail.Where(x => x != null).ToList();
                                 SSGrid.AddRange(ReceiveItemDetailGrid);
                                 ReceiveItemDetailGrid.Add(item);
                             }
@@ -435,7 +435,7 @@ namespace eTactWeb.Controllers
                             else
                             {
                                 item.SeqNo = ReceiveItemDetail.Count + 1;
-                                ReceiveItemDetailGrid = ReceiveItemDetail.Where(x => x != null).ToList();
+                                //ReceiveItemDetailGrid = ReceiveItemDetail.Where(x => x != null).ToList();
                                 SSGrid.AddRange(ReceiveItemDetailGrid);
                                 ReceiveItemDetailGrid.Add(item);
                             }
