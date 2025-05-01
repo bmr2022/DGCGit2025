@@ -453,7 +453,13 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "PurchaseRejection")
             {
-                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                string modelPRGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
+                List<AccPurchaseRejectionDetail> PurchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
+                if (!string.IsNullOrEmpty(modelPRGridJson) && purchaseRejectionDetail == null)
+                {
+                    purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
+                }
                 ItemDetailGrid = purchaseRejectionDetail;
             }
             else if (TxModel.TxPageName == "SaleRejection")
@@ -554,6 +560,12 @@ public class TaxController : Controller
             if (ItemDetailGrid != null && TxModel.TxType != "EXPENSES")
             {
                 _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+                string modeltxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+                List<TaxModel> txgrid = new List<TaxModel>();
+                if (!string.IsNullOrEmpty(modeltxGridJson) && TaxGrid == null)
+                {
+                    TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modeltxGridJson);
+                }
 
                 foreach (var item in ItemDetailGrid)
                 {
@@ -1200,7 +1212,7 @@ public class TaxController : Controller
 
                 string modelPRJson = HttpContext.Session.GetString("PurchaseRejectionModel");
                 AccPurchaseRejectionModel purchaseRejectionModel = new AccPurchaseRejectionModel();
-                if (!string.IsNullOrEmpty(modelPRJson) && MainModel == null && MainModel.ItemDetailGrid == null)
+                if (!string.IsNullOrEmpty(modelPRJson) && (MainModel == null || MainModel.ItemDetailGrid == null))
                 {
                     MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelPRJson);
                 }
@@ -1907,6 +1919,11 @@ public class TaxController : Controller
             if (SessionName == "PurchaseBill")
             {
                 _MemoryCache.TryGetValue("PurchaseBill", out PurchaseBillModel MainModel);
+                var modelJson = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+                }
                 ItemModel = MainModel.ItemDetailGridd;
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
@@ -1936,6 +1953,14 @@ public class TaxController : Controller
             {
                 _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
                 ItemModel = saleBillDetail;
+
+
+                var modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ItemModel = JsonConvert.DeserializeObject<SaleBillDetail>(modelJson);
+                }
+                //ItemModel = MainModel.ItemDetailGridd;
 
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
@@ -1981,7 +2006,13 @@ public class TaxController : Controller
             }
             if (SessionName == "PurchaseRejection")
             {
-                _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                //_MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                string modelPRGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
+                List<AccPurchaseRejectionDetail> purchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
+                if (!string.IsNullOrEmpty(modelPRGridJson))
+                {
+                    purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
+                }
                 ItemModel = purchaseRejectionDetail;
 
                 if (ItemModel != null && ItemModel?.Count > 0)

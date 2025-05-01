@@ -796,16 +796,22 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                var StrTransDate = Convert.ToDateTime(TransDate);
-                var Date = DateTime.Now;
-                var FormattedTransDate = DateTime.Now.ToString("yyyy/MM/dd");
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
-                SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@WCID", WCid));
-                SqlParams.Add(new SqlParameter("@transDate", FormattedTransDate));
-                SqlParams.Add(new SqlParameter("@batchno", batchno));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINWIP", SqlParams);
+                if (ItemCode > 0 && WCid > 0 )
+                    {
+                    var StrTransDate = Convert.ToDateTime(TransDate);
+                    var Date = DateTime.Now;
+                    var FormattedTransDate = DateTime.Now.ToString("yyyy/MM/dd");
+                    var SqlParams = new List<dynamic>();
+                    SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
+                    SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
+                    SqlParams.Add(new SqlParameter("@WCID", WCid));
+                    SqlParams.Add(new SqlParameter("@transDate", FormattedTransDate));
+                    SqlParams.Add(new SqlParameter("@batchno", batchno));
+                    _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINWIPWithNegativeStock", SqlParams);
+                }
+
+                //--FillCurrentBatchINWIP
+                //_ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINWIP", SqlParams);
             }
             catch (Exception ex)
             {

@@ -1416,8 +1416,8 @@ public class PurchaseBillDAL
                 flag = !string.IsNullOrEmpty(flag) ? flag : "DisplayPendingData";
                 MRNType = !string.IsNullOrEmpty(MRNType) ? MRNType : "MRN";
                 dashboardtype = !string.IsNullOrEmpty(dashboardtype) ? dashboardtype : "SUMMARY";
-                firstdate = (firstdate != null) ? Convert.ToDateTime(firstdate) : firstDayOfMonth;
-                todate = (todate != null) ? Convert.ToDateTime(todate) : today;
+                firstdate = (firstdate != null) ? firstdate : firstDayOfMonth;
+                todate = (todate != null) ? todate : today;
                 string fromDate = firstdate.HasValue ? CommonFunc.ParseFormattedDate(firstdate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(firstDayOfMonth.Date.ToString());
                 string toDate = todate.HasValue ? CommonFunc.ParseFormattedDate(todate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(today.Date.ToString());
                 oCmd.Parameters.AddWithValue("@flag", flag);

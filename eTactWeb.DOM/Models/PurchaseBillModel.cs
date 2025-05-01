@@ -9,7 +9,7 @@ namespace eTactWeb.DOM.Models;
 [Serializable()]
 public class PBDashBoard : TimeStamp
 {
-    public string SummaryDetail { get; set; }
+    public string? SummaryDetail { get; set; }
     public string? FromDate { get; set; }
     public string? ToDate { get; set; }
     public string? FromDate1 { get; set; }
@@ -30,8 +30,8 @@ public class PBDashBoard : TimeStamp
     
     //Dashboard Grid
     public IList<PBDashBoard> PBDashboard { get; set; }
-    public int EntryID { get; set; }
-    public int SeqNo { get; set; }
+    public int? EntryID { get; set; }
+    public int? SeqNo { get; set; }
     public string? EnteredBy { get; set; }
     public string? UpdatedByName { get; set; }
     
@@ -49,22 +49,22 @@ public class PBDashBoard : TimeStamp
     public string? GateNo { get; set; }
     public string? GateDate { get; set; }
     public string? DomesticImport { get; set; }
-    public float BillAmount { get; set; }
-    public float TaxableAmount { get; set; }
-    public float GSTAmount { get; set; }
-    public float NetAmt { get; set; }
-    public float PendAmt { get; set; }
-    public float PaidAmt { get; set; }
+    public float? BillAmount { get; set; }
+    public float? TaxableAmount { get; set; }
+    public float?  GSTAmount { get; set; }
+    public float? NetAmt { get; set; }
+    public float? PendAmt { get; set; }
+    public float? PaidAmt { get; set; }
     public string? PaymentTerm { get; set; }
     public string? Transporter { get; set; }
     public string? VehicleNo { get; set; }
     public string? Currency { get; set; }
     public string? ExchangeRate { get; set; }
-    public float RoundOffAmt { get; set; }
+    public float? RoundOffAmt { get; set; }
     public string? RoundoffType { get; set; }
-    public float TotalDiscountPercent { get; set; }
-    public float PONetAmt { get; set; }
-    public float TDSAmount { get; set; }
+    public float? TotalDiscountPercent { get; set; }
+    public float? PONetAmt { get; set; }
+    public float? TDSAmount { get; set; }
     public string? Remark { get; set; }
     public string? Branch { get; set; }
     public string? Approved { get; set; }
@@ -101,8 +101,9 @@ public class PBDashBoard : TimeStamp
     public string? PORate { get; set; }
     public string? DiscountPer { get; set; }
     public string? DiscountAmt { get; set; }
-    [Column(TypeName = "decimal(10, 4)")]
-    public decimal Amount { get; set; }
+    //[Column(TypeName = "decimal(10, 4)")]
+    
+    public decimal? Amount { get; set; }
     public string? PONo { get; set; }
     public string? PODate { get; set; }
     public string? POType { get; set; }
@@ -262,7 +263,7 @@ public class PBItemDetail : TaxModel, ITDSModel
         get { return _tdsModel.TxPageName; }
         set { _tdsModel.TxPageName = value; }
     }
-    public int UpdatedBy
+    public int? UpdatedBy
     {
         get { return _tdsModel.UpdatedBy; }
         set { _tdsModel.UpdatedBy = value; }
@@ -289,7 +290,8 @@ public class PBItemDetail : TaxModel, ITDSModel
     [Column(TypeName = "decimal(10, 4)")]
     public decimal AltQty { get; set; }
 
-    [Column(TypeName = "decimal(10, 4)")]
+    //[Column(TypeName = "decimal(10, 4)")]
+    
     public decimal? Amount { get; set; }
 
     public string? Color { get; set; }
@@ -307,7 +309,7 @@ public class PBItemDetail : TaxModel, ITDSModel
     public IList<TextValue>? ItemNameList { get; set; }
 
     [Column(TypeName = "decimal(10, 4)")]
-    public decimal ItemNetAmount { get; set; }
+    public decimal? ItemNetAmount { get; set; }
     
     [Column(TypeName = "decimal(10, 4)")]
     public decimal? GSTAmount { get; set; }
@@ -572,7 +574,7 @@ public class PurchaseBillModel : PBItemDetail
     public string? ModeOfTransport { get; set; }
     public string? FOC { get; set; }
     [Column(TypeName = "decimal(10, 4)")]
-    public decimal? CurrencyId { get; set; }
+    public int? CurrencyId { get; set; }
     public string? Currency { get; set; }
     public string? CC { get; set; }
     public int? UID { get; set; }

@@ -142,7 +142,8 @@ public class Common
         int ID { get; set; }
         string? Mode { get; set; }
         string TxPageName { get; set; }
-        int UpdatedBy { get; set; }
+        int? UpdatedBy { get; set; }
+      
         DateTime? UpdatedOn { get; set; }
     }
     public class TextValue
@@ -169,7 +170,7 @@ public class Common
         [System.Text.Json.Serialization.JsonIgnore]
         public string TxPageName { get; set; }
 
-        public int UpdatedBy { get; set; }
+        public int? UpdatedBy { get; set; }
 
         public DateTime? UpdatedOn { get; set; }
     }
