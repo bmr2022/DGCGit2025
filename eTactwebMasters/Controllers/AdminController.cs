@@ -395,7 +395,7 @@ public class AdminController : Controller, IAsyncDisposable
             if (!string.IsNullOrEmpty(modelJson))
             {
                 UserRightModelDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
-            }   
+            }
 
             //ALL MODULES and MAINMENUS
             if (model.Module == "0" && model.MainMenu == "0")
@@ -492,9 +492,13 @@ public class AdminController : Controller, IAsyncDisposable
             else
             {
                 var MainModel = new UserRightModel();
-                var UserRightGrid = new List<UserRightModel>();
-                var UserGrid = new List<UserRightModel>();
-                var SSGrid = new List<UserRightModel>();
+                var existingListJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+                var existingRights = !string.IsNullOrEmpty(existingListJson)
+                    ? JsonConvert.DeserializeObject<List<UserRightModel>>(existingListJson)
+                    : new List<UserRightModel>();
+
+                var duplicates = new List<string>();
+                int seqNo = existingRights.Any() ? (existingRights.Max(x => x.Seqno) ?? 0) + 1 : 1;
 
                 MainModel.Module = model.Module;
                 MainModel.All = model.All;
@@ -502,64 +506,49 @@ public class AdminController : Controller, IAsyncDisposable
                 MainModel.Update = model.Update;
                 MainModel.Delete = model.Delete;
                 MainModel.View = model.View;
-                if(model.MainMenu == "0")
-                {
+
+                if (model.MainMenu == "0")
                     model.MainMenu = string.Empty;
-                }
+
                 MainModel.MainMenuList = await _IAdminModule.GetMenuList("MainMenu", model.Module, model.MainMenu);
-                int SeqNo = 1;
+
                 foreach (var item1 in MainModel.MainMenuList)
                 {
-                    string userRightsJson = HttpContext.Session.GetString("KeyUserRightsDetail");
-                    IList<UserRightModel> UserRightModelDetail1 = new List<UserRightModel>();
-                    if (!string.IsNullOrEmpty(userRightsJson))
+                    var newEntry = new UserRightModel
                     {
-                        UserRightModelDetail1 = JsonConvert.DeserializeObject<List<UserRightModel>>(userRightsJson);
-                    }
-                    var newMenuItemModel = new UserRightModel();
+                        Module = MainModel.Module,
+                        MainMenu = item1.Text,
+                        All = MainModel.All,
+                        Save = MainModel.Save,
+                        Update = MainModel.Update,
+                        Delete = MainModel.Delete,
+                        View = MainModel.View,
+                        EmpID = model.EmpID,
+                        EmpName = model.EmpName,
+                        ID = model.ID
+                    };
 
-                    newMenuItemModel.Module = MainModel.Module;
-                    newMenuItemModel.All = MainModel.All;
-                    newMenuItemModel.Save = MainModel.Save;
-                    newMenuItemModel.Update =   MainModel.Update;
-                    newMenuItemModel.Delete = MainModel.Delete;
-                    newMenuItemModel.View = MainModel.View;
-                    newMenuItemModel.MainMenu = item1.Text;
-                    newMenuItemModel.EmpID = model.EmpID;
-                    newMenuItemModel.EmpName = model.EmpName;
-                    newMenuItemModel.ID = model.ID;
+                    bool isDuplicate = existingRights.Any(x =>
+                        x.EmpName == newEntry.EmpName &&
+                        x.Module == newEntry.Module &&
+                        x.MainMenu == newEntry.MainMenu);
 
-                    if (newMenuItemModel != null)
+                    if (isDuplicate)
                     {
-                        if (UserRightModelDetail1 == null)
-                        {
-                            newMenuItemModel.Seqno = 1;
-                            UserGrid.Add(model);
-                        }
-                        else
-                        {
-                            if (UserRightModelDetail1.Where(x => x.EmpName == newMenuItemModel.EmpName && x.Module == newMenuItemModel.Module && x.MainMenu == newMenuItemModel.MainMenu).Any())
-                            {
-                                return StatusCode(207, "Duplicate");
-                            }
-                            else
-                            {
-                                newMenuItemModel.Seqno = SeqNo++;
-                                UserGrid = UserRightModelDetail1.Where(x => x != null).ToList();
-                                SSGrid.AddRange(UserGrid);
-                                UserGrid.Add(newMenuItemModel);
-                            }
-                        }
+                        duplicates.Add(newEntry.MainMenu);
+                        continue;
+                    }
 
-                        MainModel.UserRights = UserGrid;
-                        HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(MainModel.UserRights));
-                    }
-                    else
-                    {
-                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
-                    }
+                    newEntry.Seqno = seqNo++;
+                    existingRights.Add(newEntry);
                 }
- 
+
+                HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(existingRights));
+                MainModel.UserRights = existingRights;
+
+                if (duplicates.Any())
+                    TempData["DuplicateMenus"] = string.Join(", ", duplicates);
+
                 return PartialView("_UserRightGrid", MainModel);
             }
         }
