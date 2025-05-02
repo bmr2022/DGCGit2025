@@ -157,10 +157,20 @@ public class TaxController : Controller
             else if (model.TxPageName == "DirectPurchaseBill")
             {
                 _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
+                }
             }
             else if (model.TxPageName == "PurchaseBill")
             {
                 _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                string modelJson = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+                }
             }
             else if (model.TxPageName == "SaleInvoice")
             {
@@ -562,7 +572,7 @@ public class TaxController : Controller
                 _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
                 string modeltxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
                 List<TaxModel> txgrid = new List<TaxModel>();
-                if (!string.IsNullOrEmpty(modeltxGridJson) && TaxGrid == null)
+                if (!string.IsNullOrEmpty(modeltxGridJson))
                 {
                     TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modeltxGridJson);
                 }
@@ -1186,11 +1196,21 @@ public class TaxController : Controller
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
                 _MemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
+                string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
+                }
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "PurchaseBill")
             {
                 _MemoryCache.TryGetValue("PurchaseBill", out PurchaseBillModel MainModel);
+                string modelJson = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+                }
                 ListOfItems = MainModel.ItemDetailGridd ?? MainModel.ItemDetailGrid;
             }
             else if (SN == "SaleInvoice")
@@ -1212,7 +1232,7 @@ public class TaxController : Controller
 
                 string modelPRJson = HttpContext.Session.GetString("PurchaseRejectionModel");
                 AccPurchaseRejectionModel purchaseRejectionModel = new AccPurchaseRejectionModel();
-                if (!string.IsNullOrEmpty(modelPRJson) && (MainModel == null || MainModel.ItemDetailGrid == null))
+                if (!string.IsNullOrEmpty(modelPRJson))
                 {
                     MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelPRJson);
                 }
@@ -1544,7 +1564,7 @@ public class TaxController : Controller
                 {
                     TotalTaxAmt = TaxGrid.Sum(x => x.TxAmount);
                 }
-                TotalTaxAmt = TotalTaxAmt + MainModel.ItemNetAmount;
+                TotalTaxAmt = TotalTaxAmt + MainModel.ItemNetAmount ?? 0;
                 MainModel.TotalTaxAmt = TotalTaxAmt;
 
                 _MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
@@ -1752,6 +1772,11 @@ public class TaxController : Controller
             case "PurchaseBill":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                string modelJson = HttpContext.Session.GetString("PurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
+                }
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
@@ -1775,7 +1800,7 @@ public class TaxController : Controller
                 _MemoryCache.TryGetValue("PurchaseRejectionModel", out MainModel);
                 string modelPRJson = HttpContext.Session.GetString("PurchaseRejectionModel");
                 AccPurchaseRejectionModel purchaseRejectionModel = new AccPurchaseRejectionModel();
-                if (!string.IsNullOrEmpty(modelPRJson) && MainModel == null && MainModel.ItemDetailGrid == null)
+                if (!string.IsNullOrEmpty(modelPRJson))
                 {
                     MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelPRJson);
                 }
@@ -1851,6 +1876,11 @@ public class TaxController : Controller
         bool isTax = false;
         bool isExp = false;
         _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IList<IssueNRGPTaxDetail> TaxGrid);
+        string modelJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+        if (!string.IsNullOrEmpty(modelJson) && TaxGrid == null)
+        {
+            TaxGrid = JsonConvert.DeserializeObject<IList<IssueNRGPTaxDetail>>(modelJson);
+        }
         if (TaxGrid != null && TaxGrid.Count > 0)
             isTax = true;
         if (isTax)
@@ -1896,6 +1926,11 @@ public class TaxController : Controller
             if (SessionName == "DirectPurchaseBill")
             {
                 _MemoryCache.TryGetValue("DirectPurchaseBill", out DirectPurchaseBillModel MainModel);
+                string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
+                }
                 ItemModel = MainModel.ItemDetailGrid;
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
@@ -2273,7 +2308,11 @@ public class TaxController : Controller
             var TaxGrid = new List<TaxModel>();
             var HSNTaxDetail = new HSNTAXInfo();
             _MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
-
+            string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson);
+            }
 
             if (TaxGrid == null)
                 TaxGrid = new List<TaxModel>();

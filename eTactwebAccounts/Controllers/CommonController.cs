@@ -49,7 +49,7 @@ namespace eTactWeb.Controllers
             string modelTDSJson = HttpContext.Session.GetString("KeyTDSGrid");
             if (!string.IsNullOrEmpty(modelTDSJson))
             {
-                TdsGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTDSJson);
+                TdsGrid = JsonConvert.DeserializeObject<List<TDSModel>>(modelTDSJson);
             }
 
             DataTable DbCrGridd = new DataTable();
