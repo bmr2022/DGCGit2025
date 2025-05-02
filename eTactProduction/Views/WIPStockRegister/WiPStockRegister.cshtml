@@ -596,7 +596,7 @@
 			  $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
 		  }
 
-		  $('#sendToExcel').click(function () {
+		 /*  $('#sendToExcel').click(function () {
 			  let table = $("#ReportTable");
 			  console.log(table);
 			  TableToExcel.convert(table[0], {
@@ -605,8 +605,11 @@
 					  name: 'ReportTable'
 				  }
 			  });
-		  });
-
+		  }); */
+		$('#sendToExcel').click(function () {
+			var reportType = $('#ReportType').val(); // assuming there's a dropdown or input with id="ReportType"
+			window.location.href = '/WIPStockRegister/ExportWIPStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
+		});
 		  function FillItemGroup() {
 			  $.ajax({
 				  type: "POST",

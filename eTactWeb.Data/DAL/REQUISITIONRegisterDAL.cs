@@ -29,7 +29,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
-        public async Task<REQUISITIONRegistermodel> GetREQUISITIONRegisterData(string Flag,string ReqType,string fromDate, string ToDate, string REQNo, string Partcode, string ItemName, string FromstoreId, string Toworkcenter,int ReqYearcode)
+        public async Task<REQUISITIONRegistermodel> GetREQUISITIONRegisterData(string Flag, string ReQType, string fromDate, string ToDate, string REQNo, string Partcode, string ItemName, string FromstoreId, string Toworkcenter, int ReqYearcode)
         {
             DataSet? oDataSet = new DataSet();
             var model = new REQUISITIONRegistermodel();
@@ -47,12 +47,12 @@ namespace eTactWeb.Data.DAL
                     var toDt = CommonFunc.ParseFormattedDate(ToDate);
 
                     oCmd.Parameters.AddWithValue("@flag", Flag);
-                    oCmd.Parameters.AddWithValue("@ReqType", ReqType);
+                    oCmd.Parameters.AddWithValue("@ReqType", ReQType);
                     oCmd.Parameters.AddWithValue("@REQNo", REQNo == null ? "" : REQNo);
                     oCmd.Parameters.AddWithValue("@fromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
-                    oCmd.Parameters.AddWithValue("@Partcode", Partcode == null ? "" : ItemName);
-                    oCmd.Parameters.AddWithValue("@ItemName", ItemName == null ? "" : Partcode);
+                    oCmd.Parameters.AddWithValue("@Partcode", Partcode == null ? "" : Partcode);
+                    oCmd.Parameters.AddWithValue("@ItemName", ItemName == null ? "" : ItemName);
                     oCmd.Parameters.AddWithValue("@FromstoreId", FromstoreId);
                     oCmd.Parameters.AddWithValue("@Toworkcenter", Toworkcenter );
                     oCmd.Parameters.AddWithValue("@ReqYearcode", ReqYearcode );
@@ -62,7 +62,7 @@ namespace eTactWeb.Data.DAL
                     {
                         oDataAdapter.Fill(oDataSet);
                     }
-                    if (ReqType=="REQUISITIONWITHOUTBOM")
+                    if (ReQType == "REQUISITIONWITHOUTBOM")
                     {
                         if (Flag == "REQUISITIONWITHOUTBOMLIST")
                         {
@@ -76,7 +76,7 @@ namespace eTactWeb.Data.DAL
                                 model.REQUISITIONRegisterDetails = _REQDetail;
                             }
                         }
-                    }else if (ReqType=="REQUISITIONWITHBOM")
+                    }else if (ReQType == "REQUISITIONWITHBOM")
                     {
                         if (Flag == "REQUISITIONWITHBOMLIST" || Flag=="REQUISITIONWITHBOMWITHCHILPARTDETAIL")
                         {

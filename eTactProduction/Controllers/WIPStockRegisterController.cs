@@ -3,14 +3,13 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using eTactWeb.DOM.Models;
 using System.Globalization;
-using System.Drawing.Printing;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
 {
-    public class WIPStockRegisterController : Controller
+	public class WIPStockRegisterController : Controller
     {
         private readonly IDataLogic _IDataLogic;
         public IWIPStockRegister _IWIPStockRegister { get; }
@@ -32,7 +31,245 @@ namespace eTactWeb.Controllers
             model.WIPStockRegisterDetail = new List<WIPStockRegisterDetail>();
             return View(model);
         }
-        public async Task<IActionResult> GetWIPRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter, int pageNumber = 1, int pageSize = 500, string SearchBox = "")
+		[HttpGet]
+		public async Task<IActionResult> ExportWIPStockRegisterToExcel(string ReportType)
+		{
+			string modelJson = HttpContext.Session.GetString("KeyWIPStockList");
+			List<WIPStockRegisterDetail> stockRegisterList = new List<WIPStockRegisterDetail>();
+			if (!string.IsNullOrEmpty(modelJson))
+			{
+				stockRegisterList = JsonConvert.DeserializeObject<List<WIPStockRegisterDetail>>(modelJson);
+			}
+
+			if (stockRegisterList == null)
+				return NotFound("No data available to export.");
+
+			using var workbook = new XLWorkbook();
+			var worksheet = workbook.Worksheets.Add("WIPStock Register");
+
+			var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<WIPStockRegisterDetail>>>
+			{
+				{ "WIPSTOCKBATCHWISESUMMARY", ExportWipStockBatchWiseSummary },
+				{ "WIPSTOCKSUMMARY", ExportWipStockSummary },
+				{ "SHOWALLWIPSTOCKSUMMARY", ExportShowAllWipStockSummary },
+				{ "SHOWONLYISSUEDATA", ExportShowOnlyIssue },
+				{ "SHOWONLYRECDATA", ExportShowOnlyRec }
+                // Add more report types here if needed
+            };
+
+			if (reportGenerators.TryGetValue(ReportType, out var generator))
+			{
+				generator(worksheet, stockRegisterList);
+			}
+			else
+			{
+				return BadRequest("Invalid report type.");
+			}
+
+			worksheet.Columns().AdjustToContents();
+
+			using var stream = new MemoryStream();
+			workbook.SaveAs(stream);
+			stream.Position = 0;
+
+			return File(
+				stream.ToArray(),
+				"application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+				"WIPStockRegisterReport.xlsx"
+			);
+		}
+		private void ExportWipStockSummary(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
+		{
+			string[] headers = {
+	        "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty", "Iss Qty", "Tot Stk",
+	        "Std Packing", "Unit", "Avg Rate", "Amount", "Min Level", "Alt Unit", "Alt Stock",
+	        "Group Name", "Bin No", "Maximum Level", "Reorder Level"
+            };
+
+
+			for (int i = 0; i < headers.Length; i++)
+				sheet.Cell(1, i + 1).Value = headers[i];
+
+			int row = 2, srNo = 1;
+			foreach (var item in list)
+			{
+				sheet.Cell(row, 1).Value = srNo++;
+				sheet.Cell(row, 2).Value = item.WorkCenterName;
+				sheet.Cell(row, 3).Value = item.PartCode;
+				sheet.Cell(row, 4).Value = item.ItemName;
+				sheet.Cell(row, 5).Value = item.OpnStk;
+				sheet.Cell(row, 6).Value = item.RecQty;
+				sheet.Cell(row, 7).Value = item.IssQty;
+				sheet.Cell(row, 8).Value = item.TotStk;
+				sheet.Cell(row, 9).Value = item.StdPacking;
+				sheet.Cell(row, 10).Value = item.Unit;
+				sheet.Cell(row, 11).Value = item.AvgRate;
+				sheet.Cell(row, 12).Value = item.Amount;
+				sheet.Cell(row, 13).Value = item.MinLevel;
+				sheet.Cell(row, 14).Value = item.AltUnit;
+				sheet.Cell(row, 15).Value = item.AltStock;
+				sheet.Cell(row, 16).Value = item.GroupName;
+				sheet.Cell(row, 17).Value = item.BinNo;
+				sheet.Cell(row, 18).Value = item.MaximumLevel;
+				sheet.Cell(row, 19).Value = item.ReorderLevel;
+
+				row++;
+			}
+		}
+		private void ExportWipStockBatchWiseSummary(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
+		{
+			string[] headers = {
+	        "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty", "Iss Qty", "Tot Stk",
+	        "Batch Stock", "Unit", "Min Level", "Alt Unit", "Alt Stock", "Avg Rate", "Amount",
+	        "Group Name", "Std Packing", "Maximum Level", "Reorder Level", "Bin No",
+	        "Party Name", "Batch No", "Unique Batch No"
+            };
+
+
+			for (int i = 0; i < headers.Length; i++)
+				sheet.Cell(1, i + 1).Value = headers[i];
+
+			int row = 2, srNo = 1;
+			foreach (var item in list)
+			{
+				sheet.Cell(row, 1).Value = srNo++;
+				sheet.Cell(row, 2).Value = item.WorkCenterName;
+				sheet.Cell(row, 3).Value = item.PartCode;
+				sheet.Cell(row, 4).Value = item.ItemName;
+				sheet.Cell(row, 5).Value = item.OpnStk;
+				sheet.Cell(row, 6).Value = item.RecQty;
+				sheet.Cell(row, 7).Value = item.IssQty;
+				sheet.Cell(row, 8).Value = item.TotStk;
+				sheet.Cell(row, 9).Value = item.BatchStock;
+				sheet.Cell(row, 10).Value = item.Unit;
+				sheet.Cell(row, 11).Value = item.MinLevel;
+				sheet.Cell(row, 12).Value = item.AltUnit;
+				sheet.Cell(row, 13).Value = item.AltStock;
+				sheet.Cell(row, 14).Value = item.AvgRate;
+				sheet.Cell(row, 15).Value = item.Amount;
+				sheet.Cell(row, 16).Value = item.GroupName;
+				sheet.Cell(row, 17).Value = item.StdPacking;
+				sheet.Cell(row, 18).Value = item.MaximumLevel;
+				sheet.Cell(row, 19).Value = item.ReorderLevel;
+				sheet.Cell(row, 20).Value = item.BinNo;
+				sheet.Cell(row, 21).Value = item.PartyName;
+				sheet.Cell(row, 22).Value = item.BatchNo;
+				sheet.Cell(row, 23).Value = item.UniquebatchNo;
+				row++;
+			}
+		}
+        private void ExportShowAllWipStockSummary(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
+		{
+            string[] headers = {
+             "Sr#","Item Name", "Part Code", "Total Stock", "Unit", "Rate", "Amount", "Item Type", "Item Group"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+				sheet.Cell(1, i + 1).Value = headers[i];
+
+			int row = 2, srNo = 1;
+			foreach (var item in list)
+			{
+				sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 1).Value = item.ItemName;
+                sheet.Cell(row, 2).Value = item.PartCode;
+                sheet.Cell(row, 3).Value = item.Total;
+                sheet.Cell(row, 4).Value = item.Unit;
+                sheet.Cell(row, 5).Value = item.Rate;
+                sheet.Cell(row, 6).Value = item.Amount;
+                sheet.Cell(row, 7).Value = item.ItemType;
+                sheet.Cell(row, 8).Value = item.ItemGroup;
+
+                row++;
+			}
+		}
+        private void ExportShowOnlyIssue(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
+		{
+            string[] headers = {
+               "Sr#", "Store Name", "Transaction Type", "Trans Date", "Part Code", "Item Name", "Rec Qty", "Unit",
+                "Rate", "Amount", "Bill No", "Bill Date", "Party Name", "MRN No", "Batch No", "Unique Batch No",
+                "Entry Id", "Alt Rec Qty", "Group Name"
+            };
+
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+				sheet.Cell(1, i + 1).Value = headers[i];
+
+			int row = 2, srNo = 1;
+			foreach (var item in list)
+			{
+				sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 1).Value = item.WorkCenterName;
+                sheet.Cell(row, 2).Value = item.TransactionType;
+                sheet.Cell(row, 3).Value = item.TransDate?.Split(" ")[0];  // Null-safe date handling
+                sheet.Cell(row, 4).Value = item.PartCode;
+                sheet.Cell(row, 5).Value = item.ItemName;
+                sheet.Cell(row, 6).Value = item.RecQty;
+                sheet.Cell(row, 7).Value = item.Unit;
+                sheet.Cell(row, 8).Value = item.Rate.ToString("0.00");
+                sheet.Cell(row, 9).Value = item.Amount;
+                sheet.Cell(row, 10).Value = item.BillNo;
+                sheet.Cell(row, 11).Value = item.BillDate?.Split(" ")[0];  // Null-safe date handling
+                sheet.Cell(row, 12).Value = item.PartyName;
+                sheet.Cell(row, 13).Value = item.MRNNo;
+                sheet.Cell(row, 14).Value = item.BatchNo;
+                sheet.Cell(row, 15).Value = item.UniquebatchNo;
+                sheet.Cell(row, 16).Value = item.EntryId;
+                sheet.Cell(row, 17).Value = item.AltRecQty;
+                sheet.Cell(row, 18).Value = item.GroupName;
+
+
+                row++;
+			}
+		}
+        private void ExportShowOnlyRec(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
+		{
+            string[] headers = {
+                "Store Name", "Transaction Type", "Trans Date", "Part Code", "Item Name", "Rec Qty", "Unit",
+                "Rate", "Amount", "Bill No", "Bill Date", "Party Name", "MRN No", "Batch No", "Unique Batch No",
+                "Entry Id", "Alt Rec Qty", "Group Name"
+            };
+
+
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+				sheet.Cell(1, i + 1).Value = headers[i];
+
+			int row = 2, srNo = 1;
+			foreach (var item in list)
+			{
+				sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 1).Value = item.WorkCenterName;
+                sheet.Cell(row, 2).Value = item.TransactionType;
+                sheet.Cell(row, 3).Value = item.TransDate?.Split(" ")[0]; // null check for safe split
+                sheet.Cell(row, 4).Value = item.PartCode;
+                sheet.Cell(row, 5).Value = item.ItemName;
+                sheet.Cell(row, 6).Value = item.RecQty;
+                sheet.Cell(row, 7).Value = item.Unit;
+                sheet.Cell(row, 8).Value = item.Rate.ToString("0.00");
+                sheet.Cell(row, 9).Value = item.Amount;
+                sheet.Cell(row, 10).Value = item.BillNo;
+                sheet.Cell(row, 11).Value = item.BillDate?.Split(" ")[0]; // null check for safe split
+                sheet.Cell(row, 12).Value = item.PartyName;
+                sheet.Cell(row, 13).Value = item.MRNNo;
+                sheet.Cell(row, 14).Value = item.BatchNo;
+                sheet.Cell(row, 15).Value = item.UniquebatchNo;
+                sheet.Cell(row, 16).Value = item.EntryId;
+                sheet.Cell(row, 17).Value = item.AltRecQty;
+                sheet.Cell(row, 18).Value = item.GroupName;
+
+
+
+                row++;
+			}
+		}
+		public async Task<IActionResult> GetWIPRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter, int pageNumber = 1, int pageSize = 500, string SearchBox = "")
         {
             var model = new WIPStockRegisterModel();
             var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, ReportType, BatchNo, UniqueBatchNo, WorkCenter))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
