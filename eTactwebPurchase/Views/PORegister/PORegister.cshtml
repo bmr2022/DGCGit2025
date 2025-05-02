@@ -406,7 +406,7 @@
 
             // Handle report type logic
             switch (reportTypeValue) {
-                case 'SUMM':
+                case 'SUMM':/*done*/
                      headers = [
                         "#Sr","Vendor", "PONO", "PO Effective Date", "PO End Date", "PO For", "Schedule No", "Schedule Date", "Schedule Year",
                         "Part Code", "Item Name", "Currency", "PO Rate", "PO Qty", "PO Value", "Received Qty", "QC OK Qty",
@@ -415,10 +415,11 @@
 
                     console.log("Data:", rows);
                     body = rows.map((item, i) => [
-                        i + 1, item.Vendor,item.PONO,item.POEffDate?.split(" ")[0] || '',item.POEndDate?.split(" ")[0] || '',
-                        item.POFOR,item.SchNO,item.Schdate?.split(" ")[0] || '',item.SchYear,item.PartCode,item.ItemName,item.Currency,
-                        item.PORate,item.POQty,item.POValue,item.RECQty,item.QCOKQty,item.PendQty,item.MinLevel, item.unit,
-                        item.Minlvldays,item.ItemGroup,item.ItemCategory
+                        i + 1, item.vendor, item.poNO, item.poEffDate?.split(" ")[0] || '', item.poEndDate?.split(" ")[0] || '',
+                        item.poFOR, item.schNO, item.schdate?.split(" ")[0] || '', item.schYear, item.partCode,
+                        item.itemName, item.currency, item.poRate, item.poQty, item.poValue,
+                        item.recQty, item.qcOKQty, item.pendQty, item.minLevel, item.unit,
+                        item.minlvlDays, item.itemGroup, item.itemCategory
                     ]);
                     break;
                 case 'LISTOFPO':
@@ -431,42 +432,134 @@
 
                     console.log("Data:", rows);
                     body = rows.map((item, i) => [
-                        i + 1, item.pono, item.poDate ? item.poDate.split(" ")[0] : '', item.poType, item.poQty,
-                        item.poEffDate ? item.poEffDate.split(" ")[0] : '', item.poCloseDate ? item.poCloseDate.split(" ")[0] : '',
-                        item.poAmmeffDate, item.orderType, item.vendor, item.partCode, item.itemName, item.unit, item.rate,
-                        item.disPer, item.disAmt, item.itemAmount, item.ammendmentNo, item.ammendmentDate, item.assRate,
-                        item.deliveryTerms, item.deliveryDate ? item.deliveryDate.split(" ")[0] : '', item.poQty, item.poFor,
+                        i + 1, item.pono, item.poDate ? item.poDate.split(" ")[0] : '', item.pOtype, item.poQty,
+                        item.poEffDate ? item.poEffDate.split(" ")[0] : '', item.pOclosedate ? item.pOclosedate.split(" ")[0] : '',
+                        item.poAmmeffdate, item.ordertype, item.vendor, item.partCode, item.itemName, item.unit, item.rate,
+                        item.disPer, item.disAmt, item.itemAmount, item.ammendmentno, item.ammendmentdate, item.assrate,
+                        item.deliveryTerms, item.deliveryDate ? item.deliveryDate.split(" ")[0] : '', item.poQty, item.pofor,
                         item.currency
                     ]);
 
 
-                    break;
-
-                default:
-                    headers = ["#Sr", "Sale Bill No", "Sale Bill Date", "Customer Name", "GST No", "Customer Address",
-                        "State", "State Code", "Country", "Part Code", "Item Name", "HSN No", "Total Bill Qty", "Unit",
-                        "Rate", "Total Discount Amt", "Amount",
-                        "CGST %", "CGST Amount", "SGST %", "SGST Amount", "IGST %", "IGST Amount",
-                        "Expense Amount", "Bill Amount", "Taxable Amount", "GST Amount", "Currency",
-                        "Invoice Amount", "Cancel Bill", "Cancel Date", "Cancel Reason",
-                        "E-Way Bill No", "E-Invoice Generated", "E-Invoice No",
-                        "Type (Item/Service/Assets)", "Domestic/Export/NEPZ", "Supply Type"
+                break;
+                case 'SUMMRATEING':
+                     headers = [
+                        "#Sr", "Item Name", "Part Code", "Currency", "PO Qty", "PO Value", "Received Qty",
+                        "Received Value", "QC OK Qty", "Balance Qty", "Balance Value", "Rating", "Party Name"
                     ];
 
 
                     console.log("Data:", rows);
-                    body = rows.map((r, i) => [
-                        i + 1, r.saleBillNo, r.saleBillDate, r.customerName, r.gstno, r.custAddress,
-                        r.state, r.stateCode, r.country, r.partCode, r.itemName, r.hsnno, r.totalBillQty, r.unit,
-                        r.rate, r.totalDisAmt, r.amount,
-                        r.cgstPer, r.cgstAmt, r.sgstPer, r.sgstAmt, r.igstPer, r.igstAmt,
-                        r.expenseAmt, r.billAmt, r.taxableAmt, r.gstAmount, r.currency,
-                        r.invAmt, r.cancelBill, r.canceldate, r.cancelReason,
-                        r.ewaybillno, r.einvGenerated, r.einvNo,
-                        r.typeItemServAssets, r.domesticExportNEPZ, r.supplyType
+                    body = rows.map((item, i) => [
+                        i + 1, item.itemName,item.partCode,item.currency,item.poQty,item.poValue,item.recQty, item.recValue,
+                        item.qcOKQty, item.balQty, item.balValue,item.rating,item.partyName
                     ]);
 
-                    break;
+
+                break;
+                case 'LISTOFSCHEDULESUMMARY':/* done */
+                     headers = [
+                        "#Sr", "PO No", "PO Date", "Schedule No", "Schedule Date", "Vendor",
+                        "Schedule Effective From", "Schedule Effective Till", "PO Effective Date", "PO Close Date",
+                        "PO Amendment Effective Date", "Order Type", "Delivery Terms", "Delivery Date",
+                        "PO For", "Currency"
+                    ];
+
+
+                    console.log("Data:", rows);
+                     body = rows.map((item, i) => [
+                        i + 1, item.pono, item.poDate ? item.poDate.split(" ")[0] : '', item.schNO, item.schdate ? item.schdate.split(" ")[0] : '', item.vendor,
+                        item.scheduleEffectiveFromDate ? item.scheduleEffectiveFromDate.split(" ")[0] : '', item.scheduleEffectiveTillDate ? item.scheduleEffectiveTillDate.split(" ")[0] : '',
+                        item.poEffDate ? item.poEffDate.split(" ")[0] : '', item.pOclosedate ? item.pOclosedate.split(" ")[0] : '', item.poAmmeffdate ? item.poAmmeffdate.split(" ")[0] : '',
+                        item.ordertype, item.deliveryterms, item.deliveryDate ? item.deliveryDate.split(" ")[0] : '', item.pofor, item.currency
+                    ]);
+
+
+
+                break;
+                case 'LISTOFSCHEDULE': /*done */
+                     headers = [
+                        "#Sr", "PO No", "PO Date", "Schedule No", "Schedule Date", "Schedule Effective From",
+                        "Schedule Effective Till", "PO Type", "PO Effective Date", "PO Close Date", "PO Amendment Effective Date",
+                        "Order Type", "Vendor", "Part Code", "Item Name", "Unit",
+                        "Rate", "Schedule Qty", "Discount %", "Discount Amt", "Item Amount",
+                        "Assessment Rate", "Delivery Terms", "Delivery Date", "PO For", "Currency",
+                        "Amendment No", "Amendment Date"
+                    ];
+
+
+
+                    console.log("Data:", rows);
+                     body = rows.map((item, i) => [
+                        i + 1, item.pono, item.poDate?.split(" ")[0] || '', item.schNO, item.schdate?.split(" ")[0] || '', item.scheduleEffectiveFromDate?.split(" ")[0] || '',
+                        item.scheduleEffectiveTillDate?.split(" ")[0] || '', item.poType, item.poEffDate?.split(" ")[0] || '', item.pOclosedate?.split(" ")[0] || '', item.poAmmeffdate?.split(" ")[0] || '',
+                        item.ordertype, item.vendor, item.partCode, item.itemName, item.unit,
+                        item.rate, item.schQty, item.disPer, item.disAmt, item.itemAmount,
+                        item.assRate, item.deliveryterms, item.deliveryDate?.split(" ")[0] || '', item.pofor, item.currency,
+                        item.ammno, item.ammDate?.split(" ")[0] || ''
+                    ]);
+
+                break;
+                case 'CONSOLIDATED':
+                     headers = [
+                        "#Sr", "Account Name", "Part Code", "Item Name", "PO Qty", "Received Qty",
+                        "QC OK Qty", "Pending Qty", "Min Level", "Unit", "Min Level Days",
+                        "Rating", "Item Group", "Item Category"
+                    ];
+
+                    console.log("Data:", rows);
+                     body = rows.map((item, i) => [
+                        i + 1, item.account_name, item.partCode, item.itemName, item.poQty, item.recQty,
+                        item.qcokQty, item.pendQty, item.minLevel, item.unit, item.minlvldays,
+                        item.rating, item.itemGroup, item.itemCategory
+                    ]);
+
+                break;
+                case 'PARTYWISECONSOLIDATED':
+                     headers = [
+                        "#Sr", "Account Name", "PO Qty", "Received Qty", "QC OK Qty", "Pending Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                     body = rows.map((item, i) => [
+                        i + 1, item.account_name, item.poQty, item.recQty, item.qcokQty, item.pendQty
+                    ]);
+
+                break;
+                case 'ITEMWISECONSOLIDATED':
+                     headers = [
+                        "#Sr", "Part Code", "Item Name", "PO Qty", "PO Value", "Received Qty", "Received Value",
+                        "QC OK Qty", "Pending Qty", "Min Level", "Unit", "Min Level Days",
+                        "Rating", "Item Group", "Item Category"
+                    ];
+
+                    console.log("Data:", rows);
+                     body = rows.map((item, i) => [
+                        i + 1, item.partCode, item.itemName, item.poQty, item.poValue, item.recQty,
+                        item.recValue, item.qcokQty, item.pendQty, item.minLevel, item.unit,
+                        item.minlvldays, item.rating, item.itemGroup, item.itemCategory
+                    ]);
+
+                break;
+                case 'PRICEHISTORY':
+                     headers = [
+                        "#Sr", "PartyName", "PONo", "PODate", "ItemName", "PartCode", "Rate",
+                        "Currency", "POQty", "Dis", "DisAmt", "PO Value",
+                        "PO Close Date", "POEff Date", "PO EntryID", "PO YearCode"
+                    ];
+
+                    console.log("Data:", rows);
+                     body = rows.map((item, i) => [
+                        i + 1, item.partyName, item.pono, item.poDate?.split(" ")[0] || '', item.itemName, item.partCode,
+                        item.poRate, item.currency, item.poQty, item.disPer, item.disAmt,
+                        item.poValue, item.poCloseDate?.split(" ")[0] || '', item.poEffDate?.split(" ")[0] || '', item.poEntryId, item.poYearCode
+                    ]);
+
+                break;
+
+                default:
+                    $.notify(reportTypeValue + " report has no data to display!", "error");
+                return;
             }
 
             // Generate table with custom column width handling

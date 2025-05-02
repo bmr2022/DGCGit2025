@@ -367,7 +367,7 @@
                 table.children('#divStockRegisterBody').append(row);
             });
         }
-        function countAllTotal() {
+       /*  function countAllTotal() {
 
             var rowCount = $('#divStockRegisterBody tr').length;
 
@@ -385,7 +385,26 @@
 
             $('#totCr').val(isNaN(TotCr) ? 0 : TotCr.toFixed(2));
             $('#totDr').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
+        } */
+
+        function countAllTotal() {
+            var TotCr = 0;
+            var TotDr = 0;
+
+            $('.totCrG').each(function () {
+                var val = parseFloat($(this).text()) || 0;
+                TotCr += val;
+            });
+
+            $('.totDrG').each(function () {
+                var val = parseFloat($(this).text()) || 0;
+                TotDr += val;
+            });
+
+            $('#totCr').val(TotCr.toFixed(2));
+            $('#totDr').val(TotDr.toFixed(2));
         }
+
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {

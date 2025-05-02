@@ -2218,6 +2218,7 @@
                 url: "@Url.Action("JWRChallanList")",
                 type: "POST",
                 data: { model: JWRList },
+                async: false,
                 success: function (data, status, xhr) {
                     console.log("JWRChallanList" + data);
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -2252,12 +2253,13 @@
 
             });
         }
+        
 
         function GetAdjustedChallan(event) {
 
             event.preventDefault();
              
-            JWRChallanList();
+             JWRChallanList();
             var Data = [];
             var rowCount = $('#divJobWorkReceiveGrid tr').length;
             for (let i = 1; i <= rowCount; i++) {
@@ -2285,6 +2287,7 @@
                 url: "@Url.Action("GetAdjustedChallan")",
                  type: "POST",
                 data: { DTTItemGrid: JSON.stringify(Data), AccountCode: parseInt($('#AccountCode').val()), GateYearcode: parseInt($('#GateYearCode').val()), Gateno: $('#GateNo').val(), yearCode: $('#YearCode').val(), billchallandate: $('#EntryDate').val(), FromFinStartDate: $('#FromDate').val() },
+                  async: false,
                 success: function (result, status, xhr) {
                     // if (result != null) {
                         if (result && result.length > 0) {
