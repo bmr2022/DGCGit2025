@@ -160,7 +160,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("IssueNRGP", JsonConvert.SerializeObject(model));
             string modelJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
             List<IssueNRGPDetail> TaxGrid = new List<IssueNRGPDetail>();
-            if (string.IsNullOrEmpty(modelJson))
+            if (!string.IsNullOrEmpty(modelJson))
             {
                 TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
             }
@@ -257,9 +257,6 @@ namespace eTactWeb.Controllers
                 }
             }
         }
-
-
-
         public IActionResult GetImage(int EntryId = 0, int YearCode = 0)
         {
             // Creatint the Report object
