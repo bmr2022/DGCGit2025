@@ -479,8 +479,17 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "DirectPurchaseBill")
             {
-                _MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
-                ItemDetailGrid = MainModel.ItemDetailGrid;
+                _MemoryCache.TryGetValue("KeyDirectPurchaseBill", out List<DPBItemDetail> DirectPurchaseBill);
+                string modelPRGridJson = HttpContext.Session.GetString("KeyDirectPurchaseBill");
+                List<DPBItemDetail> DirectPurchaseBill1 = new List<DPBItemDetail>();
+                if (!string.IsNullOrEmpty(modelPRGridJson) && DirectPurchaseBill == null)
+                {
+                    DirectPurchaseBill1 = JsonConvert.DeserializeObject<List<DPBItemDetail>>(modelPRGridJson);
+                }
+                ItemDetailGrid = DirectPurchaseBill1;
+
+                //_MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
+                //ItemDetailGrid = MainModel.ItemDetailGrid;
                 var _ItemGrid = new List<DPBItemDetail>();
                 _ItemGrid = ItemDetailGrid;
                 var Amount = 0.0;
