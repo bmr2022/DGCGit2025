@@ -304,7 +304,13 @@ namespace eTactWeb.Controllers
                         {
                             if (RCDetail.Any(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.Storeid == item.Storeid))
                             {
-                                return StatusCode(207, "Duplicate");
+                                //return StatusCode(207, "Duplicate");
+                                var duplicateInfo = new
+                                {
+                                    item.ItemCode,
+                                    item.Storeid,
+                                    item.BatchNo
+                                };
                             }
                             else
                             {
