@@ -185,10 +185,11 @@ namespace eTactWeb.Controllers
             {
                 HttpContext.Session.Remove("KeyPendingToIssue");
                 string modelJson = HttpContext.Session.GetString("KeyPendingToIssue");
-                IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
+                List<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = new List<IssueWithoutBomDetail>();
+                 //IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
+                    IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
                 }
                 TempData.Clear();
                 var MainModel = new IssueWithoutBom();
@@ -218,17 +219,18 @@ namespace eTactWeb.Controllers
                                 else
                                 {
                                     item.seqno = IssueWithoutBomDetailGrid.Count + 1;
-                                            IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
+                                            //IssueGrid = IssueWithoutBomDetailGrid.Where(x => x != null).ToList();
                                             SSGrid.AddRange(IssueGrid);
                                             IssueGrid.Add(item);
                                     }
                                 }
                             
-                            MainModel.ItemDetailGrid = IssueGrid;
-
-                            HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                            
                         }
                     }
+                    MainModel.ItemDetailGrid = IssueGrid;
+
+                    HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
                 string pendingToIssue = HttpContext.Session.GetString("KeyPendingToIssue");
                 IList<IssueWithoutBomDetail> grid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(pendingToIssue);

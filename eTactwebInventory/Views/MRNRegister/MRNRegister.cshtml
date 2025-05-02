@@ -259,156 +259,7 @@
 
             GetMRNRegisterData();//INITIAL - ON LOAD METHOD
         });
-       /*  $('#sendToPDF').click(async function () {
-            debugger
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
-
-            // Get dynamic values
-            var reportTypeText = $('#ReportType').find(":selected").text();
-            var reportTypeValue = $('#ReportType').val();
-
-            var mrnTypeText = $('#MRNType').find(":selected").text();
-            var mrnTypeValue = $('#MRNType').val();
-
-            var fromDate = $('#FromDate').val();
-            var toDate = $('#ToDate').val();
-
-            var vendorName = $('#VendorName').val();
-            var gateNo = $('#gateno').val();
-            var mrnNo = $('#MRNno').val();
-            var invoiceNo = $('#invoiceNo').val();
-            var poNo = $('#PONo').val();
-            var schNo = $('#Schno').val();
-            var partCode = $('#PartCode').val();
-            var itemName = $('#ItemName').val();
-            var docName = $('#docname').val();
-
-            // Additional fields you mentioned:
-            var workCenter = $('#WCID').find(":selected").text();
-            var itemGroup = $('#ItemGroup').val();
-            var itemType = $('#ItemType').val();
-            var batchNo = $('#BatchNo').val();
-            var uniqueBatchNo = $('#UniqueBatchNo').val();
-
-            // Report Title
-            doc.setFontSize(16).text(reportTypeText, 40, 40);
-
-            // Date Range
-            doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
-
-            let currentY = 75;
-            const headerFields = [
-                { label: 'Report Type (Text)', value: reportTypeText || '' },
-                { label: 'Report Type (Value)', value: reportTypeValue || '' },
-                { label: 'MRN Type (Text)', value: mrnTypeText || '' },
-                { label: 'MRN Type (Value)', value: mrnTypeValue || '' },
-                { label: 'From Date', value: fromDate || '' },
-                { label: 'To Date', value: toDate || '' },
-                { label: 'Vendor Name', value: vendorName || '' },
-                { label: 'Gate Entry No', value: gateNo || '' },
-                { label: 'MRN No', value: mrnNo || '' },
-                { label: 'Invoice No', value: invoiceNo || '' },
-                { label: 'PO No', value: poNo || '' },
-                { label: 'Sch No', value: schNo || '' },
-                { label: 'Part Code', value: partCode || '' },
-                { label: 'Item Name', value: itemName || '' },
-                { label: 'Document Type', value: docName || '' },
-                { label: 'Work Center', value: (workCenter && workCenter !== '-Select-') ? workCenter : '' },
-                { label: 'Item Group', value: itemGroup || '' },
-                { label: 'Item Type', value: itemType || '' },
-                { label: 'Batch No', value: batchNo || '' },
-                { label: 'Unique Batch No', value: uniqueBatchNo || '' }
-            ];
-
-
-            // Filter out any fields with empty values
-            const filled = headerFields.filter(field => field.value);
-
-            // If there is at least one non-empty value, print the header
-            if (filled.length > 0) {
-                filled.forEach(field => {
-                    doc.setFontSize(10)
-                        .text(`${field.label}: ${field.value}`, 40, currentY);
-                    currentY += 15;
-                });
-            }
-            // Fetch data
-            var resp = await fetch('/MRNRegister/GetMRNRegisterData');
-            var rows = await resp.json();
-
-            // Declare headers and body
-            let headers = [];
-            let body = [];
-
-            // Handle report type logic
-            switch (reportTypeValue) {
-                case 'vendorItemWiseSummary':
-                    const headers = [
-                        "Vendor Name", "MRN No", "MRN Date", "Gate No", "Gate Date", "Invoice No",
-                        "Invoice Date", "Document No", "Part Code", "Item Name", "Bill Quantity",
-                        "Received Quantity", "Short/Excess Quantity", "Unit", "Amount", "Total Amount",
-                        "Net Amount", "Remarks", "Actual Entry By Employee", "Actual Entry Date",
-                        "Updated By Employee", "Last Updated Date", "FOC", "Department Name",
-                        "Currency", "Received In Store", "MRN Type"
-                    ];
-                    body = rows.map((r, i) => [
-                        i + 1, r.VendorName, r.MRNNo, r.MRNDate, r.GateNo, r.GDate,
-                        r.InvoiceNo, r.InvoiceDate, r.DocNo, r.PartCode, r.ItemName,
-                        r.BillQty, r.RecQty, r.ShortExcessQty, r.Unit, r.Amount,
-                        r.TotalAmt, r.NetAmount, r.Remark, r.ActualEntryByEmp, r.ActualEntryDate,
-                        r.UpdatedByEmp, r.LastUpdatedDate, r.FOC, r.DepName, r.Currency,
-                        r.RecInStore, r.MRNType
-                    ]);
-
-                    break;
-
-                // Add more cases for different report types here if needed
-                default:
-                    headers = ["Sr#", "Item Name"];
-                    body = rows.map((r, i) => [i + 1, r.ItemName]);
-                    break;
-            }
-
-            // Generate table
-            doc.autoTable({
-                startY: 75,
-                head: [headers],
-                body: body,
-                theme: 'grid',
-                margin: { left: 40, right: 40 },
-                styles: {
-                    fontSize: 7,
-                    cellPadding: 3,
-                    overflow: 'linebreak',
-                    halign: 'center',
-                    valign: 'middle'
-                },
-                headStyles: {
-                    fillColor: [41, 128, 185],
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                tableWidth: 'auto',
-                columnStyles: {
-                    0: { cellWidth: 'auto' },    // Column 1: Sr#
-                    1: { cellWidth: 'auto' },    // Column 2: ProdDate
-                    2: { cellWidth: 'auto' },    // Column 3: NewProdRework
-                    3: { cellWidth: 'auto' },    // Column 4: FGPartCode
-                    4: { cellWidth: 'auto' },    // Column 5: FGItemName
-                    5: { cellWidth: 'auto' },    // Column 6: Workcenter
-                    6: { cellWidth: 'auto' },    // Column 7: FGProdQty
-                    7: { cellWidth: 'auto' },    // Column 8: FGOKQty
-                    8: { cellWidth: 'auto' },    // Column 9: FGRejQty
-                    9: { cellWidth: 'auto' },    // Column 10: TransferToWCSTr
-                },
-                showHead: 'everyPage'
-            });
-
-            // Save the PDF
-            doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
-        }); */
-
+       
         $('#sendToPDF').click(async function () {
             debugger
             const { jsPDF } = window.jspdf;
@@ -509,12 +360,130 @@
                         r.actualEntryByEmp, r.actualEntryDate, r.currency,
                         r.recInStore, r.mrnType
                     ]);
-                    break;
+                break;
+                case 'vendorItemWiseConsolidated':
+                    headers = [
+                        "Sr#", "Part Code", "Item Name", "Bill Quantity",
+                        "Received Quantity", "Short/Excess Quantity", "Unit",
+                        "Total Amount", "MRN Type"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.partCode,r.itemName, r.billQty, r.recQty,  r.shortExcessQty,
+                        r.unit,r.totalAmt, r.mrnType
+                    ]);
+                break;
+                case 'vendorWiseConsolidated':
+                    headers = [
+                        "Sr#", "Vendor Name", "Bill Quantity",
+                        "Received Quantity", "Short/Excess Quantity",
+                        "Total Amount", "MRN Type"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.billQty,  r.recQty, r.shortExcessQty,
+                        r.totalAmt,  r.mrnType
+                    ]);
+                break;
+
+                case 'ItemWiseConsolidated':
+                    headers = [
+                        "Sr#", "Part Code", "Item Name", "Bill Quantity",
+                        "Received Quantity", "Short/Excess Quantity",
+                        "Unit", "Rate", "Total Amount", "MRN Type"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.partCode, r.itemName,r.billQty,r.recQty,
+                        r.shortExcessQty,r.unit,r.rate,r.totalAmt,r.mrnType
+                    ]);
+                break;
+
+                case 'DAYWISEMRNENTRYLIST':
+                    headers = [
+                        "Sr#", "MRN No", "MRN Date", "Gate No", "Vendor Name", "Invoice No",
+                        "Invoice Date", "Document No", "Bill Quantity", "Received Quantity",
+                        "Currency", "Received In Store", "MRN Type", "MRN QC Completed",
+                        "Need To Check QC", "Vendor Address", "Actual Entry By Employee",
+                        "Actual Entry Date", "Last Updated By", "Last Updated Date", "Entry By Machine Name"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1,r.mrnNo, r.mrnDate,r.gateNo,r.vendorName,r.invoiceNo,
+                        r.invoiceDate,r.docNo, r.billQty,r.recQty, r.currency,
+                        r.recInStore,r.mrnType, r.mrnQcCompleted,r.needTochkQc,
+                        r.vendAddress,r.actualEntryByEmp, r.actualEntryDate,
+                        r.lastUpdatedby, r.lastUpdatedDate,r.entryByMachineName
+                    ]);
+                break;
+                case 'PENDMRNFORQC(SUMMARY)':
+                    headers = [
+                        "Sr#", "Vendor Name", "MRN No", "MRN Date", "Gate No", "Gate Date",
+                        "Invoice No", "Invoice Date", "Total Bill Quantity", "Received Quantity",
+                        "Total Amount", "Purchase Bill Posted", "MRN Type"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1,r.vendorName, r.mrnNo, r.mrnDate, r.gateNo, r.gDate,
+                        r.invoiceNo, r.invoiceDate, r.totalBillQty, r.recQty,r.totalAmt,
+                        r.purchaseBillPosted,r.mrnType
+                    ]);
+                break;
+                case 'PENDMRNFORQC(DEATIL)':
+                    headers = [
+                        "Sr#", "Vendor Name", "MRN No", "MRN Date", "Gate No", "Gate Date",
+                        "Invoice No", "Invoice Date", "Part Code", "Item Name", "Total Bill Quantity",
+                        "Received Quantity", "Rate", "Total Amount", "PO No", "PO Date", "PO Type",
+                        "Schedule No", "Schedule Date", "QC Completed", "Purchase Bill Posted"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.mrnNo, r.mrnDate, r.gateNo, r.gDate, r.invoiceNo, r.invoiceDate, r.partCode, r.itemName,
+                        r.totalBillQty, r.recQty, r.rate, r.totalAmt, r.poNo, r.poDate, r.poType, r.schNo, r.schDate, r.qcCompleted, r.purchaseBillPosted
+                    ]);
+
+                break;
+                case 'Short Excess Register':
+                    headers = [
+                        "Sr#", "MRN No", "MRN Date", "MRN Type", "Gate No", "Gate Date", "Invoice No", "Invoice Date", "Account Name",
+                        "PO No", "PO Date", "Schedule No", "Part Code", "Item Name", "Bill Quantity", "Received Quantity",
+                        "Short/Excess Quantity", "Unit", "Rate", "Total Amount", "Net Amount", "Currency", "Department Name",
+                        "Alt Quantity", "Alt Unit", "Batch No", "Unique Batch No"
+                    ];
+
+                    console.log("Data:", rows);
+                    
+                    body = rows.map((r, i) => [
+                        i + 1, r.mrnNo, r.mrnDate, r.mrnType, r.gateNo, r.gDate, r.invoiceNo, r.invoiceDate, r.accountName,
+                        r.poNo, r.poDate, r.schNo, r.partCode, r.itemName, r.billQty, r.recQty, r.shortExcessQty, r.unit,
+                        r.rate, r.totalAmt, r.netAmount, r.currency, r.depName, r.altQty, r.altUnit, r.batchNo, r.uniqueBatchNo
+                    ]);
+                break;
+
 
                 // Add more cases for different report types here if needed
                 default:
-                    headers = ["Sr#", "Item Name"];
-                    body = rows.map((r, i) => [i + 1, r.ItemName]);
+                    headers = [
+                        "Sr#", "Vendor Name", "MRN No", "MRN Date", "Gate No", "Gate Date", "Entry Date", "Invoice No",
+                        "Invoice Date", "Document No", "PO No", "PO Date", "PO Type", "Schedule No", "Schedule Date",
+                        "Part Code", "Item Name", "Bill Quantity", "Received Quantity", "Short/Excess Quantity", "Unit",
+                        "Rate", "Amount", "Alt Quantity", "Alt Unit", "QC Completed", "MRN QC Completed", "Need to Check QC",
+                        "Batch No", "Unique Batch No", "Supplier Batch No", "Shelf Life", "Total Amount", "Net Amount", "Remark",
+                        
+                        "FOC", "Department Name", "Currency", "Received In Store", "MRN Type", "Vendor Address"
+                    ];
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.mrnNo, r.mrnDate, r.gateNo, r.gDate, r.entryDate, r.invoiceNo,
+                        r.invoiceDate, r.docNo, r.poNo, r.poDate, r.poType, r.schNo, r.schDate, r.partCode, r.itemName,
+                        r.billQty, r.recQty, r.shortExcessQty, r.unit, r.rate, r.amount, r.altQty, r.altUnit,
+                        r.qcCompleted, r.mrnQcCompleted, r.needToChkQc, r.batchNo, r.uniqueBatchNo, r.supplierBatchNo,
+                        r.shelfLife, r.totalAmt, r.netAmount, r.remark, r.foc, r.depName, r.currency, r.recInStore, r.mrnType,
+                        r.vendAddress
+                    ]);
                     break;
             }
 

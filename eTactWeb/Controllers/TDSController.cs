@@ -123,7 +123,7 @@ public class TDSController : Controller
                 };
                 if (!string.IsNullOrEmpty(Data))
                 {
-                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data, settings);
+                    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(Data, settings);
                 }
 
 

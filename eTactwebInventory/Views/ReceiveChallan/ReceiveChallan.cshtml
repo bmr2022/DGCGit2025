@@ -1219,9 +1219,20 @@
                 type: "POST",
                 url: '@Url.Action("AddReceiveChallanDetail")',
                 data: { "model": ItemData },
+                // statusCode: {
+                //     207: function () {
+                //         $.notify('Duplicate Item...!', "info");
+                //     }
+                // },
                 statusCode: {
-                    207: function () {
-                        $.notify('Duplicate Item...!', "info");
+                    207: function (xhr) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            var msg = `Duplicate Item Found: ItemCode ${response.ItemCode}, StoreId ${response.Storeid}, BatchNo ${response.BatchNo}`;
+                            $.notify(msg, "info");
+                        } catch (e) {
+                            $.notify("Duplicate Item...!", "info");
+                        }
                     }
                 },
                 success: function (result, status, xhr) {

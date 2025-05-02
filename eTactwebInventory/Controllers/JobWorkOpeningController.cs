@@ -363,9 +363,9 @@ namespace eTactWeb.Controllers
             JOGrid.Columns.Add("ChallanNo", typeof(string));
             JOGrid.Columns.Add("ChalanEntryId", typeof(int));
             JOGrid.Columns.Add("ChallanYearcode", typeof(int));
-            JOGrid.Columns.Add("challandate", typeof(DateTime));
+            JOGrid.Columns.Add("challandate", typeof(string));
             JOGrid.Columns.Add("Accountcode", typeof(int));
-            JOGrid.Columns.Add("EntryDate", typeof(DateTime));
+            JOGrid.Columns.Add("EntryDate", typeof(string));
             JOGrid.Columns.Add("ItemCode", typeof(int));
             JOGrid.Columns.Add("Qty", typeof(decimal));
             JOGrid.Columns.Add("Rate", typeof(decimal));
@@ -381,7 +381,7 @@ namespace eTactWeb.Controllers
             JOGrid.Columns.Add("UID", typeof(string));
             JOGrid.Columns.Add("EnteredByEmpId", typeof(int));
             JOGrid.Columns.Add("ClosedChallan", typeof(string));
-            JOGrid.Columns.Add("CloseChallandate", typeof(DateTime));
+            JOGrid.Columns.Add("CloseChallandate", typeof(string));
             JOGrid.Columns.Add("CloseChallanByEmpId", typeof(int));
 
             foreach (var Item in DetailList)
@@ -397,9 +397,11 @@ namespace eTactWeb.Controllers
                     Item.IssJWChallanNo,
                     Item.IssChalanEntryId,
                     Item.IssChallanYearcode,
-                    Item.Isschallandate,
+                    //Item.Isschallandate,
+                     Item.Isschallandate == null ? string.Empty : ParseFormattedDate(Item.Isschallandate.Split(" ")[0]),
                     Item.Accountcode,
-                    Item.EntryDate,
+                    //Item.EntryDate,
+                     Item.EntryDate == null ? string.Empty : ParseFormattedDate(Item.EntryDate.Split(" ")[0]),
                     Item.ItemCode,
                     Item.RecQty,
                     Item.Rate,
@@ -415,7 +417,8 @@ namespace eTactWeb.Controllers
                     Item.UID,
                     Item.EnteredByEmpId,
                     Item.ClosedChallan == null ? "" : Item.ClosedChallan,
-                    Item.CloseChallandate,
+                    //Item.CloseChallandate,
+                    Item.CloseChallandate == null ? string.Empty : ParseFormattedDate(Item.CloseChallandate.Split(" ")[0]),
                     Item.CloseChallanByEmpId == null ? 0 : Item.CloseChallanByEmpId,
                     });
             }

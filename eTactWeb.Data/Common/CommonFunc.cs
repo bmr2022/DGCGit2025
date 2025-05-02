@@ -149,7 +149,7 @@ public static class CommonFunc
              "yyyy-MM-ddTHH:mm:ss.SSSZ","yyyy-MM-ddTHH:mm:ss+HH:mm","EEEE, MMMM dd, yyyy",
              "EEE, dd MMM yyyy","EEEE dd/MM/yyyy","EEEE dd-MMM-yyyy","HH:mm:ss","hh:mm:ss a","dd-MMM-yyyy hh:mm:ss tt",
              "HH:mm","hh:mm a","dd/MMM/yyyy hh:mm:ss tt", "dd/MMM/yyyy hh:mm:ss","dd/MM/yyyy hh:mm:ss tt","dd-MM-yyyy hh:mm:ss","dd-MM-yyyy HH:mm:ss","d-M-yy hh:mm:ss"
-             ,"d-M-yy HH:mm:ss","dd-M-yy hh:mm:ss","dd-M-yy HH:mm:ss","dd/MMM/yyyy HH.mm.ss tt"
+             ,"d-M-yy HH:mm:ss","dd-M-yy hh:mm:ss","dd-M-yy HH:mm:ss","dd/MMM/yyyy HH.mm.ss tt","dd/MMM/yyyy hh.mm.ss tt"
         };
 
             // Try parsing the date string against all the formats

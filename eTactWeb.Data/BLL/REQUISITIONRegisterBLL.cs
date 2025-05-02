@@ -22,9 +22,9 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _REQUISITIONRegisterDAL = new REQUISITIONRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
-        public async Task<REQUISITIONRegistermodel> GetREQUISITIONRegisterData(string Flag,string ReQType,string fromDate, string ToDate, string REQNo, string Partcode, string ItemName, string FromstoreId, string Toworkcenter, int ReqYearcode)
+        public async Task<REQUISITIONRegistermodel> GetREQUISITIONRegisterData(string Flag, string ReQType, string fromDate, string ToDate, string REQNo, string Partcode, string ItemName, string FromstoreId, string Toworkcenter, int ReqYearcode)
         {
-            return await _REQUISITIONRegisterDAL.GetREQUISITIONRegisterData(Flag, ReQType, fromDate, ToDate, Partcode, ItemName, REQNo, FromstoreId,Toworkcenter,ReqYearcode);
+            return await _REQUISITIONRegisterDAL.GetREQUISITIONRegisterData( Flag,  ReQType,  fromDate,  ToDate,  REQNo,  Partcode,  ItemName,  FromstoreId,  Toworkcenter,  ReqYearcode);
 
         }
     }
