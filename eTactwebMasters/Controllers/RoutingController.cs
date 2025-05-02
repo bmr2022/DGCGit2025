@@ -15,9 +15,7 @@ namespace eTactWeb.Controllers
     public class RoutingController : Controller
     {
         private readonly IDataLogic _IDataLogic;
-        //private readonly IGateInward _IGateInward;
         public IRouting _IRouting { get; }
-
         private readonly ILogger<RoutingController> _logger;
         private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment IWebHostEnvironment { get; }

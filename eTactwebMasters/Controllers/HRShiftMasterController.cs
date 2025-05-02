@@ -19,17 +19,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IHRShiftMaster _IHRShiftMaster { get; }
-
         private readonly ILogger<HRShiftMasterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public HRShiftMasterController(ILogger<HRShiftMasterController> logger, IDataLogic iDataLogic, IHRShiftMaster iHRShiftMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public HRShiftMasterController(ILogger<HRShiftMasterController> logger, IDataLogic iDataLogic, IHRShiftMaster iHRShiftMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IHRShiftMaster = iHRShiftMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

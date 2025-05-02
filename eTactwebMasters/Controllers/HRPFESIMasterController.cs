@@ -19,18 +19,14 @@ namespace eTactwebMasters.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IHRPFESIMaster _IHRPFESIMaster;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        private readonly IMemoryCache _MemoryCache;
         private readonly ILogger<HRPFESIMasterController> _logger;
 
-
-
-        public HRPFESIMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IHRPFESIMaster iHRPFESIMaster, IMemoryCache iMemoryCache, ILogger<HRPFESIMasterController> logger)
+        public HRPFESIMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IHRPFESIMaster iHRPFESIMaster, ILogger<HRPFESIMasterController> logger)
         {
             _IDataLogic = iDataLogic;
             _IHRPFESIMaster = iHRPFESIMaster;
             _IWebHostEnvironment = iWebHostEnvironment;
             _EncryptDecrypt = encryptDecrypt;
-            _MemoryCache = iMemoryCache;
             _logger = logger;
         }
 
@@ -39,47 +35,27 @@ namespace eTactwebMasters.Controllers
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new HRPFESIMasterModel();
-
             MainModel.EntryId = ID;
             MainModel.Mode = Mode;
 
             if (Mode != "U")
             {
                 MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                //MainModel.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
-
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
             {
-
-
                 MainModel = await _IHRPFESIMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.EntryId = ID;
                 if (Mode == "U")
                 {
                     MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    //MainModel.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
-
                     MainModel.UpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
-
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024
-            };
-            _MemoryCache.Set("HRPFESIDashboard", MainModel.HRPFESIDashboard, cacheEntryOptions);
+                HttpContext.Session.SetString("HRPFESIDashboard", JsonConvert.SerializeObject(MainModel.HRPFESIDashboard));
             }
-
-
-
-
-
             MainModel = await BindModel(MainModel).ConfigureAwait(false);
             MainModel = await BindModel1(MainModel).ConfigureAwait(false);
-            //MainModel = await BindModel2(MainModel).ConfigureAwait(false);
             return View(MainModel);
         }
 
@@ -174,7 +150,6 @@ namespace eTactwebMasters.Controllers
         }
         public async Task<IActionResult> GetDetailData()
         {
-            //model.Mode = "Search";
             var model = new HRPFESIMasterModel();
             model = await _IHRPFESIMaster.GetDashboardDetailData();
             return PartialView("_HRPFESIMasterDashBoardGrid", model);
@@ -184,8 +159,6 @@ namespace eTactwebMasters.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> HRPFESIMaster(HRPFESIMasterModel model)
         {
-            //Logger.LogInformation("\n \n ********** Save Tax Master ********** \n \n");
-
             try
             {
                 if (model != null)

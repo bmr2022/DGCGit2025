@@ -20,17 +20,14 @@ public class AdminController : Controller, IAsyncDisposable
     private readonly IAdminModule _IAdminModule;
     private readonly IDataLogic _IDataLogic;
     private readonly IWebHostEnvironment _IWebHostEnvironment;
-    private readonly IMemoryCache _MemoryCache;
-
     private dynamic Result;
 
-    public AdminController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IAdminModule iAdminModule, IMemoryCache memoryCache)
+    public AdminController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IAdminModule iAdminModule)
     {
         _IDataLogic = iDataLogic;
         _IWebHostEnvironment = iWebHostEnvironment;
         _EncryptDecrypt = encryptDecrypt;
         _IAdminModule = iAdminModule;
-        _MemoryCache = memoryCache;
     }
 
     public IActionResult DeleteRightByID(int ID)
@@ -87,16 +84,17 @@ public class AdminController : Controller, IAsyncDisposable
 
     public void GetClearGrid()
     {
-        if (_MemoryCache.TryGetValue("KeyUserRightsDetail", out _))
+        string modelJson = HttpContext.Session.GetString("KeyUserRightsList");
+        if (string.IsNullOrEmpty(modelJson))
         {
-            _MemoryCache.Remove("KeyUserRightsDetail");
+            HttpContext.Session.Remove("KeyUserRightsList");
         }
     }
 
     public async Task<IActionResult> UserMaster(int ID, string Mode)
     {
         UserMasterModel model = new();
-        _MemoryCache.Remove("KeyUserRightsList");
+        HttpContext.Session.Remove("KeyUserRightsList");
         if (ID == 0)
         {
             model.UserTypeList = await _IDataLogic.GetDropDownList("UserTypeTB", "SP_GetDropDownList");
@@ -224,20 +222,22 @@ public class AdminController : Controller, IAsyncDisposable
         UserRightModel model = new();
         if (Mode == "C")
         {
-            _MemoryCache.TryGetValue("KeyUserRightsDetail", out IList<UserRightModel> UserRightModelDetail);
+            string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+            List<UserRightModel> UserRightModelDetail = new List<UserRightModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                UserRightModelDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+            }
             model.UserRights = UserRightModelDetail;
         }
         else
         {
-            _MemoryCache.Remove("KeyUserRightsDetail");
+            HttpContext.Session.Remove("KeyUserRightsDetail");
             model.UserRights = new List<UserRightModel>();
-
         }
 
         if (ID != 0 || (Mode == "V" || Mode == "U" || Mode == "C"))
         {
-
-            // model = await _IAdminModule.GetUserRightByID(ID);
             model.Mode = Mode;
         }
 
@@ -253,15 +253,17 @@ public class AdminController : Controller, IAsyncDisposable
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> UserRights(UserRightModel model)
     {
-        //if (ModelState.IsValid)
-        //{
         model.Mode = model.ModelMode == "U" ? "Update" : "Insert";
 
         if (model.EmpID != 0)
         {
-            //model.SubMenu ??= model.SubMenu2;
             var UserRightGrid = new DataTable();
-            _MemoryCache.TryGetValue("KeyUserRightsDetail", out List<UserRightModel> UserRightDetail);
+            string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+            List<UserRightModel> UserRightDetail = new List<UserRightModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                UserRightDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+            }
 
             UserRightGrid = GetDetailTable(UserRightDetail);
             Common.ResponseResult Result = await _IAdminModule.SaveUserRights(model, UserRightGrid);
@@ -296,27 +298,13 @@ public class AdminController : Controller, IAsyncDisposable
         }
         return RedirectToAction(nameof(UserRightDashboard), new { ID = 0 });
     }
-    //else
-    //{
-    //    ViewBag.isSuccess = false;
-    //    TempData["Message"] = "Form Validation Error.";
-    //    return RedirectToAction(nameof(UserRights), new { ID = 0 });
-    //}
-
     public async Task<IActionResult> GetSearchDataByEmpName(int EmpID, string Module, string MainMenu) // for main form
     {
         //model.Mode = "Search";
         var model = new UserRightModel();
         model.UserRights = new List<UserRightModel>();
         model = await _IAdminModule.GetSearchData(EmpID);
-        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-            SlidingExpiration = TimeSpan.FromMinutes(55),
-            Size = 1024,
-        };
-
-        _MemoryCache.Set("KeyUserRightsDetail", model.UserRights, cacheEntryOptions);
+        HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(model.UserRights));
         if (model.UserRights.Count > 0)
         {
             model.Mode = "U";
@@ -339,13 +327,6 @@ public class AdminController : Controller, IAsyncDisposable
         model.Mode = "Detail";
         return PartialView("_SearchFieldDashboard", model);
     }
-    //public async Task<IActionResult> GetSearchDataByUser(string EmpName)
-    //{
-    //    //model.Mode = "Search";
-    //    var model = new UserRightModel();
-    //    model = await _IAdminModule.GetSearchData(EmpName);
-    //    return PartialView("_UserRightsAssigned", model);
-    //}
     public IActionResult AddToGrid(int EmpID, string Module, string MainMenu, string All, string Save, string Update, string Delete, string View)
     {
         try
@@ -362,7 +343,12 @@ public class AdminController : Controller, IAsyncDisposable
                 View = View
             };
 
-            _MemoryCache.TryGetValue("KeyUserRightsList", out IList<UserRightModel> UserRightList);
+            string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+            List<UserRightModel> UserRightList = new List<UserRightModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                UserRightList = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+            }
 
             var MainModel = new UserRightModel();
             var UserRightGrid = new List<UserRightModel>();
@@ -391,16 +377,7 @@ public class AdminController : Controller, IAsyncDisposable
 
             MainModel.UserRights = UserGrid;
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            _MemoryCache.Set("KeyUserRightsList", MainModel.UserRights, cacheEntryOptions);
-
-
+            HttpContext.Session.SetString("KeyUserRightsList", JsonConvert.SerializeObject(MainModel.UserRights));    
             return PartialView("_UserRightsAssigned", MainModel);
 
         }
@@ -413,7 +390,12 @@ public class AdminController : Controller, IAsyncDisposable
     {
         try
         {
-            _MemoryCache.TryGetValue("KeyUserRightsDetail", out IList<UserRightModel> UserRightModelDetail);
+            string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+            IList<UserRightModel> UserRightModelDetail = new List<UserRightModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                UserRightModelDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+            }   
 
             //ALL MODULES and MAINMENUS
             if (model.Module == "0" && model.MainMenu == "0")
@@ -460,7 +442,12 @@ public class AdminController : Controller, IAsyncDisposable
 
                             foreach (var item1 in newUserRightModel.MainMenuList)
                             {
-                                _MemoryCache.TryGetValue("KeyUserRightsDetail", out IList<UserRightModel> UserRightModelDetail1);
+                                string userRightsJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+                                IList<UserRightModel> UserRightModelDetail1 = new List<UserRightModel>();
+                                if (!string.IsNullOrEmpty(userRightsJson))
+                                {
+                                    UserRightModelDetail1 = JsonConvert.DeserializeObject<List<UserRightModel>>(userRightsJson);
+                                }
                                 var newMenuItemModel = new UserRightModel();
 
                                 newMenuItemModel.Module = newUserRightModel.Module;
@@ -490,22 +477,12 @@ public class AdminController : Controller, IAsyncDisposable
                                     }
 
                                     MainModel1.UserRights = UserGrid1;
-
-                                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                                    {
-                                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                                        Size = 1024,
-                                    };
-
-                                    _MemoryCache.Set("KeyUserRightsDetail", MainModel1.UserRights, cacheEntryOptions);
+                                    HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(MainModel1.UserRights));
                                 }
                                 else
                                 {
                                     ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
                                 }
-
-
                             }
                         }
                     }
@@ -533,7 +510,12 @@ public class AdminController : Controller, IAsyncDisposable
                 int SeqNo = 1;
                 foreach (var item1 in MainModel.MainMenuList)
                 {
-                    _MemoryCache.TryGetValue("KeyUserRightsDetail", out IList<UserRightModel> UserRightModelDetail1);
+                    string userRightsJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+                    IList<UserRightModel> UserRightModelDetail1 = new List<UserRightModel>();
+                    if (!string.IsNullOrEmpty(userRightsJson))
+                    {
+                        UserRightModelDetail1 = JsonConvert.DeserializeObject<List<UserRightModel>>(userRightsJson);
+                    }
                     var newMenuItemModel = new UserRightModel();
 
                     newMenuItemModel.Module = MainModel.Module;
@@ -570,14 +552,7 @@ public class AdminController : Controller, IAsyncDisposable
                         }
 
                         MainModel.UserRights = UserGrid;
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyUserRightsDetail", MainModel.UserRights, cacheEntryOptions);
+                        HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(MainModel.UserRights));
                     }
                     else
                     {
@@ -596,7 +571,12 @@ public class AdminController : Controller, IAsyncDisposable
     public IActionResult DeleteItemRow(int SeqNo)
     {
         var MainModel = new UserRightModel();
-        _MemoryCache.TryGetValue("KeyUserRightsDetail", out List<UserRightModel> UserRightDetail);
+        string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+        List<UserRightModel> UserRightDetail = new List<UserRightModel>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            UserRightDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+        }
         int Indx = Convert.ToInt32(SeqNo) - 1;
 
         if (UserRightDetail != null && UserRightDetail.Count > 0)
@@ -612,17 +592,8 @@ public class AdminController : Controller, IAsyncDisposable
             }
             MainModel.UserRights = UserRightDetail;
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            _MemoryCache.Set("KeyUserRightsDetail", MainModel.UserRights, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(MainModel.UserRights));
         }
-
-
         return PartialView("_UserRightGrid", MainModel);
     }
 
@@ -630,7 +601,11 @@ public class AdminController : Controller, IAsyncDisposable
     {
         IList<UserRightModel> UserRightDetail = new List<UserRightModel>();
 
-        _MemoryCache.TryGetValue("KeyUserRightsDetail", out UserRightDetail);
+        string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            UserRightDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+        }
 
         IEnumerable<UserRightModel> SSGrid = UserRightDetail;
         if (UserRightDetail != null)
@@ -690,7 +665,12 @@ public class AdminController : Controller, IAsyncDisposable
     public async Task<IActionResult> CopyUserRightDetail(string EmpName, int EmpID)
     {
         var MainModel = new UserRightModel();
-        _MemoryCache.TryGetValue("KeyUserRightsDetail", out IList<UserRightModel> UserRightModelDetail);
+        string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+        List<UserRightModel> UserRightModelDetail = new List<UserRightModel>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            UserRightModelDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+        }
         if (UserRightModelDetail != null)
         {
             foreach (var userRight in UserRightModelDetail)
@@ -699,14 +679,7 @@ public class AdminController : Controller, IAsyncDisposable
                 userRight.EmpName = EmpName;
             }
             MainModel.UserRights = UserRightModelDetail;
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            _MemoryCache.Set("KeyUserRightsDetail", MainModel.UserRights, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(MainModel.UserRights));
         }
         return PartialView("_UserRightGrid", MainModel);
     }

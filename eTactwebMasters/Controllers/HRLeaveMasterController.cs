@@ -19,18 +19,14 @@ namespace eTactwebMasters.Controllers
             private readonly IDataLogic _IDataLogic;
             private readonly IHRLeaveMaster _IHRLeaveMaster;
             private readonly IWebHostEnvironment _IWebHostEnvironment;
-            private readonly IMemoryCache _MemoryCache;
             private readonly ILogger<HRLeaveMasterController> _logger;
 
-
-
-            public HRLeaveMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IHRLeaveMaster iHRLeaveMaster, IMemoryCache iMemoryCache, ILogger<HRLeaveMasterController> logger)
+            public HRLeaveMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IHRLeaveMaster iHRLeaveMaster, ILogger<HRLeaveMasterController> logger)
             {
                 _IDataLogic = iDataLogic;
                 _IHRLeaveMaster = iHRLeaveMaster;
                 _IWebHostEnvironment = iWebHostEnvironment;
                 _EncryptDecrypt = encryptDecrypt;
-                _MemoryCache = iMemoryCache;
                 _logger = logger;
             }
 
@@ -57,7 +53,6 @@ namespace eTactwebMasters.Controllers
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.LeaveId = ID;
 
-
                 if (Mode == "U")
                 {
                     MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -66,22 +61,8 @@ namespace eTactwebMasters.Controllers
                     MainModel.UpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
 
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024
-            };
-                _MemoryCache.Set("HRLeaveDashboard", MainModel.HRLeaveDashboard, cacheEntryOptions);
+                HttpContext.Session.SetString("HRLeaveDashboard", JsonConvert.SerializeObject(MainModel.HRLeaveDashboard));
             }
-
-            //// If not in "Update" mode, bind new model data
-            //else
-            //{
-            //    // MainModel = await BindModels(MainModel);
-            //}
-
-
 
             MainModel = await BindModel(MainModel).ConfigureAwait(false);
             MainModel = await BindModel1(MainModel).ConfigureAwait(false);

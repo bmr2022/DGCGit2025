@@ -19,70 +19,46 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IHRSalaryHeadMaster _ISalaryHeadMaster;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        private readonly IMemoryCache _MemoryCache;
         private readonly ILogger<HRSalaryHeadMasterController> _logger;
 
-
-
-        public HRSalaryHeadMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IHRSalaryHeadMaster iSalaryHeadMaster, IMemoryCache iMemoryCache, ILogger<HRSalaryHeadMasterController> logger)
+        public HRSalaryHeadMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IHRSalaryHeadMaster iSalaryHeadMaster, ILogger<HRSalaryHeadMasterController> logger)
         {
             _IDataLogic = iDataLogic;
             _ISalaryHeadMaster = iSalaryHeadMaster;
             _IWebHostEnvironment = iWebHostEnvironment;
             _EncryptDecrypt = encryptDecrypt;
-            _MemoryCache = iMemoryCache;
             _logger = logger;
         }
-
         
         public async Task<ActionResult> HRSalaryHeadMaster(int ID, string Mode)//, ILogger logger)
         {
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new HRSalaryHeadMasterModel();
-            // _MemoryCache.Remove("KeyPartCodePartyWiseGrid");
             MainModel.SalHeadEntryId = ID;
             MainModel.Mode = Mode;
-            //MainModel.SalHeadEntryDate = SalHeadEntryDate;
             if (Mode != "U")
             {
                 MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
-               
-
             }
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U"|| Mode == "V")
             {
-
-                //Retrieve the old data by AccountCode and populate the model with existing values
                 MainModel = await _ISalaryHeadMaster.GetViewByID(ID).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.SalHeadEntryId = ID;
                
-
                 if (Mode == "U")
                 {
                     MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
                     MainModel.LastUpdatedOn = HttpContext.Session.GetString("LastUpdatedOn");
-
-                }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                _MemoryCache.Set("HRSalaryDashboard", MainModel.HRSalaryDashboard, cacheEntryOptions);
+                }               
+                HttpContext.Session.SetString("HRSalaryDashboard", JsonConvert.SerializeObject(MainModel.HRSalaryDashboard));
             }
 
-            // If not in "Update" mode, bind new model data
             else
             {
                 // MainModel = await BindModels(MainModel);
             }
-
-            
 
             MainModel = await BindModel(MainModel).ConfigureAwait(false);
             MainModel = await BindModel1(MainModel).ConfigureAwait(false);

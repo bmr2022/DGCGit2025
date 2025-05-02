@@ -25,15 +25,13 @@ public class ItemMasterController : Controller
     private readonly IDataLogic _IDataLogic;
     private readonly IItemMaster _IItemMaster;
     private readonly IWebHostEnvironment _IWebHostEnvironment;
-    private readonly IMemoryCache _MemoryCache;
     private readonly ILogger<ItemMasterController> _logger;
-    public ItemMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IItemMaster iItemMaster, IMemoryCache iMemoryCache, ILogger<ItemMasterController> logger)
+    public ItemMasterController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IItemMaster iItemMaster, ILogger<ItemMasterController> logger)
     {
         _IDataLogic = iDataLogic;
         _IItemMaster = iItemMaster;
         _IWebHostEnvironment = iWebHostEnvironment;
         _EncryptDecrypt = encryptDecrypt;
-        _MemoryCache = iMemoryCache;
         _logger = logger;
     }
     [HttpPost]
@@ -61,19 +59,12 @@ public class ItemMasterController : Controller
 
         var allData = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HsnNo, UniversalPartCode, Flag);
 
-        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-            SlidingExpiration = TimeSpan.FromMinutes(55),
-            Size = 1024,
-        };
-        _MemoryCache.Set("KeyItemListSearch", allData, cacheEntryOptions);
+        HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(allData));
 
         model.TotalRecords = allData.Count();
         model.PageNumber = pageNumber;
         model.PageSize = pageSize;
         model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-
         model.Item_Name = Item_Name;
         model.PartCode = PartCode;
         model.ParentName = ParentCode;
@@ -90,7 +81,6 @@ public class ItemMasterController : Controller
     {
         ItemMasterModel model = new ItemMasterModel();
         model.SwitchAll = "false";
-
         Item_Name = string.IsNullOrEmpty(Item_Name) ? "" : Item_Name.Trim();
         PartCode = string.IsNullOrEmpty(PartCode) ? "" : PartCode.Trim();
         ItemType = ItemType == "0" || ItemType == null ? null : ItemType;
@@ -146,12 +136,13 @@ public class ItemMasterController : Controller
     public IActionResult GlobalSearch(string searchString,int pageNumber=1,int pageSize=500)
     {
         ItemMasterModel model = new ItemMasterModel();
+        IList<ItemMasterModel> itemViewModel = new List<ItemMasterModel>();
         if (string.IsNullOrWhiteSpace(searchString))
         {
             return PartialView("_IMGrid", new List<ItemMasterModel>());
         }
 
-        if (!_MemoryCache.TryGetValue("KeyItemListSearch", out IList<ItemMasterModel> itemViewModel) || itemViewModel == null)
+        if (itemViewModel == null)
         {
             return PartialView("_IMGrid", new List<ItemMasterModel>());
         }
@@ -190,14 +181,7 @@ public class ItemMasterController : Controller
             ViewBag.isSuccess = false;
             TempData["500"] = "500";
         }
-        //}
-        //else
-        //{
-        //    ViewBag.isSuccess = false;
-        //    TempData["423"] = "423";
-        //}
         return RedirectToAction("Dashboard", new { Item_Name = ItemName, PartCode = PartCode, ParentCode = ParentName, ItemType = POServType, HsnNo = HSNNO, Flag = "" });
-        //return RedirectToAction(nameof(Dashboard));
     }
     public async Task<IActionResult> GetData()
     {
@@ -239,7 +223,7 @@ public class ItemMasterController : Controller
     public async Task<IActionResult> ItemDetail(int ID, string Mode)
     {
         ItemMasterModel model = new ItemMasterModel();
-        _MemoryCache.Remove("KeyItemList");
+        HttpContext.Session.Remove("KeyItemList");
 
         if (ID == 0)
         {
@@ -486,20 +470,20 @@ public class ItemMasterController : Controller
     {
         try
         {
-            _MemoryCache.Remove("KeyItemList");
+            HttpContext.Session.Remove("KeyItemList");
 
-            _MemoryCache.TryGetValue("KeyItemList", out IList<ItemViewModel> ItemViewModel);
+            string ItemList = HttpContext.Session.GetString("KeyItemList");
+            IList<ItemViewModel> ItemViewModel = new List<ItemViewModel>();
+            if(!string.IsNullOrEmpty(ItemList))
+            {
+                ItemViewModel = JsonConvert.DeserializeObject<IList<ItemViewModel>>(ItemList);
+            }
 
             var MainModel = new ItemMasterModel();
             var ItemDetailGrid = new List<ItemViewModel>();
             var ItemGrid = new List<ItemViewModel>();
             var SSGrid = new List<ItemViewModel>();
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
+           
             var seqNo = 0;
             foreach (var item in model)
             {
@@ -527,10 +511,16 @@ public class ItemMasterController : Controller
                     }
                     MainModel.ExcelDataList = ItemGrid;
 
-                    _MemoryCache.Set("KeyItemList", MainModel.ExcelDataList, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyItemList", JsonConvert.SerializeObject(MainModel.ExcelDataList));
                 }
             }
-            _MemoryCache.TryGetValue("KeyItemList", out List<ItemViewModel> ItemListt);
+
+            string modelData = HttpContext.Session.GetString("KeyItemList");
+            IList<ItemViewModel> ItemListt = new List<ItemViewModel>();
+            if (!string.IsNullOrEmpty(modelData))
+            {
+                ItemListt = JsonConvert.DeserializeObject<IList<ItemViewModel>>(modelData);
+            }
             var CC = HttpContext.Session.GetString("Branch");
             var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var ItemGridList = new DataTable();

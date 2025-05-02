@@ -13,13 +13,11 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         private readonly IEmployeeMaster _IEmployeeMaster;
-        private readonly IMemoryCache _MemoryCache;
 
-        public EmployeeMasterController(IDataLogic iDataLogic, IEmployeeMaster iEmployeeMaster, IMemoryCache memoryCache)
+        public EmployeeMasterController(IDataLogic iDataLogic, IEmployeeMaster iEmployeeMaster)
         {
             _IDataLogic = iDataLogic;
             _IEmployeeMaster = iEmployeeMaster;
-            _MemoryCache = memoryCache;
         }
 
         public async Task<IActionResult> EmployeeMaster(int ID, string Mode)
@@ -99,14 +97,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-      
+
         public async Task<JsonResult> GetJobDesignation()
         {
             var JSON = await _IEmployeeMaster.GetJobDesignation();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-      
+
         public async Task<JsonResult> GetJobShift()
         {
             var JSON = await _IEmployeeMaster.GetJobShift();
@@ -125,41 +123,41 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-      
+
 
         [HttpPost]
         //[ValidateAntiForgeryToken]
         public async Task<IActionResult> EmployeeMaster(EmployeeMasterModel model)
         {
-                model.Mode = model.Mode != "U" ? "SAVE" : "UPDATE";
-                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                var Result = await _IEmployeeMaster.SaveEmployeeMaster(model);
+            model.Mode = model.Mode != "U" ? "SAVE" : "UPDATE";
+            model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            var Result = await _IEmployeeMaster.SaveEmployeeMaster(model);
 
-                if (Result == null)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["Message"] = "Something Went Wrong, Please Try Again.";
-                    return RedirectToAction(nameof(DashBoard));
-                }
-                else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                {
-                    ViewBag.isSuccess = true;
-                    TempData["200"] = "200";
-                    return RedirectToAction(nameof(DashBoard));
-                }
-                else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.Ambiguous)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["300"] = "300";
-                }
-                else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                {
-                    ViewBag.isSuccess = true;
-                    TempData["202"] = "202";
-                    return RedirectToAction(nameof(DashBoard));
-                }
-                return RedirectToAction(nameof(EmployeeMaster), new { ID = 0 });
-            
+            if (Result == null)
+            {
+                ViewBag.isSuccess = false;
+                TempData["Message"] = "Something Went Wrong, Please Try Again.";
+                return RedirectToAction(nameof(DashBoard));
+            }
+            else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+            {
+                ViewBag.isSuccess = true;
+                TempData["200"] = "200";
+                return RedirectToAction(nameof(DashBoard));
+            }
+            else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.Ambiguous)
+            {
+                ViewBag.isSuccess = false;
+                TempData["300"] = "300";
+            }
+            else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["202"] = "202";
+                return RedirectToAction(nameof(DashBoard));
+            }
+            return RedirectToAction(nameof(EmployeeMaster), new { ID = 0 });
+
         }
 
         public async Task<IActionResult> GetSearchData(string EmpCode, string ReportType)
@@ -168,11 +166,11 @@ namespace eTactWeb.Controllers
             model.Mode = "Search";
             model = await _IEmployeeMaster.GetSearchData(model, EmpCode, ReportType).ConfigureAwait(true);
             model.EmployeeMasterList = model.EmployeeMasterList?.DistinctBy(x => x.EmpId).ToList() ?? new List<EmployeeMasterModel>();
-            if (ReportType== "DashBoardSummary")
+            if (ReportType == "DashBoardSummary")
             {
                 return PartialView("_EmployeeMasterDashboardSummary", model);
             }
-            if (ReportType== "DashBoardDetail")
+            if (ReportType == "DashBoardDetail")
             {
                 return PartialView("_EmployeeMasterDashboardDetail", model);
             }
@@ -227,7 +225,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out IList<EmployeeMasterModel> EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
 
                 var MainModel = new EmployeeMasterModel();
                 var WorkOrderPGrid = new List<EmployeeMasterModel>();
@@ -261,14 +264,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.EmployeeMasterGrid = OrderGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyEmployeeMasterGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
                 else
                 {
@@ -287,11 +283,19 @@ namespace eTactWeb.Controllers
             IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
             }
             IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
             if (EmployeeMasterGrid != null)
@@ -307,7 +311,12 @@ namespace eTactWeb.Controllers
             var MainModel = new EmployeeMasterModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterGrid", out List<EmployeeMasterModel> EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterGrid");
+                List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+                }
                 int Indx = SrNO - 1;
 
                 if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
@@ -323,14 +332,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyEmployeeMasterGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyEmployeeMasterGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
             }
 
@@ -340,7 +342,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out IList<EmployeeMasterModel> EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
 
                 var MainModel = new EmployeeMasterModel();
                 var WorkOrderPGrid = new List<EmployeeMasterModel>();
@@ -374,14 +381,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.EmployeeMasterGrid = OrderGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyEmployeeMasterEductionGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyEmployeeMasterEductionGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
                 else
                 {
@@ -400,11 +400,19 @@ namespace eTactWeb.Controllers
             IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
             }
             IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
             if (EmployeeMasterGrid != null)
@@ -420,7 +428,12 @@ namespace eTactWeb.Controllers
             var MainModel = new EmployeeMasterModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterEductionGrid", out List<EmployeeMasterModel> EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterEductionGrid");
+                List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+                }
                 int Indx = SrNO - 1;
 
                 if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
@@ -436,14 +449,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyEmployeeMasterEductionGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyEmployeeMasterEductionGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
             }
 
@@ -453,7 +459,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out IList<EmployeeMasterModel> EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
 
                 var MainModel = new EmployeeMasterModel();
                 var WorkOrderPGrid = new List<EmployeeMasterModel>();
@@ -487,14 +498,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.EmployeeMasterGrid = OrderGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyEmployeeMasterExperianceGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyEmployeeMasterExperianceGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
                 else
                 {
@@ -513,11 +517,19 @@ namespace eTactWeb.Controllers
             IList<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<IList<EmployeeMasterModel>>(modelJson);
+                }
             }
             IEnumerable<EmployeeMasterModel> SSBreakdownGrid = EmployeeMasterGrid;
             if (EmployeeMasterGrid != null)
@@ -533,7 +545,12 @@ namespace eTactWeb.Controllers
             var MainModel = new EmployeeMasterModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyEmployeeMasterExperianceGrid", out List<EmployeeMasterModel> EmployeeMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyEmployeeMasterExperianceGrid");
+                List<EmployeeMasterModel> EmployeeMasterGrid = new List<EmployeeMasterModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    EmployeeMasterGrid = JsonConvert.DeserializeObject<List<EmployeeMasterModel>>(modelJson);
+                }
                 int Indx = SrNO - 1;
 
                 if (EmployeeMasterGrid != null && EmployeeMasterGrid.Count > 0)
@@ -549,17 +566,9 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.EmployeeMasterGrid = EmployeeMasterGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyEmployeeMasterExperianceGrid", MainModel.EmployeeMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyEmployeeMasterExperianceGrid", JsonConvert.SerializeObject(MainModel.EmployeeMasterGrid));
                 }
             }
-
             return PartialView("_EmployeeMasterExperianceGrid", MainModel);
         }
     }

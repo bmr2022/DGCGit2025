@@ -16,17 +16,14 @@ namespace eTactwebMasters.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IHRHolidaysMaster _IHRHolidaysMaster { get; }
-
         private readonly ILogger<HRHolidaysMasterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public HRHolidaysMasterController(ILogger<HRHolidaysMasterController> logger, IDataLogic iDataLogic, IHRHolidaysMaster iHRHolidaysMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public HRHolidaysMasterController(ILogger<HRHolidaysMasterController> logger, IDataLogic iDataLogic, IHRHolidaysMaster iHRHolidaysMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IHRHolidaysMaster = iHRHolidaysMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -48,15 +45,7 @@ namespace eTactwebMasters.Controllers
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.HolidayId = ID;
                 
-
-
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                _MemoryCache.Set("HRHolidayDashboard", MainModel.HRHolidayDashboard, cacheEntryOptions);
+                HttpContext.Session.SetString("HRHolidayDashboard", JsonConvert.SerializeObject(MainModel.HRHolidayDashboard));
             }
             MainModel = await BindModel(MainModel).ConfigureAwait(false);
             MainModel = await BindModel1(MainModel).ConfigureAwait(false);

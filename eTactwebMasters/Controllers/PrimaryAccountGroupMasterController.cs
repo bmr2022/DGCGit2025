@@ -15,17 +15,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IPrimaryAccountGroupMaster _IPrimaryAccountGroupMaster { get; }
-
         private readonly ILogger<PrimaryAccountGroupMasterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public PrimaryAccountGroupMasterController(ILogger<PrimaryAccountGroupMasterController> logger, IDataLogic iDataLogic, IPrimaryAccountGroupMaster IPrimaryAccountGroupMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public PrimaryAccountGroupMasterController(ILogger<PrimaryAccountGroupMasterController> logger, IDataLogic iDataLogic, IPrimaryAccountGroupMaster IPrimaryAccountGroupMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPrimaryAccountGroupMaster = IPrimaryAccountGroupMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -42,7 +39,7 @@ namespace eTactWeb.Controllers
             MainModel.EnteredEMPID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             //MainModel.PrefixEntryId= Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-            _MemoryCache.Remove("PrimaryAccountGroupMasterGrid");
+            HttpContext.Session.Remove("PrimaryAccountGroupMasterGrid");
 
             if (!string.IsNullOrEmpty(Mode) && EnteredEMPID > 0 && Mode == "U")
             {
@@ -168,7 +165,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("PrimaryAccountGroupMasterGrid");
+                HttpContext.Session.Remove("PrimaryAccountGroupMasterGrid");
 
                 var model = new PrimaryAccountGroupMasterDashBoardModel();
                 var Result = await _IPrimaryAccountGroupMaster.GetDashboardData().ConfigureAwait(true);  // Adjust interface/service as needed

@@ -15,17 +15,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IDepartmentMaster _IDepartmentMaster { get; }
-
         private readonly ILogger<DepartmentMasterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public DepartmentMasterController(ILogger<DepartmentMasterController> logger, IDataLogic iDataLogic, IDepartmentMaster iDepartmentMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public DepartmentMasterController(ILogger<DepartmentMasterController> logger, IDataLogic iDataLogic, IDepartmentMaster iDepartmentMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IDepartmentMaster = iDepartmentMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

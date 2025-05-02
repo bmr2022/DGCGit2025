@@ -17,17 +17,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IHRWeekOffMaster _IHRWeekOffMaster { get; }
-
         private readonly ILogger<HRWeekOffMasterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public HRWeekOffMasterController(ILogger<HRWeekOffMasterController> logger, IDataLogic iDataLogic, IHRWeekOffMaster iHRWeekOffMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public HRWeekOffMasterController(ILogger<HRWeekOffMasterController> logger, IDataLogic iDataLogic, IHRWeekOffMaster iHRWeekOffMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IHRWeekOffMaster = iHRWeekOffMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }

@@ -18,17 +18,14 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IAlternateItemMaster _IAlternateItemMaster { get; }
-
         private readonly ILogger<AlternateItemMasterController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public AlternateItemMasterController(ILogger<AlternateItemMasterController> logger, IDataLogic iDataLogic, IAlternateItemMaster iAlternateItemMaster, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public AlternateItemMasterController(ILogger<AlternateItemMasterController> logger, IDataLogic iDataLogic, IAlternateItemMaster iAlternateItemMaster, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IAlternateItemMaster = iAlternateItemMaster;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -51,8 +48,7 @@ namespace eTactWeb.Controllers
             MainModel.EffectiveDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
 
             MainModel.EntryByempId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            _MemoryCache.Remove("AlternateItemMasterGrid");
-
+            HttpContext.Session.Remove("AlternateItemMasterGrid");
             // Check if Mode is "Update" (U) and the ID is valid
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
@@ -81,13 +77,7 @@ namespace eTactWeb.Controllers
                     MainModel.EffectiveDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
 
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024
-                };
-                _MemoryCache.Set("AlternateItemMasterGrid", MainModel.AlternateItemMasterGrid, cacheEntryOptions);
+               HttpContext.Session.SetString("AlternateItemMasterGrid", JsonConvert.SerializeObject(MainModel.AlternateItemMasterGrid));
             }
 
             // If not in "Update" mode, bind new model data
@@ -107,8 +97,12 @@ namespace eTactWeb.Controllers
             try
             {
                 var GIGrid = new DataTable();
-                _MemoryCache.TryGetValue("AlternateItemMasterGrid", out List<AlternateItemMasterGridModel> AlternateItemMasterGrid);
-
+                string modelJson = HttpContext.Session.GetString("AlternateItemMasterGrid");
+                List<AlternateItemMasterGridModel> AlternateItemMasterGrid = new List<AlternateItemMasterGridModel>();
+                if (modelJson != null)
+                {
+                    AlternateItemMasterGrid = JsonConvert.DeserializeObject<List<AlternateItemMasterGridModel>>(modelJson);
+                }
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 if (model.Mode == "U")
@@ -140,7 +134,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        _MemoryCache.Remove("AlternateItemMasterGrid");
+                        HttpContext.Session.Remove("AlternateItemMasterGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -202,8 +196,12 @@ namespace eTactWeb.Controllers
             {
                 if (model.Mode == "U")
                 {
-
-                    _MemoryCache.TryGetValue("KeyAlternateItemMasterGrid", out IList<AlternateItemMasterGridModel> AlternateItemMasterDGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyAlternateItemMasterGrid");
+                    IList<AlternateItemMasterGridModel> AlternateItemMasterDGrid = new List<AlternateItemMasterGridModel>();
+                    if (modelJson != null)
+                    {
+                        AlternateItemMasterDGrid = JsonConvert.DeserializeObject<List<AlternateItemMasterGridModel>>(modelJson);
+                    }
 
                     var MainModel = new AlternateItemMasterModel();
                     var WorkOrderPGrid = new List<AlternateItemMasterGridModel>();
@@ -238,14 +236,7 @@ namespace eTactWeb.Controllers
 
                         MainModel.AlternateItemMasterGrid = OrderGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyAlternateItemMasterGrid", MainModel.AlternateItemMasterGrid, cacheEntryOptions);
+                        HttpContext.Session.SetString("KeyAlternateItemMasterGrid", JsonConvert.SerializeObject(MainModel.AlternateItemMasterGrid));
                     }
                     else
                     {
@@ -255,8 +246,12 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-
-                    _MemoryCache.TryGetValue("AlternateItemMasterGrid", out IList<AlternateItemMasterGridModel> AlternateItemMasterGrid);
+                    string modelJson = HttpContext.Session.GetString("AlternateItemMasterGrid");
+                    IList<AlternateItemMasterGridModel> AlternateItemMasterGrid = new List<AlternateItemMasterGridModel>();
+                    if (modelJson != null)
+                    {
+                        AlternateItemMasterGrid = JsonConvert.DeserializeObject<List<AlternateItemMasterGridModel>>(modelJson);
+                    }
 
                     var MainModel = new AlternateItemMasterModel();
                     var WorkOrderPGrid = new List<AlternateItemMasterGridModel>();
@@ -290,14 +285,7 @@ namespace eTactWeb.Controllers
 
                         MainModel.AlternateItemMasterGrid = OrderGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("AlternateItemMasterGrid", MainModel.AlternateItemMasterGrid, cacheEntryOptions);
+                       HttpContext.Session.SetString("AlternateItemMasterGrid", JsonConvert.SerializeObject(MainModel.AlternateItemMasterGrid));
                     }
                     else
                     {
@@ -316,11 +304,19 @@ namespace eTactWeb.Controllers
             IList<AlternateItemMasterGridModel> AlternateItemMasterGrid = new List<AlternateItemMasterGridModel>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyAlternateItemMasterGrid", out AlternateItemMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyAlternateItemMasterGrid");
+                if (modelJson != null)
+                {
+                    AlternateItemMasterGrid = JsonConvert.DeserializeObject<List<AlternateItemMasterGridModel>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyAlternateItemMasterGrid", out AlternateItemMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyAlternateItemMasterGrid");
+                if (modelJson != null)
+                {
+                    AlternateItemMasterGrid = JsonConvert.DeserializeObject<List<AlternateItemMasterGridModel>>(modelJson);
+                }
             }
             IEnumerable<AlternateItemMasterGridModel> SSBreakdownGrid = AlternateItemMasterGrid;
             if (AlternateItemMasterGrid != null)
@@ -335,7 +331,12 @@ namespace eTactWeb.Controllers
             var MainModel = new AlternateItemMasterModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyAlternateItemMasterGrid", out List<AlternateItemMasterGridModel> AlternateItemMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyAlternateItemMasterGrid");
+                List<AlternateItemMasterGridModel> AlternateItemMasterGrid = new List<AlternateItemMasterGridModel>();
+                if (modelJson != null)
+                {
+                    AlternateItemMasterGrid = JsonConvert.DeserializeObject<List<AlternateItemMasterGridModel>>(modelJson);
+                }
                 int Indx = SeqNo - 1;
 
                 if (AlternateItemMasterGrid != null && AlternateItemMasterGrid.Count > 0)
@@ -351,19 +352,18 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.AlternateItemMasterGrid = AlternateItemMasterGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyAlternateItemMasterGrid", MainModel.AlternateItemMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyAlternateItemMasterGrid", JsonConvert.SerializeObject(MainModel.AlternateItemMasterGrid));
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyAlternateItemMasterGrid", out List<AlternateItemMasterGridModel> AlternateItemMasterGrid);
+                string modelJson = HttpContext.Session.GetString("KeyAlternateItemMasterGrid");
+                List<AlternateItemMasterGridModel> AlternateItemMasterGrid = new List<AlternateItemMasterGridModel>();
+                if (modelJson != null)
+                {
+                    AlternateItemMasterGrid = JsonConvert.DeserializeObject<List<AlternateItemMasterGridModel>>(modelJson);
+                }
+                
                 int Indx = SeqNo;
 
                 if (AlternateItemMasterGrid != null && AlternateItemMasterGrid.Count > 0)
@@ -379,14 +379,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.AlternateItemMasterGrid = AlternateItemMasterGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyAlternateItemMasterGrid", MainModel.AlternateItemMasterGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyAlternateItemMasterGrid", JsonConvert.SerializeObject(MainModel.AlternateItemMasterGrid));
                 }
             }
 
