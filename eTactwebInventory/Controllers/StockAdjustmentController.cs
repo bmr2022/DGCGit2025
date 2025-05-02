@@ -22,16 +22,14 @@ namespace eTactWeb.Controllers
     public class StockAdjustmentController : Controller
     {
         public IDataLogic IDataLogic { get; }
-        public IMemoryCache IMemoryCache { get; }
         public IStockAdjustment IStockAdjust { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<StockAdjustmentController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
-        public StockAdjustmentController(IStockAdjustment iStockAdjust, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<StockAdjustmentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public StockAdjustmentController(IStockAdjustment iStockAdjust, IDataLogic iDataLogic, ILogger<StockAdjustmentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             IStockAdjust = iStockAdjust;
             IDataLogic = iDataLogic;
-            IMemoryCache = iMemoryCache;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
@@ -43,8 +41,8 @@ namespace eTactWeb.Controllers
             //RoutingModel model = new RoutingModel();
             ViewData["Title"] = "StockAdjustment Details";
             TempData.Clear();
-            IMemoryCache.Remove("KeyStockAdjustGrid");
-            IMemoryCache.Remove("KeyStockMultiBatchAdjustGrid");
+            HttpContext.Session.Remove("KeyStockAdjustGrid");
+            HttpContext.Session.Remove("KeyStockMultiBatchAdjustGrid");
             var MainModel = new StockAdjustmentModel();
 
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
@@ -73,13 +71,6 @@ namespace eTactWeb.Controllers
                 MainModel = await BindModel(MainModel);
             }
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.PartCodeBack = PartCode;
@@ -89,8 +80,7 @@ namespace eTactWeb.Controllers
             MainModel.WorkCenterBack = WCName;
             MainModel.SummaryDetailBack = SummaryDetail;
             MainModel.GlobalSearchBack = Searchbox;
-            IMemoryCache.Set("KeyStockAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
-            //IMemoryCache.Set("KeyStockAdjustGrid", model, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyStockAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
             return View(MainModel);
         }
 
@@ -113,7 +103,12 @@ namespace eTactWeb.Controllers
                 var SeqNo = 1;
                 foreach (var item in model)
                 {
-                    IMemoryCache.TryGetValue("KeyStockMultiBatchAdjustGrid", out IList<StockAdjustmentDetail> StockAdjustmentGrid);
+                    string modelJson = HttpContext.Session.GetString("KeyStockMultiBatchAdjustGrid");
+                    IList<StockAdjustmentDetail> StockAdjustmentGrid = new List<StockAdjustmentDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        StockAdjustmentGrid = JsonConvert.DeserializeObject<List<StockAdjustmentDetail>>(modelJson);
+                    }
 
                     if (model != null)
                     {
@@ -146,16 +141,8 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.StockAdjustModelGrid = StockGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        IMemoryCache.Set("KeyStockMultiBatchAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
-                        IMemoryCache.Set("KeyStockAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
-
+                        HttpContext.Session.SetString("KeyStockMultiBatchAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
+                        HttpContext.Session.SetString("KeyStockAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
                     }
                     else
                     {
@@ -181,7 +168,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                IMemoryCache.TryGetValue("KeyStockAdjustGrid", out IList<StockAdjustmentDetail> StockAdjustmentGrid);
+                string modelJson = HttpContext.Session.GetString("KeyStockAdjustGrid");
+                IList<StockAdjustmentDetail> StockAdjustmentGrid = new List<StockAdjustmentDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    StockAdjustmentGrid = JsonConvert.DeserializeObject<List<StockAdjustmentDetail>>(modelJson);
+                }
 
                 var MainModel = new StockAdjustmentModel();
                 var StockGrid = new List<StockAdjustmentDetail>();
@@ -221,14 +213,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.StockAdjustModelGrid = StockGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyStockAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyStockAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
                 }
                 else
                 {
@@ -250,8 +235,12 @@ namespace eTactWeb.Controllers
             try
             {
                 var SAGrid = new DataTable();
-
-                IMemoryCache.TryGetValue("KeyStockAdjustGrid", out IList<StockAdjustmentDetail> StocAdjustmentDetail);
+                string modelJson = HttpContext.Session.GetString("KeyStockAdjustGrid");
+                IList<StockAdjustmentDetail> StocAdjustmentDetail = new List<StockAdjustmentDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    StocAdjustmentDetail = JsonConvert.DeserializeObject<List<StockAdjustmentDetail>>(modelJson);
+                }
 
                 if (StocAdjustmentDetail == null)
                 {
@@ -286,15 +275,13 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            IMemoryCache.Remove(SAGrid);
                             var model1 = new StockAdjustmentModel();
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
                             model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                             model1.CC = HttpContext.Session.GetString("Branch");
-                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyStockAdjustGrid");
+                            HttpContext.Session.Remove("KeyStockAdjustGrid");
                             return View(model1);
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -306,9 +293,8 @@ namespace eTactWeb.Controllers
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
                             model1.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                             model1.CC = HttpContext.Session.GetString("Branch");
-                            //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyStockAdjustGrid");
+                            HttpContext.Session.Remove("KeyStockAdjustGrid");
                             return View(model1);
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -324,7 +310,6 @@ namespace eTactWeb.Controllers
                                 model2.FinToDate = HttpContext.Session.GetString("ToDate");
                                 model2.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                                 model2.CC = HttpContext.Session.GetString("Branch");
-                                // model2.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                                 model2.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                                 return View(model2);
                             }
@@ -332,7 +317,6 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            // return View("Error", Result);
                             return View(model);
                         }
                     }
@@ -356,143 +340,27 @@ namespace eTactWeb.Controllers
             }
         }
 
-        //public async Task<IActionResult> AddMainStockDetail(List<StockAdjustmentDetail> model,string StoreWork)
-        //{
-        //    try
-        //    {
-
-        //        var MainModel = new StockAdjustmentModel();
-        //        MainModel.StoreWorkCenter = StoreWork;
-        //        var StockGrid = new List<StockAdjustmentDetail>();
-        //        var StockAdjustGrid = new List<StockAdjustmentDetail>();
-        //        List<StockAdjustmentDetail> StockAdjustmentGrid = new List<StockAdjustmentDetail>();
-        //        var SeqNo = 1;
-        //        foreach (var item in model)
-        //        {
-        //            IMemoryCache.TryGetValue("KeyStockMultiBatchAdjustGrid", out StockAdjustmentGrid);
-
-        //            if (model != null)
-        //            {
-        //                if (StockAdjustmentGrid == null)
-        //                {
-        //                    item.SeqNo = SeqNo++;
-        //                    StockGrid.Add(item);
-        //                }
-        //                else
-        //                {
-        //                    if (item.Storeid != 0)
-        //                    {
-        //                        if (StockAdjustmentGrid.Any(x => x.ItemCode == item.ItemCode && x.Storeid == item.Storeid && x.batchno == item.batchno && x.uniqbatchno == item.uniqbatchno))
-        //                        {
-        //                            return StatusCode(207, "Duplicate");
-        //                        }
-        //                    }
-        //                    else
-        //                    {
-        //                        if (StockAdjustmentGrid.Any(x => x.ItemCode == item.ItemCode && x.Wcid == item.Wcid && x.batchno == item.batchno && x.uniqbatchno == item.uniqbatchno))
-        //                        {
-        //                            return StatusCode(207, "Duplicate");
-        //                        }
-        //                    }
-
-        //                    item.SeqNo = StockAdjustmentGrid.Count + 1;
-        //                    StockGrid = StockAdjustmentGrid.Where(x => x != null).ToList();
-        //                    StockAdjustGrid.AddRange(StockGrid);
-        //                    StockGrid.Add(item);
-        //                }
-        //                MainModel.StockAdjustModelGrid = StockGrid;
-
-        //                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //                {
-        //                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //                    SlidingExpiration = TimeSpan.FromMinutes(55),
-        //                    Size = 1024,
-        //                };
-
-        //                IMemoryCache.Set("KeyStockMultiBatchAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
-        //                IMemoryCache.Set("KeyStockAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
-
-        //            }
-        //            else
-        //            {
-        //                ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
-        //            }
-        //        }
-
-        //        MainModel.CC = HttpContext.Session.GetString("Branch");
-        //        MainModel.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-        //        MainModel.entryByEmp = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-        //        MainModel.entryByEmpName = HttpContext.Session.GetString("EmpName");
-        //        MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-        //        MainModel.EntryDate = DateTime.Now.ToString();
-        //        MainModel.MachineNo = Environment.MachineName;
-        //        var ItemGridList = new DataTable();
-        //        ItemGridList = GetDetailTable(MainModel.StockAdjustModelGrid);
-
-        //          var Result = await IStockAdjust.SaveStockAdjust(MainModel,ItemGridList);
-
-        //        if (Result != null)
-        //        {
-        //            if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-        //            {
-        //                ViewBag.isSuccess = true;
-        //                TempData["200"] = "200";
-        //            }
-        //            if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
-        //            {
-        //                ViewBag.isSuccess = true;
-        //                TempData["202"] = "202";
-        //            }
-        //            if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-        //            {
-        //                ViewBag.isSuccess = false;
-        //                TempData["500"] = "500";
-        //                Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-        //                return View("Error", Result);
-        //            }
-        //        }
-
-        //        return RedirectToAction(nameof(ImportStock));
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        LogException<StockAdjustmentController>.WriteException(Logger, ex);
-
-        //        var ResponseResult = new ResponseResult()
-        //        {
-        //            StatusCode = HttpStatusCode.InternalServerError,
-        //            StatusText = "Error",
-        //            Result = ex
-        //        };
-
-        //        return View("Error", ResponseResult);
-        //    }
-        //}
-
         public IActionResult ClearGrid()
         {
-            IMemoryCache.Remove("KeyStockAdjustGrid");
+            HttpContext.Session.Remove("KeyStockAdjustGrid");
             var MainModel = new StockAdjustmentModel();
             return PartialView("_StockAdjustGrid", MainModel);
         }
         public IActionResult ClearMultiBatchGrid()
         {
-            IMemoryCache.Remove("KeyStockMultiBatchAdjustGrid");
+            HttpContext.Session.Remove("KeyStockMultiBatchAdjustGrid");
             var MainModel = new StockAdjustmentModel();
             return PartialView("_StockAdjustGrid", MainModel);
         }
         public async Task<IActionResult> Dashboard(int ItemCode = 0, string PartCode = "", string ItemName = "", string StoreWorkCenter = "", string StoreName = "", string WCName = "", string FromDate = "", string ToDate = "", string SummaryDetail = "")
         {
-            IMemoryCache.Remove("KeyStockAdjustGrid");
+            HttpContext.Session.Remove("KeyStockAdjustGrid");
             var model = new SADashborad();
             DateTime now = DateTime.Now;
-            //DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
             if (FromDate == "" && ToDate == "")
             {
                 model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-                //model.FromDate = ParseFormattedDate((model.FromDate).Split(" ")[0]);
                 model.ToDate = (DateTime.Today).ToString("dd/MM/yyyy").Replace("-", "/");
-                //model.ToDate = ParseFormattedDate((model.ToDate).Split(" ")[0]);
             }
             else
             {
@@ -529,11 +397,8 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> DetailDashboard(SADashborad model)
         {
-            IMemoryCache.Remove("KeyStockAdjustGrid");
+            HttpContext.Session.Remove("KeyStockAdjustGrid");
             DateTime now = DateTime.Now;
-            //DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-            //model.FromDate = new DateTime(now.Year, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
-            //model.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
             var Result = await IStockAdjust.GetDashboardData(model);
 
             if (Result != null)
@@ -555,9 +420,9 @@ namespace eTactWeb.Controllers
             return PartialView("_SADetailDashboardGrid", model);
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC, int ItemCode, string PartCode, string EntryDate,string ItemName, string StoreWorkCenter, string StoreName, string WCName, string FromDate, string ToDate, string SummaryDetail,int entryByEmp,string EntryByMachineName)
+        public async Task<IActionResult> DeleteByID(int ID, int YC, int ItemCode, string PartCode, string EntryDate, string ItemName, string StoreWorkCenter, string StoreName, string WCName, string FromDate, string ToDate, string SummaryDetail, int entryByEmp, string EntryByMachineName)
         {
-            var Result = await IStockAdjust.DeleteByID(ID, YC,entryByEmp,EntryByMachineName,EntryDate).ConfigureAwait(false);
+            var Result = await IStockAdjust.DeleteByID(ID, YC, entryByEmp, EntryByMachineName, EntryDate).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -569,7 +434,7 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            return RedirectToAction("Dashboard", new { ItemCode = ItemCode, PartCode = PartCode, ItemName = ItemName, StoreWorkCenter = StoreWorkCenter, StoreName = StoreName, WCName = WCName, FromDate = ParseFormattedDate(FromDate), ToDate = ParseFormattedDate(ToDate), SummaryDetail = SummaryDetail, entryByEmp=entryByEmp,EntryByMachineName=EntryByMachineName });
+            return RedirectToAction("Dashboard", new { ItemCode = ItemCode, PartCode = PartCode, ItemName = ItemName, StoreWorkCenter = StoreWorkCenter, StoreName = StoreName, WCName = WCName, FromDate = ParseFormattedDate(FromDate), ToDate = ParseFormattedDate(ToDate), SummaryDetail = SummaryDetail, entryByEmp = entryByEmp, EntryByMachineName = EntryByMachineName });
         }
         public async Task<IActionResult> GetSearchData(SADashborad model)
         {
@@ -578,17 +443,17 @@ namespace eTactWeb.Controllers
             var DT = new DataTable();
             if (model.SummaryDetail == "Summary")
             {
-                 DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode",
-                        "SlipNo", "StockAdjustmentDate", "StoreWorkcenter", "EntryDate", "entryByEmp",
-                                    "enterByEmpName", "UpdatedbyEmp", "UpdatedByEmpName", "UpdatedOn", "EntryByMachineName");
+                DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode",
+                       "SlipNo", "StockAdjustmentDate", "StoreWorkcenter", "EntryDate", "entryByEmp",
+                                   "enterByEmpName", "UpdatedbyEmp", "UpdatedByEmpName", "UpdatedOn", "EntryByMachineName");
             }
             else
             {
-                 DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode",
-                        "SlipNo", "StockAdjustmentDate", "StoreWorkcenter", "PartCode", "ItemName", "storeid", "wcid", "Unit", "TotalStock", "LotStock", "altUnit", 
-                        "AltQty", "ActuleStockQty", "AdjQty", "AdjType", "Rate", "Amount", "batchno", "uniquebatchno", "reasonOfAdjutment", "StoreName", "WorkCenter",
-                        "EntryDate", "entryByEmp", "Itemcode", "UpdatedbyEmp",
-                                    "enterByEmpName", "UpdatedByEmpName", "UpdatedOn", "EntryByMachineName");
+                DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode",
+                       "SlipNo", "StockAdjustmentDate", "StoreWorkcenter", "PartCode", "ItemName", "storeid", "wcid", "Unit", "TotalStock", "LotStock", "altUnit",
+                       "AltQty", "ActuleStockQty", "AdjQty", "AdjType", "Rate", "Amount", "batchno", "uniquebatchno", "reasonOfAdjutment", "StoreName", "WorkCenter",
+                       "EntryDate", "entryByEmp", "Itemcode", "UpdatedbyEmp",
+                                   "enterByEmpName", "UpdatedByEmpName", "UpdatedOn", "EntryByMachineName");
             }
 
             model.SADashboard = CommonFunc.DataTableToList<StockAdjustDashboard>(DT, "StockAdjustment");
@@ -602,7 +467,12 @@ namespace eTactWeb.Controllers
             if (Mode == "U")
             {
                 int Indx = Convert.ToInt32(SeqNo) - 1;
-                IMemoryCache.TryGetValue("KeyStockAdjustGrid", out List<StockAdjustmentDetail> StockAdjustDetail);
+                string modelJson = HttpContext.Session.GetString("KeyStockAdjustGrid");
+                List<StockAdjustmentDetail> StockAdjustDetail = new List<StockAdjustmentDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    StockAdjustDetail = JsonConvert.DeserializeObject<List<StockAdjustmentDetail>>(modelJson);
+                }
 
                 if (StockAdjustDetail != null && StockAdjustDetail.Count > 0)
                 {
@@ -617,19 +487,18 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.StockAdjustModelGrid = StockAdjustDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyStockAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
+                   HttpContext.Session.SetString("KeyStockAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
                 }
             }
             else
             {
-                IMemoryCache.TryGetValue("KeyStockAdjustGrid", out List<StockAdjustmentDetail> StockAdjustDetail);
+                string modelJson = HttpContext.Session.GetString("KeyStockAdjustGrid");
+                List<StockAdjustmentDetail> StockAdjustDetail = new List<StockAdjustmentDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    StockAdjustDetail = JsonConvert.DeserializeObject<List<StockAdjustmentDetail>>(modelJson);
+                }
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (StockAdjustDetail != null && StockAdjustDetail.Count > 0)
@@ -645,83 +514,12 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.StockAdjustModelGrid = StockAdjustDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyStockAdjustGrid", MainModel.StockAdjustModelGrid, cacheEntryOptions);
+                   HttpContext.Session.SetString("KeyStockAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
                 }
             }
 
             return PartialView("_StockAdjustGrid", MainModel);
         }
-
-        //public IActionResult DeleteExcelItemRow(int SeqNo, string Mode)
-        //{
-        //    var MainModel = new StockAdjustmentModel();
-        //    if (Mode == "U")
-        //    {
-        //        int Indx = Convert.ToInt32(SeqNo) - 1;
-        //        IMemoryCache.TryGetValue("KeyStockAdjustGrid", out List<StockAdjustmentDetail> StockAdjustDetail);
-
-        //        if (StockAdjustDetail != null && StockAdjustDetail.Count > 0)
-        //        {
-        //            StockAdjustDetail.RemoveAt(Convert.ToInt32(Indx));
-
-        //            Indx = 0;
-
-        //            foreach (var item in StockAdjustDetail)
-        //            {
-        //                Indx++;
-        //                item.SeqNo = Indx;
-        //            }
-        //            MainModel.ExcelDetailGrid = StockAdjustDetail;
-        //            MainModel.ImportMode = "Y";
-        //            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //            {
-        //                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //                SlidingExpiration = TimeSpan.FromMinutes(55),
-        //                Size = 1024,
-        //            };
-
-        //            IMemoryCache.Set("KeyStockAdjustGrid", MainModel.ExcelDetailGrid, cacheEntryOptions);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        IMemoryCache.TryGetValue("KeyStockAdjustGrid", out List<StockAdjustmentDetail> StockAdjustDetail);
-        //        int Indx = Convert.ToInt32(SeqNo) - 1;
-
-        //        if (StockAdjustDetail != null && StockAdjustDetail.Count > 0)
-        //        {
-        //            StockAdjustDetail.RemoveAt(Convert.ToInt32(Indx));
-
-        //            Indx = 0;
-
-        //            foreach (var item in StockAdjustDetail)
-        //            {
-        //                Indx++;
-        //                item.SeqNo = Indx;
-        //            }
-        //            MainModel.ExcelDetailGrid = StockAdjustDetail;
-        //            MainModel.ImportMode = "Y";
-
-        //            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //            {
-        //                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //                SlidingExpiration = TimeSpan.FromMinutes(55),
-        //                Size = 1024,
-        //            };
-
-        //            IMemoryCache.Set("KeyStockAdjustGrid", MainModel.ExcelDetailGrid, cacheEntryOptions);
-        //        }
-        //    }
-
-        //    return PartialView("_StockAdjustGrid", MainModel);
-        //}
 
         private static DataTable GetExcelDetailTable(IList<StockAdjustmentModel> DetailList)
         {
@@ -835,7 +633,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new StockAdjustmentModel();
-            IMemoryCache.TryGetValue("KeyStockAdjustGrid", out List<StockAdjustmentDetail> StockAdjutGrid);
+            string modelJson = HttpContext.Session.GetString("KeyStockAdjustGrid");
+            List<StockAdjustmentDetail> StockAdjutGrid = new List<StockAdjustmentDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                StockAdjutGrid = JsonConvert.DeserializeObject<List<StockAdjustmentDetail>>(modelJson);
+            }
             var SAGrid = StockAdjutGrid.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SAGrid);
             return Json(JsonString);
@@ -848,18 +651,6 @@ namespace eTactWeb.Controllers
 
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
-
-                //foreach (DataRow row in oDataSet.Tables[1].Rows)
-                //{
-                //    _List.Add(new TextValue
-                //    {
-                //        Value = row["entryid"].ToString(),
-                //        Text = row["StageDescription"].ToString()
-                //    });
-                //}
-                //model.StageList = _List;
-                //_List = new List<TextValue>();
-
 
             }
             return model;
@@ -1111,12 +902,6 @@ namespace eTactWeb.Controllers
                         });
                     }
                 }
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 var model = new StockAdjustmentModel();
                 model.ImportMode = "Y";
                 model.ExcelDetailGrid = data;
@@ -1159,9 +944,7 @@ namespace eTactWeb.Controllers
                     list.Add(stockDetail);
                 }
 
-
-                IMemoryCache.Set("KeyStockAdjustGrid", list, cacheEntryOptions);
-
+                HttpContext.Session.SetString("KeyStockAdjustGrid", JsonConvert.SerializeObject(list));
                 return PartialView("_StockAdjustGrid", model);
             }
             catch (Exception ex)
@@ -1179,7 +962,7 @@ namespace eTactWeb.Controllers
 
         public async Task<JsonResult> GetDashItemName(string FromDate, string ToDate)
         {
-            var JSON = await IStockAdjust.GetDashItemName( FromDate,  ToDate);
+            var JSON = await IStockAdjust.GetDashItemName(FromDate, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1204,6 +987,5 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
     }
 }

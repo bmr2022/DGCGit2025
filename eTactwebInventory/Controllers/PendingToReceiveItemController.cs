@@ -14,21 +14,19 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IPendingToReceiveItem _IPendingToReceiveItem;
         private readonly ILogger<PendingToReceiveItemController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public PendingToReceiveItemController(ILogger<PendingToReceiveItemController> logger, IDataLogic iDataLogic, IPendingToReceiveItem IPendingToReceiveItem, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public PendingToReceiveItemController(ILogger<PendingToReceiveItemController> logger, IDataLogic iDataLogic, IPendingToReceiveItem IPendingToReceiveItem, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPendingToReceiveItem = IPendingToReceiveItem;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         public async Task<IActionResult> PendingToReceiveItem()
         {
             ViewData["Title"] = "Pending Receive Item to QC Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyPendingReceiveItem");
+            HttpContext.Session.Remove("KeyPendingReceiveItem");
             var MainModel = new PendingToReceiveItemModel();
             var model = new PendingToReceiveItemModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
@@ -39,14 +37,8 @@ namespace eTactWeb.Controllers
             MainModel= await BindProdSlipNo(MainModel);
             MainModel= await BindStoreName(MainModel);
             MainModel= await BindProdType(MainModel);
-            //MainModel.CC = HttpContext.Session.GetString("Branch");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyPendingReceiveItem", model, cacheEntryOptions);
+
+            HttpContext.Session.SetString("KeyPendingReceiveItem", JsonConvert.SerializeObject(model));
             return View(MainModel);
         }
         private async Task<PendingToReceiveItemModel> BindItem(PendingToReceiveItemModel model)
@@ -275,26 +267,32 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyReceiveItemGrid");
-                _MemoryCache.TryGetValue("KeyReceiveItemGrid", out IList<ReceiveItemDetail> ReceiveItemDetailGrid);
+                HttpContext.Session.Remove("KeyReceiveItemGrid");
+                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                List<ReceiveItemDetail> ReceiveItemDetailGrid = new List<ReceiveItemDetail>();
+                if (modelJson != null)
+                {
+                    ReceiveItemDetailGrid = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                }
+
                 TempData.Clear();
 
                 var MainModel = new ReceiveItemModel();
                 var ReceiveItemDetails = new List<ReceiveItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+               
                 var seqNo = 0;
                 if (ReceiveItemDetail != null)
                 {
                     ReceiveItemDetails.AddRange(ReceiveItemDetail);
                 }
                 MainModel.ItemDetailGrid = ReceiveItemDetails;
-                _MemoryCache.TryGetValue("KeyReceiveItemGrid", out IList<ReceiveItemDetail> grid);
-                _MemoryCache.Set("KeyReceiveItem", MainModel.ItemDetailGrid, cacheEntryOptions);
+                string ReceiveData = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                IList<ReceiveItemDetail> grid = new List<ReceiveItemDetail>();
+                if(!string.IsNullOrEmpty(ReceiveData))
+                {
+                    grid = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(ReceiveData);
+                }
+                HttpContext.Session.SetString("KeyReceiveItem", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 return Json("done");
             }
             catch (Exception ex)

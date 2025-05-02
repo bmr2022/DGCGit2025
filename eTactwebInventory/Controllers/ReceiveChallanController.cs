@@ -21,17 +21,15 @@ namespace eTactWeb.Controllers
     public class ReceiveChallanController : Controller
     {
         public IDataLogic IDataLogic { get; }
-        public IMemoryCache IMemoryCache { get; }
         public IReceiveChallan IReceiveChallan { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<ReceiveChallanController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration iconfiguration;
-        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IConfiguration configuration, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public ReceiveChallanController(IReceiveChallan iReceiveChallan, IConfiguration configuration, IDataLogic iDataLogic, ILogger<ReceiveChallanController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             IReceiveChallan = iReceiveChallan;
             IDataLogic = iDataLogic;
-            IMemoryCache = iMemoryCache;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
@@ -45,7 +43,7 @@ namespace eTactWeb.Controllers
             //RoutingModel model = new RoutingModel();  
             ViewData["Title"] = "ReceiveChllan Details";
             TempData.Clear();
-            IMemoryCache.Remove("KeyReceiveChallan");
+            HttpContext.Session.Remove("KeyReceiveChallan");
             var MainModel = new ReceiveChallanModel();
 
             MainModel.CC = HttpContext.Session.GetString("Branch");
@@ -76,15 +74,7 @@ namespace eTactWeb.Controllers
             MainModel.FinToDate = ParseFormattedDate(HttpContext.Session.GetString("ToDate").Split(" ")[0]);
             
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            IMemoryCache.Set("KeyReceiveChallan", MainModel.ReceiveChallanList, cacheEntryOptions);
-            //IMemoryCache.Set("KeyInterStoreTransferGrid", model, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyReceiveChallan", JsonConvert.SerializeObject(MainModel.ReceiveChallanList));
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.AccountNameBack = Account_Name;
@@ -97,24 +87,6 @@ namespace eTactWeb.Controllers
             return View(MainModel);
         }
 
-        //public static DateTime ParseDate(string dateString)
-        //{
-        //    if (string.IsNullOrEmpty(dateString))
-        //    {
-        //        return default;
-        //    }
-
-        //    if (DateTime.TryParseExact(dateString, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
-        //    {
-        //        return parsedDate;
-        //    }
-        //    else
-        //    {
-        //        return DateTime.Parse(dateString);
-        //    }
-
-        //}
-
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -126,7 +98,7 @@ namespace eTactWeb.Controllers
         [Route("{controller}/Dashboard")]
         public async Task<IActionResult> RCDashboard(string AccountName, string PartCode, string ItemName, string GateNo, string ChallanNo, string SummaryDetail, string Flag = "True", string FromDate = "", string ToDate = "")
         {
-            IMemoryCache.Remove("KeyReceiveChallan");
+            HttpContext.Session.Remove("KeyReceiveChallan");
             var model = new RCDashboard();
             DateTime now = DateTime.Now;
 
@@ -192,7 +164,12 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new ReceiveChallanModel();
-            IMemoryCache.TryGetValue("KeyReceiveChallan", out List<ReceiveChallanDetail> ReceiveChallanDetail);
+            string modelJson = HttpContext.Session.GetString("KeyReceiveChallan");
+            List<ReceiveChallanDetail> ReceiveChallanDetail = new List<ReceiveChallanDetail>();
+            if (modelJson != null)
+            {
+                ReceiveChallanDetail = JsonConvert.DeserializeObject<List<ReceiveChallanDetail>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (ReceiveChallanDetail != null && ReceiveChallanDetail.Count > 0)
@@ -208,14 +185,7 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ReceiveChallanList = ReceiveChallanDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                IMemoryCache.Set("KeyWorkOrderGrid", MainModel.ReceiveChallanList, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyWorkOrderGrid", JsonConvert.SerializeObject(MainModel.ReceiveChallanList));
             }
             return PartialView("_ReceiveChallanGrid", MainModel);
         }
@@ -316,7 +286,12 @@ namespace eTactWeb.Controllers
                 var SeqNo = 0;
                 foreach (var item in model)
                 {
-                    IMemoryCache.TryGetValue("KeyReceiveChallan", out IList<ReceiveChallanDetail> RCDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyReceiveChallan");
+                    IList<ReceiveChallanDetail> RCDetail = new List<ReceiveChallanDetail>();
+                    if (modelJson != null)
+                    {
+                        RCDetail = JsonConvert.DeserializeObject<List<ReceiveChallanDetail>>(modelJson);
+                    }
 
                     if (model != null)
                     {
@@ -342,15 +317,7 @@ namespace eTactWeb.Controllers
                         RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
                         MainModel.ReceiveChallanList = RCGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        IMemoryCache.Set("KeyReceiveChallan", MainModel.ReceiveChallanList, cacheEntryOptions);
-
+                        HttpContext.Session.SetString("KeyReceiveChallan", JsonConvert.SerializeObject(MainModel.ReceiveChallanList));
                     }
                     else
                     {
@@ -370,7 +337,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new ReceiveChallanModel();
-            IMemoryCache.TryGetValue("KeyReceiveChallan", out List<ReceiveChallanDetail> RCDetail);
+            string modelJson = HttpContext.Session.GetString("KeyReceiveChallan");
+            List<ReceiveChallanDetail> RCDetail = new List<ReceiveChallanDetail>();
+            if (modelJson != null)
+            {
+                RCDetail = JsonConvert.DeserializeObject<List<ReceiveChallanDetail>>(modelJson);
+            }
             var RCGrid = RCDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(RCGrid);
             return Json(JsonString);
@@ -385,7 +357,12 @@ namespace eTactWeb.Controllers
             {
                 var RCGrid = new DataTable();
 
-                IMemoryCache.TryGetValue("KeyReceiveChallan", out IList<ReceiveChallanDetail> RCDetail);
+                string modelJson = HttpContext.Session.GetString("KeyReceiveChallan");
+                IList<ReceiveChallanDetail> RCDetail = new List<ReceiveChallanDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    RCDetail = JsonConvert.DeserializeObject<List<ReceiveChallanDetail>>(modelJson);
+                }
 
                 if (RCDetail == null)
                 {
@@ -414,7 +391,6 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            IMemoryCache.Remove(RCGrid);
                             var model1 = new ReceiveChallanModel();
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -422,8 +398,7 @@ namespace eTactWeb.Controllers
                             model1.CC = HttpContext.Session.GetString("Branch");
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyReceiveChallan");
-                            //return View(model1);
+                            HttpContext.Session.Remove("KeyReceiveChallan");
                             return RedirectToAction("ReceiveChallan", model1);
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -437,8 +412,7 @@ namespace eTactWeb.Controllers
                             model1.CC = HttpContext.Session.GetString("Branch");
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyReceiveChallan");
-                            //return View(model1);
+                            HttpContext.Session.Remove("KeyReceiveChallan");
                             return RedirectToAction("ReceiveChallan", model1);
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)

@@ -29,33 +29,31 @@ namespace eTactWeb.Controllers
         private readonly IIssueNRGP _IIssueNRGP;
         private readonly ITaxModule _ITaxModule;
         private readonly ILogger<NRGPController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IItemMaster itemMaster;
         private EncryptDecrypt _EncryptDecrypt { get; }
         private IWebHostEnvironment _IWebHostEnvironment { get; }
         private LoggerInfo LoggerInfo { get; }
         private readonly IConfiguration _iconfiguration;
 
-        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
+        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueNRGP = iIssueNRGP;
             _ITaxModule = iTaxModule;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.itemMaster = itemMaster;
             _EncryptDecrypt = encryptDecrypt;
             LoggerInfo = loggerInfo;
-            _iconfiguration = configuration; 
+            _iconfiguration = configuration;
         }
 
         [Route("{controller}/Index")]
         //[HttpGet]
-        public async Task<ActionResult> IssueNRGP(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "",string RGPNRGP="", string PartCode = "", string ItemName = "", string ChallanNo = "", string ChallanType = "", string DashboardType = "")
+        public async Task<ActionResult> IssueNRGP(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string RGPNRGP = "", string PartCode = "", string ItemName = "", string ChallanNo = "", string ChallanType = "", string DashboardType = "")
         {
             var model = new IssueNRGPModel();
-            model.RGPNRGP ="NRGP";
+            model.RGPNRGP = "NRGP";
             //model.EntryId = 4;
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
@@ -75,7 +73,7 @@ namespace eTactWeb.Controllers
                 model.ChallanNo = entryChallanData.Result[0].ChallanNo;
                 //model.ChallanNo = entryChallanData.ChallanNo;
             }
-            
+
             if (!string.IsNullOrEmpty(challanTypeJson))
             {
                 var entryChallanData = JsonConvert.DeserializeObject<dynamic>(challanTypeJson);
@@ -106,18 +104,12 @@ namespace eTactWeb.Controllers
 
             model.ActualEnteredEMpBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             model.ActualEnteredEmpByName = HttpContext.Session.GetString("EmpName");
-            model.FinFromDate =  CommonFunc.ParseFormattedDate( HttpContext.Session.GetString("FromDate"));
+            model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
             model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
             //model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.CC = HttpContext.Session.GetString("Branch");
-            MemoryCacheEntryOptions cacheEntryOptions = new()
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(55),
-                SlidingExpiration = TimeSpan.FromMinutes(60),
-                Size = 1024,
-            };
-            _MemoryCache.Remove("KeyIssueNRGPGrid");
-            _MemoryCache.Remove("KeyIssueNRGPTaxGrid");
+            HttpContext.Session.Remove("KeyIssueNRGPGrid");
+            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
             if (Mode != "U")
             {
                 model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -131,8 +123,6 @@ namespace eTactWeb.Controllers
 
                 model.Mode = Mode;
                 model.YearCode = YC;
-                //model.EntryDate = ParseDate(model.EntryDate).ToString();
-                //model.ChallanDate = ParseDate(model.ChallanDate).ToString();
                 model.EntryTime = model.EntryTime;
                 model = await BindModel(model);
 
@@ -141,7 +131,6 @@ namespace eTactWeb.Controllers
                 if (model.IssueNRGPDetailGrid?.Count != 0 && model.IssueNRGPDetailGrid != null)
                 {
                     HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(model.IssueNRGPDetailGrid));
-                    _MemoryCache.Set("KeyIssueNRGPGrid", model.IssueNRGPDetailGrid, cacheEntryOptions);
                 }
 
                 if (model.IssueNRGPTaxGrid != null)
@@ -153,26 +142,28 @@ namespace eTactWeb.Controllers
                     //    Size = 1024,
                     //};
                     HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(model.IssueNRGPDetailGrid));
-
-                    _MemoryCache.Set("KeyIssueNRGPTaxGrid", model.IssueNRGPTaxGrid, cacheEntryOptions);
-                    _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out List<IssueNRGPTaxDetail> TaxGrid11);
-
+                    HttpContext.Session.SetString("KeyIssueNRGPTaxGrid", JsonConvert.SerializeObject(model.IssueNRGPTaxGrid));
+                    string modelNRGPJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+                    List<IssueNRGPDetail> TaxGrid11 = new List<IssueNRGPDetail>();
+                    if (string.IsNullOrEmpty(modelNRGPJson))
+                    {
+                        TaxGrid11 = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelNRGPJson);
+                    }
                 }
-
             }
             else
             {
-                // model = await BindModels(null);
                 model = await BindModel(model);
-                //model.EntryDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
                 model.ChallanDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
                 model.EntryTime = DateTime.Now.ToString("hh:mm:ss tt");
-                //_MemoryCache.Remove("KeyIssueNRGPGrid");
-                //_MemoryCache.Remove("KeyIssueNRGPTaxGrid");
             }
             HttpContext.Session.SetString("IssueNRGP", JsonConvert.SerializeObject(model));
-            _MemoryCache.Set("IssueNRGP", model, cacheEntryOptions);
-            _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out List<IssueNRGPTaxDetail> TaxGrid);
+            string modelJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+            List<IssueNRGPDetail> TaxGrid = new List<IssueNRGPDetail>();
+            if (string.IsNullOrEmpty(modelJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
+            }
             model.FromDateBack = FromDate;
             model.ToDateBack = ToDate;
             model.PartCodeBack = PartCode;
@@ -199,12 +190,7 @@ namespace eTactWeb.Controllers
             {
                 return DateTime.Parse(dateString);
             }
-
-            //    throw new FormatException("Invalid date format. Expected format: dd/MM/yyyy");
-
         }
-
-
         public async Task<JsonResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo)
         {
             var JSON = await _IIssueNRGP.GetItemRate(ItemCode, TillDate, YearCode, BatchNo, UniqueBatchNo);
@@ -220,7 +206,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
         {
-            
+
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
@@ -228,7 +214,7 @@ namespace eTactWeb.Controllers
             var ReportName = _IIssueNRGP.GetReportName();
             ViewBag.EntryId = EntryId;
             ViewBag.YearCode = YearCode;
-           
+
             if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
                 webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
@@ -272,7 +258,7 @@ namespace eTactWeb.Controllers
             }
         }
 
-        
+
 
         public IActionResult GetImage(int EntryId = 0, int YearCode = 0)
         {
@@ -316,9 +302,18 @@ namespace eTactWeb.Controllers
                 var INGrid = new DataTable();
                 DataTable TaxDetailDT = null;
 
-                _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out List<IssueNRGPDetail> NRGPDetail);
-                //_MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> JobWorkGridDetailEdit);
-                _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out List<IssueNRGPTaxDetail> TaxGrid);
+                string modelJson = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+                List<IssueNRGPDetail> NRGPDetail = new List<IssueNRGPDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    NRGPDetail = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
+                }
+                string modelJson1 = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+                List<IssueNRGPTaxDetail> TaxGrid = new List<IssueNRGPTaxDetail>();
+                if (!string.IsNullOrEmpty(modelJson1))
+                {
+                    TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(modelJson1);
+                }
 
                 if (NRGPDetail == null)
                 {
@@ -327,13 +322,6 @@ namespace eTactWeb.Controllers
                     model = await BindModel(model);
                     return View("IssueNRGP", model);
                 }
-                //else if (TaxGrid == null)
-                //{
-                //    ModelState.Clear();
-                //    ModelState.TryAddModelError("IssueNRGPGridDetail", "Tax Grid Should Have Atleast 1 Item...!");
-                //    model = await BindModel(model);
-                //    return View("IssueNRGP", model);
-                //}
                 else
                 {
                     if (model.CC == null)
@@ -357,16 +345,16 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            _MemoryCache.Remove("KeyIssueNRGPGrid");
-                            _MemoryCache.Remove("KeyIssueNRGPTaxGrid");
+                            HttpContext.Session.Remove("KeyIssueNRGPGrid");
+                            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
                             return RedirectToAction("IssueNRGP");
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
-                            _MemoryCache.Remove("KeyIssueNRGPGrid");
-                            _MemoryCache.Remove("KeyIssueNRGPTaxGrid");
+                            HttpContext.Session.Remove("KeyIssueNRGPGrid");
+                            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
                             return RedirectToAction("IssueNRGP");
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -399,9 +387,19 @@ namespace eTactWeb.Controllers
                             //return View("Error", Result);
                         }
                     }
-                    _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out List<IssueNRGPDetail> NRGPDetail1);
-                    //_MemoryCache.TryGetValue("KeyJobWorkIssueEdit", out List<JobWorkGridDetail> JobWorkGridDetailEdit);
-                    _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out List<IssueNRGPTaxDetail> TaxGrid1);
+                    string modelIssueNRGPGrid = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+                    List<IssueNRGPDetail> NRGPDetail1 = new List<IssueNRGPDetail>();
+                    if (!string.IsNullOrEmpty(modelIssueNRGPGrid))
+                    {
+                        NRGPDetail1 = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelIssueNRGPGrid);
+                    }
+
+                    string modelIssueNRGPTaxGrid = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+                    List<IssueNRGPTaxDetail> TaxGrid1 = new List<IssueNRGPTaxDetail>();
+                    if (!string.IsNullOrEmpty(modelIssueNRGPTaxGrid))
+                    {
+                        TaxGrid1 = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(modelIssueNRGPTaxGrid);
+                    }
                     model.IssueNRGPDetailGrid = NRGPDetail1;
                     model.IssueNRGPTaxGrid = TaxGrid1;
                     model.ChallanType = model.ChallanType;
@@ -477,9 +475,9 @@ namespace eTactWeb.Controllers
 
             return Table;
         }
-        public async Task<JsonResult> CheckGateEntry(int ID, string Mode,int YC)
+        public async Task<JsonResult> CheckGateEntry(int ID, string Mode, int YC)
         {
-            var JSON = await _IIssueNRGP.CheckGateEntry(ID,YC);
+            var JSON = await _IIssueNRGP.CheckGateEntry(ID, YC);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -532,7 +530,12 @@ namespace eTactWeb.Controllers
             {
                 if (model.Mode == "U")
                 {
-                    _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out IList<IssueNRGPDetail> GridDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+                    List<IssueNRGPDetail> GridDetail = new List<IssueNRGPDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        GridDetail = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
+                    }
 
                     var MainModel = new IssueNRGPModel();
                     var IssueNrgpGrid = new List<IssueNRGPDetail>();
@@ -565,15 +568,9 @@ namespace eTactWeb.Controllers
                         IssueNGrid = IssueNGrid.OrderBy(item => item.SEQNo).ToList();
                         MainModel.IssueNRGPDetailGrid = IssueNGrid;
                         MainModel.Mode = "U";
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
 
-                        _MemoryCache.Set("KeyIssueNRGPGrid", MainModel.IssueNRGPDetailGrid, cacheEntryOptions);
-                        _MemoryCache.Set("IssueNRGP", MainModel, cacheEntryOptions);
+                        HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(MainModel.IssueNRGPDetailGrid));
+                        HttpContext.Session.SetString("IssueNRGP", JsonConvert.SerializeObject(MainModel));
                     }
                     else
                     {
@@ -584,7 +581,12 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out IList<IssueNRGPDetail> GridDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+                    List<IssueNRGPDetail> GridDetail = new List<IssueNRGPDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        GridDetail = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
+                    }
 
                     var MainModel = new IssueNRGPModel();
                     var IssueNrgpGrid = new List<IssueNRGPDetail>();
@@ -617,15 +619,8 @@ namespace eTactWeb.Controllers
                         IssueNGrid = IssueNGrid.OrderBy(item => item.SEQNo).ToList();
                         MainModel.IssueNRGPDetailGrid = IssueNGrid;
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                        {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-
-                        _MemoryCache.Set("KeyIssueNRGPGrid", MainModel.IssueNRGPDetailGrid, cacheEntryOptions);
-                        _MemoryCache.Set("IssueNRGP", MainModel, cacheEntryOptions);
+                        HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(MainModel.IssueNRGPDetailGrid));
+                        HttpContext.Session.SetString("IssueNRGP", JsonConvert.SerializeObject(MainModel));
 
                     }
                     else
@@ -642,11 +637,11 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC,string machineName,int actuaEntryBy, int ItemCode, string PartCode, string ItemName, string VendorName, string RGPNRGP, string ChallanNo, string ChallanType, string FromDate, string ToDate)
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string machineName, int actuaEntryBy, int ItemCode, string PartCode, string ItemName, string VendorName, string RGPNRGP, string ChallanNo, string ChallanType, string FromDate, string ToDate)
         {
-            actuaEntryBy= Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            actuaEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 
-            var Result = await _IIssueNRGP.DeleteByID(ID, YC,machineName,actuaEntryBy).ConfigureAwait(false);
+            var Result = await _IIssueNRGP.DeleteByID(ID, YC, machineName, actuaEntryBy).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -662,7 +657,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                ViewBag.isSuccess = false; 
+                ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
             DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
@@ -677,8 +672,20 @@ namespace eTactWeb.Controllers
         {
             bool exists = false;
             var model = new IssueNRGPModel();
-            _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out List<IssueNRGPTaxDetail> TaxGrid);
-            _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out List<IssueNRGPDetail> IssueNRGPGrid);
+            string modelJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+            List<IssueNRGPTaxDetail> TaxGrid = new List<IssueNRGPTaxDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(modelJson);
+            }
+
+            string IssueNRGPGridJson = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+            List<IssueNRGPDetail> IssueNRGPGrid = new List<IssueNRGPDetail>();
+            if (!string.IsNullOrEmpty(IssueNRGPGridJson))
+            {
+                IssueNRGPGrid = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(IssueNRGPGridJson);
+            }
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IssueNRGPGrid != null)
@@ -707,19 +714,18 @@ namespace eTactWeb.Controllers
                 foreach (IssueNRGPDetail item in IssueNRGPGrid)
                 {
                     Indx++;
-                  //  item.SEQNo = Indx;
+                    //  item.SEQNo = Indx;
                 }
                 model.NetAmount = IssueNRGPGrid.Sum(x => (float)x.Amount);
                 model.ItemNetAmount = IssueNRGPGrid.Sum(x => (decimal)x.Amount);
                 if (IssueNRGPGrid.Count <= 0)
                 {
-                    _MemoryCache.Remove("KeyIssueNRGPTaxGrid");
-                    _MemoryCache.Remove("KeyIssueNRGPGrid");
+                    HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
+                    HttpContext.Session.Remove("KeyIssueNRGPGrid");
                 }
                 else
                 {
                     HttpContext.Session.SetString("KeyIssueNRGPGrid", JsonConvert.SerializeObject(IssueNRGPGrid));
-                    _MemoryCache.Set("KeyIssueNRGPGrid", IssueNRGPGrid);
                 }
                 model.IssueNRGPDetailGrid = IssueNRGPGrid;
             }
@@ -728,9 +734,9 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> Dashboard(int ItemCode = 0, string PartCode = "", string ItemName = "", string VendorName = "", string RGPNRGP = "", string ChallanNo = "", string ChallanType = "", string FromDate = "", string ToDate = "")
         {
-            _MemoryCache.Remove("KeyIssueNRGPGrid");
-            _MemoryCache.Remove("IssueNRGP");
-            _MemoryCache.Remove("KeyIssueNRGPTaxGrid");
+            HttpContext.Session.Remove("KeyIssueNRGPGrid");
+            HttpContext.Session.Remove("IssueNRGP");
+            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
             var model = new INDashboard();
             DateTime now = DateTime.Now;
             //DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
@@ -763,7 +769,7 @@ namespace eTactWeb.Controllers
                 model.PartCode = PartCode;
                 model.ItemCode = ItemCode;
                 model.ItemName = ItemName;
-                model.VendorName = VendorName; 
+                model.VendorName = VendorName;
                 model.RGPNRGP = RGPNRGP;
                 model.ChallanNo = ChallanNo;
                 model.ChallanType = ChallanType;
@@ -786,10 +792,10 @@ namespace eTactWeb.Controllers
                                "HSNNO", "Store", "BatchNo", "uniquebatchno", "Qty", "TotalStock",
                                "BatchStock", "ProcessId", "unit", "Rate", "Amount", "PurchasePrice",
                                "AltQty", "altUnit", "StageDescription", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName","PONo","PoYear","PODate",
-                               "POAmmendNo","discper", "discamt", "AgainstChallanNoEntryId", "AgainstChallanNo",
-                               "AgainstChallanYearCode", "AgainstChallanType","ItemColor","ItemSize",
-                               "ItemModel","PendQty","PendAltQty");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "PONo", "PoYear", "PODate",
+                               "POAmmendNo", "discper", "discamt", "AgainstChallanNoEntryId", "AgainstChallanNo",
+                               "AgainstChallanYearCode", "AgainstChallanType", "ItemColor", "ItemSize",
+                               "ItemModel", "PendQty", "PendAltQty");
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGP");
 
             }
@@ -984,7 +990,7 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string StoreName, string batchno )
+        public async Task<JsonResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string StoreName, string batchno)
         {
             var FinStartDate = HttpContext.Session.GetString("FromDate");
             var JSON = await _IIssueNRGP.FillCurrentBatchINStore(ItemCode, YearCode, FinStartDate, StoreName, batchno);
@@ -1018,21 +1024,21 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillAgainstChallanNo(int AccountCode,int ItemCode,int YearCode,string ChallanDate)
+        public async Task<JsonResult> FillAgainstChallanNo(int AccountCode, int ItemCode, int YearCode, string ChallanDate)
         {
-            var JSON = await _IIssueNRGP.FillAgainstChallanNo("ChallanAgainstRec", AccountCode,ItemCode,YearCode,ChallanDate);
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
-        }  
-        public async Task<JsonResult> FillAgainstChallanYC(int AccountCode,int ItemCode,int YearCode,string ChallanDate,string AgainstChallanNo)
-        {
-            var JSON = await _IIssueNRGP.FillAgainstChallanYC("ChallanAgainstRecYearCode", AccountCode,ItemCode,YearCode,ChallanDate,AgainstChallanNo);
+            var JSON = await _IIssueNRGP.FillAgainstChallanNo("ChallanAgainstRec", AccountCode, ItemCode, YearCode, ChallanDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillAgainstChallanEntryId(int AccountCode,int ItemCode,string ChallanDate,string AgainstChallanNo,string AgainstChallanYC)
+        public async Task<JsonResult> FillAgainstChallanYC(int AccountCode, int ItemCode, int YearCode, string ChallanDate, string AgainstChallanNo)
         {
-            var JSON = await _IIssueNRGP.FillAgainstChallanEntryId("ChallanAgainstRecYearCode", AccountCode,ItemCode,ChallanDate,AgainstChallanNo, AgainstChallanYC);
+            var JSON = await _IIssueNRGP.FillAgainstChallanYC("ChallanAgainstRecYearCode", AccountCode, ItemCode, YearCode, ChallanDate, AgainstChallanNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillAgainstChallanEntryId(int AccountCode, int ItemCode, string ChallanDate, string AgainstChallanNo, string AgainstChallanYC)
+        {
+            var JSON = await _IIssueNRGP.FillAgainstChallanEntryId("ChallanAgainstRecYearCode", AccountCode, ItemCode, ChallanDate, AgainstChallanNo, AgainstChallanYC);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1070,7 +1076,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRow(int SeqNo)
         {
             var MainModel = new IssueNRGPModel();
-            _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out List<IssueNRGPDetail> INGrid);
+            string modelJson = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+            List<IssueNRGPDetail> INGrid = new List<IssueNRGPDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                INGrid = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelJson);
+            }
             var INDetail = INGrid.Where(x => x.SEQNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(INDetail);
             return Json(JsonString);

@@ -22,16 +22,14 @@ namespace eTactWeb.Controllers
         private readonly IPendingMaterialToIssueThrBOM _IPendingMaterialToIssueThrBOM;      
         private readonly IIssueThrBOM _IssueThrBom;             
         private readonly ILogger<PendingMaterialToIssueThrBOMController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
         public PendingMaterialToIssueThrBOMController(ILogger<PendingMaterialToIssueThrBOMController> logger, IDataLogic iDataLogic, 
-           IConfiguration iconfiguration,  IPendingMaterialToIssueThrBOM IPendingMaterialToIssueThrBOM, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IIssueThrBOM IIssueThrBom)
+           IConfiguration iconfiguration,  IPendingMaterialToIssueThrBOM IPendingMaterialToIssueThrBOM, IWebHostEnvironment iWebHostEnvironment, IIssueThrBOM IIssueThrBom)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPendingMaterialToIssueThrBOM = IPendingMaterialToIssueThrBOM;            
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             _IssueThrBom = IIssueThrBom;
             _iconfiguration = iconfiguration;
@@ -41,20 +39,14 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Pending Requisition to Issue Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyPendingToIssueThrBOM");
+            HttpContext.Session.Remove("KeyPendingToIssueThrBOM");
             var MainModel = new PendingMaterialToIssueThrBOMModel();
             var model = new IssueWithoutBomDetail();
             MainModel = await BindModel(MainModel);
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyPendingToIssueThrBOM", model, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyPendingToIssueThrBOM", JsonConvert.SerializeObject(model));
             return View(MainModel);
         }
       
@@ -201,20 +193,20 @@ namespace eTactWeb.Controllers
             
             try
             {
-                _MemoryCache.Remove("KeyPendingToIssueThrBOM");
-                _MemoryCache.TryGetValue("KeyPendingToIssueThrBOM", out IList<IssueThrBomDetail> IssueThrBomDetailGrid);
+                HttpContext.Session.Remove("KeyPendingToIssueThrBOM");
+                string serializedData = HttpContext.Session.GetString("KeyPendingToIssueThrBOM");
+                List<IssueThrBomDetail> IssueThrBomDetailGrid = new List<IssueThrBomDetail>();
+                if (!string.IsNullOrEmpty(serializedData))
+                {
+                    IssueThrBomDetailGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(serializedData);
+                }
                 TempData.Clear();
 
                 var MainModel = new IssueThrBom();
                 var IssueWithoutBomGrid = new List<IssueThrBomDetail>();
                 var IssueGrid = new List<IssueThrBomDetail>();
                 var SSGrid = new List<IssueThrBomDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+                
                 var seqNo = 0;
                 if (model != null)
                 {
@@ -245,13 +237,16 @@ namespace eTactWeb.Controllers
 
                             MainModel.ItemDetailGrid = IssueGrid;
 
-                            _MemoryCache.Set("KeyPendingToIssueThrBOM", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            HttpContext.Session.SetString("KeyPendingToIssueThrBOM", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }
-                _MemoryCache.TryGetValue("KeyPendingToIssueThrBOM", out IList<IssueThrBomDetail> grid);
-                _MemoryCache.Set("KeyIssThrBom", MainModel.ItemDetailGrid, cacheEntryOptions);
-
+                string modelJson = HttpContext.Session.GetString("KeyPendingToIssueThrBOM");
+                List<IssueThrBomDetail> grid = new List<IssueThrBomDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    grid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
+                }
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                 HttpContext.Session.SetString("KeyIssThrBom", serializedGrid);

@@ -28,13 +28,11 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IJobWorkReceive _IJobWorkReceive;
         private readonly ILogger<JobWorkReceiveController> _logger;
-        private readonly IMemoryCache _MemoryCache;
-        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+        public JobWorkReceiveController(ILogger<JobWorkReceiveController> logger, IDataLogic iDataLogic, IJobWorkReceive iJobWorkReceive, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IJobWorkReceive = iJobWorkReceive;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
         }
@@ -44,23 +42,17 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Job Work Receive Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyJobWorkRecieve");
-            _MemoryCache.Remove("KeyJobWorkRecieveGrid");
+            HttpContext.Session.Remove("KeyJobWorkRecieve");
+            HttpContext.Session.Remove("KeyJobWorkRecieveGrid");
             var MainModel = new JobWorkReceiveModel();
             MainModel = await BindModel(MainModel);
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
 
-            _MemoryCache.Set("KeyJobWorkRecieve", MainModel, cacheEntryOptions);
-            _MemoryCache.Set("KeyJobWorkRecieveGrid", MainModel, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyJobWorkRecieve", JsonConvert.SerializeObject(MainModel));
+            HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel));
             return View(MainModel);
         }
         [Route("{controller}/Index")]
@@ -77,8 +69,8 @@ namespace eTactWeb.Controllers
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.CreatedByName = HttpContext.Session.GetString("EmpName");
 
-            _MemoryCache.Remove("KeyJobWorkRecieve");
-            _MemoryCache.Remove("KeyJobWorkRecieveGrid");
+            HttpContext.Session.Remove("KeyJobWorkRecieve");
+            HttpContext.Session.Remove("KeyJobWorkRecieveGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IJobWorkReceive.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -90,14 +82,9 @@ namespace eTactWeb.Controllers
                 MainModel.GateDate = ParseDate(MainModel.GateDate).ToString("dd/MM/yyyy");
                 MainModel.InvDate = ParseDate(MainModel.InvDate).ToString("dd/MM/yyyy");
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyJobWorkRecieveGrid", MainModel.JobWorkReceiveGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyJobWorkRecieve", MainModel.ItemDetailGrid, cacheEntryOptions);
+
+                HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel.JobWorkReceiveGrid));
+                HttpContext.Session.SetString("KeyJobWorkRecieve", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
             }
             else
             {
@@ -137,8 +124,18 @@ namespace eTactWeb.Controllers
             {
                 var JWRGrid = new DataTable();
                 var ChallanGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyJobWorkRecieve", out List<JobWorkReceiveDetail> JobWorkReceiveDetail);
-                _MemoryCache.TryGetValue("KeyJobWorkRecieveGrid", out List<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyJobWorkRecieve");
+                List<JobWorkReceiveDetail> JobWorkReceiveDetail = new List<JobWorkReceiveDetail>();
+                if(!string.IsNullOrEmpty(modelJson))
+                {
+                    JobWorkReceiveDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveDetail>>(modelJson);
+                }
+                string modelReceiveGridJson = HttpContext.Session.GetString("KeyJobWorkRecieveGrid");
+                List<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail = new List<JobWorkReceiveItemDetail>();
+                if (!string.IsNullOrEmpty(modelReceiveGridJson))
+                {
+                    JobWorkReceiveItemDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveItemDetail>>(modelReceiveGridJson);
+                }
                 if (JobWorkReceiveDetail == null && JobWorkReceiveItemDetail == null)
                 {
                     ModelState.Clear();
@@ -225,10 +222,6 @@ namespace eTactWeb.Controllers
 
                                 return View(model);
                             }
-                            //ViewBag.isSuccess = false;
-                            //TempData["500"] = "500";
-                            //_logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                            //return View("Error", Result);
                         }
                     }
                     var model1 = await BindModel(null);
@@ -271,8 +264,8 @@ namespace eTactWeb.Controllers
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             webReport = new WebReport();
-           
-             webReport.Report.Load(webRootPath + "\\jobworkMRN.frx"); // default report
+
+            webReport.Report.Load(webRootPath + "\\jobworkMRN.frx"); // default report
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
@@ -286,8 +279,8 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyJobWorkRecieve");
-                _MemoryCache.Remove("KeyJobWorkRecieveGrid");
+                HttpContext.Session.Remove("KeyJobWorkRecieve");
+                HttpContext.Session.Remove("KeyJobWorkRecieveGrid");
                 var model = new JWRecQDashboard();
                 var Result = await _IJobWorkReceive.GetDashboardData(FromDate, Todate, Flag).ConfigureAwait(true);
 
@@ -626,8 +619,8 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> ClearGridAjax()
         {
-            _MemoryCache.Remove("KeyJobWorkRecieve");
-            _MemoryCache.Remove("KeyJobWorkRecieveGrid");
+            HttpContext.Session.Remove("KeyJobWorkRecieve");
+            HttpContext.Session.Remove("KeyJobWorkRecieveGrid");
             return Json("done");
         }
         public async Task<JsonResult> GetBomRevNo(int ItemCode)
@@ -636,9 +629,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> ViewDetailSection(int yearCode,int entryId)
+        public async Task<JsonResult> ViewDetailSection(int yearCode, int entryId)
         {
-            var JSON = await _IJobWorkReceive.ViewDetailSection(yearCode,entryId);
+            var JSON = await _IJobWorkReceive.ViewDetailSection(yearCode, entryId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -695,13 +688,13 @@ namespace eTactWeb.Controllers
                 {
                     JobWorkReceiveDetail jobWorkRec = new JobWorkReceiveDetail
                     {
-                        EntryIdIssJw = row["EntryIdIssJw"] != DBNull.Value ?  Convert.ToInt32(row["EntryIdIssJw"]) : 0,
+                        EntryIdIssJw = row["EntryIdIssJw"] != DBNull.Value ? Convert.ToInt32(row["EntryIdIssJw"]) : 0,
                         IssChallanNo = row["IssJWChallanNo"]?.ToString(),
                         IssYearCode = row["IssYearCode"] != DBNull.Value ? Convert.ToInt32(row["IssYearCode"]) : 0,
                         IssChallanDate = row["ChallanDate"]?.ToString(),
                         IssPartCode = row["IssPartCode"]?.ToString(),
                         IssItemName = row["IssItemName"]?.ToString(),
-                        ItemCode = row["IssItemCode"] != DBNull.Value ? Convert.ToInt32(row["IssItemCode"])  : 0,
+                        ItemCode = row["IssItemCode"] != DBNull.Value ? Convert.ToInt32(row["IssItemCode"]) : 0,
                         BOMrevno = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
                         BOMRevDate = row["BOMDate"]?.ToString(),
                         BOMInd = row["BomStatus"]?.ToString(),
@@ -710,7 +703,7 @@ namespace eTactWeb.Controllers
                         FinishItemName = row["FinishItemName"]?.ToString(),
                         FinishItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
                         BOMQty = row["bomqty"] != DBNull.Value ? Convert.ToDecimal(row["bomqty"]) : 0,
-                       
+
                         AdjQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualAdjQty"]) : 0,
                         Through = row["through"]?.ToString(),
                         //TotaladjQty = Convert.ToDecimal(row["QtyToBeRec"]),
@@ -718,9 +711,9 @@ namespace eTactWeb.Controllers
                         TotalIssuedQty = row["ActualAdjQty"] != DBNull.Value ? Convert.ToDecimal(row["ActualAdjQty"]) : 0,
                         IssuedBatchNO = row["batchno"]?.ToString(),
                         IssuedUniqueBatchNo = row["uniquebatchno"]?.ToString(),
-                         RecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
-                         TotalRecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
-                         YearCodeIssJw = row["IssYearCode"] != null ? Convert.ToInt32(row["IssYearCode"]) : 0
+                        RecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
+                        TotalRecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
+                        YearCodeIssJw = row["IssYearCode"] != null ? Convert.ToInt32(row["IssYearCode"]) : 0
                     };
 
                     JobWorkReceiveDetail.Add(jobWorkRec);
@@ -776,7 +769,12 @@ namespace eTactWeb.Controllers
                 var seqNo = 0;
                 foreach (var item in model)
                 {
-                    _MemoryCache.TryGetValue("KeyJobWorkRecieve", out IList<JobWorkReceiveDetail> JobWorkReceiveDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyJobWorkRecieve");
+                    List<JobWorkReceiveDetail> JobWorkReceiveDetail = new List<JobWorkReceiveDetail>();
+                    if(modelJson != null)
+                    {
+                        JobWorkReceiveDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveDetail>>(modelJson);
+                    }
                     if (item != null)
                     {
                         if (JobWorkReceiveDetail == null)
@@ -794,7 +792,7 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.ItemDetailGrid = JobWorkReceiveGrid;
 
-                        _MemoryCache.Set("KeyJobWorkRecieve", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        HttpContext.Session.SetString("KeyJobWorkRecieve", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                     }
                 }
                 return PartialView("_JobWorkReceiveGrid", MainModel);
@@ -808,18 +806,18 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyJobWorkRecieveGrid", out IList<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyJobWorkRecieveGrid");
+                List<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail = new List<JobWorkReceiveItemDetail>();
+                if (modelJson != null)
+                {
+                    JobWorkReceiveItemDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveItemDetail>>(modelJson);
+                }
 
                 var MainModel = new JobWorkReceiveModel();
                 var JobWorkReceiveGrid = new List<JobWorkReceiveItemDetail>();
                 var JobReceiveGrid = new List<JobWorkReceiveItemDetail>();
                 var SSGrid = new List<JobWorkReceiveItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+               
                 var seqNo = 0;
                 if (model != null)
                 {
@@ -838,7 +836,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.JobWorkReceiveGrid = JobWorkReceiveGrid;
 
-                    _MemoryCache.Set("KeyJobWorkRecieveGrid", MainModel.JobWorkReceiveGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel.JobWorkReceiveGrid));
                 }
 
                 return PartialView("_JobWorkReceiveGrid", MainModel);
@@ -857,16 +855,15 @@ namespace eTactWeb.Controllers
                 var JobWorkReceiveGrid = new List<JobWorkReceiveItemDetail>();
                 var JobReceiveGrid = new List<JobWorkReceiveItemDetail>();
                 var SSGrid = new List<JobWorkReceiveItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 var seqNo = 0;
                 foreach (var item in model)
                 {
-                    _MemoryCache.TryGetValue("KeyJobWorkRecieveGrid", out IList<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyJobWorkRecieveGrid");
+                    List<JobWorkReceiveItemDetail> JobWorkReceiveItemDetail = new List<JobWorkReceiveItemDetail>();
+                    if (modelJson != null)
+                    {
+                        JobWorkReceiveItemDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveItemDetail>>(modelJson);
+                    }
                     if (item != null)
                     {
                         if (JobWorkReceiveItemDetail == null)
@@ -884,7 +881,7 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.JobWorkReceiveGrid = JobWorkReceiveGrid;
 
-                        _MemoryCache.Set("KeyJobWorkRecieveGrid", MainModel.JobWorkReceiveGrid, cacheEntryOptions);
+                        HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel.JobWorkReceiveGrid));
                     }
                 }
                 return PartialView("_JobWorkReceiveGrid", MainModel);
@@ -901,10 +898,7 @@ namespace eTactWeb.Controllers
                 model = new JobWorkReceiveModel();
 
                 model.YearCode = Constants.FinincialYear;
-                model.EntryId = _IDataLogic.GetEntryID("JobworkReceivemain", Constants.FinincialYear, "GateEntryID","Gateyearcode");
-                //model.EntryDate = DateTime.Today;
-                //model.EntryDate = DateTime.Now.ToString("hh:mm tt");
-
+                model.EntryId = _IDataLogic.GetEntryID("JobworkReceivemain", Constants.FinincialYear, "GateEntryID", "Gateyearcode");
             }
             var oDataSet = new DataSet();
             var _List = new List<TextValue>();

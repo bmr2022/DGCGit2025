@@ -11,7 +11,6 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IMinimumMaximaumLevel _IMinimumMaximaumLevel { get; }
-
         private readonly ILogger<MinimumMaximaumLevelController> _logger;
         private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }

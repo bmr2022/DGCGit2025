@@ -18,15 +18,13 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly ILogger<ReturnFromDepartmentMainController> _logger;
         private readonly IRetFromDepartmentMain _IRetFromDepartmentMain;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
 
-        public ReturnFromDepartmentMainController(IDataLogic iDataLogic, ILogger<ReturnFromDepartmentMainController> logger, IMemoryCache memoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IRetFromDepartmentMain iRetFromDepartmentMain)
+        public ReturnFromDepartmentMainController(IDataLogic iDataLogic, ILogger<ReturnFromDepartmentMainController> logger, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IRetFromDepartmentMain iRetFromDepartmentMain)
         {
             _IDataLogic = iDataLogic;
             _logger = logger;
-            _MemoryCache = memoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
             _IRetFromDepartmentMain = iRetFromDepartmentMain;
@@ -48,7 +46,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyRetFromDeptMainGrid");
+                HttpContext.Session.Remove("KeyRetFromDeptMainGrid");
 
                 var model = new RetFromDepMainDashboard
                 {
@@ -100,7 +98,7 @@ namespace eTactWeb.Controllers
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            _MemoryCache.Remove("KeyRetFromDeptMainGrid");
+            HttpContext.Session.Remove("KeyRetFromDeptMainGrid");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -108,13 +106,7 @@ namespace eTactWeb.Controllers
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyRetFromDeptMainGrid", MainModel.ReturnDetailGrid, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyRetFromDeptMainGrid", JsonConvert.SerializeObject(MainModel.ReturnDetailGrid));
             }
             else
             {
@@ -138,7 +130,12 @@ namespace eTactWeb.Controllers
             {
                 var ReqGrid = new DataTable();
                 var mainmodel2 = model;
-                _MemoryCache.TryGetValue("KeyRetFromDeptMainGrid", out List<ReturnFromDepartmentDetail> RequisitionDetail);
+                string modelJson = HttpContext.Session.GetString("KeyRetFromDeptMainGrid");
+                List<ReturnFromDepartmentDetail> RequisitionDetail = new List<ReturnFromDepartmentDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    RequisitionDetail = JsonConvert.DeserializeObject<List<ReturnFromDepartmentDetail>>(modelJson);
+                }
                 mainmodel2.ReqDetailGrid = RequisitionDetail;
                 if (RequisitionDetail == null)
                 {
@@ -166,7 +163,7 @@ namespace eTactWeb.Controllers
                             TempData["200"] = "200";
                             var MainModel = new ReturnFromDepartmentMainModel();
                             MainModel = await BindModel(MainModel);
-                            _MemoryCache.Remove("KeyRetFromDeptMainGrid");
+                            HttpContext.Session.Remove("KeyRetFromDeptMainGrid");
                             return RedirectToAction(nameof(ReturnFromDepartmentMain));
                         }
                         if ((Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted) || (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted))
@@ -175,7 +172,7 @@ namespace eTactWeb.Controllers
                             TempData["202"] = "202";
                             var MainModel = new ReturnFromDepartmentMainModel();
                             MainModel = await BindModel(MainModel);
-                            _MemoryCache.Remove("KeyRetFromDeptMainGrid");
+                            HttpContext.Session.Remove("KeyRetFromDeptMainGrid");
                             return RedirectToAction(nameof(ReturnFromDepartmentMain));
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -289,8 +286,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                // Retrieve the existing grid data from memory cache
-                _MemoryCache.TryGetValue("KeyRetFromDeptMainGrid", out IList<ReturnFromDepartmentDetail> GridDetail);
+                string modelJson = HttpContext.Session.GetString("KeyRetFromDeptMainGrid");
+                List<ReturnFromDepartmentDetail> GridDetail = new List<ReturnFromDepartmentDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<ReturnFromDepartmentDetail>>(modelJson);
+                }
 
                 var MainModel = new ReturnFromDepartmentMainModel();
                 var SSGrid = new List<ReturnFromDepartmentDetail>();
@@ -340,14 +341,7 @@ namespace eTactWeb.Controllers
                     // Set the updated grid data to the MainModel
                     MainModel.ReturnDetailGrid = SSGrid;
 
-                    // Update memory cache with the new grid data
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-                    _MemoryCache.Set("KeyRetFromDeptMainGrid", SSGrid, cacheEntryOptions);
+                   HttpContext.Session.SetString("KeyRetFromDeptMainGrid", JsonConvert.SerializeObject(SSGrid));
                 }
                 else
                 {
@@ -366,7 +360,12 @@ namespace eTactWeb.Controllers
         public async Task<IActionResult> DeleteItemRow(int SeqNo)
         {
             var MainModel = new ReturnFromDepartmentMainModel();
-            _MemoryCache.TryGetValue("KeyRetFromDeptMainGrid", out List<ReturnFromDepartmentDetail> RequisitionDetail);
+            string modelJson = HttpContext.Session.GetString("KeyRetFromDeptMainGrid");
+            List<ReturnFromDepartmentDetail> RequisitionDetail = new List<ReturnFromDepartmentDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                RequisitionDetail = JsonConvert.DeserializeObject<List<ReturnFromDepartmentDetail>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (RequisitionDetail != null && RequisitionDetail.Count > 0)
@@ -392,7 +391,7 @@ namespace eTactWeb.Controllers
 
                 if (RequisitionDetail.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyRetFromDeptMainGrid");
+                    HttpContext.Session.Remove("KeyRetFromDeptMainGrid");
                 }
             }
             return PartialView("_ReturnFromDepartmentMainGrid", MainModel);
@@ -401,7 +400,12 @@ namespace eTactWeb.Controllers
         public IActionResult EditItemRow(int SeqNo)
         {
             var model = new ReturnFromDepartmentMainModel();
-            _MemoryCache.TryGetValue("KeyRetFromDeptMainGrid", out List<ReturnFromDepartmentDetail> ReturnFromDepartmentDetail);
+            string modelJson = HttpContext.Session.GetString("KeyRetFromDeptMainGrid");
+            List<ReturnFromDepartmentDetail> ReturnFromDepartmentDetail = new List<ReturnFromDepartmentDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                ReturnFromDepartmentDetail = JsonConvert.DeserializeObject<List<ReturnFromDepartmentDetail>>(modelJson);
+            }
             var SSGrid = ReturnFromDepartmentDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);

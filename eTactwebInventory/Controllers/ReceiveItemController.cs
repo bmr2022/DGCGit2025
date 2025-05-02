@@ -16,14 +16,12 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IReceiveItem _IReceiveItem;
         private readonly ILogger<ReceiveItemController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public ReceiveItemController(ILogger<ReceiveItemController> logger, IDataLogic iDataLogic, IReceiveItem IReceiveItem, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public ReceiveItemController(ILogger<ReceiveItemController> logger, IDataLogic iDataLogic, IReceiveItem IReceiveItem, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IReceiveItem = IReceiveItem;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
         [Route("{controller}/Index")]
@@ -31,26 +29,12 @@ namespace eTactWeb.Controllers
         {
             ViewData["Title"] = "Receive Item Detail";
             TempData.Clear();
-            _MemoryCache.Remove("KeyReceiveItemGrid");
-            _MemoryCache.Remove("KeyReceiveItemGridDetail");
+            HttpContext.Session.Remove("KeyReceiveItemGrid");
+            HttpContext.Session.Remove("KeyReceiveItemGridDetail");
             var MainModel = new ReceiveItemModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            //MainModel.InProcQCYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            //MainModel.CC = HttpContext.Session.GetString("Branch");
-            //MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            //MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-            //MainModel.ActualEntrydate = HttpContext.Session.GetString("EntryDate");
-            //MainModel = await BindModel(MainModel);
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            _MemoryCache.Set("KeyReceiveItemGrid", MainModel, cacheEntryOptions);
-            //MainModel.DateIntact = "N";
+            HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel));
             return View(MainModel);
         }
         [Route("{controller}/Index")]
@@ -60,28 +44,20 @@ namespace eTactWeb.Controllers
             //_logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new ReceiveItemModel();
-            _MemoryCache.Remove("KeyReceiveItemGridDetail");
+            HttpContext.Session.Remove("KeyReceiveItemGridDetail");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.RecMatYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             MainModel.UID=Convert.ToInt32(HttpContext.Session.GetString("UID"));
             //MainModel = await BindEmpList(MainModel);
-            _MemoryCache.Remove("KeyReceiveItemGrid");
+            HttpContext.Session.Remove("KeyReceiveItemGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IReceiveItem.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                //MainModel = await BindEmpList(MainModel);
-                //MainModel = await BindModel(MainModel).ConfigureAwait(false);
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyReceiveItemGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
             }
             else
             {
@@ -120,9 +96,18 @@ namespace eTactWeb.Controllers
             try
             {
                 var ReceiveItemGrid = new DataTable();
-
-                _MemoryCache.TryGetValue("KeyReceiveItemGridDetail", out List<ReceiveItemDetail> ReceiveItemDetail);
-                _MemoryCache.TryGetValue("KeyReceiveItemGrid", out List<ReceiveItemDetail> ReceiveItemDetailEdit);
+                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                List<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
+                if(!string.IsNullOrEmpty(modelJson))
+                {
+                    ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                }
+                string receiveItemJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                List<ReceiveItemDetail> ReceiveItemDetailEdit = new List<ReceiveItemDetail>();
+                if (!string.IsNullOrEmpty(receiveItemJson))
+                {
+                    ReceiveItemDetailEdit = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(receiveItemJson);
+                }
 
                 if (ReceiveItemDetail == null && ReceiveItemDetailEdit == null)
                 {
@@ -199,7 +184,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyReceiveItem", out IList<ReceiveItemDetail> ReceiveItemDetailGrid);
+                string modelJson = HttpContext.Session.GetString("KeyReceiveItem");
+                IList<ReceiveItemDetail> ReceiveItemDetailGrid = new List<ReceiveItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ReceiveItemDetailGrid = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                }
                 var MainModel = new ReceiveItemModel();
                 var ReceiveItem = new List<ReceiveItemDetail>();
                 var SSGrid = new List<ReceiveItemDetail>();
@@ -225,7 +215,7 @@ namespace eTactWeb.Controllers
 
                             MainModel.ItemDetailGrid = ReceiveItem;
 
-                            _MemoryCache.Set("KeyReceiveItemGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }
@@ -241,7 +231,12 @@ namespace eTactWeb.Controllers
             var MainModel = new ReceiveItemModel();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyReceiveItemGrid", out List<ReceiveItemDetail> ReceiveItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                List<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                }
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (ReceiveItemDetail != null && ReceiveItemDetail.Count > 0)
@@ -257,19 +252,17 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = ReceiveItemDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyReceiveItemGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                   HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyReceiveItemGridDetail", out List<ReceiveItemDetail> ReceiveItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                List<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                }
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (ReceiveItemDetail != null && ReceiveItemDetail.Count > 0)
@@ -285,14 +278,7 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = ReceiveItemDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyReceiveItemGridDetail", MainModel.ItemDetailGrid, cacheEntryOptions);
+                   HttpContext.Session.SetString("KeyReceiveItemGridDetail", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
             }
 
@@ -303,11 +289,19 @@ namespace eTactWeb.Controllers
             IList<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
             if (Mode == "U")
             {
-                _MemoryCache.TryGetValue("KeyReceiveItemGrid", out ReceiveItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                }
             }
             else
             {
-                _MemoryCache.TryGetValue("KeyReceiveItemGridDetail", out ReceiveItemDetail);
+                string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                }
             }
             IEnumerable<ReceiveItemDetail> SSGrid = ReceiveItemDetail;
             if (ReceiveItemDetail != null)
@@ -321,8 +315,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyReceiveItemGridDetail");
-
+                HttpContext.Session.Remove("KeyReceiveItemGridDetail");
                 var model = new ReceiveItemDashboard();
                 var Result = await _IReceiveItem.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
@@ -389,15 +382,14 @@ namespace eTactWeb.Controllers
                 var MainModel = new ReceiveItemModel();
                 var ReceiveItemDetailGrid = new List<ReceiveItemDetail>();
                 var SSGrid = new List<ReceiveItemDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 if (Mode == "U")
                 {
-                    _MemoryCache.TryGetValue("KeyReceiveItemGrid", out IList<ReceiveItemDetail> ReceiveItemDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyReceiveItemGrid");
+                    IList<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                    }
                     var seqNo = 0;
                     foreach (var item in model)
                     {
@@ -417,13 +409,18 @@ namespace eTactWeb.Controllers
                                 ReceiveItemDetailGrid.Add(item);
                             }
                             MainModel.ItemDetailGrid = ReceiveItemDetailGrid;
-                            _MemoryCache.Set("KeyReceiveItemGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }
                 else
                 {
-                    _MemoryCache.TryGetValue("KeyReceiveItemGridDetail", out IList<ReceiveItemDetail> ReceiveItemDetail);
+                    string modelJson = HttpContext.Session.GetString("KeyReceiveItemGridDetail");
+                    IList<ReceiveItemDetail> ReceiveItemDetail = new List<ReceiveItemDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        ReceiveItemDetail = JsonConvert.DeserializeObject<List<ReceiveItemDetail>>(modelJson);
+                    }
                     var seqNo = 0;
                     foreach (var item in model)
                     {
@@ -443,7 +440,7 @@ namespace eTactWeb.Controllers
                                 ReceiveItemDetailGrid.Add(item);
                             }
                             MainModel.ItemDetailGrid = ReceiveItemDetailGrid;
-                            _MemoryCache.Set("KeyReceiveItemGridDetail", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            HttpContext.Session.SetString("KeyReceiveItemGridDetail", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }

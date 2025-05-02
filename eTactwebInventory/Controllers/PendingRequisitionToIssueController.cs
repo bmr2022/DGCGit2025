@@ -18,15 +18,13 @@ namespace eTactWeb.Controllers
         private readonly IPendingReqToIssue _IPendReqToIssue;
         private readonly IIssueWithoutBom _IssueWithoutBom;
         private readonly ILogger<PendingRequisitionToIssueController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public PendingRequisitionToIssueController(ILogger<PendingRequisitionToIssueController> logger, IDataLogic iDataLogic, IPendingReqToIssue IPendReqToIssue,IIssueWithoutBom IIssueWithoutBom, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public PendingRequisitionToIssueController(ILogger<PendingRequisitionToIssueController> logger, IDataLogic iDataLogic, IPendingReqToIssue IPendReqToIssue,IIssueWithoutBom IIssueWithoutBom,IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IPendReqToIssue = IPendReqToIssue;
             _IssueWithoutBom = IIssueWithoutBom;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
         }
        
@@ -35,20 +33,14 @@ namespace eTactWeb.Controllers
            
             ViewData["Title"] = "Pending Requisition to Issue Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyPendingToIssue");
+            HttpContext.Session.Remove("KeyPendingToIssue");
             var MainModel = new PendingRequisitionToIssue();
             var model = new IssueWithoutBomDetail();
             MainModel = await BindModel(MainModel);
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            _MemoryCache.Set("KeyPendingToIssue", model, cacheEntryOptions);
+           HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(model));
 
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
@@ -191,20 +183,19 @@ namespace eTactWeb.Controllers
             //}
             try
             {
-                
-                _MemoryCache.Remove("KeyPendingToIssue");
-                _MemoryCache.TryGetValue("KeyPendingToIssue", out IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid);
+                HttpContext.Session.Remove("KeyPendingToIssue");
+                string modelJson = HttpContext.Session.GetString("KeyPendingToIssue");
+                IList<IssueWithoutBomDetail> IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IssueWithoutBomDetailGrid = JsonConvert.DeserializeObject<IList<IssueWithoutBomDetail>>(modelJson);
+                }
                 TempData.Clear();
                 var MainModel = new IssueWithoutBom();
                 var IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
                 var IssueGrid = new List<IssueWithoutBomDetail>();
                 var SSGrid = new List<IssueWithoutBomDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+               
                 var seqNo = 0;
                 if (model != null)
                 {
@@ -235,12 +226,17 @@ namespace eTactWeb.Controllers
                             
                             MainModel.ItemDetailGrid = IssueGrid;
 
-                            _MemoryCache.Set("KeyPendingToIssue", MainModel.ItemDetailGrid, cacheEntryOptions);
+                            HttpContext.Session.SetString("KeyPendingToIssue", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                         }
                     }
                 }
-                _MemoryCache.TryGetValue("KeyPendingToIssue", out IList<IssueWithoutBomDetail> grid);
-                _MemoryCache.Set("KeyIssWOBom", MainModel.ItemDetailGrid, cacheEntryOptions);
+                string pendingToIssue = HttpContext.Session.GetString("KeyPendingToIssue");
+                IList<IssueWithoutBomDetail> grid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(pendingToIssue);
+                if(!string.IsNullOrEmpty(pendingToIssue))
+                {
+                    grid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(pendingToIssue);
+                }
+                HttpContext.Session.SetString("KeyIssWOBom", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                 HttpContext.Session.SetString("KeyIssWOBom", serializedGrid);

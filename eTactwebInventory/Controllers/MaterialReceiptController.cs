@@ -27,36 +27,23 @@ namespace eTactWeb.Controllers
     public class MaterialReceiptController : Controller
     {
         public IMaterialReceipt _MRN { get; }
-       // public IWebHostEnvironment IWebHostEnvironment { get; }
         private readonly IDataLogic _IDataLogic;
         private readonly IMaterialReceipt _IMaterialReceipt;
         private readonly ILogger<MaterialReceiptController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         private readonly IConfiguration _iconfiguration;
 
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMaterialReceipt = iMaterialReceipt;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this._iconfiguration = iconfiguration;
         }
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
         {
-            //string my_connection_string;
-            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            //string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //var webReport = new WebReport();
-            //webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
-            //webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
-            //webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
-            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //return View(webReport);
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
@@ -67,53 +54,40 @@ namespace eTactWeb.Controllers
             webReport.Report = new Report();
             if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
-                //webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); 
-                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString()+".frx" );
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
             }
             else
             {
                 webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
             }
-          
+
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
-            webReport.Report.SetParameterValue("MrnYearcodeparam",YearCode );
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
             return View(webReport);
         }
-         public IActionResult PrintReportShortExcess(int EntryId = 0, int YearCode = 0, string MrnNo = "",int AccountCode=0)
-         {
-            //string my_connection_string;
-            //string contentRootPath = _IWebHostEnvironment.ContentRootPath;
-            //string webRootPath = _IWebHostEnvironment.WebRootPath;
-            //var webReport = new WebReport();
-            //webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
-            //webReport.Report.SetParameterValue("MrnEntryparam", EntryId);
-            //webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
-            //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-            //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-            //return View(webReport);
+        public IActionResult PrintReportShortExcess(int EntryId = 0, int YearCode = 0, string MrnNo = "", int AccountCode = 0)
+        {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
             string webRootPath = _IWebHostEnvironment.WebRootPath;
             var webReport = new WebReport();
             webReport.Report.Clear();
-           // var ReportName = _IMaterialReceipt.GetReportName();
+            // var ReportName = _IMaterialReceipt.GetReportName();
             webReport.Report.Dispose();
             webReport.Report = new Report();
-            
-            webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default report
-          
-          
+
+            webReport.Report.Load(webRootPath + "\\MRNShortExcess.frx"); // default repor 
             my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
             webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
             webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             //webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
-            webReport.Report.SetParameterValue("MrnYearcodeparam",YearCode );
-            webReport.Report.SetParameterValue("entryidparam",EntryId );
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
             webReport.Report.SetParameterValue("accountcodeparam", AccountCode);
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
@@ -180,35 +154,10 @@ namespace eTactWeb.Controllers
                 }
             }
         }
-      //  [Route("{controller}/Index")]
-        //public async Task<IActionResult> MaterialReceipt()
-        //{
-        //    ViewData["Title"] = "Inventory Details";
-        //    TempData.Clear();
-        //    _MemoryCache.Remove("KeyMaterialReceiptGrid");
-        //    _MemoryCache.Remove("KeyBatchDetailGrid");
-        //    var MainModel = new MaterialReceiptModel();
-        //    MainModel = await BindModels(MainModel);
-        //    MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-        //    MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-        //    MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-        //    MainModel.EnteredByEmpname = HttpContext.Session.GetString("EmpName");
-        //    MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
-        //    MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-        //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //    {
-        //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //        SlidingExpiration = TimeSpan.FromMinutes(55),
-        //        Size = 1024,
-        //    };
 
-        //    _MemoryCache.Set("KeyMaterialReceiptGrid", MainModel, cacheEntryOptions);
-        //    MainModel.DateIntact = "N";
-        //    return View(MainModel);
-        //}
         [HttpPost]
         [ValidateAntiForgeryToken]
-       // [Route("{controller}/Index")]
+        // [Route("{controller}/Index")]
         public async Task<IActionResult> MaterialReceipt(MaterialReceiptModel model)
         {
             var fromDt = model.FromDate;
@@ -218,8 +167,18 @@ namespace eTactWeb.Controllers
             {
                 var MRGrid = new DataTable();
                 var BatchGrid = new DataTable();
-                _MemoryCache.TryGetValue("KeyMaterialReceiptGrid", out List<MaterialReceiptDetail> MaterialReceiptDetail);
-                _MemoryCache.TryGetValue("KeyBatchDetailGrid", out List<BatchDetailModel> BatchDetail);
+                string materialGrid = HttpContext.Session.GetString("KeyMaterialReceiptGrid");
+                List<MaterialReceiptDetail> MaterialReceiptDetail = new List<MaterialReceiptDetail>();
+                if (string.IsNullOrEmpty(materialGrid))
+                {
+                    MaterialReceiptDetail = JsonConvert.DeserializeObject<List<MaterialReceiptDetail>>(materialGrid);
+                }
+                string batchGrid = HttpContext.Session.GetString("KeyBatchDetailGrid");
+                List<BatchDetailModel> BatchDetail = new List<BatchDetailModel>();
+                if (string.IsNullOrEmpty(batchGrid))
+                {
+                    BatchDetail = JsonConvert.DeserializeObject<List<BatchDetailModel>>(batchGrid);
+                }
                 if (MaterialReceiptDetail == null)
                 {
                     ModelState.Clear();
@@ -255,8 +214,8 @@ namespace eTactWeb.Controllers
                             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                             MainModel.EnteredByEmpname = HttpContext.Session.GetString("EmpName");
                             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            _MemoryCache.Remove("KeyMaterialReceiptGrid");
-                            _MemoryCache.Remove("KeyBatchDetailGrid");
+                            HttpContext.Session.Remove("KeyMaterialReceiptGrid");
+                            HttpContext.Session.Remove("KeyBatchDetailGrid");
                             MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
                             MainModel.ActualEntryDate = DateTime.Now;
@@ -277,8 +236,8 @@ namespace eTactWeb.Controllers
                             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                             MainModel.EnteredByEmpname = HttpContext.Session.GetString("EmpName");
                             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            _MemoryCache.Remove("KeyMaterialReceiptGrid");
-                            _MemoryCache.Remove("KeyBatchDetailGrid");
+                            HttpContext.Session.Remove("KeyMaterialReceiptGrid");
+                            HttpContext.Session.Remove("KeyBatchDetailGrid");
                             MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
                             MainModel.ActualEntryDate = DateTime.Now;
@@ -341,7 +300,7 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
-       // [Route("{controller}/Index")]
+        // [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> MaterialReceipt(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string MrnNo = "", string PoNo = "", string Type = "", string Searchbox = "")
         {
@@ -355,8 +314,8 @@ namespace eTactWeb.Controllers
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.EmployeeList = await _IMaterialReceipt.GetEmployeeList();
             MainModel.EnteredEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-            _MemoryCache.Remove("KeyMaterialReceiptGrid");
-            _MemoryCache.Remove("KeyBatchDetailGrid");
+            HttpContext.Session.Remove("KeyMaterialReceiptGrid");
+            HttpContext.Session.Remove("KeyBatchDetailGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
                 MainModel = await _IMaterialReceipt.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -368,14 +327,8 @@ namespace eTactWeb.Controllers
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
                 MainModel.EmployeeList = await _IMaterialReceipt.GetEmployeeList();
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
-                _MemoryCache.Set("KeyBatchDetailGrid", MainModel.BatchDetailGrid, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                HttpContext.Session.SetString("KeyBatchDetailGrid", JsonConvert.SerializeObject(MainModel.BatchDetailGrid));
             }
             else
             {
@@ -395,32 +348,31 @@ namespace eTactWeb.Controllers
             }
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
-            MainModel.VendorNameBack= VendorName;
+            MainModel.VendorNameBack = VendorName;
             MainModel.GateNoBack = GateNo;
             MainModel.MrnNoBack = MrnNo;
             MainModel.DashboardTypeBack = Type;
             MainModel.GlobalSearchBack = Searchbox;
             MainModel.PoNoBack = PoNo;
             MainModel.PartCodeBack = PartCode;
-            MainModel.ItemNameBack= ItemName;
+            MainModel.ItemNameBack = ItemName;
             return View(MainModel);
         }
         public IActionResult AddMaterialReceiptDetail(List<MaterialReceiptDetail> model)
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyMaterialReceiptGrid", out IList<MaterialReceiptDetail> MaterialReceiptDetail);
+                string materialGrid = HttpContext.Session.GetString("KeyMaterialReceiptGrid");
+                List<MaterialReceiptDetail> MaterialReceiptDetail = new List<MaterialReceiptDetail>();
+                if (string.IsNullOrEmpty(materialGrid))
+                {
+                    MaterialReceiptDetail = JsonConvert.DeserializeObject<List<MaterialReceiptDetail>>(materialGrid);
+                }
 
                 var MainModel = new MaterialReceiptModel();
                 var MaterialReceiptGrid = new List<MaterialReceiptDetail>();
                 var MaterialGrid = new List<MaterialReceiptDetail>();
                 var SSGrid = new List<MaterialReceiptDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
                 var seqNo = 0;
                 foreach (var item in model)
                 {
@@ -448,7 +400,7 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.ItemDetailGrid = MaterialGrid;
 
-                        _MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
+                        HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                     }
                 }
                 return PartialView("_MaterialReceiptGrid", MainModel);
@@ -463,7 +415,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyMaterialReceiptGrid");
+                HttpContext.Session.Remove("KeyMaterialReceiptGrid");
                 var model = new MRNQDashboard();
                 var Result = await _IMaterialReceipt.GetDashboardData().ConfigureAwait(true);
 
@@ -557,7 +509,13 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new MaterialReceiptModel();
-            _MemoryCache.TryGetValue("KeyMaterialReceiptGrid", out List<MaterialReceiptDetail> MaterialReceiptGrid);
+
+            string modelJson = HttpContext.Session.GetString("KeyMaterialReceiptGrid");
+            List<MaterialReceiptDetail> MaterialReceiptGrid = new List<MaterialReceiptDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                MaterialReceiptGrid = JsonConvert.DeserializeObject<List<MaterialReceiptDetail>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (MaterialReceiptGrid != null && MaterialReceiptGrid.Count > 0)
@@ -573,26 +531,22 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.ItemDetailGrid = MaterialReceiptGrid;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (MaterialReceiptGrid.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyMaterialReceiptGrid");
+                    HttpContext.Session.Remove("KeyMaterialReceiptGrid");
                 }
-                //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             return PartialView("_MaterialReceiptGrid", MainModel);
         }
         public IActionResult DeleteBatchItemRow(int SeqNo)
         {
             var MainModel = new MaterialReceiptModel();
-            _MemoryCache.TryGetValue("KeyBatchDetailGrid", out List<BatchDetailModel> BatchDetailModel);
+            string modelJson = HttpContext.Session.GetString("KeyBatchDetailGrid");
+            List<BatchDetailModel> BatchDetailModel = new List<BatchDetailModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                BatchDetailModel = JsonConvert.DeserializeObject<List<BatchDetailModel>>(modelJson);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (BatchDetailModel != null && BatchDetailModel.Count > 0)
@@ -608,19 +562,10 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.BatchDetailGrid = BatchDetailModel;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-
                 if (BatchDetailModel.Count == 0)
                 {
-                    _MemoryCache.Remove("KeyBatchDetailGrid");
+                    HttpContext.Session.Remove("KeyBatchDetailGrid");
                 }
-                //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
             return PartialView("_BatchDetailAdd", MainModel);
         }
@@ -633,7 +578,7 @@ namespace eTactWeb.Controllers
             MRGrid.Columns.Add("poyearcode", typeof(int));
             MRGrid.Columns.Add("schno", typeof(string));
             MRGrid.Columns.Add("schyearcode", typeof(int));
-           // MRGrid.Columns.Add("SchDate", typeof(string));
+            // MRGrid.Columns.Add("SchDate", typeof(string));
             MRGrid.Columns.Add("PoType", typeof(string));
             MRGrid.Columns.Add("PoAmendNo", typeof(int));
             MRGrid.Columns.Add("PODate", typeof(string));
@@ -822,15 +767,15 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> ClearGridAjax(string FromDate, string ToDate)
         {
-            _MemoryCache.Remove("KeyMaterialReceiptGrid");
-            _MemoryCache.Remove("KeyBatchDetailGrid");
+            HttpContext.Session.Remove("KeyMaterialReceiptGrid");
+            HttpContext.Session.Remove("KeyBatchDetailGrid");
             var JSON = await _IMaterialReceipt.GetGateNo("PENDINGGATEFORMRN", "SP_MRN", FromDate, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> ClearbatchGridAjax(string FromDate, string ToDate)
         {
-            _MemoryCache.Remove("KeyBatchDetailGrid");
+            HttpContext.Session.Remove("KeyBatchDetailGrid");
             var JSON = await _IMaterialReceipt.GetGateNo("PENDINGGATEFORMRN", "SP_MRN", FromDate, ToDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -885,21 +830,6 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            //DateTime fromDt, toDt;
-            //string fromDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
-            //     fromDt = DateTime.ParseExact(fromDtString, "dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-            //    // Use fromDt as needed
-            //string toDtString = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(ToDate);
-            //     toDt = DateTime.ParseExact(toDtString, "dd-MMM-yyyy", System.Globalization.CultureInfo.InvariantCulture);
-
-
-
-                // Use fromDt as needed
-            //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
-            // DateTime fromDt = eTactWeb.Data.Common.CommonFunc.ParseFormattedDate(FromDate);
-            //string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
-            //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
-            //string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
 
             return RedirectToAction("MRNDashboard", new { FromDate = FromDate, ToDate = ToDate, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, GateNo = GateNo, PONo = PONo, ItemName = ItemName, PartCode = PartCode, Type = Type });
 
@@ -915,8 +845,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyBatchDetailGrid", out IList<BatchDetailModel> BatchDetailGrid);
-
+                string batchGrid = HttpContext.Session.GetString("KeyBatchDetailGrid");
+                List<BatchDetailModel> BatchDetailGrid = new List<BatchDetailModel>();
+                if (string.IsNullOrEmpty(batchGrid))
+                {
+                    BatchDetailGrid = JsonConvert.DeserializeObject<List<BatchDetailModel>>(batchGrid);
+                }
 
                 var MainModel = new MaterialReceiptModel();
                 var MaterialReceiptGrid = new List<BatchDetailModel>();
@@ -981,14 +915,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.BatchDetailGrid = MaterialGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyBatchDetailGrid", MainModel.BatchDetailGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyBatchDetailGrid", JsonConvert.SerializeObject(MainModel.BatchDetailGrid));
                 }
                 else
                 {
@@ -1005,7 +932,12 @@ namespace eTactWeb.Controllers
         }
         public IActionResult EditItemRow(int SeqNo)
         {
-            _MemoryCache.TryGetValue("KeyMaterialReceiptGrid", out List<MaterialReceiptDetail> MaterialGrid);
+            string modelJson = HttpContext.Session.GetString("KeyMaterialReceiptGrid");
+            List<MaterialReceiptDetail> MaterialGrid = new List<MaterialReceiptDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                MaterialGrid = JsonConvert.DeserializeObject<List<MaterialReceiptDetail>>(modelJson);
+            }
 
             var SSGrid = MaterialGrid.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
@@ -1025,7 +957,5 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
-
     }
 }
