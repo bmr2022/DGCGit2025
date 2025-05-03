@@ -1504,14 +1504,14 @@ public class PurchaseBillController : Controller
                     FirstItem = group.First(),
                     TotalAmount = group.Sum(item => item.TxAmount)
                 });
-
+            int rowNo = 1;
             foreach (var group in groupedTaxDetails)
             {
                 var Item = group.FirstItem;
                 Table.Rows.Add(
                 new object[]
                 {
-                    Item.TxSeqNo,
+                    rowNo++,
                     Item.TxType ?? string.Empty,
                     Item.TxItemCode,
                     Item.TxTaxType,
