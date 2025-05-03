@@ -67,7 +67,7 @@ namespace eTactWeb.Data.DAL
             DS.Tables[4].TableName = "AdjustmentDetail";
             DS.Tables[5].TableName = "PurchaseRejectionAgainstBillGrid";
             int cnt = 0;
-
+            #region MainTable
             model.PurchaseRejEntryId = DS.Tables[0].Rows[0]["PurchaseRejEntryId"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejEntryId"]) : 0;
             model.PurchaseRejYearCode = DS.Tables[0].Rows[0]["PurchaseRejYearCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejYearCode"]) : 0;
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"]?.ToString();
@@ -134,7 +134,7 @@ namespace eTactWeb.Data.DAL
                     model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationDate"].ToString();
                 }
             }
-
+            #endregion
             if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
             {
                 foreach (DataRow row in DS.Tables[1].Rows)
