@@ -97,10 +97,32 @@ public class TDSController : Controller
             else if (model.TxPageName == "DirectPurchaseBill")
             {
                 string Data = HttpContext.Session.GetString("DirectPurchaseBill");
+                //if (!string.IsNullOrEmpty(Data))
+                //{
+                //    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                //}
+
+
+                var settings = new JsonSerializerSettings
+                {
+                    MissingMemberHandling = MissingMemberHandling.Ignore,
+                    NullValueHandling = NullValueHandling.Include,
+                    Error = (sender, args) =>
+                    {
+                        // Suppress the error and mark it handled
+                        args.ErrorContext.Handled = true;
+                    }
+                };
                 if (!string.IsNullOrEmpty(Data))
                 {
-                    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(Data, settings);
                 }
+
+
+
+
+
+
             }
             else if (model.TxPageName == "PurchaseBill")
             {
