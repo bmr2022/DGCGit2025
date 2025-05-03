@@ -319,7 +319,13 @@ public class TaxController : Controller
             if (model.TxPageName == "IssueNRGP")
             {
                 _MemoryCache.TryGetValue("IssueNRGP", out MainModel);
-                //MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(model.TxPageName));
+
+                //var jsondata = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+                //if (jsondata != null)
+                //{
+                //    MainModel = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(jsondata);
+                //}
+                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(model.TxPageName));
             }
 
             if (TaxGrid != null && TaxGrid.Count > 0)
