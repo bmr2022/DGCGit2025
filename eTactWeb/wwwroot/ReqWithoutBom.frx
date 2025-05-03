@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/14/2025 12:05:27" ReportInfo.Modified="04/30/2025 19:19:00" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/14/2025 12:05:27" ReportInfo.Modified="05/03/2025 13:00:50" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSJvq1rwu49LMJV0oPdetm7w==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSJnRtQl4dlT81hPVlT/+FKA==">
       <TableDataSource Name="Table" Alias="GetRequisitionMainDetail" DataType="System.Int32" Enabled="true" SelectCommand="exec GetRequisitionMainDetail @EntryId=@entryparam,@YearCode=@yearparam">
         <Column Name="REQNo" DataType="System.String"/>
         <Column Name="ReqDate" DataType="System.DateTime"/>
@@ -100,7 +100,7 @@
       <LineObject Name="Line1" Left="9.45" Top="179.55" Width="699.3" Diagonal="true"/>
       <TextObject Name="Text70" Left="151.2" Top="132.3" Width="207.9" Height="18.9" CanGrow="true" CanBreak="false" Text="[GetRequisitionMainDetail.DeptName]" Font="Arial, 10pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="182.22" Width="718.2" Height="47.25">
+    <PageHeaderBand Name="PageHeader1" Top="182.75" Width="718.2" Height="47.25">
       <LineObject Name="Line3" Left="9.45" Height="47.25"/>
       <TextObject Name="Text17" Left="37.8" Top="9.45" Width="75.6" Height="18.9" Text="Part Code" Font="Arial, 10pt"/>
       <TextObject Name="Text18" Left="113.4" Top="9.45" Width="160.65" Height="28.35" Text="Item Name" HorzAlign="Center" Font="Arial, 10pt"/>
@@ -124,7 +124,7 @@
       <LineObject Name="Line4" Left="708.75" Height="47.25"/>
       <LineObject Name="Line2" Left="9.45" Top="47.25" Width="699.3" Diagonal="true"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="232.13" Width="718.2" Height="28.35" Condition="[getrequisitionmaindetail.PartCode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="233.2" Width="718.2" Height="28.35" Condition="[getrequisitionmaindetail.PartCode]">
       <LineObject Name="Line5" Left="9.45" Height="28.35"/>
       <LineObject Name="Line6" Left="37.8" Height="28.35"/>
       <LineObject Name="Line9" Left="113.4" Height="28.35"/>
@@ -147,10 +147,10 @@
       <TextObject Name="Text51" Left="113.4" Width="160.65" Height="28.35" CanGrow="true" CanBreak="false" Text="[GetRequisitionMainDetail.Item_Name]" HorzAlign="Center" Font="Arial, 10pt"/>
       <TextObject Name="Text54" Left="396.9" Width="37.8" Height="28.35" Text="[GetRequisitionMainDetail.Unit]" HorzAlign="Center" Font="Arial, 10pt"/>
       <LineObject Name="Line44" Left="9.45" Top="28.35" Width="699.3" Diagonal="true"/>
-      <DataBand Name="Data1" Top="263.15" Width="718.2" DataSource="Table"/>
-      <GroupFooterBand Name="GroupFooter1" Top="265.82" Width="718.2"/>
+      <DataBand Name="Data1" Top="264.75" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="267.95" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="308.95" Width="718.2" Height="75.6">
+    <ReportSummaryBand Name="ReportSummary1" Top="312.15" Width="718.2" Height="75.6">
       <TextObject Name="Text34" Left="132.3" Top="47.25" Width="94.5" Height="18.9" Text="Prepared By" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text35" Left="472.5" Top="47.25" Width="94.5" Height="18.9" Text="Approved By" Font="Arial, 10pt"/>
       <LineObject Name="Line41" Left="9.45" Height="75.6"/>
@@ -165,7 +165,7 @@
       <TextObject Name="Text71" Left="226.8" Width="47.25" Height="18.9" Text="Total:" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text72" Left="274.05" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalReqQty]" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text73" Left="330.75" Width="66.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[TotalStock]" Font="Arial, 8pt, style=Bold"/>
-      <ChildBand Name="Child1" Top="268.48" Width="718.2" Height="37.8" FillUnusedSpace="true">
+      <ChildBand Name="Child1" Top="271.15" Width="718.2" Height="37.8" FillUnusedSpace="true">
         <LineObject Name="Line30" Left="9.45" Height="37.8"/>
         <LineObject Name="Line31" Left="37.8" Height="37.8"/>
         <LineObject Name="Line32" Left="113.4" Height="37.8"/>
@@ -180,7 +180,7 @@
         <LineObject Name="Line22" Left="9.45" Top="37.8" Width="699.3" Diagonal="true"/>
       </ChildBand>
     </ReportSummaryBand>
-    <PageFooterBand Name="PageFooter1" Top="387.22" Width="718.2" Height="18.9">
+    <PageFooterBand Name="PageFooter1" Top="390.95" Width="718.2" Height="18.9">
       <TextObject Name="Text41" Left="340.2" Width="56.7" Height="18.9" Text="[Page#]" HorzAlign="Center" Font="Arial, 10pt"/>
     </PageFooterBand>
   </ReportPage>
