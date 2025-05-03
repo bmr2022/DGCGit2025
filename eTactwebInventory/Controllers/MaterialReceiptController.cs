@@ -175,10 +175,10 @@ namespace eTactWeb.Controllers
                 }
                 string batchGrid = HttpContext.Session.GetString("KeyBatchDetailGrid");
                 List<BatchDetailModel> BatchDetail = new List<BatchDetailModel>();
-                if (string.IsNullOrEmpty(batchGrid))
-                {
-                    BatchDetail = JsonConvert.DeserializeObject<List<BatchDetailModel>>(batchGrid);
-                }
+                //if (string.IsNullOrEmpty(batchGrid))
+                //{
+                //    BatchDetail = JsonConvert.DeserializeObject<List<BatchDetailModel>>(batchGrid);
+                //}
                 if (MaterialReceiptDetail == null)
                 {
                     ModelState.Clear();
@@ -393,7 +393,7 @@ namespace eTactWeb.Controllers
                             else
                             {
                                 item.SeqNo = MaterialReceiptDetail.Count + 1;
-                                MaterialGrid = MaterialReceiptDetail.Where(x => x != null).ToList();
+                                //MaterialGrid = MaterialReceiptDetail.Where(x => x != null).ToList();
                                 SSGrid.AddRange(MaterialGrid);
                                 MaterialGrid.Add(item);
                             }
@@ -782,8 +782,10 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetGateMainData(string GateNo, string GateYearCode, int GateEntryId)
         {
+            HttpContext.Session.Remove("KeyMaterialReceiptGrid");
             var JSON = await _IMaterialReceipt.GetGateMainData("GATEMAINDATA", "SP_MRN", GateNo, GateYearCode, GateEntryId);
             string JsonString = JsonConvert.SerializeObject(JSON);
+            HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonString);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetGateItemData(string GateNo, string GateYearCode, int GateEntryId)

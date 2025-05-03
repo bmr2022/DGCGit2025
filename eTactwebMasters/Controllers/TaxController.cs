@@ -308,6 +308,11 @@ public class TaxController : Controller
         var CgstSgst = ITaxModule.SgstCgst(model.TxAccountCode);
 
         _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IList<IssueNRGPTaxDetail> TaxGrid);
+        var jsondata = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+        if (jsondata != null)
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(jsondata);
+        }
 
         if (HttpContext.Session.GetString(model.TxPageName) != null)
         {
@@ -1258,6 +1263,16 @@ public class TaxController : Controller
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
                 _MemoryCache.TryGetValue("IssueNRGP", out IssueNRGPModel MainModel);
+
+
+                string modelPRJson = HttpContext.Session.GetString("IssueNRGP");
+                IssueNRGPModel MainModel1 = new IssueNRGPModel();
+                if (!string.IsNullOrEmpty(modelPRJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<IssueNRGPModel>(modelPRJson);
+                }
+
+
                 ListOfItems = MainModel.IssueNRGPDetailGrid;
             }
             else
@@ -2187,6 +2202,12 @@ public class TaxController : Controller
             if (SessionName == "IssueNRGP")
             {
                 _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out IList<IssueNRGPDetail> GridDetail);
+
+                string jsondata = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+                if (!string.IsNullOrEmpty(jsondata))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(jsondata);
+                }
                 ItemModel = GridDetail;
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
