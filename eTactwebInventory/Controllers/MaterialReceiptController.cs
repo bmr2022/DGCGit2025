@@ -169,7 +169,7 @@ namespace eTactWeb.Controllers
                 var BatchGrid = new DataTable();
                 string materialGrid = HttpContext.Session.GetString("KeyMaterialReceiptGrid");
                 List<MaterialReceiptDetail> MaterialReceiptDetail = new List<MaterialReceiptDetail>();
-                if (string.IsNullOrEmpty(materialGrid))
+                if (!string.IsNullOrEmpty(materialGrid))
                 {
                     MaterialReceiptDetail = JsonConvert.DeserializeObject<List<MaterialReceiptDetail>>(materialGrid);
                 }
