@@ -17,113 +17,92 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ISubVoucher _ISubVoucher { get; }
-
         private readonly ILogger<SubVoucherController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public SubVoucherController(ILogger<SubVoucherController> logger, IDataLogic iDataLogic, ISubVoucher iSubVoucher, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public SubVoucherController(ILogger<SubVoucherController> logger, IDataLogic iDataLogic, ISubVoucher iSubVoucher, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ISubVoucher = iSubVoucher;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
         [Route("SubVoucher/Index")]
         [HttpGet]
-        public async Task<ActionResult> SubVoucher( int PrefixEntryId, int YC,string MainVoucherTableName, string MainVoucherName, string GlobalSearch, string LedgerName, string YearCode, float Amount, string GroupName, string Mode, int AccountCode, int GroupAccountCode, string CC, string Account_Name, string FromDate = "", string ToDate = "" )
+        public async Task<ActionResult> SubVoucher(int PrefixEntryId, int YC, string MainVoucherTableName, string MainVoucherName, string GlobalSearch, string LedgerName, string YearCode, float Amount, string GroupName, string Mode, int AccountCode, int GroupAccountCode, string CC, string Account_Name, string FromDate = "", string ToDate = "")
         {
-              _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
+            _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
 
-                TempData.Clear();
-                var MainModel = new SubVoucherModel();
+            TempData.Clear();
+            var MainModel = new SubVoucherModel();
+            MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
+            HttpContext.Session.Remove("KeySubVoucherGrid");
+
+            if (!string.IsNullOrEmpty(Mode) && PrefixEntryId > 0 && Mode == "U")
+            {
+                MainModel = await _ISubVoucher.GetViewByID(PrefixEntryId, MainVoucherName, MainVoucherTableName).ConfigureAwait(false);
+                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.ID = PrefixEntryId;
+                MainModel.MainVoucherName = MainVoucherName;
+                MainModel.MainVoucherTableName = MainVoucherTableName;
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-                MainModel.EntryByEmpName= HttpContext.Session.GetString("EmpName");
-                //MainModel.PrefixEntryId= Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("ID"));
+                MainModel.UpdationDate = DateTime.Now.ToString();
 
-               _MemoryCache.Remove("KeySubVoucherGrid");
+            }
+            // When updating the record, make sure to capture updated info
+            if (Mode == "U")
+            {
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdationDate = DateTime.Now.ToString();
+            }
 
-                if (!string.IsNullOrEmpty(Mode) && PrefixEntryId > 0 && Mode == "U")
-                {
-                    MainModel = await _ISubVoucher.GetViewByID( PrefixEntryId,MainVoucherName, MainVoucherTableName).ConfigureAwait(false);
-               
-
-                    MainModel.Mode = Mode; // Set Mode to Update
-                    MainModel.ID = PrefixEntryId;
-                    MainModel.MainVoucherName = MainVoucherName;
-                    MainModel.MainVoucherTableName = MainVoucherTableName;
-                    // Bind additional model values if necessary
-                    // MainModel =  BindModels(MainModel).ConfigureAwait(false);
-                    MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-                    MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
-                    MainModel.UpdatedBy= Convert.ToInt32(HttpContext.Session.GetString("ID"));
-                    MainModel.UpdationDate = DateTime.Now.ToString();
-
-                    // You can use caching if required here
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024
-                    };
-                }
-
-
-
-                // When updating the record, make sure to capture updated info
-                if (Mode == "U")
-                {
-                    MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    MainModel.UpdationDate = DateTime.Now.ToString();
-                }
-
-                return View(MainModel);
-            
-            
+            return View(MainModel);
         }
-      
+
         [Route("{controller}/Index")]
         [HttpPost]
         public async Task<IActionResult> SubVoucher(SubVoucherModel model)
         {
-            
+
             try
             {
                 //var GIGrid = new DataTable();
 
                 //_MemoryCache.TryGetValue("KeyLedgerOpeningEntryGrid", out List<LedgerOpeningEntryGridModel> LedgerOpeningEntryGrid);
 
-                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+
 
                 var Result = await _ISubVoucher.SaveSubVoucher(model);
-                    if (Result != null)
+                if (Result != null)
+                {
+                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
                     {
-                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["200"] = "200";
-                            _MemoryCache.Remove("KeySubVoucherGrid");
-                        }
-                        else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                        {
-                            ViewBag.isSuccess = true;
-                            TempData["202"] = "202";
-                        }
-                        else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                        {
-                            ViewBag.isSuccess = false;
-                            TempData["500"] = "500";
-                            _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                            return View("Error", Result);
-                        }
-
+                        ViewBag.isSuccess = true;
+                        TempData["200"] = "200";
+                        HttpContext.Session.Remove("KeySubVoucherGrid");
                     }
-                    return RedirectToAction(nameof(SubVoucherDashBoard));
+                    else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["202"] = "202";
+                    }
+                    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["500"] = "500";
+                        _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                        return View("Error", Result);
+                    }
+
+                }
+                return RedirectToAction(nameof(SubVoucherDashBoard));
             }
             catch (Exception ex)
             {
@@ -155,7 +134,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("SubVoucherGrid");
+                HttpContext.Session.Remove("SubVoucherGrid");
 
                 var model = new SubVoucherDashBoardModel();
                 //model.DashboardType = "SUMMARY";
@@ -172,7 +151,7 @@ namespace eTactWeb.Controllers
                     if (DS != null)
                     {
                         var DT = DS.Tables[0].DefaultView.ToTable(true, "PrefixEntryId",
-                            "MainVoucherName", "MainVoucherTableName", "SubVoucherName", "VoucherRotationType", 
+                            "MainVoucherName", "MainVoucherTableName", "SubVoucherName", "VoucherRotationType",
                             "StartSubVouchDiffSeries", "SubVouchPrefix", "FromYearPrefix", "ToYearPreFix",
                             "MonthPrefix", "DayPrefix", "SeparatorApplicable", "Separator", "TotalLength", "ActualEntryBy",
                             "ActualEntryDate", "UpdatedBy", "UpdationDate", "EntryByMachine");
@@ -203,7 +182,7 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> DeleteByID(string MainVoucherName, string MainVoucherTableName, string StartSubVouchDiffSeries, int ActualEntryBy, int UpdatedBy, int PrefixEntryId)
         {
-            var Result = await _ISubVoucher.DeleteByID( MainVoucherName,  MainVoucherTableName,  StartSubVouchDiffSeries,  ActualEntryBy,  UpdatedBy,  PrefixEntryId);
+            var Result = await _ISubVoucher.DeleteByID(MainVoucherName, MainVoucherTableName, StartSubVouchDiffSeries, ActualEntryBy, UpdatedBy, PrefixEntryId);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
@@ -221,7 +200,7 @@ namespace eTactWeb.Controllers
                 TempData["500"] = "500";
             }
 
-            return RedirectToAction("SubVoucherDashBoard", new { Flag = "False",  MainVoucherName= MainVoucherName, MainVoucherTableName= MainVoucherTableName,  StartSubVouchDiffSeries= StartSubVouchDiffSeries,  ActualEntryBy= ActualEntryBy,  UpdatedBy= UpdatedBy,  PrefixEntryId= PrefixEntryId });
+            return RedirectToAction("SubVoucherDashBoard", new { Flag = "False", MainVoucherName = MainVoucherName, MainVoucherTableName = MainVoucherTableName, StartSubVouchDiffSeries = StartSubVouchDiffSeries, ActualEntryBy = ActualEntryBy, UpdatedBy = UpdatedBy, PrefixEntryId = PrefixEntryId });
 
         }
         //[HttpPost]

@@ -16,16 +16,14 @@ namespace eTactWeb.Controllers
     public class PendingMRPController : Controller
     {
         public IDataLogic IDataLogic { get; }
-        public IMemoryCache IMemoryCache { get; }
         public IMRP IMRP { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<PendingMRPController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
-        public PendingMRPController(IMRP _IMRP, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<PendingMRPController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public PendingMRPController(IMRP _IMRP, IDataLogic iDataLogic, ILogger<PendingMRPController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             IMRP = _IMRP;
             IDataLogic = iDataLogic;
-            IMemoryCache = iMemoryCache;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
@@ -35,8 +33,8 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<IActionResult> PendingMRP()
         {
-            IMemoryCache.Remove("KeyPendingMRPDetail");
-            IMemoryCache.Remove("KeyMRPSaleOrderDetail");
+            HttpContext.Session.Remove("KeyPendingMRPDetail");
+            HttpContext.Session.Remove("KeyMRPSaleOrderDetail");
             var model = new PendingMRP();
             //  var MRPSOList = new List<MRPSaleOrderDetail>();
             DateTime now = DateTime.Now;
@@ -93,17 +91,11 @@ namespace eTactWeb.Controllers
 
                 model.PendingMRPGrid = CommonFunc.DataTableToList<PendingMRP>(DT, "PendingMRP");
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
 
                 var SODetailData = GetMRPSOList(model.PendingMRPGrid);
 
                 MRPSOList.AddRange(SODetailData);
-                IMemoryCache.Set("KeyMRPSaleOrderDetail", MRPSOList, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyMRPSaleOrderDetail", JsonConvert.SerializeObject(MRPSOList));
             }
 
             return View(model);
@@ -181,7 +173,7 @@ namespace eTactWeb.Controllers
             return MRPSO;
         }
 
-        public async Task<IActionResult> GetFilteredData(int Month, int YearCode, int AccountCode = 0, string SONO = "", int SOYearCode = 0, string schNo = "")
+        public async Task<IActionResult> GetFilteredData(int Month, int YearCode, string IncludeProjection, int AccountCode = 0, string SONO = "", int SOYearCode = 0, string schNo = "")
         {
             var mainmodel = new PendingMRP();
             mainmodel.Month = Month;
@@ -190,6 +182,7 @@ namespace eTactWeb.Controllers
             mainmodel.sono = SONO;
             mainmodel.SOYearCode = SOYearCode;
             mainmodel.ScheduleNo = schNo;
+            mainmodel.IncludeProjection = IncludeProjection;
 
             var Result = await IMRP.PendingMRPData(mainmodel);
             DataSet DS = Result.Result;
@@ -223,7 +216,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> ClearPendingMRPGrid()
         {
-            IMemoryCache.Remove("KeyPendingMRPDetail");
+            HttpContext.Session.Remove("KeyPendingMRPDetail");
             var JSON = await IMRP.GetWorkCenter();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -255,23 +248,8 @@ namespace eTactWeb.Controllers
                         ListOfMRPFGRMGrid.AddRange(FGRMDetailData.MRPFGRMGrid);
                     }
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    //    IMemoryCache.Set("KeyPendingMRPDetail", MainModel.PendingMRPGrid, cacheEntryOptions);
-
-                    IMemoryCache.Set("KeyPendingMRPToMRPDetail", ListOfMRPGrid, cacheEntryOptions);
-                    IMemoryCache.Set("KeyPendingFGRMMRP", ListOfMRPFGRMGrid, cacheEntryOptions);
-
-                    //}
-                    //else
-                    //{
-                    //    ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
-                    //}
+                    HttpContext.Session.SetString("KeyPendingMRPToMRPDetail", JsonConvert.SerializeObject(ListOfMRPGrid));
+                    HttpContext.Session.SetString("KeyPendingFGRMMRP", JsonConvert.SerializeObject(ListOfMRPFGRMGrid));
                 }
 
 
@@ -281,7 +259,7 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
-        }        
+        }
 
 
     }

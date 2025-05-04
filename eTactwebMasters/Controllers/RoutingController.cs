@@ -17,15 +17,13 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         public IRouting _IRouting { get; }
         private readonly ILogger<RoutingController> _logger;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment IWebHostEnvironment { get; }
 
-        public RoutingController(ILogger<RoutingController> logger, IDataLogic iDataLogic, IRouting iRouting, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public RoutingController(ILogger<RoutingController> logger, IDataLogic iDataLogic, IRouting iRouting, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IRouting = iRouting;
-            _MemoryCache = iMemoryCache;
             IWebHostEnvironment = iWebHostEnvironment;
         }
 
@@ -35,7 +33,7 @@ namespace eTactWeb.Controllers
             //RoutingModel model = new RoutingModel();
             ViewData["Title"] = "Inventory Details";
             TempData.Clear();
-            _MemoryCache.Remove("KeyRoutingGrid");
+            HttpContext.Session.Remove("KeyRoutingGrid");
             var MainModel = new RoutingModel();
             if (MainModel.Mode != "U")
             {
@@ -44,16 +42,8 @@ namespace eTactWeb.Controllers
                 MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
             }
             var model = await BindModel(MainModel);
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            //model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            //model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.CC = HttpContext.Session.GetString("Branch");
-            _MemoryCache.Set("KeyRoutingGrid", model, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyRoutingGrid", JsonConvert.SerializeObject(model));
             return View(model);
         }
 
@@ -66,8 +56,12 @@ namespace eTactWeb.Controllers
             try
             {
                 var RoutingGrid = new DataTable();
-
-                _MemoryCache.TryGetValue("KeyRoutingGrid", out List<RoutingDetail> RoutingDetailGrid);
+                string jsonString = HttpContext.Session.GetString("KeyRoutingGrid");
+                IList<RoutingDetail> RoutingDetailGrid = new List<RoutingDetail>();
+                if (jsonString != null)
+                {
+                    RoutingDetailGrid = JsonConvert.DeserializeObject<List<RoutingDetail>>(jsonString);
+                }
                 if (RoutingDetailGrid == null)
                 {
                     ModelState.Clear();
@@ -143,7 +137,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new RoutingModel();
-            _MemoryCache.TryGetValue("KeyRoutingGrid", out IList<RoutingDetail> GridDetail);
+            string jsonString = HttpContext.Session.GetString("KeyRoutingGrid");
+            IList<RoutingDetail> GridDetail = new List<RoutingDetail>();
+            if (jsonString != null)
+            {
+                GridDetail = JsonConvert.DeserializeObject<List<RoutingDetail>>(jsonString);
+            }
             var SAGrid = GridDetail.Where(x => x.SequenceNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SAGrid);
             return Json(JsonString);
@@ -268,7 +267,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.TryGetValue("KeyRoutingGrid", out IList<RoutingDetail> GridDetail);
+                string jsonString = HttpContext.Session.GetString("KeyRoutingGrid");
+                IList<RoutingDetail> GridDetail = new List<RoutingDetail>();
+                if (jsonString != null)
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<RoutingDetail>>(jsonString);
+                }
 
                 var MainModel = new RoutingModel();
                 var RoutingDetailGrid = new List<RoutingDetail>();
@@ -299,14 +303,7 @@ namespace eTactWeb.Controllers
                     RoutingGrid = RoutingGrid.OrderBy(item => item.SequenceNo).ToList();
                     MainModel.RoutingDetailGrid = RoutingGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    _MemoryCache.Set("KeyRoutingGrid", MainModel.RoutingDetailGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyRoutingGrid", JsonConvert.SerializeObject(MainModel.RoutingDetailGrid));
                 }
                 else
                 {
@@ -324,7 +321,12 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new RoutingModel();
-            _MemoryCache.TryGetValue("KeyRoutingGrid", out List<RoutingDetail> RoutingDetail);
+            string jsonString = HttpContext.Session.GetString("KeyRoutingGrid");
+            IList<RoutingDetail> RoutingDetail = new List<RoutingDetail>();
+            if (jsonString != null)
+            {
+                RoutingDetail = JsonConvert.DeserializeObject<List<RoutingDetail>>(jsonString);
+            }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (RoutingDetail != null && RoutingDetail.Count > 0)
@@ -339,14 +341,7 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.RoutingDetailGrid = RoutingDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                _MemoryCache.Set("KeyRoutingGrid", MainModel.RoutingDetailGrid, cacheEntryOptions);
+               HttpContext.Session.SetString("KeyRoutingGrid", JsonConvert.SerializeObject(MainModel.RoutingDetailGrid));
             }
             return PartialView("_RoutingGrid", MainModel);
         }
@@ -356,7 +351,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                _MemoryCache.Remove("KeyRoutingGrid");
+                HttpContext.Session.Remove("KeyRoutingGrid");
                 var model = new RoutingMainDashboard();
                 //model.FromDate = HttpContext.Session.GetString("FromDate");
                 model.FromDate = FromDate;
@@ -500,7 +495,7 @@ namespace eTactWeb.Controllers
             //_logger.LogInformation("\n \n ********* Page Gate Inward ********* \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new RoutingModel();
-            _MemoryCache.Remove("KeyRoutingGrid");
+            HttpContext.Session.Remove("KeyRoutingGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U" || Mode == "C"))
             {
                 MainModel = await _IRouting.GetViewByID(ID, Mode).ConfigureAwait(false);
@@ -508,13 +503,7 @@ namespace eTactWeb.Controllers
                 MainModel.ID = ID;
                 MainModel.CC = HttpContext.Session.GetString("Branch");
                 MainModel = await BindModel(MainModel).ConfigureAwait(false);
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                _MemoryCache.Set("KeyRoutingGrid", MainModel.RoutingDetailGrid, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyRoutingGrid", JsonConvert.SerializeObject(MainModel.RoutingDetailGrid));  
             }
             else
             {
@@ -537,31 +526,6 @@ namespace eTactWeb.Controllers
 
                 var dt = time.ToString(format);
                 return Json(formattedDate);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
             }
             catch (HttpRequestException ex)
             {
@@ -583,7 +547,5 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
-
     }
 }

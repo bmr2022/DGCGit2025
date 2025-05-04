@@ -43,6 +43,7 @@ namespace eTactWeb.DOM.Models
         public string StoreId { get; set; }
         public string WcId { get; set; }
         public List<PendingMRP>? PendingMRPGrid { get; set; }
+        public string? IncludeProjection { get; set; }
     }
 }
 

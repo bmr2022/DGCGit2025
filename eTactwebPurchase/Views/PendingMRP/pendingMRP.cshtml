@@ -1,546 +1,555 @@
 ﻿@model eTactWeb.DOM.Models.PendingMRP
 
 @{
-    ViewData["Title"] = "Pending MRP";
-    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+	ViewData["Title"] = "Pending MRP";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="PendingMRP" autocomplete="off" class="form-horizontal">
-        <div class="card-header card-headerBG text-light bg-gradient">
-            <h5>
-                <strong>Pending MRP</strong>
-                <span class="d-flex float-end" style="margin-top:-2px;">
-                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+	<form asp-action="PendingMRP" autocomplete="off" class="form-horizontal">
+		<div class="card-header card-headerBG text-light bg-gradient">
+			<h5>
+				<strong>Pending MRP</strong>
+				<span class="d-flex float-end" style="margin-top:-2px;">
+					@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
 
-                    <div class="col-auto">
-                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                        <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                            <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                            REFRESH
-                        </a>
-                    </div>
-                </span>
-            </h5>
-        </div>
-        <div>
-        </div>
-        <div class="card-body bg-light pt-0">
-            <div class="accordion shadow-lg">
-                <div class="accordion-item" id="GI_Grid">
-                    <h2 class="accordion-header" id="H_RParameter">
-                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
-                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
-                            Required Parameter
-                        </button>
-                    </h2>
-                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
-                        <div class="accordion-body">
-                            <div class="row g-2 gx-3 align-items-center">
-                                <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="MRPGenDate" class="form-label">MRP Gen Date</label>
-                                    <input asp-for="MRPGenDate" class="form-control" readonly />
-                                </div>
-                                <div class="col-xxl-2 col-xl-2 col-lg-4 col-md-6 col-sm-12 col-xs-12">
-                                    <label asp-for="Month" class="form-label">From the Month</label>
-                                    <input asp-for="Month" type="month" class="form-control" />
-                                </div>
-                                <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="MRPEntryId" class="form-label">MRP Entry Id</label>
-                                    <input asp-for="MRPEntryId" class="form-control" readonly />
-                                </div>
-                                <div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12">
-                                    <label asp-for="YearCode" class="form-label">YearCode</label>
-                                    <input asp-for="YearCode" class="form-control" readonly />
-                                </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="MRPNo" class="form-label">MRP No</label>
-                                    <input asp-for="MRPNo" class="form-control" readonly />
-                                </div>
-                                <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 justify-content-center mt-3">
-                                    <button class="btn btn-sm btn-outline-info me-3" type="button" onclick="GetFilteredData();">
-                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>Show
-                                    </button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+					<div class="col-auto">
+						@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+						<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+							@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+							<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+							REFRESH
+						</a>
+					</div>
+				</span>
+			</h5>
+		</div>
+		<div>
+		</div>
+		<div class="card-body bg-light pt-0">
+			<div class="accordion shadow-lg">
+				<div class="accordion-item" id="GI_Grid">
+					<h2 class="accordion-header" id="H_RParameter">
+						<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+							<i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+							Required Parameter
+						</button>
+					</h2>
+					<div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+						<div class="accordion-body">
+							<div class="row g-2 gx-3 align-items-center">
+								<div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+									<label asp-for="MRPGenDate" class="form-label">MRP Gen Date</label>
+									<input asp-for="MRPGenDate" class="form-control" readonly />
+								</div>
+								<div class="col-xxl-2 col-xl-2 col-lg-4 col-md-6 col-sm-12 col-xs-12">
+									<label asp-for="Month" class="form-label">From the Month</label>
+									<input asp-for="Month" type="month" class="form-control" />
+								</div>
+								<div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+									<label asp-for="MRPEntryId" class="form-label">MRP Entry Id</label>
+									<input asp-for="MRPEntryId" class="form-control" readonly />
+								</div>
+								<div class="col-xxl-2 col-xl-2 col-lg-3 col-md-3 col-sm-12 col-xs-12">
+									<label asp-for="YearCode" class="form-label">YearCode</label>
+									<input asp-for="YearCode" class="form-control" readonly />
+								</div>
+								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+									<label asp-for="MRPNo" class="form-label">MRP No</label>
+									<input asp-for="MRPNo" class="form-control" readonly />
+								</div>
+@* 								<div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 justify-content-center mt-3">
+									<button class="btn btn-sm btn-outline-info me-3" type="button" onclick="GetFilteredData();">
+										<i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>Show
+									</button>
+								</div> *@
+								<div class="col-xxl-1 col-xl-2 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px;">
+									<label asp-for="IncludeProjection" class="form-label">ShowField</label>
+									<select asp-for="IncludeProjection" class="form-select" onchange="GetFilteredData();">
+										<option value="N">Show Projection Based order</option>
+										<option selected value="Y">Exclude projection</option>
+									</select>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
 
-                <div class="accordion-item">
-                    <h2 class="accordion-header" id="H_SAGrid">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
-                        </button>
-                    </h2>
+				<div class="accordion-item">
+					<h2 class="accordion-header" id="H_SAGrid">
+						<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+							<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+						</button>
+					</h2>
 
-                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
-                        <div class="accordion-body">
-                            <div class="card-body" id="divPendingMRP">
-                                <div class="row">
-                                    <div class="col-md-9 divPendingMRPPartial">
-                                        <div class="mb-3">
-                                            <div class="d-flex">
-                                                <button class="btn btn-sm btn-outline-warning me-3" type="button" id="CheckAll">
-                                                    <i class="fa fa-check-square" aria-hidden="true"></i> Check All
-                                                </button>
-                                                <button class="btn btn-sm btn-outline-danger me-3" type="button" id="unCheckAll">
-                                                    <i class="fa fa-check-square" aria-hidden="true"></i> UnCheck All
-                                                </button>
+					<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+						<div class="accordion-body">
+							<div class="card-body" id="divPendingMRP">
+								<div class="row">
+									<div class="col-md-9 divPendingMRPPartial">
+										<div class="mb-3">
+											<div class="d-flex">
+												<button class="btn btn-sm btn-outline-warning me-3" type="button" id="CheckAll">
+													<i class="fa fa-check-square" aria-hidden="true"></i> Check All
+												</button>
+												<button class="btn btn-sm btn-outline-danger me-3" type="button" id="unCheckAll">
+													<i class="fa fa-check-square" aria-hidden="true"></i> UnCheck All
+												</button>
 
-                                                <div class="ms-auto">
-                                                    <button class="btn btn-sm btn-outline-success me-3" type="button" id="SendToExcel">
-                                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>Send To Excel
-                                                    </button>
-                                                    <button class="btn btn-sm btn-outline-primary me-3" type="button" id="GenerateMRP">
-                                                        <i class="fa fa-exchange" aria-hidden="true"></i> Generate MRP
-                                                    </button>
-                                                </div>
-                                            </div>
+												<div class="ms-auto">
+													<button class="btn btn-sm btn-outline-success me-3" type="button" id="SendToExcel">
+														<i class="fa-solid fa-upload fa-fw fa-lg "></i>Send To Excel
+													</button>
+													<button class="btn btn-sm btn-outline-primary me-3" type="button" id="GenerateMRP">
+														<i class="fa fa-exchange" aria-hidden="true"></i> Generate MRP
+													</button>
+												</div>
+											</div>
 
-                                        </div>
-                                        <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
-                                            <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0">
-                                                <thead class="bg-gradient card-headerBG text-light PMRPThead">
-                                                    <tr>
-                                                        <th></th>
-                                                        <th>Sr#</th>
-                                                        <th>SONO</th>
-                                                        <th>SO EntryId</th>
-                                                        <th>SO Date</th>
-                                                        <th>SO YearCode</th>
-                                                        <th>Account Name</th>
-                                                        <th>SO Type</th>
-                                                        <th>Schedule No</th>
-                                                        <th>Sch YearCode</th>
-                                                        <th>Sch EntryID</th>
-                                                        <th>Sch_Date</th>
-                                                        <th>Order Qty</th>
-                                                        <th>FG Item</th>
-                                                        <th>FG Stock</th>
-                                                        <th>Sale Rate</th>
-                                                        <th>IIndMonthQty</th>
-                                                        <th>IIrdMonthQty</th>
-                                                        <th>BOM</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody id="divPendingMRPbody">
-                                                    <partial name="_PendingMRPGrid" />
-                                                </tbody>
-                                            </table>
-                                        </div>
+										</div>
+										<div class="table-responsive" style="max-height:300px;overflow-y:auto;">
+											<table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0">
+												<thead class="bg-gradient card-headerBG text-light PMRPThead">
+													<tr>
+														<th></th>
+														<th>Sr#</th>
+														<th>SONO</th>
+														<th>SO EntryId</th>
+														<th>SO Date</th>
+														<th>SO YearCode</th>
+														<th>Account Name</th>
+														<th>SO Type</th>
+														<th>Schedule No</th>
+														<th>Sch YearCode</th>
+														<th>Sch EntryID</th>
+														<th>Sch_Date</th>
+														<th>Order Qty</th>
+														<th>FG Item</th>
+														<th>FG Stock</th>
+														<th>Sale Rate</th>
+														<th>IIndMonthQty</th>
+														<th>IIrdMonthQty</th>
+														<th>BOM</th>
+													</tr>
+												</thead>
+												<tbody id="divPendingMRPbody">
+													<partial name="_PendingMRPGrid" />
+												</tbody>
+											</table>
+										</div>
 
-                                    </div>
-                                    <div class="col-md-3" style="">
-                                        GenerateMRP
-                                        <div class="card shadow">
-                                            <div class="card-header bg-white font-bold">
-                                                CONSIDER STOCK OF
-                                            </div>
-                                            <div class="card-body" style="font-size:10px;">
-                                                <div class="p-3" style="background-color:#f1fab9;">
-                                                    <label class="mb-1" style="font-weight:bold"><input type="checkbox" id="CheckAllStore"/>STORE</label>
-                                                    <div id="appendStore" style="max-height:70px;overflow-y:auto;"></div>
-                                                </div>
-                                                <div class="mt-4 p-3" style="background-color:#fab9e1;">
-                                                    <label class="mb-1" style="font-weight:bold"><input type="checkbox" id="CheckAllWC" />WORKCENTER</label>
-                                                    <div id="appendWc" style="max-height:70px;overflow-y:auto;"></div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+									</div>
+									<div class="col-md-3" style="">
+										GenerateMRP
+										<div class="card shadow">
+											<div class="card-header bg-white font-bold">
+												CONSIDER STOCK OF
+											</div>
+											<div class="card-body" style="font-size:10px;">
+												<div class="p-3" style="background-color:#f1fab9;">
+													<label class="mb-1" style="font-weight:bold"><input type="checkbox" id="CheckAllStore" />STORE</label>
+													<div id="appendStore" style="max-height:70px;overflow-y:auto;"></div>
+												</div>
+												<div class="mt-4 p-3" style="background-color:#fab9e1;">
+													<label class="mb-1" style="font-weight:bold"><input type="checkbox" id="CheckAllWC" />WORKCENTER</label>
+													<div id="appendWc" style="max-height:70px;overflow-y:auto;"></div>
+												</div>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
 
-                    </div>
-                </div>
-            </div>
-        </div>
-    </form>
+					</div>
+				</div>
+			</div>
+		</div>
+	</form>
 
 
 </div>
-@section Scripts{
-    <Script>
-        $(document).ready(function () {
-            GetServerDate();
-            FillStore();
-            FillWorkCenter();            
-            //$('#MRPGenDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            //$('#Month').datepicker({ dateFormat: 'mm/yy' }).datepicker("setDate", new Date(year, month, 1));
+@section Scripts {
+	<Script>
+		$(document).ready(function () {
+			GetServerDate();
+			FillStore();
+			FillWorkCenter();
+			//$('#MRPGenDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+			//$('#Month').datepicker({ dateFormat: 'mm/yy' }).datepicker("setDate", new Date(year, month, 1));
 
-            //var CurrentDate = new Date();
-            //var CurrentMonth = CurrentDate.getMonth() + 1;
-
-
-            //$('#Month').val(CurrentMonth);
-
-            var currentDate = new Date();
-
-            var currentYear = currentDate.getFullYear();
-            var currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
+			//var CurrentDate = new Date();
+			//var CurrentMonth = CurrentDate.getMonth() + 1;
 
 
-            var defaultValue = currentYear + '-' + currentMonth;
-            $('#Month').val(defaultValue);
+			//$('#Month').val(CurrentMonth);
 
-            GetFilteredData();
-        });
-        
-        function GetServerDate() {
+			var currentDate = new Date();
 
-            $.ajax({
-                type: "GET",
-                url: "@Url.Action("GetServerDate")",
-                async: false,
-                success: function (result, status, error) {
-
-                    $('#MRPGenDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    var currentDate = result;
-                    var currentMonth = parseInt(currentDate.split("/")[1]);
-                    var currentYear = parseInt(currentDate.split("/")[2]);
-                    var minMonth = currentYear + '-' + (currentMonth < 10 ? '0' : '') + currentMonth;
-                    $('#Month').prop('min', minMonth);
-
-                }
-            });
-        }
-
-        var SelectedStorevalues = "";
-        function FillStore() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("GetStore")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-                    if (result != null) {
-                         
-                        var SelectedStore = [];
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            var ArrLength = obj.Result.Table.length;
-                            for (var i = 0; i < ArrLength; i++) {
-                                $('#appendStore').append('<input type="Checkbox" id="Chk-' + obj.Result.Table[i].EntryID + '"> ' + obj.Result.Table[i].Store_Name + '<br/>');
-                                var CheckboxId = $('#Chk-' + obj.Result.Table[i].EntryID);
-
-                                if (CheckboxId.prop("checked")) {
-                                    SelectedStore.push(obj.Result.Table[i].EntryID);
-                                }
-                            }
-
-                            SelectedStorevalues = SelectedStore.join(',');
-
-                        }
-                    }
-                }
-            });
-        }
-        var SelectedWcValues = "";
-
-        function FillWorkCenter() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("GetWorkCenter")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-
-                    if (result != null) {
-                        var SelectedWc = [];
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            var ArrLength = obj.Result.Table.length;
-                            for (var i = 0; i < ArrLength; i++) {
-                                $('#appendWc').append('<input type="Checkbox" id="ChkWc-' + obj.Result.Table[i].EntryID + '"> ' + obj.Result.Table[i].WorkCenterDescription + '<br/>');
-                                var CheckboxWcId = $('#ChkWc-' + obj.Result.Table[i].EntryID);
-
-                                if (CheckboxWcId.prop("checked")) {
-                                    SelectedWc.push(obj.Result.Table[i].EntryID);
-                                }
-                            }
-
-                            SelectedWcValues = SelectedWc.join(',');
-                        }
-
-                    }
-                }
-            });
-        }
-
-        function GetFilteredData() {
-            var Month = parseInt($('#Month').val().split("-")[1]);
-            var yearcode = parseInt($('#YearCode').val());
-            $.ajax({
-                url: '@Url.Action("GetFilteredData")',
-                type: "POST",
-                data: { "Month": Month, "YearCode": yearcode },
-                success: function (data) {
-                    $('#divPendingMRPbody').empty();
-                    $('#divPendingMRPbody').append(data);
-                    //RowCount();
-
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-            CheckMonthWiseData();
-        }
-        var MRPEntryId;
-        var MRPNo;
-
-        function CheckMonthWiseData() {
-            var Month = parseInt($('#Month').val().split("-")[1]);
-            var Year = parseInt($('#Month').val().split("-")[0]);
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("IsCheckMonthWiseData")",
-                data: { "Month": Month, "Year": Year },
-                dataType: "json",
-                success: function (result, status, error) {
-
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#MRPEntryId').val(obj.Result.Table[0].MRPEntryID);
-                            $('#MRPNo').val(obj.Result.Table[0].MRPNo);
-
-                            MRPEntryId = obj.Result.Table[0].MRPEntryID;
-                            MRPNo = obj.Result.Table[0].MRPNo;
-                        } else {
-                            $('#MRPEntryId').val(0);
-                            $('#MRPNo').val(0);
-                        }
-                    }
-                }
-            });
-        }
-
-        $('#GenerateMRP').click(function () {
-             
-            FillStore();
-            FillWorkCenter();
-            var RowCount = $('#divPendingMRPbody tr').length;
-            var count = 0;
-            for (var i = 1; i <= RowCount; i++) {
-                if ($('#dataCheckbox-' + i).prop("checked")) {
-                    count++;
-                } else {
-                    //do ntohing
-                }
-            }
-            if (count <= 0) {
-                $.notify("PLease select MRP", "error");
-                return false;
-            }
-
-            var uniqueSONOYearCodes = [];
-            var uniqueSchNoYearCodes = [];
-            for (var i = 1; i <= RowCount; i++) {
-                var isCheckeValue = $('#dataCheckbox-' + i).prop("checked");
-                if (isCheckeValue) {
-                    var sono = $('#GMRPsono-' + i).text();
-                    var soEntryId = $('#GMRPsoEntryId-' + i).text();
-                    var yc = $('#GMRPYC-' + i).text();
-                    var sonoyearVal = soEntryId + " " + yc;
-                    //uniqueSONOYearCodes = Array.from(new Set(sonoyear.map(item => item.SONOYearCode)));
-                    uniqueSONOYearCodes.push({
-                        SONOYearCode: sonoyearVal,
-                        SOYearCode: yc,
-                        SOEntryId: soEntryId
-                    });
-
-                    var schNo = $('#GMRPSchNo-' + i).text();
-                    var schEntryId = $('#GMRPSchEntryId-' + i).text();
-                    var schYC = $('#GMRPSchYC-' + i).text();
-                    var schNoYearVal = schEntryId + " " + schYC;
-                    uniqueSchNoYearCodes.push({
-                        SchNoYearCode: schNoYearVal,
-                        SchYearCode: schYC,
-                        SchEntryId: schEntryId
-                    });
-                }
-            }
-
-            const sonoyear = Array.from(
-                new Set(uniqueSONOYearCodes.map(item => item.SONOYearCode))
-            ).map(sonoYearCode => {
-                return {
-                    SONOYearCode: sonoYearCode,
-                    SOYearCode: uniqueSONOYearCodes.find(item => item.SONOYearCode === sonoYearCode).SOYearCode,
-                };
-            });
-
-            const schnoyear = Array.from(
-                new Set(uniqueSchNoYearCodes.map(item => item.SchNoYearCode))
-            ).map(schNoYearCode => {
-                return {
-                    SchNoYearCode: schNoYearCode,
-                    SchYearCode: uniqueSchNoYearCodes.find(item => item.SchNoYearCode === schNoYearCode).SchYearCode,
-                };
-            });
-             
-            var sonoyearValue = sonoyear.map(item => item.SONOYearCode).join(',');
-
-            var schnoyearValue = schnoyear.map(item => item.SchNoYearCode).join(',');
-
-            var data = [];
-            var ForMonth = parseInt($('#Month').val().split("-")[1]);
-            var ForMonthYear = parseInt($('#Month').val().split("-")[0]);
-
-            if ($('#MRPEntryId').val() > 0 && $('#MRPNo').val() > 0) {
-
-                data.push({
-                    "sono": sonoyearValue,
-                    "SOYearCode": sonoyear[0].SOYearCode,
-                    "MRPEntryId": MRPEntryId,
-                    "MRPNo": MRPNo,
-                    "Month": ForMonth,
-                    "ForMonthYear": ForMonthYear,
-                    "StoreId": SelectedStorevalues,
-                    "WcId": SelectedWcValues,
-                    "ScheduleNo": schnoyearValue
-                });
-
-            } else {
-                data.push({
-                    "sono": sonoyearValue,
-                    "SOYearCode": sonoyear[0].SOYearCode,
-                    "Month": ForMonth,
-                    "ForMonthYear": ForMonthYear,
-                    "StoreId": SelectedStorevalues,
-                    "WcId": SelectedWcValues,
-                    "ScheduleNo": schnoyearValue
-                });
-            }
-            console.log(data);
-           
-
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("GenerateMRP")",
-                data: { "model": data },
-                dataType: "json",
-                async:false,
-                success: function (result, status, error) {
-
-                    if (result != null) {
-                        if (result == "done") {
-                            //var obj = $.parseJSON(result);
-                            //if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            //}
-                            var url = '@Url.Action("MRP", "MRP")';
-                            window.location.href = url;
-                        } else {
-                            $.notify("Something went Worng....!", "error");
-                        }
-                    }
-                }
-            });
-
-            FillMRPSOList();
-        });
-
-        function FillMRPSOList() {
-            var ForMonth = parseInt($('#Month').val().split("-")[1]);
-            var YearCode = parseInt($('#YearCode').val());
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillMRPSOList")",
-                data: { "ForMonth": ForMonth, "YearCode": YearCode },
-                dataType: "json",
-                async:false,
-                success: function (result, status, error) {
-
-                    if (result != null) {
-
-                    }
-                }
-            });
-        }
-
-        $('#Month').change(function () {
-            ClearPendingMRPGrid();
-        });
-
-        function ClearPendingMRPGrid() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("ClearPendingMRPGrid")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-
-                    $('#divPendingMRPbody').empty();
-                    $('#divPendingMRPbody').append("<tr class='text-center'><td colspan='17' class='text-black-50'><strong class='text-danger'>NO DATA ADDED</strong></td></tr>");
-                }
-            });
-        }
-
-        $('#CheckAll').click(function () {
-            var RowCount = $('#divPendingMRPbody tr').length;
-            for (var i = 0; i <= RowCount; i++) {
-                $('#dataCheckbox-' + i).prop("checked", true);
-            }
-        });
-
-        $('#unCheckAll').click(function () {
-            var RowCount = $('#divPendingMRPbody tr').length;
-            for (var i = 0; i <= RowCount; i++) {
-                $('#dataCheckbox-' + i).prop("checked", false);
-            }
-        });
-
-        $('#CheckAllStore').click(function () {
-            let checkboxes = document.querySelectorAll("#appendStore input[type='checkbox']");
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        })
-
-        $('#CheckAllWC').click(function () {
-            let checkboxes = document.querySelectorAll("#appendWc input[type='checkbox']");
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        })
-
-        $("#SendToExcel").click(function () {
-            var table = $(".PMRPGrid");
-            if (table.length === 0) {
-                console.error("Table element with ID 'PMRPGrid' not found.");
-                return;
-            }
-
-            try {
-                table.table2excel({
-                    filename: "PendingMRP.xls"
-                });
-            } catch (error) {
-                console.error("An error occurred while exporting to Excel:", error);
-            }
-        });
+			var currentYear = currentDate.getFullYear();
+			var currentMonth = (currentDate.getMonth() + 1).toString().padStart(2, '0');
 
 
-    </Script>
-    <script src="~/Scripts/table2excel.js"></script>
+			var defaultValue = currentYear + '-' + currentMonth;
+			$('#Month').val(defaultValue);
+
+			GetFilteredData();
+		});
+
+		function GetServerDate() {
+
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("GetServerDate")",
+				async: false,
+				success: function (result, status, error) {
+
+					$('#MRPGenDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+					var currentDate = result;
+					var currentMonth = parseInt(currentDate.split("/")[1]);
+					var currentYear = parseInt(currentDate.split("/")[2]);
+					var minMonth = currentYear + '-' + (currentMonth < 10 ? '0' : '') + currentMonth;
+					$('#Month').prop('min', minMonth);
+
+				}
+			});
+		}
+
+		var SelectedStorevalues = "";
+		function FillStore() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetStore")",
+				dataType: "json",
+				async: false,
+				success: function (result, status, error) {
+					if (result != null) {
+
+						var SelectedStore = [];
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							var ArrLength = obj.Result.Table.length;
+							for (var i = 0; i < ArrLength; i++) {
+								$('#appendStore').append('<input type="Checkbox" id="Chk-' + obj.Result.Table[i].EntryID + '"> ' + obj.Result.Table[i].Store_Name + '<br/>');
+								var CheckboxId = $('#Chk-' + obj.Result.Table[i].EntryID);
+
+								if (CheckboxId.prop("checked")) {
+									SelectedStore.push(obj.Result.Table[i].EntryID);
+								}
+							}
+
+							SelectedStorevalues = SelectedStore.join(',');
+
+						}
+					}
+				}
+			});
+		}
+		var SelectedWcValues = "";
+
+		function FillWorkCenter() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetWorkCenter")",
+				dataType: "json",
+				async: false,
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var SelectedWc = [];
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							var ArrLength = obj.Result.Table.length;
+							for (var i = 0; i < ArrLength; i++) {
+								$('#appendWc').append('<input type="Checkbox" id="ChkWc-' + obj.Result.Table[i].EntryID + '"> ' + obj.Result.Table[i].WorkCenterDescription + '<br/>');
+								var CheckboxWcId = $('#ChkWc-' + obj.Result.Table[i].EntryID);
+
+								if (CheckboxWcId.prop("checked")) {
+									SelectedWc.push(obj.Result.Table[i].EntryID);
+								}
+							}
+
+							SelectedWcValues = SelectedWc.join(',');
+						}
+
+					}
+				}
+			});
+		}
+
+		function GetFilteredData() {
+			debugger
+			var Month = parseInt($('#Month').val().split("-")[1]);
+			var yearcode = parseInt($('#YearCode').val());
+			var IncludeProjection = $('#IncludeProjection').val();
+			$.ajax({
+				url: '@Url.Action("GetFilteredData")',
+				type: "POST",
+				data: { "Month": Month, "YearCode": yearcode, "IncludeProjection" : IncludeProjection },
+				success: function (data) {
+					$('#divPendingMRPbody').empty();
+					$('#divPendingMRPbody').append(data);
+					//RowCount();
+
+				},
+				error: function (response) {
+					alert(response.responseText);
+				},
+				failure: function (response) {
+					alert(response.responseText);
+				}
+			});
+			CheckMonthWiseData();
+		}
+		var MRPEntryId;
+		var MRPNo;
+
+		function CheckMonthWiseData() {
+			var Month = parseInt($('#Month').val().split("-")[1]);
+			var Year = parseInt($('#Month').val().split("-")[0]);
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("IsCheckMonthWiseData")",
+				data: { "Month": Month, "Year": Year },
+				dataType: "json",
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#MRPEntryId').val(obj.Result.Table[0].MRPEntryID);
+							$('#MRPNo').val(obj.Result.Table[0].MRPNo);
+
+							MRPEntryId = obj.Result.Table[0].MRPEntryID;
+							MRPNo = obj.Result.Table[0].MRPNo;
+						} else {
+							$('#MRPEntryId').val(0);
+							$('#MRPNo').val(0);
+						}
+					}
+				}
+			});
+		}
+
+		$('#GenerateMRP').click(function () {
+
+			FillStore();
+			FillWorkCenter();
+			var RowCount = $('#divPendingMRPbody tr').length;
+			var count = 0;
+			for (var i = 1; i <= RowCount; i++) {
+				if ($('#dataCheckbox-' + i).prop("checked")) {
+					count++;
+				} else {
+					//do ntohing
+				}
+			}
+			if (count <= 0) {
+				$.notify("PLease select MRP", "error");
+				return false;
+			}
+
+			var uniqueSONOYearCodes = [];
+			var uniqueSchNoYearCodes = [];
+			for (var i = 1; i <= RowCount; i++) {
+				var isCheckeValue = $('#dataCheckbox-' + i).prop("checked");
+				if (isCheckeValue) {
+					var sono = $('#GMRPsono-' + i).text();
+					var soEntryId = $('#GMRPsoEntryId-' + i).text();
+					var yc = $('#GMRPYC-' + i).text();
+					var sonoyearVal = soEntryId + " " + yc;
+					//uniqueSONOYearCodes = Array.from(new Set(sonoyear.map(item => item.SONOYearCode)));
+					uniqueSONOYearCodes.push({
+						SONOYearCode: sonoyearVal,
+						SOYearCode: yc,
+						SOEntryId: soEntryId
+					});
+
+					var schNo = $('#GMRPSchNo-' + i).text();
+					var schEntryId = $('#GMRPSchEntryId-' + i).text();
+					var schYC = $('#GMRPSchYC-' + i).text();
+					var schNoYearVal = schEntryId + " " + schYC;
+					uniqueSchNoYearCodes.push({
+						SchNoYearCode: schNoYearVal,
+						SchYearCode: schYC,
+						SchEntryId: schEntryId
+					});
+				}
+			}
+
+			const sonoyear = Array.from(
+				new Set(uniqueSONOYearCodes.map(item => item.SONOYearCode))
+			).map(sonoYearCode => {
+				return {
+					SONOYearCode: sonoYearCode,
+					SOYearCode: uniqueSONOYearCodes.find(item => item.SONOYearCode === sonoYearCode).SOYearCode,
+				};
+			});
+
+			const schnoyear = Array.from(
+				new Set(uniqueSchNoYearCodes.map(item => item.SchNoYearCode))
+			).map(schNoYearCode => {
+				return {
+					SchNoYearCode: schNoYearCode,
+					SchYearCode: uniqueSchNoYearCodes.find(item => item.SchNoYearCode === schNoYearCode).SchYearCode,
+				};
+			});
+
+			var sonoyearValue = sonoyear.map(item => item.SONOYearCode).join(',');
+
+			var schnoyearValue = schnoyear.map(item => item.SchNoYearCode).join(',');
+
+			var data = [];
+			var ForMonth = parseInt($('#Month').val().split("-")[1]);
+			var ForMonthYear = parseInt($('#Month').val().split("-")[0]);
+
+			if ($('#MRPEntryId').val() > 0 && $('#MRPNo').val() > 0) {
+
+				data.push({
+					"sono": sonoyearValue,
+					"SOYearCode": sonoyear[0].SOYearCode,
+					"MRPEntryId": MRPEntryId,
+					"MRPNo": MRPNo,
+					"Month": ForMonth,
+					"ForMonthYear": ForMonthYear,
+					"StoreId": SelectedStorevalues,
+					"WcId": SelectedWcValues,
+					"ScheduleNo": schnoyearValue
+				});
+
+			} else {
+				data.push({
+					"sono": sonoyearValue,
+					"SOYearCode": sonoyear[0].SOYearCode,
+					"Month": ForMonth,
+					"ForMonthYear": ForMonthYear,
+					"StoreId": SelectedStorevalues,
+					"WcId": SelectedWcValues,
+					"ScheduleNo": schnoyearValue
+				});
+			}
+			console.log(data);
+
+
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GenerateMRP")",
+				data: { "model": data },
+				dataType: "json",
+				async:false,
+				success: function (result, status, error) {
+
+					if (result != null) {
+						if (result == "done") {
+							//var obj = $.parseJSON(result);
+							//if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							//}
+							var url = '@Url.Action("MRP", "MRP")';
+							window.location.href = url;
+						} else {
+							$.notify("Something went Worng....!", "error");
+						}
+					}
+				}
+			});
+
+			FillMRPSOList();
+		});
+
+		function FillMRPSOList() {
+			var ForMonth = parseInt($('#Month').val().split("-")[1]);
+			var YearCode = parseInt($('#YearCode').val());
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("FillMRPSOList")",
+				data: { "ForMonth": ForMonth, "YearCode": YearCode },
+				dataType: "json",
+				async:false,
+				success: function (result, status, error) {
+
+					if (result != null) {
+
+					}
+				}
+			});
+		}
+
+		$('#Month').change(function () {
+			ClearPendingMRPGrid();
+		});
+
+		function ClearPendingMRPGrid() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("ClearPendingMRPGrid")",
+				dataType: "json",
+				async: false,
+				success: function (result, status, error) {
+
+					$('#divPendingMRPbody').empty();
+					$('#divPendingMRPbody').append("<tr class='text-center'><td colspan='17' class='text-black-50'><strong class='text-danger'>NO DATA ADDED</strong></td></tr>");
+				}
+			});
+		}
+
+		$('#CheckAll').click(function () {
+			var RowCount = $('#divPendingMRPbody tr').length;
+			for (var i = 0; i <= RowCount; i++) {
+				$('#dataCheckbox-' + i).prop("checked", true);
+			}
+		});
+
+		$('#unCheckAll').click(function () {
+			var RowCount = $('#divPendingMRPbody tr').length;
+			for (var i = 0; i <= RowCount; i++) {
+				$('#dataCheckbox-' + i).prop("checked", false);
+			}
+		});
+
+		$('#CheckAllStore').click(function () {
+			let checkboxes = document.querySelectorAll("#appendStore input[type='checkbox']");
+			checkboxes.forEach(checkbox => {
+				checkbox.checked = this.checked;
+			});
+		})
+
+		$('#CheckAllWC').click(function () {
+			let checkboxes = document.querySelectorAll("#appendWc input[type='checkbox']");
+			checkboxes.forEach(checkbox => {
+				checkbox.checked = this.checked;
+			});
+		})
+
+		$("#SendToExcel").click(function () {
+			var table = $(".PMRPGrid");
+			if (table.length === 0) {
+				console.error("Table element with ID 'PMRPGrid' not found.");
+				return;
+			}
+
+			try {
+				table.table2excel({
+					filename: "PendingMRP.xls"
+				});
+			} catch (error) {
+				console.error("An error occurred while exporting to Excel:", error);
+			}
+		});
+
+
+	</Script>
+	<script src="~/Scripts/table2excel.js"></script>
 }
 
 
 
 
 <style>
-    .PMRPThead th {
-        background-color: #127387;
-        position: sticky;
-        top: 0;
-        height: 40px;
-        z-index: 1;
-    }
+	.PMRPThead th {
+		background-color: #127387;
+		position: sticky;
+		top: 0;
+		height: 40px;
+		z-index: 1;
+	}
 </style>

@@ -18,15 +18,13 @@ namespace eTactWeb.Controllers
         private static readonly Action<ILogger, string, Exception> _loggerMessage = LoggerMessage.Define<string>(LogLevel.Error, eventId: new EventId(id: 0, name: "ERROR"), formatString: "{Message}");
         private readonly EncryptDecrypt EncryptDecrypt;
         private readonly IDataLogic IDataLogic;
-        private readonly IMemoryCache IMemoryCache;
         private readonly ITaxMaster ITaxMaster;
         private readonly ILogger<TaxMasterController> Logger;
 
-        public TaxMasterController(ITaxMaster iTaxMaster, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<TaxMasterController> logger, EncryptDecrypt encryptDecrypt)
+        public TaxMasterController(ITaxMaster iTaxMaster, IDataLogic iDataLogic, ILogger<TaxMasterController> logger, EncryptDecrypt encryptDecrypt)
         {
             IDataLogic = iDataLogic;
             ITaxMaster = iTaxMaster;
-            IMemoryCache = iMemoryCache;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
         }

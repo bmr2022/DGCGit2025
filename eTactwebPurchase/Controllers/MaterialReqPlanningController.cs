@@ -12,18 +12,15 @@ namespace eTactwebPurchase.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public IMaterialReqPlanning _IMaterialReqPlanning { get; }
-
         private readonly ILogger<MaterialReqPlanningController> _logger;
         private readonly IConfiguration iconfiguration;
-        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public MaterialReqPlanningController(ILogger<MaterialReqPlanningController> logger, IDataLogic iDataLogic, IMemoryCache iMemoryCache, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMaterialReqPlanning iMaterialReqPlanning)
+        public MaterialReqPlanningController(ILogger<MaterialReqPlanningController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMaterialReqPlanning iMaterialReqPlanning)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMaterialReqPlanning = iMaterialReqPlanning;
-            _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
