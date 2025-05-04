@@ -45,7 +45,8 @@ namespace eTactWeb.Controllers
                 string contentRootPath = _IWebHostEnvironment.ContentRootPath;
                 string webRootPath = _IWebHostEnvironment.WebRootPath;
                 var webReport = new WebReport();
-                string reportPath = Path.Combine(webRootPath, "ReqWithoutBom.frx");
+               // string reportPath = Path.Combine(webRootPath, "ReqWithoutBom.frx");
+                string reportPath = Path.Combine(webRootPath, "ReqWithoutBOMF.frx");
                 webReport.Report.Load(reportPath);
                 string my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
                 webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
@@ -668,7 +669,14 @@ namespace eTactWeb.Controllers
             var model = new RWBDashboard();
             model = await _IReqWithoutBOM.GetDashboardData(REQNo,WCName,WONo, DepName, PartCode, ItemName,BranchName, FromDate, ToDate);
             model.Mode = "Summary";
-
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            string serializedGrid = JsonConvert.SerializeObject(model.ReqMainDashboard);
+            HttpContext.Session.SetString("KeyRWBList", serializedGrid);
             return PartialView("_ReqWithoutBomDashboardGrid", model);
         }
         public async Task<IActionResult> GetDetailData(string REQNo,string WCName,string WONo,string DepName,string PartCode,string ItemName,string BranchName, string FromDate, string ToDate)
@@ -677,6 +685,14 @@ namespace eTactWeb.Controllers
             var model = new RWBDashboard();
             model = await _IReqWithoutBOM.GetDetailData(REQNo,WCName,WONo, DepName, PartCode, ItemName,BranchName, FromDate, ToDate);
             model.Mode = "Detail";
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            string serializedGrid = JsonConvert.SerializeObject(model.ReqMainDashboard);
+            HttpContext.Session.SetString("KeyRWBList", serializedGrid);
             return PartialView("_ReqWithoutBomDashboardGrid", model);
         }
         public async Task<JsonResult> GetNewEntry(int YearCode)
@@ -704,6 +720,18 @@ namespace eTactWeb.Controllers
             var SSGrid = RequisitionDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);
+        }
+        [HttpGet]
+        public IActionResult GetReqWithoutBomDashBoardGridData()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyRWBList");
+            List<RWBDashboard> stockRegisterList = new List<RWBDashboard>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<RWBDashboard>>(modelJson);
+            }
+
+            return Json(stockRegisterList);
         }
     }
 }

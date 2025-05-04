@@ -375,6 +375,7 @@
             $(this).attr("tabindex", ++tabIndx);
         });
         $(document).ready(function () {
+            console.log($('#NetTotal').val());
             $('#YearCode').val($('#sessionYC').text());
             if ($('#PBType').val() == 'Import') {
                 $('#Rate').prop("disabled", true);
@@ -425,6 +426,7 @@
                 CalculateAdjAmt('NetTotal');
             }
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "INSERT") {
+                console.log('inside if'+$('#NetTotal').val());
                 setInterval(checkNetTotalChange, 500);
             }
             var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
@@ -578,19 +580,22 @@
                 }
                 else {
                     fillEntryandVouchNo();
-                    btnClearTax();
+                    /* btnClearTax(); */
                     btnClearTDS();
                     $('#lblItemNetAmount').text(0.00);
                     $('#lblItemCount').text(0);
                 }
             }
             else {
+                console.log($('#NetTotal').val());
                 // var hiddenCurrency = $('#hiddenCurrency').val();
                 // $('#Currency').val(hiddenCurrency);
                 var rowCount = $('#divPBItemList tr').length;
                 var columnCount = $('#divPBItemList tr td').length;
                 if ($('#Mode').val() == "U") {
-                    refreshitemcountandnetamt(true);
+                    console.log("before"+$('#NetTotal').val());
+                    /* refreshitemcountandnetamt(true); */
+                    console.log("after" + $('#NetTotal').val());
                 }
                 else {
                     refreshitemcountandnetamt();
@@ -601,15 +606,24 @@
             }
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "INSERT" || $('#Mode').val() == "PBI") {
+                console.log("before1" + $('#NetTotal').val());
                 onInvoiceChange('InvNo');
+                console.log("after1" + $('#NetTotal').val());
             }
             if ($('#Mode').val() == "V" || $('#Mode').val() == "U" || $('#Mode').val() == "PBI") {
+                console.log("before2" + $('#NetTotal').val());
                 GetDbCrDetail();
+                console.log("after2" + $('#NetTotal').val());
                 if ($('#Mode').val() != 'PBI') {
-                    TDP();
-                    $('#TotalRoundOff').trigger('change');
+                    console.log("before3" + $('#NetTotal').val());
+                    /* monika */
+                    /* TDP(); */
+                    console.log("before3" + $('#NetTotal').val());
+                    /* $('#TotalRoundOff').trigger('change'); */
                 }
+                console.log("before4:" + $('#NetTotal').val());
                 CalculateAdjAmt('NetTotal');
+                console.log("after4:" + $('#NetTotal').val());
             }
             const currentYear = $('#YearCode').val();
 
@@ -618,10 +632,11 @@
                 minDate: new Date(currentYear, 4 - 1, 1) // 3 - 1 represents April (January is 0, so April is 3)
             });
             $('#POFor').trigger("change");
+            console.log($('#NetTotal').val());
 
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+           /*  if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 calculatenettotal();
-            }
+            } */
         });
 
        
@@ -2005,13 +2020,12 @@
         });
 
 
-        function calculatenettotal() {
+/*         function calculatenettotal() {
             var rowCount = $('#divPBItemList tr').length;
             var columnCount = $('#divPBItemList tr td').length;
             var taxRowCount = $('#divTaxGrid tr').length;
             var sum = 0;
 
-            /* refreshitemcountandnetamt(); */
 
             for (var i = 1; i <= rowCount; i++) {
 
@@ -2031,7 +2045,7 @@
             $('#NetTotal').val(sum.toFixed(2));
 
         }
-
+ */
         $('.ItemBtn').click(function () {
             let IsError = 0;
 

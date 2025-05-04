@@ -174,10 +174,17 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "SaleInvoice")
             {
-                _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
-                var saleBillModel = new SaleBillModel();
-                saleBillModel.saleBillDetails = saleBillDetail.ToList();
-                MainModel = saleBillModel;
+                //_MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
+                string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                List<SaleBillDetail> saleBillDetail = new();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    saleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+                }
+
+                //var saleBillModel = new SaleBillModel();
+                //saleBillModel.saleBillDetails = saleBillDetail.ToList();
+                MainModel.saleBillDetails = saleBillDetail;
             }
             else if (model.TxPageName == "CreditNote")
             {
@@ -307,14 +314,32 @@ public class TaxController : Controller
 
         var CgstSgst = ITaxModule.SgstCgst(model.TxAccountCode);
 
-        _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IList<IssueNRGPTaxDetail> TaxGrid);
+        //_MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IList<IssueNRGPTaxDetail> TaxGrid);
+        var jsondata = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+        List<IssueNRGPTaxDetail> TaxGrid = new List<IssueNRGPTaxDetail>();
+        if (jsondata != null)
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(jsondata);
+        }
 
         if (HttpContext.Session.GetString(model.TxPageName) != null)
         {
             if (model.TxPageName == "IssueNRGP")
             {
-                _MemoryCache.TryGetValue("IssueNRGP", out MainModel);
-                //MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(model.TxPageName));
+                var jsonMainModeldata = HttpContext.Session.GetString("IssueNRGP");
+                if (jsonMainModeldata != null)
+                {
+                    MainModel = JsonConvert.DeserializeObject<IssueNRGPModel>(jsonMainModeldata);
+                }
+
+                //_MemoryCache.TryGetValue("IssueNRGP", out MainModel);
+
+                //var jsondata = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+                //if (jsondata != null)
+                //{
+                //    MainModel = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(jsondata);
+                //}
+                //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(model.TxPageName));
             }
 
             if (TaxGrid != null && TaxGrid.Count > 0)
@@ -348,6 +373,7 @@ public class TaxController : Controller
                 {
                     _List.AddRange(MainModel.IssueNRGPTaxGrid);
                     _List.AddRange(Add2IssueList(model, _List, null));
+
                 }
                 else
                 {
@@ -366,6 +392,9 @@ public class TaxController : Controller
             }
 
             MainModel.IssueNRGPTaxGrid = _List;
+
+            string serializedData = JsonConvert.SerializeObject(MainModel.IssueNRGPTaxGrid);
+            HttpContext.Session.SetString("KeyTaxGrid", serializedData);
 
             StoreInCache("KeyIssueNRGPTaxGrid", MainModel.IssueNRGPTaxGrid);
         }
@@ -453,7 +482,14 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "SaleInvoice")
             {
-                _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
+                //_MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
+                string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                List<SaleBillDetail> saleBillDetail = new();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    saleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+                }
+
                 ItemDetailGrid = saleBillDetail;
             }
             else if (TxModel.TxPageName == "CreditNote")
@@ -951,7 +987,13 @@ public class TaxController : Controller
         {
             if (TxModel.TxPageName == "IssueNRGP")
             {
-                _MemoryCache.TryGetValue("IssueNRGP", out MainModel);
+                //_MemoryCache.TryGetValue("IssueNRGP", out MainModel);
+                var jsonMainModeldata = HttpContext.Session.GetString("IssueNRGP");
+                if (jsonMainModeldata != null)
+                {
+                    MainModel = JsonConvert.DeserializeObject<IssueNRGPModel>(jsonMainModeldata);
+                }
+
                 ItemDetailGrid = MainModel.IssueNRGPDetailGrid;
                 var _ItemGrid = new List<IssueNRGPDetail>();
                 _ItemGrid = ItemDetailGrid;
@@ -973,7 +1015,15 @@ public class TaxController : Controller
 
             if (ItemDetailGrid != null && TxModel.TxType != "EXPENSES")
             {
-                _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out List<IssueNRGPTaxDetail> TaxGrid);
+                //_MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out List<IssueNRGPTaxDetail> TaxGrid);
+
+                var jsondata = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+                List<IssueNRGPTaxDetail> TaxGrid = new List<IssueNRGPTaxDetail>();
+                if (jsondata != null)
+                {
+                    TaxGrid = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(jsondata);
+                }
+
 
                 if (TaxGrid != null)
                 {
@@ -1011,8 +1061,15 @@ public class TaxController : Controller
                 var taxGrid22 = new List<int>();
                 foreach (var item in ItemDetailGrid)
                 {
+                    //List<IssueNRGPDetail> taxGrid1 = new List<IssueNRGPDetail>();
+                    //_MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out taxGrid1);
+
+                    var jsonTaxGrid1data = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
                     List<IssueNRGPDetail> taxGrid1 = new List<IssueNRGPDetail>();
-                    _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out taxGrid1);
+                    if (jsonTaxGrid1data != null)
+                    {
+                        taxGrid1 = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(jsonTaxGrid1data);
+                    }
 
                     if (taxGrid1 == null)
                     {
@@ -1135,6 +1192,8 @@ public class TaxController : Controller
                 MainModel.TotalTaxAmt = TotalTaxAmt;
 
                 StoreInCache("KeyIssueNRGPTaxGrid", TaxGrid);
+                string serializedGrid = JsonConvert.SerializeObject(TaxGrid);
+                HttpContext.Session.SetString("KeyIssueNRGPTaxGrid", serializedGrid);
             }
         }
         return PartialView("_TaxNRGPGrid", MainModel);
@@ -1225,7 +1284,14 @@ public class TaxController : Controller
             else if (SN == "SaleInvoice")
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
+                //_MemoryCache.TryGetValue("SaleBillModel", out SaleBillModel MainModel);
+                SaleBillModel MainModel = new();
+                string modelJson = HttpContext.Session.GetString("SaleBillModel");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJson);
+                }
+
                 ListOfItems = MainModel.saleBillDetails;
             }
             else if (SN == "CreditNote")
@@ -1258,6 +1324,16 @@ public class TaxController : Controller
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
                 _MemoryCache.TryGetValue("IssueNRGP", out IssueNRGPModel MainModel);
+
+
+                string modelPRJson = HttpContext.Session.GetString("IssueNRGP");
+                IssueNRGPModel MainModel1 = new IssueNRGPModel();
+                if (!string.IsNullOrEmpty(modelPRJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<IssueNRGPModel>(modelPRJson);
+                }
+
+
                 ListOfItems = MainModel.IssueNRGPDetailGrid;
             }
             else
@@ -1332,7 +1408,7 @@ public class TaxController : Controller
                         {
                             if (item.ItemCode == ToInt32(PC))
                             {
-                                Amt += item.IssQty*item.PurchasePrice;
+                                Amt += item.IssQty * item.PurchasePrice;
                             }
                         }
                         else
@@ -1345,7 +1421,7 @@ public class TaxController : Controller
                         }
                     }
                 }
-             }
+            }
             catch (Exception ex)
             {
                 throw;
@@ -1749,22 +1825,22 @@ public class TaxController : Controller
 
         switch (TxPageName)
         {
-			case "ItemList":
-				HttpContext.Session.Get(TxPageName);
-				MainModel = new SaleOrderModel();
-				MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
-				MainModel.AccountCode = AC;
-				MainModel.TxPageName = TxPageName;
-				MainModel.TxRoundOff = RF;
-				isSuccess = ValidateHsnTax(MainModel);
-				if (isSuccess != "SuccessFull")
-				{
-					return Content(isSuccess);
-				}
-				TaxGrid = await GetHSNTaxList(MainModel);
-				break;
+            case "ItemList":
+                HttpContext.Session.Get(TxPageName);
+                MainModel = new SaleOrderModel();
+                MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxPageName));
+                MainModel.AccountCode = AC;
+                MainModel.TxPageName = TxPageName;
+                MainModel.TxRoundOff = RF;
+                isSuccess = ValidateHsnTax(MainModel);
+                if (isSuccess != "SuccessFull")
+                {
+                    return Content(isSuccess);
+                }
+                TaxGrid = await GetHSNTaxList(MainModel);
+                break;
 
-			case "PurchaseOrder":
+            case "PurchaseOrder":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
                 MainModel.AccountCode = AC;
@@ -1792,7 +1868,13 @@ public class TaxController : Controller
                 break;
             case "SaleInvoice":
                 HttpContext.Session.Get(TxPageName);
-                _MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+                //_MemoryCache.TryGetValue("SaleBillModel", out MainModel);
+                string modelSaleInvoiceJson = HttpContext.Session.GetString("SaleBillModel");
+                if (!string.IsNullOrEmpty(modelSaleInvoiceJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelSaleInvoiceJson);
+                }
+
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
@@ -1853,8 +1935,10 @@ public class TaxController : Controller
         {
             MainModel.TaxDetailGridd = TaxGrid;
             StoreInCache("KeyTaxGrid", MainModel.TaxDetailGridd);
-        }
 
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
+            HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
+        }
 
         return PartialView("_TaxGrid", MainModel);
     }
@@ -1995,14 +2079,14 @@ public class TaxController : Controller
 
             if (SessionName == "SaleInvoice")
             {
-                _MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
-                ItemModel = saleBillDetail;
+                //_MemoryCache.TryGetValue("KeySaleBillGrid", out IList<SaleBillDetail> saleBillDetail);
+                //ItemModel = saleBillDetail;
 
 
                 var modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    ItemModel = JsonConvert.DeserializeObject<SaleBillDetail>(modelJson);
+                    ItemModel = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
                 }
                 //ItemModel = MainModel.ItemDetailGridd;
 
@@ -2187,6 +2271,12 @@ public class TaxController : Controller
             if (SessionName == "IssueNRGP")
             {
                 _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out IList<IssueNRGPDetail> GridDetail);
+
+                string jsondata = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+                if (!string.IsNullOrEmpty(jsondata))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(jsondata);
+                }
                 ItemModel = GridDetail;
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
@@ -2360,7 +2450,7 @@ public class TaxController : Controller
                 }
 
                 string partCode = "";
-                if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "CreditNote"  || MainModel.TxPageName == "PurchaseRejection" || MainModel.TxPageName == "PurchaseBill" || MainModel.TxPageName == "SaleRejection")
+                if (MainModel.TxPageName == "JobWorkIssue" || MainModel.TxPageName == "SaleInvoice" || MainModel.TxPageName == "CreditNote" || MainModel.TxPageName == "PurchaseRejection" || MainModel.TxPageName == "PurchaseBill" || MainModel.TxPageName == "SaleRejection")
                     partCode = item.PartCode;
                 else
                     partCode = item.PartText;

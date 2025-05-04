@@ -134,6 +134,7 @@ namespace eTactWeb.Controllers
                     {
                         MainModel = JsonConvert.DeserializeObject<SaleBillModel>(modelJson);
                     }
+
                     DbCrGridd = GetSbDbCrDetailTable(MainModel);
                     //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
                 }
@@ -941,6 +942,9 @@ namespace eTactWeb.Controllers
                 MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
 
                 StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
+
+                //string serializedGrid = JsonConvert.SerializeObject(MainModel.adjustmentModel.AdjAdjustmentDetailGrid);
+                //HttpContext.Session.SetString("KeyAdjGrid", serializedGrid);
             }
             else
             {
@@ -1057,7 +1061,7 @@ namespace eTactWeb.Controllers
                         entryid ?? 0,
                         yearcode ?? 0,
                         acccode ?? 0,
-                        Item.AdjModeOfAdjstment,
+                        Item.AdjModeOfAdjstment ?? string.Empty,
                         Item.AdjDrCr ?? string.Empty,
                        (float)Math.Round((Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0, 2),//Item.AdjAdjstedAmt ?? 0,
                         0,//AgainstAccEntryId
@@ -1096,7 +1100,7 @@ namespace eTactWeb.Controllers
                         entryid ?? 0,
                         yearcode ?? 0,
                         acccode ?? 0,
-                        Item.AdjModeOfAdjstment,
+                        Item.AdjModeOfAdjstment ?? string.Empty,
                         Item.AdjDrCr ?? string.Empty,
                         (Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0,
                         Item.AdjAgnstAccEntryID ?? 0,
