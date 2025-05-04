@@ -1458,8 +1458,12 @@ public class SaleOrderController : Controller
 		Table.Columns.Add("ProjQty1", typeof(float));
 		Table.Columns.Add("ProjQty2", typeof(float));
 		Table.Columns.Add("deliverydate", typeof(string)); // datetime
+        Table.Columns.Add("CustomerSaleOrder", typeof(string));
+        Table.Columns.Add("CustomerLocation", typeof(string));
+        Table.Columns.Add("ItemModel", typeof(string));
+        Table.Columns.Add("CustItemCategory", typeof(string));	
 
-		DataTable TblSch = new();
+        DataTable TblSch = new();
 
 		TblSch.Columns.Add("ItemCode", typeof(int));
 		TblSch.Columns.Add("Qty", typeof(float));
@@ -1500,8 +1504,11 @@ public class SaleOrderController : Controller
 					Item.ProjQty1,
 					Item.ProjQty2,
 					Item.DeliveryDate == null ? "" : ParseFormattedDate(Item.DeliveryDate),
-
-				});
+					Item.CustomerSaleOrder == null ? "" : Item.CustomerSaleOrder,
+                    Item.CustomerLocation == null ? "" : Item.CustomerLocation,
+                    Item.ItemModel == null ? "" : Item.ItemModel,
+                    Item.CustItemCategory == null ? "" : Item.CustItemCategory,
+                });
 
 			if (Item.DeliveryScheduleList != null && Item.DeliveryScheduleList.Count > 0)
 			{
@@ -1734,7 +1741,11 @@ public class SaleOrderController : Controller
 						Excessper = int.TryParse(worksheet.Cells[row, 24].Value?.ToString(), out int tempExcessper) ? tempExcessper : 0,
 						ProjQty1 = decimal.TryParse(worksheet.Cells[row, 25].Value?.ToString(), out decimal tempProjQty1) ? tempProjQty1 : 0,
 						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
-					});
+                        CustomerSaleOrder = worksheet.Cells[row, 27].Value?.ToString() ?? "",
+                        CustomerLocation = worksheet.Cells[row, 28].Value?.ToString() ?? "",
+                        ItemModel = worksheet.Cells[row, 29].Value?.ToString() ?? "",
+                        CustItemCategory = worksheet.Cells[row, 30].Value?.ToString() ?? "",
+                    });
 				}
 
                 var duplicateItems = itemList
