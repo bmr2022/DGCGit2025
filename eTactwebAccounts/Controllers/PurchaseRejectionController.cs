@@ -134,9 +134,9 @@ namespace eTactWeb.Controllers
                 {
                     TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
                 }
-                if (!string.IsNullOrEmpty(modelTaxJson))
+                if (!string.IsNullOrEmpty(modelDrCrJson))
                 {
-                    DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(modelTaxJson);
+                    DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(modelDrCrJson);
                 }
 
                  if (PurchaseRejectionDetail == null)
