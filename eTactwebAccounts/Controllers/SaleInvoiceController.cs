@@ -67,6 +67,15 @@ namespace eTactWeb.Controllers
             {
                 saleBillDetail = JsonConvert.DeserializeObject<IList<SaleBillDetail>>(modelJson);
             }
+
+            string serializedGrid = HttpContext.Session.GetString("KeyAdjGrid");
+            var adjustmentModel = new AdjustmentModel();
+            if (!string.IsNullOrEmpty(serializedGrid))
+            {
+                adjustmentModel = JsonConvert.DeserializeObject<AdjustmentModel>(serializedGrid);
+                // Use adjustmentModel as needed
+            }
+
             string AdjChallanGridJson = HttpContext.Session.GetString("KeyAdjChallanGrid");
             List<CustomerJobWorkChallanAdj> AdjChallanGrid = new List<CustomerJobWorkChallanAdj>();
             if (!string.IsNullOrEmpty(AdjChallanGridJson))
@@ -79,6 +88,15 @@ namespace eTactWeb.Controllers
             {
                 TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(TaxGridJson);
             }
+            
+            //string modelAdjJson = HttpContext.Session.GetString("KeyAdjGrid");
+            //List<AdjustmentModel> adjModel = new();
+            //if (!string.IsNullOrEmpty(modelAdjJson))
+            //{
+            //     adjModel = JsonConvert.DeserializeObject<List<AdjustmentModel>>(modelAdjJson);
+            //}
+
+
             string DrCrGridJson = HttpContext.Session.GetString("KeyDrCrGrid");
             List<DbCrModel> DrCrGrid = new List<DbCrModel>();
             if (!string.IsNullOrEmpty(DrCrGridJson))
@@ -130,9 +148,9 @@ namespace eTactWeb.Controllers
                     DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
                 }
 
-                if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                if (adjustmentModel.AdjAdjustmentDetailGrid != null && adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
                 {
-                    AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleBillEntryId, model.SaleBillYearCode, model.AccountCode);
+                    AdjDetailDT = CommonController.GetAdjDetailTable(adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.SaleBillEntryId, model.SaleBillYearCode, model.AccountCode);
                 }
                 string serverFolderPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "SaleBill");
                 if (!Directory.Exists(serverFolderPath))
