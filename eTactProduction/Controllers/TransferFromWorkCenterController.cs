@@ -20,14 +20,16 @@ namespace eTactWeb.Controllers
         public WebReport webReport;
         private readonly IDataLogic _IDataLogic;
         private readonly ITransferFromWorkCenter _ITransferFromWorkCenter;
+        public IWIPStockRegister _IWIPStockRegister { get; }
         private readonly ILogger<TransferFromWorkCenterController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
-        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public TransferFromWorkCenterController(ILogger<TransferFromWorkCenterController> logger, IWIPStockRegister iWIPStockRegister, IDataLogic iDataLogic, ITransferFromWorkCenter ITransferFromWorkCenter, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _ITransferFromWorkCenter = ITransferFromWorkCenter;
+            _IWIPStockRegister = iWIPStockRegister;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
@@ -790,10 +792,19 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        //public async Task<IActionResult> PendingToTransferMaterial(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter)
-        //{
-        //    var model = new WIPStockRegisterModel();
-        //    var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, ReportType, BatchNo, UniqueBatchNo, WorkCenter))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
-        //}
+        public async Task<IActionResult> PendingWIPDetailData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter)
+        {
+            var model = new WIPStockRegisterModel();
+            var fullList = (await _IWIPStockRegister.GetStockRegisterData(FromDate, ToDate, PartCode, ItemName, ItemGroup, ItemType, WCID, ReportType, BatchNo, UniqueBatchNo, WorkCenter))?.WIPStockRegisterDetail ?? new List<WIPStockRegisterDetail>();
+            model.WIPStockRegisterDetail = fullList;
+            return PartialView("_PendingToTransferMaterial", model);
+        }
+        [Route("{controller}/PendingToTransferMaterial")]
+        public IActionResult PendingToTransferMaterial()
+        {
+            var model = new WIPStockRegisterModel();
+            model.WIPStockRegisterDetail = new List<WIPStockRegisterDetail>();
+            return View(model);
+        }
     }
 }
