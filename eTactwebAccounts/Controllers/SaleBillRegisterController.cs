@@ -57,10 +57,30 @@ namespace eTactWeb.Controllers
             if (string.IsNullOrEmpty(GSTNO) || GSTNO == "0")
             { GSTNO = ""; }
             model = await _ISaleBillRegister.GetSaleBillRegisterData(ReportType, FromDate, ToDate, docname, SONo, Schno, PartCode, ItemName, SaleBillNo, CustomerName, HSNNO, GSTNO);
-         model.ReportMode= ReportType;
+            model.ReportMode= ReportType;
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            string serializedGrid = JsonConvert.SerializeObject(model.SaleBillRegisterDetail);
+            HttpContext.Session.SetString("KeySaleBillRegsiterList", serializedGrid);
             //return PartialView("_SaleBillRegisterSaleDetail", model);
             return PartialView("_SaleBillRegisterGrid", model);
 
+        }
+        [HttpGet]
+        public IActionResult GetSaleBillRegistergridData()
+        {
+            string modelJson = HttpContext.Session.GetString("KeySaleBillRegsiterList");
+            List<SaleBillRegisterDetail> stockRegisterList = new List<SaleBillRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<SaleBillRegisterDetail>>(modelJson);
+            }
+
+            return Json(stockRegisterList);
         }
         public async Task<JsonResult> FillCustomerList(string FromDate, string ToDate)
         {
