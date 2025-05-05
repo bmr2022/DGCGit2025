@@ -27,17 +27,15 @@ namespace eTactWeb.Controllers
     public class IndentController : Controller
     {
         public IDataLogic IDataLogic { get; }
-        public IMemoryCache IMemoryCache { get; }
         public IIndent _Indent { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<IndentController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration _iconfiguration;
-        public IndentController(IIndent _IIndent, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<IndentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public IndentController(IIndent _IIndent, IDataLogic iDataLogic, ILogger<IndentController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _Indent = _IIndent;
             IDataLogic = iDataLogic;
-            IMemoryCache = iMemoryCache;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
@@ -49,7 +47,7 @@ namespace eTactWeb.Controllers
         public async Task<ActionResult> Indent(int ID, string Mode, int YC, string FromDate = "", string ToDate = "",  string IndentNo = "", string DeptName = "", string ItemName = "", string PartCode="",string Searchbox = "", string SummaryDetail = "")
         {
             var MainModel = new IndentModel();
-            IMemoryCache.Remove("KeyIndentList");
+            HttpContext.Session.Remove("KeyIndentList");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -69,17 +67,9 @@ namespace eTactWeb.Controllers
                 MainModel.Mode = Mode;
                 MainModel.IndentorEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 MainModel.IndentorEmpName = HttpContext.Session.GetString("EmpName");
-                //MainModel.ID = ID;
                 MainModel = await BindModel(MainModel);
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                IMemoryCache.Set("KeyIndentList", MainModel.IndentDetails, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyIndentList", JsonConvert.SerializeObject(MainModel.IndentDetails));
             }
             else
             {
@@ -189,7 +179,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new IndentModel();
-            IMemoryCache.TryGetValue("KeyIndentList", out List<IndentDetail> IndentGrids);
+            string modelJson = HttpContext.Session.GetString("KeyIndentList");
+            List<IndentDetail> IndentGrids = new List<IndentDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IndentGrids = JsonConvert.DeserializeObject<List<IndentDetail>>(modelJson);
+            }
             var IndentGrid = IndentGrids.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(IndentGrid);
             return Json(JsonString);
@@ -197,7 +192,7 @@ namespace eTactWeb.Controllers
 
         public IActionResult ClearGrid()
         {
-            IMemoryCache.Remove("KeyIndentList");
+            HttpContext.Session.Remove("KeyIndentList");
             var MainModel = new IndentModel();
             return PartialView("_IndentGrid", MainModel);
         }
@@ -335,13 +330,17 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                IMemoryCache.TryGetValue("KeyIndentList", out IList<IndentDetail> IndentGrid);
+                string modelJson = HttpContext.Session.GetString("KeyIndentList");
+                List<IndentDetail> IndentGrid = new List<IndentDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    IndentGrid = JsonConvert.DeserializeObject<List<IndentDetail>>(modelJson);
+                }
 
                 var MainModel = new IndentModel();
                 var IndentDetail = new List<IndentDetail>();
                 var IndentDetailGrid = new List<IndentDetail>();
                 model.ReqDate = ParseDate(model.ReqDate).ToString();
-
 
                 if (model != null)
                 {
@@ -364,19 +363,11 @@ namespace eTactWeb.Controllers
                             IndentDetail.Add(model);
 
                         }
-
                     }
 
                     MainModel.IndentDetails = IndentDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyIndentList", MainModel.IndentDetails, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyIndentList", JsonConvert.SerializeObject(MainModel.IndentDetails));
                 }
                 else
                 {
@@ -426,7 +417,13 @@ namespace eTactWeb.Controllers
         {
             var MainModel = new IndentModel();
 
-            IMemoryCache.TryGetValue("KeyIndentList", out List<IndentDetail> IndentDetail);
+            string modelJson = HttpContext.Session.GetString("KeyIndentList");
+            List<IndentDetail> IndentDetail = new List<IndentDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IndentDetail = JsonConvert.DeserializeObject<List<IndentDetail>>(modelJson);
+            }
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (IndentDetail != null && IndentDetail.Count > 0)
@@ -442,15 +439,7 @@ namespace eTactWeb.Controllers
                 }
                 MainModel.IndentDetails = IndentDetail;
 
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-
-                IMemoryCache.Set("KeyIndentList", MainModel.IndentDetails, cacheEntryOptions);
-
+                HttpContext.Session.SetString("KeyIndentList", JsonConvert.SerializeObject(MainModel.IndentDetails));
             }
 
             return PartialView("_IndentGrid", MainModel);
@@ -483,8 +472,13 @@ namespace eTactWeb.Controllers
             {
                 var IndentGrid = new DataTable();
 
-                IMemoryCache.TryGetValue("KeyIndentList", out IList<IndentDetail> IndentDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyIndentList");
+                IList<IndentDetail> IndentDetail = new List<IndentDetail>();
+                if(!string.IsNullOrEmpty(modelJson))
+                {
+                    IndentDetail = JsonConvert.DeserializeObject<List<IndentDetail>>(modelJson);
+                }
+  
                 if (IndentDetail == null)
                 {
                     ModelState.Clear();
@@ -519,7 +513,6 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            IMemoryCache.Remove(IndentGrid);
                             var model1 = new IndentModel();
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -528,7 +521,7 @@ namespace eTactWeb.Controllers
                             model1 = await BindModel(model1);
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyIndentList");
+                            HttpContext.Session.Remove("KeyIndentList");
                             return View(model1);
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -543,7 +536,7 @@ namespace eTactWeb.Controllers
                             model1 = await BindModel(model1);
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("KeyIndentList");
+                            HttpContext.Session.Remove("KeyIndentList");
                             return View(model1);
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -576,13 +569,12 @@ namespace eTactWeb.Controllers
                             //return View("Error", Result);
                         }
 
-                        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        string modelDataJson = HttpContext.Session.GetString("KeyIndentList");
+                        List<IndentDetail> IndentDetailGrid = new List<IndentDetail>();
+                        if (!string.IsNullOrEmpty(modelDataJson))
                         {
-                            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                            SlidingExpiration = TimeSpan.FromMinutes(55),
-                            Size = 1024,
-                        };
-                        IMemoryCache.TryGetValue("KeyIndentList", out List<IndentDetail> IndentDetailGrid);
+                            IndentDetailGrid = JsonConvert.DeserializeObject<List<IndentDetail>>(modelDataJson);
+                        }
 
                         Mainmodel.IndentDetails = IndentDetailGrid;
                         Mainmodel = await BindModel(Mainmodel);
@@ -611,7 +603,7 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> Dashboard(string Flag = "True",string FromDate = "", string ToDate = "", string IndentNo = "", string DeptName = "", string ItemName = "", string PartCode = "", string Searchbox = "", string SummaryDetail = "")
         {
-            IMemoryCache.Remove("KeyIndentList");
+            HttpContext.Session.Remove("KeyIndentList");
             var model = new IndentDashboard();
             DateTime now = DateTime.Now;
 

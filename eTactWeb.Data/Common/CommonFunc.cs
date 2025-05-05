@@ -1011,7 +1011,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "ForMonthYear"
                         && typeProperty.PropertyInfo.Name != "Mode" && typeProperty.PropertyInfo.Name != "TxPageName"
                         && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "UpdatedOn" && typeProperty.PropertyInfo.Name != "SeqNo"
-                        )
+                        && typeProperty.PropertyInfo.Name != "IncludeProjection")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);

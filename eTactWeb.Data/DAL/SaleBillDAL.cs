@@ -863,6 +863,10 @@ namespace eTactWeb.Data.DAL
             DS.Tables[3].TableName = "DRCRDetail";
             DS.Tables[4].TableName = "AdjustmentDetail";
             DS.Tables[5].TableName = "CustomerAdjDetail";
+
+            //DS.Tables[6].TableName = "AdjustmentDetail";
+            //DS.Tables[7].TableName = "CustomerAdjDetail";
+
             int cnt = 0;
 
             model.SaleBillEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillEntryId"]);

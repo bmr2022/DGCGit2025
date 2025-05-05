@@ -16,16 +16,14 @@ namespace eTactWeb.Controllers
     public class MRPController : Controller
     {
         public IDataLogic IDataLogic { get; }
-        public IMemoryCache IMemoryCache { get; }
         public IMRP IMRP { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<MRPController> Logger { get; }
         private EncryptDecrypt EncryptDecrypt { get; }
-        public MRPController(IMRP _IMRP, IDataLogic iDataLogic, IMemoryCache iMemoryCache, ILogger<MRPController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public MRPController(IMRP _IMRP, IDataLogic iDataLogic, ILogger<MRPController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
         {
             IMRP = _IMRP;
             IDataLogic = iDataLogic;
-            IMemoryCache = iMemoryCache;
             Logger = logger;
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
@@ -38,14 +36,11 @@ namespace eTactWeb.Controllers
             //RoutingModel model = new RoutingModel();
             ViewData["Title"] = "MRP Details";
             TempData.Clear();
-            IMemoryCache.Remove("KeyMRPDetail");
-            IMemoryCache.Remove("KeyMRPFGDetail");
-            IMemoryCache.Remove("KeyMRPSODetail");
-            //IMemoryCache.Remove("keyAddedMRPGrid");
+            HttpContext.Session.Remove("KeyMRPDetail");
+            HttpContext.Session.Remove("KeyMRPFGDetail");
+            HttpContext.Session.Remove("KeyMRPSODetail");
             var MainModel = new MRPMain();
 
-            //MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
-            //MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
@@ -71,18 +66,9 @@ namespace eTactWeb.Controllers
             {
                 // MainModel = await BindModel(MainModel);
             }
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            IMemoryCache.Set("KeyMRPDetail", MainModel.MRPGrid, cacheEntryOptions);
-            IMemoryCache.Set("KeyMRPFGDetail", MainModel.MRPFGRMGrid, cacheEntryOptions);
-            IMemoryCache.Set("KeyMRPSODetail", MainModel.MRPSOGrid, cacheEntryOptions);
-            //IMemoryCache.Set("keyAddedMRPGrid", MainModel.MRPGrid, cacheEntryOptions);
-            //IMemoryCache.Set("KeyStockAdjustGrid", model, cacheEntryOptions);
+            HttpContext.Session.SetString("KeyMRPDetail", JsonConvert.SerializeObject(MainModel.MRPGrid));
+            HttpContext.Session.SetString("KeyMRPFGDetail", JsonConvert.SerializeObject(MainModel.MRPFGRMGrid));
+            HttpContext.Session.SetString("KeyMRPSODetail", JsonConvert.SerializeObject(MainModel.MRPSOGrid));
             return View(MainModel);
         }
 
@@ -114,31 +100,6 @@ namespace eTactWeb.Controllers
 
                 var dt = time.ToString(format);
                 return Json(formattedDate);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
-
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
             }
             catch (HttpRequestException ex)
             {
@@ -165,11 +126,24 @@ namespace eTactWeb.Controllers
                 var MRPSOGrid = new DataTable();
                 var MRPFGGrid = new DataTable();
 
-                //IMemoryCache.TryGetValue("keyAddedMRPGrid", out IList<MRPDetail> MRPDetail);
-                IMemoryCache.TryGetValue("KeyMRPDetail", out IList<MRPDetail> MRPDetail);
-                IMemoryCache.TryGetValue("KeyMRPSODetail", out IList<MRPSaleOrderDetail> MRPSODetail);
-                IMemoryCache.TryGetValue("KeyMRPFGDetail", out IList<MRPFDRMDetail> MRPFGDetail);
-
+                string modelJson = HttpContext.Session.GetString("KeyMRPDetail");
+                string modelJsonFG = HttpContext.Session.GetString("KeyMRPFGDetail");
+                string modelJsonSO = HttpContext.Session.GetString("KeyMRPSODetail");
+                IList<MRPDetail> MRPDetail = new List<MRPDetail>();
+                IList<MRPSaleOrderDetail> MRPSODetail = new List<MRPSaleOrderDetail>();
+                IList<MRPFDRMDetail> MRPFGDetail = new List<MRPFDRMDetail>();
+                if (modelJson != null)
+                {
+                    MRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(modelJson);
+                }
+                if (modelJsonFG != null)
+                {
+                    MRPFGDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(modelJsonFG);
+                }
+                if (modelJsonSO != null)
+                {
+                    MRPSODetail = JsonConvert.DeserializeObject<IList<MRPSaleOrderDetail>>(modelJsonSO);
+                }
                 if (MRPDetail == null)
                 {
                     ModelState.Clear();
@@ -212,9 +186,6 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
-                            IMemoryCache.Remove(MRPGrid);
-                            IMemoryCache.Remove(MRPSOGrid);
-                            IMemoryCache.Remove(MRPFGGrid);
                             var model1 = new MRPMain();
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -222,7 +193,7 @@ namespace eTactWeb.Controllers
                             model1.CC = HttpContext.Session.GetString("Branch");
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("keyAddedMRPGrid");
+                            HttpContext.Session.Remove("keyAddedMRPGrid");
                             return View(model1);
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -236,7 +207,7 @@ namespace eTactWeb.Controllers
                             model1.CC = HttpContext.Session.GetString("Branch");
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                            IMemoryCache.Remove("keyAddedMRPGrid");
+                            HttpContext.Session.Remove("keyAddedMRPGrid");
                             return View(model1);
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -286,7 +257,7 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> Dashboard()
          {
-            IMemoryCache.Remove("keyAddedMRPGrid");
+            HttpContext.Session.Remove("keyAddedMRPGrid");
             var model = new MRPDashboard();
             DateTime now = DateTime.Now;
 
@@ -539,79 +510,29 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new MRPMain();
-            IMemoryCache.TryGetValue("keyAddedMRPGrid", out List<MRPDetail> MRPGrid);
+            string modelJson = HttpContext.Session.GetString("keyAddedMRPGrid");
+            IList<MRPDetail> MRPGrid = new List<MRPDetail>();
+            if (modelJson != null)
+            {
+                MRPGrid = JsonConvert.DeserializeObject<IList<MRPDetail>>(modelJson);
+            }
+
             var MRPDetail = MRPGrid.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(MRPDetail);
             return Json(JsonString);
         }
 
-        //public IActionResult DeleteItemRow(int SeqNo, string Mode)
-        //{
-        //    var MainModel = new MRPMain();
-        //    if (Mode == "U")
-        //    {
-        //        int Indx = Convert.ToInt32(SeqNo) - 1;
-        //        IMemoryCache.TryGetValue("keyAddedMRPGrid", out List<MRPDetail> MRPDetail);
-
-        //        if (MRPDetail != null && MRPDetail.Count > 0)
-        //        {
-        //            MRPDetail.RemoveAt(Convert.ToInt32(Indx));
-
-        //            Indx = 0;
-
-        //            foreach (var item in MRPDetail)
-        //            {
-        //                Indx++;
-        //                item.SeqNo = Indx;
-        //            }
-        //            MainModel.MRPGrid = MRPDetail;
-
-        //            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //            {
-        //                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //                SlidingExpiration = TimeSpan.FromMinutes(55),
-        //                Size = 1024,
-        //            };
-
-        //            IMemoryCache.Set("keyAddedMRPGrid", MainModel.MRPGrid, cacheEntryOptions);
-        //        }
-        //    }
-        //    else
-        //    {
-        //        IMemoryCache.TryGetValue("keyAddedMRPGrid", out List<MRPDetail> MRPDetail);
-        //        int Indx = Convert.ToInt32(SeqNo) - 1;
-
-        //        if (MRPDetail != null && MRPDetail.Count > 0)
-        //        {
-        //            MRPDetail.RemoveAt(Convert.ToInt32(Indx));
-
-        //            Indx = 0;
-
-        //            foreach (var item in MRPDetail)
-        //            {
-        //                Indx++;
-        //                item.SeqNo = Indx;
-        //            }
-        //            MainModel.MRPGrid = MRPDetail;
-
-        //            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        //            {
-        //                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-        //                SlidingExpiration = TimeSpan.FromMinutes(55),
-        //                Size = 1024,
-        //            };
-
-        //            IMemoryCache.Set("keyAddedMRPGrid", MainModel.MRPGrid, cacheEntryOptions);
-        //        }
-        //    }
-        //    return PartialView("_MRPGrid", MainModel);
-        //}
-
         public IActionResult FillMRPGridDetail()
         {
             try
             {
-                IMemoryCache.TryGetValue("KeyPendingMRPToMRPDetail", out IList<MRPDetail> PendingMRPDetail);
+                string modelJson = HttpContext.Session.GetString("KeyPendingMRPToMRPDetail");
+                IList<MRPDetail> PendingMRPDetail = new List<MRPDetail>();
+                if (modelJson != null)
+                {
+                    PendingMRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(modelJson);
+                }
+
                 var model = new MRPDetail();
                 var MainModel = new MRPMain();
                 var MRPGrid = new List<MRPDetail>();
@@ -620,7 +541,12 @@ namespace eTactWeb.Controllers
 
                 foreach (var item in PendingMRPDetail)
                 {
-                    IMemoryCache.TryGetValue("KeyMRPDetail", out IList<MRPDetail> MRPDetail);
+                    string MRPDetailJson = HttpContext.Session.GetString("KeyMRPDetail");
+                    IList<MRPDetail> MRPDetail = new List<MRPDetail>();
+                    if (MRPDetailJson != null)
+                    {
+                        MRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(MRPDetailJson);
+                    }
 
                     if (MRPDetail == null)
                     {
@@ -640,14 +566,7 @@ namespace eTactWeb.Controllers
                     MainModel.EntryID = item.MRPEntryId;
                     MainModel.MRPNo = item.MRPNo;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyMRPDetail", MainModel.MRPGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyMRPDetail", JsonConvert.SerializeObject(MainModel.MRPGrid));
                 }
                 return PartialView("_MRPGrid", MainModel);
             }
@@ -661,7 +580,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                IMemoryCache.TryGetValue("KeyPendingFGRMMRP", out IList<MRPFDRMDetail> PendingMRPFGDetail);
+                string modelJson = HttpContext.Session.GetString("KeyPendingFGRMMRP");
+                IList<MRPFDRMDetail> PendingMRPFGDetail = new List<MRPFDRMDetail>();
+                if (modelJson != null)
+                {
+                    PendingMRPFGDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(modelJson);
+                }
                 var model = new MRPFDRMDetail();
                 var MainModel = new MRPMain();
                 var MRPGrid = new List<MRPFDRMDetail>();
@@ -671,7 +595,12 @@ namespace eTactWeb.Controllers
 
                 foreach (var item in PendingMRPFGDetail)
                 {
-                    IMemoryCache.TryGetValue("KeyMRPFGDetail", out IList<MRPFDRMDetail> MRPDetail);
+                    string MRPDetailJson = HttpContext.Session.GetString("KeyMRPFGDetail");
+                    IList<MRPFDRMDetail> MRPDetail = new List<MRPFDRMDetail>();
+                    if (MRPDetailJson != null)
+                    {
+                        MRPDetail = JsonConvert.DeserializeObject<IList<MRPFDRMDetail>>(MRPDetailJson);
+                    }
 
                     if (MRPDetail == null)
                     {
@@ -688,14 +617,7 @@ namespace eTactWeb.Controllers
                     }
 
                     MainModel.MRPFGRMGrid = MRPGrid;
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyMRPFGDetail", MainModel.MRPFGRMGrid, cacheEntryOptions);
+                    HttpContext.Session.SetString("KeyMRPFGDetail", JsonConvert.SerializeObject(MainModel.MRPFGRMGrid));
                 }
                 return PartialView("_MRPFGGrid", MainModel);
             }
@@ -709,7 +631,12 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                IMemoryCache.TryGetValue("KeyMRPSaleOrderDetail", out IList<MRPSaleOrderDetail> MRPSODetail);
+                string modelJson = HttpContext.Session.GetString("KeyMRPSaleOrderDetail");
+                IList<MRPSaleOrderDetail> MRPSODetail = new List<MRPSaleOrderDetail>();
+                if (modelJson != null)
+                {
+                    MRPSODetail = JsonConvert.DeserializeObject<IList<MRPSaleOrderDetail>>(modelJson);
+                }
                 var model = new MRPSaleOrderDetail();
                 var MainModel = new MRPMain();
                 var MRPGrid = new List<MRPSaleOrderDetail>();
@@ -719,7 +646,12 @@ namespace eTactWeb.Controllers
 
                 foreach (var item in MRPSODetail)
                 {
-                    IMemoryCache.TryGetValue("KeyMRPSODetail", out IList<MRPDetail> MRPDetail);
+                    string MRPDetailJson = HttpContext.Session.GetString("KeyMRPSODetail");
+                    IList<MRPDetail> MRPDetail = new List<MRPDetail>();
+                    if (MRPDetailJson != null)
+                    {
+                        MRPDetail = JsonConvert.DeserializeObject<IList<MRPDetail>>(MRPDetailJson);
+                    }
                     item.Months = Month;
                     item.MonthYear = ForMonthYear;
 
@@ -739,14 +671,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.MRPSOGrid = MRPGrid;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    IMemoryCache.Set("KeyMRPSODetail", MainModel.MRPSOGrid, cacheEntryOptions);
+                   HttpContext.Session.SetString("KeyMRPSODetail", JsonConvert.SerializeObject(MainModel.MRPSOGrid));
                 }
                 return PartialView("_MRPSOGrid", MainModel);
             }
