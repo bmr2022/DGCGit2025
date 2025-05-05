@@ -359,6 +359,14 @@ namespace eTactWeb.Controllers
             var model = new CustJWIssQDashboard();
             model = await _ICustomerJobWorkIssue.GetDashboardDetailsData(FromDate, ToDate, ReportType);
             //model.Reporttype = "Detail";
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            string serializedGrid = JsonConvert.SerializeObject(model.CustJWIssQDashboardGrid);
+            HttpContext.Session.SetString("KeyCustJWIList", serializedGrid);
             if (ReportType == "SUMMARY")
             {
                 return PartialView("_CustJobworkDashboardSummaryGrid", model);
@@ -370,7 +378,18 @@ namespace eTactWeb.Controllers
             }
             return null;
         }
+        [HttpGet]
+        public IActionResult GetCustJWIDashBoardGridData()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyCustJWIList");
+            List<CustJWIssQDashboard> custJWIList = new List<CustJWIssQDashboard>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                custJWIList = JsonConvert.DeserializeObject<List<CustJWIssQDashboard>>(modelJson);
+            }
 
+            return Json(custJWIList);
+        }
 
         private static DataTable GetDetailTable(IList<CustomerJobWorkIssueDetail> DetailList)
         {
