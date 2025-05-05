@@ -744,7 +744,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Store" class="form-label" style="color:red">Store/Wc*</label>
-                                    <select class="form-select" asp-for="StoreTransferScrap">
+                                    <select class="form-select" asp-for="StoreTransferProduct">
                                         <option>-Select-</option>
                                         <option value="S">Store</option>
                                         <option value="W">WorkCenter</option>
@@ -793,8 +793,88 @@
                 </div>
 
                 <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_ProductionData">
+                        <button id="H_ProductionData" class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Production" aria-expanded="true" aria-controls="B_Production">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Production Entry By product</strong>
+                        </button>
+                    </h2>
+                    <div id="B_Production" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_ProductionData">
+                        <div class="accordion-body">
+                            <div class="row g-3">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ProductPartCode" class="form-label" style="color:red">Part Code*</label>
+                                    <select asp-for="ProductPartCode" class="form-select" style="width:180px"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ProductItemName" class="form-label" style="color:red">Item Name*</label>
+                                    <input asp-for="ProductItemCode" class="form-control" type="hidden" />
+                                    <select asp-for="ProductItemName" class="form-select" style="width:180px"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px">
+                                    <label asp-for="ProductType" class="form-label" style="color:red">Product Type*</label>
+                                    <select asp-for="ProductType" class="form-select" style="width:100px"></select>
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ProductQty" class="form-label" style="color:red">Product Qty*</label>
+                                    <input asp-for="ProductQty" class="form-control" min="0" type="number" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Productunit" class="form-label">Product Unit</label>
+                                    <input asp-for="Productunit" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ProductStore" class="form-label" style="color:red">Store/Wc*</label>
+                                    <select class="form-select" asp-for="StoreTransferProduct">
+                                        <option>-Select-</option>
+                                        <option value="S">Store</option>
+                                        <option value="W">WorkCenter</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ProductTransferToWCStore" class="form-label" style="color:red">Transfer To Wc or Store*</label>
+                                    <input asp-for="ProductStoreId" class="form-control" type="hidden" />
+                                    <input asp-for="ProductToWC" class="form-control" type="hidden" />
+                                    <input asp-for="ProductToWC" class="form-control" type="hidden" />
+                                    <select asp-for="ProductTransferToWCStore" class="form-select" style="width:150px"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9" style="width:150px;margin-top:28px">
+                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger" onclick="ProductGrid(event)" style="width:150px">
+                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                </div>
+                            </div>
+                            </br>
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="table-responsive" style="max-height:250px;">
+                                        <table class="table table-hover table-bordered table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static" id="GridLabels">
+                                                <tr>
+                                                    <th>Action</th>
+                                                    <th>Seq No</th>
+                                                    <th>Product ItemName</th>
+                                                    <th>Product PartCode</th>
+                                                    <th>Product Type</th>
+                                                    <th>Product Qty</th>
+                                                    <th>Product Unit</th>
+                                                    <th>Store/WC</th>
+                                                    <th>Transfer to WC or Store</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divProductDetailGrid">
+                                                <partial name="_ProductionEntryProductDetail" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
                     <h2 class="accordion-header" id="H_OpGrid">
-                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Optional Parameter Entry</strong>
                         </button>
                     </h2>
@@ -1328,6 +1408,9 @@
             FillScrapItems();
             FillScrapPartCode();
             FillScrapType();
+            FillProductPartCode();
+            FillProductItems();
+            FillProductType();
             FillResFactor();
             FillAltItemName();
             FillAltPartCode();
@@ -1735,6 +1818,10 @@
         $('#ScrapPartCode').select2();
         $('#ScrapType').select2();
         $('#TransferToWCStore').select2();
+        $('#ProductItemName').select2();
+        $('#ProductPartCode').select2();
+        $('#ProductType').select2();
+        $('#ProductTransferToWCStore').select2();
         $('#AltItemName').select2();
         $('#AltPartCode').select2();
         $('#RmPartCode').select2();
@@ -1906,6 +1993,16 @@
             }
             else if ($('#StoreTransferScrap').val() == 'S') {
                 FillStoreforScrap();
+            }
+        })
+
+        $('#StoreTransferProduct').change(function () {
+
+            if ($('#StoreTransferProduct').val() == 'W') {
+                FillProductTransferWorkCenterforScrap();
+            }
+            else if ($('#StoreTransferProduct').val() == 'S') {
+                FillProductStoreforScrap();
             }
         })
 
@@ -2346,7 +2443,27 @@
                 }
             });
         }
-
+        function FillProductTransferWorkCenterforScrap() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillTransferWorkCenter")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProductTransferToWCStore').empty();
+                            $('#ProductTransferToWCStore').append('<option disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProductTransferToWCStore').append('<option selected value="' + val.entryid + '">' + val.WorkCenterDescription + '</option>');
+                                $('#ProductToWC').val($('#ProductTransferToWCStore').val())
+                            })
+                        }
+                    }
+                }
+            });
+        }
         function FillScrapType() {
             $.ajax({
                 type: "POST",
@@ -2368,6 +2485,26 @@
             });
         }
 
+        function FillProductType() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProductType")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProductType').empty();
+                            $('#ProductType').append('<option disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProductType').append('<option selected value="' + val.ProductType + '">' + val.ProductType + '</option>');
+                            })
+                        }
+                    }
+                }
+            });
+        }
 
         function FillResFactor() {
 
@@ -2793,6 +2930,24 @@
             });
         }
 
+        function GetProductUnit() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetScrapUnit")",
+                data: { ScrapItemCode: $('#ProductItemName').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#Productunit').val($.parseJSON(result).Result[0].Unit);
+                    }
+                }
+            });
+        }
+
         function FillRMItemName() {
 
             $.ajax({
@@ -2897,6 +3052,28 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#TransferToWCStore').append('<option selected value="' + val.entryid + '">' + val.Store_Name + '</option>');
                                 $('#TransferToStoreId').val($('#TransferToWCStore').val())
+                            })
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProductStoreforScrap() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStore")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProductTransferToWCStore').empty();
+                            $('#ProductTransferToWCStore').append('<option disabled>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProductTransferToWCStore').append('<option selected value="' + val.entryid + '">' + val.Store_Name + '</option>');
+                                $('#ProductStoreId').val($('#ProductTransferToWCStore').val())
                             })
                         }
                     }
@@ -3931,6 +4108,19 @@
             GetScrapUnit();
         });
 
+        $(document).on('select2:select', '#ProductItemName,#ProductPartCode', function (e) {
+            var cntId = e.target.id;
+            if (cntId == 'ScrapItemName') {
+                ProductItemNameChange(cntId);
+            }
+            else {
+                ProductPartCodeChange(cntId);
+            }
+            $('#ScrapItemCode').val($('#ScrapItemName').val())
+            $('#Scrapunit').val('')
+            GetScrapUnit();
+        });
+
         $(document).on('select2:select', '#AltItemName,#AltPartCode', function (e) {
 
             var cntId = e.target.id;
@@ -3950,6 +4140,16 @@
 
         function ScrapItemNameChange(ID) {
             SetPartCodeItemNameScrap(ID);
+        }
+
+        function ProductItemNameChange(ID) {
+            SetPartCodeItemNameProduct(ID);
+        }
+
+        function ProductPartCodeChange(ID) {
+
+            $.when(SetPartCodeItemNameProduct(ID)).done(function () {
+            });
         }
 
         function AltPartCodeChange(ID) {
@@ -4020,6 +4220,27 @@
             });
         }
 
+        function FillProductItems() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillScrapItems")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProductItemName').empty();
+                            $('#ProductItemName').append('<option selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProductItemName').append('<option value="' + val.Item_Code + '">' + val.Item_Name + '</option>')
+                            })
+                        }
+                    }
+                }
+            });
+        }
+
         function FillScrapPartCode() {
             $.ajax({
                 type: "POST",
@@ -4034,6 +4255,27 @@
                             $('#ScrapPartCode').append('<option selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#ScrapPartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>')
+                            })
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillProductPartCode() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillScrapPartCode")",
+                dataType: "json",
+                data: {},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ProductPartCode').empty();
+                            $('#ProductPartCode').append('<option selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ProductPartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>')
                             })
                         }
                     }
@@ -4254,6 +4496,21 @@
                 }
             }
         }
+
+        function SetPartCodeItemNameProduct(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "ProductPartCode") {
+                    $("#ProductItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ScrapItemName") {
+                    $("#ProductPartCode").val(v).trigger("change");
+                }
+            }
+        }
+
 
         function SetPartCodeItemNameAlt(ID) {
             if (!ID) return;
@@ -5211,6 +5468,54 @@
             }
         }
 
+        function ValidateProduct_Grid() {
+
+            var Err = 0;
+            if ($('#ProductPartCode').prop('selectedIndex') == 0) {
+                AddErrorCls('ProductPartCode');
+                $.notify("Select ProductPartCode", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ProductPartCode');
+            }
+            if ($('#ProductItemName').prop('selectedIndex') == 0) {
+                AddErrorCls('ProductItemName');
+                $.notify("Select ProductItemName", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ProductItemName');
+            }
+            if ($('#ProductQty').val() == 0) {
+                AddErrorCls('ProductQty');
+                $.notify("ProductQty Required", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ProductQty');
+            }
+            if ($('#ProductQty').val() > 0) {
+                if ($('#StoreTransferProduct').prop('selectedIndex') == 0) {
+                    AddErrorCls('StoreTransferProduct');
+                    $.notify("StoreTransferProduct Required", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('StoreTransferProduct');
+                }
+                if ($('#ProductTransferToWCStore').val() == null) {
+                    AddErrorCls('ProductTransferToWCStore');
+                    $.notify("ProductTransferToWCStore Required", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('ProductTransferToWCStore');
+                }
+                Err == 1 ? ShowErrorFldwithAddtoGrid('H_Measurements') : HideErrorFldwithAddtoGrid('H_Measurements');
+                if (Err == 1) return false;
+                return true;
+            }
+        }
+
         function ClearScrapGrid() {
 
             $('#ScrapPartCode').prop('selectedIndex', 0).trigger("change"),
@@ -5246,6 +5551,70 @@
                 "TransferToWCStore": $('#TransferToWCStore').find(':selected').text(),
                 "TransferToStoreId": parseInt($('#TransferToWCStore').val()),
                 "TransferToWC": parseInt($('#TransferToWCStore').val())
+            }
+
+            $.ajax({
+                url: "@Url.Action("AddScrapdetailGrid")",
+                type: "POST",
+                data: { model: ScrapData },
+                success: function (data, status, xhr) {
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                    }
+                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
+                    }
+                    else {
+                        $('#divScrapDetailGrid').html(data);
+                        editingScrapNow = false;
+                        ClearScrapGrid();
+                    }
+
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+
+                    $('.Schedule').fadeIn();
+                }
+            }).done(function () {
+
+            }).fail(function () {
+                alert("error");;
+            }).always(function () {
+
+            });
+        }
+
+        function ProductGrid(event) {
+
+            event.preventDefault();
+            if (!ValidateProduct_Grid()) return;
+            var ProductTransferToStoreId = 0;
+            var ProductTransferToWC = 0;
+            var ProductTransferToWCStore = $('#StoreTransferProduct').val();
+            if (ProductTransferToWCStore == "S") {
+                ProductTransferToStoreId = $('#ProductTransferToWCStore').val();
+            }
+            else {
+                ProductTransferToWC = $('#ProductTransferToWCStore').val();
+            }
+            var ScrapData = {
+                "ProductItemName": $('#ProductItemName').find(':selected').text(),
+                "ProductPartCode": $('#ProductPartCode').find(':selected').text(),
+                "ProductItemCode": $('#ProductItemCode').val(),
+                "ProductType": $('#ProductType').val(),
+                "ProductQty": $('#ProductQty').val(),
+                "Productunit": $('#Productunit').val(),
+                "StoreTransferProduct": $('#StoreTransferProduct').val(),
+                "ProductTransferToWCStore": $('#ProductTransferToWCStore').find(':selected').text(),
+                "ProductTransferToStoreId": parseInt($('#ProductTransferToStoreId').val()),
+                "ProductTransferToWC": parseInt($('#ProductTransferToWC').val())
             }
 
             $.ajax({

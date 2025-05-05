@@ -80,7 +80,7 @@ public interface IProductionEntry
     Task<ResponseResult> GetDateforBreakdown(string Flag, string DiffType, string QtyOfTime, string FromTime);
     Task<ResponseResult> GetTimeDiff(string Flag, string ToTime, string DiffType, string FromTime);
     Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int DocType);
-
+    Task<ResponseResult> FillProductType();
     public Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode);
 
 }

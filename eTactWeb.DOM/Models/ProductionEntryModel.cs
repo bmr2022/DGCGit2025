@@ -290,6 +290,17 @@ public class ProductionEntryItemDetail : TimeStamp
     public int TransferToWC { get; set; }
     public string? ProdType { get; set; }
     public string? ProdEntryAllowToAddRMItem { get; set; }
+    public string? ProductPartCode { get; set; }
+    public string? ProductItemName { get; set; }
+    public string? ProductItemCode { get; set; }
+    public string? ProductType { get; set; }
+    public decimal ProductQty { get; set; }
+    public string? Productunit { get; set; }
+    public string? ProductStore { get; set; }
+    public string? StoreTransferProduct { get; set; }
+    public string? ProductTransferToWCStore { get; set; }
+    public int ProductStoreId { get; set; }
+    public int ProductToWC { get; set; }
     public IList<ProductionEntryItemDetail>? ProductionEntryDetail { get; set; }
 }
 
@@ -504,15 +515,24 @@ public class ProductionEntryModel : ProductionEntryItemDetail
     public string? MaterialTransferd { get; set; }
     public string? ProdEntryAllowToAddRMItem { get; set; }
     public string? QcMandatory {  get; set; }
+    public string? ProductPartCode { get; set; }
+    public string? ProductItemName { get; set; }
+    public string? ProductItemCode { get; set; }
+    public string? ProductType { get; set; }
+    public decimal ProductQty {  get; set; }
+    public string? Productunit { get; set; }
+    public string? ProductStore { get; set; }
+    public string? StoreTransferProduct { get; set; }
+    public string? ProductTransferToWCStore { get; set; }
+    public int ProductStoreId { get; set; }
+    public int ProductToWC { get; set; }
     public IList<ProductionEntryItemDetail>? ItemDetailGrid { get; set; }
     public IList<ProductionEntryItemDetail>? BreakdownDetailGrid { get; set; }
     public IList<ProductionEntryItemDetail>? OperatorDetailGrid { get; set; }
     public IList<ProductionEntryItemDetail>? ScrapDetailGrid { get; set; }
+    public IList<ProductionEntryItemDetail>? ProductDetailGrid { get; set; }
     public IList<ProductionEntryItemDetail>? ProductionChilDataDetail { get; set; }
-
     public IList<TextValue>? PONO { get; set; }
-
-
     private IList<SelectListItem> _Type = new List<SelectListItem>()
         {
             new() { Value = "Item", Text = "Item" },
@@ -524,8 +544,6 @@ public class ProductionEntryModel : ProductionEntryItemDetail
         get => _Type;
         set => _Type = value;
     }
-
-
 }
 
 

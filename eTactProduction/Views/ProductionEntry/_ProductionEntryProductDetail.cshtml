@@ -1,0 +1,40 @@
+﻿@model eTactWeb.DOM.Models.ProductionEntryModel
+
+@if (Model.ProductDetailGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.ProductDetailGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr id="itemGrid" class="small" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a class="table-link link-primary" onclick="EditScrapItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger" onclick="DeleteScrapItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+            <td>@item.SeqNo</td>
+            <td>@item.ProductItemName</td>
+            <td>@item.ProductPartCode</td>
+            <td>@item.ProductType</td>
+            <td>@item.ProductQty.ToString("0.00")</td>
+            <td>@item.Productunit</td>
+            <td>@item.StoreTransferProduct</td>
+            <td>@item.ProductTransferToWCStore</td>
+        </tr>
+    }
+}
