@@ -95,7 +95,7 @@ namespace eTactWeb.DOM.Models
         public string? SOtype { get; set; }
         public string? Remark { get; set; }
         public string? PreparedByEmp { get; set; }
-        public string? ActualEntryByEmp { get; set; }
+        //public string? ActualEntryByEmp { get; set; }
         public string? ActualEntryDate { get; set; }
         public string? LastUpdatedby { get; set; }
         public string? Updationdate { get; set; }
