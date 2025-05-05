@@ -2808,6 +2808,7 @@
                 if ($('#Rate').val() == '' || $('#Rate').val() == 0) {
                     AddErrorCls('Rate');
                     $.notify("Rate is required", "error");
+                    Err = 1;
                 }
                 else {
                     RemoveErrorCls('Rate');
