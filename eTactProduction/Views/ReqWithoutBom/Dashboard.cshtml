@@ -359,8 +359,8 @@
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.reqNo, r.reqDate.split(" ")[0] : "", r.itemName, r.partCode, r.qty, r.unit,
-                        r.altQty, r.pendQty, r.location, r.binNo, r.entryDate.split(" ")[0] : "",
+                        i + 1, r.reqNo, r.reqDate? r.reqDate.split(" ")[0] : "", r.itemName, r.partCode, r.qty, r.unit,
+                        r.altQty, r.pendQty, r.location, r.binNo, r.entryDate ? r.entryDate.split(" ")[0] : "",
                         r.workCenter, r.branchName,  r.cancel, 
                          r.entryId, r.totalReqQty, r.totalPendQty
                     ]);
