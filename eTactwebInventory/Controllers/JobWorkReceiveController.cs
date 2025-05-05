@@ -126,7 +126,7 @@ namespace eTactWeb.Controllers
                 var ChallanGrid = new DataTable();
                 string modelJson = HttpContext.Session.GetString("KeyJobWorkRecieve");
                 List<JobWorkReceiveDetail> JobWorkReceiveDetail = new List<JobWorkReceiveDetail>();
-                if(!string.IsNullOrEmpty(modelJson))
+                if (!string.IsNullOrEmpty(modelJson))
                 {
                     JobWorkReceiveDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveDetail>>(modelJson);
                 }
@@ -760,18 +760,18 @@ namespace eTactWeb.Controllers
                 var JobWorkReceiveGrid = new List<JobWorkReceiveDetail>();
                 var JobReceiveGrid = new List<JobWorkReceiveDetail>();
                 var SSGrid = new List<JobWorkReceiveDetail>();
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                //    SlidingExpiration = TimeSpan.FromMinutes(55),
-                //    Size = 1024,
-                //};
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
                 var seqNo = 0;
                 foreach (var item in model)
                 {
                     string modelJson = HttpContext.Session.GetString("KeyJobWorkRecieve");
                     List<JobWorkReceiveDetail> JobWorkReceiveDetail = new List<JobWorkReceiveDetail>();
-                    if(modelJson != null)
+                    if (modelJson != null)
                     {
                         JobWorkReceiveDetail = JsonConvert.DeserializeObject<List<JobWorkReceiveDetail>>(modelJson);
                     }
@@ -786,15 +786,19 @@ namespace eTactWeb.Controllers
                         else
                         {
                             item.SeqNo = JobWorkReceiveDetail.Count + 1;
-                            JobWorkReceiveGrid = JobWorkReceiveDetail.Where(x => x != null).ToList();
+                            //JobWorkReceiveGrid = JobWorkReceiveDetail.Where(x => x != null).ToList();
                             SSGrid.AddRange(JobWorkReceiveGrid);
                             JobWorkReceiveGrid.Add(item);
                         }
                         MainModel.ItemDetailGrid = JobWorkReceiveGrid;
 
-                        HttpContext.Session.SetString("KeyJobWorkRecieve", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                        //HttpContext.Session.SetString("KeyJobWorkRecieve", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                        //HttpContext.Session.SetString("KeyJobWorkRecieve", JsonConvert.SerializeObject(JobWorkReceiveGrid));
                     }
                 }
+                HttpContext.Session.SetString("KeyJobWorkRecieve", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                Console.WriteLine("Session Data: " + HttpContext.Session.GetString("KeyJobWorkRecieve"));
+                Console.WriteLine("Session Data: " + HttpContext.Session.GetString("KeyJobWorkRecieveGrid"));
                 return PartialView("_JobWorkReceiveGrid", MainModel);
             }
             catch (Exception ex)
@@ -817,7 +821,7 @@ namespace eTactWeb.Controllers
                 var JobWorkReceiveGrid = new List<JobWorkReceiveItemDetail>();
                 var JobReceiveGrid = new List<JobWorkReceiveItemDetail>();
                 var SSGrid = new List<JobWorkReceiveItemDetail>();
-               
+
                 var seqNo = 0;
                 if (model != null)
                 {
@@ -830,7 +834,7 @@ namespace eTactWeb.Controllers
                     else
                     {
                         model.SeqNo = JobWorkReceiveItemDetail.Count + 1;
-                        JobWorkReceiveGrid = JobWorkReceiveItemDetail.Where(x => x != null).ToList();
+                        //JobWorkReceiveGrid = JobWorkReceiveItemDetail.Where(x => x != null).ToList();
                         SSGrid.AddRange(JobWorkReceiveGrid);
                         JobWorkReceiveGrid.Add(model);
                     }
@@ -851,10 +855,10 @@ namespace eTactWeb.Controllers
             try
             {
 
-                var MainModel = new JobWorkReceiveModel();
-                var JobWorkReceiveGrid = new List<JobWorkReceiveItemDetail>();
-                var JobReceiveGrid = new List<JobWorkReceiveItemDetail>();
-                var SSGrid = new List<JobWorkReceiveItemDetail>();
+                var MainModel1 = new JobWorkReceiveModel();
+                var JobWorkReceiveGrid1 = new List<JobWorkReceiveItemDetail>();
+                var JobReceiveGrid1 = new List<JobWorkReceiveItemDetail>();
+                var SSGrid1 = new List<JobWorkReceiveItemDetail>();
                 var seqNo = 0;
                 foreach (var item in model)
                 {
@@ -869,23 +873,24 @@ namespace eTactWeb.Controllers
                         if (JobWorkReceiveItemDetail == null)
                         {
                             item.SeqNo += seqNo + 1;
-                            JobWorkReceiveGrid.Add(item);
+                            JobWorkReceiveGrid1.Add(item);
                             seqNo++;
                         }
                         else
                         {
                             item.SeqNo = JobWorkReceiveItemDetail.Count + 1;
-                            JobWorkReceiveGrid = JobWorkReceiveItemDetail.Where(x => x != null).ToList();
-                            SSGrid.AddRange(JobWorkReceiveGrid);
-                            JobWorkReceiveGrid.Add(item);
+                            //JobWorkReceiveGrid = JobWorkReceiveItemDetail.Where(x => x != null).ToList();
+                            SSGrid1.AddRange(JobWorkReceiveGrid1);
+                            JobWorkReceiveGrid1.Add(item);
                         }
-                        MainModel.JobWorkReceiveGrid = JobWorkReceiveGrid;
+                        MainModel1.JobWorkReceiveGrid = JobWorkReceiveGrid1;
 
-                        HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel.JobWorkReceiveGrid));
-                        HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(model));
+                        //HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel1.JobWorkReceiveGrid));
+                        //HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(model));
                     }
                 }
-                return PartialView("_JobWorkReceiveGrid", MainModel);
+                HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel1.JobWorkReceiveGrid));
+                return PartialView("_JobWorkReceiveGrid", MainModel1);
             }
             catch (Exception ex)
             {
