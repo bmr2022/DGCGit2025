@@ -82,6 +82,9 @@
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="CustomerJWI" asp-action="CustomerJWIDashboard"
                                      asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day).ToString("dd/MM/yyyy")"
                                    asp-route-Todate="@DateTime.Today.ToString("dd/MM/yyyy")"
@@ -269,7 +272,164 @@
         }
 
 
+        $('#sendToPDF').click(async function () {
+            debugger
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
+            // Get dynamic values
+            var CustomerName = $('#CustomerName').val();
+            var ChallanNo = $('#ChallanNo').val();
+            var ItemName = $('#ItemName').val();
+            var PartCode = $('#PartCode').val();
+           
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+
+            var dashboardTypeText = $('#Reporttype option:selected').text();
+            var dashboardTypeValue = $('#Reporttype').val();
+
+            var yearCode = $('#YearCode').val();
+
+            // Report Title
+            doc.setFontSize(16).text(dashboardTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+                
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            // Fetch data
+            var resp = await fetch('/CustomerJWI/GetCustJWIDashBoardGridData');
+            var rows = await resp.json();
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (dashboardTypeValue) {
+                case 'Summary':
+                    headers = [
+                        "#Sr", "REQ No", "Req Date", "Entry Date", "Work Center", "WO No", "Branch Name",
+                        "Reason", "Cancel", "Machine Name", "WO Year Code", "Entry Id", "Year Code",
+                        "Total Req Qty", "Total Pend Qty", "Created By", "Updated By"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.reqNo, r.reqDate ? r.reqDate.split(" ")[0] : "",
+                        r.entryDate ? r.entryDate.split(" ")[0] : "", r.workCenter,
+                        r.woNo, r.branchName, r.reason, r.cancel, r.machName, r.woYearcode,
+                        r.entryId, r.yearCode, r.totalReqQty, r.totalPendQty, r.createdBy,
+                        r.updatedBy
+                    ]);
+                    break;
+                case 'Detail':
+                    headers = [
+                        "#Sr", "REQ No", "Req Date", "Item Name", "Part Code", "Quantity", "Unit", "Alt Qty",
+                        "Pending Qty", "Location", "Bin No", "Entry Date", "Work Center", "Branch Name",
+                        "Cancel", "Entry ID",
+                        "Total Req Qty", "Total Pend Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.reqNo, r.reqDate ? r.reqDate.split(" ")[0] : "", r.itemName, r.partCode, r.qty, r.unit,
+                        r.altQty, r.pendQty, r.location, r.binNo, r.entryDate ? r.entryDate.split(" ")[0] : "",
+                        r.workCenter, r.branchName, r.cancel,
+                        r.entryId, r.totalReqQty, r.totalPendQty
+                    ]);
+
+
+                    break;
+
+
+
+                default:
+                    headers = [
+                        "#Sr", "REQ No", "Req Date", "Entry Date", "Work Center", "WO No", "Branch Name",
+                        "Reason", "Cancel", "Machine Name", "WO Year Code", "Entry Id", "Year Code",
+                        "Total Req Qty", "Total Pend Qty", "Created By", "Updated By"
+                    ];
+                    console.log("Data:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.reqNo, r.reqDate ? r.reqDate.split(" ")[0] : "",
+                        r.entryDate ? r.entryDate.split(" ")[0] : "", r.workCenter,
+                        r.woNo, r.branchName, r.reason, r.cancel, r.machName, r.woYearcode,
+                        r.entryId, r.yearCode, r.totalReqQty, r.totalPendQty, r.createdBy,
+                        r.updatedBy
+                    ]);
+                    break;
+            }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15, // Adjust the starting Y position
+                head: [headers],
+                body: body,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: {
+                    0: { cellWidth: 30 },   // Column 1: Sr#
+                    1: { cellWidth: 50 },   // Column 2: VendorName
+                    2: { cellWidth: 50 },   // Column 3: MRNNo
+                    3: { cellWidth: 40 },   // Column 4: MRNDate
+                    4: { cellWidth: 60 },   // Column 5: GateNo
+                    5: { cellWidth: 30 },   // Column 6: GDate
+                    6: { cellWidth: 40 },   // Column 7: InvoiceNo
+                    7: { cellWidth: 40 },   // Column 8: InvoiceDate
+                    8: { cellWidth: 60 },   // Column 9: DocNo
+                    9: { cellWidth: 50 },   // Column 10: PartCode
+                    10: { cellWidth: 60 },  // Column 11: ItemName
+                    11: { cellWidth: 20 },  // Column 12: BillQty
+                    12: { cellWidth: 20 },  // Column 13: RecQty
+                    13: { cellWidth: 20 },  // Column 14: ShortExcessQty
+                    14: { cellWidth: 50 },  // Column 15: Unit
+                    15: { cellWidth: 40 },  // Column 16: Amount
+                    16: { cellWidth: 40 },  // Column 17: TotalAmt
+                    17: { cellWidth: 40 },  // Column 18: NetAmount
+                    18: { cellWidth: 30 },  // Column 19: Remark
+                    19: { cellWidth: 30 },  // Column 20: ActualEntryByEmp
+                    20: { cellWidth: 40 },  // Column 21: ActualEntryDate
+
+
+                },
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`ReqWithoutBom_${dashboardTypeValue.replace(/\s+/g, '_')}.pdf`);
+
+        });
         function BackButtonData(event, EntryId) {
              
             event.preventDefault();
