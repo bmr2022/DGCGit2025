@@ -64,14 +64,13 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
-                    oCmd.Parameters.AddWithValue("@PartCode", PartCode);
-                    oCmd.Parameters.AddWithValue("@ItemName", ItemName);
-                    oCmd.Parameters.AddWithValue("@GroupName", ItemGroup);
-                    oCmd.Parameters.AddWithValue("@CatName", ItemType);
-                    oCmd.Parameters.AddWithValue("@WCId", WCID);
-                    oCmd.Parameters.AddWithValue("@BatchNo", BatchNo);
-                    oCmd.Parameters.AddWithValue("@Uniquebatchno", UniqueBatchNo); 
-
+                    oCmd.Parameters.AddWithValue("@PartCode", string.IsNullOrEmpty(PartCode) ? DBNull.Value : (object)PartCode);
+                    oCmd.Parameters.AddWithValue("@ItemName", string.IsNullOrEmpty(ItemName) ? DBNull.Value : (object)ItemName);
+                    oCmd.Parameters.AddWithValue("@GroupName", string.IsNullOrEmpty(ItemGroup) ? DBNull.Value : (object)ItemGroup);
+                    oCmd.Parameters.AddWithValue("@CatName", string.IsNullOrEmpty(ItemType) ? DBNull.Value : (object)ItemType);
+                    oCmd.Parameters.AddWithValue("@WCId", WCID); // int — 0 is fine
+                    oCmd.Parameters.AddWithValue("@BatchNo", string.IsNullOrEmpty(BatchNo) ? DBNull.Value : (object)BatchNo);
+                    oCmd.Parameters.AddWithValue("@Uniquebatchno", string.IsNullOrEmpty(UniqueBatchNo) ? DBNull.Value : (object)UniqueBatchNo);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
