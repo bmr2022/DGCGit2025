@@ -58,6 +58,7 @@ namespace eTactWeb.DOM.Models
         };
 
         public IList<SelectListItem> TypeList
+
         {
             get => _Type;
             set => _Type = value;
@@ -154,8 +155,8 @@ namespace eTactWeb.DOM.Models
         public DateTime? CustJWRecEntryDate { get; set; }
         public long? RecItemcode { get; set; }
         public string? RecItemName { get; set; }
-        public long? CustJWIssEntryid { get; set; }
-        public long? CustJWIssYearCode { get; set; }
+       // public long? CustJWIssEntryid { get; set; }
+       // public long? CustJWIssYearCode { get; set; }
         public string? CustJWIssChallanNo { get; set; }
         public DateTime? CustJWIssChallanDate { get; set; }
         public long? AccountCode { get; set; }
@@ -171,7 +172,7 @@ namespace eTactWeb.DOM.Models
         public float? QtyToBeRec { get; set; }
         public DateTime? BOMRecDate { get; set; }
         public int? BomRevNo { get; set; }
-        public long? ProcessID { get; set; }
+       // public long? ProcessID { get; set; }
         public float? IssQty { get; set; }
         public float? TotalAdjQty { get; set; }
         public float? TotalIssQty { get; set; }
@@ -183,7 +184,7 @@ namespace eTactWeb.DOM.Models
         public string? PreRecChallanNo { get; set; }
         public float? ScrapQtyAgainstRecQty { get; set; }
         public string? Recbatchno { get; set; }
-        public int? RecItemCode { get; set; }
+       // public int? RecItemCode { get; set; }
         public string? RecPartCode { get; set; }
         public string? Recuniquebatchno { get; set; }
         public string? Issbatchno { get; set; }

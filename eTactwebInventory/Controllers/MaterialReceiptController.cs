@@ -175,10 +175,10 @@ namespace eTactWeb.Controllers
                 }
                 string batchGrid = HttpContext.Session.GetString("KeyBatchDetailGrid");
                 List<BatchDetailModel> BatchDetail = new List<BatchDetailModel>();
-                //if (string.IsNullOrEmpty(batchGrid))
-                //{
-                //    BatchDetail = JsonConvert.DeserializeObject<List<BatchDetailModel>>(batchGrid);
-                //}
+                if (!string.IsNullOrEmpty(batchGrid))
+                {
+                    BatchDetail = JsonConvert.DeserializeObject<List<BatchDetailModel>>(batchGrid);
+                }
                 if (MaterialReceiptDetail == null)
                 {
                     ModelState.Clear();

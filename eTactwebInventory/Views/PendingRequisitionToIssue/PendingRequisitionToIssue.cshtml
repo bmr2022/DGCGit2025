@@ -1041,7 +1041,7 @@
             var rowCount = $('#divPendIssueGrid tr').length;
 
             for (var i = 0; i < rowCount; i++) {
-                if (parseInt($('#IssueQty' + i).val()) <= 0) {
+                if (parseFloat($('#IssueQty' + i).val()) <= 0) {
                     $('#PendingGrid' + i + ' input').css("color", "red");
                     $('#IssueQty' + i).css("font-weight", "bolder");
                     $('#Stock' + i).css("font-weight", "bolder");
@@ -1051,7 +1051,7 @@
                         $('#OriginalItemCode' + i).val($('#ItemCode' + i).val());
                     }
                 }
-                else if (parseInt($('#Stock' + i).val()) < parseInt($('#ReqQty' + i).val())) {
+                else if (parseFloat($('#Stock' + i).val()) < parseFloat($('#ReqQty' + i).val())) {
                     $('#PendingGrid' + i + ' input').css("color", "blue");
                     $('#IssueQty' + i).css("font-weight", "bolder");
                     $('#Stock' + i).css("font-weight", "bolder");

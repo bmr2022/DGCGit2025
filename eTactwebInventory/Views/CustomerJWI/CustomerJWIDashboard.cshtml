@@ -315,7 +315,18 @@
             }
 
             // Fetch data
+            // var resp = await fetch('/CustomerJWI/GetCustJWIDashBoardGridData');
+            // var rows = await resp.json();
+             
             var resp = await fetch('/CustomerJWI/GetCustJWIDashBoardGridData');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); // Log full error
+                console.error("Error body:", errorText);
+                return; // Exit early
+            }
+
             var rows = await resp.json();
 
             // Declare headers and body
@@ -324,37 +335,48 @@
 
             // Handle report type logic
             switch (dashboardTypeValue) {
-                case 'Summary':
+                case 'SUMMARY':
                     headers = [
-                        "#Sr", "REQ No", "Req Date", "Entry Date", "Work Center", "WO No", "Branch Name",
-                        "Reason", "Cancel", "Machine Name", "WO Year Code", "Entry Id", "Year Code",
-                        "Total Req Qty", "Total Pend Qty", "Created By", "Updated By"
+                        "#Sr",  "Challan No", "Challan Date", "Customer Name", "Customer Address",
+                        "State", "State Code", "GST Type", "JW Type", "Total Amount", "Net Amount", "E-Way Bill",
+                        "Entry Machine", "Issued By", "Vehicle No", "Time of Removal", "Dispatch Through",
+                        "Dispatch To","Bill No"
                     ];
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.reqNo, r.reqDate ? r.reqDate.split(" ")[0] : "",
-                        r.entryDate ? r.entryDate.split(" ")[0] : "", r.workCenter,
-                        r.woNo, r.branchName, r.reason, r.cancel, r.machName, r.woYearcode,
-                        r.entryId, r.yearCode, r.totalReqQty, r.totalPendQty, r.createdBy,
-                        r.updatedBy
+                        i + 1, r.challanNo,
+                        r.challanDate ? r.challanDate.split(" ")[0] : "", r.customerName,r.customerAddress,
+                        r.state,r.stateCode,r.gstType,r.jwType,r.totalAmount,r.netAmount,r.eWayBill,r.entryMachineName,
+                        r.issuedByEmpName,r.vehicleNo,r.timeOfRemovel,r.dispatchThrough,r.dispatchTo,
+                        r.billNo,
                     ]);
                     break;
-                case 'Detail':
+                case 'DETAIL':
                     headers = [
-                        "#Sr", "REQ No", "Req Date", "Item Name", "Part Code", "Quantity", "Unit", "Alt Qty",
-                        "Pending Qty", "Location", "Bin No", "Entry Date", "Work Center", "Branch Name",
-                        "Cancel", "Entry ID",
-                        "Total Req Qty", "Total Pend Qty"
+                        "#Sr", "Entry Date", "Challan No", "Challan Date", "Customer Name", "Customer Address",
+                        "State", "State Code", "GST Type", "JW Type", "BOM Ind", "Produce/Unproduce", "BOM No",
+                        "Part Code", "Item Name", "HSN No", "Qty", "Unit", "Rate", "Net Amount", "Types",
+                        "SO No", "Cust Order No", "SO Date", "Sch No", "Sch Date", "Sch Year Code", "Batch No",
+                        "Unique Batch No", "Batch Stock", "Total Stock", "Total Amount", "Net Amount",
+                        "E-Way Bill", "Entry Machine", "Issued By", "Transporter", "Vehicle No", "Time of Removal",
+                        "Dispatch Through", "Dispatch To", "Entered By", "Actual Entry Date", "Updated By",
+                        "Updated On", "Remark", "Cost Center", "UID", "Bill No", "Bill Year Code",
+                        "Cust JW Iss Entry ID", "Cust JW Iss Year Code"
                     ];
 
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.reqNo, r.reqDate ? r.reqDate.split(" ")[0] : "", r.itemName, r.partCode, r.qty, r.unit,
-                        r.altQty, r.pendQty, r.location, r.binNo, r.entryDate ? r.entryDate.split(" ")[0] : "",
-                        r.workCenter, r.branchName, r.cancel,
-                        r.entryId, r.totalReqQty, r.totalPendQty
+                        i + 1,r.entryDate?.split(" ")[0] || "",r.challanNo,r.challanDate?.split(" ")[0] || "",
+                        r.customerName,r.customerAddress,r.state,r.stateCode,r.gstType,r.jwType,
+                        r.bomInd,r.produceUnproduce,r.bomNo,r.partCode,r.itemName,r.hsnNo,r.qty,
+                        r.unit,r.rate,r.netAmount,r.types,r.sono,r.custOrderNo,r.soDate?.split(" ")[0] || "",
+                        r.schNo,r.schDate?.split(" ")[0] || "",r.schYearcode,r.batchNo,r.uNiqueBatchNo,
+                        r.batchStock,r.totalStock,r.totalAmount,r.netAmount,r.eWayBill,r.entryMachineName,
+                        r.issuedByEmpName,r.transporterName,r.vehicleNo,r.timeOfRemovel,r.dispatchThrough,
+                        r.dispatchTo,r.entryByEmp,r.actualEntryDate?.split(" ")[0] || "",r.updatedByEmp,
+                        r.updatedOn?.split(" ")[0] || "",r.remark,r.cc,r.uid,r.billNo,r.billYearCode,
+                        r.custJwIssEntryId,r.custJwIssYearCode
                     ]);
-
 
                     break;
 
@@ -362,17 +384,11 @@
 
                 default:
                     headers = [
-                        "#Sr", "REQ No", "Req Date", "Entry Date", "Work Center", "WO No", "Branch Name",
-                        "Reason", "Cancel", "Machine Name", "WO Year Code", "Entry Id", "Year Code",
-                        "Total Req Qty", "Total Pend Qty", "Created By", "Updated By"
+                        "#Sr","ChallanNo","ChallanDate", "CustomerName"
                     ];
                     console.log("Data:", rows);
                     body = rows.map((r, i) => [
-                        i + 1, r.reqNo, r.reqDate ? r.reqDate.split(" ")[0] : "",
-                        r.entryDate ? r.entryDate.split(" ")[0] : "", r.workCenter,
-                        r.woNo, r.branchName, r.reason, r.cancel, r.machName, r.woYearcode,
-                        r.entryId, r.yearCode, r.totalReqQty, r.totalPendQty, r.createdBy,
-                        r.updatedBy
+                        i + 1, r.challanNo, r.challanDate?.split(" ")[0] || "", r.customerName
                     ]);
                     break;
             }
@@ -427,7 +443,7 @@
             });
 
             // Save the PDF
-            doc.save(`ReqWithoutBom_${dashboardTypeValue.replace(/\s+/g, '_')}.pdf`);
+            doc.save(`CustJWI_${dashboardTypeValue.replace(/\s+/g, '_')}.pdf`);
 
         });
         function BackButtonData(event, EntryId) {
@@ -505,6 +521,9 @@
         }
     </script>
     <script src="~/Scripts/table2excel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
 
 
 }
