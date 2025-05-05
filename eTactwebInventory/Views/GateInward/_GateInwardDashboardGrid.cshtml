@@ -42,6 +42,8 @@ else
             <tbody id="gateDashboardtable">
                 @{
                     var @Cntr = 0;
+                    int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                    int srNo = srNoStart + 1;
                     if (Model.GateDashboard == null || Model.GateDashboard.Count == 0)
                     {
                         <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -53,7 +55,7 @@ else
 
                             Cntr = Cntr + 1;
                             <tr onclick="selection(this)">
-                                <th>@Cntr</th>
+                                <th>@srNo</th>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
                                         <div id="printData-@Cntr">
@@ -129,6 +131,7 @@ else
                                 <td>@item.EnteredBy</td>
                                 <td>@item.UpdatedBy</td>
                             </tr>
+                            srNo++;
                         }
                     }
                 }
@@ -136,7 +139,15 @@ else
         </table>
 
     </div>
-    <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+  
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+
+<center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
+
 }
 @{
     int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);

@@ -1473,7 +1473,7 @@
                         Err = 1;
                     }
 
-                    if ($('#saleBillRow-' + i).find('td.rate').text() != $('#Rate').val()) {
+                    if (parseFloat($('#saleBillRow-' + i).find('td.rate').text()) != parseFloat($('#Rate').val())) {
                         $.notify('Rate should same with Grid Rate...!', "error");
                         AddErrorCls('Rate');
                         Err = 1;
@@ -1659,6 +1659,7 @@
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
                         $('#Uniquebatchno,#Batchno,#Qty,#SOPendQty').val(0);
+                        $('#StoreId').val(0);
                         // $('#LotStock,#TotalStock').val("");
 
                         // $('#BOMInd,#ProducedUnprod').val('');
@@ -1852,6 +1853,7 @@
                 success: function (result, status, error) {
 
                     if (result != null) {
+                         
                         var obj = $.parseJSON(result);
                         $('#PartCode').empty();
                         $('#PartCode').append('<option value="0">-Select-</option>');
@@ -1863,6 +1865,7 @@
                                 $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
                             });
                         }
+                         
                         $('#ItemCode').empty();
                         $('#ItemCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1887,6 +1890,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
+                         
                         $('#PartCode').empty();
                         $('#PartCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1897,6 +1901,7 @@
                                 $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
                             });
                         }
+                         
                         $('#ItemCode').empty();
                         $('#ItemCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1922,6 +1927,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
+                         
                         $('#PartCode').empty();
                         $('#PartCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1932,6 +1938,7 @@
                                 $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
                             });
                         }
+                         
                         $('#ItemCode').empty();
                         $('#ItemCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -2350,7 +2357,7 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-                            debugger
+                             
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -2364,7 +2371,7 @@
                                 FILLCustomerOrderAndSPDate();
                                 FillSOSchedule();
                                 FillSchYearCode();
-                                $('#SaleSchYearCode').trigger("change");
+                                // $('#SaleSchYearCode').trigger("change");
                                 $('#SchNo').val(obj[0].SchNo);
                                 $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
                                 // FillItems($('#TypeItemServAssets').val());
@@ -2377,7 +2384,7 @@
                                 } else {
                                     FillSOWiseItems();
                                 }
-                                debugger
+                                 debugger
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2393,6 +2400,7 @@
                                 $('#SONO').val(obj[0].SONO);
                                 $('#SOYearCode').val(obj[0].SOYearCode);
                                 $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
+                                 
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2959,7 +2967,7 @@
                 }
             } else {
 
-
+                 debugger
                 if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
                     FillSOWiseItems();
                 }
@@ -3006,6 +3014,7 @@
                     }
 
                     $('#SchNo,#SaleSchYearCode,#SOPendQty,#Rate').val(0);
+                     
                     $('#PartCode,#ItemCode').val(0).trigger("change");
                     $('#Batchno,#Uniquebatchno').val("");
                 }
@@ -3326,6 +3335,7 @@
                 url: "@Url.Action("FILLSOScheduleDate")",
                 data: { "sono": $('#SONO').val(), "accountCode": $('#AccountCode').val(), "soYearCode": $('#SOYearCode').val(), "SchNo": $('#SchNo').val(), "schYearCode": $('#SaleSchYearCode').val() },
                 dataType: "json",
+                // async:false,
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -3348,7 +3358,7 @@
                                 JWItemList($('#TypeItemServAssets').val());
                             }
                         } else {
-
+                            debugger
                             if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
                                 FillSOWiseItems();
                             }

@@ -104,5 +104,24 @@ namespace eTactwebInventory.Controllers
             return Json(JsonString);
         }
 
+        public async Task<JsonResult> FillFGItemName()
+        {
+            var JSON = await _IDeassembleItem.FillFGItemName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillFGPartCode()
+        {
+            var JSON = await _IDeassembleItem.FillFGPartCode();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillBomNo(int FinishItemCode)
+        {
+            var JSON = await _IDeassembleItem.FillBomNo(FinishItemCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
     }
 }

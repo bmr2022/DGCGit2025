@@ -11,5 +11,8 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> NewEntryId();
         Task<ResponseResult> FillStore();
+        Task<ResponseResult> FillFGItemName();
+        Task<ResponseResult> FillFGPartCode();
+        Task<ResponseResult> FillBomNo(int FinishItemCode);
     }
 }

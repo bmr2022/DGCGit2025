@@ -1307,7 +1307,13 @@ public class TaxController : Controller
             else if (SN == "CreditNote")
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("CreditNoteModel", out AccCreditNoteModel MainModel);
+                //_MemoryCache.TryGetValue("CreditNoteModel", out AccCreditNoteModel MainModel);
+                AccCreditNoteModel MainModel = new();
+                string modelJson = HttpContext.Session.GetString("CreditNoteModel");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJson);
+                }
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "PurchaseRejection")
@@ -2121,7 +2127,13 @@ public class TaxController : Controller
 
             if (SessionName == "CreditNote")
             {
-                _MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
+                var modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+                List<AccCreditNoteDetail> creditNoteDetail = new();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    creditNoteDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
+                }
+                //_MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
                 ItemModel = creditNoteDetail;
 
                 if (ItemModel != null && ItemModel?.Count > 0)

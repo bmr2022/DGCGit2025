@@ -77,11 +77,13 @@
                 else
                 {
                     var @Cntr = 0;
+                    int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                    int srNo = srNoStart + 1;
                     foreach (var item in Model.MasterList)
                     {
                         Cntr = Cntr + 1;
                         <tr>
-                            <td class="FWB">@Cntr</td>
+                            <td class="FWB">@srNo</td>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
@@ -170,6 +172,7 @@
                             <td>@item.UpdatedOn  </td>
                             <td>@item.Active </td>
                         </tr>
+                        srNo++;
                     }
                 }
             </tbody>
@@ -202,7 +205,15 @@
         </table>
     </div>
 </div>
-<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+<center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
+
 
 <style>
     #container {

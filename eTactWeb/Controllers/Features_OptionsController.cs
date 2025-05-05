@@ -61,7 +61,7 @@ string AccSaleBillManualTaxAllowed,
 string AccAllowBackdateVoucherEntry,
 string AccBackdateVoucherEntryPassword,
 string AccAllowToChangeVoucherDateInPurchBill,
-string AccPurchaseVoucherPrintoutFilename,
+string AccPurchaseVoucherPrintoutFilename,string IssueChaallanTaxIsMandatory,
 string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJobWorkIss)
         {
             _logger.LogInformation("\n \n ********** Page Features_Options ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
@@ -182,6 +182,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 MainModel.POClosePOAlwaysAgainstIndent = POClosePOAlwaysAgainstIndent;
                 MainModel.ProdAllowMultiplePlanInProdSchOrNot = ProdAllowMultiplePlanInProdSchOrNot;
                 MainModel.IndentReportName = IndentReportName;
+                MainModel.IssueChaallanTaxIsMandatory = IssueChaallanTaxIsMandatory;
 
 
 

@@ -28,6 +28,19 @@ namespace eTactWeb.Data.BLL
         {
             return await _IDeassembleItemDAL.FillStore();
         }
+        public async Task<ResponseResult> FillFGItemName()
+        {
+            return await _IDeassembleItemDAL.FillFGItemName();
+        }
+        public async Task<ResponseResult> FillFGPartCode()
+        {
+            return await _IDeassembleItemDAL.FillFGPartCode();
+        }
+        
+        public async Task<ResponseResult> FillBomNo(int FinishItemCode)
+        {
+            return await _IDeassembleItemDAL.FillBomNo(FinishItemCode);
+        }
 
     }
 }

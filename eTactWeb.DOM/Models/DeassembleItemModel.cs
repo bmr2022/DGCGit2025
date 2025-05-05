@@ -14,6 +14,7 @@ namespace eTactWeb.DOM.Models
         public string? DeassEntryDate { get; set; }
         public int? DeassYearcode { get; set; }
         public string? DeassSlipNo { get; set; }
+        public int? BomNo { get; set; }
         public int? FGStoreId { get; set; }
         public string? FGStoreName { get; set; }
         public int? FinishItemCode { get; set; }
