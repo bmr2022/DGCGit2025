@@ -1220,23 +1220,45 @@ namespace eTactWeb.Controllers
             {
                 foreach (TDSModel Item in TDSDetailList)
                 {
-                    DateTime InvoiceDate = new DateTime();
-                    DateTime challanDate = new DateTime();
-                    DateTime BankVoucherDate = new DateTime();
+                    //DateTime InvoiceDate = new DateTime();
+                    //DateTime challanDate = new DateTime();
+                    //DateTime BankVoucherDate = new DateTime();
+                    //string InvoiceDt = "";
+                    //string challanDt = "";
+                    //string BankVoucherDt = "";
+
+                    DateTime InvoiceDate = new DateTime(2000, 1, 1);
+                    DateTime challanDate = new DateTime(2000, 1, 1);
+                    DateTime BankVoucherDate = new DateTime(2000, 1, 1);
                     string InvoiceDt = "";
                     string challanDt = "";
                     string BankVoucherDt = "";
+
+                    #region Formats
+                    string[] formats = {
+                    "dd-MM-yyyy HH:mm:ss",
+                    "dd/MM/yyyy HH:mm:ss",
+                    "yyyy-MM-dd HH:mm:ss",
+                    "MM/dd/yyyy HH:mm:ss",
+                    "dd-MM-yyyy",
+                    "dd/MM/yyyy",
+                    "yyyy-MM-dd",
+                    "MM/dd/yyyy"
+                };
+                    #endregion
+
                     if (MainModel.InvDate != null)
                     {
-                        InvoiceDate = DateTime.Parse(MainModel.InvDate, new CultureInfo("en-GB"));
-                        InvoiceDt = InvoiceDate.ToString("dd/MMM/yyyy");
+                        DateTime.TryParseExact(MainModel.InvDate, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out InvoiceDate);
+                        //DateTime.TryParse(MainModel.InvDate, CultureInfo.InvariantCulture, out InvoiceDate);
+                        InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
                     }
                     else
                     {
-                        InvoiceDt = DateTime.Now.ToString("dd/MMM/yyyy");
+                        InvoiceDt = DateTime.Today.ToString();
                     }
-                    challanDt = DateTime.Now.ToString("dd/MMM/yyyy");
-                    BankVoucherDt = DateTime.Now.ToString("dd/MMM/yyyy");
+                    challanDt = DateTime.Today.ToString();
+                    BankVoucherDt = DateTime.Today.ToString();
 
                     Table.Rows.Add(
                         new object[]
