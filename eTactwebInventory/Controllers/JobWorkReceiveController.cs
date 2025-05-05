@@ -760,12 +760,12 @@ namespace eTactWeb.Controllers
                 var JobWorkReceiveGrid = new List<JobWorkReceiveDetail>();
                 var JobReceiveGrid = new List<JobWorkReceiveDetail>();
                 var SSGrid = new List<JobWorkReceiveDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
+                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                //{
+                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                //    SlidingExpiration = TimeSpan.FromMinutes(55),
+                //    Size = 1024,
+                //};
                 var seqNo = 0;
                 foreach (var item in model)
                 {
@@ -882,6 +882,7 @@ namespace eTactWeb.Controllers
                         MainModel.JobWorkReceiveGrid = JobWorkReceiveGrid;
 
                         HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(MainModel.JobWorkReceiveGrid));
+                        HttpContext.Session.SetString("KeyJobWorkRecieveGrid", JsonConvert.SerializeObject(model));
                     }
                 }
                 return PartialView("_JobWorkReceiveGrid", MainModel);
