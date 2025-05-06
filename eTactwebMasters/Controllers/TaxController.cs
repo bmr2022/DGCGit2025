@@ -142,6 +142,11 @@ public class TaxController : Controller
         var CgstSgst = ITaxModule.SgstCgst(model.TxAccountCode);
 
         _MemoryCache.TryGetValue("KeyTaxGrid", out IList<TaxModel> TaxGrid);
+        string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+        if (!string.IsNullOrEmpty(modelTxGridJson))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<IList<TaxModel>>(modelTxGridJson);
+        }
 
         if (HttpContext.Session.GetString(model.TxPageName) != null)
         {
@@ -196,6 +201,11 @@ public class TaxController : Controller
             else if (model.TxPageName == "PurchaseRejection")
             {
                 _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out IList<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+                string modelPRGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
+                if (!string.IsNullOrEmpty(modelPRGridJson))
+                {
+                    purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
+                }
                 var purchaseRejectionModel = new AccPurchaseRejectionModel();
                 purchaseRejectionModel.AccPurchaseRejectionDetails = purchaseRejectionDetail.ToList();
                 MainModel = purchaseRejectionModel;
