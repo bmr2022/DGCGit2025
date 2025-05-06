@@ -13,7 +13,7 @@ public interface IProductionEntry
     Task<ResponseResult> AltUnitConversion(int ItemCode, int AltQty, int UnitQty);
     Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo);
     Task<ResponseResult> GetFeatureOption(string Flag, string SPName);
-    Task<ResponseResult> SaveProductionEntry(ProductionEntryModel model, DataTable GIGrid, DataTable OperatorGrid, DataTable BreakDownGrid, DataTable ScrapGrid);
+    Task<ResponseResult> SaveProductionEntry(ProductionEntryModel model, DataTable GIGrid, DataTable OperatorGrid, DataTable BreakDownGrid, DataTable ScrapGrid, DataTable ProductGrid);
     Task<ProductionEntryDashboard> GetDashboardData(string FromDate, string ToDate, string SlipNo, string ItemName, string PartCode, string ProdPlanNo, string ProdSchNo, string ReqNo, string DashboardType);
     Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate, int ActualEntryBy);
     Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);
@@ -24,6 +24,9 @@ public interface IProductionEntry
     Task<ResponseResult> FillStore();
     Task<ResponseResult> FillWorkcenter();
     Task<ResponseResult> GetUnit(int RmItemCode);
+    Task<ResponseResult> FillProductItems(int FgItemCode, string BomNo);
+    Task<ResponseResult> FillProductPartCode(int FgItemCode, string BomNo);
+    Task<ResponseResult> FillProductUnit(int ProductItemCode);
     Task<ResponseResult> GetScrapUnit(int ScrapItemCode);
     Task<ResponseResult> GetWorkCenterTotalStock(string Flag, int ItemCode, int WcId, string TillDate);
     Task<ResponseResult> GetWorkCenterQty(string Flag, int ItemCode, int WcId, string TillDate, string BatchNo, string UniqueBatchNo);
@@ -73,6 +76,7 @@ public interface IProductionEntry
     Task<ProductionEntryDashboard> GetOperationData(string FromDate, string ToDate);
     Task<ProductionEntryDashboard> GetScrapData(string FromDate, string ToDate);
     Task<ProductionEntryModel> GetViewByID(int ID, int YearCode);
+    Task<ProductionEntryDashboard> GetProductData(string FromDate, string ToDate);
     Task<ResponseResult> CheckFeatureOption();
     Task<ResponseResult> CCEnableDisable();
     Task<ResponseResult> GetFormRights(int uId);

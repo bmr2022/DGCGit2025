@@ -75,6 +75,7 @@
                                     <option value="Breakdown">Breakdown</option>
                                     <option value="Operation">Operator</option>
                                     <option value="Scrap">Scrap</option>
+                                    <option value="Product">Product</option>
                                 </select>
                             </div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
@@ -394,6 +395,10 @@
             }
             else if ($('#DashboardType').val() == "Scrap") {
                 GetScrapData();
+                GetFormRights();
+            }
+            else if ($('#DashboardType').val() == "Product") {
+                GetProductData();
                 GetFormRights();
             }
             else {
@@ -1214,6 +1219,30 @@
             var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetScrapData")',
+                type: "POST",
+                data: $('#SParam').serializeArray(),
+                async: false,
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    CheckApprovedOrNotScrapDetail();
+                    var dashGrid = $('#gateDashboardtable tr').length
+                    $('#totalRows').text(dashGrid);
+                    GetFormRights();
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetProductData() {
+
+            var data = $('#SParam').serialize();
+            $.ajax({
+                url: '@Url.Action("GetProductData")',
                 type: "POST",
                 data: $('#SParam').serializeArray(),
                 async: false,

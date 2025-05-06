@@ -90,6 +90,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.GetScrapData(FromDate, ToDate);
         }
+        public async Task<ProductionEntryDashboard> GetProductData(string FromDate, string ToDate)
+        {
+            return await _ProductionEntryDAL.GetProductData(FromDate, ToDate);
+        }
         public async Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO)
         {
             return await _ProductionEntryDAL.GetPopUpData(Flag, AccountCode, PONO);
@@ -102,9 +106,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.GetFeatureOption(Flag, SPName);
         }
-        public async Task<ResponseResult> SaveProductionEntry(ProductionEntryModel model, DataTable GIGrid, DataTable OperatorGrid, DataTable BreakDownGrid, DataTable ScrapGrid)
+        public async Task<ResponseResult> SaveProductionEntry(ProductionEntryModel model, DataTable GIGrid, DataTable OperatorGrid, DataTable BreakDownGrid, DataTable ScrapGrid, DataTable ProductGrid)
         {
-            return await _ProductionEntryDAL.SaveProductionEntry(model, GIGrid, OperatorGrid, BreakDownGrid, ScrapGrid);
+            return await _ProductionEntryDAL.SaveProductionEntry(model, GIGrid, OperatorGrid, BreakDownGrid, ScrapGrid, ProductGrid);
         }
         public async Task<ResponseResult> DeleteByID(int ID, int YC, string CC, string EntryByMachineName, string EntryDate,int ActualEntryBy)
         {
@@ -206,9 +210,21 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.FillScrapType();
         }
+        public async Task<ResponseResult> FillProductItems(int FgItemCode, string BomNo)
+        {
+            return await _ProductionEntryDAL.FillProductItems(FgItemCode,BomNo);
+        }
+        public async Task<ResponseResult> FillProductPartCode(int FgItemCode, string BomNo)
+        {
+            return await _ProductionEntryDAL.FillProductPartCode(FgItemCode, BomNo);
+        }
         public async Task<ResponseResult> FillProductType()
         {
             return await _ProductionEntryDAL.FillProductType();
+        }
+        public async Task<ResponseResult> FillProductUnit(int ProductItemCode)
+        {
+            return await _ProductionEntryDAL.FillProductUnit(ProductItemCode);
         }
         public async Task<ResponseResult> FillRMItemName()
         {

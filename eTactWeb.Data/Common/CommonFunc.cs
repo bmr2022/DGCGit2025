@@ -1165,7 +1165,8 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "Yearcode" && typeProperty.PropertyInfo.Name != "ReqYearcode"
                     && typeProperty.PropertyInfo.Name != "QCCheckedDate"
                     && typeProperty.PropertyInfo.Name != "StoreWC" && typeProperty.PropertyInfo.Name != "RMItemName"&&typeProperty.PropertyInfo.Name != "Searchbox"
-                    && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize")
+                    && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+                    && typeProperty.PropertyInfo.Name != "ProductQty" && typeProperty.PropertyInfo.Name != "ProductUnit")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
