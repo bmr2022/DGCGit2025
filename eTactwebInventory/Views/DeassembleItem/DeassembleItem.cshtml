@@ -35,10 +35,10 @@
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="InterStoreTransfer" autocomplete="off" class="form-horizontal">
+    <form asp-action="DeassembleItem" autocomplete="off" class="form-horizontal">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
-                <strong>Inter Store Transfer</strong>
+                <strong>Deassemble Item</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
                     <a asp-action="ISTDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
@@ -137,10 +137,25 @@
                                     <input asp-for="DeassSlipNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
 
-                                
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG PartCode </label>
 
+                                    <input type="hidden" value="@Model.FinishItemCode" id="FinishItemCode" />
 
-                                <div class="col-lg ToStore">
+                                    <select class="form-select" asp-for="FinishPartCode">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
+                                    <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG ItemName</label>
+
+                                    <select class="form-select" asp-for="FinishItemName">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="FGStoreId" class="control-label" style="color: red;">Store Name</label>
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
@@ -151,32 +166,7 @@
                                     </select>
                                 </div>
 
-                                <div class="col-lg ToStore">
-                                    <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG PartCode </label>
-                                    
-                                        <input type="hidden" value="@Model.FinishItemCode" id="FinishItemCode" />
-                                    
-                                    <select class="form-select" asp-for="FinishPartCode">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc">
-                                    <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG ItemName</label>
-                                   
-                                    <select class="form-select" asp-for="FinishItemName">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc">
-                                    <label asp-for="FGBatchNo" class="control-label" style="color: red;"> FGBatchNo</label>
-
-                                    <select class="form-select" asp-for="FGBatchNo">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc">
+                                <div class="col-xl-1 col-lg-4 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="BomNo" class="control-label" style="color: red;"> BomNo</label>
 
                                     <select class="form-select" asp-for="BomNo">
@@ -184,84 +174,107 @@
                                     </select>
                                 </div>
 
+
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc">
+                                    <label asp-for="MaterialRecFrom" class="control-label" style="color: red;"> MaterialRecFrom</label>
+
+                                    <select class="form-select" asp-for="MaterialRecFrom">
+                                        <option value="">-Select-</option>
+                                        <option value="Production">Production</option>
+                                        <option value="MRN">MRN</option>
+                                        <option value="None">None</option>
+                                    </select>
+                                </div>
+
+
+
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN " style="display:none">
+                                    <label asp-for="MRNO" class="control-label" style="color: red;"> MRNO</label>
+
+                                    <select class="form-select" asp-for="MRNO">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN " style="display:none">
+                                    <label asp-for="MRNYearCode" class="control-label" style="color: red;"> MRNYearCode</label>
+
+                                    <select class="form-select" asp-for="MRNYearCode">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN" style="display:none">
+                                    <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
+                                    <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN" style="display:none">
+                                    <label asp-for="MRNEntryID" class="form-label" style="color: blue;">MRNEntryID</label>
+                                    <input asp-for="MRNEntryID" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                    <label asp-for="ProdSlipNO" class="form-label" style="color: blue;">ProdSlipNO</label>
+                                    <input asp-for="ProdSlipNO" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                    <label asp-for="ProdDate" class="form-label" style="color: blue;">ProdDate</label>
+                                    <input asp-for="ProdDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                    <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
+                                    <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                    <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
+                                    <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                    <label asp-for="ProdEntryId" class="form-label" style="color: blue;">ProdEntryId</label>
+                                    <input asp-for="ProdEntryId" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
+                                    <label asp-for="FGBatchNo" class="control-label" style="color: red;"> FGBatchNo</label>
+
+                                    <select class="form-select" asp-for="FGBatchNo">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
                                     <label asp-for="FGUniqueBatchNo" class="control-label" style="color: red;"> FGUniqueBatchNo</label>
 
                                     <select class="form-select" asp-for="FGUniqueBatchNo">
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                  <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                <div class="col-xl-1 col-lg-4 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalStock" class="form-label" style="color: blue;">TotalStock</label>
                                     <input asp-for="TotalStock" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                  <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="FGQty" class="form-label" style="color: blue;">FGQty</label>
-                                    <input asp-for="FGQty" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    <input asp-for="FGQty" class="form-control"  />
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="FGConvQty" class="form-label" style="color: blue;">FGConvQty</label>
-                                    <input asp-for="FGConvQty" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    <input asp-for="FGConvQty" class="form-control"   />
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="Unit" class="form-label" style="color: blue;">Unit</label>
                                     <input asp-for="Unit" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
 
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="MRNO" class="form-label" style="color: blue;">MRNO</label>
-                                    <input asp-for="MRNO" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="MRNYearCode" class="form-label" style="color: blue;">MRNYearCode</label>
-                                    <input asp-for="MRNYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
-                                    <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="MRNEntryID" class="form-label" style="color: blue;">MRNEntryID</label>
-                                    <input asp-for="MRNEntryID" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ProdSlipNO" class="form-label" style="color: blue;">ProdSlipNO</label>
-                                    <input asp-for="ProdSlipNO" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ProdDate" class="form-label" style="color: blue;">ProdDate</label>
-                                    <input asp-for="ProdDate" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
-                                    <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
-                                    <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="ProdEntryId" class="form-label" style="color: blue;">ProdEntryId</label>
-                                    <input asp-for="ProdEntryId" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc">
-                                    <label asp-for="MaterialRecFrom" class="control-label" style="color: red;"> MaterialRecFrom</label>
-
-                                    <select class="form-select" asp-for="MaterialRecFrom">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
-
-
-
-
-
+                               
                             </div>
 
                         </div>
@@ -289,14 +302,16 @@
                                             <tr>
                                                
                                                 <th>RM StoreName</th>
-                                                <th style="align-items:left;">Rm PartCode</th>
+                                                <th style="align-items:left;">RM PartCode</th>
+                                                <th style="align-items:left;">RM ItemName</th>
+                                                <th>BomQty</th>
+                                                <th>DeassQty</th>
+                                                <th>IdealDeassQty</th>
                                                 <th>Unit</th>
                                                 <th>Remark</th>
                                                 <th>RMBatchNo</th>
                                                 <th>RmUniqueBatchNo</th>
-                                                <th>BomQty</th>
-                                                <th>DeassQty</th>
-                                                <th>IdealDeassQty</th>
+                                               
                                                 
                                             </tr>
                                         </thead>
@@ -318,22 +333,25 @@
                                                         <option value="0">-Select-</option>
                                                     </select>
                                                 </td>
-                                                <td><input asp-for="Unit" style="width:70px !important" readonly /></td>
-                                                <td><input asp-for="Remark" style="width:70px !important" readonly /></td>
+                                                <td><input asp-for="BomQty" class="form-control" style="width:80px;" readonly /></td>
+                                                <td><input asp-for="DeassQty" style="width:70px !important" /></td>
+                                                <td><input asp-for="IdealDeassQty" style="width:70px !important" readonly /></td>
+                                                <td><input asp-for="RMUnit" style="width:70px !important" readonly /></td>
+                                                <td><input asp-for="Remark" style="width:100px !important"  /></td>
 
                                                 <td>
                                                     <select class="form-select" asp-for="RMBatchNo" style="width:100px;">
                                                         <option value="0" disabled selected>-Select-</option>
+                                                        <option value="1">1</option>
                                                     </select>
                                                 </td>
                                                 <td>
                                                     <select class="form-select" asp-for="RmUniqueBatchNo">
                                                         <option value="0" disabled selected>-Select-</option>
+                                                        <option value="1"  >1</option>
                                                     </select>
                                                 </td>
-                                                <td><input asp-for="BomQty" class="form-control" style="width:80px;"/></td>
-                                                <td><input asp-for="DeassQty" style="width:70px !important" readonly /></td>
-                                                <td><input asp-for="IdealDeassQty" style="width:70px !important" readonly /></td>
+                                                
                                               
 
                                             </tr>
@@ -345,14 +363,14 @@
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
 
-                            <div class="d-flex">
-                                <div class="col-md-10">
+                            <div class="d-flex justify-content-between">
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+                                </div>
+                                <div class="col-md-2">
                                     <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
                                         <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
                                     </button>
-                                </div>
-                                <div class="col-md-2 mt-1 mb-1">
-                                    <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
                                 </div>
                             </div>
 
@@ -363,20 +381,22 @@
                                             <tr>
                                                 <th>Action</th>
                                                 <th>SR#</th>
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store</th>
+
                                                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
                                                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
-                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store</th>
-                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch NO</th>
-                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
-                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark </th>
                                                 <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BomQty</th>
                                                 <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeassQty</th>
                                                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IdealDeassQty</th>
-  
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark </th>
+
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch NO</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                                                
                                             </tr>
                                         </thead>
-                                        <tbody id="divDeassembleItemGrid">
+                                        <tbody id="divISTGrid">
                                             <partial name="_DeassembleItemGrid" />
                                         </tbody>
                                     </table>
@@ -444,7 +464,7 @@
 {
     <script>
         $(document).ready(function () {
-            GetFormRights();
+            /* GetFormRights(); */
             $('#FinishItemName').select2();
             $('#FinishPartCode').select2();
             $('#BomNo').select2();
@@ -452,16 +472,33 @@
             $('#FGStoreId').select2();
             $('#FGBatchNo').select2();
             $('#FGUniqueBatchNo').select2();
-           
+            $('#RMItemName').select2();
+            $('#RmPartCode').select2();
+
+            $('#FGQty').on('input', function () {
+                $('#FGConvQty').val($(this).val());
+            });
+            $('#FGConvQty').on('input', function () {
+                 calculateDeassQty();
+            });
+
+            var FGConvQty = parseFloat($('#FGConvQty').val());
+            var BomQty = parseFloat($('#BomQty').val());
+            var DeassQty = parseFloat($('#DeassQty').val());
+            var IdealDeassQty = parseFloat($('#IdealDeassQty').val());
+
+            DeassQty = FGConvQty * BomQty;
+            parseFloat($('#DeassQty').val(DeassQty));
+            parseFloat($('#IdealDeassQty').val(DeassQty));
 
             $('#Remark').rules("remove", "required");
             $('#ToWCID').prop("disabled", true);
             FillStore();
             FillRMStore();
-            FillLoadToStoreName();
+           
             FillFGPartCode();
             FillFGItemName();
-;            GetAllowBackDate();
+;         
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -498,7 +535,7 @@
             }
             else {
                 GetServerDate();
-                FillLoadTOWorkcenter();
+                
 
                 if ($('#IssueToStoreWC').val() == 'S') {
                     $('#FromStoreId').val($('#hiddenFromStoreId').val());
@@ -545,26 +582,70 @@
 
         });
 
+
+        $('#MaterialRecFrom').change(function () {
+            var selectedValue = $(this).val();
+
+            if (selectedValue === 'Production') {
+                $('.Production').css('display', 'block');
+            } else {
+                $('.Production').css('display', 'none');
+            }
+
+            if (selectedValue === 'MRN') {
+                $('.MRN').css('display', 'block');
+            } else {
+                $('.MRN').css('display', 'none');
+            }
+
+            if (selectedValue === 'None') {
+                $('.MRN').css('display', 'none');
+                $('.Production').css('display', 'none');
+            }
+        });
+
         $(document).on('select2:select', '#FinishItemName,#FinishPartCode', function (e) {
 
             var cntId = e.target.id;
+            console.log(cntId);
             if (cntId == 'FinishItemName') {
                 ItemNameChange(cntId);
+               /*  $('#FinishItemCode').val($('#FinishItemName').val()); */
             }
             else if (cntId == 'FinishPartCode') {
                 PartCodeChange(cntId);
+                /* $('#FinishItemCode').val($('#FinishPartCode').val()); */
             }
             $('#FinishItemCode').val($('#FinishItemName').val())
             FillBomNo();
         });
 
         function ItemNameChange(ID) {
+
+            $('#RmPartCode,#RMItemName,#RMStoreId,#Wcid').val("").trigger("change");
+            $('#RMBatchNo,#RmUniqueBatchNo,#AdjType,#reasonOfAdjustment').val("");
+            $('#RMUnit,#Remark').val("");
+            $('#DeassQty,#BomQty,#IdealDeassQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
+            $('#BomQty,#UniqueBatchNo,#ReasonOfTransfer').val('');
             SetPartCodeItemName(ID);
+            FillFGStockBatchNo();
+            FillFGStockUniqueBatchNo();
+            GetItemPartCode(ID);
+            FillMRNNO();
         }
 
         function PartCodeChange(ID) {
-
-            SetPartCodeItemName(ID);
+            $('#RmPartCode,#RMItemName,#RMStoreId,#Wcid').val("").trigger("change");
+            $('#RMBatchNo,#RmUniqueBatchNo,#AdjType,#reasonOfAdjustment').val("");
+            $('#RMUnit,#Remark').val("");
+            $('#DeassQty,#BomQty,#IdealDeassQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
+            $('#BomQty,#UniqueBatchNo,#ReasonOfTransfer').val('');
+            $.when(SetPartCodeItemName(ID)).done(function () {
+                GetItemPartCode(ID);
+            });
+            FillFGStockBatchNo();
+            FillFGStockUniqueBatchNo();
+            FillMRNNO();
         }
 
         function SetPartCodeItemName(ID) {
@@ -581,45 +662,163 @@
             }
         }
 
+        $('#FGQty').on('input', function () {
+            var FGQty = parseFloat($(this).val());
+            var TotalStock = parseFloat($("#TotalStock").val());
+
+            if (FGQty > TotalStock) {
+                $.notify('Quantity must be less then TotalStock ', 'error');
+                $(this).val('');
+            }
+        });
+
+        $('#FGConvQty').on('input', function () {
+            var FGConvQty = parseFloat($(this).val());
+            var TotalStock = parseFloat($("#TotalStock").val());
+
+            if (FGConvQty > TotalStock) {
+                $.notify('FGConvQty must be less then TotalStock ', 'error');
+                $(this).val('');
+            }
+        });
+
+        function calculateDeassQty() {
+            var FGConvQty = parseFloat(document.getElementById('FGConvQty').value) || 0;
+            var BomQty = parseFloat(document.getElementById('BomQty').value) || 0;
+            var DeassQty = FGConvQty * BomQty;
+            document.getElementById('DeassQty').value = DeassQty.toFixed(2);
+            document.getElementById('IdealDeassQty').value = DeassQty.toFixed(2);
+        }
+
+
+
+        $(document).on('select2:select', '#RMItemName,#RmPartCode', function (e) {
+
+            var cntId = e.target.id;
+            console.log(cntId);
+            if (cntId == 'RMItemName') {
+                RMItemNameChange(cntId);
+               /*  $('#RMItemCode').val($('#RMItemName').val()); */
+            }
+            else if (cntId == 'RmPartCode') {
+                RMPartCodeChange(cntId);
+                /* $('#RMItemCode').val($('#RmPartCode').val()); */
+            }
+            $('#RMItemCode').val($('#RMItemName').val());
+            /* FillBomNo(); */
+        });
+
+        function RMItemNameChange(ID) {
+            SetRMPartCodeItemName(ID);
+            
+                GetRMItemPartCode(ID);
+           
+           /*  FillRMStockBatchNo();
+            FillRMStockUniqueBatchNo(); */
+            BomQty();
+            calculateDeassQty();
+        }
+
+        function RMPartCodeChange(ID) {
+
+            $.when(SetRMPartCodeItemName(ID)).done(function () {
+                GetRMItemPartCode(ID);
+            });
+           /*  FillRMStockBatchNo();
+            FillRMStockUniqueBatchNo(); */
+            BomQty();
+            calculateDeassQty();
+        }
+
+        function SetRMPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "RmPartCode") {
+                    $("#RMItemName").val(v).trigger("change");
+                }
+
+                if (ID == "RMItemName") {
+                    $("#RmPartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+        async function GetItemPartCode(ID) {
+            $.getJSON({
+                url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+                data: { Code: $('#' + ID).val() },
+                success: function (result, status, xhr) {
+                    if (result) {
+                        var obj = JSON.parse(result);
+                        if (!obj) {
+                            $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+                        }
+                        else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#Unit').val(obj.Result[0].Unit);
+                           
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+        async function GetRMItemPartCode(ID) {
+            $.getJSON({
+                url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+                data: { Code: $('#' + ID).val() },
+                success: function (result, status, xhr) {
+                    if (result) {
+                        var obj = JSON.parse(result);
+                        if (!obj) {
+                            $('#RMUnit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+                        }
+                        else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+                            $('#RMUnit').val(obj.Result[0].Unit);
+
+                        }
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+       /*  $('#RMBatchNo').change(function () {
+            FillRMStockUniqueBatchNo();
+            
+        }); */
+        $('#FGBatchNo').change(function () {
+            FillFGStockUniqueBatchNo();
+
+        });
+
+
+        $('#BomNo').change(function () {
+            FillRMItemName();
+            FillRMPartCode();
+        });
+
+        $('#MRNO').change(function () {
+            FillMRNYearCode();
+        });
+        $('#MRNYearCode').change(function () {
+            FillMRNDetail();
+        });
+
 
 
         $('#submitBTN').click(function (event) {
             event.preventDefault();
-            if ($('#FromStoreId').val() == null) {
-                $.notify('Please select From StoreName.', 'error');
-            }
-            else {
+           
                 $("form").submit();
-            }
+           
         });
 
-        function ItemNameChange(ID) {
-            SetPartCodeItemName(ID);
-            FillTotalStock();
-            FillStockBatchNo();
-            $('#BatchNo,#UniqueBatchNo').val('');
-            if ($('#IssueToStoreWC').val() == 'S') {
-                FillRecStoreStock();
-            } else {
-                //FillWIPStock();
-                /* FillCurrentWIPBatchINStore(); */
-                FillStockBatchNo();
-                GetWIPStockBatchWise();
-            }
-        }
-        function PartCodeChange(ID) {
-            SetPartCodeItemName(ID);
-            FillTotalStock();
-            FillStockBatchNo();
-            if ($('#IssueToStoreWC').val() == 'S') {
-                FillRecStoreStock();
-            } else {
-                // FillWIPStock();
-                /* FillCurrentWIPBatchINStore(); */
-                FillStockBatchNo();
-                GetWIPStockBatchWise();
-            }
-        }
+        
 
         function GetAltQty() {
             var ItemCode = parseInt($('#ItemCode').val());
@@ -643,34 +842,9 @@
             });
         }
 
-        //function GetWIPStockBatchWise() {
-        //    var ItemCode = parseInt($('#ItemCode').val());
-        //    var WCID = parseInt($('#ToWCID').val());
-        //    var uniqbatchno = $('#UniqueBatchNo').val();
-        //    var BatchNo = $('#BatchNo').val();
-        //    $.ajax({
-        //        type: "POST",
-        //        data: { "ItemCode": ItemCode, "WCID": WCID, "uniquebatchno": uniqbatchno, "batchno": BatchNo },
-        //        url: "@Url.Action("GetWIPStockBatchWise", "StockAdjustment")",
-        //        dataType: "json",
-        //        async: false,
-        //        success: function (result, status, error) {
+       
 
-        //            if (result != null) {
-        //                var obj = $.parseJSON(result);
-        //                if (obj.StatusCode != 500) {
-        //                    $('#RecStoreStock').val(0);
-        //                    $('#RecStoreStock').val(obj.Result[0].STOCK);
-        //                    $('#LotStockQty').val(0);
-        //                    $('#LotStockQty').val(obj.Result[0].STOCK);
-        //                }
-        //                // AdjStockOperation();
-        //            }
-        //        }
-        //    });
-        //}
-
-        function GetFormRights() {
+/*         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
@@ -714,27 +888,9 @@
                 }
             });
         }
+ */
 
-
-        function GetWIPStockBatchWise() {
-
-            var ItemCode = parseInt($('#ItemCode').val());
-            var WCID = parseInt($('#ToWCID').val());
-            $.ajax({
-                type: "POST",
-                data: { "ItemCode": ItemCode, "WCID": WCID },
-                url: "@Url.Action("GETWIPotalSTOCK", "StockAdjustment")",
-                dataType: "json",
-                success: function (result, status, error) {
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        $('#RecStoreStock').val("");
-                        $('#RecStoreStock').val(obj.Result[0].STOCK);
-                    }
-                }
-            });
-        }
-
+        
 
         function GetUnitAltUnit(ItemCode) {
             $.ajax({
@@ -890,7 +1046,7 @@
             }
             else {
                 $.ajax({
-                    url: '/InterStoreTransfer/EditItemRows',
+                    url: '@Url.Action("EditItemRows")',
                     type: "POST",
                     data: { SeqNo: SeqNo },
                     async: false,
@@ -900,41 +1056,38 @@
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
 
-                            $('#PartCode').val(obj[0].ItemCode).trigger("change");
-                            $('#ItemCode').val(obj[0].ItemCode).trigger("change");
-                            //$('#ItemCode').text(obj[0].ItemName);
-                            $('#TotalStockQty').val(obj[0].TotalStockQty);
-                            $('#LotStockQty').val(obj[0].LotStockQty);
-                            if ($('#BatchNo').val() == obj[0].BatchNo) {
-                                $('#BatchNo').val(obj[0].BatchNo);
-                                $('#UniqueBatchNo').val(obj[0].UniqueBatchNo);
+                            $('#RmPartCode').val(obj[0].RMItemCode).trigger("change");
+                            /* $('#RmPartCode').text(obj[0].RmPartCode).trigger("change"); */
+                            $('#RMItemName').val(obj[0].RMItemCode).trigger("change");
+                            /* $('#RMItemName').text(obj[0].RMItemName).trigger("change"); */
+                            $('#RMItemCode').val(obj[0].RMItemCode);
+                            $('#RMUnit').val(obj[0].RMUnit);
+                            $('#RMStoreId').val(obj[0].RMStoreId).trigger("change");
+                            /* $('#RMStoreId').text(obj[0].RMStoreName).trigger("change"); */
+
+                            $('#Remark').val(obj[0].Remark);
+                            if ($('#RMBatchNo').val() == obj[0].RMBatchNo) {
+                                $('#RMBatchNo').val(obj[0].RMBatchNo);
+                                $('#RmUniqueBatchNo').val(obj[0].UniqueBatchNo);
                             } else {
-                                $('#BatchNo').append("<option value='" + obj[0].BatchNo + "' selected>" + obj[0].BatchNo + "</option>")
-                                $('#UniqueBatchNo').append("<option value='" + obj[0].UniqueBatchNo + "' selected>" + obj[0].UniqueBatchNo + "</option>")
+                                $('#RMBatchNo').append("<option value='" + obj[0].RMBatchNo + "' selected>" + obj[0].RMBatchNo + "</option>")
+                                $('#RmUniqueBatchNo').append("<option value='" + obj[0].RmUniqueBatchNo + "' selected>" + obj[0].RmUniqueBatchNo + "</option>")
 
                             }
-                            $('#hiddenSeqNo').val(obj[0].SeqNo);
-                            $('#Qty').val(obj[0].Qty);
-                            $('#Unit').val(obj[0].Unit);
-                            $('#AltQty').val(obj[0].AltQty);
-                            $('#AltUnit').val(obj[0].AltUnit);
-                            $('#Rate').val(obj[0].Rate);
-                            $('#ReasonOfTransfer').val(obj[0].ReasonOfTransfer);
-                            $('#RecStoreStock').val(obj[0].RecStoreStock);
 
-                            $('#divISTGrid tr#' + SeqNo).remove();
-
+                            $('#BomQty').val(obj[0].BomQty);
+                            $('#DeassQty').val(obj[0].DeassQty);
+                            $('#IdealDeassQty').val(obj[0].IdealDeassQty);
+                           
                             var rowCount = $('#divISTGrid tr').length;
                             for (var i = 1; i <= rowCount + 1; i++) {
                                 $('#editItemGrid-' + i).css("pointer-events", "none");
                                 $('#editItemGrid-' + i).css("cursor", "not-allowed");
                             }
 
-                            GetPrevQty();
+                           /*  GetPrevQty(); */
                             DeleteItemRow(SeqNo);
-                            FillLotStock();
-                            //$('#LotStockQty').val(obj[0].Qty + BatchStock);
-                            $('#LotStockQty').val(QtyVal + BatchStock);
+                            
                         }
                     },
                     error: function (response) {
@@ -999,44 +1152,35 @@
 
             e.preventDefault();
             EditEachItem = false;
-            var seqnoarray = [];
-            $('#divISTGrid tr').each(function (index, element) {
-                var currentRow = $(element);
-                var seqnoText = currentRow.find('th').data('seqno') == undefined ? 0 : currentRow.find('th').data('seqno');
-                if (seqnoText != 0) {
-                    seqnoarray.push(parseInt(seqnoText));
-                }
-            });
-            var highestValue = 0;
-            if (seqnoarray.length == 0) {
-                highestValue = 0;
-            }
-            else {
-                highestValue = Math.max(...seqnoarray);
-            }
+
+            var rowCount = $('#divISTGrid table tbody tr').length + 1; // assuming you append one more row
+            var Seqno = rowCount;
+            
             if (!ValidateGrid()) return;
-            var itemCodee = parseInt($('#ItemCode').val());
-            var batchNoo = $('#BatchNo').val();
-            var uniquebatchnoo = $('#UniqueBatchNo').val();
+            var itemCodee = parseInt($('#RMItemCode').val());
+            var batchNoo = $('#RMBatchNo').val();
+            var uniquebatchnoo = $('#RmUniqueBatchNo').val();
             var SchData = {
-                "ItemCode": parseInt($('#ItemCode').val()),
-                "PartCode": $('#PartCode :selected').text(),
-                "ItemName": $('#ItemCode :selected').text(),
-                "TotalStockQty": $('#TotalStockQty').val(),
-                "LotStockQty": $('#LotStockQty').val(),
-                "Qty": $('#Qty').val(),
-                "Unit": $('#Unit').val(),
-                "AltUnit": $('#AltUnit').val(),
-                "Rate": $('#Rate').val(),
-                "BatchNo": $('#BatchNo').find(':selected').text(),
-                "UniqueBatchNo": $('#UniqueBatchNo').find(':selected').text(),
-                "ReasonOfTransfer": $('#ReasonOfTransfer').val(),
-                "RecStoreStock": $('#RecStoreStock').val(),
-                "SeqNo": parseInt($('#hiddenSeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#hiddenSeqNo').val())
+                "RMStoreId": parseInt($('#RMStoreId').val()),
+                "RMStoreName": $('#RMStoreId :selected').text(),
+                "RMItemCode": parseInt($('#RMItemCode').val()),
+                "RmPartCode": $('#RmPartCode :selected').text(),
+                "RMItemName": $('#RMItemName :selected').text(),
+                "RMUnit": $('#RMUnit').val(),
+                "Remark": $('#Remark').val(),
+                "RMBatchNo": $('#RMBatchNo').find(':selected').text(),
+                "RmUniqueBatchNo": $('#RmUniqueBatchNo').find(':selected').text(),
+                "BomQty": $('#BomQty').val(),
+                "DeassQty": $('#DeassQty').val(),
+                "IdealDeassQty": $('#IdealDeassQty').val(),
+
+
+
+                "SeqNo": Seqno
             }
             $.ajax({
                 type: "POST",
-                url: '@Url.Action("AddInterStoreTransferDetail")',
+                url: '@Url.Action("AddDeassembleDetail")',
                 data: SchData,
                 statusCode: {
                     207: function () {
@@ -1046,13 +1190,11 @@
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divISTGrid').html(result);
-                        $('#PartCode,#ItemCode,#Storeid,#Wcid').val("").trigger("change");
-                        $('#batchno,#uniqbatchno,#AdjType,#reasonOfAdjustment').val("");
-                        $('#Unit,#altUnit').val("");
-                        $('#TotalStockQty,#LotStockQty,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
-                        $('#BatchNo,#UniqueBatchNo,#ReasonOfTransfer').val('');
-                        //$('#Storeid,#Wcid').prop("disabled", false);
-
+                        $('#RmPartCode,#RMItemName,#RMStoreId,#Wcid').val("").trigger("change");
+                        $('#RMBatchNo,#RmUniqueBatchNo,#AdjType,#reasonOfAdjustment').val("");
+                        $('#RMUnit,#Remark').val("");
+                        $('#DeassQty,#BomQty,#IdealDeassQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
+                        $('#BomQty,#UniqueBatchNo,#ReasonOfTransfer').val('');
                        
                         $('#PartCode').focus();
                         var rowCount = $('#divISTGrid tr').length;
@@ -1063,7 +1205,7 @@
                             "batchno": batchNoo,
                             "uniquebatchno": uniquebatchnoo
                         });
-                        //TotalNoOfRows();
+                        
                     }
                 },
                 error: function (result, status, xhr) {
@@ -1072,52 +1214,25 @@
             });
         });
 
-        $('#ToWCID').change(function () {
-            //FillWIPStock();
-            FillCurrentWIPBatchINStore();
-            GetWIPStockBatchWise();
-
-        });
+        
 
 
         $('#SlipDate').change(function () {
             ClearGrid();
         });
+      
 
-        $('#ToStoreId').change(function () {
+        $('#FGStoreId').change(function () {
             FillRecStoreStock();
         });
 
-        $('#BatchNo').change(function () {
-            //for (var i = 0; i < UniqueBatchNo.length; i++) {
-            //    if ($('#BatchNo').val() == UniqueBatchNo[i].Batchno) {
-            //        $('#UniqueBatchNo').val(UniqueBatchNo[i].UniqueBatchNo);
-            //    }
-            //}
 
-            if ($('#IssueToStoreWC').val() == "S") {
-                //FillStockBatchNo();
-                FillStockUniqueBatchNo();
-                FillLotStock();
-                FillRecStoreStock();
-            } else {
-                /* FillCurrentWIPUniqueBatchINStore(); */
-                FillStockUniqueBatchNo();
-                GetWIPStockBatchWise();
-                FillLotStock();
-            }
 
-            FillRate();
-
-        });
-
-        $('#UniqueBatchNo').change(function () {
+        $('#FGUniqueBatchNo').change(function () {
             FillLotStock();
-            if ($('#IssueToStoreWC').val() == "S") {
+            
                 FillRecStoreStock();
-            } else {
-                GetWIPStockBatchWise();
-            }
+            
         });
 
         var QtyVal = 0;
@@ -1140,24 +1255,7 @@
             });
         }
 
-        function GetAllowBackDate() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("GetAllowBackDate")",
-                dataType: "json",
-                success: function (result, status, error) {
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.Result[0].AllowBackDateInterStoreTransfer == 'Y') {
-                            $("#SlipDate").prop("disabled", false);
-                            $("#SlipDate").prop("readonly", true);
-                            $('#SlipDate').css('background-color', 'rgb(248 255 178)');
-
-                        }
-                    }
-                }
-            });
-        }
+       
 
         function GetBatchInventory() {
             $.ajax({
@@ -1176,19 +1274,6 @@
                     }
                 }
             });
-        }
-
-
-        function SetPartCodeItemName(ID) {
-            if (!ID) return;
-            else {
-                var v = $('#' + ID).select2('val');
-                if (ID == "PartCode") {
-                    $("#ItemCode").val(v).trigger("change");
-                } else {
-                    $("#PartCode").val(v).trigger("change");
-                }
-            }
         }
 
         function FillTotalStock() {
@@ -1214,34 +1299,12 @@
             });
         }
 
-        //function FillRecStoreStock() {
-        //    var ItemCode = $('#ItemCode').val();
-        //    var Storeid = $('#ToStoreId').val();
-        //    var UniqueBatchNo = $('#UniqueBatchNo').val();
-        //    var BatchNo = $('#BatchNo').val();
-        //    $.ajax({
-        //        type: "POST",
-        //        url: "@Url.Action("FillLotStock", "StockAdjustment")",
-        //        data: { "ItemCode": ItemCode, "Storeid": Storeid, "UniqueBatchNo": UniqueBatchNo, "BatchNo": BatchNo },
-        //        async: false,
-        //        success: function (result, status, error) {
-        //
-        //            if (result != null) {
-        //                var obj = $.parseJSON(result);
-        //                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-        //                    $('#RecStoreStock').val("");
-        //                    $('#RecStoreStock').val(obj.Result[0].STOCK);
-        //                }
-        //            }
-        //        }
-        //    });
-        //}
 
         function FillRecStoreStock() {
-            var ItemCode = $('#ItemCode').val();
-            var Storeid = $('#ToStoreId').val();
-            var UniqueBatchNo = $('#UniqueBatchNo').val();
-            var BatchNo = $('#BatchNo').val();
+            var ItemCode = $('#FinishPartCode').val();
+            var Storeid = $('#FGStoreId').val();
+            var UniqueBatchNo = $('#FGUniqueBatchNo').val();
+            var BatchNo = $('#FGBatchNo').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillTotalStock", "StockAdjustment")",
@@ -1251,20 +1314,22 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#RecStoreStock').val("");
-                            $('#RecStoreStock').val(obj.Result[0].STOCK);
+                            $('#TotalStock').val("");
+                            $('#TotalStock').val(obj.Result[0].STOCK);
                         }
                     }
                 }
             });
         }
 
-        var UniqueBatchNo = [];
-        function FillStockBatchNo() {
 
-            var ItemCode = $('#ItemCode').val();
-            var YearCode = $('#YearCode').val();
-            var StoreName = $('#FromStoreId').find(':selected').text();
+
+        var RMUniqueBatchNo = [];
+        function FillRMStockBatchNo() {
+
+            var ItemCode = $('#RmPartCode').val();
+            var YearCode = $('#DeassYearcode').val();
+            var StoreName = $('#RMStoreId').find(':selected').text();
             var batchno = "";
             $.ajax({
                 type: "POST",
@@ -1276,19 +1341,15 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            UniqueBatchNo = [];
-                            $('#BatchNo').empty();
-                            $('#BatchNo').append('<option value="" selected>-Select-</option>');
-                            $('#UniqueBatchNo').empty();
-                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                            FGUniqueBatchNo = [];
+                            $('#RMBatchNo').empty();
+                            $('#RMBatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#RmUniqueBatchNo').empty();
+                            $('#RmUniqueBatchNo').append('<option value="" selected>-Select-</option>');
 
                             $.each(obj.Result, function (index, val) {
-                                $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
-                                //UniqueBatchNo.push({
-                                //    "Batchno": val.batchno,
-                                //    "UniqueBatchNo": val.UniqueBatchNo
-                                //});
-                                //$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
+                                $('#RMBatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+
                             });
                             GetBatchInventory();
 
@@ -1298,8 +1359,8 @@
                                 var itemsWithCode16 = itemBatchArray.filter(function (item) {
                                     return item.itemcode === parseInt(ItemCode);
                                 });
-                                var selectList = $('#BatchNo');
-                                var SelectUBList = $('#UniqueBatchNo');
+                                var selectList = $('#RMBatchNo');
+                                var SelectUBList = $('#FGUniqueBatchNo');
                                 selectList.find('option').each(function () {
                                     var optionValue = $(this).val();
 
@@ -1329,21 +1390,21 @@
 
 
                         } else {
-                            $('#BatchNo').empty();
-                            $('#BatchNo').append('<option value="" selected>-Select-</option>');
-                            $('#UniqueBatchNo').empty();
-                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#RMBatchNo').empty();
+                            $('#RMBatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#FGUniqueBatchNo').empty();
+                            $('#FGUniqueBatchNo').append('<option value="" selected>-Select-</option>');
                         }
                     }
                 }
             });
         }
 
-        function FillStockUniqueBatchNo() {
-            var ItemCode = $('#ItemCode').val();
-            var YearCode = $('#YearCode').val();
-            var StoreName = $('#FromStoreId').find(':selected').text();
-            var batchno = $('#BatchNo').val();
+        function FillRMStockUniqueBatchNo() {
+            var ItemCode = $('#RmPartCode').val();
+            var YearCode = $('#DeassYearcode').val();
+            var StoreName = $('#RMStoreId').find(':selected').text();
+            var batchno = $('#RMBatchNo').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillStockBatchNo")",
@@ -1355,17 +1416,127 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
 
-                            $('#UniqueBatchNo').empty();
-                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#RmUniqueBatchNo').empty();
+                            $('#RmUniqueBatchNo').append('<option value="" selected>-Select-</option>');
 
                             $.each(obj.Result, function (index, val) {
-                                $('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
+                                $('#RmUniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
                             });
                             //    GetBatchInventory();
 
                         } else {
-                            $('#UniqueBatchNo').empty();
-                            $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#RmUniqueBatchNo').empty();
+                            $('#RmUniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                        }
+                    }
+                }
+            });
+        }
+
+
+        var FGUniqueBatchNo = [];
+        function FillFGStockBatchNo() {
+
+            var ItemCode = $('#FinishPartCode').val();
+            var YearCode = $('#DeassYearcode').val();
+            var StoreName = $('#FGStoreId').find(':selected').text();
+            var batchno = "";
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStockBatchNo")",
+                async: false,
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            FGUniqueBatchNo = [];
+                            $('#FGBatchNo').empty();
+                            $('#FGBatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#FGUniqueBatchNo').empty();
+                            $('#FGUniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#FGBatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                
+                            });
+                            GetBatchInventory();
+
+
+                            var itemArrayLength = itemBatchArray.length;
+                            if (itemArrayLength > 0) {
+                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                                    return item.itemcode === parseInt(ItemCode);
+                                });
+                                var selectList = $('#FGBatchNo');
+                                var SelectUBList = $('#FGUniqueBatchNo');
+                                selectList.find('option').each(function () {
+                                    var optionValue = $(this).val();
+
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.batchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+
+                                SelectUBList.find('option').each(function () {
+
+                                    var optionValue = $(this).val();
+
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.uniquebatchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+                            }
+
+
+
+                        } else {
+                            $('#FGBatchNo').empty();
+                            $('#FGBatchNo').append('<option value="" selected>-Select-</option>');
+                            $('#FGUniqueBatchNo').empty();
+                            $('#FGUniqueBatchNo').append('<option value="" selected>-Select-</option>');
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillFGStockUniqueBatchNo() {
+            var ItemCode = $('#FinishPartCode').val();
+            var YearCode = $('#DeassYearcode').val();
+            var StoreName = $('#FGStoreId').find(':selected').text();
+            var batchno = $('#FGBatchNo').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStockBatchNo")",
+                async: false,
+                data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+                            $('#FGUniqueBatchNo').empty();
+                            $('#FGUniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#FGUniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
+                            });
+                            //    GetBatchInventory();
+
+                        } else {
+                            $('#FGUniqueBatchNo').empty();
+                            $('#FGUniqueBatchNo').append('<option value="" selected>-Select-</option>');
                         }
                     }
                 }
@@ -1483,14 +1654,7 @@
             });
         }
 
-        
-
-
        
-
-       
-
-        
 
         function ClearGrid() {
             $.ajax({
@@ -1501,11 +1665,7 @@
                     if (result == "") {
                         $('#divISTGrid').append("<tr class='text-center'><td colspan='17' class='text-black-50'><strong class='text-danger'>NO DATA ADDED</strong></td></tr>");
                     }
-                    if ($('#IssueToStoreWC').val() == 'S') {
-                        FillStockBatchNo();
-                    } else {
-                        FillCurrentWIPBatchINStore();
-                    }
+                    
 
                 },
                 error: function (result, status, xhr) {
@@ -1601,6 +1761,69 @@
                 }
             });
         }
+
+        function FillRMItemName() {
+            var FinishItemCode = $("#FinishItemCode").val();
+            var BomNo = $("#BomNo").val();
+            console.log(FinishItemCode);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillRMItemName")",
+                data: { FinishItemCode: FinishItemCode, BomNo: BomNo },
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RMItemName').empty();
+                            $('#RMItemName').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#RMItemName').append('<option value="' + val.Item_Code + '">' + val.Item_Name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var RMItemCode = "@Model.RMItemCode";
+                                $('#RMItemName').val(RMItemCode).trigger("change");
+                            }
+                        }
+
+                    }
+                }
+            });
+        }
+
+        function FillRMPartCode() {
+            var FinishItemCode = $("#FinishItemCode").val();
+            var BomNo = $("#BomNo").val();
+            console.log(FinishItemCode);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillRMPartCode")",
+                data: { FinishItemCode: FinishItemCode, BomNo: BomNo },
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RmPartCode').empty();
+                            $('#RmPartCode').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#RmPartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var RMItemCode = "@Model.RMItemCode";
+                                $('#RmPartCode').val(RMItemCode).trigger("change");
+                            }
+                        }
+
+                    }
+                }
+            });
+        }
+
         function FillStore() {
             $.ajax({
                 type: "POST",
@@ -1627,6 +1850,98 @@
                 }
             });
         }
+
+
+        function FillMRNNO() {
+            var FGItemCode = $('#FinishPartCode').val();
+            var yearcode = $('#DeassYearcode').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillMRNNO")",
+                dataType: "json",
+                async: false,
+                data: { FGItemCode: FGItemCode, yearcode: yearcode },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MRNO').empty();
+                            $('#MRNO').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#MRNO').append('<option value="' + val.MRNno + '">' + val.MRNno + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var MRNO = "@Model.MRNO";
+                                $('#MRNO').val(MRNO).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+
+        function FillMRNYearCode() {
+            var FGItemCode = $('#FinishItemCode').val();
+            var yearcode = $('#DeassYearcode').val();
+            var MRNNO = $('#MRNO').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillMRNYearCode")",
+                dataType: "json",
+                async: false,
+                data: { FGItemCode: FGItemCode, yearcode: yearcode, MRNNO: MRNNO },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MRNYearCode').empty();
+                            $('#MRNYearCode').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#MRNYearCode').append('<option value="' + val.MRNYearCode + '">' + val.MRNYearCode + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var MRNYearCode = "@Model.MRNYearCode";
+                                $('#MRNYearCode').val(MRNYearCode).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillMRNDetail() {
+            var yearcode = $('#DeassYearcode').val();
+            var MRNNO = $('#MRNO').val();
+            var mrnyearcode = $('#MRNYearCode').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillMRNDetail")",
+                dataType: "json",
+                async: false,
+                data: { yearcode: yearcode, MRNNO: MRNNO, mrnyearcode: mrnyearcode },
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var date = new Date(obj.Result[0].MRNEntryDate);
+                            var formattedDate = ("0" + date.getDate()).slice(-2) + "/" + ("0" + (date.getMonth() + 1)).slice(-2) + "/" + date.getFullYear();
+
+                            $('#MRNDate').val(formattedDate);
+                            /* $('#MRNDate').val(obj.Result[0].MRNEntryDate); */
+                            $('#MRNEntryID').val(obj.Result[0].MRNEntryId);
+                        }
+                    }
+                }
+            });
+        }
+
+
 
 
 
@@ -1658,56 +1973,9 @@
         }
 
 
-        function FillLoadToStoreName() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillLoadToStoreName")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
+       
 
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#ToStoreId').empty();
-                            $('#ToStoreId').append('<option value="" disabled selected>-Select-</option>');
-
-                            $.each(obj.Result, function (index, val) {
-                                $('#ToStoreId').append('<option value="' + val.EntryID + '">' + val.store_name + '</option>');
-                            });
-                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                                
-                            }
-                        }
-                    }
-                }
-            });
-        }
-
-        function FillLoadTOWorkcenter() {
-
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillLoadTOWorkcenter")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#ToWCID').empty();
-                            $('#ToWCID').append('<option value="" disabled selected>-Select-</option>');
-
-                            $.each(obj.Result, function (index, val) {
-                                $('#ToWCID').append('<option value="' + val.EntryID + '">' + val.WorkCenterDescription + '</option>');
-                            });
-                        }
-
-                    }
-                }
-            });
-        }
+       
 
         function GetServerDate() {
             $.ajax({
@@ -1716,18 +1984,15 @@
                 async: false,
                 success: function (result, status, error) {
 
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
-                    $('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
-                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    $('#DeassEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
 
 
 
-                    $('#EntryDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
-                    $('#SlipDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
+                    $('#DeassEntryDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
 
 
-                    $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
-                    $('#SlipDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
+                    $('#DeassEntryDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
                 }
             });
         }
@@ -1747,6 +2012,26 @@
                         $('#DeassSlipNo').val("");
                         $('#DeassSlipNo').val(obj.Result[0].SlipNo);
                     }
+                }
+            });
+        }
+
+        function BomQty() {
+            var RMItemCode = $('#RmPartCode').val();
+           
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BomQty")",
+                dataType: "json",
+                data: { RMItemCode: RMItemCode },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#BomQty').val("");
+                        $('#BomQty').val(obj.Result[0].bomqty);
+                       
+                    }
+                    calculateDeassQty();
                 }
             });
         }

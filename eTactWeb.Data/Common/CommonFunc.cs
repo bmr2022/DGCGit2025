@@ -1310,7 +1310,9 @@ public static class CommonFunc
                     && typeProperty.PropertyInfo.Name != "AgainstChallanNo" && typeProperty.PropertyInfo.Name != "BatchNo"
                     && typeProperty.PropertyInfo.Name != "UniqueBatchNo" && typeProperty.PropertyInfo.Name != "SupplierBatchNo"
                     && typeProperty.PropertyInfo.Name != "ShelfLife" && typeProperty.PropertyInfo.Name != "ItemSize"
-                    && typeProperty.PropertyInfo.Name != "ItemColor")
+                    && typeProperty.PropertyInfo.Name != "ItemColor"&& typeProperty.PropertyInfo.Name != "TotalRecords"
+                    && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "PageSize"
+                    )
 
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

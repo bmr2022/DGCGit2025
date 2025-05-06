@@ -34,7 +34,7 @@ namespace eTactWeb.DOM.Models
         public int? UpdatedOn { get; set; }
         public string? EntryByMachine { get; set; }
         public string? CC { get; set; }
-        public int? MRNO { get; set; }
+        public string? MRNO { get; set; }
         public int? MRNYearCode { get; set; }
         public string? MRNDate { get; set; }
         public int? MRNEntryID { get; set; }
@@ -67,7 +67,7 @@ namespace eTactWeb.DOM.Models
         public string? RMStoreName { get; set; }
         public string? RMItemName { get; set; }
         public string? RmPartCode { get; set; }
-        public string? Unit { get; set; }
+        public string? RMUnit { get; set; }
         public string? Remark { get; set; }
         public string? RMBatchNo { get; set; }
         public string? RmUniqueBatchNo { get; set; }
