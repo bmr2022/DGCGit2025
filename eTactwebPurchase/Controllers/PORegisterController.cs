@@ -7,6 +7,7 @@ using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using Newtonsoft.Json;
 
 namespace eTactWeb.Controllers
 {
@@ -39,9 +40,29 @@ namespace eTactWeb.Controllers
             var model = new PORegisterModel();
             model = await _IPORegister.GetPORegisterData(FromDate, ToDate, ReportType, YearCode, Partyname, partcode, itemName, POno, SchNo, OrderType, POFor, ItemType, ItemGroup);
             model.ReportMode = ReportType;
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            string serializedGrid = JsonConvert.SerializeObject(model.PORegisterDetails);
+            HttpContext.Session.SetString("KeyPORegsiterList", serializedGrid);
             return PartialView("_PORegisterGrid", model);
         }
+       
+        [HttpGet]
+        public IActionResult GetPORegisterDataForPDF()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyPORegsiterList");
+            List<PORegisterDetail> stockRegisterList = new List<PORegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<PORegisterDetail>>(modelJson);
+            }
 
+            return Json(stockRegisterList);
+        }
         public async Task<JsonResult> GetServerDate()
         {
             try
