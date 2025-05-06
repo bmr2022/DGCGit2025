@@ -659,7 +659,7 @@ namespace eTactWeb.Controllers
                     MainModel.PurchaseRejectionInvoiceNo ?? string.Empty, //invoice no
                     MainModel.adjustmentModel == null ? string.Empty : MainModel.adjustmentModel.AdjAgnstVouchNo, //MainModel.voucherNo ?? string.Empty,
                     string.Empty, // AginstInvNo
-                    2024, // AginstVoucherYearCode
+                    MainModel.AgainstPurchaseBillYearCode, // AginstVoucherYearCode
                     MainModel.AccountCode,
                     MainModel.DocAccountCode,
                     Item.ItemCode,
