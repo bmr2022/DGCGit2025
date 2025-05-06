@@ -1658,12 +1658,14 @@
                         }
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
-                        $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty').val(0);
-                        $('#LotStock,#TotalStock').val("");
+                        $('#Uniquebatchno,#Batchno,#Qty,#SOPendQty').val(0);
+                                $('#Rate').val($('#Rate').val().toFixed(2));
+                        // $('#LotStock,#TotalStock').val("");
+
                         // $('#BOMInd,#ProducedUnprod').val('');
                         //$('#HSNNo').val("");
                         //$('#Unit,#AltUnit').val("");
-                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
+                        // $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
 
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
@@ -2363,7 +2365,7 @@
                                 } else {
                                     FillSOWiseItems();
                                 }
-
+                                debugger
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2590,7 +2592,7 @@
 
 
         function ValidateSubmit() {
-            debugger
+            
             var salebillRowCount = $('#divTaxGrid tr').length;
             if ($('#divTaxGrid tr td').length > 1) {
                 for (var i = 1; i < salebillRowCount; i++) {
@@ -2819,6 +2821,7 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType + ">" + val.SONo + "</option>");
                             });
+                            
                             $('#SOType').val($('#SONO').find(':selected').data('sotype'));
                         }
                     }
@@ -2929,6 +2932,8 @@
                 $('#RateInOtherCurr').prop("readonly", true);
                 $('#ItemSA').prop("disabled", true);
             }
+
+                $('#SOType').val($('#SONO').find(':selected').data('sotype'));
         });
 
         $('#SOYearCode').change(function () {
