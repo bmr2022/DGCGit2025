@@ -62,7 +62,7 @@
                             <td>@item.POQty</td>
                             <td>@(item.POEffDate  == null ? string.Empty : @item.POEffDate.Split(" ")[0])</td>
                             <td>@(item.POclosedate  == null ? string.Empty : @item.POclosedate.Split(" ")[0])</td>
-                            <td>@item.poAmmeffdate</td>
+                            <td>@item.poAmmeffdate== null ? string.Empty : @item.poAmmeffdate.Split(" ")[0])</td>
                             <td>@item.ordertype</td>
                             <td>@item.Vendor</td>
                             <td>@item.PartCode</td>
@@ -73,7 +73,7 @@
                             <td>@item.DisAmt</td>
                             <td>@item.ItemAmount</td>
                             <td>@item.Ammendmentno</td>
-                            <td>@item.Ammendmentdate</td>
+                            <td>@item.Ammendmentdate== null ? string.Empty : @item.Ammendmentdate.Split(" ")[0])</td>
                             <td>@item.Assrate</td>
                             <td>@item.Deliveryterms</td>
                             <td>@(item.deliveryDate  == null ? string.Empty : @item.deliveryDate.Split(" ")[0])</td>
