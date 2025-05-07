@@ -1507,14 +1507,14 @@
                 $.notify("Please check at least one row to adjust", "error");
                 Err = 1;
             }
-            if ($('#Balance').val() == 0) {
+            /* if ($('#Balance').val() == 0) {
                 AddErrorCls('Balance');
                 $.notify("Balance is must be greater than 0.", "error");
                 Err = 1;
             }
             else {
                 RemoveErrorCls('Balance');
-            }
+            } */
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;
             return true;
@@ -1628,14 +1628,14 @@
             else {
                 RemoveErrorCls('AdjustmentAmt');
             }
-            if ($('#Balance').val() == 0) {
+           /*  if ($('#Balance').val() == 0) {
                 AddErrorCls('Balance');
                 $.notify("Balance is must be greater than 0.", "error");
                 Err = 1;
             }
             else {
                 RemoveErrorCls('Balance');
-            }
+            } */
             if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 AddErrorCls('ModeOfAdjustment');
                 $.notify("Cannot add to grid directly.", "error");
