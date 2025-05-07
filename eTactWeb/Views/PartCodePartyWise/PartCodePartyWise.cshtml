@@ -541,7 +541,7 @@
         }
 
         var editingNow = false;
-        function EditItemRow(SeqNo) {
+        function EditItemRow(SeqNo,AccountCode) {
              
             if (editingNow == false) {
 
@@ -549,7 +549,7 @@
                     $.ajax({
                         url: '@Url.Action("EditItemRow")',
                         type: "POST",
-                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val(), AccountCode: AccountCode },
                     })
                         .done(function (data, status, xhr) {
                             editingNow = true;

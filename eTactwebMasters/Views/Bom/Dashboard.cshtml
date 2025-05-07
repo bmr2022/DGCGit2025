@@ -279,11 +279,12 @@
             });
         }
         $("#search-box").on("input", function () {
-             
+             debugger
             var searchString = $(this).val().trim();
+            var ReportType = $("#DashboardType").val();
 
             $.ajax({
-                url: "/Bom/GlobalSearch?searchString=" + searchString,
+                url: "/Bom/GlobalSearch?searchString=" + searchString + "&ReportType=" + ReportType,
                 type: "GET",
                 data: { searchString: searchString },
                 success: function (data) {
@@ -296,7 +297,7 @@
                     $('#totalRows').text(dashGrid);
                 },
                 error: function () {
-                    alert("Error fetching search results.");
+                    console.log("Error fetching search results.");
                 }
             });
         });

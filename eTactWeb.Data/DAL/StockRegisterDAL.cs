@@ -306,6 +306,29 @@ namespace eTactWeb.Data.DAL
                                                      }).ToList();
                     }
                 }
+                else if (ReportType == "NegativeStock")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.StockRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                     select new StockRegisterDetail
+                                                     {
+                                                         StoreName = string.IsNullOrEmpty(dr["StoreName"].ToString()) ? "" : dr["StoreName"].ToString(),
+                                                         ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
+                                                         PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
+                                                         UniquebatchNo = string.IsNullOrEmpty(dr["UniqueBatchNo"].ToString()) ? "" : dr["UniqueBatchNo"].ToString(),
+                                                         BatchNo = string.IsNullOrEmpty(dr["BatchNo"].ToString()) ? "" : dr["BatchNo"].ToString(),
+                                                         ItemCode = string.IsNullOrEmpty(dr["ItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ItemCode"].ToString()),
+
+                                                         StoreId = string.IsNullOrEmpty(dr["StoreId"].ToString()) ? 0 : Convert.ToInt32(dr["StoreId"].ToString()),
+                                                         TotStk = string.IsNullOrEmpty(dr["Stock"].ToString()) ? 0 : Convert.ToDecimal(dr["Stock"].ToString()),
+
+
+                                                         //SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
+                                                     }).ToList();
+                    }
+                }
+
             }
             catch (Exception ex)
             {
