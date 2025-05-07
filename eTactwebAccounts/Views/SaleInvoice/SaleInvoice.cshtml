@@ -416,7 +416,7 @@
     <script>
 
         $(document).ready(function () {
-            
+
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -1037,7 +1037,7 @@
         }
 
         function DueDateCalculation() {
-            
+
             var dueDate = $('#AdjDueDate').val();
             // var SaleBillDate = new Date($('#SaleBillDate').val());
 
@@ -1550,7 +1550,7 @@
                 }
             });
 
-            
+
 
             var highestValue = 0;
             if (seqnoarray.length == 0) {
@@ -1631,7 +1631,7 @@
                 "VendJwAdjustmentMandatory": $('#VendJwAdjustmentMandatory').val()
             }
 
-            
+
 
             $.ajax({
                 type: "POST",
@@ -1659,7 +1659,6 @@
                         //$('#PartCode,#ItemCode').val(0).trigger("change");
 
                         $('#Uniquebatchno,#Batchno,#Qty,#SOPendQty').val(0);
-                                $('#Rate').val($('#Rate').val().toFixed(2));
                         // $('#LotStock,#TotalStock').val("");
 
                         // $('#BOMInd,#ProducedUnprod').val('');
@@ -1735,7 +1734,7 @@
                     $.notify('Something Went Wrong, Please Try Again.', "error");
                 }
             }).done(function () {
-                 
+
                 //alert('inside ajax');
                 GetTaxPartItem();
                 GetDbCrDetail();
@@ -2240,8 +2239,12 @@
         }
 
         $('#SubmitButton').click(function () {
-
-            $("form").submit();
+            if ($('#divAdjItemList tr td').length > 1) {
+                $.notify('Adjustgrid is manadatory...!', "error");
+            }
+            else {
+                $("form").submit();
+            }
         })
         var itemsStockableAndCustJw = [];
 
@@ -2338,12 +2341,12 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-                             
+
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
-                             
+
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 FillSONO();
                                 $('#SONO').val(obj[0].SONO);
@@ -2592,7 +2595,7 @@
 
 
         function ValidateSubmit() {
-            
+
             var salebillRowCount = $('#divTaxGrid tr').length;
             if ($('#divTaxGrid tr td').length > 1) {
                 for (var i = 1; i < salebillRowCount; i++) {
@@ -2821,7 +2824,7 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType + ">" + val.SONo + "</option>");
                             });
-                            
+
                             $('#SOType').val($('#SONO').find(':selected').data('sotype'));
                         }
                     }
@@ -2933,7 +2936,7 @@
                 $('#ItemSA').prop("disabled", true);
             }
 
-                $('#SOType').val($('#SONO').find(':selected').data('sotype'));
+            $('#SOType').val($('#SONO').find(':selected').data('sotype'));
         });
 
         $('#SOYearCode').change(function () {
@@ -3211,7 +3214,7 @@
                                 }
                             });
 
-                            
+
                             GetBatchInventory();
 
                             var selectListLength = $('#Batchno option').length - 1;
@@ -3379,7 +3382,7 @@
                     // alert(result);
                     var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
                     var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
-                     
+
                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                         //  alert('right');
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
@@ -3390,11 +3393,11 @@
                     } else {
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
-                         
+
                         var currentYear = getFinancialYear();
                         if ($('#SaleBillYearCode').val() == currentYear) {
                             $('#SaleBillDate').prop("disabled", false);
-                        }else{
+                        } else {
                             $('#SaleBillDate').prop("disabled", true);
                         }
                     }
@@ -3417,7 +3420,7 @@
                     $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ApprovDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                
+
                     var saleBillEntryDate = parseDateToFormat($('#SaleBillEntryDate').val());
                     let dateParts = saleBillEntryDate.split("/");
                     let day = parseInt(dateParts[0], 10);
@@ -3509,7 +3512,7 @@
         }
 
         function PressBack() {
-             
+
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());

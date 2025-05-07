@@ -1061,7 +1061,8 @@ namespace eTactWeb.Controllers
                         entryid ?? 0,
                         yearcode ?? 0,
                         acccode ?? 0,
-                        Item.AdjModeOfAdjstment ?? string.Empty,
+                        // adjustment detail
+                        Item.AdjModeOfAdjstment,
                         Item.AdjDrCr ?? string.Empty,
                        (float)Math.Round((Item.AdjPendAmt != null && Item.AdjPendAmt > 0) ? Convert.ToSingle(Item.AdjPendAmt) : 0, 2),//Item.AdjAdjstedAmt ?? 0,
                         0,//AgainstAccEntryId
