@@ -43,8 +43,9 @@ namespace eTactWeb.Controllers
             model.Month = now.Month;
             var Result = await IMRP.PendingMRPData(model);
 
-            if (Result != null)
-            {
+            //if (Result != null)
+                if (Result?.Result != null && Result.Result.Tables.Count > 0)
+                {
                 var _List = new List<TextValue>();
                 DataSet DS = Result.Result;
 
