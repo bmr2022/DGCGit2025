@@ -677,7 +677,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                if (model.Mode == "U")
+                if (model.Mode == "U" || model.Mode == "V")
                 {
                     string modelJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
                     List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
@@ -803,7 +803,7 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int SeqNo, string Mode)
         {
             var MainModel = new GateInwardModel();
-            if (Mode == "U")
+            if (Mode == "U" || Mode == "V")
             {
                 string modelJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
                 List<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
@@ -872,7 +872,7 @@ namespace eTactWeb.Controllers
         public IActionResult EditItemRow(int SeqNo, string Mode)
         {
             IList<GateInwardItemDetail> GateInwardItemDetail = new List<GateInwardItemDetail>();
-            if (Mode == "U")
+            if (Mode == "U" || Mode == "V")
             {
                 string modelJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
                 if (!string.IsNullOrEmpty(modelJson))

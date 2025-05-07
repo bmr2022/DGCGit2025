@@ -872,7 +872,6 @@
                 $('#Address').val(address);
                 fillPONumber();
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                        alert("first entrydate" + EntryDate);
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
 
                 if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
@@ -1010,7 +1009,6 @@
                         var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
 
                         if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                            alert("result"+result);
                             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                             $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                             $('#ShowPOTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",parseDateToFormat(result));
@@ -1043,7 +1041,7 @@
 
                             var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
                             var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split("-").join("/"));
-                                    alert("second entrydate"+EntryDate );
+                                 
                             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
                             $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDt));
 
@@ -2130,7 +2128,6 @@
                     }
                 },
                 error: function (response, status, xhr) {
-                    alert(response.responseText);
                     $.notify(response.responseText, "error");
                 }
             });
@@ -2354,7 +2351,6 @@
                     $.notify(result.responseText, "error");
                 },
                 failure: function (result, status, xhr) {
-                    alert(response.responseText);
                 },
                 complete: function () {
                     console.log(5);
@@ -2364,7 +2360,7 @@
             }).done(function () {
                 console.log(3);
             }).fail(function () {
-                alert("error");;
+                alert("error");
             }).always(function () {
                 console.log(4);
             });
@@ -2445,7 +2441,7 @@
                         data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
                     })
                         .done(function (data, status, xhr) {
-
+                            debugger
                             if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                                 $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                                 reject("Duplicate");
@@ -2558,7 +2554,6 @@
 
                 },
                 failure: function (response, status, xhr) {
-                    alert(response.responseText);
                     $.notify(response.responseText, "error");
                 }
             });
