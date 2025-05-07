@@ -242,22 +242,18 @@
                                     <div class="text-center">
                                         <strong>Total No Of Items: <span id="lblTotalNoOfBelowItems"></span></strong>
                                     </div>
-
                                     <div style="width:170px;">
                                         <label asp-for="Naration" class="form-label">Naration</label>
                                         <input asp-for="Naration" class="form-control" data-val="false" />
                                     </div>
-
                                     <div style="width:170px;">
                                         <label asp-for="DrAmt" class="form-label">Dr Amt</label>
                                         <input asp-for="DrAmt" class="form-control" readonly />
                                     </div>
-
                                     <div style="width:170px;">
                                         <label asp-for="CrAmt" class="form-label">Cr Amt</label>
                                         <input asp-for="CrAmt" class="form-control" readonly data-val="false" />
                                     </div>
-
                                     <div style="width:170px;">
                                         <label asp-for="VoucherAmt" class="form-label">Voucher Amt</label>
                                         <input asp-for="VoucherAmt" class="form-control" data-val="false" readonly />
@@ -388,6 +384,10 @@
                 <div class="d-flex align-items-center gap-3" style="margin-left:70px">
                     <button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()">Adjust</button>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12"> 
+                        <label asp-for="AdjustAmount" class="form-label me-2">Total Adjst Amt</label>
+                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" />
+                    </div>
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amount to Adjust</label>
                         <input asp-for="PopUpBalance" class="form-control" readonly />
@@ -479,6 +479,19 @@
     </div>
 </div>
 
+<!-- Info Modal -->
+<div class="modal fade" id="infoDialog" tabindex="-1" data-bs-backdrop="static">
+    <div class="modal-dialog">
+        <div class="modal-content" style="background-color: #e0f0ff;">
+            <div class="modal-header text-white p-2" style="background-color:darkgray">
+                <button type="button" class="btn-close btn-close-white ms-auto" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                This is a nested modal.
+            </div>
+        </div>
+    </div>
+</div>
 
 @section Scripts {
     <script>
@@ -527,6 +540,24 @@
             if (!Validate_Submit()) return;
             $('form').submit();
         });
+
+        function ChangeAdjustAmount(){
+            debugger
+            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            var AdjustQty = parseFloat($('#AdjustAmount').val());
+            var ExcessAmount = 0;
+            for (let i = 1; i <= rowCount; i++){
+                var BalanceAmt = parseFloat($('#BalanceAmt-' + i).text());
+                if (AdjustQty >= BalanceAmt) {
+                    $('#CheckUnCheck-' + i).prop('checked', true);
+                    CheckUnCheckCheck(i);
+                    ExcessAmount = AdjustQty - BalanceAmt;
+                    break;
+                }
+            }
+            /* var myModal = new bootstrap.Modal(document.getElementById('infoDialog'));
+            myModal.show(); */
+        }
 
         $(document).ready(function () {
              
@@ -707,8 +738,6 @@
 
                     FillSONO();
                 }
-
-
             }
             $("#SONo").on("change", function () {
                 GetSOYear();
