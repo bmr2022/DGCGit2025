@@ -329,7 +329,7 @@
         }
 
         $('.ItemBtn').click(function (e) {
-               
+            debugger
             e.preventDefault();
             var ItemData = {
                 "EmpName": $('#EmpID').val(),
@@ -355,15 +355,15 @@
                 success: function (data) {
                      
                     if (data == "Duplicate") {
-                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $.notify('Duplicate Item Not Allowed for ' + $('#MainMenu').val(), "info");
                         //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                     }
                     else if (data == "AlreadyExists") {
-                        $.notify("Please delete existing permissions if you want to add all permits", "error");
+                        $.notify("Please delete existing permissions for ' + $('#MainMenu').val() + ' if you want to add all permits", "error");
                     }
                     else {
                         $('#UserRightsGrid').empty().html(data);
-                        $.notify('Item Added To Grid.', "success");
+                         $.notify('Permission added for ' + $('#MainMenu').val(), "success");
                     }
                 }
             });
