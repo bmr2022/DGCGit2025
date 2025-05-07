@@ -1814,7 +1814,7 @@
                 success: function (result, status, error) {
 
                     for (var j = 1; j <= itemGridArr.length; j++) {
-                         
+                        
                         var IC = itemGridArr[j-1].IC;
                         var BatchNo = itemGridArr[j-1].BatchNo;
 
@@ -3171,29 +3171,37 @@
         }
 
         function DiscountPerCalculation() {
-
+            debugger
             CalculateAmount();
             var discountPerVal = $('#DiscountPer').val() == '' ? 0 : parseFloat($('#DiscountPer').val());
             var discountPer = parseFloat(discountPerVal);
-            var amount = $('#Amount').val() == "" ? 0 : parseFloat($('#Amount').val());
-            $('#DiscountAmt').val((discountPer * amount / 100).toFixed(2));
-            var discountAmt = $('#DiscountAmt').val() == "" ? 0 : parseFloat($('#DiscountAmt').val()).toFixed(2);
-            var finalAmount = (amount - discountAmt).toFixed(2);
-            $('#ItemAmount').val(finalAmount);
-            // $('#Amount').val($('#Amount').val() - $('#DiscountAmt').val());
+            if (discountPer != 0) {
+                var amount = $('#Amount').val() == "" ? 0 : parseFloat($('#Amount').val());
+                $('#DiscountAmt').val((discountPer * amount / 100).toFixed(2));
+                var discountAmt = $('#DiscountAmt').val() == "" ? 0 : parseFloat($('#DiscountAmt').val()).toFixed(2);
+                var finalAmount = (amount - discountAmt).toFixed(2);
+                $('#ItemAmount').val(finalAmount);
+                // $('#Amount').val($('#Amount').val() - $('#DiscountAmt').val());
+            }else{
+                $('#DiscountAmt').val(0);
+            }
         }
 
         function DiscountAmtCalculation() {
-
+            debugger
             CalculateAmount();
             var discAmtVal = $('#DiscountAmt').val() == '' ? 0 : parseFloat($('#DiscountAmt').val());
             var discAmt = parseFloat(discAmtVal);
-            var amount = $('#Amount').val() == "" ? 0 : parseFloat($('#Amount').val());
-            $('#DiscountPer').val((discAmt * 100 / amount).toFixed(2));
-            var discountPer = $('#DiscountPer').val() == "" ? 0 : parseFloat($('#DiscountPer').val());
-            var finalAmount = (amount - discountPer).toFixed(2);
-            $('#ItemAmount').val(finalAmount);
-            // $('#Amount').val($('#Amount').val() - $('#DiscountAmt').val());
+            if (discAmt != 0) {
+                var amount = $('#Amount').val() == "" ? 0 : parseFloat($('#Amount').val());
+                $('#DiscountPer').val((discAmt * 100 / amount).toFixed(2));
+                var discountPer = $('#DiscountPer').val() == "" ? 0 : parseFloat($('#DiscountPer').val());
+                var finalAmount = (amount - discountPer).toFixed(2);
+                $('#ItemAmount').val(finalAmount);
+                // $('#Amount').val($('#Amount').val() - $('#DiscountAmt').val());
+            }else{
+                $('#DiscountPer').val(0);
+            }
         }
 
         $('#DiscountPer,#DiscountAmt').on('input', function () {
