@@ -392,8 +392,11 @@
                         <button type="button" class="addToGrid btn btn-sm btn-outline-danger" onclick="GridButton(event)" style="width:150px">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                         </button>
+                        <div class="col-md-1 me-2">
+                            <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                        </div>
                     </h2>
-
+                    
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
@@ -522,8 +525,14 @@
 
 
                         </div>
+
                         <div class="card">
                             <div class="card-body overflow-auto pb-0">
+                              <div class="ms-auto d-flex align-items-center">
+                                    <div class="col-md-2">
+                                        <input type="text" class="form-control" id="search-box2" placeholder="Search..."  style="background-color:#FFFACD;" "">
+                                    </div>
+                              </div>
                                 <div class="table-responsive" style="max-height:250px;">
                                     <table class="table table-hover table-bordered table-striped">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static" id="GridLabels">
@@ -1815,7 +1824,45 @@
                 GetPartCode();
             }
         })
+        var currentSearchColumn = null;
+        debugger
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divProductionEntryGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
 
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        var currentSearchColumn2 = null;
+        debugger
+        $("#search-box2").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divAddProductionEntryGrid tr").filter(function () {
+                if (currentSearchColumn2 !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn2).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn2 = $(this).data('columnno');
+            $("#search-box2").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
         $('#Store').change(function () {
             if ($('#Store').val() == "S") {
                 $('#NextWorkCenter').change(function () {
