@@ -13,6 +13,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
@@ -127,10 +128,10 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 //DateTime issueDate = DateTime.ParseExact(TillDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
-                DateTime issueDate = DateTime.Today;
+                //DateTime issueDate = DateTime.Today;
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@storeid", StoreId));
-                SqlParams.Add(new SqlParameter("@IssueDate", issueDate.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@IssueDate", ParseFormattedDate(TillDate)));
                 SqlParams.Add(new SqlParameter("@uniqbatchno", UniqBatchNo));
                 SqlParams.Add(new SqlParameter("@batchno", BatchNo));
 
@@ -207,11 +208,11 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 //DateTime issueDate = DateTime.ParseExact(IssuedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime issueDate = DateTime.Today;
+                //DateTime issueDate = DateTime.Today;
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@transDate", CommonFunc.ParseFormattedDate( issueDate.ToString())));
+                SqlParams.Add(new SqlParameter("@transDate", CommonFunc.ParseFormattedDate(IssuedDate)));
                 SqlParams.Add(new SqlParameter("@batchno", BatchNo));
                 SqlParams.Add(new SqlParameter("@FinStartDate", CommonFunc.ParseFormattedDate(FinStartDate)));
 

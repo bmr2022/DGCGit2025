@@ -13,7 +13,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 using static eTactWeb.DOM.Models.Common;
- 
+using static eTactWeb.Data.Common.CommonFunc;
+
 using static eTactWeb.DOM.Models.JobWorkIssueModel;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
@@ -154,7 +155,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
-                SqlParams.Add(new SqlParameter("@TransDate", TillDate));
+                SqlParams.Add(new SqlParameter("@TransDate", ParseFormattedDate(TillDate)));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@BatchNo", BatchNo));
                 SqlParams.Add(new SqlParameter("@uniquebatchno", UniqueBatchNo));

@@ -13,6 +13,7 @@ using System.Reflection;
 using System.Reflection.PortableExecutable;
 using System.Threading.Tasks.Dataflow;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL;
@@ -146,10 +147,10 @@ public class ProductionEntryDAL
         try
         {
             var SqlParams = new List<dynamic>();
-            DateTime tilldt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //DateTime tilldt = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
             SqlParams.Add(new SqlParameter("@WCID", WcId));
-            SqlParams.Add(new SqlParameter("@TILL_DATE", tilldt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@TILL_DATE", ParseFormattedDate(TillDate)));
             SqlParams.Add(new SqlParameter("@BATCHNO", BatchNo));
             SqlParams.Add(new SqlParameter("@Uniquebatchno", UniqueBatchNo));
 
@@ -770,10 +771,10 @@ public class ProductionEntryDAL
         try
         {
             var SqlParams = new List<dynamic>();
-            DateTime TransDt = DateTime.ParseExact(TransDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //DateTime TransDt = DateTime.ParseExact(TransDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
             SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
             SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
-            SqlParams.Add(new SqlParameter("@transDate", TransDt.ToString("yyyy/MM/dd")));
+            SqlParams.Add(new SqlParameter("@transDate", ParseFormattedDate(TransDate)));
             SqlParams.Add(new SqlParameter("@WCID", WcId));
             SqlParams.Add(new SqlParameter("@batchno", BatchNo));
 

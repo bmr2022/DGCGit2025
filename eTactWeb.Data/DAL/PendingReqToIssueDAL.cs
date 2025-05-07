@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
@@ -214,7 +215,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@TransDate", IssueDate));
+                SqlParams.Add(new SqlParameter("@TransDate", ParseFormattedDate(IssueDate)));
                 SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@SToreIdWCID", StoreId));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));

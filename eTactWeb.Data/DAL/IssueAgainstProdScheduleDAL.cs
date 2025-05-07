@@ -9,6 +9,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -553,13 +554,13 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 //DateTime issueDate = DateTime.ParseExact(IssuedDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DateTime issueDate = DateTime.Today;
+                //DateTime issueDate = DateTime.Today;
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@transDate", issueDate.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@transDate", ParseFormattedDate(IssuedDate)));
                 SqlParams.Add(new SqlParameter("@batchno", BatchNo));
-                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
+                SqlParams.Add(new SqlParameter("@FinStartDate", ParseFormattedDate(FinStartDate)));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);
             }

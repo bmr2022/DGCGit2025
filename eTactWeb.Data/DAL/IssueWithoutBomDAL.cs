@@ -693,11 +693,11 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
 
-                DateTime issueDate = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime issueDate = DateTime.ParseExact(TillDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@STORE_ID", StoreId));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", issueDate.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", ParseFormattedDate(TillDate)));
                 SqlParams.Add(new SqlParameter("@BATCHNO", BatchNo));
                 SqlParams.Add(new SqlParameter("@Uniquebatchno", UniqBatchNo));
 
@@ -769,13 +769,13 @@ namespace eTactWeb.Data.DAL
             {
 
                 var SqlParams = new List<dynamic>();
-                DateTime issuedDate = DateTime.Today;
+                //DateTime issuedDate = DateTime.Today;
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@StorName", StoreName));
-                SqlParams.Add(new SqlParameter("@transDate", IssuedDate));
+                SqlParams.Add(new SqlParameter("@transDate", ParseFormattedDate(IssuedDate)));
                 SqlParams.Add(new SqlParameter("@batchno", BatchNo));
-                SqlParams.Add(new SqlParameter("@FinStartDate", FinStartDate));
+                SqlParams.Add(new SqlParameter("@FinStartDate", ParseFormattedDate(FinStartDate)));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("FillCurrentBatchINStore", SqlParams);
             }
