@@ -13,13 +13,13 @@ else
         Cntr = Cntr + 1;
         <tr class="small " style="white-space:nowrap">
             <td style="white-space:nowrap;">
-                <a href="#" class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                <a href="#" class="table-link link-primary" onclick="EditItemRow(@Cntr,@item.AccountCode);">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                     </span>
                 </a>
-                <a href="#" class="table-link link-danger" onclick="DeleteItemFromGrid(@item.SeqNo,@item.AccountCode);">
+                <a href="#" class="table-link link-danger" onclick="DeleteItemFromGrid(@Cntr,@item.AccountCode);">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
