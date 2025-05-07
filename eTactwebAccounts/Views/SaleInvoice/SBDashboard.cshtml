@@ -155,7 +155,7 @@
             var ToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
             // $("#FinFromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
-            debugger
+             
             $('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#FinFromDate').val()));
 
             var fromDateBack = sessionStorage.getItem('FromDateBack');
