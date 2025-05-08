@@ -525,10 +525,49 @@
 @section Scripts
 {
     <script>
+            function FillPopUpGridDetails(modeId) {
+            var html = '';
+            if (modeId === 'U' || modeId === 'V') {
+                var data = @Html.Raw(Json.Serialize(Model.AccPurchaseRejectionAgainstBillDetails));
+                if (data && data.length > 0) {
+                    data.forEach((item, index) => {
+                        html += `<tr id="PRPopUpDataRow-${index + 1}" style="font-size: 12px;">
+                        <td>${index + 1}</td>
+                        <td id="partCode">${item.partCode || ''}<input type="hidden" id="popupItemCode-${index}" value="${item.itemCode || ''}" /></td>
+                        <td id="popUpItemName">${item.itemName || ''}</td>
+                        <td id="popUpPurchBillEntryId">${item.againstPurchaseBillEntryId || ''}</td>
+                        <td id="popUpPurchBillYearCode">${item.againstPurchaseBillYearCode || ''}</td>
+                        <td id="popUpInvoiceNo">${item.purchaseRejectionInvoiceNo || ''}</td>
+                        <td id="popUpInvoiceDate">${item.againstPurchaseBillDate || ''}</td>
+                        <td id="popUpItemName">${item.itemName || ''}</td>
+                        <td id="popUpPartCode">${item.partCode || ''}</td>
+                        <td id="popUpINVNetAmt">${item.itemNetAmount || 0}</td>
+                        <td id="popUpDueDate">${item.poDate || ''}</td>
+                        <td id="popUpPaidAmt">0</td>
+                        <td id="popUpRemainingAmt">0</td>
+                        <td id="popUpBillQty">${item.billQty || 0}</td>
+                        <td id="popUpBillRate">${item.billRate || 0}</td>
+                        <td id="popUpItemAmount-${index}">${item.amount || 0}</td>
+                        <td id="popUpdisPer">${item.discountPer || 0}</td>
+                        <td id="popUpDisAmt">${item.discountAmt || 0}</td>
+                    </tr>`;
+                        billQty += parseFloat(item.BillQty) || 0;
+                        billRate += parseFloat(item.BillRate) || 0;
+                    });
+                } else {
+                    html = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                }
+                $('#BillQty').val(billQty.toFixed(2));
+                $('#BillRate').val(billRate.toFixed(2));
+                $('#RejectedQty').val($('#BillQty').val());
+                $('#PRRate').val($('#BillRate').val());
+                CalculateItemAmount();
+                BasicTotal();
+                $('#divAddPurchaseRejectionPopupDataGrid').html(html);
+            }
+        }
         $(document).ready(function () {
-
             GetServerDate();
-
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 $('#divAddPurchaseRejectionPopupDataGrid').empty();
@@ -558,7 +597,7 @@
             GetCostCenter();
             DueDateCalculation();
             const myInput = document.getElementById("TotalDiscountPercentage");
-
+            FillPopUpGridDetails($('#Mode').val());
             myInput.addEventListener("input", function (event) {
                 const inputValue = parseInt(event.target.value);
                 if (isNaN(inputValue) || inputValue > 100) {
