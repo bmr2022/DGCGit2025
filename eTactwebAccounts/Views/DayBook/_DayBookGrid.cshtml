@@ -48,8 +48,8 @@
                             <td>@item.Ledger</td>
                             <td>@item.VoucherNo</td>
                             <td>@item.InvoiceNo</td>
-                           
-                            <td> @item.VoucherDate== null ? string.Empty : @item.VoucherDate.Split(" ")[0])</td>
+
+                            <td> @(item.VoucherDate == null ? string.Empty : item.VoucherDate.Split(' ')[0])</td>
 
                             <td>@item.VoucherType</td>
                             <td id="totDrG-@Cntr" class="totDrG">@item.DrAmt</td>

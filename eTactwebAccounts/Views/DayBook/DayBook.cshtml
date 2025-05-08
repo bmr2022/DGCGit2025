@@ -91,6 +91,9 @@
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="DayBook" asp-action="DayBook">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
@@ -168,7 +171,158 @@
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
+        $('#sendToPDF').click(async function () {
+            debugger
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
+            // Get dynamic values
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var voucherTypeText = $('#VoucherType option:selected').text();
+            var voucherTypeValue = $('#VoucherType').val();
+            var ledgerText = $('#Ledger option:selected').text();
+            var ledgerValue = $('#Ledger').val();
+            var crAmt = $('#CrAmt').val();
+            var drAmt = $('#DrAmt').val();
+
+
+            // Report Title (Bold and Color)
+            doc.setFontSize(16).setFont('helvetica', 'bold').setTextColor(41, 128, 185).text('DayBookReport', 40, 40);  // Blue color
+
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont('helvetica', 'bold');
+            doc.text('For the duration From:', 40, 58);
+            doc.setFont('helvetica', 'normal');
+            doc.text(fromDate, 160, 58);
+            doc.setFont('helvetica', 'bold');
+            doc.text('To:', 240, 58);
+            doc.setFont('helvetica', 'normal');
+            doc.text(toDate, 270, 58);
+
+            // Header Fields
+            const headerFields = [
+              
+            ];
+
+            // Adding headerFields to PDF with bold labels
+            let yPosition = 75; // starting position for header fields
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0); // Set black color once before loop
+
+            headerFields.forEach((field, index) => {
+                if (field.value) {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${field.label}:`, 40, yPosition);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(field.value, 140, yPosition);
+                    yPosition += 15;
+                }
+            });
+
+            // Fetch data
+            var resp = await fetch('/DayBook/DayBookGridDataForPDF');
+            var rows = await resp.json();
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+           
+             headers = [
+                "Sr#", "Ledger", "VoucherNo", "InvoiceNo", "VoucherDate", "VoucherType",
+                "DrAmt", "CrAmt", "Category", "ParentHead",
+                "EnteredBy","MachineName", "AccountCode", "EntryID", "YearCode"
+             ];
+             body = rows.map((r, i) => [
+                i + 1, r.ledger,r.voucherNo,r.invoiceNo, r.voucherDate ? r.voucherDate.split(' ')[0] : '',
+                r.voucherType, r.drAmt,r.crAmt,r.category, r.parentHead,r.enteredBy,r.entryByMachine,
+                r.accountCode,r.accEntryId,r.accYearCode
+             ]);
+                
+            // Generate table with bold and colored header
+            doc.autoTable({
+                startY: yPosition, // after headerFields
+                head: [headers],
+                body: body,
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 3,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                columnStyles: {
+                    0: { cellWidth: 20 },   
+                    1: { cellWidth: 50 },   
+                    2: { cellWidth: 30 },   
+                    3: { cellWidth: 40 },   
+                    4: { cellWidth: 40 },   
+                    5: { cellWidth: 50 },   
+                    6: { cellWidth: 30 },   
+                    7: { cellWidth: 30 },   
+                    8: { cellWidth: 60 },   
+                    9: { cellWidth: 50 },   
+                    10: { cellWidth: 60 }, 
+                    11: { cellWidth: 60 }, 
+                    12: { cellWidth: 30 },  
+                    13: { cellWidth: 30 },  
+                    14: { cellWidth: 30 },  
+                },
+                tableWidth: 'auto',
+                showHead: 'everyPage'
+            });
+
+            // 1. Calculate all totals
+            const totaldrAmt = rows.reduce((sum, r) => sum + (+r.drAmt || 0), 0);
+            const totalcrAmt = rows.reduce((sum, r) => sum + (+r.crAmt || 0), 0);
+           
+
+            // 2. Build the one-line footer values string
+            const footerValues =
+                `Total DR Amt: ${totaldrAmt.toFixed(2)}  |  ` +
+                `Total CR Amt: ${totalcrAmt.toFixed(2)}  |  `;
+
+            // 3. Determine where the table finished
+            const finalY = doc.lastAutoTable.finalY || yPosition;
+
+            // 4. Compute available width (pageWidth − margins)
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const marginLeft = 40;
+            const marginRight = 40;
+            const availableW = pageWidth - marginLeft - marginRight;
+
+            // 5. Draw a bold footer title
+            const titleY = finalY + 15;
+            doc.setFont('helvetica', 'bold')
+                .setFontSize(11)
+                .setTextColor(41, 128, 185)           // Optional: match your header color
+                .text('Report Totals:', marginLeft, titleY);
+
+            // 6. Draw the footer values on the same line (normal weight)
+            const valuesY = titleY + 12;
+            doc.setFont('helvetica', 'normal')
+                .setFontSize(10)
+                .setTextColor(0, 0, 0)
+                .text(footerValues, marginLeft, valuesY, {
+                    maxWidth: availableW,
+                    align: 'left'
+                });
+
+            // Save the PDF
+           // doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+            doc.save('DayBook_Report.pdf');
+        });
+       
         function FillLedgerName() {
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
@@ -463,6 +617,8 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/3.2.13/jquery.validate.unobtrusive.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 }
 <style>

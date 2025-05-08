@@ -34,7 +34,7 @@
                                     </div>
                                     <div class="col">
                                         <label class="form-label">To Date</label>
-                                        <input id="ToDate" maxlength="10" class="form-control" />
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" />
                                     </div>
                                 </div>
                             </div>
@@ -143,6 +143,37 @@
             GetSearchData();
 
         });
+        function loadPage(pageNumber) {
+            debugger
+
+            var dashboardType = $('#SummaryDetail').val();
+            var url = '';
+
+            if (dashboardType === "Summary") {
+                url = '@Url.Action("GetSearchData", "WorkOrder")';
+            } else if (dashboardType === "Detail") {
+                url = '@Url.Action("GetSearchData", "WorkOrder")';
+            } 
+
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            console.log("WorkOrderData:", formData);
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $('#btnGridExcel').click(function () {
+            var reportType = $('#SummaryDetail').val();
+            window.location.href = '/WorkOrder/ExportWorkOrderToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
 
         function GetFormRights() {
 
@@ -240,22 +271,43 @@
 
         var currentSearchColumn = null;
 
-        $("#search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#WorkOrderGrid tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#WorkOrderGrid tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
+
+
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup');
+        // });
+
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#SummaryDetail').val();
+            $.ajax({
+                url: "/WorkOrder/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
                 }
             });
-        });
-
-
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup');
         });
 
         $(document).on("click", ".sortCol", function () {
@@ -293,10 +345,8 @@
         }
 
 
-        $("#btnGridExcel").click(function () {
-
-        });
-
+        
+        
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });

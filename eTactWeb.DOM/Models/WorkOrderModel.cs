@@ -193,6 +193,9 @@ namespace eTactWeb.DOM.Models
         public string LastUpdatedBy { get; set; }
         public string LastUpdatedDate { get; set; }
         public string SummaryDetail { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<WorkOrderGridDashboard>? WorkOrderGrid { get; set; }
     }
 
@@ -204,5 +207,6 @@ namespace eTactWeb.DOM.Models
         public string AccountName { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
+       
     }
 }
