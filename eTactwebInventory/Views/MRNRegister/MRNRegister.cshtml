@@ -261,7 +261,7 @@
         });
        
         $('#sendToPDF').click(async function () {
-            debugger
+             
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
@@ -595,7 +595,7 @@
         }
 
         function GetMRNRegisterData() {
-            debugger
+             
             var inputValue = $('#gateno').val();
              $.ajax({
                 type: "POST",
