@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Security.AccessControl;
 using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
@@ -306,12 +307,14 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var entrydate=CommonFunc.ParseFormattedDate(EntryDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@MatConvEntryId", EntryId));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 //SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDate));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.ParseExact(EntryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd/MMM/yyyy")));
+                //SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.ParseExact(EntryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd/MMM/yyyy")));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", entrydate));
 
 
                 SqlParams.Add(new SqlParameter("@ActualEntryByEmpid", EntryByempId));
