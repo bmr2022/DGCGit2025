@@ -202,7 +202,7 @@ public class BomController : Controller
                 DataTable _Table = new DataTable();
 
                 _Table.Columns.Add("SeqNo", typeof(int));
-                _Table.Columns.Add("ItemCode", typeof(int));
+                _Table.Columns.Add("ItemCode", typeof(string));
                 _Table.Columns.Add("Qty", typeof(decimal));
                 _Table.Columns.Add("Unit", typeof(string));
                 _Table.Columns.Add("Location", typeof(string));

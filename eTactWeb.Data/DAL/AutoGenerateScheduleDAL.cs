@@ -177,7 +177,7 @@ namespace eTactWeb.Data.DAL
                     }
                     else if (ReportType == "Generate Purchase Schedule")
                     {
-                        resultList.AutoGenerateScheduleGrid = (from DataRow row in oDataSet.Tables[1].Rows
+                        resultList.AutoGenerateScheduleGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                                select new AutoGenerateScheduleModel
                                                                {
                                                                    VendorName = row["VendorName"] == DBNull.Value ? string.Empty : row["VendorName"].ToString(),
@@ -216,7 +216,7 @@ namespace eTactWeb.Data.DAL
 
                     if (ReportType == "Generate Purchase Schedule")
                     {
-                        resultList.AutoGenerateScheduleGrid2 = (from DataRow row in oDataSet.Tables[1].Rows
+                        resultList.AutoGenerateScheduleGrid2 = (from DataRow row in oDataSet.Tables[0].Rows
                                                                 select new AutoGenerateScheduleModel
                                                                 {
                                                                     VendorName = row["VendorName"] == DBNull.Value ? string.Empty : row["VendorName"].ToString(),

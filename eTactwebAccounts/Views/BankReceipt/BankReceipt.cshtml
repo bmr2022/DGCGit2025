@@ -581,6 +581,7 @@
             $('#AdjustmentAmt').rules("remove", "required");
             $('#AdjustmentAmtOthCur').rules("remove", "required");
             $('#SoDate').rules("remove", "required");
+            $('#SONo').rules("remove", "required");
             $('#SOYear').rules("remove", "required");
             $('#AgainstVoucherNo').rules("remove", "required");
             $('#AgainstVoucherDate').rules("remove", "required");
@@ -766,7 +767,7 @@
 
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
-            BindModeOfAdjust();
+            /* BindModeOfAdjust(); */
             CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });

@@ -541,6 +541,7 @@
             $('#PartyWiseNaration').rules("remove", "required");
             $('#SoDate').rules("remove", "required");
             $('#SOYear').rules("remove", "required");
+            $('#SONo').rules("remove", "required");
             $('#SeqNo').rules("remove", "required");
             $('#CustOrderNo').rules("remove", "required");
             $('#AgainstVoucherNo').rules("remove", "required");
@@ -755,7 +756,7 @@
 
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
-            BindModeOfAdjust();
+            // BindModeOfAdjust();
             CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });

@@ -1279,10 +1279,14 @@
         //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         // });
 
-        $('#sendToExcel').click(function () {
-            $("#GateDataTable").table2excel({
-                filename: "ProductionDetailData.xls"
-            });
+        // $('#sendToExcel').click(function () {
+        //     $("#GateDataTable").table2excel({
+        //         filename: "ProductionDetailData.xls"
+        //     });
+        // });
+         $('#sendToExcel').click(function () {
+            var reportType = $('#DashboardType').val();
+            window.location.href = '/ProductionEntry/ExportProductionDataToExcel?ReportType=' + encodeURIComponent(reportType);
         });
 
         $(document).on("click", ".sortCol", function () {

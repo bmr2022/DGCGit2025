@@ -20,6 +20,7 @@ using System.Data;
 using System.Globalization;
 using System.Net;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
 {
@@ -780,6 +781,389 @@ namespace eTactWeb.Controllers
             model.PageSize = pageSize;
 
             return PartialView("_ProductionEntryDashboardGrid", model);
+        }
+        public async Task<IActionResult> ExportProductionDataToExcel(string ReportType)
+        {
+            string cacheKey = $"KeyProdList_{ReportType}";
+            IList<ProductionEntryDashboard> stockRegisterList;
+
+            // Check if data is in memory cache
+            if (!_MemoryCache.TryGetValue(cacheKey, out stockRegisterList))
+            {
+                return NotFound("No data available to export.");
+            }
+
+            if (stockRegisterList == null || !stockRegisterList.Any())
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("ProductionPlan Register");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<ProductionEntryDashboard>>>
+            {
+                { "Summary", ExportProductionSummary },
+                { "Detail", ExportProductionDetail },
+                { "DetailWithBatchwise", ExportProductionDetailWithBatchwise },
+                { "Breakdown", ExportProductionBreakdown },
+                { "Operation", ExportProductionOperation },
+                { "Scrap", ExportProductionScrap },
+            };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, stockRegisterList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "ProductionPlanReport.xlsx"
+            );
+        }
+        private void ExportProductionSummary(IXLWorksheet sheet, IList<ProductionEntryDashboard> list)
+        {
+            string[] headers = {
+            "Sr#","Part Code", "Item Name", "Production Date", "Production Slip No", "Produced Against",
+    "New Production/Rework", "Production In WC", "Stage Description", "Scheduled Qty",
+    "FG Produced Qty", "FG OK Qty", "FG Rejected Qty", "Next To Store", "Next To Work Center",
+    "Transfer FG to WC/Store", "Rejected Qty In WC", "Rejected Qty", "Startup Rej Qty",
+    "Transfer To QC", "Store WC", "BOM No", "BOM Date", "Machine Name", "QC Checked",
+    "Production Plan No", "Production Plan Year Code", "Production Plan Date",
+    "Production Plan Schedule No", "Production Plan Schedule Year", "Production Plan Schedule Date",
+    "Req No", "Req Year Code", "Req Date", "Batch No", "Unique Batch No", "Start Time", "To Time",
+    "Setup Time", "Previous WC", "Production Entry ID", "Entry Date", "Production Year Code",
+    "WO Qty", "Pending Qty to Issue", "Rej Qty Due to Trial", "Pending Qty for Prod",
+    "Pending Qty for QC", "Rejected Store", "QC Mandatory", "Produced In Line No", "QC Checked",
+    "Initial Reading", "Final Reading", "Shots", "Completed", "Utilised Hours", "Production Line No",
+    "Standard Shots", "Standard Cycle Time", "Remark", "Cyclic Time", "Production Hour",
+    "Item Model", "Cavity", "Efficiency", "Actual Time Required", "Parent Prod Schedule No",
+    "Parent Prod Schedule Date", "Parent Prod Schedule Year Code", "SO No", "SO Year Code", "SO Date",
+    "SO Type", "QC Offer Date", "QC Qty", "OK Qty", "Stock Qty", "Material Transferred",
+    "Rework QC Year Code", "Rework QC Date", "Shift Close", "Completed Production", "CC",
+    "Entry By Machine No", "Actual Entry By Name", "Actual Entry Date", "Last Updated By",
+    "Last Updated Date", "Entry Designation", "Operator Name", "Supervisor"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++; // Sr No
+                sheet.Cell(row, 2).Value = item.FGPartCode;
+                sheet.Cell(row, 3).Value = item.FGItemName;
+                sheet.Cell(row, 4).Value = item.ProdDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 5).Value = item.ProdSlipNo;
+                sheet.Cell(row, 6).Value = item.ProdAgainstPlanManual;
+                sheet.Cell(row, 7).Value = item.NewProdRework;
+                sheet.Cell(row, 8).Value = item.ProdInWC;
+                sheet.Cell(row, 9).Value = item.StageDescription;
+                sheet.Cell(row, 10).Value = item.ProdSchQty;
+                sheet.Cell(row, 11).Value = item.FGProdQty;
+                sheet.Cell(row, 12).Value = item.FGOKQty;
+                sheet.Cell(row, 13).Value = item.FGRejQty;
+                sheet.Cell(row, 14).Value = item.NextToStore;
+                sheet.Cell(row, 15).Value = item.NextToWorkCenter;
+                sheet.Cell(row, 16).Value = item.TransferFGToWCorSTORE;
+                sheet.Cell(row, 17).Value = item.RejQtyInWC;
+                sheet.Cell(row, 18).Value = item.RejQTy;
+                sheet.Cell(row, 19).Value = item.startupRejQty;
+                sheet.Cell(row, 20).Value = item.TransferToQc;
+                sheet.Cell(row, 21).Value = item.StoreWC;
+                sheet.Cell(row, 22).Value = item.BOMNO;
+                sheet.Cell(row, 23).Value = item.BOMDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 24).Value = item.MachineName;
+                sheet.Cell(row, 25).Value = item.QCChecked;
+                sheet.Cell(row, 26).Value = item.ProdPlanNo;
+                sheet.Cell(row, 27).Value = item.ProdPlanYearCode;
+                sheet.Cell(row, 28).Value = item.ProdPlanDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 29).Value = item.ProdPlanSchNo;
+                sheet.Cell(row, 30).Value = item.ProdPlanSchYearCode;
+                sheet.Cell(row, 31).Value = item.ProdPlanSchDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 32).Value = item.Reqno;
+                sheet.Cell(row, 33).Value = item.ReqThrBOMYearCode;
+                sheet.Cell(row, 34).Value = item.ReqDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 35).Value = item.BatchNo;
+                sheet.Cell(row, 36).Value = item.UniqueBatchNo;
+                sheet.Cell(row, 37).Value = item.StartTime?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 38).Value = item.ToTime?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 39).Value = item.setupTime;
+                sheet.Cell(row, 40).Value = item.PrevWC;
+                sheet.Cell(row, 41).Value = item.PRODEntryId;
+                sheet.Cell(row, 42).Value = item.Entrydate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 43).Value = item.PRODYearcode;
+                sheet.Cell(row, 44).Value = item.WOQTY;
+                sheet.Cell(row, 45).Value = item.PendingQtyToIssue;
+                sheet.Cell(row, 46).Value = item.RejQtyDuetoTrail;
+                sheet.Cell(row, 47).Value = item.PendQtyForProd;
+                sheet.Cell(row, 48).Value = item.PendQtyForQC;
+                sheet.Cell(row, 49).Value = item.rejStore;
+                sheet.Cell(row, 50).Value = item.QCMandatory;
+                sheet.Cell(row, 51).Value = item.ProducedINLineNo;
+                sheet.Cell(row, 52).Value = item.QCChecked;
+                sheet.Cell(row, 53).Value = item.InitialReading;
+                sheet.Cell(row, 54).Value = item.FinalReading;
+                sheet.Cell(row, 55).Value = item.Shots;
+                sheet.Cell(row, 56).Value = item.Completed;
+                sheet.Cell(row, 57).Value = item.UtilisedHours;
+                sheet.Cell(row, 58).Value = item.ProdLineNo;
+                sheet.Cell(row, 59).Value = item.stdShots;
+                sheet.Cell(row, 60).Value = item.stdCycletime;
+                sheet.Cell(row, 61).Value = item.Remark;
+                sheet.Cell(row, 62).Value = item.CyclicTime;
+                sheet.Cell(row, 63).Value = item.ProductionHour;
+                sheet.Cell(row, 64).Value = item.ItemModel;
+                sheet.Cell(row, 65).Value = item.cavity;
+                sheet.Cell(row, 66).Value = item.efficiency;
+                sheet.Cell(row, 67).Value = item.ActualTimeRequired;
+                sheet.Cell(row, 68).Value = item.parentProdSchNo;
+                sheet.Cell(row, 69).Value = item.parentProdSchDate;
+                sheet.Cell(row, 70).Value = item.parentProdSchYearcode;
+                sheet.Cell(row, 71).Value = item.SONO;
+                sheet.Cell(row, 72).Value = item.SOYearcode;
+                sheet.Cell(row, 73).Value = item.SODate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 74).Value = item.sotype;
+                sheet.Cell(row, 75).Value = item.QCOfferDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 76).Value = item.QCQTy;
+                sheet.Cell(row, 77).Value = item.OKQty;
+                sheet.Cell(row, 78).Value = item.StockQTy;
+                sheet.Cell(row, 79).Value = item.matTransferd;
+                sheet.Cell(row, 80).Value = item.RewQcYearCode;
+                sheet.Cell(row, 81).Value = item.RewQcDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 82).Value = item.shiftclose;
+                sheet.Cell(row, 83).Value = item.ComplProd;
+                sheet.Cell(row, 84).Value = item.CC;
+                sheet.Cell(row, 85).Value = item.EntryByMachineNo;
+                sheet.Cell(row, 86).Value = item.ActualEmpByName;
+                sheet.Cell(row, 87).Value = item.ActualEntryDate?.Split(" ")[0] ?? "";
+                sheet.Cell(row, 88).Value = item.LastUpdatedByName;
+                sheet.Cell(row, 89).Value = item.LastUpdationDate;
+                sheet.Cell(row, 90).Value = item.EntryByDesignation;
+                sheet.Cell(row, 91).Value = item.OperatorName;
+                sheet.Cell(row, 92).Value = item.supervisior;
+
+
+                row++;
+            }
+        }
+        private void ExportProductionDetail(IXLWorksheet sheet, IList<ProductionEntryDashboard> list)
+        {
+            string[] headers = {
+            "Sr#","WONO", "WO Date", "WO Status", "Effective From", "Effective Till", "Entry Date", "Year Code",
+    "Remark (Production)", "Remark (Supply Stage)", "Remark (Routing)", "Remark (Packing)",
+    "Other Instruction", "Billing Status", "Pending Route Sheet", "Approved By", "Approved Date",
+    "Close WO", "Close Date", "WO Rev No", "WO Rev Date", "Actual Entry By", "Actual Entry Date",
+    "Last Updated By", "Last Updated Date", "Machine Name"
+            };
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.NewProdRework;
+                sheet.Cell(row, 3).Value = item.ProdSlipNo;
+                sheet.Cell(row, 4).Value = item.ProdDate?.Split(" ")[0];
+                sheet.Cell(row, 5).Value = item.FGPartCode;
+                sheet.Cell(row, 6).Value = item.FGItemName;
+                sheet.Cell(row, 7).Value = item.WorkCenter;
+                sheet.Cell(row, 8).Value = item.ProdQty;
+                sheet.Cell(row, 9).Value = item.Unit;
+                sheet.Cell(row, 10).Value = item.RMPartCode;
+                sheet.Cell(row, 11).Value = item.RMItemName;
+                sheet.Cell(row, 12).Value = item.ConsumedRMQTY;
+                sheet.Cell(row, 13).Value = item.ConsumedRMUnit;
+                sheet.Cell(row, 14).Value = item.MainRMQTY;
+                sheet.Cell(row, 15).Value = item.MainRMUnit;
+                sheet.Cell(row, 16).Value = item.TotalReqRMQty;
+                sheet.Cell(row, 17).Value = item.TotalStock;
+                sheet.Cell(row, 18).Value = item.AltRMQty;
+                sheet.Cell(row, 19).Value = item.AltRMUnit;
+                sheet.Cell(row, 20).Value = item.RMNetWt;
+                sheet.Cell(row, 21).Value = item.GrossWt;
+                sheet.Cell(row, 22).Value = item.BOMNO;
+                sheet.Cell(row, 23).Value = item.BOMRevDate?.Split(" ")[0];
+                sheet.Cell(row, 24).Value = item.ManualAutoEntry;
+                sheet.Cell(row, 25).Value = item.EntryId;
+                sheet.Cell(row, 26).Value = item.Yearcode;
+                sheet.Cell(row, 27).Value = item.QCMandatory;
+                sheet.Cell(row, 28).Value = item.PendQtyForQC;
+
+                row++;
+            }
+
+        }
+        private void ExportProductionDetailWithBatchwise(IXLWorksheet sheet, IList<ProductionEntryDashboard> list)
+        {
+            string[] headers = {
+            "Sr#",    "NewProdRework", "ProdSlipNo", "ProdDate", "FGPartCode", "FGItemName", "WorkCenter", "ProdQty",
+    "RMPartCode", "RMItemName", "Unit", "ConsumedRMQTY", "ConsumedRMUnit", "MainRMQTY", "MainRMUnit",
+    "FGProdQty", "TotalReqRMQty", "TotalStock", "BatchStock", "AltRMQty", "AltRMUnit",
+    "RMNetWt", "GrossWt", "Batchwise", "BatchNo", "UniqueBatchNo",
+    "BOMNO", "BOMRevDate", "ManualAutoEntry", "EntryId", "Yearcode",
+    "QCMandatory", "PendQtyForQC"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.NewProdRework;
+                sheet.Cell(row, 3).Value = item.ProdSlipNo;
+                sheet.Cell(row, 4).Value = item.ProdDate;
+                sheet.Cell(row, 5).Value = item.FGPartCode;
+                sheet.Cell(row, 6).Value = item.FGItemName;
+                sheet.Cell(row, 7).Value = item.WorkCenter;
+                sheet.Cell(row, 8).Value = item.ProdQty;
+                sheet.Cell(row, 9).Value = item.RMPartCode;
+                sheet.Cell(row, 10).Value = item.RMItemName;
+                sheet.Cell(row, 11).Value = item.Unit;
+                sheet.Cell(row, 12).Value = item.ConsumedRMQTY;
+                sheet.Cell(row, 13).Value = item.ConsumedRMUnit;
+                sheet.Cell(row, 14).Value = item.MainRMQTY;
+                sheet.Cell(row, 15).Value = item.MainRMUnit;
+                sheet.Cell(row, 16).Value = item.FGProdQty;
+                sheet.Cell(row, 17).Value = item.TotalReqRMQty;
+                sheet.Cell(row, 18).Value = item.TotalStock;
+                sheet.Cell(row, 19).Value = item.BatchStock;
+                sheet.Cell(row, 20).Value = item.AltRMQty;
+                sheet.Cell(row, 21).Value = item.AltRMUnit;
+                sheet.Cell(row, 22).Value = item.RMNetWt;
+                sheet.Cell(row, 23).Value = item.GrossWt;
+                sheet.Cell(row, 24).Value = item.Batchwise;
+                sheet.Cell(row, 25).Value = item.BatchNo;
+                sheet.Cell(row, 26).Value = item.UniqueBatchNo;
+                sheet.Cell(row, 27).Value = item.BOMNO;
+                sheet.Cell(row, 28).Value = item.BOMRevDate;
+                sheet.Cell(row, 29).Value = item.ManualAutoEntry;
+                sheet.Cell(row, 30).Value = item.EntryId;
+                sheet.Cell(row, 31).Value = item.Yearcode;
+                sheet.Cell(row, 32).Value = item.QCMandatory;
+                sheet.Cell(row, 33).Value = item.PendQtyForQC;
+
+                row++;
+            }
+        }
+        private void ExportProductionBreakdown(IXLWorksheet sheet, IList<ProductionEntryDashboard> list)
+        {
+            string[] headers = {
+            "Sr#", "Entry ID", "Year Code", "Prod Date", "Break From Time", "Break To Time", "Reason Detail",
+    "Break Time (Min)", "Responsible Employee Name", "Responsible Factor", "QC Mandatory", "Pending Qty for QC"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.EntryId;
+                sheet.Cell(row, 3).Value = item.Yearcode;
+                sheet.Cell(row, 4).Value = item.Proddate?.Split(" ")[0];
+                sheet.Cell(row, 5).Value = item.BreakfromTime;
+                sheet.Cell(row, 6).Value = item.BreaktoTime;
+                sheet.Cell(row, 7).Value = item.ResonDetail;
+                sheet.Cell(row, 8).Value = item.BreakTimeMin;
+                sheet.Cell(row, 9).Value = item.ResEmpName;
+                sheet.Cell(row, 10).Value = item.ResFactor;
+                sheet.Cell(row, 11).Value = item.QCMandatory;
+                sheet.Cell(row, 12).Value = item.PendQtyForQC;
+
+                row++;
+            }
+        }
+        private void ExportProductionOperation(IXLWorksheet sheet, IList<ProductionEntryDashboard> list)
+        {
+            string[] headers = {
+            "Sr#", "EntryId", "Yearcode", "NewProdRework", "ProdSlipNo", "ProdDate",
+    "FGPartCode", "FGItemName", "WorkCenter", "MachineName", "OperatorName",
+    "Fromtime", "ToTime", "TotalHrs", "OverTimeHrs", "MachineCharges",
+    "QCMandatory", "PendQtyForQC"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.EntryId;
+                sheet.Cell(row, 3).Value = item.Yearcode;
+                sheet.Cell(row, 4).Value = item.NewProdRework;
+                sheet.Cell(row, 5).Value = item.ProdSlipNo;
+                sheet.Cell(row, 6).Value = item.ProdDate?.Split(" ")[0];
+                sheet.Cell(row, 7).Value = item.FGPartCode;
+                sheet.Cell(row, 8).Value = item.FGItemName;
+                sheet.Cell(row, 9).Value = item.WorkCenter;
+                sheet.Cell(row, 10).Value = item.MachineName;
+                sheet.Cell(row, 11).Value = item.OperatorName;
+                sheet.Cell(row, 12).Value = item.Fromtime;
+                sheet.Cell(row, 13).Value = item.ToTime;
+                sheet.Cell(row, 14).Value = item.TotalHrs;
+                sheet.Cell(row, 15).Value = item.OverTimeHrs;
+                sheet.Cell(row, 16).Value = item.MachineCharges;
+                sheet.Cell(row, 17).Value = item.QCMandatory;
+                sheet.Cell(row, 18).Value = item.PendQtyForQC;
+
+                row++;
+            }
+        }
+        private void ExportProductionScrap(IXLWorksheet sheet, IList<ProductionEntryDashboard> list)
+        {
+            string[] headers = {
+            "Sr#","Entry ID", "Year Code", "New Prod/Rework", "Prod Slip No", "Prod Date",
+    "FG Part Code", "FG Item Name", "Work Center", "Machine Name", "Scrap Type",
+    "Scrap Qty", "Scrap Unit", "QC Mandatory", "Pending Qty for QC"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.EntryId;
+                sheet.Cell(row, 3).Value = item.Yearcode;
+                sheet.Cell(row, 4).Value = item.NewProdRework;
+                sheet.Cell(row, 5).Value = item.ProdSlipNo;
+                sheet.Cell(row, 6).Value = item.ProdDate?.Split(" ")[0];
+                sheet.Cell(row, 7).Value = item.FGPartCode;
+                sheet.Cell(row, 8).Value = item.FGItemName;
+                sheet.Cell(row, 9).Value = item.WorkCenter;
+                sheet.Cell(row, 10).Value = item.MachineName;
+                sheet.Cell(row, 11).Value = item.ScrapType;
+                sheet.Cell(row, 12).Value = item.ScrapQty;
+                sheet.Cell(row, 13).Value = item.Scrapunit;
+                sheet.Cell(row, 14).Value = item.QCMandatory;
+                sheet.Cell(row, 15).Value = item.PendQtyForQC;
+
+                row++;
+            }
         }
         public async Task<ProductionEntryModel> BindModels(ProductionEntryModel model)
         {

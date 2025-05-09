@@ -53,8 +53,29 @@ namespace eTactWeb.Controllers
         {
             var model = new DayBookModel();
             model = await _IDayBook.GetDayBookDetailsData(FromDate , ToDate,  Ledger,  VoucherType,  CrAmt,  DrAmt);
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            string serializedGrid = JsonConvert.SerializeObject(model.DayBookGrid);
+            HttpContext.Session.SetString("KeyDayBookList", serializedGrid);
             return PartialView("_DayBookGrid", model);
            
+        }
+        [HttpGet]
+        public IActionResult DayBookGridDataForPDF()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyDayBookList");
+            List<DayBookModel> stockRegisterList = new List<DayBookModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<DayBookModel>>(modelJson);
+            }
+
+            return Json(stockRegisterList);
         }
     }
 }

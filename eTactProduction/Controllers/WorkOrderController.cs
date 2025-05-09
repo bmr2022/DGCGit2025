@@ -17,6 +17,11 @@ using eTactWeb.DOM.Models;
 using System.Data;
 using System.Net;
 using System.Globalization;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Runtime.Caching;
+using DocumentFormat.OpenXml.Bibliography;
+using System.Drawing.Printing;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers
 {
@@ -26,13 +31,14 @@ namespace eTactWeb.Controllers
         public IWorkOrder _IworkOrder { get; }
         private readonly ILogger<WorkOrderController> _logger;
         public IWebHostEnvironment IWebHostEnvironment { get; }
-
-        public WorkOrderController(ILogger<WorkOrderController> logger, IDataLogic iDataLogic, IWorkOrder iWorkOrder, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IMemoryCache _MemoryCache;
+        public WorkOrderController(ILogger<WorkOrderController> logger, IDataLogic iDataLogic, IWorkOrder iWorkOrder, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IworkOrder = iWorkOrder;
             IWebHostEnvironment = iWebHostEnvironment;
+            _MemoryCache = iMemoryCache;
         }
 
         [HttpGet]
@@ -415,6 +421,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                 }
+                
                 return View(model);
             }
             catch (Exception ex)
@@ -460,14 +467,325 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetSearchData(string SummaryDetail, string WONO, string CC, string SONO, string SchNo, string AccountName, string PartCode, string ItemName, string FromDate, string ToDate)
+        public async Task<IActionResult> GetSearchData(string SummaryDetail, string WONO, string CC, string SONO, string SchNo, string AccountName, string PartCode, string ItemName, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new WorkOrderGridDashboard();
             model = await _IworkOrder.GetDashboardData(SummaryDetail, WONO, CC, SONO, SchNo, AccountName, PartCode, ItemName, FromDate, ToDate);
+            var modelList = model?.WorkOrderGrid ?? new List<WorkOrderGridDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.WorkOrderGrid = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<WorkOrderGridDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.WorkOrderGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyWorkOrderList", modelList, cacheEntryOptions);
             return PartialView("_WorkOrderDashboardGrid", model);
         }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 5)
+        {
+            WorkOrderGridDashboard model = new WorkOrderGridDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_WorkOrderDashboardGrid", new List<WorkOrderGridDashboard>());
+            }
+            string cacheKey = "KeyWorkOrderList";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<WorkOrderGridDashboard> workorderDashboard) || workorderDashboard == null)
+            {
+                return PartialView("_WorkOrderDashboardGrid", new List<WorkOrderGridDashboard>());
+            }
 
+            List<WorkOrderGridDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = workorderDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = workorderDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = workorderDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.WorkOrderGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            return PartialView("_WorkOrderDashboardGrid", model);
+        }
+        //[HttpGet]
+        //public async Task<IActionResult> ExportWorkOrderToExcel(string ReportType)
+        //{
+        //    string modelJson = HttpContext.Session.GetString("KeyWorkOrderList");
+        //    List<WorkOrderGridDashboard> stockRegisterList = new List<WorkOrderGridDashboard>();
+        //    if (!string.IsNullOrEmpty(modelJson))
+        //    {
+        //        stockRegisterList = JsonConvert.DeserializeObject<List<WorkOrderGridDashboard>>(modelJson);
+        //    }
+
+        //    if (stockRegisterList == null)
+        //        return NotFound("No data available to export.");
+
+        //    using var workbook = new XLWorkbook();
+        //    var worksheet = workbook.Worksheets.Add("ProductionPlan Register");
+
+        //    var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<WorkOrderGridDashboard>>>
+        //    {
+        //        { "Summary", ExportWorkOrderSummary },
+        //        { "Detail", ExportWorkOrderDetail },
+
+        //        // Add more report types here if needed
+        //    };
+
+        //    if (reportGenerators.TryGetValue(ReportType, out var generator))
+        //    {
+        //        generator(worksheet, stockRegisterList);
+        //    }
+        //    else
+        //    {
+        //        return BadRequest("Invalid report type.");
+        //    }
+
+        //    worksheet.Columns().AdjustToContents();
+
+        //    using var stream = new MemoryStream();
+        //    workbook.SaveAs(stream);
+        //    stream.Position = 0;
+
+        //    return File(
+        //        stream.ToArray(),
+        //        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+        //        "ProductionPlanReport.xlsx"
+        //    );
+        //}
+        public async Task<IActionResult> ExportWorkOrderToExcel(string ReportType)
+        {
+            string cacheKey = "KeyWorkOrderList";
+            IList<WorkOrderGridDashboard> stockRegisterList;
+
+            // Check if data is in memory cache
+            if (!_MemoryCache.TryGetValue(cacheKey, out stockRegisterList))
+            {
+                return NotFound("No data available to export.");
+            }
+
+            if (stockRegisterList == null || !stockRegisterList.Any())
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("ProductionPlan Register");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<WorkOrderGridDashboard>>>
+    {
+        { "Summary", ExportWorkOrderSummary },
+        { "Detail", ExportWorkOrderDetail },
+    };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, stockRegisterList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "ProductionPlanReport.xlsx"
+            );
+        }
+
+        private void ExportWorkOrderSummary(IXLWorksheet sheet, IList<WorkOrderGridDashboard> list)
+        {
+            string[] headers = {
+            "Sr#","WONO", "WO Date", "WO Status", "Effective From", "Effective Till", "Entry Date", "Year Code",
+    "Remark (Production)", "Remark (Supply Stage)", "Remark (Routing)", "Remark (Packing)",
+    "Other Instruction", "Billing Status", "Pending Route Sheet", "Approved By", "Approved Date",
+    "Close WO", "Close Date", "WO Rev No", "WO Rev Date", "Actual Entry By", "Actual Entry Date",
+    "Last Updated By", "Last Updated Date", "Machine Name"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.WONO;
+                sheet.Cell(row, 3).Value = item.WODate?.Split(" ")[0];
+                sheet.Cell(row, 4).Value = item.WoStataus;
+                sheet.Cell(row, 5).Value = item.EffectiveFrom?.Split(" ")[0];
+                sheet.Cell(row, 6).Value = item.EffectiveTill?.Split(" ")[0];
+                sheet.Cell(row, 7).Value = item.EntryDate?.Split(" ")[0];
+                sheet.Cell(row, 8).Value = item.YearCode;
+                sheet.Cell(row, 9).Value = item.RemarkForProduction;
+                sheet.Cell(row, 10).Value = item.RemarkProductSupplyStage;
+                sheet.Cell(row, 11).Value = item.RemarkForRouting;
+                sheet.Cell(row, 12).Value = item.RemarkForPacking;
+                sheet.Cell(row, 13).Value = item.OtherInstruction;
+                sheet.Cell(row, 14).Value = item.BillingStatus;
+                sheet.Cell(row, 15).Value = item.PendRouteSheet;
+                sheet.Cell(row, 16).Value = item.ApprovedBy;
+                sheet.Cell(row, 17).Value = item.ApprovedDate?.Split(" ")[0];
+                sheet.Cell(row, 18).Value = item.CloseWo;
+                sheet.Cell(row, 19).Value = item.CloseDate?.Split(" ")[0];
+                sheet.Cell(row, 20).Value = item.WorevNo;
+                sheet.Cell(row, 21).Value = item.WORevDate?.Split(" ")[0];
+                sheet.Cell(row, 22).Value = item.ActualEntryBy;
+                sheet.Cell(row, 23).Value = item.ActualEntryDate?.Split(" ")[0];
+                sheet.Cell(row, 24).Value = item.LastUpdatedBy;
+                sheet.Cell(row, 25).Value = item.LastUpdatedDate?.Split(" ")[0];
+                sheet.Cell(row, 26).Value = item.MachineName;
+                row++;
+            }
+        }
+        private void ExportWorkOrderDetail(IXLWorksheet sheet, IList<WorkOrderGridDashboard> list)
+        {
+            string[] headers = {
+            "Sr#", "Entry ID", "WONo", "WO Date", "WO Status", "Work Center Name", "Effective From", "Effective Till",
+    "Account Name", "SO No", "SO Year Code", "SO Date", "Customer Order No", "Schedule No", "Schedule Year Code",
+    "Schedule Date", "Part Code", "Item Name", "Color", "Order Qty", "Pending Route Sheet Qty", "Pending Prod Qty",
+    "WO Qty", "FG Stock", "WIP Stock", "Drawing No", "Prod Inst 1", "Prod Inst 2", "SO Instruction",
+    "Packaging Instruction", "Route Sheet No", "Route Sheet Year Code", "Route Sheet Date", "Route Sheet Entry No",
+    "Previous WO Qty", "Entry Date", "Year Code", "Remark For Production", "Remark Product Supply Stage",
+    "Remark For Routing", "Remark For Packing", "Other Instruction", "Billing Status", "Pending Route Sheet",
+    "Approved By", "Approved Date", "Close WO", "Close Date", "WO Rev No", "WO Rev Date", "Actual Entry By",
+    "Actual Entry Date", "Last Updated By", "Last Updated Date", "FG Store Name", "WIP Store Name", "Machine Name"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.Entryid;
+                sheet.Cell(row, 3).Value = item.WONO;
+                sheet.Cell(row, 4).Value = item.WODate?.Split(' ')[0];
+                sheet.Cell(row, 5).Value = item.WoStataus;
+                sheet.Cell(row, 6).Value = item.WorkCenterName;
+                sheet.Cell(row, 7).Value = item.EffectiveFrom?.Split(' ')[0];
+                sheet.Cell(row, 8).Value = item.EffectiveTill?.Split(' ')[0];
+                sheet.Cell(row, 9).Value = item.AccountName;
+                sheet.Cell(row, 10).Value = item.SONO;
+                sheet.Cell(row, 11).Value = item.SOYearCode;
+                sheet.Cell(row, 12).Value = item.SODate?.Split(' ')[0];
+                sheet.Cell(row, 13).Value = item.CustomerOrderNo;
+                sheet.Cell(row, 14).Value = item.SchNo;
+                sheet.Cell(row, 15).Value = item.SchYearCode;
+                sheet.Cell(row, 16).Value = item.SchDate?.Split(' ')[0];
+                sheet.Cell(row, 17).Value = item.PartCode;
+                sheet.Cell(row, 18).Value = item.ItemName;
+                sheet.Cell(row, 19).Value = item.COLOR;
+                sheet.Cell(row, 20).Value = item.OrderQty;
+                sheet.Cell(row, 21).Value = item.PendRouteSheetQTy;
+                sheet.Cell(row, 22).Value = item.PendProdQty;
+                sheet.Cell(row, 23).Value = item.WOQty;
+                sheet.Cell(row, 24).Value = item.FGStock;
+                sheet.Cell(row, 25).Value = item.WIPStock;
+                sheet.Cell(row, 26).Value = item.drawingNo;
+                sheet.Cell(row, 27).Value = item.ProdInst1;
+                sheet.Cell(row, 28).Value = item.ProdInst2;
+                sheet.Cell(row, 29).Value = item.SOInstruction;
+                sheet.Cell(row, 30).Value = item.PkgInstruction;
+                sheet.Cell(row, 31).Value = item.RouteSheetNo;
+                sheet.Cell(row, 32).Value = item.RouteSheetYearCode;
+                sheet.Cell(row, 33).Value = item.RouteSheetDate?.Split(' ')[0];
+                sheet.Cell(row, 34).Value = item.RouteSheetEntryNo;
+                sheet.Cell(row, 35).Value = item.PrevWoQty;
+                sheet.Cell(row, 36).Value = item.EntryDate?.Split(' ')[0];
+                sheet.Cell(row, 37).Value = item.YearCode;
+                sheet.Cell(row, 38).Value = item.RemarkForProduction;
+                sheet.Cell(row, 39).Value = item.RemarkProductSupplyStage;
+                sheet.Cell(row, 40).Value = item.RemarkForRouting;
+                sheet.Cell(row, 41).Value = item.RemarkForPacking;
+                sheet.Cell(row, 42).Value = item.OtherInstruction;
+                sheet.Cell(row, 43).Value = item.BillingStatus;
+                sheet.Cell(row, 44).Value = item.PendRouteSheet;
+                sheet.Cell(row, 45).Value = item.ApprovedBy;
+                sheet.Cell(row, 46).Value = item.ApprovedDate?.Split(' ')[0];
+                sheet.Cell(row, 47).Value = item.CloseWo;
+                sheet.Cell(row, 48).Value = item.CloseDate?.Split(' ')[0];
+                sheet.Cell(row, 49).Value = item.WorevNo;
+                sheet.Cell(row, 50).Value = item.WORevDate?.Split(' ')[0];
+                sheet.Cell(row, 51).Value = item.ActualEntryBy;
+                sheet.Cell(row, 52).Value = item.ActualEntryDate?.Split(' ')[0];
+                sheet.Cell(row, 53).Value = item.LastUpdatedBy;
+                sheet.Cell(row, 54).Value = item.LastUpdatedDate?.Split(' ')[0];
+                sheet.Cell(row, 55).Value = item.FGStoreName;
+                sheet.Cell(row, 56).Value = item.WIPStoreName;
+                sheet.Cell(row, 57).Value = item.MachineName;
+
+                row++;
+            }
+        }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string Type = "")
         {
             string contentRootPath = IWebHostEnvironment.ContentRootPath;

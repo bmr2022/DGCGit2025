@@ -299,7 +299,8 @@
 
             var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
 
-            window.location.href = url;
+           //window.location.href = url;
+            window.open(url, '_blank');
         });
 
         $('#ReportType').change(function () {

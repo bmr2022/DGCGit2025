@@ -116,10 +116,8 @@
 												<button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetWIPRegisterData();">
 													<i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
 												</button>
-												<button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
-													<i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
-												</button>
-												<button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+
+                                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
 													<i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
 												</button>
 												<a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="WIPStockRegister" asp-action="WIPStockRegister">
@@ -256,7 +254,7 @@
 			  });
 		  }
 
-						 $('#sendToPDF').click(async function () {
+		 $('#sendToPDF').click(async function () {
 			debugger
 			const { jsPDF } = window.jspdf;
 			const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
@@ -427,7 +425,7 @@
 			doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
 		});
 
-				function getColumnStyles(reportTypeValue) {
+		function getColumnStyles(reportTypeValue) {
 			switch (reportTypeValue) {
 				case 'WIPSTOCKSUMMARY':
 					return {
