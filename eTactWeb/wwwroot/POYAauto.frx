@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="04/03/2025 10:28:17" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="05/01/2025 12:10:55" ReportInfo.CreatorVersion="2023.2.0.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -67,8 +67,8 @@ namespace FastReport
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0qV/4XWB/GakhEImaBTWf/PBnZ6dVGDHB8wwUUSKt1X0+9L+hn2cza0duTWNIj31Xn0a4szJxIzrVv4haSk4cFb+Fb8v2HulAHt7i8LGtQ5Zm3s1njB4RHDBwWB1TQ6PoT1qlNyi/4RZ0E0JpKN0gasD2SiVPmqqlu2JUtpX3Eaf6CZdrOIETFue2o27bb385Q==" ConnectionStringExpression="[MyParameter]">
-      <TableDataSource Name="Table" Alias="ReportData" DataType="System.Int32" Enabled="true" SelectCommand="exec ReportData @EntryId=@entryparam,@yearCode=@yearparam,@PONo=@ponoparam">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtTXVSZhe9iG03YEV+aGe9mceMoPJ8jnFzj/PvQscMGfwRY/2ZGvCWVrf2aS5mc0Nar6gt5Twg8k/vaiGwZ9YrEdmNXqkrI5X4SZ1uU4tmzLXtjEg2kYIKM0cA0NU4AU7cjQrI7tqcICV6H4rOuoqCHI=" ConnectionStringExpression="[MyParameter]">
+      <TableDataSource Name="Table" Alias="ReportData" DataType="System.Int32" Enabled="true" SelectCommand="exec ReportData @EntryId=@entryparam,@yearCode=@yearparam">
         <Column Name="Account_Name" DataType="System.String"/>
         <Column Name="PartCode" DataType="System.String"/>
         <Column Name="Item_Name" DataType="System.String"/>
@@ -235,7 +235,6 @@ namespace FastReport
         <Column Name="Party_Code" DataType="System.String"/>
         <CommandParameter Name="entryparam" Expression="entryparam"/>
         <CommandParameter Name="yearparam" Expression="yearparam"/>
-        <CommandParameter Name="ponoparam" DataType="22" Expression="ponoparam"/>
       </TableDataSource>
     </MsSqlDataConnection>
     <Relation Name="Account_Head_Master_Company_Detail" ParentDataSource="null" ChildDataSource="null" ParentColumns="CC" ChildColumns="CC" Enabled="true"/>
@@ -249,26 +248,25 @@ namespace FastReport
   </Dictionary>
   <ReportPage Name="Page1" RawPaperSize="9" LeftMargin="1.5" TopMargin="0.7" RightMargin="1.5" BottomMargin="0.5" Watermark.Font="Arial, 60pt">
     <ReportTitleBand Name="ReportTitle1" Width="782.46" Height="340.96">
-      <TextObject Name="Text11" Left="47.25" Top="207.9" Width="94.5" Height="18.9" Text="P.O. No." Font="Arial, 10pt"/>
-      <TextObject Name="Text254" Left="141.75" Top="207.9" Width="141.75" Height="18.9" Text="[ReportData.PONo]" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text14" Left="47.25" Top="226.8" Width="66.15" Height="18.9" Text="PO Date" Font="Arial, 10pt"/>
-      <TextObject Name="Text251" Left="141.75" Top="226.8" Width="207.9" Height="18.9" Text="[ReportData.PODate]" Format="Date" Format.Format="D" Font="Arial, 10pt"/>
-      <TextObject Name="Text248" Left="151.2" Top="283.5" Width="141.75" Height="18.9" Text="[ReportData.AmmNo]" HideZeros="true" Font="Arial, 10pt"/>
-      <TextObject Name="Text12" Left="47.25" Top="283.5" Width="94.5" Height="18.9" Text="Amm. No.:" Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="9.45" Top="207.9" Width="94.5" Height="18.9" Text="P.O. No." Font="Arial, 10pt"/>
+      <TextObject Name="Text254" Left="103.95" Top="207.9" Width="141.75" Height="18.9" Text="[ReportData.PONo]" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text14" Left="9.45" Top="226.8" Width="66.15" Height="18.9" Text="PO Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text251" Left="103.95" Top="226.8" Width="207.9" Height="18.9" Text="[ReportData.PODate]" Format="Custom" Format.Format="dd/MMM/yyyy" Font="Arial, 10pt"/>
+      <TextObject Name="Text248" Left="113.4" Top="283.5" Width="141.75" Height="18.9" Text="[ReportData.AmmNo]" HideZeros="true" Font="Arial, 10pt"/>
+      <TextObject Name="Text12" Left="9.45" Top="283.5" Width="94.5" Height="18.9" Text="Amm. No.:" Font="Arial, 10pt"/>
       <LineObject Name="Line141" Left="774.9" Top="85.05" Height="47.25"/>
-      <LineObject Name="Line81" Left="40.07" Top="85.05" Width="735.21"/>
-      <LineObject Name="Line147" Left="39.69" Top="85.05" Height="47.25"/>
-      <TextObject Name="Text15" Left="47.25" Top="264.6" Width="113.4" Height="18.9" Text="P.O. Type" Font="Arial, 10pt"/>
-      <TextObject Name="Text249" Left="141.75" Top="264.6" Width="132.3" Height="18.9" Text="[ReportData.POType]" Font="Arial, 10pt"/>
-      <TextObject Name="Text252" Left="151.2" Top="302.4" Width="132.3" Height="18.9" VisibleExpression="[ReportData.AmmNo]!=0" Text="[ReportData.AmendApproveDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
-      <TextObject Name="Text16" Left="47.25" Top="302.4" Width="85.05" Height="18.9" Text="Amm. Date:" Font="Arial, 10pt"/>
-      <TextObject Name="Text9" Left="47.25" Top="189.76" Width="94.5" Height="18.9" Text="GSTIN       " Font="Arial, 10pt"/>
+      <LineObject Name="Line81" Left="2.27" Top="85.05" Width="773.01"/>
+      <TextObject Name="Text15" Left="9.45" Top="264.6" Width="113.4" Height="18.9" Text="P.O. Type" Font="Arial, 10pt"/>
+      <TextObject Name="Text249" Left="103.95" Top="264.6" Width="132.3" Height="18.9" Text="[ReportData.POType]" Font="Arial, 10pt"/>
+      <TextObject Name="Text252" Left="113.4" Top="302.4" Width="132.3" Height="18.9" VisibleExpression="[ReportData.AmmNo]!=0" Text="[ReportData.AmendApproveDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text16" Left="9.45" Top="302.4" Width="85.05" Height="18.9" Text="Amm. Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="9.45" Top="189.76" Width="94.5" Height="18.9" Text="GSTIN       " Font="Arial, 10pt"/>
       <TextObject Name="Text42" Left="406.35" Top="265.36" Width="94.5" Height="18.9" Text="Email." Font="Arial, 10pt"/>
-      <TextObject Name="Text52" Left="113.4" Top="189.76" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text52" Left="75.6" Top="189.76" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
       <TextObject Name="Text69" Left="491.4" Top="265.36" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
-      <TextObject Name="Text8" Left="47.25" Top="170.86" Width="94.5" Height="18.9" Text="PAN No." Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Left="9.45" Top="170.86" Width="94.5" Height="18.9" Text="PAN No." Font="Arial, 10pt"/>
       <TextObject Name="Text41" Left="406.35" Top="246.46" Width="94.5" Height="18.9" Text="PAN No." Font="Arial, 10pt"/>
-      <TextObject Name="Text51" Left="103.95" Top="170.86" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
+      <TextObject Name="Text51" Left="66.15" Top="170.86" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
       <TextObject Name="Text68" Left="491.4" Top="246.46" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
       <TextObject Name="Text40" Left="406.35" Top="227.56" Width="94.5" Height="18.9" Text="GSTIN" Font="Arial, 10pt"/>
       <TextObject Name="Text67" Left="491.4" Top="227.56" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
@@ -276,42 +274,42 @@ namespace FastReport
       <TextObject Name="Text66" Left="491.4" Top="208.66" Width="18.9" Height="18.9" Text=" :" Font="Arial, 10pt"/>
       <LineObject Name="Line1" Left="396.9" Top="85.81" Height="255.15"/>
       <TextObject Name="Text253" Left="406.35" Top="123.61" Width="359.1" Height="18.9" Text="[ReportData.Account_Name]" Font="Arial, 10pt, style=Bold"/>
-      <LineObject Name="Line132" Left="39.69" Top="114.16" Height="225.67"/>
+      <LineObject Name="Line132" Left="1.89" Top="0.76" Height="339.07"/>
       <LineObject Name="Line140" Left="774.9" Top="133.06" Height="206.77"/>
       <TextObject Name="Text268" Left="406.35" Top="142.51" Width="359.1" Height="66.15" Text="[ReportData.VendorAddress]" Font="Arial, 10pt"/>
-      <LineObject Name="Line187" Left="40.07" Top="340.2" Width="735.21"/>
-      <TextObject Name="Text270" Left="200.34" Top="9.45" Width="415.8" Height="37.8" Text="YA  AUTO INDUSTRIES" HorzAlign="Center" Font="Arial, 22pt, style=Bold"/>
+      <LineObject Name="Line187" Left="2.27" Top="340.2" Width="773.01"/>
       <TextObject Name="Text271" Left="406.35" Top="94.5" Width="113.4" Height="18.9" Text="Supplier Code:" Font="Arial, 10pt, style=Bold"/>
-      <TextObject Name="Text273" Left="47.25" Top="113.4" Width="349.65" Height="18.9" Text="[ReportData.CompAdd]" Font="Arial, 9pt"/>
-      <LineObject Name="Line188" Left="39.69" Height="85.05"/>
+      <TextObject Name="Text273" Left="9.45" Top="113.4" Width="349.65" Height="18.9" Text="[ReportData.CompAdd]" Font="Arial, 9pt"/>
       <LineObject Name="Line189" Left="774.9" Height="85.05"/>
-      <LineObject Name="Line190" Left="37.8" Width="735.21"/>
-      <TextObject Name="Text275" Left="47.25" Top="132.3" Width="349.65" Height="37.8" Text="[ReportData.CompAdd1]" Font="Arial, 9pt"/>
-      <TextObject Name="Text276" Left="141.75" Top="189" Width="207.9" Height="18.9" Text="[ReportData.CompGSTNO]" Font="Arial, 9pt"/>
-      <TextObject Name="Text277" Left="141.75" Top="170.1" Width="207.9" Height="18.9" Text="[ReportData.CompPANNo]" Font="Arial, 9pt"/>
-      <TextObject Name="Text278" Left="47.25" Top="94.5" Width="207.9" Height="18.9" Text="YA  AUTO INDUSTRIES" Font="Arial, 10pt, style=Bold"/>
+      <LineObject Name="Line190" Width="773.01"/>
+      <TextObject Name="Text275" Left="9.45" Top="132.3" Width="349.65" Height="37.8" Text="[ReportData.CompAdd1]" Font="Arial, 9pt"/>
+      <TextObject Name="Text276" Left="103.95" Top="189" Width="207.9" Height="18.9" Text="[ReportData.CompGSTNO]" Font="Arial, 9pt"/>
+      <TextObject Name="Text277" Left="103.95" Top="170.1" Width="207.9" Height="18.9" Text="[ReportData.CompPANNo]" Font="Arial, 9pt"/>
       <TextObject Name="Text279" Left="500.85" Top="226.8" Width="160.65" Height="18.9" Text="[ReportData.VendorGST]" Font="Arial, 10pt"/>
       <TextObject Name="Text281" Left="500.85" Top="207.9" Width="170.1" Height="18.9" Text="[ReportData.Vendorcity]" Font="Arial, 10pt"/>
       <TextObject Name="Text304" Left="500.85" Top="94.5" Width="160.65" Height="18.9" Text="[ReportData.Party_Code]" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text305" Left="500.85" Top="264.6" Width="264.6" Height="18.9" Text="[ReportData.VendorPurchasePersonEmailId]" Font="Arial, 10pt"/>
       <TextObject Name="Text306" Left="500.85" Top="245.7" Width="160.65" Height="18.9" Text="[ReportData.Vendorpanno]" Font="Arial, 10pt"/>
-      <TextObject Name="Text307" Left="141.75" Top="245.7" Width="207.9" Height="18.9" Text="[ReportData.POCloseDate]" Format="Date" Format.Format="D" Font="Arial, 10pt"/>
-      <TextObject Name="Text308" Left="47.25" Top="245.7" Width="94.5" Height="18.9" Text="PO Close Dt:" Font="Arial, 10pt"/>
+      <TextObject Name="Text307" Left="103.95" Top="245.7" Width="207.9" Height="18.9" Text="[ReportData.POCloseDate]" Format="Custom" Format.Format="dd/MMM/yyyy" Font="Arial, 10pt"/>
+      <TextObject Name="Text308" Left="9.45" Top="245.7" Width="94.5" Height="18.9" Text="PO Close Dt:" Font="Arial, 10pt"/>
       <TextObject Name="Text324" Left="236.25" Top="47.25" Width="321.3" Height="28.35" BeforePrintEvent="Text324_BeforePrint" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
       <TextObject Name="Text325" Left="406.35" Top="292.95" Width="94.5" Height="18.9" Text="BANK NAME:" Font="Arial, 10pt"/>
       <TextObject Name="Text326" Left="406.35" Top="321.3" Width="94.5" Height="18.9" Text="IFSC CODE :" Font="Arial, 10pt"/>
       <TextObject Name="Text327" Left="576.45" Top="321.3" Width="94.5" Height="18.9" Text="A/C NO :" Font="Arial, 10pt"/>
+      <TextObject Name="Text270" Left="179.55" Top="9.45" Width="415.8" Height="37.8" Text="YA  AUTO INDUSTRIES" HorzAlign="Center" Font="Arial, 22pt, style=Bold"/>
+      <TextObject Name="Text278" Left="9.45" Top="94.5" Width="207.9" Height="18.9" Text="YA  AUTO INDUSTRIES" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text330" Left="9.45" Top="321.3" Width="85.05" Height="18.9" Text="CIJ NO.:" Font="Arial, 12pt, style=Bold"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="344.96" Width="782.46" Height="47.25">
-      <ShapeObject Name="Shape3" Left="39.69" Width="737.1" Height="47.25"/>
-      <TextObject Name="Text115" Left="37.8" Top="4" Width="28.35" Height="28.35" Text="S. NO." HorzAlign="Center" Font="Arial, 8pt"/>
-      <TextObject Name="Text116" Left="66.15" Top="13.45" Width="103.95" Height="28.35" Text="Part Number" HorzAlign="Center" Font="Arial, 8pt"/>
+    <PageHeaderBand Name="PageHeader1" Top="345.96" Width="782.46" Height="47.25">
+      <ShapeObject Name="Shape3" Left="1.89" Width="774.9" Height="47.25"/>
+      <TextObject Name="Text115" Left="9.45" Top="4" Width="28.35" Height="28.35" Text="S. NO." HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text116" Left="47.25" Top="13.45" Width="75.6" Height="28.35" Text="Part Number" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text99" Left="321.3" Top="13.45" Width="37.8" Height="18.9" Text="QTY" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text100" Left="359.1" Top="13.45" Width="37.8" Height="18.9" Text="UOM" Font="Arial, 8pt"/>
       <TextObject Name="Text101" Left="387.45" Top="13.45" Width="56.7" Height="18.9" Text="RATE" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text107" Left="538.65" Top="4" Width="47.25" Height="13.23" Text="CGST " Font="Arial, 8pt"/>
       <TextObject Name="Text110" Left="623.7" Top="4" Width="37.8" Height="18.9" Text="SGST" Font="Arial, 8pt"/>
-      <TextObject Name="Text98" Left="160.65" Top="13.45" Width="113.4" Height="18.9" Text="Item Name" HorzAlign="Center" Font="Arial, 8pt"/>
+      <TextObject Name="Text98" Left="141.75" Top="13.45" Width="113.4" Height="18.9" Text="Item Name" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text106" Left="529.2" Top="22.9" Width="37.8" Height="18.9" Text="Rate " HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text108" Left="567" Top="22.9" Width="37.8" Height="18.9" Text="Amt" Font="Arial, 8pt"/>
       <TextObject Name="Text109" Left="604.8" Top="22.9" Width="37.8" Height="18.9" Text="Rate " HorzAlign="Center" Font="Arial, 8pt"/>
@@ -321,8 +319,8 @@ namespace FastReport
       <TextObject Name="Text105" Left="274.05" Top="13.45" Width="37.8" Height="18.9" Text="HSN" Font="Arial, 8pt"/>
       <TextObject Name="Text114" Left="727.65" Top="22.9" Width="47.25" Height="18.9" Text="Amt" Font="Arial, 8pt"/>
       <TextObject Name="Text303" Left="472.5" Top="13.61" Width="56.7" Height="13.61" Text="Total" HorzAlign="Center" Font="Arial, 8pt"/>
-      <LineObject Name="Line195" Left="75.6" Height="47.25"/>
-      <LineObject Name="Line196" Left="156.87" Height="47.25"/>
+      <LineObject Name="Line195" Left="37.8" Height="47.25"/>
+      <LineObject Name="Line196" Left="128.52" Height="47.25"/>
       <LineObject Name="Line197" Left="266.49" Height="47.25"/>
       <LineObject Name="Line198" Left="321.3" Height="47.25"/>
       <LineObject Name="Line199" Left="359.1" Height="47.25"/>
@@ -340,9 +338,9 @@ namespace FastReport
       <TextObject Name="Text309" Left="440.37" Top="12.47" Width="37.8" Height="18.9" Text="Disc" HorzAlign="Center" Font="Arial, 8pt"/>
       <LineObject Name="Line214" Left="444.15" Height="47.25"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="396.21" Width="782.46" Height="28.35" Condition="[ReportData.PartCode]">
-      <TextObject Name="Text310" Left="75.6" Width="75.6" Height="28.35" Text="[ReportData.PartCode]" Font="Arial, 8pt"/>
-      <TextObject Name="Text311" Left="160.65" Width="103.95" Height="28.35" Text="[ReportData.Item_Name]" Font="Arial, 8pt"/>
+    <GroupHeaderBand Name="GroupHeader1" Top="398.21" Width="782.46" Height="28.35" Condition="[ReportData.PartCode]">
+      <TextObject Name="Text310" Left="37.8" Width="85.05" Height="28.35" Text="[ReportData.PartCode]" Font="Arial, 7.5pt"/>
+      <TextObject Name="Text311" Left="132.3" Width="132.3" Height="28.35" Text="[ReportData.Item_Name]" Font="Arial, 7.5pt"/>
       <LineObject Name="Line216" Left="321.3" Height="28.35"/>
       <TextObject Name="Text312" Left="264.6" Width="56.7" Height="28.35" Text="[ReportData.HSNNo]" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text313" Left="321.3" Width="37.8" Height="18.9" Text="[ReportData.POQty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
@@ -358,7 +356,7 @@ namespace FastReport
       <TextObject Name="Text323" Left="727.65" Width="47.25" Height="18.9" Text="[ReportData.IGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Center" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
       <LineObject Name="Line217" Left="359.1" Height="28.35"/>
       <LineObject Name="Line218" Left="266.49" Height="28.35"/>
-      <LineObject Name="Line219" Left="156.87" Height="28.35"/>
+      <LineObject Name="Line219" Left="128.52" Height="28.35"/>
       <LineObject Name="Line220" Left="396.9" Height="28.35"/>
       <LineObject Name="Line221" Left="444.15" Height="28.35"/>
       <LineObject Name="Line222" Left="476.28" Height="28.35"/>
@@ -368,53 +366,49 @@ namespace FastReport
       <LineObject Name="Line226" Left="638.82" Height="28.35"/>
       <LineObject Name="Line227" Left="682.29" Height="28.35"/>
       <LineObject Name="Line228" Left="720.09" Height="28.35"/>
-      <LineObject Name="Line229" Left="75.6" Height="28.35"/>
-      <LineObject Name="Line230" Left="40.64" Height="28.35"/>
+      <LineObject Name="Line229" Left="37.8" Height="28.35"/>
+      <LineObject Name="Line230" Left="2.84" Height="28.35"/>
       <LineObject Name="Line231" Left="774.9" Height="28.35"/>
-      <TextObject Name="Text238" Left="47.25" Width="18.9" Height="28.35" Text="[Row#]" Font="Arial, 8pt"/>
-      <DataBand Name="Data1" Top="428.56" Width="782.46" EvenStyle="EvenRows" Guides="0,0,0,0,0" DataSource="Table" KeepTogether="true"/>
-      <GroupFooterBand Name="GroupFooter1" Top="432.56" Width="782.46"/>
+      <TextObject Name="Text238" Left="9.45" Width="18.9" Height="28.35" Text="[Row#]" Font="Arial, 8pt"/>
+      <LineObject Name="Line232" Top="28.35" Width="774.9" Border.Style="Dot"/>
+      <DataBand Name="Data1" Top="431.56" Width="782.46" EvenStyle="EvenRows" Guides="0,0,0,0,0" DataSource="Table" KeepTogether="true"/>
+      <GroupFooterBand Name="GroupFooter1" Top="436.56" Width="782.46"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="482.14" Width="782.46" Height="351.54">
-      <TextObject Name="Text241" Left="47.25" Top="113.4" Width="378" Height="18.9" Text="[ReportData.NetAmtInWord]" Font="Arial, 8pt"/>
-      <TextObject Name="Text167" Left="75.6" Top="189" Width="94.5" Height="18.9" Text="Prepared By:" Font="Arial, 10pt"/>
-      <TextObject Name="Text170" Left="604.8" Top="189" Width="94.5" Height="18.9" Text="Approved By:" Font="Arial, 10pt"/>
-      <LineObject Name="Line151" Left="39.69" Height="351.54"/>
-      <LineObject Name="Line99" Left="39.69" Top="217.35" Width="735.21"/>
-      <TextObject Name="Text175" Left="37.8" Top="226.8" Width="132.3" Height="18.9" Text=" Terms &amp; Conditions" Font="Arial, 10pt"/>
-      <TextObject Name="Text176" Left="47.25" Top="249.1" Width="585.9" Height="18.9" Text="1- Please ensure P.O. NO.,Part code,Item description &amp; our GST No. in your all bills/correspondance." Font="Arial, 7pt"/>
-      <TextObject Name="Text177" Left="47.25" Top="268" Width="585.9" Height="18.9" Text="2- Segregation charge would be charged @ Rs 100 /- per hour in case segregation is done by Auto Components." Font="Arial, 7pt"/>
-      <TextObject Name="Text179" Left="47.25" Top="286.9" Width="585.9" Height="18.9" Text="3- We reserve the rights to cancel this P.O., if delivery schedule not met or any discripancy found from your side." Font="Arial, 7pt"/>
-      <TextObject Name="Text180" Left="47.25" Top="305.05" Width="661.5" Height="28.35" Text="4. Any material belongs to us &amp; laying with you,i.e Components,Tools,Dies and moulds must be cared properly &amp;  keep indemnified   against any damage or losses." Font="Arial, 7pt"/>
-      <TextObject Name="Text181" Left="47.25" Top="332.26" Width="585.9" Height="18.9" Text="5. MRN Rejction &amp; Line Rejection will send through Transport on To pay basis." Font="Arial, 7pt"/>
-      <LineObject Name="Line112" Left="39.69" Top="350.03" Width="737.1"/>
-      <TextObject Name="Text166" Left="47.25" Top="132.3" Width="94.5" Height="18.9" Text="Remark" Font="Arial, 10pt"/>
-      <LineObject Name="Line172" Left="774.9" Height="351.54"/>
-      <LineObject Name="Line173" Left="37.8" Width="737.1"/>
-      <TextObject Name="Text282" Left="151.2" Top="132.3" Width="283.5" Height="37.8" Text="[ReportData.Remark]" Font="Arial, 8pt"/>
-      <TextObject Name="Text283" Left="236.25" Top="189" Width="94.5" Height="18.9" Text="Checked By:" Font="Arial, 10pt"/>
-      <TextObject Name="Text291" Left="434.7" Top="122.85" Width="103.95" Height="18.9" Text="Amm Reason" Font="Arial, 10pt"/>
-      <TextObject Name="Text300" Left="557.55" Top="122.85" Width="198.45" Height="18.9" Text="[ReportData.AmmendmentReason]" Font="Arial, 10pt"/>
-      <TextObject Name="Text290" Left="434.7" Top="75.6" Width="103.95" Height="18.9" Text="Payment Terms" Font="Arial, 10pt"/>
-      <TextObject Name="Text299" Left="557.55" Top="75.6" Width="207.9" Height="56.7" Text="[ReportData.PaymentTerms]" Font="Arial, 10pt"/>
-      <TextObject Name="Text285" Left="47.25" Top="56.7" Width="122.85" Height="18.9" Text="Delivery Terms" Font="Arial, 10pt"/>
-      <TextObject Name="Text289" Left="434.7" Top="37.8" Width="103.95" Height="18.9" Text="Freight" Font="Arial, 10pt"/>
-      <TextObject Name="Text294" Left="189" Top="56.7" Width="236.25" Height="18.9" Text="[ReportData.Remark]" Font="Arial, 10pt"/>
-      <TextObject Name="Text298" Left="557.55" Top="37.8" Width="207.9" Height="37.8" Text="[ReportData.FreightPaidBy]" Font="Arial, 10pt"/>
-      <TextObject Name="Text297" Left="189" Top="75.6" Width="151.2" Height="18.9" Text="[ReportData.InsurancePaidBy]" Font="Arial, 10pt"/>
-      <TextObject Name="Text284" Left="47.25" Top="37.8" Width="122.85" Height="18.9" Text="Place Of Delivery" Font="Arial, 10pt"/>
-      <TextObject Name="Text288" Left="47.25" Top="75.6" Width="103.95" Height="18.9" Text="Insurance" Font="Arial, 10pt"/>
-      <LineObject Name="Line192" Left="37.8" Top="179.55" Width="735.21"/>
-      <LineObject Name="Line193" Left="37.8" Top="28.35" Width="737.1"/>
+    <ReportSummaryBand Name="ReportSummary1" Top="488.14" Width="782.46" Height="294.84">
+      <TextObject Name="Text241" Left="9.45" Top="103.95" Width="378" Height="18.9" Text="[ReportData.NetAmtInWord]" Font="Arial, 8pt"/>
+      <TextObject Name="Text175" Left="9.45" Top="170.1" Width="132.3" Height="18.9" Text=" Terms &amp; Conditions" Font="Arial, 10pt"/>
+      <TextObject Name="Text176" Left="18.9" Top="192.4" Width="585.9" Height="18.9" Text="1- Please ensure P.O. NO.,Part code,Item description &amp; our GST No. in your all bills/correspondance." Font="Arial, 7pt"/>
+      <TextObject Name="Text177" Left="18.9" Top="211.3" Width="585.9" Height="18.9" Text="2- Segregation charge would be charged @ Rs 100 /- per hour in case segregation is done by Auto Components." Font="Arial, 7pt"/>
+      <TextObject Name="Text179" Left="18.9" Top="230.2" Width="585.9" Height="18.9" Text="3- We reserve the rights to cancel this P.O., if delivery schedule not met or any discripancy found from your side." Font="Arial, 7pt"/>
+      <TextObject Name="Text180" Left="18.9" Top="248.35" Width="661.5" Height="28.35" Text="4. Any material belongs to us &amp; laying with you,i.e Components,Tools,Dies and moulds must be cared properly &amp;  keep indemnified   against any damage or losses." Font="Arial, 7pt"/>
+      <TextObject Name="Text181" Left="18.9" Top="275.56" Width="585.9" Height="18.9" Text="5. MRN Rejction &amp; Line Rejection will send through Transport on To pay basis." Font="Arial, 7pt"/>
+      <LineObject Name="Line112" Left="-26.46" Top="293.33" Width="803.25"/>
+      <TextObject Name="Text166" Left="9.45" Top="132.3" Width="94.5" Height="18.9" Text="Remark" Font="Arial, 10pt"/>
+      <LineObject Name="Line172" Left="774.9" Height="294.84"/>
+      <LineObject Name="Line173" Width="774.9"/>
+      <TextObject Name="Text282" Left="113.4" Top="132.3" Width="283.5" Height="18.9" Text="[ReportData.Remark]" Font="Arial, 8pt"/>
+      <TextObject Name="Text291" Left="396.9" Top="122.85" Width="103.95" Height="18.9" Text="Amm Reason" Font="Arial, 10pt"/>
+      <TextObject Name="Text300" Left="519.75" Top="122.85" Width="198.45" Height="18.9" Text="[ReportData.AmmendmentReason]" Font="Arial, 10pt"/>
+      <TextObject Name="Text290" Left="396.9" Top="75.6" Width="103.95" Height="18.9" Text="Payment Terms" Font="Arial, 10pt"/>
+      <TextObject Name="Text299" Left="519.75" Top="75.6" Width="207.9" Height="56.7" Text="[ReportData.PaymentTerms]" Font="Arial, 10pt"/>
+      <TextObject Name="Text285" Left="9.45" Top="56.7" Width="122.85" Height="18.9" Text="Delivery Terms" Font="Arial, 10pt"/>
+      <TextObject Name="Text289" Left="396.9" Top="37.8" Width="103.95" Height="18.9" Text="Freight" Font="Arial, 10pt"/>
+      <TextObject Name="Text294" Left="151.2" Top="56.7" Width="236.25" Height="18.9" Text="[ReportData.Remark]" Font="Arial, 10pt"/>
+      <TextObject Name="Text298" Left="519.75" Top="37.8" Width="207.9" Height="37.8" Text="[ReportData.FreightPaidBy]" Font="Arial, 10pt"/>
+      <TextObject Name="Text297" Left="151.2" Top="75.6" Width="151.2" Height="18.9" Text="[ReportData.InsurancePaidBy]" Font="Arial, 10pt"/>
+      <TextObject Name="Text284" Left="9.45" Top="37.8" Width="122.85" Height="18.9" Text="Place Of Delivery" Font="Arial, 10pt"/>
+      <TextObject Name="Text288" Left="9.45" Top="75.6" Width="103.95" Height="18.9" Text="Insurance" Font="Arial, 10pt"/>
+      <LineObject Name="Line192" Top="160.65" Width="773.01"/>
+      <LineObject Name="Line193" Top="28.35" Width="774.9"/>
       <TextObject Name="Text240" Left="595.35" Top="9.45" Width="122.85" Height="18.9" BeforePrintEvent="Text240_BeforePrint" Text="[ReportData.NetAmount]" HideZeros="true" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text262" Left="510.3" Top="9.45" Width="47.25" Height="18.9" Text="Net Amt" HideZeros="true" Font="Arial, 8pt"/>
-      <TextObject Name="Text328" Left="406.35" Top="189" Width="94.5" Height="18.9" Text="Verified By:" Font="Arial, 10pt"/>
-      <TextObject Name="Text329" Left="189" Top="37.8" Width="207.9" Height="18.9" Text="[ReportData.ShippingAddress]" Font="Arial, 10pt"/>
-      <ChildBand Name="Child1" Top="436.56" Width="782.46" Height="41.58" FillUnusedSpace="true">
-        <LineObject Name="Line171" Left="39.69" Height="40.82"/>
+      <TextObject Name="Text329" Left="151.2" Top="37.8" Width="207.9" Height="18.9" Text="[ReportData.ShippingAddress]" Font="Arial, 10pt"/>
+      <LineObject Name="Line233" Height="294.84"/>
+      <ChildBand Name="Child1" Top="441.56" Width="782.46" Height="41.58" FillUnusedSpace="true">
+        <LineObject Name="Line171" Left="1.89" Height="40.82"/>
         <LineObject Name="Line174" Left="774.9" Height="40.82"/>
-        <LineObject Name="Line175" Left="75.6" Height="40.82"/>
-        <LineObject Name="Line176" Left="156.87" Height="40.82"/>
+        <LineObject Name="Line175" Left="37.8" Height="40.82"/>
+        <LineObject Name="Line176" Left="128.52" Height="40.82"/>
         <LineObject Name="Line177" Left="266.49" Height="40.82"/>
         <LineObject Name="Line178" Left="321.3" Height="40.82"/>
         <LineObject Name="Line179" Left="359.1" Height="40.82"/>
@@ -429,10 +423,16 @@ namespace FastReport
         <LineObject Name="Line215" Left="444.15" Height="40.82"/>
       </ChildBand>
     </ReportSummaryBand>
-    <PageFooterBand Name="PageFooter1" Top="841.68" Width="782.46">
-      <ChildBand Name="Child2" Top="837.68" Width="782.46" FillUnusedSpace="true">
-        <LineObject Name="Line191" Left="39.69" Width="737.1"/>
-      </ChildBand>
+    <PageFooterBand Name="PageFooter1" Top="792.98" Width="782.46" Height="37.8">
+      <TextObject Name="Text283" Left="245.7" Top="9.45" Width="94.5" Height="18.9" Text="Checked By:" Font="Arial, 10pt"/>
+      <TextObject Name="Text167" Left="18.9" Top="9.45" Width="94.5" Height="18.9" Text="Prepared By:" Font="Arial, 10pt"/>
+      <TextObject Name="Text170" Left="604.8" Top="9.45" Width="94.5" Height="18.9" Text="Approved By:" Font="Arial, 10pt"/>
+      <TextObject Name="Text328" Left="406.35" Top="9.45" Width="94.5" Height="18.9" Text="Verified By:" Font="Arial, 10pt"/>
+      <LineObject Name="Line234" Top="9.45" Width="774.9"/>
+      <LineObject Name="Line235" Top="37.8" Width="774.9"/>
+      <LineObject Name="Line236" Top="9.45" Height="28.35"/>
+      <LineObject Name="Line237" Left="774.9" Top="9.45" Height="28.35"/>
+      <ChildBand Name="Child2" Top="787.98" Width="782.46" FillUnusedSpace="true"/>
     </PageFooterBand>
   </ReportPage>
 </Report>
