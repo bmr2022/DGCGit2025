@@ -1544,6 +1544,19 @@
                         <li>
                             <a class="dropdown-item" href="#">Deassemble Item &raquo; </a>
                             <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="DeassembleItem" asp-controller="DeassembleItem" id="DeassembleItem">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        Deassemble Item
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item ReceiveItemInStore" asp-action="DeassembleItemDashBoard" asp-controller="DeassembleItem">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                    <input class="userRightsPermission" type="hidden" value="Receive Item In Store" />
+                                </li>
                             </ul>
                         </li>
                         <li><hr class="dropdown-divider"></li>

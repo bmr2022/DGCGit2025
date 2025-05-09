@@ -296,6 +296,7 @@ namespace eTactWeb
             services.TryAddTransient<IStockRegister, StockRegisterBLL>();
             services.TryAddTransient<ICustomerJWR, CustomerJWRBLL>();
             services.TryAddTransient<IInterStoreTransfer, InterStoreTransferBLL>();
+            services.TryAddTransient<IDeassembleItem, DeassembleItemBLL>();
             services.TryAddTransient<IReceiveChallan, ReceiveChallanBLL>();
             services.TryAddTransient<IWIPStockRegister, WIPStockRegisterBLL>();
             services.TryAddTransient<IProductionEntryReport, ProductionEntryReportBLL>();
