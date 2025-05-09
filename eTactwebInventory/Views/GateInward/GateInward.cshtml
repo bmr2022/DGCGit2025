@@ -861,7 +861,7 @@
             });
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
+                $('#POType').rules("remove", "required");
                 $('#AC1').prop("checked", true);
                 fillAccount();
                 var selectElement = $("#AccountCode");
@@ -874,14 +874,16 @@
                 console.log("before parse EntryDate" + $("#EntryDate").val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 console.log("EntryDate" + EntryDate);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
+                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate)); */
                 console.log("after parse EntryDate" + $("#EntryDate").val());
 
 
                 console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
                 var InvoiceDate = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
                 console.log("InvoiceDate" + InvoiceDate);
-                $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDate));
+               /*  $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDate)); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#InvoiceDate').datepicker("setDate", InvoiceDate);
                 console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
 
 

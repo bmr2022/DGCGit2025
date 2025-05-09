@@ -664,15 +664,30 @@
             }
             else if ($('#Mode').val() == "PSA" || $('#Mode').val() == "PSU") {
                  
-                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ScheduleDate').val()));
+               /*  $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ScheduleDate').val())); */
                 $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffTillDate').val()));
                 $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchAmendmentDate').val()));
                  
                 $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val()));
                 $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val()));
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
-                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#PODate').val()));
+               /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#PODate').val())); */
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                var PODate = parseDateToFormat($('#PODate').val().split(" ")[0]);
+                var ScheduleDate = parseDateToFormat($('#ScheduleDate').val().split(" ")[0]);
+                
+
+                
+
+                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
+                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#PODate').datepicker("setDate", PODate);
+                $('#ScheduleDate').datepicker("setDate", ScheduleDate);
+              
+
                 $('#SchAmendmentDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $('#SchAmendmentDate').datepicker("option", "maxDate", parseDateToFormat($('#SchEffTillDate').val()));
                 $('#DeliveryDate')
