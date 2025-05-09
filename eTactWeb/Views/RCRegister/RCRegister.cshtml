@@ -424,22 +424,58 @@
             });
         });
 
+        // function GetServerDate() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "@Url.Action("GetServerDate","SaleOrder")",
+        //         async: false,
+        //         success: function (result, status, error) {
+        //             console.log(result);
+        //             if (result != null) {
+
+        //                 var firstDayOfMonth = getFirstDayOfMonth(result);
+        //                 $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+        //                 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+        //             }
+        //         }
+        //     });
+        // }
+
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate","SaleOrder")",
+                url: "@Url.Action("GetServerDate", "MRNRegister")",
                 async: false,
                 success: function (result, status, error) {
                     console.log(result);
                     if (result != null) {
+                        // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 
                         var firstDayOfMonth = getFirstDayOfMonth(result);
                         $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+
                         $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 
                     }
                 }
             });
+        }
+
+        function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
         }
 
         function getFirstDayOfMonth(dateString) {
