@@ -459,6 +459,7 @@ namespace eTactWeb.Controllers
                 {
                     HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
                 }
+                HttpContext.Session.SetString("KeyReqWithoutBOMGrid", JsonConvert.SerializeObject(RequisitionDetail));
             }
             return PartialView("_ReqWithoutBomGrid", MainModel);
         }
