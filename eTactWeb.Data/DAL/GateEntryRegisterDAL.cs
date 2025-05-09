@@ -108,7 +108,7 @@ namespace eTactWeb.Data.DAL
                                                          AgainstChallanQty = Convert.ToInt32(dr["ShelfLife"].ToString()),
 
                                                         PreparedByEmp = string.IsNullOrEmpty(dr["PrepByEMp"].ToString()) ? "" : dr["PrepByEMp"].ToString(),
-                                                        ActualEntryByEmp = string.IsNullOrEmpty(dr["ActualEnteredBy"].ToString()) ? "" : dr["ActualEnteredBy"].ToString(),
+                                                         ActualEntryByEMp = string.IsNullOrEmpty(dr["ActualEnteredBy"].ToString()) ? "" : dr["ActualEnteredBy"].ToString(),
                                                         EntryByMachineName = string.IsNullOrEmpty(dr["EntryByMachineName"].ToString()) ? "" : dr["EntryByMachineName"].ToString(),
                                                         Remark = string.IsNullOrEmpty(dr["Remark"].ToString()) ? "" : dr["Remark"].ToString(),
                                                         ShelfLife = Convert.ToInt32(dr["ShelfLife"].ToString()),
@@ -202,7 +202,7 @@ namespace eTactWeb.Data.DAL
                                                          Amout = Convert.ToDecimal(dr["TotalAmount"].ToString()),
                                                           Remark = string.IsNullOrEmpty(dr["Remark"].ToString()) ? "" : dr["Remark"].ToString(),
                                                          PreparedByEmp = string.IsNullOrEmpty(dr["PrepByEMp"].ToString()) ? "" : dr["PrepByEMp"].ToString(),
-                                                         ActualEntryByEmp = string.IsNullOrEmpty(dr["ActualEntryByEMp"].ToString()) ? "" : dr["ActualEntryByEMp"].ToString(),
+                                                         ActualEntryByEMp = string.IsNullOrEmpty(dr["ActualEntryByEMp"].ToString()) ? "" : dr["ActualEntryByEMp"].ToString(),
                                                          UpdatedByEMp = string.IsNullOrEmpty(dr["UpdatedByEMp"].ToString()) ? "" : dr["UpdatedByEMp"].ToString(),
                                                         
                                                          EntryByMachineName = string.IsNullOrEmpty(dr["EntryByMachineName"].ToString()) ? "" : dr["EntryByMachineName"].ToString(),
@@ -233,7 +233,7 @@ namespace eTactWeb.Data.DAL
                                                          DocNo = string.IsNullOrEmpty(dr["DocName"].ToString()) ? "" : dr["DocName"].ToString(), 
                                                          Remark = string.IsNullOrEmpty(dr["Remark"].ToString()) ? "" : dr["Remark"].ToString(),
                                                          PreparedByEmp = string.IsNullOrEmpty(dr["PrepByEMp"].ToString()) ? "" : dr["PrepByEMp"].ToString(),
-                                                         ActualEntryByEmp = string.IsNullOrEmpty(dr["ActualEntryByEMp"].ToString()) ? "" : dr["ActualEntryByEMp"].ToString(),
+                                                         ActualEntryByEMp = string.IsNullOrEmpty(dr["ActualEntryByEMp"].ToString()) ? "" : dr["ActualEntryByEMp"].ToString(),
                                                          ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? "" : dr["ActualEntryDate"].ToString(),
 
                                                          UpdatedByEMp = string.IsNullOrEmpty(dr["UpdatedByEMp"].ToString()) ? "" : dr["UpdatedByEMp"].ToString(),

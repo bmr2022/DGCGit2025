@@ -61,7 +61,7 @@ namespace eTactWeb.DOM.Models
         public string? POtype { get; set; }
         public string? Remark { get; set; }
         public string? PreparedByEmp { get; set; }
-        public string? ActualEntryByEmp { get; set; }
+        public string? ActualEntryByEMp { get; set; }
         public string? ActualEntryDate { get; set; }
         public string? LastUpdatedby { get; set; }
         public DateTime? Updationdate { get; set; }
@@ -85,7 +85,7 @@ namespace eTactWeb.DOM.Models
         public decimal? Amount { get; set; }
         public decimal? AgainstChallanQty { get; set; }
         public string? AgainstChallanNo { get; set; }
-        public string? ActualEntryByEMp {  get; set; }
+        //public string? ActualEntryByEMp {  get; set; }
         public string? UpdatedByEMp { get; set; }
         public string? AltUnit { get; set; }
         public decimal? Amout { get; set; }
