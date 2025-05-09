@@ -92,12 +92,14 @@ else
                                         </a></td>
                                 <th>@Cntr</th>
                                 <td style="background-color: #e09ef0;">@item.GateNo</td>
-                                <td>@item.GDate</td>
-                                <td>@item.EntryDate</td>
+                                <td>
+                                    @(item.GDate == null ? string.Empty : @item.GDate.Split(" ")[0])
+                                </td>
+                                <td>@(item.EntryDate == null ? string.Empty : @item.EntryDate.Split(" ")[0])</td>
                                 <td>@item.VendorName</td>
                                
                                 <td>@item.InvoiceNo</td>
-                                <td>@item.InvoiceDate</td>
+                                <td>@(item.InvoiceDate == null ? string.Empty : @item.InvoiceDate.Split(" ")[0])</td>
                              
                                 <td>@item.DocNo</td>
                                 <td>@item.POTypeServiceItem</td>
@@ -125,7 +127,9 @@ else
                                 <td>@item.PreparedByEmp</td>
                                 <td>@item.ActualEntryByEMp</td>
                                 <td>@item.UpdatedByEMp</td>
-                                <td>@item.LastUpdatedDate</td>
+                                <td>
+                                    @(item.LastUpdatedDate == null ? string.Empty : @item.LastUpdatedDate.Split(" ")[0])
+                                </td>
                                 <td>@item.EntryByMachineName</td>
 
                                 <td>@item.GateEntryId</td>

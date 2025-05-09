@@ -140,6 +140,9 @@
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="GateEntryRegister" asp-action="GateEntryRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
@@ -228,6 +231,304 @@
 
              GetGateRegisterData();//INITIAL - ON LOAD METHOD
         });
+        $('#sendToPDF').click(async function () {
+            debugger
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            // Get dynamic values
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var vendorName = $('#VendorName').val();
+            var gateNo = $('#gateno').val();
+            var invoiceNo = $('#invoiceNo').val();
+            var poNo = $('#PONo').val();
+            var schNo = $('#Schno').val();
+            var partCode = $('#PartCode').val();
+            var itemName = $('#ItemName').val();
+            var docName = $('#docname').val();
+            var reportTypeValue = $('#ReportType').val();
+            var reportTypeText = $('#ReportType option:selected').text();
+
+            // Report Title (Bold and Color)
+            doc.setFontSize(16).setFont('helvetica', 'bold').setTextColor(41, 128, 185).text(reportTypeText, 40, 40);  // Blue color
+
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont('helvetica', 'bold');
+            doc.text('For the duration From:', 40, 58);
+            doc.setFont('helvetica', 'normal');
+            doc.text(fromDate, 160, 58);
+            doc.setFont('helvetica', 'bold');
+            doc.text('To:', 240, 58);
+            doc.setFont('helvetica', 'normal');
+            doc.text(toDate, 270, 58);
+
+            // Header Fields
+            const headerFields = [
+              
+            ];
+
+            // Adding headerFields to PDF with bold labels
+            let yPosition = 75; // starting position for header fields
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0); // Set black color once before loop
+
+            headerFields.forEach((field, index) => {
+                if (field.value) {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${field.label}:`, 40, yPosition);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(field.value, 140, yPosition);
+                    yPosition += 15;
+                }
+            });
+
+            // Fetch data
+            /* var resp = await fetch('/GateEntryRegister/GetGateEntryDataForPDF');
+            var rows = await resp.json(); */
+
+            var resp = await fetch('/GateEntryRegister/GetGateEntryDataForPDF');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); // Log full error
+                console.error("Error body:", errorText);
+                return; // Exit early
+            }
+
+            var rows = await resp.json();
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+                case 'ITEMSUMMARY':
+                    headers = [
+                        "Sr#", "Part Code", "Item Name", "Qty", "Unit", "Amount",
+                        "Alt Qty", "Alt Unit"
+                    ];
+                    console.log("SummaryData:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.partCode,  r.itemName,r.qty,r.unit,r.amount,r.altQty,r.altUnit
+                    ]);
+                    break;
+                case 'PARTYITEMSUMMARY':
+                    headers = [
+                        "Sr#", "Vendor Name", "Part Code", "Item Name", "Qty", "Unit",
+                        "Amount", "Alt Qty", "Alt Unit", "Company Address"
+                    ];
+                    console.log("SummaryData:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName,r.partCode,r.itemName, r.qty, r.unit,r.amount,
+                        r.altQty,r.altUnit,r.companyAddress
+                    ]);
+                 break;
+                case 'PARTYITEMPOSUMMARY':
+                    headers = [
+                        "Sr#", "Part Code", "Item Name", "Qty", "Unit", "Amount",
+                        "PO No", "Sch No", "Alt Qty", "Alt Unit", "Company Address"
+                    ];
+                    console.log("SummaryData:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.partCode,r.itemName,r.qty,r.unit,r.amount,r.poNo,r.schNo,
+                        r.altQty, r.altUnit,r.companyAddress
+                    ]);
+                 break;
+                case 'DAYWISEGATEENTRYLIST':
+                    headers = [
+                        "Sr#", "GDate", "Entry Date", "Vendor Name", "Invoice No", "Invoice Date",
+                        "Doc No", "Gate Entry ID", "Gate Year Code", "Actual Entry By Emp",
+                        "Last Updated By", "Last Updated Date", "Entry By Machine Name"
+                    ];
+                    console.log("SummaryData:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.gDate.split(" ")[0] || '', r.entryDate.split(" ")[0] || '', r.vendorName, r.invoiceNo, r.invoiceDate.split(" ")[0] || '',
+                        r.docNo,r.gateEntryId,r.gateYearCode,r.actualEntryByEmp,r.lastUpdatedby,
+                        r.lastUpdatedDate.split(" ")[0] || '', r.entryByMachineName
+                    ]);
+                 break;
+                case 'PENDGATEFORMRN':
+                    headers = [
+                        "Sr#", "Gate No", "GDate", "Entry Date", "Vendor Name", "Invoice No",
+                        "Invoice Date", "Doc No", "Remark", "Prepared By Emp", "Actual Entry By Emp",
+                        "Actual Entry Date", "Updated By Emp", "Last Updated Date", "Gate Entry ID",
+                       
+                    ];
+                    console.log("SummaryData:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.gateNo, r.gDate.split(" ")[0] || '', r.entryDate.split(" ")[0] || '', r.vendorName, r.invoiceNo,
+                        r.invoiceDate.split(" ")[0] || '', r.docNo, r.remark, r.preparedByEmp, r.actualEntryByEMp,
+                        r.actualEntryDate.split(" ")[0] || '', r.updatedByEMp, r.lastUpdatedDate.split(" ")[0] || '', r.gateEntryId
+                    ]);
+                 break;
+
+                // Add more cases for different report types here if needed
+                default:
+                    $.notify("This report type has no data",'error');
+                    return;
+            }
+
+            // Generate table with bold and colored header
+            doc.autoTable({
+                startY: yPosition, // after headerFields
+                head: [headers],
+                body: body,
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 3,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                columnStyles: getColumnStyles(reportTypeValue),
+                tableWidth: 'auto',
+                showHead: 'everyPage'
+            });
+
+            // 1. Calculate all totals
+            const totalOpnStk = rows.reduce((sum, r) => sum + (+r.opnStk || 0), 0);
+            const totalRecQty = rows.reduce((sum, r) => sum + (+r.recQty || 0), 0);
+            const totalIssQty = rows.reduce((sum, r) => sum + (+r.issQty || 0), 0);
+            const totalTotStk = rows.reduce((sum, r) => sum + (+r.totStk || 0), 0);
+            const totalAmount = rows.reduce((sum, r) => sum + (+r.amount || 0), 0);
+
+            // 2. Build the one-line footer values string
+            const footerValues =
+                `Total Open Stock: ${totalOpnStk.toFixed(2)}  |  ` +
+                `Total Rec Stock: ${totalRecQty.toFixed(2)}  |  ` +
+                `Total Issue Stock: ${totalIssQty.toFixed(2)}  |  ` +
+                `Total Stock: ${totalTotStk.toFixed(2)}  |  ` +
+                `Total Amount: ${totalAmount.toFixed(2)}`;
+
+            // 3. Determine where the table finished
+            const finalY = doc.lastAutoTable.finalY || yPosition;
+
+            // 4. Compute available width (pageWidth − margins)
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const marginLeft = 40;
+            const marginRight = 40;
+            const availableW = pageWidth - marginLeft - marginRight;
+
+            // 5. Draw a bold footer title
+            const titleY = finalY + 15;
+            doc.setFont('helvetica', 'bold')
+                .setFontSize(11)
+                .setTextColor(41, 128, 185)           // Optional: match your header color
+                .text('Report Totals:', marginLeft, titleY);
+
+            // 6. Draw the footer values on the same line (normal weight)
+            const valuesY = titleY + 12;
+            doc.setFont('helvetica', 'normal')
+                .setFontSize(10)
+                .setTextColor(0, 0, 0)
+                .text(footerValues, marginLeft, valuesY, {
+                    maxWidth: availableW,
+                    align: 'left'
+                });
+
+            // Save the PDF
+            doc.save(`GateEntry_${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+
+        });
+        function getColumnStyles(reportTypeValue) {
+            switch (reportTypeValue) {
+                case 'WIPSTOCKSUMMARY':
+                case 'ITEMSUMMARY':
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 50 },   // Part Code
+                        2: { cellWidth: 60 },   // Item Name
+                        3: { cellWidth: 30 },   // Qty
+                        4: { cellWidth: 30 },   // Unit
+                        5: { cellWidth: 35 },   // Amount
+                        6: { cellWidth: 30 },   // Alt Qty
+                        7: { cellWidth: 30 }    // Alt Unit
+                    };
+
+                case 'PARTYITEMSUMMARY':
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 80 },   // Vendor Name
+                        2: { cellWidth: 50 },   // Part Code
+                        3: { cellWidth: 60 },   // Item Name
+                        4: { cellWidth: 30 },   // Qty
+                        5: { cellWidth: 30 },   // Unit
+                        6: { cellWidth: 35 },   // Amount
+                        7: { cellWidth: 30 },   // Alt Qty
+                        8: { cellWidth: 30 },   // Alt Unit
+                        9: { cellWidth: 60 }    // Company Address
+                    };
+
+                case 'PARTYITEMPOSUMMARY':
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 50 },   // Part Code
+                        2: { cellWidth: 60 },   // Item Name
+                        3: { cellWidth: 30 },   // Qty
+                        4: { cellWidth: 30 },   // Unit
+                        5: { cellWidth: 35 },   // Amount
+                        6: { cellWidth: 30 },   // PO No
+                        7: { cellWidth: 30 },   // Sch No
+                        8: { cellWidth: 30 },   // Alt Qty
+                        9: { cellWidth: 30 },   // Alt Unit
+                        10: { cellWidth: 60 }   // Company Address
+                    };
+
+                case 'DAYWISEGATEENTRYLIST':
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 50 },   // GDate
+                        2: { cellWidth: 50 },   // Entry Date
+                        3: { cellWidth: 80 },   // Vendor Name
+                        4: { cellWidth: 50 },   // Invoice No
+                        5: { cellWidth: 50 },   // Invoice Date
+                        6: { cellWidth: 50 },   // Doc No
+                        7: { cellWidth: 50 },   // Gate Entry ID
+                        8: { cellWidth: 50 },   // Gate Year Code
+                        9: { cellWidth: 60 },   // Actual Entry By Emp
+                        10: { cellWidth: 60 },  // Last Updated By
+                        11: { cellWidth: 50 },  // Last Updated Date
+                        12: { cellWidth: 60 }   // Entry By Machine Name
+                    };
+
+                case 'PENDGATEFORMRN':
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 50 },   // Gate No
+                        2: { cellWidth: 50 },   // GDate
+                        3: { cellWidth: 50 },   // Entry Date
+                        4: { cellWidth: 80 },   // Vendor Name
+                        5: { cellWidth: 50 },   // Invoice No
+                        6: { cellWidth: 50 },   // Invoice Date
+                        7: { cellWidth: 50 },   // Doc No
+                        8: { cellWidth: 50 },   // Remark
+                        9: { cellWidth: 60 },   // Prepared By Emp
+                        10: { cellWidth: 60 },  // Actual Entry By Emp
+                        11: { cellWidth: 50 },  // Actual Entry Date
+                        12: { cellWidth: 60 },  // Updated By Emp
+                        13: { cellWidth: 50 },  // Last Updated Date
+                        14: { cellWidth: 50 },  // Gate Entry ID
+                        15: { cellWidth: 50 },  // Gate Year Code
+                        16: { cellWidth: 60 }   // Entry By Machine Name
+                    };
+                default:
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 80 },   // Item Name
+                        2: { cellWidth: 30 }    // Total Stock
+                    };
+            }
+        }
 
         function GetServerDate() {
             $.ajax({
@@ -663,6 +964,10 @@
         })
 
     </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+   
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 }
 <style>
