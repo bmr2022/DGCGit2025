@@ -913,9 +913,10 @@ public class GateInwardDAL
         }
 
         //model.BiltyDate = DateTime.ParseExact(DS.Tables[0].Rows[0]["BiltyDate"].ToString(), "mm/dd/yyyy", CultureInfo.InvariantCulture);
-
-        model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
-        model.InvoiceDate = DS.Tables[0].Rows[0]["InvoiceDate"].ToString();
+        var entrydate= CommonFunc.ParseFormattedDate( DS.Tables[0].Rows[0]["EntryDate"].ToString());
+        var InvoiceDate= CommonFunc.ParseFormattedDate(DS.Tables[0].Rows[0]["InvoiceDate"].ToString());
+        model.EntryDate = entrydate;
+        model.InvoiceDate = InvoiceDate;
 
         return model;
     }
