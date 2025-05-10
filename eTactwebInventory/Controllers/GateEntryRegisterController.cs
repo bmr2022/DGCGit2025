@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using eTactWeb.DOM.Models;
 using System.Globalization;
+using DocumentFormat.OpenXml.Drawing.Diagrams;
 
 namespace eTactWeb.Controllers
 {
@@ -54,7 +55,27 @@ namespace eTactWeb.Controllers
        
             model = await _IGateEntryRegister.GetGateRegisterData(ReportType,  FromDate,  ToDate,  gateno,  docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName);
             model.ReportMode= ReportType;
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            string serializedGrid = JsonConvert.SerializeObject(model.GateEntryRegisterDetail);
+            HttpContext.Session.SetString("KeyGateEntryList", serializedGrid);
             return PartialView("_GateEntryRegisterGrid", model);
+        }
+        public IActionResult GetGateEntryDataForPDF()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyGateEntryList");
+            List<GateEntryRegisterDetail> GateEntryRegisterList = new List<GateEntryRegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                GateEntryRegisterList = JsonConvert.DeserializeObject<List<GateEntryRegisterDetail>>(modelJson);
+            }
+
+            return Json(GateEntryRegisterList);
         }
         public async Task<JsonResult> FillGateNo(string FromDate, string ToDate)
         {

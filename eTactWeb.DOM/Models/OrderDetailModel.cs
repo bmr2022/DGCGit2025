@@ -72,9 +72,11 @@ namespace eTactWeb.DOM.Models
         public decimal TolLimit { get; set; }
         public string? Unit { get; set; }
         public string? UnitRate { get; set; }
-
+        public string? CustomerSaleOrder { get; set; }
         public string? DeliveryDate { get; set; }
-      
+        public string? CustomerLocation { get; set; }
+        public string? ItemModel { get; set; }
+        public string? CustItemCategory { get; set; }
     }
 
     [Serializable()]

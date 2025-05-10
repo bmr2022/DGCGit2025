@@ -492,56 +492,139 @@ public class BomController : Controller
 
         return View(model);
     }
-    [HttpGet]
-    public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
-    {
+   
+    //public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+    //{
+    //    BomDashboard model = new BomDashboard();
+    //    DataTable bomViewModel = new DataTable();
+    //    string bomData = HttpContext.Session.GetString("KeyBomList");
+    //    if (string.IsNullOrWhiteSpace(searchString))
+    //    {
+    //        return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
+    //    }
+
+    //    if (bomViewModel == null)
+    //    {
+    //        return PartialView("_BomDashboardGrid", model); // no data in memory
+    //    }
+
+    //    // Clone the structure of the original DataTable
+    //    DataTable filteredTable = bomViewModel.Clone();
+
+    //    // Filter rows based on the search string (case-insensitive)
+    //    foreach (DataRow row in bomViewModel.Rows)
+    //    {
+    //        foreach (DataColumn column in bomViewModel.Columns)
+    //        {
+    //            if (column.DataType == typeof(string))
+    //            {
+    //                var cellValue = row[column]?.ToString();
+    //                if (!string.IsNullOrEmpty(cellValue) &&
+    //                    cellValue.Contains(searchString, StringComparison.OrdinalIgnoreCase))
+    //                {
+    //                    filteredTable.ImportRow(row);
+    //                    break; // match found in this row, no need to check other columns
+    //                }
+    //            }
+    //        }
+    //    }
+
+    //    // Total records after search
+    //    model.TotalRecords = filteredTable.Rows.Count;
+    //    model.PageNumber = pageNumber;
+    //    model.PageSize = pageSize;
+
+    //    // Paging the filtered rows
+    //    var pagedRows = filteredTable.AsEnumerable()
+    //                                 .Skip((pageNumber - 1) * pageSize)
+    //                                 .Take(pageSize);
+
+    //    model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : filteredTable.Clone();
+
+    //    return PartialView("_BomDashboardGrid", model);
+    //}
+
+
+	public static DataTable ToDataTable<T>(List<T> items)
+	{
+		DataTable table = new DataTable(typeof(T).Name);
+
+		var props = typeof(T).GetProperties(System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+
+		foreach (var prop in props)
+		{
+			table.Columns.Add(prop.Name, Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+		}
+
+		foreach (var item in items)
+		{
+			var values = new object[props.Length];
+			for (int i = 0; i < props.Length; i++)
+			{
+				values[i] = props[i].GetValue(item, null);
+			}
+			table.Rows.Add(values);
+		}
+
+		return table;
+	}
+
+
+	[HttpGet]
+
+	public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 500)
+  {
         BomDashboard model = new BomDashboard();
-        DataTable bomViewModel = new DataTable();
-        string bomData = HttpContext.Session.GetString("KeyBomList");
+        //DataTable bomViewModel = new DataTable();
+        //string bomData = HttpContext.Session.GetString("KeyBomList");
+        //WIPStockRegisterModel model = new WIPStockRegisterModel();
         if (string.IsNullOrWhiteSpace(searchString))
         {
             return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
         }
 
-        if (bomViewModel == null)
+        string modelJson = HttpContext.Session.GetString("KeyBomList");
+        List<BomModel> BomDashboard = new List<BomModel>();
+        if (!string.IsNullOrEmpty(modelJson))
         {
-            return PartialView("_BomDashboardGrid", model); // no data in memory
+            BomDashboard = JsonConvert.DeserializeObject<List<BomModel>>(modelJson);
+        }
+        if (BomDashboard == null)
+        {
+            return PartialView("_BomDashboardGrid", new List<BomModel>());
         }
 
-        // Clone the structure of the original DataTable
-        DataTable filteredTable = bomViewModel.Clone();
+        List<BomModel> filteredResults;
 
-        // Filter rows based on the search string (case-insensitive)
-        foreach (DataRow row in bomViewModel.Rows)
+        if (string.IsNullOrWhiteSpace(searchString))
         {
-            foreach (DataColumn column in bomViewModel.Columns)
+            filteredResults = BomDashboard.ToList();
+        }
+        else
+        {
+            filteredResults = BomDashboard
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+
+            if (filteredResults.Count == 0)
             {
-                if (column.DataType == typeof(string))
-                {
-                    var cellValue = row[column]?.ToString();
-                    if (!string.IsNullOrEmpty(cellValue) &&
-                        cellValue.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-                    {
-                        filteredTable.ImportRow(row);
-                        break; // match found in this row, no need to check other columns
-                    }
-                }
+                filteredResults = BomDashboard.ToList();
             }
         }
 
-        // Total records after search
-        model.TotalRecords = filteredTable.Rows.Count;
+        model.TotalRecords = filteredResults.Count;
+		//model.DTDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+		var pagedList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+		model.BomList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         model.PageNumber = pageNumber;
         model.PageSize = pageSize;
 
-        // Paging the filtered rows
-        var pagedRows = filteredTable.AsEnumerable()
-                                     .Skip((pageNumber - 1) * pageSize)
-                                     .Take(pageSize);
-
-        model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : filteredTable.Clone();
-
-        return PartialView("_BomDashboardGrid", model);
+        return PartialView("_BomDashboardGrid", model.BomList);
     }
 
     [HttpPost]

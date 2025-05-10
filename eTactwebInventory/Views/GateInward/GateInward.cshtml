@@ -855,13 +855,13 @@
 
         $(document).ready(function () {
 
-            GetServerDate();
+           
             $(':input:visible').each(function () {
                 $(this).attr('tabindex', '0');
             });
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
+                $('#POType').rules("remove", "required");
                 $('#AC1').prop("checked", true);
                 fillAccount();
                 var selectElement = $("#AccountCode");
@@ -871,8 +871,21 @@
                 var address = $('#hiddenAddress').val();
                 $('#Address').val(address);
                 fillPONumber();
+                console.log("before parse EntryDate" + $("#EntryDate").val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
+                console.log("EntryDate" + EntryDate);
+                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate)); */
+                console.log("after parse EntryDate" + $("#EntryDate").val());
+
+
+                console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
+                var InvoiceDate = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
+                console.log("InvoiceDate" + InvoiceDate);
+               /*  $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDate)); */
+                $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#InvoiceDate').datepicker("setDate", InvoiceDate);
+                console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
+
 
                 if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
                     $(".ChallanElements").show();
@@ -882,6 +895,7 @@
 
             }
             else {
+                GetServerDate();
                 fillEntryandGate();
                 $(".ChallanElements").css("display", "none");
                 //SetFields();
@@ -1015,7 +1029,7 @@
                             $('#BiltyDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         }
                         else {
-                            ;
+                            
                             var poDate;
                             var biltyDt;
                             $("#ShowPOTillDate").datepicker({

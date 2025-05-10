@@ -1559,7 +1559,10 @@ namespace eTactWeb.Data.DAL
                                     Unit = row["Unit"].ToString(),
                                     UnitRate = row["UnitRate"].ToString(),
                                     DeliveryDate = Convert.ToDateTime(row["DeliveryDate"]).ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture),
-
+                                    CustomerSaleOrder = row["CustomerSaleOrder"].ToString(),
+                                    CustomerLocation = row["CustomerLocation"].ToString(),
+                                    ItemModel = row["ItemModel"].ToString(),
+                                    CustItemCategory = row["CustItemCategory"].ToString(),
                                     DeliveryScheduleList = listObject.Where(x => x.DPartCode == Convert.ToInt32(row["ItemCode"])).ToList(),
                                 });
 
