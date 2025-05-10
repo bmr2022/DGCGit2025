@@ -97,7 +97,14 @@
         </tbody>
     </table>
 </div>
-
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+<center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
 <style>
 
     .sort-icon {
