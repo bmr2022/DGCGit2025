@@ -215,8 +215,7 @@ namespace eTactWeb.Data.DAL
                         AdjSeqNo = cnt1,
                         AdjModeOfAdjstment = row["ModOfAdjust"]?.ToString(),
                         //AdjModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
-                        //AdjNewRefNo = row["NewrefNo"]?.ToString(),
-                        AdjNewRefNo = row["Column1"]?.ToString(),
+                        AdjNewRefNo = row["NewrfNo"]?.ToString(),
                         //AdjDescription = row["Description"]?.ToString(),
                         //AdjDrCrName = row["AccEntryId"]?.ToString(),
                         AdjDrCr = row["DR/CR"]?.ToString(),
@@ -284,8 +283,8 @@ namespace eTactWeb.Data.DAL
                         AgainstPurchaseVoucherNo = row["AgainstPurchaseVoucherNo"]?.ToString(),
                         PurchaseBillType = row["DebitNotePurchaseRejection"]?.ToString(),
                         ItemCode = row["PurchaseRejItemCode"] != DBNull.Value ? Convert.ToInt32(row["PurchaseRejItemCode"]) : 0,
-                        //PartCode = row["SchdeliveryDate"]?.ToString(),
-                        //ItemName = row["BillQty"]?.ToString(),
+                        //PartCode = row["PartCode"]?.ToString(),
+                        //ItemName = row["itemNamePartCode"]?.ToString(),
                         BillQty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
                         Unit = row["Unit"]?.ToString(),
                         BillRate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
@@ -646,8 +645,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@BillAmt", model.BillAmt));
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
+                //SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
                 SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Taxableamt", model.Taxableamt));
+                //SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));
                 SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.ToatlDiscountPercent));
                 SqlParams.Add(new SqlParameter("@TotalDiscountAmount", model.TotalDiscountAmount));
                 SqlParams.Add(new SqlParameter("@InvNetAmt", model.NetAmt));

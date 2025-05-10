@@ -591,13 +591,13 @@
             GetExchnageRate();
             FillDocument("F");
             FillStore();
+            FillPopUpGridDetails($('#Mode').val());
             BasicTotal();
             BasicPopUpItemGrid();
             BasicItemGridTotal();
             GetCostCenter();
             DueDateCalculation();
             const myInput = document.getElementById("TotalDiscountPercentage");
-            FillPopUpGridDetails($('#Mode').val());
             myInput.addEventListener("input", function (event) {
                 const inputValue = parseInt(event.target.value);
                 if (isNaN(inputValue) || inputValue > 100) {
@@ -653,7 +653,7 @@
                 onInvoiceChange('PurchaseRejectionInvoiceNo');
                 setInterval(checkNetTotalChange, 500);
             }
-
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); }
         });
 
         $('#AdjModeOfAdjstment').change(function () {
