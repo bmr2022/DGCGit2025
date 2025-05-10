@@ -625,6 +625,24 @@ public class ProductionEntryDAL
 
         return _ResponseResult;
     }
+    public async Task<ResponseResult> FillProductType()
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "ProductType"));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> FillRMItemName()
     {
         var _ResponseResult = new ResponseResult();

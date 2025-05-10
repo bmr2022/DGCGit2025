@@ -1495,7 +1495,7 @@
                 data: { SessionName: "CreditNote", Mode: $('#Mode').val() },
                 dataType: "json",
                 success: await function (data, status, error) {
-
+                    debugger
                     $('#TxPartCode').empty();
                     $('#TxPartCode').append('<option>-Select-</option>');
                     var PartCode = 0;
