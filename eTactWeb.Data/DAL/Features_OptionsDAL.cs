@@ -294,6 +294,7 @@ namespace eTactWeb.Data.DAL
                                                                 RGPChallanPrintReportName = dr["RGPChallanPrintReportName"] != DBNull.Value ? dr["RGPChallanPrintReportName"].ToString() : string.Empty,
                                                                 NRGPChallanPrintReportName = dr["NRGPChallanPrintReportName"] != DBNull.Value ? dr["NRGPChallanPrintReportName"].ToString() : string.Empty,
                                                                 AllowBackDateReceiveChallanEntry = dr["AllowBackDateReceiveChallanEntry"] != DBNull.Value ? dr["AllowBackDateReceiveChallanEntry"].ToString() : string.Empty,
+                                                                IssueChaallanTaxIsMandatory = dr["IssueChaallanTaxIsMandatory"] != DBNull.Value ? dr["IssueChaallanTaxIsMandatory"].ToString() : string.Empty,
 
 
                                                             }).ToList();
@@ -628,6 +629,7 @@ namespace eTactWeb.Data.DAL
                     model.RGPChallanPrintReportName = DS.Tables[0].Rows[0]["RGPChallanPrintReportName"] != DBNull.Value ? DS.Tables[0].Rows[0]["RGPChallanPrintReportName"].ToString(): string.Empty;
                     model.NRGPChallanPrintReportName = DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"] != DBNull.Value? DS.Tables[0].Rows[0]["NRGPChallanPrintReportName"].ToString() : string.Empty;
                     model.AllowBackDateReceiveChallanEntry = DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"] != DBNull.Value? DS.Tables[0].Rows[0]["AllowBackDateReceiveChallanEntry"].ToString(): string.Empty;
+                    model.IssueChaallanTaxIsMandatory = DS.Tables[0].Rows[0]["IssueChaallanTaxIsMandatory"] != DBNull.Value? DS.Tables[0].Rows[0]["IssueChaallanTaxIsMandatory"].ToString(): string.Empty;
 
                 }
                 if (Type == "JustJobWorkDetail")
@@ -846,6 +848,7 @@ namespace eTactWeb.Data.DAL
                             SqlParams.Add(new SqlParameter("@RGPChallanPrintReportName", model.RGPChallanPrintReportName));
                             SqlParams.Add(new SqlParameter("@NRGPChallanPrintReportName", model.NRGPChallanPrintReportName));
                             SqlParams.Add(new SqlParameter("@AllowBackDateReceiveChallanEntry", model.AllowBackDateReceiveChallanEntry));
+                            SqlParams.Add(new SqlParameter("@IssueChaallanTaxIsMandatory", model.IssueChaallanTaxIsMandatory));
 
                         }
                         if (model.Type == "JustJobWorkDetail")

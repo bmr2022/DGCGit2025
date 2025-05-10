@@ -24,6 +24,8 @@
                 @{
                    
                     var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
                     if (Model.DTDashboard == null || Model.DTDashboard.Rows.Count == 0)
                     {
                         <tr class="text-center"><td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -37,7 +39,7 @@
                         Cntr = Cntr + 1;
 
                             <tr>
-                            <td class="FWB">@Cntr</td>
+                            <td class="FWB">@srNo</td>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
@@ -83,13 +85,21 @@
                             <td>@Model.DTDashboard.Rows[i]["EffectiveDate"]</td>
                             <td>@Model.DTDashboard.Rows[i]["fgitemcode"]</td>
                             </tr>
+                        srNo++;
                             }
                     }
                 }
             </tbody>
         </table>
     </div>
-
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+<center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
     
 <style>
     #container {

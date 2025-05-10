@@ -4,7 +4,7 @@
     ViewData["Title"] = "Dashboard";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-<div class="shadow-lg">
+<div class="shadow-lg" >
     <div class="card rounded border-light bg-gradient">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
@@ -193,7 +193,73 @@
             sessionStorage.removeItem('DashboardTypeBack');
             sessionStorage.removeItem('GlobalSearchBack');
         });
+        function loadPage(pageNumber) {
 
+            debugger
+            var dashboardType = $('#DataType').val();
+            var url = '';
+            var formData = {};
+            if (dashboardType === "RMDETAIL") {
+                url = '@Url.Action("RMDetailData", "IssueThrBOM")';
+            } else if (dashboardType === "FGSUMM") {
+                url = '@Url.Action("FGDetailData", "IssueThrBOM")';
+            } else if (dashboardType === "SUMM") {
+                url = '@Url.Action("SummaryData", "IssueThrBOM")';
+            }
+
+            if (dashboardType === "FGSUMM") {
+                formData = {
+                    FromDate: $('#FromDate').val(),
+                    Todate: $('#ToDate').val(),
+                    Flag: "",
+                    DashboardType: "",
+                    IssueSlipNo: $('#IssueSlipNo').val(),
+                    ReqNo: $('#ReqNo').val(),
+                    FGPartCode: $('#FGPartCode').val(),
+                    GlobalSearch: $('#search-box').val(),
+                    FGItemName: $('#FGItemName').val()
+                };
+            } else if (dashboardType === "RMDETAIL") {
+                formData = {
+                    FromDate: $('#FromDate').val(),
+                    Todate: $('#ToDate').val(),
+                    WCName: $("#WCName").val(),
+                    PartCode: $("#FGPartCode").val(),
+                    ItemName: $("#FGItemName").val(),
+                    Flag: "",
+                    DashboardType: $('#DataType').val(),
+                    IssueSlipNo: $('#IssueSlipNo').val(),
+                    ReqNo: $('#ReqNo').val(),
+                    GlobalSearch: $('#search-box').val(),
+                    FGPartCode: $('#FGPartCode').val(),
+                    FGItemName: $('#FGItemName').val()
+                };
+            } else if (dashboardType === "SUMM") {
+                formData = {
+                    FromDate: $('#FromDate').val(),
+                    Todate: $('#ToDate').val(),
+                    Flag: "",
+                    DashboardType: "",
+                    IssueSlipNo: $('#IssueSlipNo').val(),
+                    ReqNo: $('#ReqNo').val()
+                };
+            }
+            formData.pageNumber = pageNumber;
+         
+            // formData.push({ name: 'pageNumber', value: pageNumber });
+            console.log("Fromdata ", formData)
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {

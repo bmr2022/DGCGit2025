@@ -153,10 +153,9 @@
 
                                 <div class="col-lg ToStore">
                                     <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG PartCode </label>
-                                    @if (Model.Mode == "U" || Model.Mode == "V")
-                                    {
+                                    
                                         <input type="hidden" value="@Model.FinishItemCode" id="FinishItemCode" />
-                                    }
+                                    
                                     <select class="form-select" asp-for="FinishPartCode">
                                         <option value="">-Select-</option>
                                     </select>
@@ -173,6 +172,14 @@
                                     <label asp-for="FGBatchNo" class="control-label" style="color: red;"> FGBatchNo</label>
 
                                     <select class="form-select" asp-for="FGBatchNo">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc">
+                                    <label asp-for="BomNo" class="control-label" style="color: red;"> BomNo</label>
+
+                                    <select class="form-select" asp-for="BomNo">
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
@@ -438,18 +445,23 @@
     <script>
         $(document).ready(function () {
             GetFormRights();
-            $('#PartCode').select2();
-            $('#ItemCode').select2();
-            //$('#Storeid').select2();
-            //$('#Wcid').select2();
+            $('#FinishItemName').select2();
+            $('#FinishPartCode').select2();
+            $('#BomNo').select2();
+            $('#FGStoreId').select2();
+            $('#FGStoreId').select2();
+            $('#FGBatchNo').select2();
+            $('#FGUniqueBatchNo').select2();
+           
 
             $('#Remark').rules("remove", "required");
             $('#ToWCID').prop("disabled", true);
             FillStore();
+            FillRMStore();
             FillLoadToStoreName();
-            FillPartCode();
-            FillItem();
-            GetAllowBackDate();
+            FillFGPartCode();
+            FillFGItemName();
+;            GetAllowBackDate();
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
@@ -533,18 +545,43 @@
 
         });
 
-        $(document).on('select2:select', '#PartCode,#ItemCode', function (e) {
-            var cntId = e.target.id;
+        $(document).on('select2:select', '#FinishItemName,#FinishPartCode', function (e) {
 
-            if (cntId == 'ItemCode') {
+            var cntId = e.target.id;
+            if (cntId == 'FinishItemName') {
                 ItemNameChange(cntId);
             }
-            else {
+            else if (cntId == 'FinishPartCode') {
                 PartCodeChange(cntId);
             }
-            GetUnitAltUnit($('#ItemCode').val());
-            FillRate();
+            $('#FinishItemCode').val($('#FinishItemName').val())
+            FillBomNo();
         });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            SetPartCodeItemName(ID);
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "FinishPartCode") {
+                    $("#FinishItemName").val(v).trigger("change");
+                }
+
+                if (ID == "FinishItemName") {
+                    $("#FinishPartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+
 
         $('#submitBTN').click(function (event) {
             event.preventDefault();
@@ -1411,14 +1448,14 @@
 
         $('#SHA').change(function () {
             $('#SHAItems').prop("checked", true);
-            FillPartCode();
-            FillItem();
+           /*  FillPartCode();
+            FillItem(); */
         });
 
         $('#SHAItems').change(function () {
             $('#SHA').prop("checked", true);
-            FillPartCode();
-            FillItem();
+           /*  FillPartCode();
+            FillItem(); */
         });
 
         var BatchStock = 0;
@@ -1477,31 +1514,28 @@
             });
         }
 
-        function FillItem() {
-
-            var ShowAllItem = "";
-            if ($('#SHAItems').prop("checked") == true) {
-                ShowAllItem = 'Y';
-            } else {
-                ShowAllItem = 'N';
-            }
+        function FillFGItemName() {
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FillItem")",
-                data: { "ShowAllItems": ShowAllItem },
+                url: "@Url.Action("FillFGItemName")",
+               
                 dataType: "json",
                 success: function (result, status, error) {
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#ItemCode').empty();
-                            $('#ItemCode').append('<option value="" disabled selected>-Select-</option>');
+                            $('#FinishItemName').empty();
+                            $('#FinishItemName').append('<option value="" disabled selected>-Select-</option>');
 
                             $.each(obj.Result, function (index, val) {
-                                $('#ItemCode').append('<option value="' + val.Item_Code + '">' + val.ItemName + '</option>');
+                                $('#FinishItemName').append('<option value="' + val.Item_Code + '">' + val.Item_Name + '</option>');
                             });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var FinishItemCode = "@Model.FinishItemCode";
+                                $('#FinishItemName').val(FinishItemCode).trigger("change");
+                            }
                         }
 
                     }
@@ -1509,31 +1543,28 @@
             });
         }
 
-        function FillPartCode() {
-
-            var ShowAllItem = "";
-            if ($('#SHA').prop("checked") == true) {
-                ShowAllItem = 'Y';
-            } else {
-                ShowAllItem = 'N';
-            }
+        function FillFGPartCode() {
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FILLPartCode")",
-                data: { "ShowAllItems": ShowAllItem },
+                url: "@Url.Action("FillFGPartCode")",
+
                 dataType: "json",
                 success: function (result, status, error) {
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#PartCode').empty();
-                            $('#PartCode').append('<option value="" disabled selected>-Select-</option>');
+                            $('#FinishPartCode').empty();
+                            $('#FinishPartCode').append('<option value="" disabled selected>-Select-</option>');
 
                             $.each(obj.Result, function (index, val) {
-                                $('#PartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                                $('#FinishPartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
                             });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var FinishItemCode = "@Model.FinishItemCode";
+                                $('#FinishPartCode').val(FinishItemCode).trigger("change");
+                            }
                         }
 
                     }
@@ -1541,6 +1572,35 @@
             });
         }
 
+        function FillBomNo() {
+            var FinishItemCode = $("#FinishItemCode").val();
+            console.log(FinishItemCode);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillBomNo")",
+                data: { FinishItemCode: FinishItemCode },
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BomNo').empty();
+                            $('#BomNo').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#BomNo').append('<option value="' + val.BOMNO + '">' + val.BOMNO + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var BomNo = "@Model.BomNo";
+                                $('#BomNo').val(BomNo).trigger("change");
+                            }
+                        }
+
+                    }
+                }
+            });
+        }
         function FillStore() {
             $.ajax({
                 type: "POST",
@@ -1559,13 +1619,44 @@
                                 $('#FGStoreId').append('<option value="' + val.storeid + '">' + val.store_name + '</option>');
                             });
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                                
+                                var FGStoreId = "@Model.FGStoreId";
+                                $('#FGStoreId').val(FGStoreId).trigger("change");
                             }
                         }
                     }
                 }
             });
         }
+
+
+
+        function FillRMStore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStore")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RMStoreId').empty();
+                            $('#RMStoreId').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#RMStoreId').append('<option value="' + val.storeid + '">' + val.store_name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var RMStoreId = "@Model.RMStoreId";
+                                $('#RMStoreId').val(RMStoreId).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
 
         function FillLoadToStoreName() {
             $.ajax({

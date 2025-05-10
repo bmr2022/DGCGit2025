@@ -863,6 +863,9 @@
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 $('#POType').rules("remove", "required");
                 $('#AC1').prop("checked", true);
+                document.getElementById("EntryDate").removeAttribute("readonly");
+                document.getElementById("InvoiceDate").removeAttribute("readonly");
+                document.getElementById("EntryDate").style.color = "black";
                 fillAccount();
                 var selectElement = $("#AccountCode");
                 var desiredValue = parseInt($('#hiddenAccountCode').val());
@@ -874,16 +877,16 @@
                 console.log("before parse EntryDate" + $("#EntryDate").val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 console.log("EntryDate" + EntryDate);
-                /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate)); */
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 console.log("after parse EntryDate" + $("#EntryDate").val());
 
 
                 console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
                 var InvoiceDate = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
                 console.log("InvoiceDate" + InvoiceDate);
-               /*  $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDate)); */
-                $('#EntryDate').datepicker("setDate", EntryDate);
-                $('#InvoiceDate').datepicker("setDate", InvoiceDate);
+                $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDate);
+               /*  $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#InvoiceDate').datepicker("setDate", InvoiceDate); */
                 console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
 
 
@@ -1108,11 +1111,11 @@
                         console.log(allowOption);
                         if (allowOption == 'Y') {
                             //$('#EntryDate').prop("readonly", false);
-                            $('#EntryDate').css('color', 'rgb(248 255 178)'); // feature option
+                            /* $('#EntryDate').css('color', 'rgb(248 255 178)'); // feature option */
                         }
                         else {
                             $('#EntryDate').prop("readonly", true);
-                            $('#EntryDate').css('color', 'rgb(248 255 178)'); // feature option
+                            /* $('#EntryDate').css('color', 'rgb(248 255 178)'); // feature option */
                         }
                         if (allowRate == 'Y') {
                             $('#Rate').prop("readonly", false);

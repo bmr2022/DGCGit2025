@@ -194,6 +194,9 @@ namespace eTactWeb.DOM.Models
         public int RecEmpCode {  get; set; }
         public string? RecEmpByCodeName {  get; set; }
         public int IssueByEmpCode { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<IssueThrBomMainDashboard>? IssueThrBOMDashboard { get; set; }
     }
 
