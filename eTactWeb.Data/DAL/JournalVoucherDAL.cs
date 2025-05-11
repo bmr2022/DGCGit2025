@@ -188,8 +188,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NEWENTRY"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
-                SqlParams.Add(new SqlParameter("@yearcode", YearCode));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+                SqlParams.Add(new SqlParameter("@yearcode", YearCode)); 
                 SqlParams.Add(new SqlParameter("@VoucherDate", ParseFormattedDate(VoucherDate)));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
@@ -250,10 +250,10 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.AccEntryId));
                 sqlParams.Add(new SqlParameter("@YearCode", model.YearCode));
                 sqlParams.Add(new SqlParameter("@EntryDate", entryDate));
-                sqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                sqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
                 sqlParams.Add(new SqlParameter("@entrybymachine", model.EntryByMachine));
                 sqlParams.Add(new SqlParameter("@VoucherDate", voucherDate));
-                sqlParams.Add(new SqlParameter("@Subvoucher", "BANK-RECEIPT"));
+                sqlParams.Add(new SqlParameter("@Subvoucher", "JOURNAL-VOUCHER"));
                 sqlParams.Add(new SqlParameter("@ActualEntryDate", actualEntryDate));
                 sqlParams.Add(new SqlParameter("@InstrumentNo", model.InsNo));
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
@@ -281,7 +281,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
                 SqlParams.Add(new SqlParameter("@summDetail", "Summary"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
                 SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
                 SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
                 responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
@@ -308,7 +308,7 @@ namespace eTactWeb.Data.DAL
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Detail");
-                    oCmd.Parameters.AddWithValue("@VoucherType", "Bank-Receipt");
+                    oCmd.Parameters.AddWithValue("@VoucherType", "JOURNAL-VOUCHER");
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
 
@@ -371,7 +371,7 @@ namespace eTactWeb.Data.DAL
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@summDetail", "Summary");
-                    oCmd.Parameters.AddWithValue("@VoucherType", "Bank-Receipt");
+                    oCmd.Parameters.AddWithValue("@VoucherType", "JOURNAL-VOUCHER");
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
 
@@ -431,7 +431,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", ParseFormattedDate(ActualEntryDate)));
-                SqlParams.Add(new SqlParameter("@Vouchertype", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@Vouchertype", "JOURNAL-VOUCHER"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -520,7 +520,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "ViewById"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
                 SqlParams.Add(new SqlParameter("@BooktrnsEntryId", ID));
                 SqlParams.Add(new SqlParameter("@yearcode", YearCode));
                 SqlParams.Add(new SqlParameter("@voucherNo", VoucherNo));
@@ -670,8 +670,8 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "SHOWSOListFORADVANCEPAYMENT"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
-                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+                SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));  
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));
 
@@ -695,7 +695,7 @@ namespace eTactWeb.Data.DAL
                 var vouchDt = CommonFunc.ParseFormattedDate(VoucherDate);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "SHOWSOYearFORADVANCEPAYMENT"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
                 SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", vouchDt));
@@ -719,7 +719,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "SHOWSODateFORADVANCEPAYMENT"));
-                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));    
                 SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", VoucherDate));

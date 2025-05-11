@@ -206,6 +206,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.FillScrapType();
         }
+        public async Task<ResponseResult> FillProductType()
+        {
+            return await _ProductionEntryDAL.FillProductType();
+        }
         public async Task<ResponseResult> FillRMItemName()
         {
             return await _ProductionEntryDAL.FillRMItemName();
