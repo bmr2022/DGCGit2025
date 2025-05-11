@@ -193,10 +193,16 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "CreditNote")
             {
-                _MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
-                var creditNoteModel = new AccCreditNoteModel();
-                creditNoteModel.AccCreditNoteDetails = creditNoteDetail.ToList();
-                MainModel = creditNoteModel;
+                //_MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
+                string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+                List<AccCreditNoteDetail> creditNoteDetail = new();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    creditNoteDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
+                }
+
+                MainModel.AccCreditNoteDetails = creditNoteDetail;
+                MainModel.ItemDetailGrid = creditNoteDetail;
             }
             else if (model.TxPageName == "PurchaseRejection")
             {
@@ -1536,7 +1542,8 @@ public class TaxController : Controller
         if (SN == "IssueNRGP")
         {
             MainModel = new IssueNRGPModel();
-            _MemoryCache.Remove("KeyIssueNRGPTaxGrid");
+            //_MemoryCache.Remove("KeyIssueNRGPTaxGrid");
+            HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
             return PartialView("_TaxNRGPGrid", MainModel);
         }
         else
@@ -1545,7 +1552,8 @@ public class TaxController : Controller
             MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : "";
             MainModel = SN == "ItemList" ? new SaleOrderModel() : "";
             MainModel = SN == "PurchaseRejection" ? new AccPurchaseRejectionModel() : "";
-            _MemoryCache.Remove("KeyTaxGrid");
+            //_MemoryCache.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("KeyTaxGrid");
             return PartialView("_TaxGrid", MainModel);
         }
 
@@ -1668,7 +1676,10 @@ public class TaxController : Controller
                 TotalTaxAmt = TotalTaxAmt + MainModel.ItemNetAmount ?? 0;
                 MainModel.TotalTaxAmt = TotalTaxAmt;
 
-                _MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
+                //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
+
+                string serializedGrid = JsonConvert.SerializeObject(TaxGrid);
+                HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
             }
             else
             {
