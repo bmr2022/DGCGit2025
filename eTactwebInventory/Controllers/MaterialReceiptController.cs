@@ -20,6 +20,10 @@ using System.Data;
 using System.Globalization;
 using FastReport.Data;
 using System.Configuration;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Runtime.Caching;
+using DocumentFormat.OpenXml.Bibliography;
+using System.Drawing.Printing;
 
 
 namespace eTactWeb.Controllers
@@ -31,15 +35,16 @@ namespace eTactWeb.Controllers
         private readonly IMaterialReceipt _IMaterialReceipt;
         private readonly ILogger<MaterialReceiptController> _logger;
         private readonly IConfiguration _iconfiguration;
-
+        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        public MaterialReceiptController(ILogger<MaterialReceiptController> logger, IDataLogic iDataLogic, IMaterialReceipt iMaterialReceipt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMaterialReceipt = iMaterialReceipt;
             _IWebHostEnvironment = iWebHostEnvironment;
             this._iconfiguration = iconfiguration;
+            _MemoryCache = iMemoryCache;
         }
 
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
@@ -462,11 +467,52 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> MRNDetailDashboard(string FromDate = "", string ToDate = "", string Flag = "", string VendorName = "", string MrnNo = "", string GateNo = "", string PONo = "", string ItemName = "", string PartCode = "", string Type = "")
+        public async Task<IActionResult> MRNDetailDashboard(string FromDate = "", string ToDate = "", string Flag = "", string VendorName = "", string MrnNo = "", string GateNo = "", string PONo = "", string ItemName = "", string PartCode = "", string Type = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
-            var model = new MRNQDashboard();
-            model = await _IMaterialReceipt.GetDetailDashboardData(VendorName, MrnNo, GateNo, PONo, ItemName, PartCode, FromDate, ToDate);
+            //var model = new MRNQDashboard();
+            var model = await _IMaterialReceipt.GetDetailDashboardData(VendorName, MrnNo, GateNo, PONo, ItemName, PartCode, FromDate, ToDate);
             model.DashboardType = "Detail";
+            var modelList = model?.MRNQDashboard ?? new List<MRNDashboard>();
+            List<MRNDashboard> filteredResults;
+
+
+
+            if (!string.IsNullOrWhiteSpace(SearchBox))
+            {
+                filteredResults = modelList
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                // fallback to full list if search yields no result
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = modelList.ToList();
+                }
+            }
+            else
+            {
+                filteredResults = modelList.ToList();
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            model.MRNQDashboard = filteredResults
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyMRNList_Detail", modelList, cacheEntryOptions);
             return PartialView("_MRNDashboardGrid", model);
         }
         public async Task<JsonResult> GetServerDate()
@@ -806,11 +852,97 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetSearchData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate)
+        public async Task<IActionResult> GetSearchData(string VendorName, string MrnNo, string GateNo, string PONo, string ItemName, string PartCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new MRNQDashboard();
             model = await _IMaterialReceipt.GetDashboardData(VendorName, MrnNo, GateNo, PONo, ItemName, PartCode, FromDate, ToDate);
+            model.DashboardType = "Summary";
+            var modelList = model?.MRNQDashboard ?? new List<MRNDashboard>();
+            List<MRNDashboard> filteredResults;
+
+
+
+            if (!string.IsNullOrWhiteSpace(SearchBox))
+            {
+                filteredResults = modelList
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+                // fallback to full list if search yields no result
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = modelList.ToList();
+                }
+            }
+            else
+            {
+                filteredResults = modelList.ToList();
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            model.MRNQDashboard = filteredResults
+                .Skip((pageNumber - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyMRNList_Summary", modelList, cacheEntryOptions);
+            return PartialView("_MRNDashboardGrid", model);
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            MRNQDashboard model = new MRNQDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_MRNDashboardGrid", new List<MRNDashboard>());
+            }
+            string cacheKey = $"KeyMRNList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<MRNDashboard> MRNDashboard) || MRNDashboard == null)
+            {
+                return PartialView("_MRNDashboardGrid", new List<MRNDashboard>());
+            }
+
+            List<MRNDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = MRNDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = MRNDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = MRNDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.MRNQDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
             return PartialView("_MRNDashboardGrid", model);
         }
         public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string MrnNo = "", string GateNo = "", string PONo = "", string ItemName = "", string PartCode = "", string Type = "")

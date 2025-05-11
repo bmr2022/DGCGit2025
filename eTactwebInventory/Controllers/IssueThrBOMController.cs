@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.Wordprocessing;
+using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
@@ -26,13 +27,15 @@ namespace eTactWeb.Controllers
         private readonly ILogger<IssueThrBOMController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
-        public IssueThrBOMController(ILogger<IssueThrBOMController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueThrBOM IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IMemoryCache _MemoryCache; 
+        public IssueThrBOMController(ILogger<IssueThrBOMController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueThrBOM IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueThrBOM = IIssueWOBOM;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = iconfiguration;
+            _MemoryCache = iMemoryCache;
         }
 
         [Route("{controller}/Index")]
@@ -954,31 +957,224 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "")
+        public async Task<IActionResult> FGDetailData(string FromDate, string Todate, string Flag = "", string DashboardType = "FGSUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueThrBomMainDashboard();
             model = await _IIssueThrBOM.FGDetailData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo, FGPartCode, FGItemName);
-            model.Mode = "FGDetail";
+            model.Mode = "FGSUMM";
+            var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.IssueThrBOMDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<IssueThrBomMainDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.IssueThrBOMDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyIssThrBOMList_FGSUMM", modelList, cacheEntryOptions);
             return PartialView("_IssueWithBomDashboardGrid", model);
         }
-        public async Task<IActionResult> RMDetailData(string FromDate, string Todate, string WCName, string PartCode, string ItemName, string Flag = "", string DashboardType = "RMDetail", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "")
+        public async Task<IActionResult> RMDetailData(string FromDate, string Todate, string WCName, string PartCode, string ItemName, string Flag = "", string DashboardType = "RMDetail", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueThrBomMainDashboard();
             model = await _IIssueThrBOM.RMDetailData(FromDate, Todate, WCName, PartCode, ItemName, Flag, DashboardType, IssueSlipNo, ReqNo, GlobalSearch, FGPartCode, FGItemName);
-            model.Mode = "RMDetail";
+            model.Mode = "RMDETAIL";
+            var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.IssueThrBOMDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<IssueThrBomMainDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.IssueThrBOMDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyIssThrBOMList_RMDETAIL", modelList, cacheEntryOptions);
             return PartialView("_IssueWithBomDashboardGrid", model);
         }
-        public async Task<IActionResult> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "")
+        public async Task<IActionResult> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueThrBomMainDashboard();
             model = await _IIssueThrBOM.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo);
-            model.Mode = "Summary";
+            model.Mode = "SUMM";
+            var modelList = model?.IssueThrBOMDashboard ?? new List<IssueThrBomMainDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.IssueThrBOMDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<IssueThrBomMainDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.IssueThrBOMDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyIssThrBOMList_SUMM", modelList, cacheEntryOptions);
             return PartialView("_IssueWithBomDashboardGrid", model);
         }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            IssueThrBomMainDashboard model = new IssueThrBomMainDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_IssueWithBomDashboardGrid", new List<IssueThrBomMainDashboard>());
+            }
+            string cacheKey = $"KeyIssThrBOMList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<IssueThrBomMainDashboard> IssueThrBOMDashboard) || IssueThrBOMDashboard == null)
+            {
+                return PartialView("_IssueWithBomDashboardGrid", new List<IssueThrBomMainDashboard>());
+            }
 
+            List<IssueThrBomMainDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = IssueThrBOMDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = IssueThrBOMDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = IssueThrBOMDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.IssueThrBOMDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
+            return PartialView("_IssueWithBomDashboardGrid", model);
+        }
         public async Task<JsonResult> GetServerDate()
         {
             try

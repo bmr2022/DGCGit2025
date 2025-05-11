@@ -1497,6 +1497,52 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
+        public IActionResult AddProductdetailGrid(ProductionEntryItemDetail model)
+        {
+            try
+            {
+                string serializedProductGrid = HttpContext.Session.GetString("KeyProductionEntryProductdetail");
+                List<ProductionEntryItemDetail> ProductionEntryProductDetail = new();
+                if (!string.IsNullOrEmpty(serializedProductGrid))
+                {
+                    ProductionEntryProductDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedProductGrid);
+                }
+
+                var MainModel = new ProductionEntryModel();
+                var ProductionEntryGrid = new List<ProductionEntryItemDetail>();
+                var ProductionGrid = new List<ProductionEntryItemDetail>();
+                var SSGrid = new List<ProductionEntryItemDetail>();
+
+                if (model != null)
+                {
+                    if (ProductionEntryProductDetail == null)
+                    {
+                        model.SeqNo = 1;
+                        ProductionEntryGrid.Add(model);
+                    }
+                    else
+                    {
+                        if (ProductionEntryProductDetail.Where(x => x.ProductPartCode == model.ProductPartCode && x.ProductItemName == model.ProductItemName).Any())
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        model.SeqNo = ProductionEntryProductDetail.Count + 1;
+                        ProductionEntryGrid = ProductionEntryProductDetail.Where(x => x != null).ToList();
+                        SSGrid.AddRange(ProductionEntryGrid);
+                        ProductionEntryGrid.Add(model);
+                    }
+                    MainModel.ScrapDetailGrid = ProductionEntryGrid;
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ProductDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryProductdetail", serializedGrid);
+                }
+
+                return PartialView("_ProductionEntryProductDetail", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         public async Task<JsonResult> AltUnitConversion(int ItemCode, int AltQty, int UnitQty)
         {
             var JSON = await _IProductionEntry.AltUnitConversion(ItemCode, AltQty, UnitQty);
@@ -1690,6 +1736,12 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> FillScrapType()
         {
             var JSON = await _IProductionEntry.FillScrapType();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillProductType()
+        {
+            var JSON = await _IProductionEntry.FillProductType();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

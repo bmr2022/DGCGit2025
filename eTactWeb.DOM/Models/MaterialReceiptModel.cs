@@ -66,6 +66,9 @@ public class MRNDashboard
     public decimal ShelfLife { get; set; }
     public string ItemSize { get; set; }
     public string ItemColor { get; set; }
+    public int TotalRecords { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
     public IList<MRNDashboard>? MRNQDashboard { get; set; }
 }
 

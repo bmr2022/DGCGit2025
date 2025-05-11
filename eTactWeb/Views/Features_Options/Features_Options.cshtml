@@ -692,6 +692,13 @@
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
+                                        <label asp-for="IssueChaallanTaxIsMandatory" class="form-label">IssueChaallan Tax IsMandatory</label>
+                                        <select class="form-control" asp-for="IssueChaallanTaxIsMandatory">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
                                         <label asp-for="AllowBackDateReceiveChallanEntry" class="form-label">Allow Backdate ReceiveChallanEntry</label>
                                         <select class="form-control" asp-for="AllowBackDateReceiveChallanEntry" >
                                             <option value="Y">Yes</option>
@@ -1056,25 +1063,25 @@
                                 <div class="row g-2 gx-3" id="_ItemGrid">
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:300px;">
-                                        <label asp-for="AccAllowtochangeDocumentinPurchaseBill" class="form-label">AccAllowtochangeDocumnetinPurchaseBill</label>
+                                        <label asp-for="AccAllowtochangeDocumentinPurchaseBill" class="form-label">AccAllow to change Documnet in PurchaseBill</label>
                                         <select class="form-control" asp-for="AccAllowtochangeDocumentinPurchaseBill" style="width:280px;">
                                             <option value="Y">Yes</option>
                                             <option value="N">No</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:400px;">
-                                        <label asp-for="AccPasswordToChangeDocumentinPurchaseBill" class="form-label">AccPasswordToChangeDocumentinPurchaseBill</label>
+                                        <label asp-for="AccPasswordToChangeDocumentinPurchaseBill" class="form-label">AccPassword To Change Document in PurchaseBill</label>
                                         <input asp-for="AccPasswordToChangeDocumentinPurchaseBill" class="form-control" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:400px;">
-                                        <label asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBill" class="form-label">AccAllowtochangeInvoiceNoDateinPurchaseBill</label>
+                                        <label asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBill" class="form-label">AccAllow to change InvoiceNo Date in PurchaseBill</label>
                                         <select class="form-control" asp-for="AccAllowtochangeInvoiceNoDateinPurchaseBill" style="width:400px;">
                                             <option value="Y">Yes</option>
                                             <option value="N">No</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="AccPasswordToAllowManualTax" class="form-label">AccPasswordToAllowManualTax</label>
+                                        <label asp-for="AccPasswordToAllowManualTax" class="form-label">AccPassword To Allow ManualTax</label>
                                         <select class="form-control" asp-for="AccPasswordToAllowManualTax" style="width:150px;">
                                             <option value="Y">Yes</option>
                                             <option value="N">No</option>
@@ -1228,6 +1235,7 @@
             $('#AllowBackDateIssueChallan').select2();
             $('#ALLOWBACKDATRECCHALLAN').select2();
             $('#AllowBackDateReceiveChallanEntry').select2();
+            $('#IssueChaallanTaxIsMandatory').select2();
             $('#AllowBackDateCustomerJWIssue').select2();
             $('#AllowProdWithoutBom').select2();
             $('#ProdSchAllowToAddManualNewItem').select2();
@@ -1275,7 +1283,7 @@
                 'AllowBackDatePURCHASEORDER', 'AllowBackDateINDENT', 'AllowBackDateMRIR', 'AllowBackDateIssueChallan',
                 'ALLOWBACKDATRECCHALLAN', 'AllowBackDateJOBWorkIssue', 'ALLOWBACKDATEJobworkRec', 'AllowBackDateRECEIVEINSTORE',
                 'AllowBackDateSALEBILL', 'AllowBackDateDAILYPRODUCTION', 'AllowBackDateTRANSFERMATERIAL',
-                'CheckPOPendFromPOonlyNotFromAmendment', 'AllowBackDateReceiveChallanEntry', 'FIFOBasedBatchInventory',
+                'CheckPOPendFromPOonlyNotFromAmendment', 'AllowBackDateReceiveChallanEntry', 'IssueChaallanTaxIsMandatory', 'FIFOBasedBatchInventory',
                 'AllowGateRateEnabled', 'AllowBackDateCustomerJWIssue', 'IssueViaScanningBarcode', 'AllowBackDateWorkorderEntry',
                 'AllowBackDateInterStoreTransfer', 'VendorJWAdjustAutoOrManual', 'AllowBackDateProductionScheduleEntry',
                 'InProdScheduleShowSumOrDetail', 'PrdProdEntryAgainstWOProdSchReqManual', 'AllowProdWithoutBom',

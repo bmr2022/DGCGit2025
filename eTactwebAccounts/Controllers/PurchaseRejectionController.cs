@@ -113,11 +113,13 @@ namespace eTactWeb.Controllers
                 string modelPRGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
                 string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
                 string modelDrCrJson = HttpContext.Session.GetString("KeyDrCrGrid");
+                string modelAdjJson = HttpContext.Session.GetString("KeyAdjGrid");
                 AccPurchaseRejectionModel MainModel = new AccPurchaseRejectionModel();
                 List<AccPurchaseRejectionAgainstBillDetail> PurchaseRejectionAgainstBillDetail = new List<AccPurchaseRejectionAgainstBillDetail>();
                 List<AccPurchaseRejectionDetail> PurchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
                 List<TaxModel> TaxGrid = new List<TaxModel>();
                 List<DbCrModel> DrCrGrid = new List<DbCrModel>();
+                AdjustmentModel AdjGrid = new AdjustmentModel();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     MainModel = JsonConvert.DeserializeObject<AccPurchaseRejectionModel>(modelJson);
@@ -137,6 +139,10 @@ namespace eTactWeb.Controllers
                 if (!string.IsNullOrEmpty(modelDrCrJson))
                 {
                     DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(modelDrCrJson);
+                }
+                if (!string.IsNullOrEmpty(modelAdjJson))
+                {
+                    AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelAdjJson);
                 }
 
                  if (PurchaseRejectionDetail == null)
@@ -184,9 +190,16 @@ namespace eTactWeb.Controllers
                         DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
                     }
 
-                    if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    if ((MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0) || (AdjGrid != null && AdjGrid.AdjAdjustmentDetailGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Count > 0))
                     {
-                        AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.PurchaseRejEntryId, model.PurchaseRejYearCode, model.AccountCode);
+                        if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Any())
+                        {
+                            AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.PurchaseRejEntryId, model.PurchaseRejYearCode, model.AccountCode);
+                        }
+                        if (AdjGrid != null && AdjGrid.AdjAdjustmentDetailGrid.Any())
+                        {
+                            AdjDetailDT = CommonController.GetAdjDetailTable(AdjGrid.AdjAdjustmentDetailGrid.ToList(), model.PurchaseRejEntryId, model.PurchaseRejYearCode, model.AccountCode);
+                        }
                     }
                     string serverFolderPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "SaleBill");
                     if (!Directory.Exists(serverFolderPath))

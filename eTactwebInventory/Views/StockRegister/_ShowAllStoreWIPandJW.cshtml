@@ -67,6 +67,14 @@
         </tbody>
     </table>
 </div>
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+<center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
 <div class="card-footer d-flex justify-content-between align-items-center">
     <div>
         <button type="button" class="btn btn-link bg-graident" onclick="back();">

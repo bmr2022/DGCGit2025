@@ -34,6 +34,8 @@
         <tbody id="IssueWOBomTbody">
             @{
                 var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
                 if (Model.IssueThrBOMDashboard == null || Model.IssueThrBOMDashboard.Count == 0)
                 {
                     <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -45,7 +47,7 @@
 
                         Cntr = Cntr + 1;
                         <tr onclick="selection(this)">
-                            <th>@Cntr</th>
+                            <th>@srNo</th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="printData-@Cntr">
@@ -141,12 +143,21 @@
                             <td>@item.UpdatedEmpName</td>
                             <td>@item.UpdatedByEmpcode</td>                          
                         </tr>
+                        srNo++;
                     }
                 }
             }
         </tbody>
     </table>
 </div>
-<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
+<center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
+
 
 
