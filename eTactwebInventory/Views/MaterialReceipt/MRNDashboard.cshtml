@@ -134,7 +134,7 @@
                 </div>
             </div>
         </div>
-        <center><strong class="totalrows">TOTAL ROWS : <span id="totalRows"></span></strong></center>
+        
 
     </div>
 </div>
@@ -142,6 +142,18 @@
 @section Scripts
 {
     <script>
+        $(document).ready(function () {
+            debugger
+            if ($('#DashboardType').val() == "Summary") {
+                //GetFormRights();
+                GetSummaryData();
+            } else {
+                //GetFormRights();
+                GetDetailData();
+            }
+            GetSearchData();
+        });
+
         $(function () {
             GetFormRights();
             var fromDateBack = sessionStorage.getItem('FromDateBack');
@@ -167,8 +179,9 @@
                 var dateString = day + "/" + month + "/" + year;
                 return dateString;
 
-                GetSearchData();
+                //GetSearchData();
             }
+
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
                  $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -187,6 +200,7 @@
                     $('#deleteCursorDiv-' + i).prop("disabled", true);
                 }
             }
+        
            var sessionYearCode = parseInt($('#SessionYearCode').val().split('/')[2].split(" ")[0]);
             console.log(sessionYearCode);
             
@@ -242,7 +256,7 @@
                 $('#DashboardType').val(DashboardTypeBack);
                 $('#PoNo').val(PoNoBack);
             }
-            GetSearchData();
+           
            
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
@@ -277,7 +291,56 @@
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
+        function loadPage(pageNumber) {
 
+            debugger
+            var dashboardType = $('#DashboardType').val();
+            var url = '';
+            var formData = $('#SParam').serialize();
+            if (dashboardType === "Summary") {
+                url = '@Url.Action("GetSearchData", "MaterialReceipt")';
+            } else if (dashboardType === "Detail") {
+                url = '@Url.Action("MRNDetailDashboard", "MaterialReceipt")';
+            }
+
+
+            formData += '&pageNumber=' + pageNumber;
+
+            // formData.push({ name: 'pageNumber', value: pageNumber });
+            console.log("Fromdata ", formData)
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        var currentSearchColumn = null;
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#DashboardType').val();
+            $.ajax({
+                url: "/MaterialReceipt/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
         function GetServerDate() {
             $.ajax({
                 type: "GET",
@@ -318,6 +381,7 @@
         }
 
         function GetSearchData() {
+            debugger
             if ($('#DashboardType').val() == "Summary") {
                 GetFormRights();
                 GetSummaryData();

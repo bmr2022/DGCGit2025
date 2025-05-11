@@ -153,15 +153,16 @@
            
 
             $('#ToDate').change(function () {
-                if ($('#DataType').val() == "RMDetail") {
+                if ($('#DataType').val() == "RMDETAIL") {
                     RMDetailData();
-                }                 
-                else if ($('#DataType').val() == "FGDetail") {
+                   
+                } else if ($('#DataType').val() == "FGSUMM") {
                     FGDetailData();
-                }
-                else {
+                   
+                } else if ($('#DataType').val() == "SUMM") {
                     SummaryData();
-                }              
+                   
+                }
             });
 
             AutoComplete('VIssueWithBom', 'ReqNo', 'ReqNo', null);
@@ -261,24 +262,43 @@
             });
         }
         var currentSearchColumn = null;
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#DataType').val();
+            $.ajax({
+                url: "/IssueThrBOM/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
 
-        $("#search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#IssueWOBomTbody tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
                 }
             });
         });
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#IssueWOBomTbody tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
 
 
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup');
-        });
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup');
+        // });
 
         $(document).on("click", ".sortCol", function () {
 
@@ -459,12 +479,15 @@
         }
 
         function GetSearchData() {
-             
-            if ($('#DataType').val() == "RMDetail") {
+
+            if ($('#DataType').val() == "RMDETAIL") {
                 RMDetailData();
                 GetFormRights();
-            } else {
+            } else if ($('#DataType').val() == "FGSUMM") {
                 FGDetailData();
+                GetFormRights();
+            } else if ($('#DataType').val() == "SUMM") {
+                SummaryData();
                 GetFormRights();
             }
         }
@@ -484,20 +507,23 @@
         }
 
         $('#DataType').change(function () {
-             
-            if ($('#DataType').val() == "RMDetail") {
-                    RMDetailData();
+            var selectedVal = $('#DataType').val();
+
+            if (selectedVal == "RMDETAIL") {
+                RMDetailData();
                 GetFormRights();
-                }                 
-                else if ($('#DataType').val() == "FGDetail") {
-                    FGDetailData();
+            } else if (selectedVal == "FGSUMM") {
+                FGDetailData();
                 GetFormRights();
-                }
-                else {
-                    SummaryData();
+            } else if (selectedVal == "SUMM") {
+                SummaryData();
                 GetFormRights();
-                }  
+            } else {
+                SummaryData();
+                GetFormRights();
+            }
         });
+
 
         function FGDetailData() {
             $.ajax({

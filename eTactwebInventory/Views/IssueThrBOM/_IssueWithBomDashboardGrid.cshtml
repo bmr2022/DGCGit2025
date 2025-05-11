@@ -6,11 +6,11 @@
     var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
 
-@if (Model.Mode == "FGDetail")
+@if (Model.Mode == "FGSUMM")
 {
     <partial name="_IssueWithBomDashboardDetailGrid" />
 }
-else @if (Model.Mode == "Summary")
+else @if (Model.Mode == "SUMM")
 {
     <partial name="_IssueWithBomDashboardSummaryDetailGrid" />
 }

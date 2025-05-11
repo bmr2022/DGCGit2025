@@ -1145,7 +1145,7 @@
 
         function ResetPendQty() {
 
-            FillSOPendQty();
+            // FillSOPendQty();
             if ($('#SOPendQty').val() != 0) {
                 var rowCount = $('#divSaleBillList tr').length;
                 var totalBillQty = 0;
@@ -1526,7 +1526,7 @@
                             $('#RateInOtherCurr').val("");
                             $('#RateInOtherCurr').val((obj.Result[0].Rate).toFixed(4));
 
-                            // ResetPendQty();
+                            ResetPendQty();
                         }
                     }
                 }
@@ -1795,19 +1795,47 @@
         }
 
         function ClearGrid() {
+            var itemGridArr = [];
+            var rowCount = $('#divSaleBillList tr').length;
+            for (var j = 1; j <= rowCount; j++) {
+
+                var iC = $('#GridIC-' + j).val();
+                var batchNo = $('#GridBatchNo-' + j).text();
+
+                itemGridArr.push({
+                    IC : iC,
+                    BatchNo : batchNo
+                });
+            }
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearGrid")",
                 success: function (result, status, error) {
 
+                    for (var j = 1; j <= itemGridArr.length; j++) {
+                        debugger
+                        var IC = itemGridArr[j-1].IC;
+                        var BatchNo = itemGridArr[j-1].BatchNo;
+
+                        var itemArrayLength = itemBatchArray.length;
+
+                        for (var i = 0; i < itemArrayLength; i++) {
+                            if (itemBatchArray[i].itemcode == IC && itemBatchArray[i].batchno == BatchNo) {
+                                itemBatchArray.splice(i, 1);
+                            }
+                        }
+                    }
+
                     $('#divSaleBillList').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divSaleBillList').html(NoData);
 
-                    $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty').val(0);
+                    $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty,#StoreId').val(0);
                     $('#LotStock,#TotalStock').val("");
                     $('#BOMInd,#ProducedUnprod').val('');
                     $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
+
                     BasicTotal();
                 },
                 error: function (req, status, error) {
@@ -1853,7 +1881,7 @@
                 success: function (result, status, error) {
 
                     if (result != null) {
-                         
+
                         var obj = $.parseJSON(result);
                         $('#PartCode').empty();
                         $('#PartCode').append('<option value="0">-Select-</option>');
@@ -1865,7 +1893,7 @@
                                 $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
                             });
                         }
-                         
+
                         $('#ItemCode').empty();
                         $('#ItemCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1890,7 +1918,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                         
+
                         $('#PartCode').empty();
                         $('#PartCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1901,7 +1929,7 @@
                                 $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
                             });
                         }
-                         
+
                         $('#ItemCode').empty();
                         $('#ItemCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1927,7 +1955,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                         
+
                         $('#PartCode').empty();
                         $('#PartCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -1938,7 +1966,7 @@
                                 $('#PartCode').append("<option value=" + val.Item_Code + " data-stockable=" + val.Stockable + ">" + val.PartCode + "</option>");
                             });
                         }
-                         
+
                         $('#ItemCode').empty();
                         $('#ItemCode').append('<option value="0">-Select-</option>');
                         if (obj.StatusCode != 500) {
@@ -2357,7 +2385,7 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-                             
+
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -2384,7 +2412,7 @@
                                 } else {
                                     FillSOWiseItems();
                                 }
-                                 debugger
+
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2400,7 +2428,7 @@
                                 $('#SONO').val(obj[0].SONO);
                                 $('#SOYearCode').val(obj[0].SOYearCode);
                                 $('#SaleSchYearCode').val(obj[0].SaleSchYearCode);
-                                 
+
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                                 $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                 FillCurrentBatchINStore();
@@ -2967,7 +2995,7 @@
                 }
             } else {
 
-                 debugger
+
                 if ($('#SONO').find(':selected').data('sotype') == 'CLOSE') {
                     FillSOWiseItems();
                 }
@@ -3014,7 +3042,7 @@
                     }
 
                     $('#SchNo,#SaleSchYearCode,#SOPendQty,#Rate').val(0);
-                     
+
                     $('#PartCode,#ItemCode').val(0).trigger("change");
                     $('#Batchno,#Uniquebatchno').val("");
                 }
@@ -3358,7 +3386,7 @@
                                 JWItemList($('#TypeItemServAssets').val());
                             }
                         } else {
-                            debugger
+
                             if ($('#SONO').find(':selected').data('sotype') == 'OPEN') {
                                 FillSOWiseItems();
                             }

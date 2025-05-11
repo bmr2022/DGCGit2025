@@ -325,8 +325,72 @@
                 }
             });
         }
+        function loadPage(pageNumber) {
 
+            debugger
+            var dashboardType = $('#DashboardType').val();
+            var url = '';
+            var formData = {};
+            if (dashboardType === "Summary") {
+                url = '@Url.Action("GetSearchData", "IssueWithoutBom")';
+            } else if (dashboardType === "Detail") {
+                url = '@Url.Action("GetDetailData", "IssueWithoutBom")';
+            }
 
+            if (dashboardType === "Summary") {
+                formData = {
+                    ReqNo: $('#ReqNo').val(),
+                    WorkCenter: $('#WorkCenterDescription').val(),
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val()
+                };
+            } else if (dashboardType === "Detail") {
+                formData = {
+                    ReqNo: $('#ReqNo').val(),
+                    ItemName: $('#Item_Name').val(),
+                    PartCode: $('#PartCode').val(),
+                    WorkCenter: $('#WorkCenterDescription').val(),
+                    FromDate: $('#FromDate').val(),
+                    ToDate: $('#ToDate').val()
+                };
+            } 
+            
+            formData.pageNumber = pageNumber;
+
+            // formData.push({ name: 'pageNumber', value: pageNumber });
+            console.log("Fromdata ", formData)
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#DashboardType').val();
+            $.ajax({
+                url: "/IssueWithoutBom/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
