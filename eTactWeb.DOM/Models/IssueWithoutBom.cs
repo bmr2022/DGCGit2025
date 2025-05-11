@@ -130,7 +130,9 @@ namespace eTactWeb.DOM.Models
         public string RecDepartment { get; set; }
         public int ActualEnteredBy { get; set; }
         public string? MachineCode { get; set; }
-
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<IssueWOBomMainDashboard>? IssueWOBOMDashboard { get; set; }
     }
 

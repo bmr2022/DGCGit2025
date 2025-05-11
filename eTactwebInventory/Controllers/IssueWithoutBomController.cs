@@ -12,6 +12,10 @@ using System.Data;
 using System.Globalization;
 using FastReport.Web;
 using Microsoft.Extensions.Configuration;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Runtime.Caching;
+using DocumentFormat.OpenXml.Bibliography;
+using System.Drawing.Printing;
 
 namespace eTactWeb.Controllers
 {
@@ -22,13 +26,15 @@ namespace eTactWeb.Controllers
         private readonly ILogger<IssueWithoutBomController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration _iconfiguration;
-        public IssueWithoutBomController(ILogger<IssueWithoutBomController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueWithoutBom IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IMemoryCache _MemoryCache;
+        public IssueWithoutBomController(ILogger<IssueWithoutBomController> logger, IConfiguration iconfiguration, IDataLogic iDataLogic, IIssueWithoutBom IIssueWOBOM, IWebHostEnvironment iWebHostEnvironment, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueWOBOM = IIssueWOBOM;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = iconfiguration;
+            _MemoryCache = iMemoryCache;
         }
 
         [Route("{controller}/Index")]
@@ -602,20 +608,164 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate)
+        public async Task<IActionResult> GetSearchData(string REQNo, string ReqDate, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueWOBomMainDashboard();
             model = await _IIssueWOBOM.GetSearchData(REQNo, ReqDate, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
+            var modelList = model?.IssueWOBOMDashboard ?? new List<IssueWOBomMainDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.IssueWOBOMDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<IssueWOBomMainDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.IssueWOBOMDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyIssWithOutBOMList_Summary", modelList, cacheEntryOptions);
             return PartialView("_IssueWithoutBomDashboardGrid", model);
         }
 
-        public async Task<IActionResult> GetDetailData(string REQNo, string ReqDate, string PartCode, string Item_Name, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(string REQNo, string ReqDate, string PartCode, string Item_Name, string IssueSlipNo, string IssueDate, string WorkCenter, string YearCode, string ReqYearCode, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             //model.Mode = "Search";
             var model = new IssueWOBomMainDashboard();
             model = await _IIssueWOBOM.GetDetailData(REQNo, ReqDate, PartCode, Item_Name, IssueSlipNo, IssueDate, WorkCenter, YearCode, ReqYearCode, FromDate, ToDate);
             model.DashboardType = "Detail";
+            var modelList = model?.IssueWOBOMDashboard ?? new List<IssueWOBomMainDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.IssueWOBOMDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<IssueWOBomMainDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.IssueWOBOMDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyIssWithOutBOMList_Detail", modelList, cacheEntryOptions);
+            return PartialView("_IssueWithoutBomDashboardGrid", model);
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            IssueWOBomMainDashboard model = new IssueWOBomMainDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_IssueWithoutBomDashboardGrid", new List<IssueWOBomMainDashboard>());
+            }
+            string cacheKey = $"KeyIssWithOutBOMList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<IssueWOBomMainDashboard> IssueWithOutBOMDashboard) || IssueWithOutBOMDashboard == null)
+            {
+                return PartialView("_IssueWithoutBomDashboardGrid", new List<IssueWOBomMainDashboard>());
+            }
+
+            List<IssueWOBomMainDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = IssueWithOutBOMDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = IssueWithOutBOMDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = IssueWithOutBOMDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.IssueWOBOMDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+
             return PartialView("_IssueWithoutBomDashboardGrid", model);
         }
         public async Task<IActionResult> FillBatchUnique(int ItemCode, int YearCode, string StoreName, string BatchNo,string IssuedDate)
