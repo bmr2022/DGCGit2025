@@ -68,6 +68,11 @@
             <option value="Detail">Detail</option>
         </select>
     </div>
+    <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
+        <input type="checkbox" id="ShowOnlyAmendItemcheck" name="ShowOnlyAmendItem" />
+        <input type="hidden" asp-for="ShowOnlyAmendItem" />
+    <label for="ShowOnlyAmendItem">Show Only Amend Item</label>
+   </div>
     <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
         <label class="form-label">Global search</label>
         <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
