@@ -744,7 +744,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Store" class="form-label" style="color:red">Store/Wc*</label>
-                                    <select class="form-select" asp-for="StoreTransferProduct">
+                                    <select class="form-select" asp-for="StoreTransferScrap">
                                         <option>-Select-</option>
                                         <option value="S">Store</option>
                                         <option value="W">WorkCenter</option>
@@ -1322,7 +1322,6 @@
             $('#ReqDatediv').hide();
             $('#displaylistbutton').hide();
             $('#displayroutingdata').hide();
-
             $('#ProdType').rules("remove", "required");
             $('#Stock').rules("remove", "required");
             $('#TargetQty').rules("remove", "required");
@@ -1408,8 +1407,6 @@
             FillScrapItems();
             FillScrapPartCode();
             FillScrapType();
-            FillProductPartCode();
-            FillProductItems();
             FillProductType();
             FillResFactor();
             FillAltItemName();
@@ -2073,6 +2070,8 @@
 
         $('#BOMNo').change(function () {
             FillScrapData();
+            FillProductPartCode();
+            FillProductItems();
         })
 
         function fillEntryandGate() {
@@ -2934,8 +2933,8 @@
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("GetScrapUnit")",
-                data: { ScrapItemCode: $('#ProductItemName').val() },
+                url: "@Url.Action("FillProductUnit")",
+                data: { ProductItemCode: $('#ProductItemCode').val() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -3994,7 +3993,7 @@
         });
 
         $('#ProdQty').change(function () {
-
+            debugger
             if ($('#ProdAgainstPlanManual').val() == 'UNPLANNED') {
                 var Target = Number(parseFloat($('#unTarget').val()).toFixed(6));
                 var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
@@ -4020,7 +4019,7 @@
                     $.notify("ProdQty cannot be less than 0", "error");
                 }
                 else {
-                    var PendQty = Number((Target - ProdQty).toFixed(6));
+                    var PendQty = Number((TargetQty - ProdQty).toFixed(6));
                     $('#PendQty').val(0);
                     $('#PendQty').val(PendQty);
                 }
@@ -4068,6 +4067,8 @@
             $('#ProdPlanYear').val(0);
             $('#ProdPlanDate').val(0);
             FillScrapData();
+            FillProductPartCode();
+            FillProductItems();
         });
 
         function GetItemNameForPendingProduction() {
@@ -4110,15 +4111,15 @@
 
         $(document).on('select2:select', '#ProductItemName,#ProductPartCode', function (e) {
             var cntId = e.target.id;
-            if (cntId == 'ScrapItemName') {
+            if (cntId == 'ProductItemName') {
                 ProductItemNameChange(cntId);
             }
             else {
                 ProductPartCodeChange(cntId);
             }
-            $('#ScrapItemCode').val($('#ScrapItemName').val())
-            $('#Scrapunit').val('')
-            GetScrapUnit();
+            $('#ProductItemCode').val($('#ProductItemName').val())
+            $('#Productunit').val('')
+            GetProductUnit();
         });
 
         $(document).on('select2:select', '#AltItemName,#AltPartCode', function (e) {
@@ -4223,9 +4224,9 @@
         function FillProductItems() {
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FillScrapItems")",
+                url: "@Url.Action("FillProductItems")",
                 dataType: "json",
-                data: {},
+                data: {"FgItemCode" : $('#FGItemCode').val(), "BomNo" : $('#BOMNo').val()},
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -4265,9 +4266,9 @@
         function FillProductPartCode() {
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("FillScrapPartCode")",
+                url: "@Url.Action("FillProductPartCode")",
                 dataType: "json",
-                data: {},
+                data: {"FgItemCode" : $('#FGItemCode').val(), "BomNo" : $('#BOMNo').val()},
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
@@ -5527,6 +5528,17 @@
                 $('#TransferToWCStore').prop('selectedIndex', 0).trigger("change")
         }
 
+        function ClearProductGrid() {
+
+            $('#ProductPartCode').prop('selectedIndex', 0).trigger("change"),
+                $('#ProductItemName').prop('selectedIndex', 0).trigger("change"),
+                $('#ProductType').prop('selectedIndex', 0).trigger("change"),
+                $('#Productunit').val(''),
+                $('#ProductQty').val(0),
+                $('#StoreTransferProduct').prop('selectedIndex', 0),
+                $('#ProductTransferToWCStore').prop('selectedIndex', 0).trigger("change")
+        }
+
         function ScrapGrid(event) {
 
             event.preventDefault();
@@ -5592,19 +5604,19 @@
         }
 
         function ProductGrid(event) {
-
+            debugger
             event.preventDefault();
             if (!ValidateProduct_Grid()) return;
             var ProductTransferToStoreId = 0;
-            var ProductTransferToWC = 0;
+            var ProductTransferToWCId = 0;
             var ProductTransferToWCStore = $('#StoreTransferProduct').val();
             if (ProductTransferToWCStore == "S") {
-                ProductTransferToStoreId = $('#ProductTransferToWCStore').val();
+                ProductTransferToStoreId = $('#ProductStoreId').val();
             }
             else {
-                ProductTransferToWC = $('#ProductTransferToWCStore').val();
+                ProductTransferToWCId = $('#ProductToWC').val();
             }
-            var ScrapData = {
+            var ProductData = {
                 "ProductItemName": $('#ProductItemName').find(':selected').text(),
                 "ProductPartCode": $('#ProductPartCode').find(':selected').text(),
                 "ProductItemCode": $('#ProductItemCode').val(),
@@ -5613,14 +5625,14 @@
                 "Productunit": $('#Productunit').val(),
                 "StoreTransferProduct": $('#StoreTransferProduct').val(),
                 "ProductTransferToWCStore": $('#ProductTransferToWCStore').find(':selected').text(),
-                "ProductTransferToStoreId": parseInt($('#ProductTransferToStoreId').val()),
-                "ProductTransferToWC": parseInt($('#ProductTransferToWC').val())
+                "ProductStoreId": ProductTransferToStoreId,
+                "ProductToWCId": ProductTransferToWCId
             }
 
             $.ajax({
-                url: "@Url.Action("AddScrapdetailGrid")",
+                url: "@Url.Action("AddProductdetailGrid")",
                 type: "POST",
-                data: { model: ScrapData },
+                data: { model: ProductData },
                 success: function (data, status, xhr) {
 
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
@@ -5630,9 +5642,9 @@
                         $.notify('Adding Item Not Allowed, Please Clear Tax Detail...!!!', "info");
                     }
                     else {
-                        $('#divScrapDetailGrid').html(data);
-                        editingScrapNow = false;
-                        ClearScrapGrid();
+                        $('#divProductDetailGrid').html(data);
+                        editingProductNow = false;
+                        ClearProductGrid();
                     }
 
                 },
@@ -5652,6 +5664,69 @@
                 alert("error");;
             }).always(function () {
 
+            });
+        }
+
+        var editingProductNow = false;
+        function EditProductItemRow(SeqNo) {
+            debugger
+            if (editingProductNow == false) {
+
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditProductItemRow")',
+                        type: "POST",
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+                            editingProductNow = true;
+                            var obj = $.parseJSON(data);
+                            DeleteProductItemRow(SeqNo)
+                                .then(() => {
+                                    0
+                                    $('#ProductPartCode').val(obj[0].ProductItemCode).trigger('change');
+                                    $('#ProductItemName').val(obj[0].ProductItemCode).trigger('change');
+                                    $('#ProductType').val(obj[0].ProductType).trigger('change');
+                                    $('#ProductQty').val(obj[0].ProductQty);
+                                    $('#Productunit').val(obj[0].Productunit);
+                                    $('#StoreTransferProduct').change();
+                                    $('#StoreTransferProduct').val(obj[0].StoreTransferProduct).trigger('change');
+                                    $('#ProductTransferToWCStore').val(obj[0].ProductTransferToWCStore).trigger('change');
+                                })
+                                .catch((error) => {
+                                    reject(error);
+                                });
+
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        var isEditProductAllowed = "false";
+
+        function DeleteProductItemRow(SeqNo) {
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteProductItemRow")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                    success: function (data) {
+                        $('#divProductDetailGrid').html(data);
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditProductAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
             });
         }
 

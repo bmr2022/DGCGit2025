@@ -52,7 +52,7 @@ namespace eTactWeb.Controllers
             var webReport = new WebReport();
 
             webReport.Report.Load(webRootPath + "\\ProductionSlipEntry.frx"); // default report
-           // webReport.Report.Load(webRootPath + "\\ProductionEntryPrint.frx"); // default report
+                                                                              // webReport.Report.Load(webRootPath + "\\ProductionEntryPrint.frx"); // default report
 
 
             //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
@@ -203,7 +203,7 @@ namespace eTactWeb.Controllers
                 MainModel = await _IProductionEntry.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
-                MainModel.YearCode=YC;
+                MainModel.YearCode = YC;
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
@@ -277,6 +277,7 @@ namespace eTactWeb.Controllers
                 var BreakDownGrid = new DataTable();
                 var OperatorGrid = new DataTable();
                 var ScrapGrid = new DataTable();
+                var ProductGrid = new DataTable();
                 string serializedProductionGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
                 List<ProductionEntryItemDetail> ProductionEntryItemDetail = new();
                 if (!string.IsNullOrEmpty(serializedProductionGrid))
@@ -301,6 +302,12 @@ namespace eTactWeb.Controllers
                 {
                     ProductionEntryScrapDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedScrapGrid);
                 }
+                string serializedProductGrid = HttpContext.Session.GetString("KeyProductionEntryProductdetail");
+                List<ProductionEntryItemDetail> ProductionEntryProductDetail = new();
+                if (!string.IsNullOrEmpty(serializedProductGrid))
+                {
+                    ProductionEntryProductDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedProductGrid);
+                }
                 if (ProductionEntryItemDetail == null && ProductionEntryOperatorDetail == null && ProductionEntryBreakdownDetail == null && ProductionEntryScrapDetail == null)
                 {
                     ModelState.Clear();
@@ -323,6 +330,7 @@ namespace eTactWeb.Controllers
                         BreakDownGrid = GetBreakdownDetailTable(ProductionEntryBreakdownDetail);
                         OperatorGrid = GetOperatorDetailTable(ProductionEntryOperatorDetail);
                         ScrapGrid = GetScrapDetailTable(ProductionEntryScrapDetail);
+                        ProductGrid = GetProductDetailTable(ProductionEntryProductDetail);
                     }
                     else
                     {
@@ -330,9 +338,10 @@ namespace eTactWeb.Controllers
                         BreakDownGrid = GetBreakdownDetailTable(ProductionEntryBreakdownDetail);
                         OperatorGrid = GetOperatorDetailTable(ProductionEntryOperatorDetail);
                         ScrapGrid = GetScrapDetailTable(ProductionEntryScrapDetail);
+                        ProductGrid = GetProductDetailTable(ProductionEntryProductDetail);
                     }
 
-                    var Result = await _IProductionEntry.SaveProductionEntry(model, GIGrid, BreakDownGrid, OperatorGrid, ScrapGrid);
+                    var Result = await _IProductionEntry.SaveProductionEntry(model, GIGrid, BreakDownGrid, OperatorGrid, ScrapGrid, ProductGrid);
 
                     if (Result != null)
                     {
@@ -344,6 +353,7 @@ namespace eTactWeb.Controllers
                             HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
                             HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
                             HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
+                            HttpContext.Session.Remove("KeyProductionEntryProductdetail");
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -686,6 +696,64 @@ namespace eTactWeb.Controllers
             var model = new ProductionEntryDashboard();
             model = await _IProductionEntry.GetScrapData(FromDate, ToDate);
             model.DashboardType = "Scrap";
+            var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.ProductionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<ProductionEntryDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.ProductionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyProdList_Scrap", modelList, cacheEntryOptions);
+            return PartialView("_ProductionEntryDashboardGrid", model);
+        }
+        public async Task<IActionResult> GetProductData(string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        {
+            //model.Mode = "Search";
+            var model = new ProductionEntryDashboard();
+            model = await _IProductionEntry.GetProductData(FromDate, ToDate);
+            model.DashboardType = "Product";
             var modelList = model?.ProductionDashboard ?? new List<ProductionEntryDashboard>();
 
 
@@ -1198,7 +1266,7 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                var time = CommonFunc.ParseFormattedDate( DateTime.Now.ToString());
+                var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
                 return Json(DateTime.Now.ToString("yyyy-MM-dd"));
             }
             catch (HttpRequestException ex)
@@ -1255,7 +1323,7 @@ namespace eTactWeb.Controllers
                 }
                 //_MemoryCache.Set("KeyMaterialReceiptGrid", MainModel.ItemDetailGrid, cacheEntryOptions);
             }
-            MainModel.ProdType=ProdType;
+            MainModel.ProdType = ProdType;
             return PartialView("_ProductionEntryGrid", MainModel);
         }
         public IActionResult AddProductionEntryGrid(List<ProductionEntryItemDetail> model)
@@ -1280,7 +1348,7 @@ namespace eTactWeb.Controllers
                     {
                         if (ProductionEntryItemDetail == null)
                         {
-                            item.SeqNo=seqNo;
+                            item.SeqNo = seqNo;
                             item.SeqNo += seqNo + 1;
                             ProductionEntryDetail.Add(item);
                             seqNo++;
@@ -1294,9 +1362,9 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.ItemDetailGrid = ProductionEntryDetail;
                         var ProdType = item.ProdType;
-                        MainModel.ProdType=ProdType;
+                        MainModel.ProdType = ProdType;
                         var ProdEntryAllow = item.ProdEntryAllowToAddRMItem;
-                        MainModel.ProdEntryAllowToAddRMItem= ProdEntryAllow;
+                        MainModel.ProdEntryAllowToAddRMItem = ProdEntryAllow;
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                         HttpContext.Session.SetString("KeyProductionEntryGrid", serializedGrid);
                     }
@@ -1341,9 +1409,9 @@ namespace eTactWeb.Controllers
                     }
                     MainModel.ItemDetailGrid = ProductionEntryGrid;
                     var ProdType = modelData.ProdType;
-                    MainModel.ProdType=ProdType;
+                    MainModel.ProdType = ProdType;
                     var ProdEntryAllow = modelData.ProdEntryAllowToAddRMItem;
-                    MainModel.ProdEntryAllowToAddRMItem= ProdEntryAllow;
+                    MainModel.ProdEntryAllowToAddRMItem = ProdEntryAllow;
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                     HttpContext.Session.SetString("KeyProductionEntryGrid", serializedGrid);
                 }
@@ -1471,7 +1539,7 @@ namespace eTactWeb.Controllers
                 {
                     if (ProductionEntryScrapDetail == null)
                     {
-                        model.SeqNo =  1;
+                        model.SeqNo = 1;
                         ProductionEntryGrid.Add(model);
                     }
                     else
@@ -1531,7 +1599,7 @@ namespace eTactWeb.Controllers
                         SSGrid.AddRange(ProductionEntryGrid);
                         ProductionEntryGrid.Add(model);
                     }
-                    MainModel.ScrapDetailGrid = ProductionEntryGrid;
+                    MainModel.ProductDetailGrid = ProductionEntryGrid;
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.ProductDetailGrid);
                     HttpContext.Session.SetString("KeyProductionEntryProductdetail", serializedGrid);
                 }
@@ -1587,7 +1655,7 @@ namespace eTactWeb.Controllers
                 var response = await _IProductionEntry.FillScrapData(FGItemCode, FgProdQty, BomNo);
                 model.ScrapDetailGrid = response.ScrapDetailGrid;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -1718,6 +1786,24 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> FillScrapItems()
         {
             var JSON = await _IProductionEntry.FillScrapItems();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillProductItems(int FgItemCode, string BomNo)
+        {
+            var JSON = await _IProductionEntry.FillProductItems(FgItemCode, BomNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillProductPartCode(int FgItemCode, string BomNo)
+        {
+            var JSON = await _IProductionEntry.FillProductPartCode(FgItemCode, BomNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillProductUnit(int ProductItemCode)
+        {
+            var JSON = await _IProductionEntry.FillProductUnit(ProductItemCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -1880,7 +1966,7 @@ namespace eTactWeb.Controllers
             {
                 ProductionChilDataDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
             }
-            
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (ProductionChilDataDetail != null && ProductionChilDataDetail.Count > 0)
@@ -2011,7 +2097,7 @@ namespace eTactWeb.Controllers
                 HttpContext.Session.Remove("KeyProductionEntryOperatordetail");
                 HttpContext.Session.Remove("KeyProductionEntryBreakdowndetail");
                 HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
-
+                HttpContext.Session.Remove("KeyProductionEntryProductdetail");
                 var model = new ProductionDashboard();
                 var Result = await _IProductionEntry.GetDashboardData().ConfigureAwait(true);
                 DateTime now = DateTime.Now;
@@ -2045,14 +2131,14 @@ namespace eTactWeb.Controllers
                     {
                         model.FromDate1 = FromDate;
                         model.ToDate1 = ToDate;
-                        model.ProdSlipNo=SlipNo;
-                        model.ItemName=ItemName;
-                        model.PartCode=PartCode;
-                        model.ProdPlanNo=ProdPlanNo;
-                        model.ProdSchNo=ProdSchNo;
-                        model.ReqNo=ReqNo;
-                        model.Searchbox=Searchbox;
-                        model.DashboardType=DashboardType;
+                        model.ProdSlipNo = SlipNo;
+                        model.ItemName = ItemName;
+                        model.PartCode = PartCode;
+                        model.ProdPlanNo = ProdPlanNo;
+                        model.ProdSchNo = ProdSchNo;
+                        model.ReqNo = ReqNo;
+                        model.Searchbox = Searchbox;
+                        model.DashboardType = DashboardType;
                         return View(model);
                     }
                 }
@@ -2311,6 +2397,52 @@ namespace eTactWeb.Controllers
             }
             return ScrapDetailGrid;
         }
+        private static DataTable GetProductDetailTable(IList<ProductionEntryItemDetail> ProductDetailList)
+        {
+            var ProductDetailGrid = new DataTable();
+
+            ProductDetailGrid.Columns.Add("ProdEntryId", typeof(int));
+            ProductDetailGrid.Columns.Add("EntryDate", typeof(string));
+            ProductDetailGrid.Columns.Add("ProdYearcode", typeof(int));
+            ProductDetailGrid.Columns.Add("FGItemCode", typeof(int));
+            ProductDetailGrid.Columns.Add("FGProdQty", typeof(decimal));
+            ProductDetailGrid.Columns.Add("ProcessId", typeof(int));
+            ProductDetailGrid.Columns.Add("SeqNo", typeof(int));
+            ProductDetailGrid.Columns.Add("ByProdItemCode", typeof(int));
+            ProductDetailGrid.Columns.Add("IdealQty", typeof(decimal));
+            ProductDetailGrid.Columns.Add("Qty", typeof(decimal));
+            ProductDetailGrid.Columns.Add("ByProdUnit", typeof(string));
+            ProductDetailGrid.Columns.Add("TrasferTOStoreWC", typeof(string));
+            ProductDetailGrid.Columns.Add("StoreID", typeof(int));
+            ProductDetailGrid.Columns.Add("WCId", typeof(int));
+
+            if (ProductDetailList != null)
+            {
+                foreach (var Item in ProductDetailList)
+                {
+                    ProductDetailGrid.Rows.Add(
+                        new object[]
+                    {
+                    Item.EntryId == 0 ? 0 : Item.EntryId,
+                    Item.EntryDate == null ? string.Empty : ParseFormattedDate(Item.EntryDate.Split(" ")[0]),
+                    Item.YearCode == 0 ? 0 : Item.YearCode,
+                    Item.FGItemCode== 0 ? 0:Item.FGItemCode,
+                    Item.FGProdQty == 0 ? 0:Item.FGProdQty,
+                    Item.ProcessId == 0 ? 0 : Item.ProcessId ,
+                    Item.SeqNo == 0 ? 0 : Item.SeqNo,
+                    Item.ProductItemCode == 0 ? 0 : Item.ProductItemCode,
+                    Item.ProdQty == 0 ? 0 : Item.ProdQty,
+                    Item.ProdQty == 0 ? 0 : Item.ProdQty,
+                    Item.Productunit == null ? "" : Item.Productunit, 
+                    Item.StoreTransferProduct == null ? "" : Item.StoreTransferProduct,
+                    Item.ProductStoreId == 0 ? 0 : Item.ProductStoreId,
+                    Item.ProductToWCId == 0 ? 0 : Item.ProductToWCId
+                        });
+                }
+                ProductDetailGrid.Dispose();
+            }
+            return ProductDetailGrid;
+        }
         public IActionResult DeleteBreakdownItemRow(int SeqNo, string Mode)
         {
             var MainModel = new ProductionEntryModel();
@@ -2322,7 +2454,7 @@ namespace eTactWeb.Controllers
                 {
                     BreakdownDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
                 }
-                
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (BreakdownDetailGrid != null && BreakdownDetailGrid.Count > 0)
@@ -2530,7 +2662,7 @@ namespace eTactWeb.Controllers
                 {
                     ScrapDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
                 }
-                
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (ScrapDetailGrid != null && ScrapDetailGrid.Count > 0)
@@ -2583,6 +2715,101 @@ namespace eTactWeb.Controllers
             if (ScrapDetailGrid != null)
             {
                 SSScrapGrid = ScrapDetailGrid.Where(x => x.SeqNo == SeqNo);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSScrapGrid);
+            return Json(JsonString);
+        }
+        public IActionResult DeleteProductItemRow(int SeqNo, string Mode)
+        {
+            var MainModel = new ProductionEntryModel();
+            if (Mode == "U")
+            {
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryProductdetail");
+                List<ProductionEntryItemDetail> ProductDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ProductDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (ProductDetailGrid != null && ProductDetailGrid.Count > 0)
+                {
+                    ProductDetailGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in ProductDetailGrid)
+                    {
+                        Indx++;
+                        item.SeqNo = Indx;
+                    }
+                    MainModel.ProductDetailGrid = ProductDetailGrid;
+
+                    string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ProductDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryProductdetail", serializedScrapGrid);
+                }
+            }
+            else
+            {
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryProductdetail");
+                List<ProductionEntryItemDetail> ProductDetailGrid = new();
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ProductDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
+
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (ProductDetailGrid != null && ProductDetailGrid.Count > 0)
+                {
+                    ProductDetailGrid.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in ProductDetailGrid)
+                    {
+                        Indx++;
+                        item.SeqNo = Indx;
+                    }
+                    MainModel.ProductDetailGrid = ProductDetailGrid;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    string serializedScrapGrid = JsonConvert.SerializeObject(MainModel.ProductDetailGrid);
+                    HttpContext.Session.SetString("KeyProductionEntryProductdetail", serializedScrapGrid);
+                }
+            }
+
+            return PartialView("_ProductionEntryProductDetail", MainModel);
+        }
+        public IActionResult EditProductItemRow(int SeqNo, string Mode)
+        {
+            IList<ProductionEntryItemDetail> ProductDetailGrid = new List<ProductionEntryItemDetail>();
+            if (Mode == "U")
+            {
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryProductdetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ProductDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
+            }
+            else
+            {
+                string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryProductdetail");
+                if (!string.IsNullOrEmpty(serializedGrid))
+                {
+                    ProductDetailGrid = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+                }
+            }
+            IEnumerable<ProductionEntryItemDetail> SSScrapGrid = ProductDetailGrid;
+            if (ProductDetailGrid != null)
+            {
+                SSScrapGrid = ProductDetailGrid.Where(x => x.SeqNo == SeqNo);
             }
             string JsonString = JsonConvert.SerializeObject(SSScrapGrid);
             return Json(JsonString);
