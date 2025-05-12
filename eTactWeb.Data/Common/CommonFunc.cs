@@ -556,6 +556,7 @@ public static class CommonFunc
                      // && typeProperty.PropertyInfo.Name != "UpdateddByEmp"
                      && typeProperty.PropertyInfo.Name != "UpdatedOn"
                      && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
+                      && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem"
                       )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -626,7 +627,8 @@ public static class CommonFunc
                       && typeProperty.PropertyInfo.Name != "CostcenetrGroupName"
                       && typeProperty.PropertyInfo.Name != "Active" && typeProperty.PropertyInfo.Name != "RateApplicableOnUnit" && typeProperty.PropertyInfo.Name != "CC"
                       && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "rate" && typeProperty.PropertyInfo.Name != "OldRate" && typeProperty.PropertyInfo.Name != "POQty"
-                      && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "Description" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit" && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval" &&
+                      && typeProperty.PropertyInfo.Name != "PendQty" && typeProperty.PropertyInfo.Name != "Unit" && typeProperty.PropertyInfo.Name != "Description" && typeProperty.PropertyInfo.Name != "AltPOQty" && typeProperty.PropertyInfo.Name != "AltUnit" && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
+                       && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem" &&
                        typeProperty.PropertyInfo.Name != "DiscPer" && typeProperty.PropertyInfo.Name != "DiscRs"
                       && typeProperty.PropertyInfo.Name != "Amount" && typeProperty.PropertyInfo.Name != "AdditionalRate"
                       && typeProperty.PropertyInfo.Name != "OldRate" && typeProperty.PropertyInfo.Name != "Remark"

@@ -78,6 +78,10 @@
             GetSearchData();
         });
 
+        document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+            document.getElementById('ShowOnlyAmendItem').value = this.checked ? 'Yes' : 'No';
+        });
+
         function CheckApprovedOrNot() {
 
             var columnLength = $('#divDashboardGrid tr td').length;
