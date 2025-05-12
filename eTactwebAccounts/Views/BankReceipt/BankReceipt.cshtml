@@ -19,6 +19,7 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
@@ -528,6 +529,7 @@
         });
 
         $(document).ready(function () {
+             
             $('#VoucherType').select2();
             $('#Intrument').select2();
             $('#LedgerName').select2();
@@ -767,7 +769,6 @@
 
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
-            /* BindModeOfAdjust(); */
             CheckBankType();
             AdjustAmountForAddToGridForDRCR();
         });
@@ -1362,7 +1363,7 @@
         }
 
         function PopUpForPendingVouchers(Action, SrNO) {
-            debugger
+             
             $('#CheckUnCheckAll').prop('checked', false);
             if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
                 $('#DisplayRoutingDetailModal').modal('hide');
@@ -1806,7 +1807,7 @@
 
         var EditEachItem = false;
         function EditItemRows(SrNO) {
-            debugger
+             
             var RowCount = $('#divBankReceiptDetail tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1924,7 +1925,7 @@
         }
 
         function CheckUnCheckEdit() {
-            debugger
+             
             var RowCount = $('#divBankReceiptDetail tr').length;
             var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var selectedRows = 0;

@@ -859,7 +859,7 @@
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                                 $('#SONO').empty();
                                 $('#SONO').append('<option>-Select-</option>');
-                                debugger
+                                 
                                 $('#CustomerOrderNo').empty();
                                 $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
                                 $.each(obj.Result, function (key, val) {
@@ -2514,7 +2514,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result.length == 0) {
-                            debugger
+                             
                             $('#CustomerOrderNo').empty();
                             $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
                             $('#SONO').empty();
@@ -2522,7 +2522,7 @@
                         } else {
                           
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                debugger
+                                 
                                 $('#CustomerOrderNo').empty();
                                 $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
                                 $.each(obj.Result, function (key, val) {
@@ -2544,7 +2544,7 @@
                             $('#SOYearCode').empty();
                             $('#SOYearCode').append('<option>-Select-</option>');
                             // $('#SOYearCode').change();
-                            debugger
+                             
                             $('#CustomerOrderNo,#SODate,#DeliveryAddress').val('');
                             $('#SchEffFromDate,#SchEffTillDate').prop('disabled', false);
 
@@ -2556,7 +2556,7 @@
                         }
                     }
                     else {
-                        debugger
+                         
                         $('#CustomerOrderNo').empty();
                         $('#CustomerOrderNo').append('<option value="" selected disabled>-Select-</option>');
                         $('#SONO').empty();
@@ -2616,7 +2616,7 @@
                             $.each(obj.Result, function (key, val) {
                                 $('#SOYearCode').append('<option value="' + val.YearCode + '">' + val.YearCode + '</option>');
                             });
-                            debugger
+                             
                             $('#CustomerOrderNo').val($('#SONO').find(':selected').data('custorderno'));
                             $('#CustomerOrderNo').change();
                         }

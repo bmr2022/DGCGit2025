@@ -143,7 +143,7 @@
 {
     <script>
         $(document).ready(function () {
-            debugger
+             
             if ($('#DashboardType').val() == "Summary") {
                 //GetFormRights();
                 GetSummaryData();
@@ -293,7 +293,7 @@
         });
         function loadPage(pageNumber) {
 
-            debugger
+             
             var dashboardType = $('#DashboardType').val();
             var url = '';
             var formData = $('#SParam').serialize();
@@ -322,7 +322,7 @@
         }
         var currentSearchColumn = null;
         $("#search-box").on("input", function () {
-            debugger
+             
             var searchString = $(this).val().trim();
             var dashboardType = $('#DashboardType').val();
             $.ajax({
@@ -381,7 +381,7 @@
         }
 
         function GetSearchData() {
-            debugger
+             
             if ($('#DashboardType').val() == "Summary") {
                 GetFormRights();
                 GetSummaryData();

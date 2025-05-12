@@ -1909,7 +1909,7 @@
             }
         })
         var currentSearchColumn = null;
-        debugger
+         
         $("#search-box").on("keyup", function () {
             var value = $(this).val().toLowerCase();
             $("#divProductionEntryGrid tr").filter(function () {
@@ -1929,7 +1929,7 @@
         });
 
         var currentSearchColumn2 = null;
-        debugger
+         
         $("#search-box2").on("keyup", function () {
             var value = $(this).val().toLowerCase();
             $("#divAddProductionEntryGrid tr").filter(function () {
@@ -3993,7 +3993,7 @@
         });
 
         $('#ProdQty').change(function () {
-            debugger
+             
             if ($('#ProdAgainstPlanManual').val() == 'UNPLANNED') {
                 var Target = Number(parseFloat($('#unTarget').val()).toFixed(6));
                 var ProdQty = Number(parseFloat($('#ProdQty').val()).toFixed(6));
@@ -5604,7 +5604,7 @@
         }
 
         function ProductGrid(event) {
-            debugger
+             
             event.preventDefault();
             if (!ValidateProduct_Grid()) return;
             var ProductTransferToStoreId = 0;
@@ -5669,7 +5669,7 @@
 
         var editingProductNow = false;
         function EditProductItemRow(SeqNo) {
-            debugger
+             
             if (editingProductNow == false) {
 
                 return new Promise((resolve, reject) => {

@@ -1564,7 +1564,7 @@
         }
 
         function SetPartCodeItemName(ID) {
-            debugger
+             
             if (!ID) return;
             else {
                 var v = $('#' + ID).select2('val');
@@ -1608,7 +1608,7 @@
 
         function ItemNameChange(ID) {
             // $('#POQty,#AltPOQty').val(0);
-            debugger
+             
             const sumItemwiseQty = Array.from(
                 itemDataArray
                     .filter(item => item.ItemCode == $('#ItemCode').val())
@@ -1898,7 +1898,7 @@
                         $('#TotalRoundOff').prop('selectedIndex', 0), $('#TotalDiscountAmt').val('0'), $('#TotalAmtAftrDiscount').val('0.00');
                 }
             }).done(function (data) {
-                debugger
+                 
                 $('#divTaxGrid').empty();
                 $('#TxPartCode,TxItemCode').empty();
                 $('#TxPartCode,TxItemCode').append("<option value='' selected disabled>-Select-</option>");
@@ -2250,7 +2250,7 @@
                 dataType: "json",
                 async: false,
                 success: await function (data, status, error) {
-                    debugger
+                     
                     $('#TxPartCode').empty();
                     $('#TxPartCode').append('<option>-Select-</option>');
                     $.each(data.partCode, function (key, val) {
