@@ -152,6 +152,8 @@ public class ProductionEntryDashboard
     public int TotalRecords { get; set; }
     public int PageNumber { get; set; }
     public int PageSize { get; set; }
+    public decimal ProductQty { get; set; }
+    public string? ProductUnit { get; set; }
     public IList<ProductionEntryDashboard>? ProductionDashboard { get; set; }
 }
 [Serializable]
@@ -246,7 +248,7 @@ public class ProductionEntryItemDetail : TimeStamp
     public decimal? SaleBillQty { get; set; }
     public string? SupplierBatchNo { get; set; }
     public decimal? ShelfLife { get; set; }
-    public int? SeqNo { get; set; }
+    public int SeqNo { get; set; }
     public int EntryId { get; set; }
     public string? OtherDetail { get; set; }
     public int? AgainstChallanYearcode { get; set; }
@@ -292,15 +294,16 @@ public class ProductionEntryItemDetail : TimeStamp
     public string? ProdEntryAllowToAddRMItem { get; set; }
     public string? ProductPartCode { get; set; }
     public string? ProductItemName { get; set; }
-    public string? ProductItemCode { get; set; }
+    public int ProductItemCode { get; set; }
     public string? ProductType { get; set; }
     public decimal ProductQty { get; set; }
     public string? Productunit { get; set; }
     public string? ProductStore { get; set; }
+    public string? ProductWorkCenter { get; set; }
     public string? StoreTransferProduct { get; set; }
     public string? ProductTransferToWCStore { get; set; }
     public int ProductStoreId { get; set; }
-    public int ProductToWC { get; set; }
+    public int ProductToWCId { get; set; }
     public IList<ProductionEntryItemDetail>? ProductionEntryDetail { get; set; }
 }
 

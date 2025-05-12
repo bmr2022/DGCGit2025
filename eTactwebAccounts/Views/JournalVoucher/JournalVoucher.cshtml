@@ -453,25 +453,25 @@
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                             <tr>
                                                 <th>Action</th>
-                                                <th>Sr#</th>
                                                 <th>Add <input id="CheckUnCheckAll" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                                <th>Voucher Type</th>
-                                                <th>YearCode</th>
-                                                <th>Voucher No</th>
-                                                <th>Invoice No</th>
-                                                <th>Voucher Date</th>
-                                                <th>Due Date</th>
-                                                <th>Balance Amt</th>
-                                                <th>Type</th>
-                                                <th>Adj Amt</th>
-                                                <th>Adjusted</th>
-                                                <th>Dr Amt</th>
-                                                <th>Cr Amt</th>
-                                                <th>BillNet Amt</th>
-                                                <th>New RefNo</th>
-                                                <th>Mode Of Adjust</th>
-                                                <th>Acc EntryId</th>
-                                                <th>Actual DrCr Type</th>
+                                                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr#</th>
+                                                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
+                                                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>YearCode</th>
+                                                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+                                                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Invoice No</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Date</th>
+                                                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Due Date</th>
+                                                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Balance Amt</th>
+                                                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Type</th>
+                                                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adj Amt</th>
+                                                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Adjusted</th>
+                                                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dr Amt</th>
+                                                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cr Amt</th>
+                                                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillNet Amt</th>
+                                                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>>New RefNo</th>
+                                                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mode Of Adjust</th>
+                                                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc EntryId</th>
+                                                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual DrCr Type</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divDisplayPopupForPendingVouchersDetail">
@@ -1988,6 +1988,29 @@
                 }
             });
         });
+
+        $(document).on("click", ".sortCol", function () {
+    var $column = $(this).parent().closest("th");
+    var colno = $(this).data('columnno');
+    var currentOrder = $(this).data('sortorder');
+
+    $('.sortCol').css('color', 'white');
+    if (currentOrder === 'asc') {
+        sortTable('GateDataTable', colno, false);
+        $(this).data('sortorder', 'desc');
+        $(this).css('color', 'yellow');
+        //$(this).css('font-size', 'larger');
+        $(this).find('i:first').removeClass('fa-arrow-up');
+        $(this).find('i:first').addClass('fa-arrow-down');
+    } else {
+        sortTable('GateDataTable', colno, true);
+        $(this).data('sortorder', 'asc');
+        $(this).css('color', 'yellow');
+        // $(this).css('font-size', 'larger');
+        $(this).find('i:first').removeClass('fa-arrow-down');
+        $(this).find('i:first').addClass('fa-arrow-up');
+    }
+});
 
         function PressBack() {
 

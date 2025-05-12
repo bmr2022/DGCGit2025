@@ -703,9 +703,9 @@ namespace eTactWeb.Data.DAL
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
-                        DRCR = row["DRCRTYPE"].ToString(),
+                        DRCR = row["CRDDR"].ToString(),
                         Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
-                        Type = row["CRDDR"].ToString(),
+                        Type = row["DRCRTYPE"].ToString(),
                     });
                 }
                 model.CashPaymentGrid = ItemList;

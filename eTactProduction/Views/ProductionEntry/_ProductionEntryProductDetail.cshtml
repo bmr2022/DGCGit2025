@@ -14,13 +14,13 @@ else
         Cntr = Cntr + 1;
         <tr id="itemGrid" class="small" style="white-space:nowrap">
             <td style="white-space:nowrap;">
-                <a class="table-link link-primary" onclick="EditScrapItemRow(@item.SeqNo);">
+                <a class="table-link link-primary" onclick="EditProductItemRow(@item.SeqNo);">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                     </span>
                 </a>
-                <a class="table-link link-danger" onclick="DeleteScrapItemRow(@item.SeqNo);">
+                <a class="table-link link-danger" onclick="DeleteProductItemRow(@item.SeqNo);">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -34,7 +34,14 @@ else
             <td>@item.ProductQty.ToString("0.00")</td>
             <td>@item.Productunit</td>
             <td>@item.StoreTransferProduct</td>
-            <td>@item.ProductTransferToWCStore</td>
+            @if(item.StoreTransferProduct == "S")
+            {
+                <td>@item.ProductStore<input type="hidden" value="@item.ProductStoreId"/></td>
+            }
+            @if (item.StoreTransferProduct == "W")
+            {
+                <td>@item.ProductWorkCenter<input type="hidden" value="@item.ProductToWCId" /></td>
+            }
         </tr>
     }
 }
