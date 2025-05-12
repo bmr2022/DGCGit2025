@@ -24,10 +24,12 @@ public class BomController : Controller
 {
     private readonly IBomModule _IBom;
     private readonly IDataLogic _IDataLogic;
-    public BomController(IDataLogic iDataLogic, IBomModule iBom)
+    private readonly IMemoryCache _MemoryCache;
+    public BomController(IDataLogic iDataLogic, IBomModule iBom, IMemoryCache iMemoryCache)
     {
         _IDataLogic = iDataLogic;
         _IBom = iBom;
+        _MemoryCache = iMemoryCache;
     }
 
     public async Task<IActionResult> BindBomData(string FIC, int BMNo)
@@ -578,6 +580,7 @@ public class BomController : Controller
         //DataTable bomViewModel = new DataTable();
         //string bomData = HttpContext.Session.GetString("KeyBomList");
         //WIPStockRegisterModel model = new WIPStockRegisterModel();
+
         if (string.IsNullOrWhiteSpace(searchString))
         {
             return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
@@ -618,8 +621,9 @@ public class BomController : Controller
         }
 
         model.TotalRecords = filteredResults.Count;
-		//model.DTDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-		var pagedList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        //model.DTDashboard = ToDataTable(filteredResults);
+        //model.DTDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        var pagedList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
 		model.BomList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         model.PageNumber = pageNumber;
         model.PageSize = pageSize;
@@ -812,13 +816,28 @@ public class BomController : Controller
         model.RMPartCodeList = await _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "CODELIST", "SP_GetDropDownList");
         model.RMItemNameList = await _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "NAMELIST", "SP_GetDropDownList");
         //var Result = System.Text.Json.JsonSerializer.Serialize(model);
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+
+       _MemoryCache.Set("KeyBOMList_Summary", model, cacheEntryOptions);
         return PartialView("_BomDashboardGrid", model);
     }
 
     public async Task<IActionResult> GetDetailSearchData(BomDashboard model)
     {
         model = await _IBom.GetDetailSearchData(model);
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
 
+        _MemoryCache.Set("KeyBOMList_Detail", model, cacheEntryOptions);
         //var Result = System.Text.Json.JsonSerializer.Serialize(model);
         if (model.DashboardType == "Summary")
         {

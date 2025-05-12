@@ -77,21 +77,37 @@ namespace eTactWeb.Controllers
                 model.PageNumber = pageNumber;
                 model.PageSize = pageSize;
             }
-
-            string serializedGrid = JsonConvert.SerializeObject(fullList);
-            HttpContext.Session.SetString("KeyStockList", serializedGrid);
+            if (ReportType == "NegativeStock")
+            {
+                string serializedGridForNegativeStock = JsonConvert.SerializeObject(fullList);
+                HttpContext.Session.SetString("KeyStockListNeg", serializedGridForNegativeStock);
+            }
+            else
+            {
+                string serializedGrid = JsonConvert.SerializeObject(fullList);
+                HttpContext.Session.SetString("KeyStockList", serializedGrid);
+            }
 
             return PartialView("_StockRegisterGrid", model);
         }
         [HttpGet]
-        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 500)
+        public IActionResult GlobalSearch(string searchString,string ReportType, int pageNumber = 1, int pageSize = 500)
         {
             StockRegisterModel model = new StockRegisterModel();
             if (string.IsNullOrWhiteSpace(searchString))
             {
                 return PartialView("_StockRegisterGrid", new List<StockRegisterModel>());
             }
-            string modelJson = HttpContext.Session.GetString("KeyStockList");
+            string modelJson = "";
+            if (ReportType == "NegativeStock")
+            {
+                 modelJson = HttpContext.Session.GetString("KeyStockListNeg");
+            }
+            else
+            {
+                 modelJson = HttpContext.Session.GetString("KeyStockList");
+            }
+                
             List<StockRegisterDetail> stockRegisterViewModel = new List<StockRegisterDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
@@ -129,8 +145,15 @@ namespace eTactWeb.Controllers
             model.StockRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             model.PageNumber = pageNumber;
             model.PageSize = pageSize;
-
-            return PartialView("_StockRegisterGrid", model);
+            if (ReportType == "NegativeStock")
+            {
+                return PartialView("_ShowNegativeStockReport", model);
+            }
+            else
+            {
+                return PartialView("_StockRegisterGrid", model);
+            }
+            return null;
         }
         public async Task<JsonResult> FillItemName()
         {
