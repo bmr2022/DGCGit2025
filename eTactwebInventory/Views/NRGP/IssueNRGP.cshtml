@@ -235,12 +235,19 @@
                                     <label asp-for="Transporter" class="form-label">Transpoter</label>
                                     <input asp-for="Transporter" class="form-control" />
                                 </div>
-                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Distance" class="form-label">Distance</label>
                                     <input asp-for="Distance" class="form-control" />
                                 </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="IssByEmpCodeName" class="form-label" style="color:red">Rec By Emp*</label>
+                                    <input asp-for="IssByEmpCode" type="hidden" />
+                                    <select class="form-select" style="width:150px;" asp-for="IssByEmpCodeName" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
+                                        <option value="0">-Select-</option>
+                                    </select>
+                                </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <div class="form-check form-switch d-flex justify-content-center mt-2">
                                         <input asp-for="SH" class="form-check-input" type="checkbox" role="switch" />
                                     </div>
@@ -982,6 +989,9 @@
             document.execCommand("copy");
             $temp.remove();
         }
+        $('#IssByEmpCodeName').change(function () {
+            $('#IssByEmpCode').val($('#IssByEmpCodeName').val());
+        })
 
         $(document).ready(function () {
             GetFormRights();
@@ -1069,6 +1079,9 @@
 
                 fillAccount();
                         TotalNetAmount();
+
+                var RecEmpCode = "@Model.IssByEmpCode";
+                $('#IssByEmpCodeName').val(RecEmpCode).trigger("change");
 
             }
             else
