@@ -141,6 +141,7 @@ namespace eTactWeb.DOM.Models
         public string Searchbox { get; set; }
         public string? DashboardType { get; set; }
         public decimal PopUpBalance { get; set; }
+        public decimal AdjustAmount { get; set; }
         public decimal TotalPopDrAmt {  get; set; }
         public decimal TotalPopCrAmt {  get; set; }
         public decimal PopDrAmt { get; set; }

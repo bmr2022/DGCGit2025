@@ -378,6 +378,10 @@
                     <button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()">Adjust</button>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                        <label asp-for="AdjustAmount" class="form-label me-2">Total Adjst Amt</label>
+                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" />
+                    </div>
+                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amount to Adjust</label>
                         <input asp-for="PopUpBalance" class="form-control" readonly />
                     </div>
@@ -516,6 +520,53 @@
             if (!Validate_Submit()) return;
             $('form').submit();
         });
+
+        function ChangeAdjustAmount() {
+            debugger;
+            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+            var AdjustQty = parseFloat($('#AdjustAmount').val());
+            if (isNaN(AdjustQty) || AdjustQty <= 0) {
+                alert('Please enter a valid Adjust Amount.');
+                return;
+            }
+
+            // Calculate total available BalanceAmt
+            var TotalAvailable = 0;
+            for (let i = 1; i <= rowCount; i++) {
+                var balanceText = $('#BalanceAmt-' + i).text();
+                var balanceValue = parseFloat(balanceText);
+                if (!isNaN(balanceValue)) {
+                    TotalAvailable += balanceValue;
+                }
+            }
+
+            // Check if AdjustQty exceeds available balance
+            if (AdjustQty > TotalAvailable) {
+                alert('Only ' + TotalAvailable.toFixed(2) + ' is available to adjust. Please enter a lesser amount.');
+                return;
+            } else {
+                var RemainingQty = AdjustQty;
+                for (let i = 1; i <= rowCount; i++) {
+                    if (RemainingQty <= 0) break;
+
+                    var BalanceAmt = parseFloat($('#BalanceAmt-' + i).text());
+                    if (isNaN(BalanceAmt) || BalanceAmt <= 0) continue;
+
+                    var AdjustInThisRow = Math.min(RemainingQty, BalanceAmt);
+
+                    // ✅ Manually set adjustment values before calling CheckUnCheckCheck
+                    $('#CheckUnCheck-' + i).prop('checked', true);
+                    $('#AdjustAmt-' + i).val(AdjustInThisRow.toFixed(2));
+                    $('#BalanceAmt-' + i).text((BalanceAmt - AdjustInThisRow).toFixed(2));
+
+                    CheckUnCheckCheck(i);
+
+                    RemainingQty -= AdjustInThisRow;
+                }
+            }
+
+            alert('Adjusted total of ' + AdjustQty + ' across rows.');
+        }
 
         $(document).ready(function () {
             $('#VoucherType').select2();
