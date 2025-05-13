@@ -541,6 +541,8 @@ namespace eTactWeb.Data.DAL
             model.PurchaseBillDate = DS.Tables[0].Rows[0]["PurchaseBilDate"].ToString();
             model.PurchaseBillYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseBillYearCode"]);
             model.Distance = Convert.ToInt32(DS.Tables[0].Rows[0]["Distance"]);
+            model.IssByEmpCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssByEmpId"]);
+            model.IssByEmpCodeName = DS.Tables[0].Rows[0]["IssByEmpName"].ToString();
 
             if (Mode == "U")
             {
@@ -700,6 +702,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@MachinName", model.MachineName));
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter));
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance));
+                SqlParams.Add(new SqlParameter("@IssByEmpId", model.IssByEmpCode));
 
                 if (model.Mode == "U")
                 {
