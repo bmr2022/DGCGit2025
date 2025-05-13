@@ -1,6 +1,7 @@
 ﻿using System.Data;
 using System.Dynamic;
 using System.Globalization;
+using System.Reflection.Emit;
 using System.Text.RegularExpressions;
 using System.Xml.Linq;
 using eTactWeb.DOM.Models;
@@ -1950,6 +1951,12 @@ public class TaxController : Controller
             case "IssueNRGP":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("IssueNRGP", out MainModel);
+
+                string modelICJson = HttpContext.Session.GetString("IssueNRGP");
+                if (!string.IsNullOrEmpty(modelICJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<dynamic>(modelICJson);
+                }
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 IssueTaxGrid = await GetHSNIssueTaxList(MainModel);
@@ -1969,8 +1976,14 @@ public class TaxController : Controller
         if (TxPageName == "IssueNRGP")
         {
             MainModel.IssueNRGPTaxGrid = IssueTaxGrid;
-            StoreInCache("KeyIssueNRGPTaxGrid", MainModel.IssueNRGPTaxGrid);
+            //StoreInCache("KeyIssueNRGPTaxGrid", MainModel.IssueNRGPTaxGrid);
+            //return PartialView("_IssueTaxGrid", MainModel);
+
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.IssueNRGPTaxGrid);
+            HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
+
             return PartialView("_IssueTaxGrid", MainModel);
+
         }
         else
         {
@@ -2009,18 +2022,19 @@ public class TaxController : Controller
     {
         bool isTax = false;
         bool isExp = false;
-        _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IList<IssueNRGPTaxDetail> TaxGrid);
+        //_MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IList<IssueNRGPTaxDetail> TaxGrid);
+        List<IssueNRGPTaxDetail> taxGrid = new();
         string modelJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
-        if (!string.IsNullOrEmpty(modelJson) && TaxGrid == null)
+        if (!string.IsNullOrEmpty(modelJson) && taxGrid == null)
         {
-            TaxGrid = JsonConvert.DeserializeObject<IList<IssueNRGPTaxDetail>>(modelJson);
+            taxGrid = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(modelJson);
         }
-        if (TaxGrid != null && TaxGrid.Count > 0)
+        if (taxGrid != null && taxGrid.Count > 0)
             isTax = true;
         if (isTax)
         {
-            isExp = TaxGrid.Any(m => m.TxType == "EXPENSES");
-            isTax = TaxGrid.Any(m => m.TxType == "TAX");
+            isExp = taxGrid.Any(m => m.TxType == "EXPENSES");
+            isTax = taxGrid.Any(m => m.TxType == "TAX");
         }
 
         return Ok(new { isTax });
@@ -2573,8 +2587,13 @@ public class TaxController : Controller
         var HSNTAXParam = new HSNTAX();
         var IssueTaxGrid = new List<IssueNRGPTaxDetail>();
         var HSNTaxDetail = new HSNTAXInfo();
-        _MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IssueTaxGrid);
+        //_MemoryCache.TryGetValue("KeyIssueNRGPTaxGrid", out IssueTaxGrid);
 
+        string modelICJson = HttpContext.Session.GetString("KeyIssueNRGPTaxGrid");
+        if (!string.IsNullOrEmpty(modelICJson))
+        {
+            MainModel = JsonConvert.DeserializeObject<List<IssueNRGPTaxDetail>>(modelICJson);
+        }
 
         if (IssueTaxGrid == null)
             IssueTaxGrid = new List<IssueNRGPTaxDetail>();
@@ -2583,7 +2602,13 @@ public class TaxController : Controller
         if (MainModel.TxPageName == "IssueNRGP")
         {
             var IssueGrid = new List<IssueNRGPDetail>();
-            _MemoryCache.TryGetValue("KeyIssueNRGPGrid", out IssueGrid);
+            //_MemoryCache.TryGetValue("KeyIssueNRGPGrid", out IssueGrid);
+            string modelICDetailJson = HttpContext.Session.GetString("KeyIssueNRGPGrid");
+             
+            if (!string.IsNullOrEmpty(modelICDetailJson))
+            {
+                IssueGrid = JsonConvert.DeserializeObject<List<IssueNRGPDetail>>(modelICDetailJson);
+            }
             grid = IssueGrid;
         }
 

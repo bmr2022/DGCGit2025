@@ -14,7 +14,7 @@ else
 
     foreach (var item in Model.AdjAdjustmentDetailGrid)
     {
-        <tr class="small @item.AdjSeqNo" style="white-space:nowrap">
+        <tr class="small @item.AdjSeqNo adjGridRow" style="white-space:nowrap">
             <td style="white-space:nowrap;">
                 @if (Model.Mode == "V" && Model.ID > 0)
                 {
@@ -60,7 +60,7 @@ else
             </td>
             <td>@item.AdjNewRefNo</td>
             <td id="GridAdjPendAmount-@item.AdjSeqNo">@(item.AdjPendAmt?.ToString("#.##") ?? "0.00")</td>
-            <td>
+            <td class="GridAdjDrCr">
                 @if (item.AdjDrCr != null && item.AdjDrCr != "" && !item.AdjDrCr.Contains("Select"))
                 {
                     @item.AdjDrCr

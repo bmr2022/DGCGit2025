@@ -1204,7 +1204,7 @@
             $('#divSaleItemGrid').empty();
             var wb = XLSX.utils.book_new();
 
-            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Rate", "Qty", "Ori. MRP", "PO No.", "Date"] });
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Rate", "Qty", "Ori. MRP", "PO No.", "Date", "Sale Order No", "Cust Location", "Item Model", "Cust Item Category"] });
 
             //ws['!ref'] = 'A1:I1';
 

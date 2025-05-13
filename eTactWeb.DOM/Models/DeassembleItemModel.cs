@@ -55,6 +55,7 @@ namespace eTactWeb.DOM.Models
         public string GlobalSearchBack { get; set; }
 
         public IList<DeassembleItemDetail> DeassembleItemDetail { get; set; }
+        
 
 
     }
@@ -74,5 +75,39 @@ namespace eTactWeb.DOM.Models
         public decimal? BomQty { get; set; }
         public decimal? DeassQty { get; set; }
         public decimal? IdealDeassQty { get; set; }
+    }
+
+    public class DeassembleItemDashBoard : TimeStamp
+    {
+        public string? FromDate {  get; set; }
+        public string? ToDate { get; set; }
+        public string? Searchbox { get; set; }
+
+        public int? DeassEntryID { get; set; }                  // DM.DeassEntryID
+        public string? DeassEntryDate { get; set; }           // DM.DeassEntryDate
+        public int? DeassYearcode { get; set; }              // DM.DeassYearcode
+        public string? DeassSlipNo { get; set; }                // DM.DeassSlipNo
+        public int?     FGStoreId { get; set; }                     // DM.FGStoreId
+        public string? FGStoreName { get; set; }                // FGStoreName
+
+        public int? FinishItemCode { get; set; }             // DM.FinishItemCode
+        public string? FinishItemName { get; set; }             // FinishItemName
+        public string? FinishPartCode { get; set; }             // FinishPartCode
+        public string? FGBatchNo { get; set; }                  // DM.FGBatchNo
+        public string? FGUniqueBatchNo { get; set; }            // DM.FGUniqueBatchNo
+
+        public decimal? TotalStock { get; set; }                // DM.TotalStock
+        public decimal? FGQty { get; set; }                     // DM.FGQty
+        public string? FGUnit { get; set; }                     // FGUnit
+        public decimal? FGConvQty { get; set; }                 // DM.FGConvQty
+
+        public int? CreatedByEmp { get; set; }                  // DM.CreatedByEmp
+        public string? CreatedByEmpName { get; set; }           // CreatedByEmpName
+        public string? CreatedOn { get; set; }                // DM.CreatedOn
+
+        public int? UpdatedBy { get; set; }                     // DM.UpdatedBy
+        public string? UpdatedByEmpName { get; set; }           // UpdatedByEmpName
+        public string? UpdatedOn { get; set; }               // DM.UpdatedOn (nullable in case it's not updated yet)
+        public IList<DeassembleItemDashBoard>? DeassembleItemDashBoardDetail { get; set; }
     }
 }

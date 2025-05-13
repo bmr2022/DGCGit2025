@@ -463,6 +463,55 @@ namespace eTactwebInventory.Controllers
         }
 
 
+        [HttpGet]
+        [Route("DeassembleDashBoard")]
+        public async Task<IActionResult> DeassembleDashBoard()
+        {
+            try
+            {
+                var model = new DeassembleItemDashBoard();
+                var result = await _IDeassembleItem.GetDashboardData().ConfigureAwait(true);
+                DateTime now = DateTime.Now;
+
+                if (result != null && result.Result != null)
+                {
+                    DataSet ds = result.Result;
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        var dt = ds.Tables[0];
+                        model.DeassembleItemDashBoardDetail = CommonFunc.DataTableToList<DeassembleItemDashBoard>(dt, "DeassembleItem");
+                    }
+
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate,string ReportType)
+        {
+            //model.Mode = "Search";
+            var model = new DeassembleItemDashBoard();
+            model = await _IDeassembleItem.GetDashBoardDetailData(FromDate, ToDate, ReportType);
+            if (ReportType=="SUMMARY")
+            {
+                return PartialView("_DashBoardSummaryGrid", model);
+            }
+            else
+            {
+                return PartialView("_DashBoardDetailGrid", model);
+            }
+            return null;
+            
+        }
+
+
 
 
 
