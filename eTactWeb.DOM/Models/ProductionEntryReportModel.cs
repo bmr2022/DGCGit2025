@@ -37,7 +37,7 @@ namespace eTactWeb.DOM.Models
         public string? NewProdRework { get; set; }
         public string? ProdSlipNo { get; set; }
         public string? ProdDate { get; set; }
-        public int ProdEntryID { get; set; }
+        
         public string? ShiftName { get; set; }
         public string? ProdPlanNo { get; set; }
         public int ProdPlanYearCode { get; set; }

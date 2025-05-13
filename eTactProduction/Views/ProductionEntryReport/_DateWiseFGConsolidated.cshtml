@@ -6,6 +6,8 @@
             <tr>
                 <th>Action</th>
                 <th>Sr#</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdEntryId</th>
+
                 <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProdDate</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>New ProdRework</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG PartCode</th>
@@ -47,6 +49,7 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
+                            <td>@item.PRODEntryId</td>
                             @if (item.ProdDate != null)
                             {
                                 <td>@item.ProdDate.Split(" ")[0]</td>

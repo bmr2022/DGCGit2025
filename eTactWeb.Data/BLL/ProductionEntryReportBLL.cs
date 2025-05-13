@@ -75,9 +75,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryReportDAL.FillProcess(FromDate, ToDate);
         }
-        public async Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process)
+        public async Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process,string ShiftName)
         {
-            return await _ProductionEntryReportDAL.GetProductionEntryReport(ReportType , FromDate, ToDate, FGPartCode, FGItemName, RMPartCode, RMItemName, ProdSlipNo,ProdPlanNo , ProdSchNo, ReqNo,WorkCenter,MachineName,OperatorName,Process);
+            return await _ProductionEntryReportDAL.GetProductionEntryReport(ReportType , FromDate, ToDate, FGPartCode, FGItemName, RMPartCode, RMItemName, ProdSlipNo,ProdPlanNo , ProdSchNo, ReqNo,WorkCenter,MachineName,OperatorName,Process, ShiftName);
         }
     }
 }

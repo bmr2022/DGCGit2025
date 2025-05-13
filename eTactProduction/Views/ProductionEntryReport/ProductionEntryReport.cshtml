@@ -391,7 +391,7 @@
                 type: "POST",
                 url: "@Url.Action("GetProductionEntryReport")",
                 async: false,
-                data: { "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "FGPartCode": $('#FGPartCode').val(), "FGItemName": $('#FGItemName').val(), "RMPartCode": $('#RMPartCode').val(), "RMItemName": $('#RMItemName').val(), "ProdSlipNo": $('#ProdSlipNo').val(), "ProdPlanNo": $('#ProdPlanNo').val(), "ProdSchNo": $('#ProdSchNo').val(), "ReqNo": $('#ReqNo').val(), "WorkCenter": $('#WorkCenter').val(), "MachineName": $('#MachineName').val(), "OperatorName": $('#OperatorName').val(), "Process": $('#Process').val() },
+                data: { "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "FGPartCode": $('#FGPartCode').val(), "FGItemName": $('#FGItemName').val(), "RMPartCode": $('#RMPartCode').val(), "RMItemName": $('#RMItemName').val(), "ProdSlipNo": $('#ProdSlipNo').val(), "ProdPlanNo": $('#ProdPlanNo').val(), "ProdSchNo": $('#ProdSchNo').val(), "ReqNo": $('#ReqNo').val(), "WorkCenter": $('#WorkCenter').val(), "MachineName": $('#MachineName').val(), "OperatorName": $('#OperatorName').val(), "Process": $('#Process').val(), "ShiftName": $('#ShiftName').val() },
                 success: function (result, status, error) {
                     $('#divproductionReportGrid').empty();
                     $('#divproductionReportGrid').html(result);
@@ -564,12 +564,14 @@
             var ItemType = $('#ItemType').val();
             var BatchNo = $('#BatchNo').val();
             var UniqueBatchNo = $('#UniqueBatchNo').val();
+            var ShiftName = $('#ShiftName').val();
 
             // Report Title
             doc.setFontSize(16).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 40);
 
             // Date Range
             doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+            doc.setFontSize(10).text(`ShiftName :${ShiftName}`, 40, 73);
 
             let currentY = 75;
             const headerFields = [
@@ -609,11 +611,12 @@
                     console.log(rows);
 
                     headers = [
-                        "Sr#", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
+                        "Sr#", "prodEntryId", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
                          "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr"
                     ];
                     body = rows.map((r, i) => [
                         i + 1,
+                        r.prodEntryId ?? '',
                         r.prodDate ?? '',
                         r.newProdRework ?? '',
                         r.fgPartCode ?? '',
@@ -1096,7 +1099,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#ShiftName').empty();
-                            $('#ShiftName').append('<option value="0" selected>-Select-</option>');
+                            $('#ShiftName').append('<option value=" " selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#ShiftName').append('<option value="' + val.ShiftName +
                                     '">' + val.ShiftName + '</option>');
