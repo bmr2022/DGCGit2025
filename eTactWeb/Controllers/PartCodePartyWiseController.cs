@@ -416,7 +416,7 @@ namespace eTactWeb.Controllers
 
             return PartialView("_PartCodePartyWiseGrid", MainModel);
         }
-        public IActionResult EditItemRow(int SeqNo, string Mode)
+        public IActionResult EditItemRow(int SeqNo, string Mode, int AccountCode)
         {
             IList<PartCodePartyWiseItemDetail> PartCodePartyWiseItemDetail = new List<PartCodePartyWiseItemDetail>();
             if (Mode == "U")
@@ -438,7 +438,9 @@ namespace eTactWeb.Controllers
             IEnumerable<PartCodePartyWiseItemDetail> SSGrid = PartCodePartyWiseItemDetail;
             if (PartCodePartyWiseItemDetail != null)
             {
-                SSGrid = PartCodePartyWiseItemDetail.Where(x => x.SeqNo == SeqNo);
+                SSGrid = PartCodePartyWiseItemDetail
+    .Where(x => x.SeqNo == SeqNo || x.AccountCode == AccountCode)
+    .ToList();
             }
             string JsonString = JsonConvert.SerializeObject(SSGrid);
             return Json(JsonString);

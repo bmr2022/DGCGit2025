@@ -510,7 +510,14 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "CreditNote")
             {
-                _MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
+                //_MemoryCache.TryGetValue("KeyCreditNoteGrid", out IList<AccCreditNoteDetail> creditNoteDetail);
+                string modelJson = HttpContext.Session.GetString("KeyCreditNoteGrid");
+                List<AccCreditNoteDetail> creditNoteDetail = new();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    creditNoteDetail = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelJson);
+                }
+
                 ItemDetailGrid = creditNoteDetail;
             }
             else if (TxModel.TxPageName == "PurchaseRejection")
@@ -1552,6 +1559,7 @@ public class TaxController : Controller
             MainModel = SN == "JobWorkIssue" ? new JobWorkIssueModel() : "";
             MainModel = SN == "ItemList" ? new SaleOrderModel() : "";
             MainModel = SN == "PurchaseRejection" ? new AccPurchaseRejectionModel() : "";
+            MainModel = SN == "CreditNote" ? new AccCreditNoteModel() : "";
             //_MemoryCache.Remove("KeyTaxGrid");
             HttpContext.Session.Remove("KeyTaxGrid");
             return PartialView("_TaxGrid", MainModel);
@@ -1908,7 +1916,13 @@ public class TaxController : Controller
                 break;
             case "CreditNote":
                 HttpContext.Session.Get(TxPageName);
-                _MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                //_MemoryCache.TryGetValue("CreditNoteModel", out MainModel);
+                string modelCreditNoteJson = HttpContext.Session.GetString("CreditNoteModel");
+                if (!string.IsNullOrEmpty(modelCreditNoteJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelCreditNoteJson);
+                }
+
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);

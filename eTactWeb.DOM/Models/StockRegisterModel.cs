@@ -31,6 +31,8 @@ namespace eTactWeb.DOM.Models
     {
         public int SeqNo { get; set; }
         public string? StoreName { get; set; }
+        public int? StoreId { get; set; }
+        public int? ItemCode { get; set; }
 
         public string? package { get; set; }
         public string? TransactionType { get; set; }

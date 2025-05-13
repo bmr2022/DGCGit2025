@@ -57,7 +57,7 @@ public class PurchaseOrderController : Controller
     public IMemoryCache IMemoryCache { get; private set; }
     public IPurchaseOrder IPurchaseOrder { get; set; }
 
-    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
+    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "",string ShowOnlyAmendItem="")
     {
 
         string my_connection_string;
@@ -68,6 +68,7 @@ public class PurchaseOrderController : Controller
         ViewBag.EntryId = EntryId;
         ViewBag.YearCode = YearCode;
         ViewBag.PONO = PONO;
+        ViewBag.ShowOnlyAmendItem= ShowOnlyAmendItem;
         if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
         {
             webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
@@ -82,6 +83,7 @@ public class PurchaseOrderController : Controller
         webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("entryparam", EntryId);
         webReport.Report.SetParameterValue("yearparam", YearCode);
+        webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
         webReport.Report.Refresh();
         return View(webReport);

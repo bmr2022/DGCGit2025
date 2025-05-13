@@ -2458,7 +2458,7 @@
                         data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
                     })
                         .done(function (data, status, xhr) {
-                            debugger
+                             
                             if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                                 $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
                                 reject("Duplicate");
