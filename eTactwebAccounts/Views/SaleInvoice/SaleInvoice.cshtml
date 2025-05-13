@@ -2323,6 +2323,28 @@
             else if ($('#StateCode').val() == 0) {
                 $.notify('StateCode is mandatory...!', "error");
             }
+            else if ($('#divAdjItemList tr').length > 0) {
+                $('tr.adjGridRow').each(function () {
+                    $(this).find('.GridAdjDrCr').each(function () {
+                        if ($(this).text().trim().toUpperCase() === 'CR') {
+                            hasCR = true;
+                            return false; 
+                        }
+                    });
+
+                    if (hasCR) {
+                        return false; 
+                    }
+                });
+
+                if (hasCR) {
+                    $.notify('AdjGrid should not have CR value...!', "error");
+                }else{
+                    if (confirm("are you sure you want to save this entry?")) {
+                        $("form").submit();
+                    }
+                }
+            }
             else if ($('#SaleBillJobwork').val() == 'J') {
 
                 var rowCount = $('#divSaleBillList tr').length;
