@@ -1330,7 +1330,7 @@ public class PurchaseOrderDAL
                 //AppDate = ParseDate(model.ApprovedDate);
                 //FirstLvlAppDate = ParseDate(model.FirstLvlApprovedDate);
 
-                var AmmAppDate = model.AmmApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.AmmApprovedDate) : string.Empty;
+                var AmmAppDate = model.AmmApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(DateTime.Today.ToString("yyyy-MM-dd")) : string.Empty;
                 var AppDate = model.ApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.ApprovedDate) : string.Empty;
                 var FirstLvlAppDate = model.FirstLvlApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.FirstLvlApprovedDate) : string.Empty;
 

@@ -80,5 +80,15 @@ namespace eTactWeb.Data.BLL
             return await _IDeassembleItemDAL.SaveDeassemble(model, ISTGrid);
         }
 
+        public async Task<DeassembleItemDashBoard> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _IDeassembleItemDAL.GetDashBoardDetailData(FromDate, ToDate,   ReportType);
+        }
+
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            return await _IDeassembleItemDAL.GetDashboardData();
+        }
+
     }
 }

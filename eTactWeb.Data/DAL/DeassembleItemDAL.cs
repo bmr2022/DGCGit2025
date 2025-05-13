@@ -372,6 +372,101 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            var responseResult = new ResponseResult();
+            try
+            {
+                var sqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", "DASHBOARD")
+        };
+
+                responseResult = await _IDataLogic.ExecuteDataSet("SP_DeassembleItemMainDetail", sqlParams).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                dynamic error = new ExpandoObject();
+                error.Message = ex.Message;
+                error.Source = ex.Source;
+            }
+            return responseResult;
+        }
+
+
+        public async Task<DeassembleItemDashBoard> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            DataSet? oDataSet = new DataSet();
+            var model = new DeassembleItemDashBoard();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SP_DeassembleItemMainDetail", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
+                    oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@reporttype", ReportType);
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (ReportType == "SUMMARY")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.DeassembleItemDashBoardDetail = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                    select new DeassembleItemDashBoard
+                                                    {
+
+                                                        DeassEntryID = Convert.ToInt32(dr["DeassEntryID"]),
+                                                        
+                                                        DeassEntryDate = dr["DeassEntryDate"].ToString(),
+                                                        DeassYearcode = Convert.ToInt32(dr["DeassYearcode"]),
+                                                        DeassSlipNo = dr["DeassSlipNo"].ToString(),
+                                                        FGStoreId = Convert.ToInt32(dr["FGStoreId"]),
+                                                        FGStoreName = dr["FGStoreName"].ToString(),
+
+                                                        FinishItemCode = Convert.ToInt32(dr["FinishItemCode"]),
+                                                        FinishItemName = dr["FinishItemName"].ToString(),
+                                                        FinishPartCode = dr["FinishPartCode"].ToString(),
+                                                        FGBatchNo = dr["FGBatchNo"].ToString(),
+                                                        FGUniqueBatchNo = dr["FGUniqueBatchNo"].ToString(),
+
+                                                        TotalStock = Convert.ToDecimal(dr["TotalStock"]),
+                                                        FGQty = Convert.ToDecimal(dr["FGQty"]),
+                                                        FGUnit = dr["FGUnit"].ToString(),
+                                                        FGConvQty = Convert.ToDecimal(dr["FGConvQty"]),
+
+                                                        CreatedByEmp = Convert.ToInt32(dr["CreatedByEmp"]),
+                                                        CreatedByEmpName = dr["CreatedByEmpName"].ToString(),
+                                                        CreatedOn = dr["CreatedOn"].ToString(),
+
+                                                        UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
+                                                        UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
+                                                        UpdatedOn = dr["UpdatedOn"].ToString()
+                                                    }).ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
+            return model;
+        }
+
 
     }
 }

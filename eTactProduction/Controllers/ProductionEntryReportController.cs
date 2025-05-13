@@ -123,7 +123,14 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process)
+
+        public async Task<JsonResult> FillShiftName()
+        {
+            var JSON = await _IProductionEntryReport.FillShiftName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<IActionResult> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process,string ShiftName)
         {
             var model = new ProductionEntryReportModel();
             string ReplaceZero(string value) => value == "0" ? "" : value;
@@ -144,7 +151,7 @@ namespace eTactWeb.Controllers
 
             model = await _IProductionEntryReport.GetProductionEntryReport(
                 ReportType, FromDate, ToDate, FGPartCode, FGItemName, RMPartCode, RMItemName,
-                ProdSlipNo, ProdPlanNo, ProdSchNo, ReqNo, WorkCenter, MachineName, OperatorName, Process
+                ProdSlipNo, ProdPlanNo, ProdSchNo, ReqNo, WorkCenter, MachineName, OperatorName, Process, ShiftName
             );
 
             model.ReportType = ReportType;

@@ -97,6 +97,7 @@ namespace eTactWeb.DOM.Models
     public class IssueNRGPDashboard
     {
         public string VendorName { get; set; }
+        
         public string ChallanDate { get; set; }
         public string ChallanNo { get; set; }
         public string RGPNRGP { get; set; }
@@ -171,6 +172,8 @@ namespace eTactWeb.DOM.Models
         public int YearCode { get; set; }
         public string EntryDate { get; set; }
         public string EntryTime { get; set; }
+        public string IssByEmpCodeName { get; set; }
+        public int IssByEmpCode { get; set; }
         public string Prefix { get; set; }
         public string RGPNRGP { get; set; }
         public string ChallanNo { get; set; }

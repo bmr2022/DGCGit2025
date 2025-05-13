@@ -327,7 +327,7 @@ namespace eTactWeb.Controllers
                 MainModel.ChallanDate = ParseDate(MainModel.ChallanDate).ToString();
                 string serializedEditGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
                 HttpContext.Session.SetString("KeyJobWorkIssueEdit", serializedEditGrid);
-                string sTaxGrid = JsonConvert.SerializeObject(MainModel.JobDetailGrid);
+                string sTaxGrid = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
                 HttpContext.Session.SetString("KeyTaxGrid", sTaxGrid);
             }
             else
