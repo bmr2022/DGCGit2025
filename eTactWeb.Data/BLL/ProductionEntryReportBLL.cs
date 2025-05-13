@@ -39,6 +39,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryReportDAL.FillRMItemName(FromDate, ToDate);
         }
+        public async Task<ResponseResult> FillShiftName()
+        {
+            return await _ProductionEntryReportDAL.FillShiftName();
+        }
         public async Task<ResponseResult> FillProdSlipNo(string FromDate, string ToDate)
         {
             return await _ProductionEntryReportDAL.FillProdSlipNo(FromDate, ToDate);

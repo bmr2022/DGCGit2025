@@ -18,6 +18,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillProdPlanNo(string FromDate, string ToDate);
         Task<ResponseResult> FillProdSchNo(string FromDate, string ToDate);
         Task<ResponseResult> FillReqNo(string FromDate, string ToDate);
+        Task<ResponseResult> FillShiftName();
         Task<ResponseResult> FillWorkCenter(string FromDate, string ToDate);
         Task<ResponseResult> FillMachinName(string FromDate, string ToDate);
         Task<ResponseResult> FillOperatorName(string FromDate, string ToDate);

@@ -123,6 +123,11 @@
                                         <option value="Production Summary">Production Summary</option>
                                     </select>
                                 </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:130px">
+                                    <label asp-for="ShiftName" class="form-label">Shift</label>
+                                    
+                                    <select asp-for="ShiftName" class="form-select"></select>
+                                </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
                                     <label class="form-label">Global search</label>
                                     <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
@@ -215,6 +220,7 @@
             FillMachinName();
             FillOperatorName();
             FillProcess();
+            FillShiftName();
             GetProductionReport();
             $('#ReportType').on('select2:open', function () {
                 setTimeout(function () {
@@ -240,6 +246,7 @@
             $('#OperatorName').select2();
             $('#Process').select2();
             $('#ReportType').select2();
+            $('#ShiftName').select2();
         });
         GetProductionReportName();
         $('#FromDate').change(function(){
@@ -1070,6 +1077,29 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#Process').append('<option value="' + val.processid +
                                     '">' + val.Process + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillShiftName() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillShiftName")",
+                dataType: "JSON",
+               
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ShiftName').empty();
+                            $('#ShiftName').append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#ShiftName').append('<option value="' + val.ShiftName +
+                                    '">' + val.ShiftName + '</option>');
                             });
                         }
                     }

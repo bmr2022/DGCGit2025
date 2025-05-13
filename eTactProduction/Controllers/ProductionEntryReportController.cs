@@ -123,6 +123,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> FillShiftName()
+        {
+            var JSON = await _IProductionEntryReport.FillShiftName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> GetProductionEntryReport(string ReportType, string FromDate, string ToDate, string FGPartCode, string FGItemName, string RMPartCode, string RMItemName, string ProdSlipNo, string ProdPlanNo, string ProdSchNo, string ReqNo, string WorkCenter, string MachineName, string OperatorName, string Process)
         {
             var model = new ProductionEntryReportModel();
