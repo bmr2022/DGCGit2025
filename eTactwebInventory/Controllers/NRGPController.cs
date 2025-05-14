@@ -115,6 +115,7 @@ namespace eTactWeb.Controllers
                 model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEnteredEMpBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEnteredEmpByName = HttpContext.Session.GetString("EmpName");
+                model.IssByEmpCode = Convert.ToInt32(HttpContext.Session.GetString("EmployeeList"));
             }
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))

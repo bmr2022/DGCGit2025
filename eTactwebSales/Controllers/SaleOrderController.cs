@@ -1693,7 +1693,7 @@ public class SaleOrderController : Controller
 					DateTime? deliveryDate = null;
 					if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
 					{
-						if (tempDeliveryDate <= DateTime.Today)
+						if (tempDeliveryDate < DateTime.Today)
 						{
 							errors.Add($"Delivery Date at row {row} must be greater than today ({DateTime.Today:dd/MMM/yyyy}).");
 						}
@@ -1741,10 +1741,10 @@ public class SaleOrderController : Controller
 						Excessper = int.TryParse(worksheet.Cells[row, 24].Value?.ToString(), out int tempExcessper) ? tempExcessper : 0,
 						ProjQty1 = decimal.TryParse(worksheet.Cells[row, 25].Value?.ToString(), out decimal tempProjQty1) ? tempProjQty1 : 0,
 						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
-                        CustomerSaleOrder = worksheet.Cells[row, 27].Value?.ToString() ?? "",
-                        CustomerLocation = worksheet.Cells[row, 28].Value?.ToString() ?? "",
-                        ItemModel = worksheet.Cells[row, 29].Value?.ToString() ?? "",
-                        CustItemCategory = worksheet.Cells[row, 30].Value?.ToString() ?? "",
+                        CustomerSaleOrder = worksheet.Cells[row, 8].Value?.ToString() ?? "",
+                        CustomerLocation = worksheet.Cells[row, 9].Value?.ToString() ?? "",
+                        ItemModel = worksheet.Cells[row, 10].Value?.ToString() ?? "",
+                        CustItemCategory = worksheet.Cells[row, 11].Value?.ToString() ?? "",
                     });
 				}
 

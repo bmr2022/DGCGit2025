@@ -27,5 +27,8 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> SaveDeassemble(DeassembleItemModel model, DataTable ISTGrid);
 
+        Task<DeassembleItemDashBoard> GetDashBoardDetailData(string FromDate, string ToDate,string  ReportType);
+        Task<ResponseResult> GetDashboardData();
+
     }
 }

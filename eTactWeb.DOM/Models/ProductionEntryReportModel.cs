@@ -25,6 +25,7 @@ namespace eTactWeb.DOM.Models
         public int? ProcessId {  get; set; }
         public string? Process {  get; set; }
         public string? ReportType { get; set; }
+        public string? ShiftName { get; set; }
         public IList<ProductionEntryReportDetail>? ProductionEntryReportDetail { get; set; }
     }
     public class ProductionEntryReportDetail
@@ -36,6 +37,8 @@ namespace eTactWeb.DOM.Models
         public string? NewProdRework { get; set; }
         public string? ProdSlipNo { get; set; }
         public string? ProdDate { get; set; }
+        
+        public string? ShiftName { get; set; }
         public string? ProdPlanNo { get; set; }
         public int ProdPlanYearCode { get; set; }
         public string? ProdPlanDate { get; set; }
@@ -138,7 +141,7 @@ namespace eTactWeb.DOM.Models
         public decimal TotalHrs {  get; set; }
         public decimal OverTimeHrs { get;set; }
         public decimal MachineCharges { get; set; }
-        public string? ShiftName {  get; set; }
+        //public string? ShiftName {  get; set; }
         public decimal TotProdQty { get; set; }
 
         [JsonPropertyName("PendQtyForQcwithoutprint")]
