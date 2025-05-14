@@ -1223,6 +1223,16 @@
             }
         });
 
+                function escapeHtml(text) {
+            return text
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/'/g, "&#39;")
+                .replace(/"/g, "&quot;");
+        }
+
+
         function GetItems() {
 
             var ItemData = {
@@ -1247,18 +1257,18 @@
                                 $('#ItemName').append('<option selected>-Select-</option>');
                                 $.each(obj.Result, function (index, val) {
                                     if ($("#PartCode option[value='" + val.Item_Code + "']").length == 0) {
-                                        $('#PartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                                        $('#PartCode').append('<option value="' + val.Item_Code + '">' + escapeHtml(val.PartCode) + '</option>');
                                     }
                                     $('#ItemName').append('<option style="display:none" value="' + val.Item_Code +
                                         '" data-item-code="' + val.Item_Code +
-                                        '" data-part-code="' + val.PartCode +
+                                        '" data-part-code="' + escapeHtml(val.PartCode) +
                                         '" data-unit="' + val.Unit +
                                         '" data-rate="' + val.Rate +
                                         '" data-alt-unit="' + val.AltUnit +
                                         '" data-qty="' + val.PendQty +
                                         '" data-alt-qty="' + val.AltQty +
                                         '" data-alt-pend-qty="' + val.AltPendQty +
-                                        '">' + val.ItemName + '</option>');
+                                        '">' + escapeHtml(val.ItemName) + '</option>');
                                 });
                             }
                         }
@@ -1674,9 +1684,9 @@
 
                                 if ($("#PartCode option[value='" + val.ItemCode + "']").length == 0) {
                                     $('#PartCode').append('<option value="' + val.ItemCode +
-                                        '" data-item-name="' + val.ItemName +
+                                        '" data-item-name="' + escapeHtml(val.ItemName) +
                                         '" data-item-code="' + val.ItemCode +
-                                        '" data-part-code="' + val.PartCode +
+                                        '" data-part-code="' + escapeHtml(val.PartCode) +
                                         '" data-unit="' + val.Unit +
                                         '" data-rate="' + val.Rate +
                                         '" data-alt-unit="' + val.altunit +
@@ -1684,12 +1694,12 @@
                                         '" data-alt-qty="' + val.AltQty +
                                         '" data-alt-pend-qty="' + val.AltPendQty +
                                         '" data-alt-needpo="' + val.NeedPo +
-                                        '">' + val.PartCode + '</option>');
+                                                '">' + escapeHtml(val.PartCode) + '</option>');
                                 }
 
                                 $('#ItemName').append('<option value="' + val.ItemCode +
                                     '" data-item-code="' + val.ItemCode +
-                                    '" data-part-code="' + val.PartCode +
+                                    '" data-part-code="' + escapeHtml(val.PartCode) +
                                     '" data-unit="' + val.Unit +
                                     '" data-rate="' + val.Rate +
                                     '" data-alt-unit="' + val.altunit +
@@ -1697,7 +1707,7 @@
                                     '" data-alt-qty="' + val.AltQty +
                                     '" data-alt-pend-qty="' + val.AltPendQty +
                                     '" data-alt-needpo="' + val.NeedPo +
-                                    '">' + val.ItemName + '</option>');
+                                    '">' + escapeHtml(val.ItemName) + '</option>');
                             });
                         }
                     }

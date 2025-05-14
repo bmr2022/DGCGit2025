@@ -179,7 +179,8 @@ namespace eTactWeb.Data.DAL
                                                              ClosingStock = row["ClosingStock"] == DBNull.Value ? 0 : Convert.ToInt32(row["ClosingStock"]),
                                                              Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToInt32(row["Rate"]),
                                                              ClosingValue = row["ClosingValue"] == DBNull.Value ? 0 : Convert.ToInt32(row["ClosingValue"]),
-                                                             StoreName = row["StoreName"] == DBNull.Value ? string.Empty : row["StoreName"].ToString()
+                                                             StoreName = row["StoreName"] == DBNull.Value ? string.Empty : row["StoreName"].ToString(),
+                                                              ItemCat = row["Type_Item"] == DBNull.Value ? string.Empty : row["Type_Item"].ToString()
 
 
                                                          }).ToList();
