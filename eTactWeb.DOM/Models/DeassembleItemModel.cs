@@ -31,7 +31,7 @@ namespace eTactWeb.DOM.Models
         public string? CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public string? UpdatedByName { get; set; }
-        public int? UpdatedOn { get; set; }
+        public string? UpdatedOn { get; set; }
         public string? EntryByMachine { get; set; }
         public string? CC { get; set; }
         public string? MRNO { get; set; }

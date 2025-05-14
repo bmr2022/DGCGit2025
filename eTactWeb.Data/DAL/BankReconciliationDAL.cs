@@ -89,7 +89,7 @@ namespace eTactWeb.Data.DAL
                                                          select new BankReconciliationModel
                                                          {
                                                              Date = row["Date"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["Date"]).ToString("dd-MM-yyyy"),
-                                                             Perticuler = row["Perticuler"] == DBNull.Value ? string.Empty : row["Perticuler"].ToString(),
+                                                             Perticuler = row["Particular"] == DBNull.Value ? string.Empty : row["Particular"].ToString(),
                                                              Type = row["Type"] == DBNull.Value ? string.Empty : row["Type"].ToString(),
                                                              BankDate = row["BankDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["BankDate"]).ToString("dd-MM-yyyy"),
                                                              DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),

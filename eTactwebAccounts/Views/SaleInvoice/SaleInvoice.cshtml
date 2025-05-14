@@ -2323,7 +2323,7 @@
             else if ($('#StateCode').val() == 0) {
                 $.notify('StateCode is mandatory...!', "error");
             }
-            else if ($('#divAdjItemList tr').length > 0) {
+            else if ($('#divAdjItemList tr td').length > 1) {
                 $('tr.adjGridRow').each(function () {
                     $(this).find('.GridAdjDrCr').each(function () {
                         if ($(this).text().trim().toUpperCase() === 'CR') {
@@ -3592,7 +3592,7 @@
         }
 
         function PressBack() {
-
+            debugger
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
