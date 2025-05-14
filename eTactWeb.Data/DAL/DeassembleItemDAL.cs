@@ -341,7 +341,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@FGQty", model.FGQty));
                 SqlParams.Add(new SqlParameter("@Unit", model.Unit ));
                 SqlParams.Add(new SqlParameter("@FGConvQty", model.FGConvQty));
-                SqlParams.Add(new SqlParameter("@CreatedByEmp", model.CreatedByEmp));
+                SqlParams.Add(new SqlParameter("@CreatedByEmp", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@CreatedOn", ActEntDt));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));

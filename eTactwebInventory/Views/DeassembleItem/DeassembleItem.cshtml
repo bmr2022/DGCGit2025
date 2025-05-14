@@ -616,7 +616,7 @@
                 PartCodeChange(cntId);
                 /* $('#FinishItemCode').val($('#FinishPartCode').val()); */
             }
-            $('#FinishItemCode').val($('#FinishItemName').val())
+            $('#FinishItemCode').val($('#FinishItemName').val());
             FillBomNo();
         });
 
@@ -663,6 +663,10 @@
                 }
             }
         }
+
+                        $('#FinishItemName').change(function () {
+                                     $('#FinishItemCode').val($('#FinishItemName').val())
+                });
 
         $('#FGQty').on('input', function () {
             var FGQty = parseFloat($(this).val());
@@ -1165,7 +1169,7 @@
             var SchData = {
                 "RMStoreId": parseInt($('#RMStoreId').val()),
                 "RMStoreName": $('#RMStoreId :selected').text(),
-                "RMItemCode": parseInt($('#RMItemCode').val()),
+                "RMItemCode": parseInt($('#RmPartCode').val()),
                 "RmPartCode": $('#RmPartCode :selected').text(),
                 "RMItemName": $('#RMItemName :selected').text(),
                 "RMUnit": $('#RMUnit').val(),
