@@ -136,7 +136,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
-                        HttpContext.Session.Remove("AlternateItemMasterGrid");
+                        HttpContext.Session.Remove("KeyMaterialConversionGrid");
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -197,7 +197,7 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("OrigItemRate", typeof(float));
                 GIGrid.Columns.Add("Remark", typeof(string));
                 GIGrid.Columns.Add("Seqno", typeof(long));
-                GIGrid.Columns.Add("AltQty", typeof(string));
+                GIGrid.Columns.Add("AltQty", typeof(float));
 
                 foreach (var Item in DetailList)
                 {
@@ -228,7 +228,7 @@ namespace eTactWeb.Controllers
                             Item.OrigItemRate == null ? 0f : Item.OrigItemRate,
                             Item.Remark == null ? "" : Item.Remark,
                             Item.seqno == null ? "" : Item.seqno,
-                            Item.AltQty == null ? "" : Item.AltQty,
+                            Item.AltOriginalQty == null ? 0 : Item.AltOriginalQty,
 
                         });
                 }
