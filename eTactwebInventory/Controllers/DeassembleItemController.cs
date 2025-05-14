@@ -54,7 +54,7 @@ namespace eTactwebInventory.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
-                //MainModel = await IInterStore.GetViewByID(ID, Mode, YC);
+                MainModel = await _IDeassembleItem.GetViewByID(ID, Mode, YC);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
                 //  MainModel = await BindModel(MainModel);
