@@ -27,7 +27,13 @@ public class PBDashBoard : TimeStamp
     public IList<TextValue>? HSNNOList { get; set; }
     public string? DashboardType { get; set; }
     public string? MRNType { get; set; }
-    
+
+    //pagintion
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+
+
     //Dashboard Grid
     public IList<PBDashBoard> PBDashboard { get; set; }
     public int? EntryID { get; set; }

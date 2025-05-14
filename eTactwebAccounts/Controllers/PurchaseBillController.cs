@@ -34,8 +34,8 @@ public class PurchaseBillController : Controller
     private readonly IWebHostEnvironment _IWebHostEnvironment;
     private readonly IConfiguration iconfiguration;
     private readonly ICompositeViewEngine _viewEngine;
-
-    public PurchaseBillController(IPurchaseBill iPurchaseBill, IDataLogic iDataLogic, ILogger<PurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ICompositeViewEngine viewEngine)
+    private readonly IMemoryCache _MemoryCache;
+    public PurchaseBillController(IPurchaseBill iPurchaseBill, IDataLogic iDataLogic, ILogger<PurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, ICompositeViewEngine viewEngine, IMemoryCache iMemoryCache)
     {
         IPurchaseBill = iPurchaseBill;
         IDataLogic = iDataLogic;
@@ -44,6 +44,7 @@ public class PurchaseBillController : Controller
         CI = new CultureInfo("en-GB");
         _IWebHostEnvironment = iWebHostEnvironment;
         iconfiguration = configuration;
+        _MemoryCache = iMemoryCache;
         _viewEngine = viewEngine;
     }
 
@@ -590,21 +591,179 @@ public class PurchaseBillController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<IActionResult> GetSearchData(PBDashBoard model)
+    public async Task<IActionResult> GetSearchData(PBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
     {
         model = await IPurchaseBill.GetSummaryData(model);
         model.DashboardType = "Summary";
+        var modelList = model?.PBDashboard ?? new List<PBDashBoard>();
+
+
+        if (string.IsNullOrWhiteSpace(SearchBox))
+        {
+            model.TotalRecords = modelList.Count();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            model.PBDashboard = modelList
+            .Skip((pageNumber - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
+        }
+        else
+        {
+            List<PBDashBoard> filteredResults;
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                filteredResults = modelList.ToList();
+            }
+            else
+            {
+                filteredResults = modelList
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = modelList.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.PBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+        }
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+
+        _MemoryCache.Set("KeyPurchaseBillList_Summary", modelList, cacheEntryOptions);
         return PartialView("_DashBoardGrid", model);
     }
-    public async Task<IActionResult> GetDetailData(PBDashBoard model)
+    public async Task<IActionResult> GetDetailData(PBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
     {
         model.Mode = "SEARCH";
         var type = model.DashboardType;
         model = await IPurchaseBill.GetDetailData(model);
         model.DashboardType = type;
+        var modelList = model?.PBDashboard ?? new List<PBDashBoard>();
+
+
+        if (string.IsNullOrWhiteSpace(SearchBox))
+        {
+            model.TotalRecords = modelList.Count();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            model.PBDashboard = modelList
+            .Skip((pageNumber - 1) * pageSize)
+               .Take(pageSize)
+               .ToList();
+        }
+        else
+        {
+            List<PBDashBoard> filteredResults;
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                filteredResults = modelList.ToList();
+            }
+            else
+            {
+                filteredResults = modelList
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = modelList.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.PBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+        }
+        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        {
+            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+            SlidingExpiration = TimeSpan.FromMinutes(55),
+            Size = 1024,
+        };
+        if(type== "TAXDetail")
+        {
+            _MemoryCache.Set("KeyPurchaseBillList_TAXDetail", modelList, cacheEntryOptions);
+        }
+        else
+        {
+            _MemoryCache.Set("KeyPurchaseBillList_Detail", modelList, cacheEntryOptions);
+
+        }
+
         return PartialView("_DashBoardGrid", model);
     }
+    [HttpGet]
+    public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+    {
+        PBDashBoard model = new PBDashBoard();
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return PartialView("_DashBoardGrid", new List<PBDashBoard>());
+        }
+        string cacheKey = $"KeyPurchaseBillList_{dashboardType}";
+        if (!_MemoryCache.TryGetValue(cacheKey, out IList<PBDashBoard> purchaseBillDashboard) || purchaseBillDashboard == null)
+        {
+            return PartialView("_DashBoardGrid", new List<PBDashBoard>());
+        }
 
+        List<PBDashBoard> filteredResults;
+
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            filteredResults = purchaseBillDashboard.ToList();
+        }
+        else
+        {
+            filteredResults = purchaseBillDashboard
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+
+            if (filteredResults.Count == 0)
+            {
+                filteredResults = purchaseBillDashboard.ToList();
+            }
+        }
+
+        model.TotalRecords = filteredResults.Count;
+        model.PBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+        if (dashboardType == "Summary")
+        {
+
+            return PartialView("_DashBoardGrid", model);
+        }
+        else
+        {
+            return PartialView("_DashboardDetailGrid", model);
+        }
+    }
     // GET: PurchaseOrderController
     [HttpGet]
     [Route("{controller}/Index")]

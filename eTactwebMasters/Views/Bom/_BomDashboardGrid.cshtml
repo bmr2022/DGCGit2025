@@ -18,85 +18,23 @@
             <tbody id="bomTableBody">
                 @{
                     var @Cntr = 0;
-                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
-                int srNo = srNoStart + 1;
+                    int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                    int srNo = srNoStart + 1;
                     if (Model.DTDashboard == null || Model.DTDashboard.Rows.Count == 0)
                     {
                         <tr class="text-center"><td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
                     }
                     else
                     {
-                        // for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
-                        // {
-                        //     Cntr = Cntr + 1;
-                        //     <tr>
-                        //         <td class="FWB">@Cntr</td>
-                        //         <td style="text-align:center;white-space: nowrap;">
-                        //             <div id="container">
-                        //                 <div id="viewCursorDiv-@Cntr">
-                        //                     <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="GetBomDetail('@Model.DTDashboard.Rows[i]["FGPartCode"]','@Model.DTDashboard.Rows[i]["BomNo"]')">
-                        //                         <span class="fa-stack">
-                        //                             <i class="fa fa-square fa-stack-2x"></i>
-                        //                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                        //                         </span>
-                        //                     </a>
-                        //                 </div>
-                        //                 <div id="editCursorDiv-@Cntr">
-                        //                     <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U" onclick="back(event)">
-                        //                         <span class="fa-stack">
-                        //                             <i class="fa fa-square fa-stack-2x"></i>
-                        //                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                        //                         </span>
-                        //                     </a> 
-                        //                 </div>
-                        //                 <div id="deleteCursorDiv-@Cntr">
-                        //                     <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
-                        //                         <span class="fa-stack">
-                        //                             <i class="fa fa-square fa-stack-2x"></i>
-                        //                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                        //                         </span>
-                        //                     </a>
-
-                        //                 </div>
-                        //             </div>
-                        //         </td>
-                        //         <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
-                        //         <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
-                        //         <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
-                        //         <td>@Model.DTDashboard.Rows[i]["BomName"]</td>
-                        //         <td>@Model.DTDashboard.Rows[i]["BOMQty"]</td>
-                        //         @if (@Model.DTDashboard.Rows[i]["EntryDate"] == null)
-                        //         {
-
-                        //             <td>@Model.DTDashboard.Rows[i]["EntryDate"]</td>
-                        //         }
-                        //         else
-                        //         {
-                        //             <td>@Model.DTDashboard.Rows[i]["EntryDate"].ToString().Split(" ")[0]</td>
-                        //         }
-                        //         @if (@Model.DTDashboard.Rows[i]["EffectiveDate"] == null)
-                        //         {
-
-                        //             <td>@Model.DTDashboard.Rows[i]["EffectiveDate"]</td>
-                        //         }
-                        //         else
-                        //         {
-                        //             <td>@Model.DTDashboard.Rows[i]["EffectiveDate"].ToString().Split(" ")[0]</td>
-                        //         }
-                        //     </tr>
-                        // }
-
-                        @foreach (System.Data.DataRow row in Model.DTDashboard.Rows)
+                        for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
                         {
-                            Cntr++;
-
+                            Cntr = Cntr + 1;
                             <tr>
                             <td class="FWB">@srNo</td>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
-                                               onclick="GetBomDetail('@row["FGPartCode"]','@row["BomNo"]')">
+                                            <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="GetBomDetail('@Model.DTDashboard.Rows[i]["FGPartCode"]','@Model.DTDashboard.Rows[i]["BomNo"]')">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -104,36 +42,99 @@
                                             </a>
                                         </div>
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" asp-action="EditBomDetail"
-                                               asp-route-FIC="@row["FGPartCode"]" asp-route-BMNo="@row["BomNo"]" asp-route-Mode="U" onclick="back(event)">
+                                            <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U" onclick="back(event)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                                 </span>
-                                            </a>
+                                            </a> 
                                         </div>
                                         <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" onclick="confirmDelete(event)"
-                                               asp-action="DeleteByID" asp-controller="Bom"
-                                               asp-route-FIC="@row["FGItemCode"]" asp-route-BMNo="@row["BomNo"]">
+                                            <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                                 </span>
                                             </a>
+
                                         </div>
                                     </div>
                                 </td>
-                                <td class="FWB">@row["BomNo"]</td>
-                                <td>@row["FGPartCode"]</td>
-                                <td>@row["FGItem"]</td>
-                                <td>@row["BomName"]</td>
-                                <td>@row["BOMQty"]</td>
-                                <td>@(row["EntryDate"] == DBNull.Value ? "" : row["EntryDate"].ToString().Split(" ")[0])</td>
-                                <td>@(row["EffectiveDate"] == DBNull.Value ? "" : row["EffectiveDate"].ToString().Split(" ")[0])</td>
+                                <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
+                                <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
+                                <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
+                                <td>@Model.DTDashboard.Rows[i]["BomName"]</td>
+                                <td>@Model.DTDashboard.Rows[i]["BOMQty"]</td>
+                                @if (@Model.DTDashboard.Rows[i]["EntryDate"] == null)
+                                {
+
+                                    <td>@Model.DTDashboard.Rows[i]["EntryDate"]</td>
+                                }
+                                else
+                                {
+                                    <td>@Model.DTDashboard.Rows[i]["EntryDate"].ToString().Split(" ")[0]</td>
+                                }
+                                @if (@Model.DTDashboard.Rows[i]["EffectiveDate"] == null)
+                                {
+
+                                    <td>@Model.DTDashboard.Rows[i]["EffectiveDate"]</td>
+                                }
+                                else
+                                {
+                                    <td>@Model.DTDashboard.Rows[i]["EffectiveDate"].ToString().Split(" ")[0]</td>
+                                }
                             </tr>
                         srNo++;
-                            }
+                        }
+
+                        // @foreach (System.Data.DataRow row in Model.DTDashboard.Rows)
+                        // {
+                        //     Cntr++;
+
+                        //     <tr>
+                        //     <td class="FWB">@srNo</td>
+                        //         <td style="text-align:center;white-space: nowrap;">
+                        //             <div id="container">
+                        //                 <div id="viewCursorDiv-@Cntr">
+                        //                     <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop"
+                        //                        onclick="GetBomDetail('@row["FGPartCode"]','@row["BomNo"]')">
+                        //                         <span class="fa-stack">
+                        //                             <i class="fa fa-square fa-stack-2x"></i>
+                        //                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                        //                         </span>
+                        //                     </a>
+                        //                 </div>
+                        //                 <div id="editCursorDiv-@Cntr">
+                        //                     <a class="table-link link-primary" asp-action="EditBomDetail"
+                        //                        asp-route-FIC="@row["FGPartCode"]" asp-route-BMNo="@row["BomNo"]" asp-route-Mode="U" onclick="back(event)">
+                        //                         <span class="fa-stack">
+                        //                             <i class="fa fa-square fa-stack-2x"></i>
+                        //                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        //                         </span>
+                        //                     </a>
+                        //                 </div>
+                        //                 <div id="deleteCursorDiv-@Cntr">
+                        //                     <a class="table-link link-danger" onclick="confirmDelete(event)"
+                        //                        asp-action="DeleteByID" asp-controller="Bom"
+                        //                        asp-route-FIC="@row["FGItemCode"]" asp-route-BMNo="@row["BomNo"]">
+                        //                         <span class="fa-stack">
+                        //                             <i class="fa fa-square fa-stack-2x"></i>
+                        //                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        //                         </span>
+                        //                     </a>
+                        //                 </div>
+                        //             </div>
+                        //         </td>
+                        //         <td class="FWB">@row["BomNo"]</td>
+                        //         <td>@row["FGPartCode"]</td>
+                        //         <td>@row["FGItem"]</td>
+                        //         <td>@row["BomName"]</td>
+                        //         <td>@row["BOMQty"]</td>
+                        //         <td>@(row["EntryDate"] == DBNull.Value ? "" : row["EntryDate"].ToString().Split(" ")[0])</td>
+                        //         <td>@(row["EffectiveDate"] == DBNull.Value ? "" : row["EffectiveDate"].ToString().Split(" ")[0])</td>
+                        //     </tr>
+                        // srNo++;
+                        //     }
                     }
                 }
             </tbody>
@@ -147,6 +148,48 @@
     }
 }
 <center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+}
+@if (Model.TotalRecords > 0) // Ensure pagination always shows when records exist
+{
+    <ul class="pagination d-flex align-items-center">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber - 1, pageSize = Model.PageSize })">Prev</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item"><a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = 1, pageSize = Model.PageSize })">1</a></li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = i, pageSize = Model.PageSize })">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = totalPages, pageSize = Model.PageSize })">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="@Url.Action("Dashboard", new { pageNumber = Model.PageNumber + 1, pageSize = Model.PageSize })">Next</a>
+            </li>
+        }
+    </ul>
+}
     <style>
         #container {
             display: flex;
@@ -188,4 +231,5 @@
             font-size: 15px;
             vertical-align: super;
         }
+
     </style>
