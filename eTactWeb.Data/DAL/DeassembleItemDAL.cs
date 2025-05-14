@@ -492,5 +492,103 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        internal async Task<DeassembleItemModel> GetViewByID(int ID, string Mode, int YC)
+        {
+            var model = new DeassembleItemModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@DeassEntryID", ID));
+                SqlParams.Add(new SqlParameter("@DeassYearCode", YC));
+
+                var ResponseResult = await _IDataLogic.ExecuteDataSet("SP_DeassembleItemMainDetail", SqlParams);
+
+                if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(ResponseResult.Result, ref model, Mode);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        private static DeassembleItemModel PrepareView(DataSet DS, ref DeassembleItemModel? model, string Mode)
+        {
+            var ItemList = new List<DeassembleItemDetail>();
+            DS.Tables[0].TableName = "VDeassembleItemMainDetail";
+
+            int cnt = 1;
+
+            model.DeassEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["DeassEntryID"].ToString());
+            model.DeassEntryDate = DS.Tables[0].Rows[0]["DeassEntryDate"].ToString();
+            model.DeassYearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["DeassYearcode"].ToString());
+            model.DeassSlipNo = DS.Tables[0].Rows[0]["DeassSlipNo"].ToString();
+            model.FGStoreId = Convert.ToInt32(DS.Tables[0].Rows[0]["FGStoreId"].ToString());
+            model.FGStoreName = DS.Tables[0].Rows[0]["FGStoreName"].ToString();
+            model.FinishItemCode = Convert.ToInt32(DS.Tables[0].Rows[0]["FinishItemCode"].ToString());
+            model.FinishItemName = DS.Tables[0].Rows[0]["FinishItemName"].ToString();
+            model.FinishPartCode = DS.Tables[0].Rows[0]["FinishPartCode"].ToString();
+            model.FGBatchNo = DS.Tables[0].Rows[0]["FGBatchNo"].ToString();
+            model.FGUniqueBatchNo = DS.Tables[0].Rows[0]["FGUniqueBatchNo"].ToString();
+            model.TotalStock = Convert.ToDecimal(DS.Tables[0].Rows[0]["TotalStock"].ToString());
+            model.FGQty = Convert.ToDecimal(DS.Tables[0].Rows[0]["FGQty"].ToString());
+            model.Unit = DS.Tables[0].Rows[0]["FGUnit"].ToString();
+            model.FGConvQty = Convert.ToDecimal(DS.Tables[0].Rows[0]["FGConvQty"].ToString());
+            model.CreatedByEmp = Convert.ToInt32(DS.Tables[0].Rows[0]["CreatedByEmp"].ToString());
+            model.CreatedByEmpName = DS.Tables[0].Rows[0]["CreatedByEmpName"].ToString();
+            model.CreatedOn = DS.Tables[0].Rows[0]["CreatedOn"].ToString();
+            
+            model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
+
+
+            if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedByEmpName"].ToString()))
+            {
+                model.UpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["UpdatedBy"].ToString());
+                model.UpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmpName"].ToString();
+                model.UpdatedOn = DS.Tables[0].Rows[0]["UpdatedOn"].ToString();
+            }
+
+            if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
+            {
+                foreach (DataRow row in DS.Tables[0].Rows)
+                {
+                    ItemList.Add(new DeassembleItemDetail
+                    {
+                        SeqNo = Convert.ToInt32(row["SeqNo"]),
+                        RMItemCode = Convert.ToInt32(row["RMItemCode"]),
+                        RmPartCode = row["RMPartCode"].ToString(),
+                        RMItemName = row["RMItemName"].ToString(),
+                        BomQty = Convert.ToDecimal(row["BomQty"]),
+                        DeassQty = Convert.ToDecimal(row["DeassQty"]),
+                        RMStoreId = Convert.ToInt32(row["RMStoreId"]),
+                        RMStoreName = row["RMStoreName"].ToString(),
+
+
+                        RMUnit = row["RMUnit"].ToString(),
+                        
+                        Remark = row["Remark"].ToString(),
+                        
+                        IdealDeassQty = Convert.ToDecimal(row["IdealDeassQty"]),
+                        RMBatchNo = row["RMBatchNo"].ToString(),
+                        RmUniqueBatchNo = row["RmUniqueBatchNo"].ToString(),
+                    });
+                   
+                }
+                ItemList = ItemList.OrderBy(item => item.SeqNo).ToList();
+                model.DeassembleItemDetail = ItemList;
+            }
+
+            return model;
+        }
+
     }
 }

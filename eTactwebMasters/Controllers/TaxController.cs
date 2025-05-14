@@ -411,7 +411,7 @@ public class TaxController : Controller
             MainModel.IssueNRGPTaxGrid = _List;
 
             string serializedData = JsonConvert.SerializeObject(MainModel.IssueNRGPTaxGrid);
-            HttpContext.Session.SetString("KeyTaxGrid", serializedData);
+            HttpContext.Session.SetString("KeyIssueNRGPTaxGrid", serializedData);
 
             StoreInCache("KeyIssueNRGPTaxGrid", MainModel.IssueNRGPTaxGrid);
         }
