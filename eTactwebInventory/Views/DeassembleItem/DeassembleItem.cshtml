@@ -140,7 +140,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG PartCode </label>
 
-                                    <input type="hidden" value="@Model.FinishItemCode" id="FinishItemCode" />
+                                    <input type="hidden" asp-for="FinishItemCode" value="@Model.FinishItemCode" id="FinishItemCode" />
 
                                     <select class="form-select" asp-for="FinishPartCode">
                                         <option value="">-Select-</option>
@@ -421,6 +421,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="CreatedByEmpName" class="form-label">CreatedByEmpName</label>
                                     <input asp-for="CreatedByEmpName" class="form-control" readonly />
+                                    <input type="hidden" asp-for="CreatedByEmp" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="CreatedOn" class="form-label" style="color: blue;">CreatedOn</label>
@@ -616,7 +617,7 @@
                 PartCodeChange(cntId);
                 /* $('#FinishItemCode').val($('#FinishPartCode').val()); */
             }
-            $('#FinishItemCode').val($('#FinishItemName').val());
+            $('#FinishItemCode').val(parseInt($('#FinishItemName').val()));
             FillBomNo();
         });
 
@@ -663,11 +664,11 @@
                 }
             }
         }
-
+/* 
                         $('#FinishItemName').change(function () {
                                      $('#FinishItemCode').val($('#FinishItemName').val())
                 });
-
+ */
         $('#FGQty').on('input', function () {
             var FGQty = parseFloat($(this).val());
             var TotalStock = parseFloat($("#TotalStock").val());
