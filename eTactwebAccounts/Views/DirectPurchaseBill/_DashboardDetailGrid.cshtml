@@ -76,6 +76,8 @@
         <tbody id="divDashboardGrid1">
             @{
                 var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
                 if (Model.DPBDashboard == null || Model.DPBDashboard.Count == 0)
                 {
                     <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -89,7 +91,7 @@
                             Cntr = Cntr + 1;
                             <tr id="approvedRow-@Cntr">
                                 <td class="FWB">
-                                    @Cntr
+                                    @srNo
                                     <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
                                 </td>
                                 @*<td style="text-align:center;white-space: nowrap;">
@@ -175,6 +177,7 @@
                                 <td>@item.IGSTAmt</td>
                                 <td>@item.NetAmount</td>
                             </tr>
+                            srNo++;
                         }
                     }
                     else
@@ -184,7 +187,7 @@
                             Cntr = Cntr + 1;
                             <tr id="approvedRow-@Cntr">
                                 <td class="FWB">
-                                    @Cntr
+                                    @srNo
                                     <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
                                 </td>
                                 <td style="text-align:center;white-space: nowrap;">
@@ -287,6 +290,7 @@
                                 <td>@item.UpdatedByName</td>
                                 <td>@item.YearCode</td>
                             </tr>
+                            srNo++;
                         }
                     }
                 }
@@ -295,7 +299,14 @@
     </table>
 
 </div>
-<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+    <center><strong>TOTAL ROWS  : <span>@displayedRows</span></strong></center>
+}
 
 <style>
     #container {

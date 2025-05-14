@@ -21,6 +21,7 @@ using System.Data;
 using System.Globalization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Drawing.Drawing2D;
+using System.Runtime.Caching;
 
 namespace eTactWeb.Controllers
 {
@@ -30,13 +31,14 @@ namespace eTactWeb.Controllers
         private readonly IMemoryCacheService _iMemoryCacheService;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly IConfiguration iconfiguration;
+        private readonly IMemoryCache _MemoryCache;
         public ILogger<DirectPurchaseBillModel> _Logger { get; set; }
         public CultureInfo CI { get; private set; }
         public EncryptDecrypt EncryptDecrypt { get; private set; }
         public IDataLogic IDataLogic { get; private set; }
         public IDirectPurchaseBill IDirectPurchaseBill { get; set; }
 
-        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration)
+        public DirectPurchaseBillController(IDirectPurchaseBill iDirectPurchaseBill, IDataLogic iDataLogic, ILogger<DirectPurchaseBillModel> logger, EncryptDecrypt encryptDecrypt, IMemoryCacheService iMemoryCacheService, IWebHostEnvironment iWebHostEnvironment, IConfiguration configuration, IMemoryCache iMemoryCache)
         {
             _iMemoryCacheService = iMemoryCacheService;
             IDirectPurchaseBill = iDirectPurchaseBill;
@@ -46,6 +48,7 @@ namespace eTactWeb.Controllers
             CI = new CultureInfo("en-GB");
             _IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
+            _MemoryCache = iMemoryCache;
         }
 
         [HttpGet]
@@ -948,22 +951,180 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetSearchData(DPBDashBoard model)
+        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             model = await IDirectPurchaseBill.GetSummaryData(model);
             model.DashboardType = "Summary";
+            var modelList = model?.DPBDashboard ?? new List<DPBDashBoard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.DPBDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<DPBDashBoard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.DPBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyDirectPurchaseBillList_Summary", modelList, cacheEntryOptions);
             return PartialView("_DashBoardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(DPBDashBoard model)
+        public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             var type = model.DashboardType;
             model = await IDirectPurchaseBill.GetDetailData(model);
             model.DashboardType = type;
+            var modelList = model?.DPBDashboard ?? new List<DPBDashBoard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.DPBDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<DPBDashBoard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.DPBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            if (type == "TAXDetail")
+            {
+                _MemoryCache.Set("KeyDirectPurchaseBillList_TAXDetail", modelList, cacheEntryOptions);
+
+            }
+            else
+            {
+
+                _MemoryCache.Set("KeyDirectPurchaseBillList_Detail", modelList, cacheEntryOptions);
+            }
             return PartialView("_DashBoardGrid", model);
         }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            DPBDashBoard model = new DPBDashBoard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_DashBoardGrid", new List<DPBDashBoard>());
+            }
+            string cacheKey = $"KeyDirectPurchaseBillList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<DPBDashBoard> dPBDashBoard) || dPBDashBoard == null)
+            {
+                return PartialView("_DashBoardGrid", new List<DPBDashBoard>());
+            }
 
+            List<DPBDashBoard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = dPBDashBoard.ToList();
+            }
+            else
+            {
+                filteredResults = dPBDashBoard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = dPBDashBoard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.DPBDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            if (dashboardType == "Summary")
+            {
+
+                return PartialView("_DashBoardGrid", model);
+            }
+            else
+            {
+                return PartialView("_DashboardDetailGrid", model);
+            }
+        }
         public async Task<IActionResult> GetAmmCompSearchData(DPBDashBoard model)
         {
             model = await IDirectPurchaseBill.GetSearchCompData(model);

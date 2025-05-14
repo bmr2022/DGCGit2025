@@ -29,6 +29,7 @@ namespace eTactWeb.Services.Interface
 
         Task<DeassembleItemDashBoard> GetDashBoardDetailData(string FromDate, string ToDate,string  ReportType);
         Task<ResponseResult> GetDashboardData();
+        Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName);
 
     }
 }

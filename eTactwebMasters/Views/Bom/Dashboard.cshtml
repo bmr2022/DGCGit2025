@@ -103,9 +103,10 @@
                                 <label asp-for="BomRevNo" class="form-label">RevNo</label>
                                 <input type="text" class="form-control" asp-for="BomRevNo" style="width:50px;" />
                             </div>
-                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:100px;">
-                                <label for="DashboardType" class="form-label">Type</label>
-                                <select id="DashboardType" name="DashboardType" class="form-select" onchange="GetSearchData();">
+                            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:150px;">
+                                <label asp-for="DashboardType"  class="form-label">Type</label>
+                                <select asp-for="DashboardType" id="DashboardType"  class="form-select" onchange="GetSearchData();">
+                                    <option value="0" >Select</option>
                                     <option value="Summary" selected>Summary</option>
                                     <option value="Detail">Detail</option>
                                 </select>
@@ -203,7 +204,7 @@
 
 
         $(document).ready(function () {
-             
+            $('#DashboardType').select2();
             var fgPartCodeBack = localStorage.getItem('FGPartCodeBack');
             var fgItemNameBack = localStorage.getItem('FGItemNameBack');
             var rmPartCodeBack = localStorage.getItem('RMPartCodeBack');

@@ -407,8 +407,8 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                    oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
-                    oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@Fromdate", CommonFunc.ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@todate", CommonFunc.ParseFormattedDate(ToDate));
                     oCmd.Parameters.AddWithValue("@reporttype", ReportType);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -426,7 +426,7 @@ namespace eTactWeb.Data.DAL
 
                                                         DeassEntryID = Convert.ToInt32(dr["DeassEntryID"]),
                                                         
-                                                        DeassEntryDate = dr["DeassEntryDate"].ToString(),
+                                                        DeassEntryDate =CommonFunc.ParseFormattedDate(dr["DeassEntryDate"].ToString()),
                                                         DeassYearcode = Convert.ToInt32(dr["DeassYearcode"]),
                                                         DeassSlipNo = dr["DeassSlipNo"].ToString(),
                                                         FGStoreId = Convert.ToInt32(dr["FGStoreId"]),
@@ -445,11 +445,12 @@ namespace eTactWeb.Data.DAL
 
                                                         CreatedByEmp = Convert.ToInt32(dr["CreatedByEmp"]),
                                                         CreatedByEmpName = dr["CreatedByEmpName"].ToString(),
-                                                        CreatedOn = dr["CreatedOn"].ToString(),
+                                                        CreatedOn =CommonFunc.ParseFormattedDate(dr["CreatedOn"].ToString()),
 
                                                         UpdatedBy = Convert.ToInt32(dr["UpdatedBy"]),
                                                         UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
-                                                        UpdatedOn = dr["UpdatedOn"].ToString()
+                                                        UpdatedOn =CommonFunc.ParseFormattedDate(dr["UpdatedOn"].ToString()),
+                                                        EntryByMachine = dr["EntryByMachine"].ToString(),
                                                     }).ToList();
                     }
                 }
@@ -467,6 +468,29 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName)
+        {
+            var _ResponseResult = new ResponseResult();
+            var etrDt = CommonFunc.ParseFormattedDate(EntryDate);
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@DeassEntryID", ID));
+                SqlParams.Add(new SqlParameter("@DeassYearcode", YC));
+                SqlParams.Add(new SqlParameter("@DeassEntryDate", etrDt));
+                SqlParams.Add(new SqlParameter("@CreatedByEmp", ActualEntryBy));
+                SqlParams.Add(new SqlParameter("@EntryByMachine", MachineName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DeassembleItemMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
+            return _ResponseResult;
+        }
     }
 }
