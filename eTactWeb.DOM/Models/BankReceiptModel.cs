@@ -10,6 +10,14 @@ namespace eTactWeb.DOM.Models
 {
     public class BankReceiptModel : TimeStamp
     {
+        public string? FromDateBack { get; set; }
+        public string? ToDateBack { get; set; }
+        public string? LedgerNameBack { get; set; }
+        public string? VoucherNoBack { get; set; }
+        public string? AgainstVoucherRefNoBack { get; set; }
+        public string? AgainstVoucherNoBack { get; set; }
+        public string? GlobalSearchBack { get; set; }
+        public string? DashboardTypeBack { get; set; }
         public int AccEntryId { get; set; }
         public string VoucherType { get; set; }
         public string VoucherNo { get; set; }
@@ -73,7 +81,7 @@ namespace eTactWeb.DOM.Models
         public string Description { get; set; }
         public string VoucherRemark { get; set; }
         public string EntryBankCash { get; set; }
-        public string ChequeDate { get; set; }
+        public string? ChequeDate { get; set; }
         public string ChequeClearDate { get; set; }
         public int UID { get; set; }
         public string CC { get; set; }

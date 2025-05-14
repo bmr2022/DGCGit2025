@@ -52,7 +52,7 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> DirectPurchaseBill(int ID, int YC, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "", string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
+        public async Task<IActionResult> DirectPurchaseBill(int ID, int YearCode, string Mode, string? TypeITEMSERVASSETS, string FromDate = "", string ToDate = "", string DashboardType = "", string DocumentType = "", string VendorName = "", string PurchVouchNo = "", string InvoiceNo = "", string PartCode = "", string ItemName = "", string HSNNo = "", string Searchbox = "")
         {
             HttpContext.Session.Remove("KeyTaxGrid");
             HttpContext.Session.Remove("KeyTDSGrid");
@@ -68,11 +68,11 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
-                MainModel = await IDirectPurchaseBill.GetViewByID(ID, YC, "ViewByID").ConfigureAwait(false);
+                MainModel = await IDirectPurchaseBill.GetViewByID(ID, YearCode, "ViewByID").ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.TDSMode = Mode;
                 MainModel.ID = ID;
-                MainModel.YearCode = YC;
+                MainModel.YearCode = YearCode;
                 MainModel = await BindModels(MainModel).ConfigureAwait(false);
                 MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
                 MainModel.FinToDate = HttpContext.Session.GetString("ToDate");

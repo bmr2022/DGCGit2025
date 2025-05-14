@@ -315,7 +315,6 @@ namespace eTactWeb.Data.DAL
 
                 var entryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
                 var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-                model.BankRECO = DateTime.Now.ToString("dd/MM/yyyy");
                 var voucherDate = CommonFunc.ParseFormattedDate(model.VoucherDate);
                 var InsDate = CommonFunc.ParseFormattedDate(model.InsDate);
 

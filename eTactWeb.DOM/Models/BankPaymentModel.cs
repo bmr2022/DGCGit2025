@@ -72,8 +72,8 @@ namespace eTactWeb.DOM.Models
         public string Description { get; set; }
         public string VoucherRemark { get; set; }
         public string EntryBankCash { get; set; }
-        public string ChequeDate { get; set; }
-        public string ChequeClearDate { get; set; }
+        public string?   ChequeDate { get; set; }
+        public string? ChequeClearDate { get; set; }
         public int UID { get; set; }
         public string CC { get; set; }
         public string TDSNatureOfPayment { get; set; }

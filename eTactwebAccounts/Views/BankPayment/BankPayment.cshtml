@@ -122,7 +122,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="BankRECO" class="form-label">Bank Reco</label>
-                                    <input asp-for="BankRECO" class="form-control" value="01/01/1900" readonly />
+                                    <input asp-for="BankRECO" class="form-control" readonly />
                                 </div>
                             </div>
                         </div>
@@ -367,7 +367,7 @@
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Display Popup For Pending Vouchers</h5>
+                <h5 class="modal-title" id="staticBackdropLabel">Pending Vouchers</h5>
                 <div class="d-flex align-items-center gap-3" style="margin-left:70px">
                     <button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()">Adjust</button>
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
