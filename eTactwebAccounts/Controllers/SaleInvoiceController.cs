@@ -369,7 +369,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyAdjGrid");
             HttpContext.Session.Remove("KeyAdjChallanGrid");
 
-            if (model.Mode != "U")
+            if (model.Mode != "U" && model.Mode != "V")
             {
                 model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
