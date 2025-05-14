@@ -218,7 +218,7 @@ namespace eTactwebInventory.Controllers
             DTSSGrid.Columns.Add("RmUniqueBatchNo", typeof(string));
             DTSSGrid.Columns.Add("IdealDeassQty", typeof(float));
             //DateTime DeliveryDt = new DateTime();
-            int seqNo = 1;
+            int seqNo = 0;
             foreach (var Item in DetailList)
             {
                 string uniqueString = Guid.NewGuid().ToString();
@@ -460,6 +460,23 @@ namespace eTactwebInventory.Controllers
             var ISTGrid = DeassembleItemDetail.Where(x => x.SeqNo == SeqNo);
             string JsonString = JsonConvert.SerializeObject(ISTGrid);
             return Json(JsonString);
+        }
+
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName, string SummaryDetail, string FromDate = "", string ToDate = "", string SlipNo = "", string PartCode = "", string ItemName = "", string BatchNo = "")
+        {
+            var Result = await _IDeassembleItem.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName).ConfigureAwait(false);
+
+            if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+            return RedirectToAction("DeassembleDashBoard", new { Flag = "false", FromDate = FromDate, ToDate = ToDate, SlipNo = SlipNo, PartCode = PartCode, ItemName = ItemName, BatchNo = BatchNo, SummaryDetail = SummaryDetail });
         }
 
 

@@ -81,6 +81,7 @@ namespace eTactWeb.DOM.Models
     {
         public string? FromDate {  get; set; }
         public string? ToDate { get; set; }
+        public string? ReportType { get; set; }                   // DM.SlipNo
         public string? Searchbox { get; set; }
 
         public int? DeassEntryID { get; set; }                  // DM.DeassEntryID
@@ -108,6 +109,8 @@ namespace eTactWeb.DOM.Models
         public int? UpdatedBy { get; set; }                     // DM.UpdatedBy
         public string? UpdatedByEmpName { get; set; }           // UpdatedByEmpName
         public string? UpdatedOn { get; set; }               // DM.UpdatedOn (nullable in case it's not updated yet)
+        public string? EntryByMachine { get; set; }
+
         public IList<DeassembleItemDashBoard>? DeassembleItemDashBoardDetail { get; set; }
     }
 }
