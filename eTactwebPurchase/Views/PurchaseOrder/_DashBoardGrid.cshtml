@@ -49,6 +49,7 @@ else
                 @{
                     var @Cntr = 0;
                     var PoallowtoprintWithoutApproval = Model.PoallowtoprintWithoutApproval;
+                    var ShowOnlyAmendItem=Model.ShowOnlyAmendItem;
                     if (Model.PODashboard == null || Model.PODashboard.Count == 0)
                     {
                         <tr class="text-center"><td colspan="18" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -68,7 +69,7 @@ else
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
                                         <div id="viewCursorDiv-@Cntr">
-                                            <a class="table-link link-success" asp-action="PODetail" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-ShowOnlyAmendItem="@item.ShowOnlyAmendItem">
+                                            <a class="table-link link-success" asp-action="PODetail" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YC="@item.YearCode" asp-route-ShowOnlyAmendItem="ShowOnlyAmendItem">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -101,7 +102,7 @@ else
                                                 </div>
                                             }
 
-                            }
+                                        }
                                         else
                                         {
                                             <div id="printData-@Cntr">

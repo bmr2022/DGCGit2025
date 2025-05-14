@@ -10,14 +10,14 @@ namespace eTactWeb.DOM.Models
     public class DeassembleItemModel: DeassembleItemDetail
     {
 
-        public int? DeassEntryID { get; set; }
+        public int DeassEntryID { get; set; }
         public string? DeassEntryDate { get; set; }
-        public int? DeassYearcode { get; set; }
-        public string? DeassSlipNo { get; set; }
-        public int? BomNo { get; set; }
-        public int? FGStoreId { get; set; }
+        public int DeassYearcode { get; set; }
+        public string DeassSlipNo { get; set; }
+        public int BomNo { get; set; }
+        public int FGStoreId { get; set; }
         public string? FGStoreName { get; set; }
-        public int? FinishItemCode { get; set; }
+        public int FinishItemCode { get; set; }
         public string? FinishItemName { get; set; }
         public string? FinishPartCode { get; set; }
         public string? FGBatchNo { get; set; }
@@ -26,12 +26,12 @@ namespace eTactWeb.DOM.Models
         public decimal? FGQty { get; set; }
         public string? Unit { get; set; }
         public decimal? FGConvQty { get; set; }
-        public int? CreatedByEmp { get; set; }
+        public int CreatedByEmp { get; set; }
         public string? CreatedByEmpName { get; set; }
         public string? CreatedOn { get; set; }
         public int? UpdatedBy { get; set; }
         public string? UpdatedByName { get; set; }
-        public int? UpdatedOn { get; set; }
+        public string? UpdatedOn { get; set; }
         public string? EntryByMachine { get; set; }
         public string? CC { get; set; }
         public string? MRNO { get; set; }
@@ -81,6 +81,7 @@ namespace eTactWeb.DOM.Models
     {
         public string? FromDate {  get; set; }
         public string? ToDate { get; set; }
+        public string? ReportType { get; set; }                   // DM.SlipNo
         public string? Searchbox { get; set; }
 
         public int? DeassEntryID { get; set; }                  // DM.DeassEntryID
@@ -108,6 +109,8 @@ namespace eTactWeb.DOM.Models
         public int? UpdatedBy { get; set; }                     // DM.UpdatedBy
         public string? UpdatedByEmpName { get; set; }           // UpdatedByEmpName
         public string? UpdatedOn { get; set; }               // DM.UpdatedOn (nullable in case it's not updated yet)
+        public string? EntryByMachine { get; set; }
+
         public IList<DeassembleItemDashBoard>? DeassembleItemDashBoardDetail { get; set; }
     }
 }

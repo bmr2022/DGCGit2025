@@ -318,7 +318,54 @@
                 }
             });
         }
+        function loadPage(pageNumber) {
 
+
+            var dashboardType = $('#DashboardType').val();
+            var url = '';
+
+            if (dashboardType === "Summary") {
+                url = '@Url.Action("GetSearchData", "PurchaseBill")';
+            } else if (dashboardType === "Detail") {
+                url = '@Url.Action("GetDetailData", "PurchaseBill")';
+            } else if (dashboardType === "TAXDetail") {
+                url = '@Url.Action("GetDetailData", "PurchaseBill")';
+            }
+
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#DashboardType').val();
+            $.ajax({
+                url: "/PurchaseBill/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
         function GetSummaryData(){
             var data = $('#SParam').serialize();
             $.ajax({
@@ -363,22 +410,22 @@
         }
 
         var currentSearchColumn = null;
-        $("#search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#divDashboardGrid1 tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
-        });
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#divDashboardGrid1 tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
 
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        // });
 
         $(document).on("click", ".sortCol", function () {
             var $column = $(this).parent().closest("th");

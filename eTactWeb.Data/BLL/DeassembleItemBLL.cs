@@ -90,5 +90,15 @@ namespace eTactWeb.Data.BLL
             return await _IDeassembleItemDAL.GetDashboardData();
         }
 
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName)
+        {
+            return await _IDeassembleItemDAL.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName);
+        }
+
+        public async Task<DeassembleItemModel> GetViewByID(int ID, string Mode, int YC)
+        {
+            return await _IDeassembleItemDAL.GetViewByID(ID, Mode, YC);
+        }
+
     }
 }
