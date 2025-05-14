@@ -137,6 +137,11 @@ public class DPBDashBoard : TimeStamp
     public string? AgainstInvNo { get; set; }
     public string? AgainstVoucherNo { get; set; }
     public DateTime? AgainstVoucherDate { get; set; }
+    //pagintion
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+    public int TotalRecords { get; set; }
+
 }
 
 [Serializable()]

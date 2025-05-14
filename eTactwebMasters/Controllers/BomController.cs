@@ -417,7 +417,7 @@ public class BomController : Controller
         return PartialView("_BomGrid", model);
     }
 
-    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string GlobalSearch = "", int pageNumber = 1, int pageSize = 50)
+    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string Search = "", int pageNumber = 1, int pageSize = 50)
     {
         //BomDashboard model = new BomDashboard
         //{
@@ -572,64 +572,7 @@ public class BomController : Controller
 	}
 
 
-	[HttpGet]
-
-	public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 500)
-  {
-        BomDashboard model = new BomDashboard();
-        //DataTable bomViewModel = new DataTable();
-        //string bomData = HttpContext.Session.GetString("KeyBomList");
-        //WIPStockRegisterModel model = new WIPStockRegisterModel();
-
-        if (string.IsNullOrWhiteSpace(searchString))
-        {
-            return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
-        }
-
-        string modelJson = HttpContext.Session.GetString("KeyBomList");
-        List<BomModel> BomDashboard = new List<BomModel>();
-        if (!string.IsNullOrEmpty(modelJson))
-        {
-            BomDashboard = JsonConvert.DeserializeObject<List<BomModel>>(modelJson);
-        }
-        if (BomDashboard == null)
-        {
-            return PartialView("_BomDashboardGrid", new List<BomModel>());
-        }
-
-        List<BomModel> filteredResults;
-
-        if (string.IsNullOrWhiteSpace(searchString))
-        {
-            filteredResults = BomDashboard.ToList();
-        }
-        else
-        {
-            filteredResults = BomDashboard
-                .Where(i => i.GetType().GetProperties()
-                    .Where(p => p.PropertyType == typeof(string))
-                    .Select(p => p.GetValue(i)?.ToString())
-                    .Any(value => !string.IsNullOrEmpty(value) &&
-                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
-                .ToList();
-
-
-            if (filteredResults.Count == 0)
-            {
-                filteredResults = BomDashboard.ToList();
-            }
-        }
-
-        model.TotalRecords = filteredResults.Count;
-        //model.DTDashboard = ToDataTable(filteredResults);
-        //model.DTDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        var pagedList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-		model.BomList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-        model.PageNumber = pageNumber;
-        model.PageSize = pageSize;
-
-        return PartialView("_BomDashboardGrid", model.BomList);
-    }
+	
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -797,6 +740,15 @@ public class BomController : Controller
         {
             DTDashboard = _IBom.GetBomDetail(FGC, BMNo, "GetBomDetail")
         };
+        //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        //{
+        //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+        //    SlidingExpiration = TimeSpan.FromMinutes(55),
+        //    Size = 1024,
+        //};
+
+        //_MemoryCache.Set("KeyBOMList_BomDetail", model, cacheEntryOptions);
+       
         return PartialView("_BomDetail", model);
     }
 
@@ -850,7 +802,62 @@ public class BomController : Controller
         return null;
     }
 
+    [HttpGet]
 
+    public IActionResult GlobalSearch(string ReportType, string searchString, int pageNumber = 1, int pageSize = 500 )
+    {
+        BomDashboard model = new BomDashboard();
+        //DataTable bomViewModel = new DataTable();
+        //string bomData = HttpContext.Session.GetString("KeyBomList");
+        //WIPStockRegisterModel model = new WIPStockRegisterModel();
+
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
+        }
+
+        string cacheKey = $"KeyBOMList_{ReportType}";
+        if (!_MemoryCache.TryGetValue(cacheKey, out IList<BomDashboard> bomDashboard) || bomDashboard == null)
+        {
+            return PartialView("_BomDashboardGrid", new List<BomDashboard>());
+        }
+        //string modelJson = HttpContext.Session.GetString("KeyBomList");
+        List<BomDashboard> filteredResults;
+        if (string.IsNullOrWhiteSpace(searchString))
+        {
+            filteredResults = bomDashboard.ToList();
+        }
+        else
+        {
+            filteredResults = bomDashboard
+                .Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) &&
+                                  value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                .ToList();
+
+
+            if (filteredResults.Count == 0)
+            {
+                filteredResults = bomDashboard.ToList();
+            }
+        }
+
+        model.TotalRecords = filteredResults.Count;
+        model.DTDashboard = ToDataTable(filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList());
+        model.PageNumber = pageNumber;
+        model.PageSize = pageSize;
+        model.TotalRecords = filteredResults.Count;
+        //model.DTDashboard = ToDataTable(filteredResults);
+        //model.DTDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        //var pagedList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        //model.BomList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        //model.PageNumber = pageNumber;
+        //model.PageSize = pageSize;
+
+        return PartialView("_BomDashboardGrid", model.BomList);
+    }
     public JsonResult GetUnit(string IC)
     {
         IC = _IBom.GetUnit(IC, "GetUnit");
