@@ -293,7 +293,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate)
+        public async Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new JournalVoucherModel();
@@ -310,6 +310,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@VoucherType", "JOURNAL-VOUCHER");
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
+                    oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -356,7 +360,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<JournalVoucherModel> GetDashBoardSummaryData(string FromDate, string ToDate)
+        public async Task<JournalVoucherModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new JournalVoucherModel();
@@ -373,6 +377,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@VoucherType", "JOURNAL-VOUCHER");
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
+                    oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

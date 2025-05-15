@@ -838,20 +838,20 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             HttpContext.Session.Remove("KeyBankReceiptGrid");
             HttpContext.Session.Remove("KeyBankReceiptGridEdit");
             var model = new BankReceiptModel();
-            model = await _IBankReceipt.GetDashBoardDetailData(FromDate, ToDate);
+            model = await _IBankReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
             return PartialView("_BankReceiptDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate,string LedgerName,string VoucherNo, string AgainstVoucherRefNo,string AgainstVoucherNo)
         {
             HttpContext.Session.Remove("KeyBankReceiptGrid");
             HttpContext.Session.Remove("KeyBankReceiptGridEdit");
             var model = new BankReceiptModel();
-            model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate);
+            model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate,LedgerName,VoucherNo,AgainstVoucherRefNo,AgainstVoucherNo);
             return PartialView("_BankReceiptDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)

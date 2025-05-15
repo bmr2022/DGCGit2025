@@ -536,7 +536,7 @@
 		});
 
 		function ChangeAdjustAmount() {
-			debugger;
+			 ;
 			var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
 			var AdjustQty = parseFloat($('#AdjustAmount').val());
 			if (isNaN(AdjustQty) || AdjustQty <= 0) {
@@ -1954,8 +1954,8 @@
 		})
 
 		function CheckUnCheckCheck(i) {
-			debugger
-			debugger
+			 
+			 
 			var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
 			if ($('#CheckUnCheck-' + i).is(':checked') == true) {
 				if (parseFloat($('#AdjustAmt-' + i).val()) == 0) {
@@ -2057,7 +2057,7 @@
 		});
 
 		function PressBack() {
-
+			 
 			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
 			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
 			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
