@@ -24,6 +24,7 @@ using FastReport.Data;
 using FastReport;
 using System.Configuration;
 using Microsoft.AspNetCore.Http;
+using System.Drawing.Printing;
 
 
 namespace eTactWeb.Controllers
@@ -38,7 +39,8 @@ namespace eTactWeb.Controllers
         private readonly ILogger<SaleBillController> _logger;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue)
+        private readonly IMemoryCache _MemoryCache;
+        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -46,6 +48,7 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
+            _MemoryCache = iMemoryCache;
         }
         [HttpPost]
         public async Task<IActionResult> SaleInvoice(SaleBillModel model)
@@ -490,7 +493,7 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate)
+        public async Task<IActionResult> GetSearchData(string summaryDetail, string partCode, string itemName, string saleBillno, string customerName, string sono, string custOrderNo, string schNo, string performaInvNo, string saleQuoteNo, string domensticExportNEPZ, string fromdate, string toDate, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
         {
             try
             {
@@ -545,6 +548,56 @@ namespace eTactWeb.Controllers
                         }
                     }
                 }
+                if (model.SaleBillDataDashboard != null && model.SaleBillDataDashboard.Any())
+                {
+                    if (!string.IsNullOrWhiteSpace(SearchBox))
+                    {
+                        var filteredResults = model.SaleBillDataDashboard
+                            .Where(item => item.GetType().GetProperties()
+                                .Where(prop => prop.PropertyType == typeof(string))
+                                .Select(prop => prop.GetValue(item)?.ToString())
+                                .Any(val => !string.IsNullOrEmpty(val) &&
+                                            val.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                            .ToList();
+
+                        if (filteredResults.Any())
+                        {
+                            model.SaleBillDataDashboard = filteredResults;
+                        }
+                    }
+
+                    model.TotalRecords = model.SaleBillDataDashboard.Count;
+                    model.PageNumber = pageNumber;
+                    model.PageSize = pageSize;
+
+                    model.SaleBillDataDashboard = model.SaleBillDataDashboard
+                        .Skip((pageNumber - 1) * pageSize)
+                        .Take(pageSize)
+                        .ToList();
+                }
+                else
+                {
+                    model.SaleBillDataDashboard = new List<SaleBillDashboard>();
+                    model.TotalRecords = 0;
+                    model.PageNumber = pageNumber;
+                    model.PageSize = pageSize;
+                }
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                if (summaryDetail == "Summary")
+                {
+                    _MemoryCache.Set("KeySaleBillList_Summary", model.SaleBillDataDashboard, cacheEntryOptions);
+
+                }
+                else
+                {
+                    _MemoryCache.Set("KeySaleBillList_Detail", model.SaleBillDataDashboard, cacheEntryOptions);
+
+                }
                 model.SummaryDetail = summaryDetail;
                 return PartialView("_SBDashboardGrid", model);
             }
@@ -552,6 +605,52 @@ namespace eTactWeb.Controllers
             {
                 throw;
             }
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            SaleBillDashboard model = new SaleBillDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_SBDashboardGrid", new List<SaleBillDashboard>());
+            }
+            string cacheKey = $"KeySaleBillList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<SaleBillDashboard> saleBillDashboard) || saleBillDashboard == null)
+            {
+                return PartialView("_SBDashboardGrid", new List<SaleBillDashboard>());
+            }
+
+            List<SaleBillDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = saleBillDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = saleBillDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = saleBillDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.SaleBillDataDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+           
+
+                return PartialView("_SBDashboardGrid", model);
+           
         }
         public async Task<JsonResult> GetBatchInventory()
         {

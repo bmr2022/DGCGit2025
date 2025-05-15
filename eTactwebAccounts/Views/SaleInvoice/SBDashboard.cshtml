@@ -248,24 +248,24 @@
 
         }
 
-        var currentSearchColumn = null;
+        // var currentSearchColumn = null;
 
-        $("#search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#divSBDashboardGrid tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
-        });
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#divSBDashboardGrid tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
 
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup');
-        });
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup');
+        // });
 
         $(document).on("click", ".sortCol", function () {
             var $column = $(this).parent().closest("th");
@@ -461,6 +461,49 @@
                 }
             });
         }
+        function loadPage(pageNumber) {
+
+
+            var dashboardType = $('#SummaryDetail').val();
+            
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'fromdate', value: $('#FinFromDate').val() });
+            formData.push({ name: 'toDate', value: $('#FinToDate').val() });
+            console.log(formData);
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            $.ajax({
+                type: 'GET',
+                url : '@Url.Action("GetSearchData", "SaleInvoice")',
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#SummaryDetail').val();
+            $.ajax({
+                url: "/SaleInvoice/GlobalSearch?searchString=" + searchString + "&dashboardType=" + dashboardType,
+
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>

@@ -1459,13 +1459,13 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "TxRemark"
                         && typeProperty.PropertyInfo.Name != "TxRoundOff"
                         && typeProperty.PropertyInfo.Name != "TxSeqNo"
-                        && typeProperty.PropertyInfo.Name != "TxTaxType"
+                        && typeProperty.PropertyInfo.Name != "TxTaxType" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         && typeProperty.PropertyInfo.Name != "TxTaxTypeName" && typeProperty.PropertyInfo.Name != "BOMInd" && typeProperty.PropertyInfo.Name != "ProducedUnprod"
                         && typeProperty.PropertyInfo.Name != "TxType" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
                         && typeProperty.PropertyInfo.Name != "YesNo" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "CreatedBy" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "Mode"
                         && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "UpdatedOn"
-
+                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -1522,9 +1522,11 @@ public static class CommonFunc
                           && typeProperty.PropertyInfo.Name != "TotalRoundOffAmt" && typeProperty.PropertyInfo.Name != "FromDateBack" && typeProperty.PropertyInfo.Name != "ToDateBack" && typeProperty.PropertyInfo.Name != "PartCodeBack" && typeProperty.PropertyInfo.Name != "ItemNameBack" && typeProperty.PropertyInfo.Name != "SaleBillNoBack" && typeProperty.PropertyInfo.Name != "CustNameBack" && typeProperty.PropertyInfo.Name != "SonoBack" && typeProperty.PropertyInfo.Name != "CustOrderNoBack"
                         && typeProperty.PropertyInfo.Name != "SchNoBack" && typeProperty.PropertyInfo.Name != "Searchbox"
                         && typeProperty.PropertyInfo.Name != "PerformaInvNoBack" && typeProperty.PropertyInfo.Name != "TaxList" && typeProperty.PropertyInfo.Name != "DT"
-                        && typeProperty.PropertyInfo.Name != "SaleQuoteNoBack" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"
+                        && typeProperty.PropertyInfo.Name != "SaleQuoteNoBack" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"&& typeProperty.PropertyInfo.Name != "BOMInd"
                         && typeProperty.PropertyInfo.Name != "DomesticExportNEPZBack" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "SearchBoxBack" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "SaleBillDataDashboard"
+                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords"
+                       
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
