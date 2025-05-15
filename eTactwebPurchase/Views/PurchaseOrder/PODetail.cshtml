@@ -452,6 +452,8 @@
                     var ItemData = {
                         'IndentNo': $('#GridIndentNo-' + i).text(),
                         'IndentDate': $('#GridIndentDate-' + i).text(),
+                        'IndentYearCode': $('#GridIndentYearCode-' + i).text(),
+
                         'IndentEntryId': $('#GridIndentEntryId-' + i).text(),
                         'PartCode': $('#GridIndentPartCode-' + i).text(),
                         'PONO': $('#PONo').val(),
@@ -795,6 +797,7 @@
                                     '<td><input type="checkbox" id="chkIndentData-' + i + '"/></td>' +
                                     '<td id="GridIndentNo-' + i + '"><input type="hidden" id="GridIndentItemCode-' + i + '" value="' + val.ItemCode + '"/> ' + val.IndentNo + '</td>' +
                                     '<td id="GridIndentDate-' + i + '">' + val.IndentDate + '</td>' +
+                                    '<td id="GridIndentYearCode-' + i + '">' + val.IndentYearCode + '</td>' +
                                     '<td id="GridIndentEntryId-' + i + '">' + val.IndentEntryId + '</td>' +
                                     '<td id="GridIndentPartCode-' + i + '">' + val.Partcode + '</td>' +
                                     '<td id="GridIndentItemName-' + i + '">' + val.itemName + '</td>' +
