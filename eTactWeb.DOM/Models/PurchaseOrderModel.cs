@@ -255,9 +255,11 @@ public class PurchaseOrderModel : POItemDetail
             new() { Value = "N", Text = "No" },
             new() { Value = "Y", Text = "Yes" },
         };
+    
 
     //just for display
     public string? UniversalPartCode { get; set; }
+    public string? ShowOnlyAmendItem { get; set; }
     public string? UniversalDescription { get; set; }
     public string? FinFromDate { get; set; }
     public string? FinToDate { get; set; }

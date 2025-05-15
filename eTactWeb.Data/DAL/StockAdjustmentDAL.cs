@@ -277,7 +277,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@WCID", WCID));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", CommonFunc.ParseFormattedDate(DateTime.Now.ToString())));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("GETWIPotalSTOCK", SqlParams);
             }
             catch (Exception ex)
@@ -297,7 +297,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@WCID", WCID));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", CommonFunc.ParseFormattedDate(DateTime.Now.ToString())));
                 SqlParams.Add(new SqlParameter("@Uniquebatchno", uniquebatchno));
                 SqlParams.Add(new SqlParameter("@BATCHNO", batchno));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("GETWIPSTOCKBATCHWISE", SqlParams);
