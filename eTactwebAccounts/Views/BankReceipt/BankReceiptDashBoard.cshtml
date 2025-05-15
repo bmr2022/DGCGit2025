@@ -101,7 +101,16 @@
 {
     <script>
         $(document).ready(function () {
-              
+
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            var LedgerNameBack = sessionStorage.getItem('LedgerNameBack');
+            var VoucherNoBack = sessionStorage.getItem('VoucherNoBack');
+            var AgainstVoucherRefNoBack = sessionStorage.getItem('AgainstVoucherRefNoBack');
+            var AgainstVoucherNoBack = sessionStorage.getItem('AgainstVoucherNoBack');
+            var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
+            var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+
             var currentDate = new Date();
 
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -109,7 +118,28 @@
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
+             if (FromDateBack != null  &&  FromDateBack != ''){
+                $('#FromDate').val(FromDateBack);
+                $('#ToDate').val(ToDateBack);
+                $('#LedgerName').val(LedgerNameBack);
+                $('#VoucherNo').val(VoucherNoBack);
+                $('#AgainstVoucherRefNo').val(AgainstVoucherRefNoBack);
+                $('#AgainstVoucherNo').val(AgainstVoucherNoBack);
+                $('#search-box').val(GlobalSearchBack);
+                $('#DashboardType').val(DashboardTypeBack);
+             }
+
             GetSearchData();
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('LedgerNameBack');
+            sessionStorage.removeItem('VoucherNoBack');
+            sessionStorage.removeItem('AgainstVoucherRefNoBack');
+            sessionStorage.removeItem('AgainstVoucherNoBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+            sessionStorage.removeItem('DashboardTypeBack');
+
         });
 
         $(function () {
@@ -311,15 +341,13 @@
                 window.location.href = linkUrl;
             }
         }
+
         function confirmEdit(event) {
             event.preventDefault();
-
-            if (confirm("Are you sure you want to Edit this entry?")) {
-                var linkUrl = $(event.currentTarget).attr("href");
-
-                // Redirect without appending additional parameters manually
-                window.location.href = linkUrl;
-            }
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+            window.location.href = linkUrl;
         }
 
         function BackButtonData(event) {

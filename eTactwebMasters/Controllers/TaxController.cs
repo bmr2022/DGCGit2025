@@ -62,7 +62,8 @@ public class TaxController : Controller
     }
     public IActionResult ClearAdjGrid()
     {
-        _MemoryCache.Remove("KeyAdjGrid");
+        //_MemoryCache.Remove("KeyAdjGrid");
+        HttpContext.Session.Remove("KeyAdjGrid");
         return Json("Ok");
     }
 

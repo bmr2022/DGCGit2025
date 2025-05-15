@@ -28,7 +28,7 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> BankReceipt(int ID, string Mode, int YearCode, string VoucherNo)
+        public async Task<ActionResult> BankReceipt(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             HttpContext.Session.Remove("KeyBankReceiptGrid");
             HttpContext.Session.Remove("KeyBankReceiptGridEdit");
@@ -50,6 +50,14 @@ namespace eTactWeb.Controllers
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReceiptGrid);
                 HttpContext.Session.SetString("KeyBankReceiptGridEdit", serializedGrid);
             }
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            MainModel.VoucherNoBack = VoucherNo;
+            MainModel.LedgerNameBack = LedgerName;
+            MainModel.AgainstVoucherRefNo = AgainstVoucherRefNo;
+            MainModel.AgainstVoucherNoBack = AgainstVoucherNo;
+            MainModel.GlobalSearchBack = Searchbox;
+            MainModel.DashboardTypeBack = DashboardType;
             return View(MainModel);
         }
         [HttpPost]
@@ -239,8 +247,8 @@ namespace eTactWeb.Controllers
                 Item.CrAmt ,
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
-                Item.ChequeDate = DateTime.Now.ToString("dd/MMM/yyyy") ,
-                Item.BankRECO =DateTime.Now.ToString("dd/MMM/yyyy") ,
+                Item.ChequeDate != null ? Item.ChequeDate : null,
+                Item.BankRECO,
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,

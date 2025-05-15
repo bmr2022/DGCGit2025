@@ -16,7 +16,7 @@ namespace eTactWeb.DOM.Models
         public string SubVoucherID { get; set; }
         public string VoucherDate { get; set; }
         public string? DueDate { get; set; }
-        public string BankRECO { get; set; }
+        public string? BankRECO { get; set; }
         public string Flag { get; set; }
         public int YearCode { get; set; }
         public string SubVoucher { get; set; }
@@ -72,8 +72,8 @@ namespace eTactWeb.DOM.Models
         public string Description { get; set; }
         public string VoucherRemark { get; set; }
         public string EntryBankCash { get; set; }
-        public string ChequeDate { get; set; }
-        public string ChequeClearDate { get; set; }
+        public string? ChequeDate { get; set; }
+        public string? ChequeClearDate { get; set; }
         public int UID { get; set; }
         public string CC { get; set; }
         public string TDSNatureOfPayment { get; set; }

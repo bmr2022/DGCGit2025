@@ -2324,6 +2324,7 @@
                 $.notify('StateCode is mandatory...!', "error");
             }
             else if ($('#divAdjItemList tr td').length > 1) {
+                var hasCR = false;
                 $('tr.adjGridRow').each(function () {
                     $(this).find('.GridAdjDrCr').each(function () {
                         if ($(this).text().trim().toUpperCase() === 'CR') {
@@ -3091,7 +3092,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-
+                    debugger
                     $('#Uniquebatchno').empty();
                     $('#Uniquebatchno').append('<option value="0" selected>-Select-</option>');
                     if (result != null) {

@@ -872,12 +872,37 @@
 
                         </ul>
                     </li>
-                    @* LedgerOpening *@
+
+                    <li>
+                        @*//1 *@
+                        <a class="dropdown-item" id="Account Master" href="#">Qc &raquo;</a>
+                        @*    <ul class="submenu dropdown-menu"> *@
+                        <ul class="submenu dropdown-menu" data-bs-popper="static">
+                            <li>
+                                @*//2 Primary Account group *@
+                                <a class="dropdown-item" id="Account Master" href="#" style="background:#FFF8DC ; color :#000000">Control plan &raquo;</a>
+                                <ul class="submenu dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="ControlPlan" asp-route-ID="0" asp-controller="ControlPlan" id="ControlPlan">
+                                            <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Control plan
+                                        </a>
 
 
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item PrimaryAccountGroupMaster" asp-action="ControlPlanDashBoard" asp-controller="ControlPlan">
+                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="PrimaryAccountGroupMaster" />
 
+                                    </li>
+                                </ul>
+                            </li> 
+                          
+                        </ul>  @*//put menu above it *@
 
-
+                    </li>  @*//1 *@
+                  
                 </ul>
                 </li>
                 <li class="nav-item dropdown">
@@ -2080,11 +2105,11 @@
                             <a class="dropdown-item" href="#">Group Ledger &raquo; </a>
                         </li>
 
-                        <li>
+                        @* <li>
                             <a class="dropdown-item" href="#">Bank Reco &raquo; </a>
                             <ul class="submenu dropdown-menu">
                             </ul>
-                        </li>
+                        </li> *@
 
                         <li><hr class="dropdown-divider"></li>
 

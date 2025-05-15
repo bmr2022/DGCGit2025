@@ -16,6 +16,9 @@ namespace eTactWeb.DOM.Models
         public string? Searchbox { get; set; }
         public string? SummaryDetail { get; set; }
         public string? Currency { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public List<SaleBillDashboard>? SaleBillDataDashboard { get; set; }
     }
     public class SaleBillDetail : TaxModel

@@ -1293,7 +1293,7 @@ public class PurchaseOrderController : Controller
                 {
                     Item.IndentNo,
                     Item.IndentEntryId  == "" ? 0 : Convert.ToInt32(Item.IndentEntryId),
-                     2024,//Item.IndentYearCode,
+                   Item.IndentYearCode,
                     Item.PendQtyForPO, // POno
                     Item.POEntryId   == "" ? 0 : Convert.ToInt32(Item.POEntryId), // POEntryId
                     Item.POYearCode   == "" ? 0 : Convert.ToInt32(Item.POYearCode),//POYC
