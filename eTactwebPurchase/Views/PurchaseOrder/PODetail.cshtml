@@ -13,8 +13,13 @@
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
+            
             <h5>
                 <strong>@ViewData["Title"] - @Model.YearCode</strong>
+                    
+                    <input type="checkbox" id="ShowOnlyAmendItemcheck" name="ShowOnlyAmendItem" />
+                    <input type="hidden" asp-for="ShowOnlyAmendItem" value="@Model.ShowOnlyAmendItem" />
+                  
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @if (Model.Mode != "V" && Model.Mode != "POC")
                     {
@@ -22,11 +27,11 @@
                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                     SAVE
                     </a> *@
-                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="GetImage" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo">
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="GetImage" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" >
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             EXPORT
                         </a>
-                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo">
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
@@ -67,7 +72,7 @@
                             <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                             Dashboard
                         </a>
-                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo">
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
@@ -380,7 +385,12 @@
 {
     <script>
         var actualRate = 0;
-
+        document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+            document.getElementById('ShowOnlyAmendItem').value = this.checked ? 'Yes' : 'No';
+            console.log(this.checked ? 'Yes' : 'No');
+        @Model.ShowOnlyAmendItem = this.checked ? 'Yes' : 'No';
+        });
+        
         $(function () {
             $('#EntryByMachineName').val($('#machineName').text());
             $('.DH').fadeOut();
@@ -452,6 +462,8 @@
                     var ItemData = {
                         'IndentNo': $('#GridIndentNo-' + i).text(),
                         'IndentDate': $('#GridIndentDate-' + i).text(),
+                        'IndentYearCode': $('#GridIndentYearCode-' + i).text(),
+
                         'IndentEntryId': $('#GridIndentEntryId-' + i).text(),
                         'PartCode': $('#GridIndentPartCode-' + i).text(),
                         'PONO': $('#PONo').val(),
@@ -491,7 +503,7 @@
                     else if (response == "OK") {
                         $.notify("Indent detail saved successfully..!", "success");
                         if ($('#ItemCode').val() == null && $('#PartCode').val() == null) {
-                            //FillItems();
+                            FillItems();
                         }
                     }
                 },
@@ -795,6 +807,7 @@
                                     '<td><input type="checkbox" id="chkIndentData-' + i + '"/></td>' +
                                     '<td id="GridIndentNo-' + i + '"><input type="hidden" id="GridIndentItemCode-' + i + '" value="' + val.ItemCode + '"/> ' + val.IndentNo + '</td>' +
                                     '<td id="GridIndentDate-' + i + '">' + val.IndentDate + '</td>' +
+                                    '<td id="GridIndentYearCode-' + i + '">' + val.IndentYearCode + '</td>' +
                                     '<td id="GridIndentEntryId-' + i + '">' + val.IndentEntryId + '</td>' +
                                     '<td id="GridIndentPartCode-' + i + '">' + val.Partcode + '</td>' +
                                     '<td id="GridIndentItemName-' + i + '">' + val.itemName + '</td>' +
@@ -817,7 +830,7 @@
                 });
             }
 
-
+           
 
             $('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
             $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));

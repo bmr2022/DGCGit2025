@@ -35,7 +35,7 @@
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>@ViewData["Title"] - @Model.YearCode</strong>
-                <input type="hidden" id="YearCode" value=""/>
+                <input type="hidden" id="YearCode" value="" />
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
                        asp-controller="PurchaseBill" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PurchVouchNo="@Model.PurchVouchNo">
@@ -121,7 +121,7 @@
                         </button>
                     </h2>
                     <div id="BPanel1" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="HPanel1">
-                      
+
                         @await Html.PartialAsync("_PBMain", Model)
                         <input type="hidden" asp-for="TypeOfSave" value="" />
                     </div>
@@ -401,7 +401,7 @@
             FillCurrency();
             var rowCounter = $('#PBPendingItemDetail tr').length;
             for (var i = 1; i <= rowCounter; i++) {
-                 BillRateChange(i);
+                BillRateChange(i);
             }
 
             var finFromDate = $('#FinFromDate').val();
@@ -426,7 +426,7 @@
                 CalculateAdjAmt('NetTotal');
             }
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "INSERT") {
-                console.log('inside if'+$('#NetTotal').val());
+                console.log('inside if' + $('#NetTotal').val());
                 setInterval(checkNetTotalChange, 500);
             }
             var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
@@ -436,7 +436,7 @@
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "PBI") {
                 var InvDate = $('#InvDate').val()?.split("-").join("/");
                 InvDate = ValidateNull(InvDate) ? parseDateToFormat(InvDate.split(" ")[0]) : 'now';
-                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", InvDate);
+                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", InvDate);
 
                 // var StrMRNEntryDate = $('#StrMRNEntryDate').val();//?.split("-").join("/");
                 // StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
@@ -444,15 +444,15 @@
 
                 var StrMRNEntryDate = $('#StrMRNEntryDate').val()?.split("-").join("/");
                 StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
-                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", StrMRNEntryDate);
+                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrMRNEntryDate);
 
                 var StrGateDate = $('#StrGateDate').val()?.split("-").join("/");
                 StrGateDate = ValidateNull(StrGateDate) ? parseDateToFormat(StrGateDate.split(" ")[0]) : 'now';
-                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", StrGateDate);
+                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrGateDate);
 
                 var StrVouchDate = $('#VouchDate').val()?.split("-").join("/");
                 StrVouchDate = ValidateNull(StrVouchDate) ? parseDateToFormat(StrVouchDate.split(" ")[0]) : 'now';
-                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2 , minDate: formattedDate1 }).datepicker("setDate", StrVouchDate);
+                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrVouchDate);
 
                 var AdjDueDate = $('#AdjDueDate').val()?.split("-").join("/");
                 AdjDueDate = ValidateNull(AdjDueDate) ? parseDateToFormat(AdjDueDate.split(" ")[0]) : 'now';
@@ -486,7 +486,7 @@
                 $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
 
                 var today = new (Date);
-                  $("#VouchDate, #PODate, #ScheduleDate, #POCloseDate, #AmmDate, #AmendmentDate, #AdjDueDate, #AdjAgnstVouchDate").datepicker({
+                $("#VouchDate, #PODate, #ScheduleDate, #POCloseDate, #AmmDate, #AmendmentDate, #AdjDueDate, #AdjAgnstVouchDate").datepicker({
                     dateFormat: 'dd/mm/yy',
                     minDate: today,
                 });
@@ -593,7 +593,7 @@
                 var rowCount = $('#divPBItemList tr').length;
                 var columnCount = $('#divPBItemList tr td').length;
                 if ($('#Mode').val() == "U") {
-                    console.log("before"+$('#NetTotal').val());
+                    console.log("before" + $('#NetTotal').val());
                     /* refreshitemcountandnetamt(true); */
                     console.log("after" + $('#NetTotal').val());
                 }
@@ -634,15 +634,15 @@
             $('#POFor').trigger("change");
             console.log($('#NetTotal').val());
 
-           /*  if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                calculatenettotal();
-            } */
+            /*  if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                 calculatenettotal();
+             } */
         });
 
-       
-        
-        
-        
+
+
+
+
         function selectDocNamesForAllRows() {
             var rowCounter = $('#PBPendingItemDetail tr').length;
             for (var i = 1; i <= rowCounter; i++) {
@@ -812,7 +812,7 @@
         $('.GridButton').click(function () {
             var rowCount = $('#divPBItemListToAddInGrid tr').length;
             $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
-             
+
             var Err = 0;
             for (let i = 1; i <= rowCount; i++) {
 
@@ -1018,7 +1018,7 @@
                 }).fail(function () {
                     alert("error");
                 }).always(function () {
-                     CalculateAdjAmt('NetTotal');
+                    CalculateAdjAmt('NetTotal');
                 });
             }
         });
@@ -1059,7 +1059,7 @@
                     sum += parseFloat(($('#GridAmount-' + i).text() == '.00' || $('#GridAmount-' + i).text() == '' || $('#GridAmount-' + i).text() == '0') ? 0 : $('#GridAmount-' + i).text());
 
                     var billrate = parseFloat(($('#MainItemGridd-BillRate-' + i).text() == '.00' || $('#MainItemGridd-BillRate-' + i).text() == '' || $('#MainItemGridd-BillRate-' + i).text() == '0') ? 0 : $('#MainItemGridd-BillRate-' + i).text());
-                    
+
                     var mrprate = parseFloat(($('#MainItemGridd-MRP-' + i).text() == '.00' || $('#MainItemGridd-MRP-' + i).text() == '' || $('#MainItemGridd-MRP-' + i).text() == '0') ? 0 : $('#MainItemGridd-MRP-' + i).text());
 
                     var POrate = parseFloat(($('#MainItemGridd-PORate-' + i).text() == '.00' || $('#MainItemGridd-PORate-' + i).text() == '' || $('#MainItemGridd-PORate-' + i).text() == '0') ? 0 : $('#MainItemGridd-PORate-' + i).text());
@@ -1097,7 +1097,7 @@
             $('#NetTotal').val(txTotal.toFixed(2));
             if (isrefreshatload != null && isrefreshatload != undefined && isrefreshatload == true) {
             }
-            else{
+            else {
                 $('#TotalDiscountPercentage').val(0);
                 $('#TotalAmtAftrDiscount').val(0);
                 $('#TotalRoundOffAmt').val(0.00);
@@ -1272,7 +1272,7 @@
                     $('#errormessage2').hide();
                     $('#AllowVouchDateChangeBox').modal("show");
                 } else if ($('#AllowVouchDateChange').val() == "Y") {
-                    AllowedVouchDate = true; 
+                    AllowedVouchDate = true;
                     var element = document.getElementById('VouchDate');
                     if (element) {
                         element.readOnly = false;
@@ -1301,7 +1301,7 @@
         function getMaxMIRDate() {
             let maxDate = null;
             $("[id^='MainItemGrid-MIRDATE-']").each(function () {
-                const dateValue = $(this).val(); 
+                const dateValue = $(this).val();
                 if (dateValue) {
                     const mirDate = parseISTDate(dateValue);
                     if (!maxDate || mirDate > maxDate) {
@@ -1465,7 +1465,7 @@
         }
 
         $('#IN1').change(function () {
-             ;
+            ;
             fillPurchaseBillItemGridFromMemoryCache();
         });
 
@@ -1523,6 +1523,32 @@
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
                 }
             });
+        });
+
+        $('#submitBTN,#UpdateButton').click(function () {
+            if ($('#divAdjItemList tr td').length > 1) {
+                var hasDR = false;
+                $('tr.adjGridRow').each(function () {
+                    $(this).find('.GridAdjDrCr').each(function () {
+                        if ($(this).text().trim().toUpperCase() === 'DR') {
+                            hasDR = true;
+                            return false;
+                        }
+                    });
+
+                    if (hasDR) {
+                        return false;
+                    }
+                });
+
+                if (hasDR) {
+                    $.notify('AdjGrid should not have DR value...!', "error");
+                } else {
+                    $("form").submit();
+                }
+            } else {
+                $("form").submit();
+            }
         });
 
         var currentSearchColumndbCr = null;
@@ -1608,7 +1634,7 @@
         $(document).on('select2:open', () => {
             document.querySelector('.select2-search__field').focus();
         });
-        
+
         function ValidateForm() {
             var Err = 0;
             if ($('#AccountCode').prop('selectedIndex') <= 0) {
@@ -1640,7 +1666,7 @@
         }
 
         $('form').submit(function (event) {
-             ;
+            ;
             $('#PartCode').prop('selectedIndex', 1).trigger("change");
 
             $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
@@ -1966,8 +1992,8 @@
             }
             else {
                 const year = $('#YearCode').val();
-                if(vouchDate && year){
-                    if(vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
+                if (vouchDate && year) {
+                    if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
                         $.notify("vouchDate must be in logged in financial year");
                         isError = true;
                     }
@@ -2020,32 +2046,32 @@
         });
 
 
-/*         function calculatenettotal() {
-            var rowCount = $('#divPBItemList tr').length;
-            var columnCount = $('#divPBItemList tr td').length;
-            var taxRowCount = $('#divTaxGrid tr').length;
-            var sum = 0;
+        /*         function calculatenettotal() {
+                    var rowCount = $('#divPBItemList tr').length;
+                    var columnCount = $('#divPBItemList tr td').length;
+                    var taxRowCount = $('#divTaxGrid tr').length;
+                    var sum = 0;
 
 
-            for (var i = 1; i <= rowCount; i++) {
+                    for (var i = 1; i <= rowCount; i++) {
 
-                sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
-            }
-            $('#ItemNetAmount').val(sum.toFixed(2));
-            var txSum = 0;
-            if ($('#divTaxGrid tr td').length > 1) {
-                for (var i = 1; i <= taxRowCount; i++) {
-                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                    }
+                    $('#ItemNetAmount').val(sum.toFixed(2));
+                    var txSum = 0;
+                    if ($('#divTaxGrid tr td').length > 1) {
+                        for (var i = 1; i <= taxRowCount; i++) {
+                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        }
+                    }
+                    $('#lblItemNetAmount').text(sum.toFixed(2));
+
+
+                    var txTotal = sum + txSum;
+                    $('#NetTotal').val(sum.toFixed(2));
+
                 }
-            }
-            $('#lblItemNetAmount').text(sum.toFixed(2));
-
-
-            var txTotal = sum + txSum;
-            $('#NetTotal').val(sum.toFixed(2));
-
-        }
- */
+         */
         $('.ItemBtn').click(function () {
             let IsError = 0;
 
@@ -2439,7 +2465,7 @@
                 $('.PartialSave').trigger("click");
             }
         });
-        
+
         function addDays(date, days) {
             var NewDate = new Date(date);
             NewDate.setDate(NewDate.getDate() + days);
@@ -2493,7 +2519,7 @@
             if (e.which == 13) e.preventDefault();
         });
     </script>
-                // New script started
+                        // New script started
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 }
 
