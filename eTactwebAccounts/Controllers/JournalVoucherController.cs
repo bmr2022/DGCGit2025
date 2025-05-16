@@ -29,7 +29,7 @@ namespace eTactwebAccounts.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> JournalVoucher(int ID, string Mode, int YearCode, string VoucherNo)
+        public async Task<ActionResult> JournalVoucher(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             HttpContext.Session.Remove("KeyJournalVoucherGrid");
             HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
@@ -51,6 +51,14 @@ namespace eTactwebAccounts.Controllers
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.JournalVoucherList);
                 HttpContext.Session.SetString("KeyJournalVoucherGridEdit", serializedGrid);
             }
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            MainModel.VoucherNoBack = VoucherNo;
+            MainModel.LedgerNameBack = LedgerName;
+            MainModel.AgainstVoucherRefNo = AgainstVoucherRefNo;
+            MainModel.AgainstVoucherNoBack = AgainstVoucherNo;
+            MainModel.GlobalSearchBack = Searchbox;
+            MainModel.DashboardTypeBack = DashboardType;
             return View(MainModel);
         }
         [HttpPost]
@@ -847,20 +855,20 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             HttpContext.Session.Remove("KeyJournalVoucherGrid");
             HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
             var model = new JournalVoucherModel();
-            model = await _IJournalVoucher.GetDashBoardDetailData(FromDate, ToDate);
+            model = await _IJournalVoucher.GetDashBoardDetailData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
             return PartialView("_JournalVoucherDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             HttpContext.Session.Remove("KeyJournalVoucherGrid");
             HttpContext.Session.Remove("KeyJournalVoucherGridEdit");
             var model = new JournalVoucherModel();
-            model = await _IJournalVoucher.GetDashBoardSummaryData(FromDate, ToDate);
+            model = await _IJournalVoucher.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
             return PartialView("_JournalVoucherDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)

@@ -9,6 +9,14 @@ namespace eTactWeb.DOM.Models
 {
     public class JournalVoucherModel : TimeStamp
     {
+        public string? FromDateBack { get; set; }
+        public string? ToDateBack { get; set; }
+        public string? LedgerNameBack { get; set; }
+        public string? VoucherNoBack { get; set; }
+        public string? AgainstVoucherRefNoBack { get; set; }
+        public string? AgainstVoucherNoBack { get; set; }
+        public string? GlobalSearchBack { get; set; }
+        public string? DashboardTypeBack { get; set; }
         public int AccEntryId { get; set; }
         public string VoucherType { get; set; }
         public string VoucherNo { get; set; }

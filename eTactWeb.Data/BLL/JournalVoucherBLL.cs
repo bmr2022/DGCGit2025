@@ -65,13 +65,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _JournalVoucherDAL.GetDashBoardData(FromDate, ToDate);
         }
-        public async Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate)
+        public async Task<JournalVoucherModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
-            return await _JournalVoucherDAL.GetDashBoardDetailData(FromDate, ToDate);
+            return await _JournalVoucherDAL.GetDashBoardDetailData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
         }
-        public async Task<JournalVoucherModel> GetDashBoardSummaryData(string FromDate, string ToDate)
+        public async Task<JournalVoucherModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
-            return await _JournalVoucherDAL.GetDashBoardSummaryData(FromDate, ToDate);
+            return await _JournalVoucherDAL.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
         }
         public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
         {

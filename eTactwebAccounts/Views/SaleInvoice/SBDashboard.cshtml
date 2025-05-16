@@ -157,7 +157,7 @@
             $('#FinToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
              
             $('#FinFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#FinFromDate').val()));
-            debugger
+             
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
             var partCodeBack = sessionStorage.getItem('PartCodeBack');
@@ -202,7 +202,7 @@
                 $('#search-box').val(searchBoxBack);
                 $('#SummaryDetail').val(summaryDetailBack);
             }
-            debugger
+             
             GetSearchData();
 
             sessionStorage.removeItem('FromDateBack');

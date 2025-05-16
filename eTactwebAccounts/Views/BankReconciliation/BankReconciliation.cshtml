@@ -244,7 +244,7 @@
            
             GetDetailsData();
 
-            handleReportTypeChange();
+            //handleReportTypeChange();
 
             // When ReportType changes, automatically set Group_Ledger to 'Ledger' if required
             $("#ReportType").change(function () {
@@ -271,6 +271,27 @@
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+        function toggleDatePicker(checkbox) {
+            const $checkbox = $(checkbox);
+            const $row = $checkbox.closest("tr");
+            const $dateInput = $row.find(".bank-date-input");
+            const $dateText = $row.find(".bank-date-text");
+
+            if ($checkbox.is(":checked")) {
+            $dateInput.show();
+            $dateText.hide();
+
+            // Initialize datepicker if not already initialized
+            if (!$dateInput.hasClass("hasDatepicker")) {
+                $dateInput.datepicker({ dateFormat: 'dd/M/yy' });
+            }
+            $dateInput.datepicker("show"); // Optionally show it immediately
+        } else {
+            $dateInput.hide();
+            $dateText.show();
+        }
         }
 
         function FillBankName() {

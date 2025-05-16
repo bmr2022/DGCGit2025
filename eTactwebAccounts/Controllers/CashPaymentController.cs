@@ -29,7 +29,7 @@ namespace eTactwebAccounts.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> CashPayment(int ID, string Mode, int YearCode, string VoucherNo)
+        public async Task<ActionResult> CashPayment(int ID, string Mode, int YearCode, string VoucherNo, string FromDate = "", string ToDate = "", string LedgerName = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             HttpContext.Session.Remove("KeyCashPaymentGrid");
             HttpContext.Session.Remove("KeyCashPaymentGridEdit");
@@ -56,7 +56,14 @@ namespace eTactwebAccounts.Controllers
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
                 HttpContext.Session.SetString("KeyCashPaymentGridEdit", serializedGrid);
             }
-
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            MainModel.VoucherNoBack = VoucherNo;
+            MainModel.LedgerNameBack = LedgerName;
+            MainModel.AgainstVoucherRefNo = AgainstVoucherRefNo;
+            MainModel.AgainstVoucherNoBack = AgainstVoucherNo;
+            MainModel.GlobalSearchBack = Searchbox;
+            MainModel.DashboardTypeBack = DashboardType;
             return View(MainModel);
         }
 
@@ -854,20 +861,20 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             HttpContext.Session.Remove("KeyCashPaymentGrid");
             HttpContext.Session.Remove("KeyCashPaymentGridEdit");
             var model = new CashPaymentModel();
-            model = await _ICashPayment.GetDashBoardDetailData(FromDate, ToDate);
+            model = await _ICashPayment.GetDashBoardDetailData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
             return PartialView("_CashPaymentDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             HttpContext.Session.Remove("KeyCashPaymentGrid");
             HttpContext.Session.Remove("KeyCashPaymentGridEdit");
             var model = new CashPaymentModel();
-            model = await _ICashPayment.GetDashBoardSummaryData(FromDate, ToDate);
+            model = await _ICashPayment.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
             return PartialView("_CashPaymentDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)

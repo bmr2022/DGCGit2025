@@ -202,18 +202,11 @@
         }
 
         function GetDashBoardSummaryData() {
-              
-            //var data = $('#SParam').serialize();
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
+
             $.ajax({
                 url: '@Url.Action("GetDashBoardSummaryData", "BankReceipt")',
                 type: "POST",
-                // data: $('#SParam').serializeArray(),
-                data: {
-                    FromDate: FromDate,
-                    ToDate: ToDate
-                },
+                data: $('#SParam').serializeArray(),
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
@@ -236,17 +229,10 @@
 
         function GetDashBoardDetailData() {
               
-            //var data = $('#SParam').serialize();
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
             $.ajax({
                 url: '@Url.Action("GetDashBoardDetailData", "BankReceipt")',
                 type: "POST",
-                // data: $('#SParam').serializeArray(),
-                data: {
-                    FromDate: FromDate,
-                    ToDate: ToDate
-                },
+                data: $('#SParam').serializeArray(),
                 async: false,
                 success: function (data) {
                       
@@ -346,7 +332,7 @@
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
             window.location.href = linkUrl;
         }
 
@@ -355,7 +341,7 @@
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
             window.location.href = linkUrl;
         }
 

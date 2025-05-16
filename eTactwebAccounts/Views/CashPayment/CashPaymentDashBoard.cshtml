@@ -97,10 +97,33 @@
     </form>
 </div>
 
+<!-- Delete Modal -->
+<div class="modal fade" id="deleteModal" tabindex="-1">
+    <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+            <div class="modal-body text-center">
+                <p>Delete this item?</p>
+                <button type="button" class="btn btn-danger btn-sm me-2" id="confirmDeleteBtn">Yes</button>
+                <button type="button" class="btn btn-secondary btn-sm" data-bs-dismiss="modal">No</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts
 {
     <script>
         $(document).ready(function () {
+
+            var FromDateBack = sessionStorage.getItem('FromDateBack');
+            var ToDateBack = sessionStorage.getItem('ToDateBack');
+            var LedgerNameBack = sessionStorage.getItem('LedgerNameBack');
+            var VoucherNoBack = sessionStorage.getItem('VoucherNoBack');
+            var AgainstVoucherRefNoBack = sessionStorage.getItem('AgainstVoucherRefNoBack');
+            var AgainstVoucherNoBack = sessionStorage.getItem('AgainstVoucherNoBack');
+            var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
+            var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
 
             var currentDate = new Date();
 
@@ -118,7 +141,27 @@
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
+            if (FromDateBack != null  &&  FromDateBack != ''){
+                $('#FromDate').val(FromDateBack);
+                $('#ToDate').val(ToDateBack);
+                $('#LedgerName').val(LedgerNameBack);
+                $('#VoucherNo').val(VoucherNoBack);
+                $('#AgainstVoucherRefNo').val(AgainstVoucherRefNoBack);
+                $('#AgainstVoucherNo').val(AgainstVoucherNoBack);
+                $('#search-box').val(GlobalSearchBack);
+                $('#DashboardType').val(DashboardTypeBack);
+             }
+
             GetSearchData();
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('LedgerNameBack');
+            sessionStorage.removeItem('VoucherNoBack');
+            sessionStorage.removeItem('AgainstVoucherRefNoBack');
+            sessionStorage.removeItem('AgainstVoucherNoBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+            sessionStorage.removeItem('DashboardTypeBack');
         });
 
         $(function () {
@@ -315,20 +358,26 @@
         function confirmDelete(event) {
             event.preventDefault();
 
-            if (confirm("Are you sure you want to Delete this entry?")) {
-                var linkUrl = $(event.currentTarget).attr("href");
-                window.location.href = linkUrl;
-            }
+            const url = $(event.currentTarget).attr('href');
+            $('#confirmDeleteBtn').data('delete-url', url);
+
+            const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
+            modal.show();
         }
+
+        $('#confirmDeleteBtn').on('click', function () {
+            const url = $(this).data('delete-url');
+            if (url) {
+                window.location.href = url;
+            }
+        });
+
         function confirmEdit(event) {
             event.preventDefault();
-
-            if (confirm("Are you sure you want to Edit this entry?")) {
-                var linkUrl = $(event.currentTarget).attr("href");
-
-                // Redirect without appending additional parameters manually
-                window.location.href = linkUrl;
-            }
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+            window.location.href = linkUrl;
         }
 
         function BackButtonData(event) {
@@ -336,7 +385,7 @@
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
             window.location.href = linkUrl;
         }
 

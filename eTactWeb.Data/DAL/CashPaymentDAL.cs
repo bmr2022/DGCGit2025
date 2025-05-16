@@ -377,7 +377,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<CashPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate)
+        public async Task<CashPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new CashPaymentModel();
@@ -396,7 +396,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@VoucherType", "Cash-Payment");
                     oCmd.Parameters.AddWithValue("@fromdate", fromDt);
                     oCmd.Parameters.AddWithValue("@todate", toDt);
-
+                    oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -442,7 +445,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<CashPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate)
+        public async Task<CashPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new CashPaymentModel();
@@ -461,7 +464,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@VoucherType", "Cash-Payment");
                     oCmd.Parameters.AddWithValue("@fromdate", fromDt);
                     oCmd.Parameters.AddWithValue("@todate", toDt);
-
+                    oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
+                    oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

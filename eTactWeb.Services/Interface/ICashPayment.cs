@@ -24,8 +24,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
         Task<ResponseResult> SaveCashPayment(CashPaymentModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
-        Task<CashPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate);
-        Task<CashPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate);
+        Task<CashPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo);
+        Task<CashPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate);
         Task<ResponseResult> FillBankType(int AccountCode);
         Task<CashPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable);
