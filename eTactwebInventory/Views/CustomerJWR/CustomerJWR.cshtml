@@ -628,17 +628,21 @@
             }
         });
 
-        function GetServerDate() {
+         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate","MaterialReceipt")",
+                url: "@Url.Action("GetServerDate", "MaterialReceipt")",
                 async: false,
-                success: function (result, status, error) {
+                success: function (result) {
                     if (result != null) {
+                        // Convert dd/mm/yyyy to a Date object
+                        var parts = result.split('/');
+                        var parsedDate = new Date(parts[2], parts[1] - 1, parts[0]); // yyyy, mm (0-based), dd
+
                         $('#EntryDate').datepicker({
                             dateFormat: 'dd/mm/yy',
-                            minDate: result // Set minDate to the server date (prevents past selection)
-                        }).datepicker("setDate", result);
+                            minDate: parsedDate
+                        }).datepicker("setDate", parsedDate);
                     }
                 }
             });
