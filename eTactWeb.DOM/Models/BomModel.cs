@@ -8,6 +8,7 @@ namespace eTactWeb.DOM.Models
         public DataTable? DTDashboard { get; set; }
         public string? FGItemName { get; set; }
         public int? FGItemCode { get; set; }
+        //public int? fgitemcode { get; set; }
         public IList<TextValue>? FGItemNameList { get; set; }
         public string? FGPartCode { get; set; }
         public IList<TextValue>? FGPartCodeList { get; set; }
@@ -16,10 +17,18 @@ namespace eTactWeb.DOM.Models
         public string? RMPartCode { get; set; }
         public IList<TextValue>? RMPartCodeList { get; set; }
         public string? BomRevNo { get; set; }
-        public string? DashboardType { get; set; }
-        public int TotalRecords { get; set; }
+        public string? BomNo { get; set; }
+        public string? FGItem { get; set; }
+        public string? BomName { get; set; }
+        //public string? bomname { get; set; }
+        public string? EntryDate { get; set; }
+       
+        public decimal BomQty { get; set; }
+        public string? DashboardType { get; set; } = "Summary";
+        public string? EffectiveDate { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public int TotalRecords { get; set; }
         public IList<BomModel>? BomList { get; set; }
     }
 

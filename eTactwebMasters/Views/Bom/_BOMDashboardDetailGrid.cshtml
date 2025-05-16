@@ -6,14 +6,14 @@
                 <tr>
                     <th>Sr#</th>
                     <th>Action</th>
-                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BomNo</th>
+                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BomNo</th>
 
-                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Part Code</th>
-                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Item Name</th>
-                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Part Code</th>
-                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Item Name</th>
-                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Name</th>
-                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Qty</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Part Code</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Item Name</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Part Code</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Item Name</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Name</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Qty</th>
                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
                     <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EffectiveDate</th>
                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>fgitemcode</th>
@@ -24,8 +24,8 @@
                 @{
                    
                     var @Cntr = 0;
-                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
-                int srNo = srNoStart + 1;
+                    int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                    int srNo = srNoStart + 1;
                     if (Model.DTDashboard == null || Model.DTDashboard.Rows.Count == 0)
                     {
                         <tr class="text-center"><td colspan="14" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -33,59 +33,59 @@
                     else
                     {
 
-                    var a = Model.DTDashboard.Rows;
-                        for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
-                        {
-                        Cntr = Cntr + 1;
+                         //var a = Model.DTDashboard.Rows;
+                            for (int i = 0; i < Model.DTDashboard.Rows.Count; i++)
+                            {
+                               Cntr = Cntr + 1;
 
-                            <tr>
-                            <td class="FWB">@srNo</td>
-                            <td style="text-align:center;white-space: nowrap;">
-                                <div id="container">
-                                    <div id="viewCursorDiv-@Cntr">
-                                        <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="GetBomDetail('@Model.DTDashboard.Rows[i]["FGPartCode"]','@Model.DTDashboard.Rows[i]["BomNo"]')">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <div id="editCursorDiv-@Cntr">
-                                        <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
+                                <tr>
+                                    <td class="FWB">@srNo</td>
+                                    <td style="text-align:center;white-space: nowrap;">
+                                        <div id="container">
+                                            <div id="viewCursorDiv-@Cntr">
+                                                <a href="#" class="table-link link-success" data-bs-toggle="modal" data-bs-target="#staticBackdrop" onclick="GetBomDetail('@Model.DTDashboard.Rows[i]["FGPartCode"]','@Model.DTDashboard.Rows[i]["BomNo"]')">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div id="editCursorDiv-@Cntr">
+                                                <a class="table-link link-primary" asp-action="EditBomDetail" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGPartCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]" asp-route-Mode="U">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
+                                            </div>
+                                            <div id="deleteCursorDiv-@Cntr">
+                                                <a class="table-link link-danger" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-controller="Bom" asp-route-FIC="@Model.DTDashboard.Rows[i]["FGItemCode"]" asp-route-BMNo="@Model.DTDashboard.Rows[i]["BomNo"]">
+                                                    <span class="fa-stack">
+                                                        <i class="fa fa-square fa-stack-2x"></i>
+                                                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                    </span>
+                                                </a>
 
-                                    </div>
-                                </div>
-                            </td>
-                            <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
-                            <td>@Model.DTDashboard.Rows[i]["RMPartCode"]</td>
-                            <td>@Model.DTDashboard.Rows[i]["RMItemName"]</td>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["RMPartCode"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["RMItemName"]</td>
 
-                            <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
 
-                            <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
 
-                            <td>@Model.DTDashboard.Rows[i]["bomname"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["bomname"]</td>
 
-                            <td>@Model.DTDashboard.Rows[i]["BomQty"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["BomQty"]</td>
 
-                            <td>@Model.DTDashboard.Rows[i]["EntryDate"]</td>
-                            <td>@Model.DTDashboard.Rows[i]["EffectiveDate"]</td>
-                            <td>@Model.DTDashboard.Rows[i]["fgitemcode"]</td>
-                            </tr>
-                        srNo++;
+                                    <td>@Model.DTDashboard.Rows[i]["EntryDate"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["EffectiveDate"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["fgitemcode"]</td>
+                                </tr>
+                                srNo++;
                             }
                     }
                 }
@@ -100,7 +100,50 @@
     }
 }
 <center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
-    
+@{
+    int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
+}
+@if (Model.TotalRecords > 0)
+{
+    <ul class="pagination d-flex align-items-center">
+        @if (Model.PageNumber > 1)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber - 1)); return false;">Previous</a>
+            </li>
+        }
+
+        @if (Model.PageNumber > 3)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(1); return false;">1</a>
+            </li>
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+        }
+
+        @for (int i = Math.Max(1, Model.PageNumber - 2); i <= Math.Min(Model.PageNumber + 2, totalPages); i++)
+        {
+            <li class="page-item @(i == Model.PageNumber ? "active" : "")">
+                <a class="page-link" href="#" onclick="loadPage(@i); return false;">@i</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages - 2)
+        {
+            <li class="page-item disabled"><a class="page-link">...</a></li>
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@totalPages); return false;">@totalPages</a>
+            </li>
+        }
+
+        @if (Model.PageNumber < totalPages)
+        {
+            <li class="page-item">
+                <a class="page-link" href="#" onclick="loadPage(@(Model.PageNumber + 1)); return false;">Next</a>
+            </li>
+        }
+    </ul>
+}
 <style>
     #container {
         display: flex;
@@ -142,5 +185,51 @@
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    .pagination {
+        display: flex;
+        justify - content: center;
+        align - items: center;
+        list - style: none;
+        padding: 0;
+        margin: 20px auto;
+        gap: 5px; /* Space between buttons */
+        white - space: nowrap; /* Keeps it in a single line */
+    }
+
+    .page - item {
+        display: inline - block;
+    }
+
+    .page - link {
+        display: flex;
+        align - items: center;
+        justify - content: center;
+        width: 40px;
+        height: 40px;
+        text - decoration: none;
+        color: black;
+        border: 1px solid #ddd;
+        font - size: 16px;
+        background - color: white;
+        border - radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .page - item.active.page - link {
+        background - color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .page - item.disabled.page - link {
+        background - color: #f0f0f0;
+        color: #999;
+        cursor: default;
+    }
+
+    .page - link: hover: not(.disabled): not(.active) {
+        background - color: #ddd;
     }
 </style>

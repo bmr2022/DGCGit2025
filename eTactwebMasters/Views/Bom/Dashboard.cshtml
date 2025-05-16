@@ -106,7 +106,7 @@
                             <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="width:150px;">
                                 <label asp-for="DashboardType"  class="form-label">Type</label>
                                 <select asp-for="DashboardType" id="DashboardType"  class="form-select" onchange="GetSearchData();">
-                                    <option value="0" >Select</option>
+                                    <option value="" disabled>-Select-</option>
                                     <option value="Summary" selected>Summary</option>
                                     <option value="Detail">Detail</option>
                                 </select>
@@ -152,7 +152,7 @@
                     <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
                 </button>
             </div> *@
-            @{
+           @*  @{
                 int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
             }
             @if (Model.TotalRecords > 0) // Ensure pagination always shows when records exist
@@ -193,7 +193,7 @@
                         </li>
                     }
                 </ul>
-            }
+            } *@
         </div>
     </div>
 </div>
@@ -214,13 +214,13 @@
             var globalSearchBack = localStorage.getItem('GlobalSearchBack');
 
             GetFormRights();
-
+            GetSummaryData();
             $('#FGPartCode').val(fgPartCodeBack == "" ? $('#FGPartCode').val() : fgPartCodeBack);
             $('#FGItemName').val(fgItemNameBack == "" ? $('#FGItemName').val() : fgItemNameBack);
             $('#RMPartCode').val(rmPartCodeBack == "" ? $('#RMPartCode').val() : rmPartCodeBack);
             $('#RMItemName').val(rmItemNameBack == "" ? $('#RMItemName').val() : rmItemNameBack);
             $('#BomRevNo').val(bomRevNoBack == "" ? $('#BomRevNo').val() : bomRevNoBack);
-            $('#DashboardType').val(summaryDetailBack == "" ? $('#DashboardType').val() : summaryDetailBack);
+         //   $('#DashboardType').val(summaryDetailBack == "" ? $('#DashboardType').val() : summaryDetailBack);
             $('#search-box').val(globalSearchBack == "" ? $('#search-box').val() : globalSearchBack);
             var dashGrid = $('#divDashboardGrid tr').length;
             $('#totalRows').text(dashGrid);
@@ -302,7 +302,32 @@
                 }
             });
         });
+        function loadPage(pageNumber) {
 
+
+            var dashboardType = $('#DashboardType').val();
+            var url = '';
+
+            if (dashboardType === "Summary") {
+                url = '@Url.Action("GetSearchData", "Bom")';
+            } else if (dashboardType === "Detail") {
+                url = '@Url.Action("GetDetailSearchData", "Bom")';
+            } 
+
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#gateDashboardtable tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights", "Bom")",
@@ -557,24 +582,24 @@
         }
 
 
-        var currentSearchColumn = null;
-        $("#search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#bomTableBody tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
-        });
+        // var currentSearchColumn = null;
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#bomTableBody tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
 
 
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        // });
 
     </script>
     <script src="https://cdn.jsdelivr.net/npm/jquery-table2excel@1.1.1/dist/jquery.table2excel.min.js"></script>
@@ -582,15 +607,15 @@
 }
 
 <style>
-    .pagination {
+   /*  .pagination {
         display: flex;
         justify-content: center;
         align-items: center;
         list-style: none;
         padding: 0;
         margin: 20px auto;
-        gap: 5px; /* Space between buttons */
-        white-space: nowrap; /* Keeps it in a single line */
+        gap: 5px; 
+        white-space: nowrap; 
     }
 
     .page-item {
@@ -627,5 +652,5 @@
     .page-link:hover:not(.disabled):not(.active) {
         background-color: #ddd;
     }
-
+ */
 </style>
