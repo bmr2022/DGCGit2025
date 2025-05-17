@@ -570,7 +570,7 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        public async Task<IActionResult> Dashboard(string FromDate, string Todate, string Flag, string REQNo = "", string WCName = "", string WONo = "", string DepName = "", string PartCode = "", string ItemName = "")
+        public async Task<IActionResult> Dashboard(string FromDate="", string Todate="", string Flag="", string REQNo = "", string WCName = "", string WONo = "", string DepName = "", string PartCode = "", string ItemName = "")
         {
             try
             {

@@ -919,7 +919,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> Dashboard(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "")
+        public async Task<IActionResult> Dashboard(string FromDate="", string Todate="", string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "", string FGPartCode = "", string FGItemName = "")
         {
             try
             {
@@ -1180,25 +1180,39 @@ namespace eTactWeb.Controllers
             try
             {
                 DateTime time = DateTime.Now;
-                string format = "MMM ddd d HH:mm yyyy";
-                string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                var dt = time.ToString(format);
-                return Json(formattedDate);
-               
-            }
-            catch (HttpRequestException ex)
-            {
-                // Log the exception for debugging purposes
-                Console.WriteLine($"HttpRequestException: {ex.Message}");
-                return Json(new { error = "Failed to fetch server date and time: " + ex.Message });
+                string isoDate = time.ToString("yyyy-MM-dd"); // ISO format
+                return Json(isoDate);
             }
             catch (Exception ex)
             {
-                // Log any other unexpected exceptions
                 Console.WriteLine($"Unexpected Exception: {ex.Message}");
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
+        //public async Task<JsonResult> GetServerDate()
+        //{
+        //    try
+        //    {
+        //        DateTime time = DateTime.Now;
+        //        string format = "MMM ddd d HH:mm yyyy";
+        //        string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+
+        //        var dt = time.ToString(format);
+        //        return Json(formattedDate);
+
+        //    }
+        //    catch (HttpRequestException ex)
+        //    {
+        //        // Log the exception for debugging purposes
+        //        Console.WriteLine($"HttpRequestException: {ex.Message}");
+        //        return Json(new { error = "Failed to fetch server date and time: " + ex.Message });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        // Log any other unexpected exceptions
+        //        Console.WriteLine($"Unexpected Exception: {ex.Message}");
+        //        return Json(new { error = "An unexpected error occurred: " + ex.Message });
+        //    }
+        //}
     }
 }
