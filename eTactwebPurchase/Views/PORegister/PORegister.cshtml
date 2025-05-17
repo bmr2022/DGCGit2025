@@ -336,7 +336,45 @@
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
+        function loadPage(pageNumber) {
+            debugger
+            var ReportType = $('#ReportMode').val();
+            
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetPORegisterData", "PORegister")',
+                data: formData,
+                success: function (result) {
+                    $('#divPORegister').empty();
+                    $('#divPORegister').html(result);
+                    $('#totalRows').text($('#divPORegister tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#ReportMode').val();
+            $.ajax({
+                url: "/PORegister/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType },
+                success: function (data) {
 
+                    $('#divPORegister').empty();
+                    $('#divPORegister').html(data);
+                    $('#totalRows').text($('#divPORegister tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
         $('#sendToPDF').click(async function () {
              
             const { jsPDF } = window.jspdf;
@@ -433,12 +471,11 @@
                     console.log("Data:", rows);
                     body = rows.map((item, i) => [
                         i + 1, item.pono, item.poDate ? item.poDate.split(" ")[0] : '', item.pOtype, item.poQty,
-                        item.poEffDate ? item.poEffDate.split(" ")[0] : '', item.pOclosedate ? item.pOclosedate.split(" ")[0] : '',
-                        item.poAmmeffdate, item.ordertype, item.vendor, item.partCode, item.itemName, item.unit, item.rate,
-                        item.disPer, item.disAmt, item.itemAmount, item.ammendmentno, item.ammendmentdate, item.assrate,
-                        item.deliveryTerms, item.deliveryDate ? item.deliveryDate.split(" ")[0] : '', item.poQty, item.pofor,
-                        item.currency
+                        item.poEffDate ? item.poEffDate.split(" ")[0] : '', item.pOclosedate ? item.pOclosedate.split(" ")[0] : '', item.poAmmeffdate ? item.poAmmeffdate.split(" ")[0] : '', item.ordertype, item.vendor,
+                        item.partCode, item.itemName, item.unit, item.rate, item.disPer, item.disAmt, item.itemAmount, item.ammendmentno, item.ammendmentdate ? item.ammendmentdate.split(" ")[0] : '', item.assrate,
+                        item.deliveryTerms, item.deliveryDate ? item.deliveryDate.split(" ")[0] : '', item.poQty, item.pofor, item.currency
                     ]);
+
 
 
                 break;
@@ -845,7 +882,7 @@
         // }
 
 
-        var currentSearchColumn = null;
+      /*   var currentSearchColumn = null;
         $(document).on("click", "th[data-columnno]", function () {
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
@@ -861,7 +898,7 @@
                 }
             });
         });
-
+ */
 
         $(document).on("click", ".sortCol", function () {
             ;

@@ -797,14 +797,10 @@ public class BomController : Controller
         model = await _IBom.GetDetailSearchData(model);
         if (model?.DTDashboard != null)
         {
-
             var list = ConvertDataTableToList<BomDashboard>(model.DTDashboard);
-
             model.TotalRecords = list.Count;
-
             var paginatedList = list.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             model.DTDashboard = ToDataTable(paginatedList);
-
             model.PageNumber = pageNumber;
             model.PageSize = pageSize;
         }
@@ -814,13 +810,9 @@ public class BomController : Controller
             SlidingExpiration = TimeSpan.FromMinutes(55),
             Size = 1024,
         };
-
         _MemoryCache.Set("KeyBOMList_Detail", model, cacheEntryOptions);
         //var Result = System.Text.Json.JsonSerializer.Serialize(model);
-      
             return PartialView("_BomDashboardDetailGrid", model);
-       
-   
     }
 
     [HttpGet]

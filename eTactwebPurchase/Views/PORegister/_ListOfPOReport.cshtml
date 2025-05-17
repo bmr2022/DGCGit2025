@@ -36,6 +36,8 @@
         <tbody id="divStockRegisterBody">
             @{
                 var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
                 if (Model.PORegisterDetails == null)
                 {
                     <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -55,7 +57,7 @@
                                     </span>
                                 </a>
                             </td>
-                            <th>@Cntr</th>
+                            <th>@srNo</th>
                             <td style="background-color: #e09ef0;">@item.PONO</td>
                             <td>@(item.PODate  == null ? string.Empty : @item.PODate.Split(" ")[0])</td>
                             <td>@item.POtype</td>
@@ -83,6 +85,7 @@
                             <td>@item.Ammno</td>
                             <td>@(item.AmmDate  == null ? string.Empty : @item.AmmDate.Split(" ")[0])</td>
                         </tr>
+                        srNo++;
                     }
                 }
             }
@@ -90,3 +93,11 @@
         </tbody>
     </table>
 </div>
+@{
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+    <center><strong>TOTAL ROWS: <span>@displayedRows</span></strong></center>
+}
