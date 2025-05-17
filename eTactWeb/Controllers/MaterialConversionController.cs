@@ -104,7 +104,6 @@ namespace eTactWeb.Controllers
 
             return View(MainModel);
         }
-
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -112,7 +111,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         [HttpPost]
         [Route("{controller}/Index")]
         public async Task<IActionResult> MaterialConversion(MaterialConversionModel model)
@@ -348,7 +346,6 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-
         public IActionResult EditItemRow(int SrNO, string Mode)
         {
             IList<MaterialConversionModel> MaterialConversionModelGrid = new List<MaterialConversionModel>();
@@ -376,7 +373,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(SSBreakdownGrid);
             return Json(JsonString);
         }
-
         public IActionResult DeleteItemRow(int SrNO, string Mode)
         {
             var MainModel = new MaterialConversionModel();
