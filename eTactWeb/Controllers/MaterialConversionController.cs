@@ -28,7 +28,7 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
-        public async Task<ActionResult> MaterialConversion(int ID,int YC,string Mode,
+        public async Task<ActionResult> MaterialConversion(int ID,int YC,string Mode,string SlipNo,
             int StoreId, int  AltStoreId, int OrginalWCID, int AltWCID, int ActualEntryByEmpid, int UpdatedByEmpId, int PlanYearCode, int ProdSchYearCode,
         decimal OriginalQty, decimal AltOriginalQty, decimal AltStock, decimal BatchStock, decimal TotalStock, decimal OrigItemRate,
         string  StoreName, string OriginalItemCode, string OriginalPartCode, string OriginalItemName, string Unit, string WorkCenterName, string AltStoreName, string AltWorkCenterName, string AltPartCode, string AltItemName, string AltUnit, string BatchNo,
@@ -86,6 +86,7 @@ namespace eTactWeb.Controllers
                 MainModel.ProdSchNo = ProdSchNo;
                 MainModel.ProdSchYearCode = ProdSchYearCode;
                 MainModel.ProdSchDatetime = ProdSchDatetime;
+                MainModel.SlipNo = "1";
 
                 if (Mode == "U")
                 {

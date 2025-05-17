@@ -51,8 +51,6 @@ namespace eTactWeb.Controllers
             var model = new BankReconciliationModel();
             model = await _IBackReconciliation.GetDetailsData( DateFrom,  DateTo,  chequeNo,  NewOrEdit, Account_Code);
             return PartialView("_BankReconciliationGrid", model);
-            
-
         }
     }
 }
