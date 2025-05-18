@@ -10,6 +10,8 @@
     <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
+        <input type="hidden" asp-for="EInvNo" />
+        <input type="hidden" asp-for="EinvGenerated" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>@ViewData["Title"] - @Model.SaleBillYearCode</strong>
@@ -494,7 +496,7 @@
 
             GetTaxPartItem();
 
-            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); }
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); BomAdjustChallanGrid(); }
 
             DueDateCalculation();
 
@@ -645,6 +647,38 @@
                     "batchno": batchNoo,
                     "uniquebatchno": uniquebatchnoo
                 });
+            }
+            debugger
+            if ($('#Mode').val() == "U") {
+                if ($('#EInvNo').val() == "" && $('#EinvGenerated').val() == "") {
+                    $('#SaleBillJobwork').prop("disabled", true);
+                    $('#GSTNO').prop("disabled", true);
+                    $('#CustAddress').prop("disabled", true);
+                    $('#DistanceKM').prop("disabled", true);
+                    $('#vehicleNo').prop("disabled", true);
+                    $('#TransporterName').prop("disabled", true);
+                    $('#TransportModeBYRoadAIR').prop("disabled", true);
+                    $('#DispatchTo').prop("disabled", true);
+                    $('#DispatchThrough').prop("disabled", true);
+                    $('#SupplyType').prop("disabled", true);
+                    $('#DocTypeAccountCode').prop("disabled", true);
+                    $('#PaymentCreditDay').prop("disabled", true);
+                    $('#TypeJob').prop("disabled", true);
+                    $('#currencyId').prop("disabled", true);
+                    $('#ExchangeRate').prop("disabled", true);
+                    $('#TypeItemServAssets').prop("disabled", true);
+                    $('#dispatchLocation').prop("disabled", true);
+                    $('#ConsigneeAccountcode').prop("disabled", true);
+                    $('#ConsigneeAddress').prop("disabled", true);
+                    $('.SODetail').prop("disabled", true);
+                    $('#btnAdjustChallanListGrid').prop("disabled", true);
+                    $('.ItemBtn').prop("disabled", true);
+                    $('.btnAddTax2Grid').prop("disabled", true);
+                    $('.btnEnterTaxPass').css("display", "none");
+                    $('.btnClearTax').prop("disabled", true);
+                    $('#AccountCode').prop("disabled", true);
+                    $('.btnClearTax').prop("disabled", true);
+                }
             }
         });
 
@@ -1063,7 +1097,7 @@
         });
 
         function PasswordCheck() {
-
+            debugger
             if ($('#taxPassword').val() != allowManualPassword) {
                 $.notify('please correct password...!', "error");
             } else {
@@ -1118,7 +1152,7 @@
                 url: "@Url.Action("AllowTaxPassword")",
                 dataType: "json",
                 success: function (result, status, error) {
-
+                    debugger
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result.length > 0) {
