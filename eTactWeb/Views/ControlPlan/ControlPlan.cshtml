@@ -77,49 +77,178 @@
                     <div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
                         <div class="accordion-body">
                             <div class="row g-3">
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="Entry_Date" class="form-label">Entry Date</label>
-                                    <input asp-for="Entry_Date" class="form-control" />
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+                                    <label asp-for="CntPlanEntryId" class="form-label">Entry Id</label>
+                                    <input asp-for="CntPlanEntryId" class="form-control" readonly/>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Entry_Date" class="form-label">Entry Date</label>
+                                    <input asp-for="Entry_Date" class="form-control" readonly/>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
                                     <label asp-for="Yearcode" class="form-label">Yearcode</label>
                                     <input asp-for="Yearcode" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="Control_PlanNo" class="form-label">Control_PlanNo</label>
+
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+                                    <label asp-for="Control_PlanNo" class="form-label">PlanNo</label>
                                     <input asp-for="Control_PlanNo" class="form-control"  />
                                 </div>
-                               
+                               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+                                    <label asp-for="RevNo" class="form-label">RevNo</label>
+                                    <input asp-for="RevNo" class="form-control" />
+                                </div>
+                               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="EffectiveDate" class="form-label">EffectiveDate</label>
+                                    <input asp-for="EffectiveDate" class="form-control" />
+                               </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <select class="form-control" id="PartCode" asp-for="PartCode">
+                                        <option value="@Model.ItemCode">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+
+                                            <option value="@Model.ItemCode" selected>@Model.PartCode</option>
+                                        }
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label"> Item Name</label>
+                                    <select class="form-control" id="ItemName" asp-for="ItemName">
+                                        <option value="@Model.ItemCode">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.ItemCode" selected>@Model.ItemName</option>
+                                        }
+                                    </select>
+                                </div>
+                                
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ControlMethod" class="form-label">ControlMethod</label>
+                                    <select class="form-control" id="ControlMethod" asp-for="ControlMethod">
+                                        <option value="@Model.ControlMethod">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Remarks" class="form-label">Remarks</label>
+                                    <input asp-for="Remarks" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="RejectionPlan" class="form-label">RejectionPlan</label>
+                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan">
+                                        <option value="@Model.RejectionPlan">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
+                                    <input asp-for="DrawingNo" class="form-control" />
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
-                <div id="divDetail">
-                    <div class="accordion-item">
-                        <h2 class="accordion-header" id="H_AddressDetail">
-                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AddressDetail" aria-expanded="false" aria-controls="B_AddressDetail">
-                                <strong><i class="fa fa-fw pr35 fa-map-marker fa-lg" aria-hidden="true"></i>DETAIL</strong>
-                                <small class="p-3"></small>
-                            </button>
-                        </h2>
-                        <div id="B_AddressDetail" class="accordion-collapse pnl4 bg-gradient collapse" aria-labelledby="H_AddressDetail">
-                            <div class="accordion-body">
-                                <div class="row g-2 gx-3">
-                                   @*  <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ComAddress" class="form-label">Comp Address</label>
-                                        <input asp-for="ComAddress" class="form-control" />
-                                    </div> *@
-                                   
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>ControlPlan Detail Grid</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" >
+                                    <label asp-for="Characteristic" class="form-label">Characteristic</label>
+                                    <select class="form-control" id="Characteristic" asp-for="ItemName" style="width:170px;">
+                                        <option value="@Model.Characteristic">-Select-</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="EvalutionMeasurmentTechnique" class="form-label">EvalutionMeasTech</label>
+                                    <select class="form-control" id="EvalutionMeasurmentTechnique" asp-for="EvalutionMeasurmentTechnique" style="width:190px;">
+                                        <option value="@Model.EvalutionMeasurmentTechnique">-Select-</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SpecificationFrom" class="form-label">Specification From</label>
+                                    <select class="form-control" id="SpecificationFrom" asp-for="SpecificationFrom" style="width:170px;">
+                                        <option value="@Model.SpecificationFrom">-Select-</option>
+
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SpecificationTo" class="form-label">Specification To</label>
+                                    <select class="form-control" id="SpecificationTo" asp-for="SpecificationTo" style="width:170px;">
+                                        <option value="@Model.SpecificationTo">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Operator" class="form-label">Operator</label>
+                                    <select class="form-control" id="Operator" asp-for="Operator" style="width:170px;">
+                                        <option value="@Model.Operator">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="FrequencyofTesting" class="form-label">Frequency</label>
+                                    <input asp-for="FrequencyofTesting" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="InspectionBy" class="form-label">InspectionBy</label>
+                                    <select class="form-control" id="InspectionBy" asp-for="InspectionBy" style="width:170px;">
+                                        <option value="@Model.InspectionBy">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class=" col-4 col-auto">
+                                    <div class="row justify-content-around">
+                                        <div class="col-auto">
+                                            <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
+                                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                            </button>
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="progress my-2 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                                </div>
+                                <div class="card">
+                                    <div class="card-body overflow-auto pb-0">
+                                        <table class="table table-hover table-bordered table-striped">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                                <tr>
+                                                    <th>Seq No</th>
+                                                    <th>Action</th>
+                                                    <th>Characteristic</th>
+                                                    <th>EvMeasurTech</th>
+                                                    <th>Specification From</th>
+                                                    <th>Operator</th>
+                                                    <th>Specification To</th>
+                                                    <th>Frequency</th>
+                                                    <th>Inpected By</th>
+
+                                                </tr>
+                                            </thead>
+                                            <tbody id="divControlPlanGrid">
+                                                <partial name="_ControlPlanMainGrid" />
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="progress my-3 mb-3" style="height: 4px;">
+                                    <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                             </div>
                         </div>
+
                     </div>
-                   
-                  
-             
-                   
-                    
                 </div>
+               
             </div>
         </div>
         <div class="card-footer p-3">
@@ -192,10 +321,35 @@
         $(document).ready(function () {
 
             GetFormRights();
+            GetNewEntryId();
+            GetPartCode();
+            GetItemName();
+            GetCharacteristic();
+            GetEvMeasureTech();
+            GetControlMethod();
+            GetRejectionPlan();
+            $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+            $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#Characteristic').select2();
+            $('#Operator').select2();
+            $('#SpecificationTo').select2();
+            $('#SpecificationFrom').select2();
+            $('#EvalutionMeasurmentTechnique').select2();
+            $('#RejectionPlan').select2();
+            $('#ControlMethod').select2();
+            $('#InspectionBy').select2();
            
         });
 
-       
+        $('#ItemName').change(function () {
+            $('#ItemCode').val($('#ItemName').val());
+        });
+        $('#PartCode').change(function () {
+            $('#ItemCode').val($('#PartCode').val());
+        });
+
         var IsSDSC = 0;
         var IsErr = 0;
         var HideShow = 0;
@@ -203,8 +357,235 @@
         $(function () {
            
         });
+        function GetNewEntryId() {
+            var Yearcode = $("#Yearcode").val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetNewEntryId")",
+                dataType: "json",
+                data: {Yearcode:Yearcode},
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                       // $('#CntPlanEntryId').val("");
+                        $('#CntPlanEntryId').val(obj.Result[0].EntryId);
+                        //$('#Control_PlanNo').val("");
+                        $('#Control_PlanNo').val(obj.Result[0].ControlPlanNo);
+                    }
+                }
+            });
+        }
+        function GetPartCode() {
+            $.ajax({
+                url: '@Url.Action("GetPartCode", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var partCodeDropdown = $('#PartCode');
+                    var obj = $.parseJSON(response);
+                    partCodeDropdown.empty();
+                    partCodeDropdown.append('<option value="">--Select--</option>');
 
 
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        partCodeDropdown.append('<option value="' + controlPlan.Itemcode + '">' + controlPlan.PartCode + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var PartCode = '@Model.PartCode';
+                        $('#PartCode').val(PartCode).trigger("change");
+                        $('#PartCode').val(PartCode);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function GetItemName() {
+            $.ajax({
+                url: '@Url.Action("GetItemName", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var itemNameDropdown = $('#ItemName');
+                    var obj = $.parseJSON(response);
+                    itemNameDropdown.empty();
+                    itemNameDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, conrolPlan) {
+                        itemNameDropdown.append('<option value="' + conrolPlan.Itemcode + '">' + conrolPlan.ItemName + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var ItemName = '@Model.ItemName';
+                        $('#ItemName').val(ItemName).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+        function GetCharacteristic() {
+            $.ajax({
+                url: '@Url.Action("GetCharacteristic", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var characteristicDropdown = $('#Characteristic');
+                    var obj = $.parseJSON(response);
+                    characteristicDropdown.empty();
+                    characteristicDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        characteristicDropdown.append('<option value="' + controlPlan.Characteristic + '">' + controlPlan.Characteristic + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var Characteristic = '@Model.Characteristic';
+                        $('#Characteristic').val(Characteristic).trigger("change");
+                        $('#Characteristic').val(Characteristic);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+        function GetEvMeasureTech() {
+            $.ajax({
+                url: '@Url.Action("GetEvMeasureTech", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var evMeasureTechDropdown = $('#EvalutionMeasurmentTechnique');
+                    var obj = $.parseJSON(response);
+                    evMeasureTechDropdown.empty();
+                    evMeasureTechDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        evMeasureTechDropdown.append('<option value="' + controlPlan.EvalutionMeasurmentTechnique + '">' + controlPlan.EvalutionMeasurmentTechnique + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var EvalutionMeasurmentTechnique = '@Model.EvalutionMeasurmentTechnique';
+                        $('#EvalutionMeasurmentTechnique').val(EvalutionMeasurmentTechnique).trigger("change");
+                        $('#EvalutionMeasurmentTechnique').val(EvalutionMeasurmentTechnique);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+        function GetControlMethod() {
+            $.ajax({
+                url: '@Url.Action("GetControlMethod", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var controlMethodDropdown = $('#ControlMethod');
+                    var obj = $.parseJSON(response);
+                    controlMethodDropdown.empty();
+                    controlMethodDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        controlMethodDropdown.append('<option value="' + controlPlan.ControlMethod + '">' + controlPlan.ControlMethod + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var ControlMethod = '@Model.ControlMethod';
+                        $('#ControlMethod').val(ControlMethod).trigger("change");
+                        $('#ControlMethod').val(ControlMethod);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+        function GetRejectionPlan() {
+            $.ajax({
+                url: '@Url.Action("GetRejectionPlan", "ControlPlan")', // Action that returns FillGroup data
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+
+                    var rejectionPlanDropdown = $('#RejectionPlan');
+                    var obj = $.parseJSON(response);
+                    rejectionPlanDropdown.empty();
+                    rejectionPlanDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, controlPlan) {
+
+                        rejectionPlanDropdown.append('<option value="' + controlPlan.RejectionPlan + '">' + controlPlan.RejectionPlan + '</option>');
+                    });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var RejectionPlan = '@Model.RejectionPlan';
+                        $('#RejectionPlan').val(ControlMethod).trigger("change");
+                        $('#RejectionPlan').val(RejectionPlan);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.log('Failed to load groups.');
+                }
+            });
+        }
+        
         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights", "AccountMaster")",
@@ -264,6 +645,91 @@
             });
         }
 
+        $('.GridButton').click(function (e) {
+            debugger
+            e.preventDefault();
+            EditEachItem = false;
+            var seqnoarray = [];
+            var rowsCounting = parseInt($('#divControlPlanGrid tr').length);
+            $('#divControlPlanGrid tr').each(function (index, element) {
+
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('td[id^=SeqNo]').text();
+
+                seqnoarray.push(parseInt(seqnoText));
+
+            });
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+
+                highestValue = Math.max(...seqnoarray);
+            }
+           
+            var ItemData = {
+                "Characteristic": $('#Characteristic').val(),
+                "CharacteristicText": $('#Characteristic').find(':selected').text() == "-Select-" ? "" : $('#Characteristic').find(':selected').text(),
+
+                "EvalutionMeasurmentTechnique": $('#EvalutionMeasurmentTechnique').val(),
+                "EvalutionMeasurmentTechniqueText": $('#EvalutionMeasurmentTechnique').find(':selected').text() == "-Select-" ? "" : $('#EvalutionMeasurmentTechnique').find(':selected').text(),
+
+                "SpecificationFrom": $('#SpecificationFrom').val(),
+                "SpecificationFromText": $('#SpecificationFrom').find(':selected').text() == "-Select-" ? "" : $('#SpecificationFrom').find(':selected').text(),
+
+                "SpecificationTo": $('#SpecificationTo').val(),
+                "SpecificationToText": $('#SpecificationTo').find(':selected').text() == "-Select-" ? "" : $('#SpecificationTo').find(':selected').text(),
+
+                "Operator": $('#Operator').val(),
+                "OperatorText": $('#Operator').find(':selected').text() == "-Select-" ? "" : $('#Operator').find(':selected').text(),
+
+                "FrequencyofTesting": $('#FrequencyofTesting').val(), // input field, no need for .find()
+
+                "InspectionBy": $('#InspectionBy').val(),
+                "InspectionByText": $('#InspectionBy').find(':selected').text() == "-Select-" ? "" : $('#InspectionBy').find(':selected').text()
+            }
+            console.log(ItemData);
+            $.ajax({
+                url: "@Url.Action("AddControlPlanDetail")",
+                type: "POST",
+                data: ItemData,
+                beforeSend: function (xhr) {
+                    console.log(1);
+                },
+                success: function (data, status, xhr) {
+                    console.log(2);
+                    $('#RoundOff').prop('selectedIndex', 0);
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Process Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    }
+                    else {
+                        $('#divControlPlanGrid').html(data);
+                        $.notify('Process Added To Grid', "success");
+                        //ClearItem();
+                    }
+                    ClearItems();
+                },
+                error: function (result, status, xhr) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result, status, xhr) {
+                    alert(response.responseText);
+                },
+                complete: function () {
+                    console.log(5);
+
+                }
+            }).done(function () {
+                console.log(3);
+
+            }).fail(function () {
+                alert("error");
+            }).always(function () {
+                console.log(4);
+            });
+        });
 
 
 
