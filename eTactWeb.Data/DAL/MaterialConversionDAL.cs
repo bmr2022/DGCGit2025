@@ -447,6 +447,7 @@ namespace eTactWeb.Data.DAL
                             AltWorkCenterName = row["AltWorkcenetr"].ToString(),
                             AltPartCode = row["AltPartCode"].ToString(),
                             AltItemName = row["AltItemName"].ToString(),
+                            AltItemCode = Convert.ToInt32(row["AltItemCode"].ToString()),
                             AltOriginalQty = Convert.ToDecimal(row["AltOriginalQty"].ToString()),
                             AltUnit = row["AltUnit"].ToString(),
                             AltStock = Convert.ToDecimal(row["AltStock"].ToString()),
