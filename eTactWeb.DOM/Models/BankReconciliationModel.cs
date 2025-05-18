@@ -25,11 +25,10 @@ namespace eTactWeb.DOM.Models
         public string ChequeNo { get; set; }
         public string entryid { get; set; }
         public string AccYearCode { get; set; }
-
-
-        
+        public string? ChequeClearDate { get; set; }
         public string Mode { get; set; }
-
+        public int SeqNo { get; set; }
+        public bool IsChecked { get; set; }
         public IList<BankReconciliationModel> BankReconciliationGrid { get; set; }
     }
 }
