@@ -32,5 +32,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _BackReconciliationDAL.GetDetailsData( DateFrom,  DateTo,  chequeNo,  NewOrEdit, BankAccountCode);
         }
+
+        public async Task<ResponseResult> SaveBankReceipt(BankReconciliationModel model, DataTable GIGrid)
+        {
+            return await _BackReconciliationDAL.SaveBankReceipt(model, GIGrid);
+        }
     }
 }

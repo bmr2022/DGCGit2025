@@ -26,7 +26,6 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-
         public async Task<ResponseResult> GetBankName(string DateFrom, string DateTo, string NewOrEdit)
         {
             var _ResponseResult = new ResponseResult();
@@ -38,7 +37,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DateFrom", ParseFormattedDate(DateFrom)));
                 SqlParams.Add(new SqlParameter("@DateTo", ParseFormattedDate(DateTo)));
 
-
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpBankreconcilation", SqlParams);
             }
             catch (Exception ex)
@@ -47,12 +45,8 @@ namespace eTactWeb.Data.DAL
                 Error.Message = ex.Message;
                 Error.Source = ex.Source;
             }
-
             return _ResponseResult;
-
         }
-
-
         public async Task<BankReconciliationModel> GetDetailsData(string DateFrom, string DateTo, string chequeNo, string NewOrEdit,string Account_Code)
         {
             var resultList = new BankReconciliationModel();
@@ -98,7 +92,7 @@ namespace eTactWeb.Data.DAL
                                                              ChequeNo = row["ChequeNo"] == DBNull.Value ? string.Empty : row["ChequeNo"].ToString(),
                                                              entryid = row["entryid"] == DBNull.Value ? string.Empty : row["entryid"].ToString(),
                                                              AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
-
+                                                             Account_Code  = row["AccountCode"] == DBNull.Value ? string.Empty : row["AccountCode"].ToString(),
 
                                                          }).ToList();
                 }
@@ -115,6 +109,35 @@ namespace eTactWeb.Data.DAL
             }
 
             return resultList;
+        }
+        public async Task<ResponseResult> SaveBankReceipt(BankReconciliationModel model, DataTable GIGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var sqlParams = new List<dynamic>();
+                if (model.Mode == "U" || model.Mode == "V")
+                {
+                    sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                }
+                else
+                {
+                    sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
+                }
+                sqlParams.Add(new SqlParameter("@dt", GIGrid));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpBankreconcilation", sqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Result = new { ex.Message, ex.StackTrace };
+            }
+
+            return _ResponseResult;
         }
     }
 }

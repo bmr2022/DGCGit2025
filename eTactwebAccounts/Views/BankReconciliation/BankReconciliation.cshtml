@@ -42,7 +42,7 @@
 			<div class="card-body">
 				<div class="card overflow-auto">
 					<div class="card-body">
-						<form id="SParam">
+						<form asp-action="BankReconciliation" asp-controller="BankReconciliation" method="post" class="form-horizontal">
 							<div class="row">
 								@* <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
                                 <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
@@ -112,7 +112,7 @@
 									<a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="BankReconciliation" asp-action="BankReconciliation">
 										<i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
 									</a>
-									<button type="submit" class="btn btn-primary btn-sm submitBTN" style="padding:3px;height:30px;width:100px;margin-left:20px;" id="submitBTN">
+									<button type="submit" class="btn btn-primary btn-sm submitBTN" style="padding:3px;height:30px;width:100px;margin-left:20px;">
 										<i class="fa-solid fa-chevron-circle-right"></i>
 										SUBMIT
 									</button>
@@ -203,7 +203,6 @@
 					</div>
 				</div>
 			</div>
-
 		</div>
 	</div>
 
@@ -267,7 +266,28 @@
 				}
 			}
 
+			$('#DateFrom').rules("remove", "required");
+			$('#DateTo').rules("remove", "required");
 
+		});
+
+		$('.submitBTN').click(function (e) {
+
+			e.preventDefault();
+			$.ajax({
+				url: '@Url.Action("BankReconciliation", "BankReconciliation")',
+				type: 'POST',
+				success: function (response) {
+					$.notify('Bank Reco is Saved Successfully.', "success");
+					setTimeout(function () {
+				location.reload();
+			}, 1000); // reload after 1 second
+				},
+				error: function (xhr) {
+					console.error("Error:", xhr.responseText);
+					// Handle error
+				}
+			});
 		});
 
 		function selection(CurrentRow) {
@@ -277,7 +297,7 @@
 		}
 
 		function toggleDatePicker(checkbox, SeqNo) {
-			 
+
 			const $checkbox = $(checkbox);
 			const $row = $checkbox.closest("tr");
 			const $dateInput = $row.find(".bank-date-input");
@@ -299,14 +319,48 @@
 				$dateInput.datepicker({
 				dateFormat: 'dd/M/yy',
 				minDate: minDate,
-				maxDate: maxDate
+				maxDate: maxDate,
+				onSelect: function () {
+					AddToBankRecoGrid(checkbox, SeqNo);
+				}
 			});
 			}
+
 			$dateInput.datepicker("show"); // Optionally show it immediately
 		} else {
 			$dateInput.hide();
 			$dateText.show();
 		}
+		}
+
+		function AddToBankRecoGrid(checkbox,SeqNo){
+			debugger
+			var $checkbox = $(checkbox);
+			var ItemData = {
+				"SeqNo": SeqNo,
+				"entryid": $('#AccEntryId-' + SeqNo).text(),
+				"AccYearCode": $('#AccYearCode-' + SeqNo).text(),
+				"VoucherNo": $('#VoucherNo-' + SeqNo).text(),
+				"Type": $('#VoucherType-' + SeqNo).text(),
+				"Account_Code": $('#AccountCode-' + SeqNo).val(),
+				"chequeNo": $('#ChequeNo-' + SeqNo).text(),
+				"DrAmt": parseFloat($('#DrAmt-' + SeqNo).text()),
+				"CrAmt": parseFloat($('#CrAmt-' + SeqNo).text()),
+				"ChequeClearDate": $('#BankRecoDate-' + SeqNo).val(),
+				"IsChecked" : $checkbox.prop('checked')
+			};
+
+			$.ajax({
+			type: "POST",
+			url: '@Url.Action("AddBankRecotoGrid", "BankReconciliation")',
+			data: { model: ItemData },
+			success: function (result, status, xhr) {
+				console.log('successfully Added toggleDatePicker Grid');
+			},
+			error: function () {
+				$.notify('Something Went Wrong, Please Try Again.', "error");
+			}
+			});
 		}
 
 		function FillBankName() {
