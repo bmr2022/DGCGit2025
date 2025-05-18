@@ -3,9 +3,310 @@
 
 @if (Model.SummaryDetail == "Detail")
 {
+    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
+        <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SBDashboardGrid">
+            <thead class="bg-gradient card-headerBG text-light">
+                <tr>
+                    <th>Sr#</th>
+                    <th>Action</th>
+                    <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill No</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillDate</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxable</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INVNetAmt</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supply Type</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State Name Supply</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Country Name Supply</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Name</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Address</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Payment Term</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Document Head</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Amend No</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Amend Date</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust PartCode</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No Of Case</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Rate</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Lot Stock</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate In Other Curr</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Pend Qty</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt SO Pend Qty</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount Per</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Discount Amt</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Remark</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Amount</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundType</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RountOffAmt</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EwayBillNo</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EInvNo</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EinvGenerated</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterdocNo</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransportModeBYRoadAIR</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchTo</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchThrough</th>
+                    <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExchangeRate</th>
+                    <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>currExchangeRate</th>
+                    <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryId</th>
+                    <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th>
+                    <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryDate</th>
+                    <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shippingdate</th>
+                    <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DistanceKM</th>
+                    <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>vehicleNo</th>
+                    <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterName</th>
+                    <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DomesticExportNEPZ</th>
+                    <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaymentCreditDay</th>
+                    <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReceivedAmt</th>
+                    <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>pendAmount</th>
+                    <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBill</th>
+                    <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Canceldate</th>
+                    <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBy</th>
+                    <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cancelreason</th>
+                    <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BankName</th>
+                    <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FreightPaid</th>
+                    <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayReason</th>
+                    <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath1</th>
+                    <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath2</th>
+                    <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath3</th>
+                    <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DocketNo</th>
+                    <th data-columnno="49" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayreson</th>
+                    <th data-columnno="50" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Commodity</th>
+                    <th data-columnno="51" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TypeItemServAssets</th>
+                    <th data-columnno="52" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillJobwork</th>
+                    <th data-columnno="53" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvNo</th>
+                    <th data-columnno="54" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvDate</th>
+                    <th data-columnno="55" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvYearCode</th>
+                    <th data-columnno="56" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BILLAgainstWarrenty</th>
+                    <th data-columnno="57" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExportInvoiceNo</th>
+                    <th data-columnno="58" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvoiceTime</th>
+                    <th data-columnno="59" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalDate</th>
+                    <th data-columnno="60" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalTime</th>
+                    <th data-columnno="61" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryFreezToAccounts</th>
+                    <th data-columnno="62" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceSheetClosed</th>
+                    <th data-columnno="63" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotNo</th>
+                    <th data-columnno="64" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotDate</th>
+                    <th data-columnno="65" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>salesperson_name</th>
+                    <th data-columnno="66" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalesPersonMobile</th>
+                    <th data-columnno="67" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
+                    <th data-columnno="68" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
+                    <th data-columnno="69" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovDate</th>
+                    <th data-columnno="70" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedBy</th>
+                    <th data-columnno="71" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Address</th>
+                    <th data-columnno="72" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated By</th>
+                    <th data-columnno="73" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated Date</th>
+                    <th data-columnno="74" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
+                    <th data-columnno="75" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                    <th data-columnno="76" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Name</th>
+                    <th data-columnno="77" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
+                    <th data-columnno="78" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By MachineName</th>
+                </tr>
+            </thead>
+            <tbody id="divSBDashboardGrid">
+                @{
+                    var @Cntr = 0;
+                    int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                    int srNo = srNoStart + 1;
+                    if (Model.SaleBillDataDashboard == null || Model.SaleBillDataDashboard.Count == 0)
+                    {
+                        <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                    }
+                    else
+                    {
+                        foreach (var item in Model.SaleBillDataDashboard)
+                        {
+                            Cntr = Cntr + 1;
+                            <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #ffeeba;" : "background-color:#fde5fc;")">
+                                <th>@srNo</th>
+                                <td style="text-align:center;white-space: nowrap;">
+                                    <div id="container">
+                                        @*<div id="printData-@Cntr">
+                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode">
+                        <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                        </span>
+                        </a>
+                        </div>*@
+                                        <div id="viewCursorDiv-@Cntr">
+                                            <a class="table-link link-success" asp-action="SaleInvoice" asp-route-Mode="V" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="BackButtonData(event)">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                        <div id="editCursorDiv-@Cntr">
+
+                                            <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="BackButtonData(event)">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+
+                                        <div id="deleteCursorDiv-@Cntr">
+                                            <a class="table-link link-danger btnDeleteData" asp-action="DeleteByID" asp-route-ID="@item.SaleBillEntryId" asp-route-YC="@item.SaleBillYearCode" asp-route-createdBy="@item.ActualEnteredBy" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                @* <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td> *@
+                                <td>@item.SaleBillNo</td>
+                                <td>@(item.SaleBillDate == null ? string.Empty : item.SaleBillDate.Split(" ")[0])</td>
+                                <td>@item.AccountName</td>
+                                <td>@item.GSTNO</td>
+                                <td>@item.BillAmt</td>
+                                <td>@item.TaxableAmt</td>
+                                <td>@item.INVNetAmt</td>
+                                <td>@item.SupplyType</td>
+                                <td>@item.StateNameofSupply</td>
+                                <td>@item.CityofSupply</td>
+                                <td>@item.CountryOfSupply</td>
+                                <td>@item.ConsigneeAccountName</td>
+                                <td>@item.ConsigneeAddress</td>
+                                <td>@item.PaymentTerm</td>
+                                <td>@item.Currency</td>
+                                <td></td> @*  Document  Head  *@
+                                <td>@item.SONO</td>
+                                <td>@item.CustOrderNo</td>
+                                <td>@item.SODate</td>
+                                <td>@item.SchNo</td>
+                                <td>@item.Schdate</td>
+                                <td>@item.SOAmendNo</td>
+                                <td>@item.SOAmendDate</td>
+                                <td>@item.PartCode</td>
+                                <td>@item.ItemName</td>
+                                <td>@item.CustomerPartCode</td>
+                                <td>@item.HSNNo</td>
+                                <td>@item.Unit</td>
+                                <td>@item.NoofCase</td>
+                                <td>@item.Qty</td>
+                                <td>@item.Rate</td>
+                                <td>@item.ItemNetAmount</td>
+                                <td>@item.StoreName</td>
+                                <td>@item.Batchno</td>
+                                <td>@item.Uniquebatchno</td>
+                                <td>@item.LotStock</td>
+                                <td>@item.TotalStock</td>
+                                <td>@item.RateInOtherCurr</td>
+                                <td>@item.AltUnit</td>
+                                <td>@item.AltQty</td>
+                                <td>@item.SOPendQty</td>
+                                <td>@item.AltSOPendQty</td>
+                                <td>@item.DiscountPer</td>
+                                <td>@item.DiscountAmt</td>
+                                <td>@item.PacketsDetail</td>
+                                <td>@item.OtherDetail</td>
+                                <td>@item.ItemRemark</td>
+                                <td>@item.Remark</td>
+                                <td>@item.GSTAmount</td>
+                                <td>@item.RoundTypea</td>
+                                <td>@item.RoundOffAmt</td>
+                                <td class="eWayBillNoGrid">@item.Ewaybillno</td>
+                                <td class="eInvNoGrid">@item.EInvNo</td>
+                                <td class="EInvGeneratedGrid">@item.EinvGenerated</td>
+                                <td>@item.TransporterdocNo</td>
+                                <td>@item.TransportModeBYRoadAIR</td>
+                                <td>@item.DispatchTo</td>
+                                <td>@item.DispatchThrough</td>
+                                <td>@item.ExchangeRate</td>
+                                <td>@item.currExchangeRate</td>
+                                <td>@item.SaleBillEntryId</td>
+                                <td>@item.SaleBillYearCode</td>
+                                <td>@(item.SaleBillEntryDate == null ? string.Empty : item.SaleBillEntryDate.Split(" ")[0])</td>
+                                <td>@(item.Shippingdate == null ? string.Empty : item.Shippingdate.Split(" ")[0])</td>
+                                <td>@item.DistanceKM</td>
+                                <td>@item.vehicleNo</td>
+                                <td>@item.TransporterName</td>
+                                <td class="domesticExportNEPZ">@item.DomesticExportNEPZ</td>
+                                <td>@item.PaymentCreditDay</td>
+                                <td>@item.DiscountAmt</td> @* Received Amt *@
+                                <td>@item.SOPendQty</td>  @* Pend Amt *@
+                                <td class="cancelBillGrid">@item.CancelBill</td>
+                                <td>@(item.Canceldate == null ? string.Empty : item.Canceldate.Split(" ")[0])</td>
+                                <td>@item.CancelBy</td>
+                                <td>@item.Cancelreason</td>
+                                <td>@item.BankName</td>
+                                <td>@item.FreightPaid</td>
+                                <td>@item.DispatchDelayReason</td>
+                                <td>@item.AttachmentFilePath1</td>
+                                <td>@item.AttachmentFilePath2</td>
+                                <td>@item.AttachmentFilePath3</td>
+                                <td>@item.DocketNo</td>
+                                <td>@item.DispatchDelayreson</td>
+                                <td>@item.Commodity</td>
+                                <td>@item.TypeItemServAssets</td>
+                                <td>@item.SaleBillJobwork</td>
+                                <td>@item.PerformaInvNo</td>
+                                <td>@(item.PerformaInvDate == null ? string.Empty : item.PerformaInvDate.Split(" ")[0])</td>
+                                <td>@item.PerformaInvYearCode</td>
+                                <td>@item.BILLAgainstWarrenty</td>
+                                <td>@item.ExportInvoiceNo</td>
+                                <td>@item.InvoiceTime</td>
+                                <td>@(item.RemovalDate == null ? string.Empty : item.RemovalDate.Split(" ")[0])</td>
+                                <td>@item.RemovalTime</td>
+                                <td>@item.EntryFreezToAccounts</td>
+                                <td>@item.BalanceSheetClosed</td>
+                                <td>@item.SaleQuotNo</td>
+                                <td>@(item.SaleQuotDate == null ? string.Empty : item.SaleQuotDate.Split(" ")[0])</td>
+                                <td>@item.AccountName</td>   @* Sales Person Name *@
+                                <td>@item.TransportModeBYRoadAIR</td>  @* Sales Person Mobile *@
+                                <td>@item.Remark</td>
+                                <td>@item.Approved</td>
+                                <td>@(item.ApprovDate == null ? string.Empty : item.ApprovDate.Split(" ")[0])</td>
+                                <td>@item.ApprovedBy</td>
+                                <td>@item.CustAddress</td>
+                                <td>@item.LastUpdatedBy</td>
+                                <td>@(item.LastUpdationDate == null ? string.Empty : item.LastUpdationDate.Split(" ")[0])</td>
+                                <td>@item.CC</td>
+                                <td>@item.Uid</td>
+                                <td>@item.ActualEnteredByName</td>
+                                <td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
+                                <td>@item.MachineName</td>
+
+                            </tr>
+                            srNo++;
+                        }
+                    }
+                }
+            </tbody>
+        </table>
+    </div>
+}
+else
+{
+    <div style="overflow-x: auto; overflow-y: auto; max-height: 400px;">
     <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SBDashboardGrid">
         <thead class="bg-gradient card-headerBG text-light">
-            <tr>
+                <tr>
                 <th>Sr#</th>
                 <th>Action</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill No</th>
@@ -14,52 +315,18 @@
                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supply Type</th>
                 <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State Name Supply</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Country Name Supply</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th>
                 <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Name</th>
                 <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Address</th>
                 <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Payment Term</th>
                 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
                 <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Document Head</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Amend No</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Amend Date</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust PartCode</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No Of Case</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Rate</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Lot Stock</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate In Other Curr</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Pend Qty</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt SO Pend Qty</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount Per</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Discount Amt</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Packets Detail</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Remark</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
                 <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxable</th>
                 <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Amount</th>
                 <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundType</th>
                 <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RountOffAmt</th>
                 <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INVNetAmt</th>
                 <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EwayBillNo</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th>
                 <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EInvNo</th>
                 <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EinvGenerated</th>
                 <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterdocNo</th>
@@ -136,7 +403,7 @@
                     foreach (var item in Model.SaleBillDataDashboard)
                     {
                         Cntr = Cntr + 1;
-                        <tr id="SbRow-@Cntr">
+                            <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #ffeeba;" : "background-color:#fde5fc;")">
                             <th>@srNo</th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
@@ -178,271 +445,7 @@
                             </td>
 
                             @* <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td> *@
-                            <td>@item.SaleBillNo</td>
-                            <td>@(item.SaleBillDate == null ? string.Empty : item.SaleBillDate.Split(" ")[0])</td>
-                            <td>@item.AccountName</td>
-                            <td>@item.GSTNO</td>
-                            <td>@item.SupplyType</td>
-                            <td>@item.StateNameofSupply</td>
-                            <td>@item.CityofSupply</td>
-                            <td>@item.CountryOfSupply</td>
-                            <td>@item.ConsigneeAccountName</td>
-                            <td>@item.ConsigneeAddress</td>
-                            <td>@item.PaymentTerm</td>
-                            <td>@item.Currency</td>
-                            <td>@item.BillAmt</td>
-                            <td></td> @*  Document  Head  *@
-                            <td>@item.SONO</td>
-                            <td>@item.CustOrderNo</td>
-                            <td>@item.SODate</td>
-                            <td>@item.SchNo</td>
-                            <td>@item.Schdate</td>
-                            <td>@item.SOAmendNo</td>
-                            <td>@item.SOAmendDate</td>
-                            <td>@item.PartCode</td>
-                            <td>@item.ItemName</td>
-                            <td>@item.CustomerPartCode</td>
-                            <td>@item.HSNNo</td>
-                            <td>@item.Unit</td>
-                            <td>@item.NoofCase</td>
-                            <td>@item.Qty</td>
-                            <td>@item.Rate</td>
-                            <td>@item.ItemNetAmount</td>
-                            <td>@item.StoreName</td>
-                            <td>@item.Batchno</td>
-                            <td>@item.Uniquebatchno</td>
-                            <td>@item.LotStock</td>
-                            <td>@item.TotalStock</td>
-                            <td>@item.RateInOtherCurr</td>
-                            <td>@item.AltUnit</td>
-                            <td>@item.AltQty</td>
-                            <td>@item.SOPendQty</td>
-                            <td>@item.AltSOPendQty</td>
-                            <td>@item.DiscountPer</td>
-                            <td>@item.DiscountAmt</td>
-                            <td>@item.PacketsDetail</td>
-                            <td>@item.OtherDetail</td>
-                            <td>@item.ItemRemark</td>
-                            <td>@item.Remark</td>
-                            <td>@item.TaxableAmt</td>
-                            <td>@item.GSTAmount</td>
-                            <td>@item.RoundTypea</td>
-                            <td>@item.RoundOffAmt</td>
-                            <td>@item.INVNetAmt</td>
-                            <td class="eWayBillNoGrid">@item.Ewaybillno</td>
-                            <td class="eInvNoGrid">@item.EInvNo</td>
-                            <td class="EInvGeneratedGrid">@item.EinvGenerated</td>
-                            <td>@item.TransporterdocNo</td>
-                            <td>@item.TransportModeBYRoadAIR</td>
-                            <td>@item.DispatchTo</td>
-                            <td>@item.DispatchThrough</td>
-                            <td>@item.ExchangeRate</td>
-                            <td>@item.currExchangeRate</td>
-                            <td>@item.SaleBillEntryId</td>
-                            <td>@item.SaleBillYearCode</td>
-                            <td>@(item.SaleBillEntryDate == null ? string.Empty : item.SaleBillEntryDate.Split(" ")[0])</td>
-                            <td>@(item.Shippingdate == null ? string.Empty : item.Shippingdate.Split(" ")[0])</td>
-                            <td>@item.DistanceKM</td>
-                            <td>@item.vehicleNo</td>
-                            <td>@item.TransporterName</td>
-                            <td class="domesticExportNEPZ">@item.DomesticExportNEPZ</td>
-                            <td>@item.PaymentCreditDay</td>
-                            <td>@item.DiscountAmt</td> @* Received Amt *@
-                            <td>@item.SOPendQty</td>  @* Pend Amt *@
-                            <td class="cancelBillGrid">@item.CancelBill</td>
-                            <td>@(item.Canceldate == null ? string.Empty : item.Canceldate.Split(" ")[0])</td>
-                            <td>@item.CancelBy</td>
-                            <td>@item.Cancelreason</td>
-                            <td>@item.BankName</td>
-                            <td>@item.FreightPaid</td>
-                            <td>@item.DispatchDelayReason</td>
-                            <td>@item.AttachmentFilePath1</td>
-                            <td>@item.AttachmentFilePath2</td>
-                            <td>@item.AttachmentFilePath3</td>
-                            <td>@item.DocketNo</td>
-                            <td>@item.DispatchDelayreson</td>
-                            <td>@item.Commodity</td>
-                            <td>@item.TypeItemServAssets</td>
-                            <td>@item.SaleBillJobwork</td>
-                            <td>@item.PerformaInvNo</td>
-                            <td>@(item.PerformaInvDate == null ? string.Empty : item.PerformaInvDate.Split(" ")[0])</td>
-                            <td>@item.PerformaInvYearCode</td>
-                            <td>@item.BILLAgainstWarrenty</td>
-                            <td>@item.ExportInvoiceNo</td>
-                            <td>@item.InvoiceTime</td>
-                            <td>@(item.RemovalDate == null ? string.Empty : item.RemovalDate.Split(" ")[0])</td>
-                            <td>@item.RemovalTime</td>
-                            <td>@item.EntryFreezToAccounts</td>
-                            <td>@item.BalanceSheetClosed</td>
-                            <td>@item.SaleQuotNo</td>
-                            <td>@(item.SaleQuotDate == null ? string.Empty : item.SaleQuotDate.Split(" ")[0])</td>
-                            <td>@item.AccountName</td>   @* Sales Person Name *@
-                            <td>@item.TransportModeBYRoadAIR</td>  @* Sales Person Mobile *@
-                            <td>@item.Remark</td>
-                            <td>@item.Approved</td>
-                            <td>@(item.ApprovDate == null ? string.Empty : item.ApprovDate.Split(" ")[0])</td>
-                            <td>@item.ApprovedBy</td>
-                            <td>@item.CustAddress</td>
-                            <td>@item.LastUpdatedBy</td>
-                            <td>@(item.LastUpdationDate == null ? string.Empty : item.LastUpdationDate.Split(" ")[0])</td>
-                            <td>@item.CC</td>
-                            <td>@item.Uid</td>
-                            <td>@item.ActualEnteredByName</td>
-                            <td>@(item.ActualEntryDate == null ? string.Empty : item.ActualEntryDate.Split(" ")[0])</td>
-                            <td>@item.MachineName</td>
-
-                        </tr>
-                        srNo++;
-                    }
-                }
-            }
-        </tbody>
-    </table>
-}
-else
-{
-    <table class="table table-hover table-bordered TbCss text-nowrap mb-0" id="SBDashboardGrid">
-        <thead class="bg-gradient card-headerBG text-light">
-            <tr>
-                <th>Sr#</th>
-                <th>Action</th>
-                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill No</th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale BillDate</th>
-                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
-                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST No</th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supply Type</th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>State Name Supply</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>City Name Supply</th>
-                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Name</th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Consignee Address</th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Payment Term</th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Currency</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Amt</th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Taxable</th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>GST Amount</th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RoundType</th>
-                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RountOffAmt</th>
-                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>INVNetAmt</th>
-                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EwayBillNo</th>
-                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EInvNo</th>
-                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EinvGenerated</th>
-                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterdocNo</th>
-                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransportModeBYRoadAIR</th>
-                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchTo</th>
-                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchThrough</th>
-                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExchangeRate</th>
-                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>currExchangeRate</th>
-                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryId</th>
-                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillYearCode</th>
-                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillEntryDate</th>
-                <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shippingdate</th>
-                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DistanceKM</th>
-                <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>vehicleNo</th>
-                <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransporterName</th>
-                <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DomesticExportNEPZ</th>
-                <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PaymentCreditDay</th>
-                <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReceivedAmt</th>
-                <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>pendAmount</th>
-                <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBill</th>
-                <th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Canceldate</th>
-                <th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CancelBy</th>
-                <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cancelreason</th>
-                <th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BankName</th>
-                <th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FreightPaid</th>
-                <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayReason</th>
-                <th data-columnno="45" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath1</th>
-                <th data-columnno="46" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath2</th>
-                <th data-columnno="47" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AttachmentFilePath3</th>
-                <th data-columnno="48" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DocketNo</th>
-                <th data-columnno="49" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DispatchDelayreson</th>
-                <th data-columnno="50" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Commodity</th>
-                <th data-columnno="51" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TypeItemServAssets</th>
-                <th data-columnno="52" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleBillJobwork</th>
-                <th data-columnno="53" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvNo</th>
-                <th data-columnno="54" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvDate</th>
-                <th data-columnno="55" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PerformaInvYearCode</th>
-                <th data-columnno="56" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BILLAgainstWarrenty</th>
-                <th data-columnno="57" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ExportInvoiceNo</th>
-                <th data-columnno="58" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>InvoiceTime</th>
-                <th data-columnno="59" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalDate</th>
-                <th data-columnno="60" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RemovalTime</th>
-                <th data-columnno="61" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryFreezToAccounts</th>
-                <th data-columnno="62" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BalanceSheetClosed</th>
-                <th data-columnno="63" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotNo</th>
-                <th data-columnno="64" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SaleQuotDate</th>
-                <th data-columnno="65" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>salesperson_name</th>
-                <th data-columnno="66" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalesPersonMobile</th>
-                <th data-columnno="67" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
-                <th data-columnno="68" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Approved</th>
-                <th data-columnno="69" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovDate</th>
-                <th data-columnno="70" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedBy</th>
-                <th data-columnno="71" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Address</th>
-                <th data-columnno="72" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated By</th>
-                <th data-columnno="73" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Last Updated Date</th>
-                <th data-columnno="74" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Branch</th>
-                <th data-columnno="75" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
-                <th data-columnno="76" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Name</th>
-                <th data-columnno="77" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual Entry Date</th>
-                <th data-columnno="78" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By MachineName</th>
-            </tr>
-        </thead>
-        <tbody id="divSBDashboardGrid">
-            @{
-                var @Cntr = 0;
-                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
-                int srNo = srNoStart + 1;
-                if (Model.SaleBillDataDashboard == null || Model.SaleBillDataDashboard.Count == 0)
-                {
-                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
-                }
-                else
-                {
-                    foreach (var item in Model.SaleBillDataDashboard)
-                    {
-                        Cntr = Cntr + 1;
-                        <tr id="SbRow-@Cntr" class="sbDashboardRow">
-                            <th>@srNo</th>
-                            <td style="text-align:center;white-space: nowrap;">
-                                <div id="container">
-                                    @*<div id="printData-@Cntr">
-                                        <a class="table-link link-dark" asp-action="PrintReport" asp-route-EntryId="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>*@
-                                    <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-action="SaleInvoice" asp-route-Mode="V" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="BackButtonData(event)">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    <div id="editCursorDiv-@Cntr">
-
-                                        <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="BackButtonData(event)">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-
-                                    <div id="deleteCursorDiv-@Cntr">
-                                        <a class="table-link link-danger btnDeleteData" asp-action="DeleteByID" asp-route-ID="@item.SaleBillEntryId" asp-route-YC="@item.SaleBillYearCode" asp-route-createdBy="@item.ActualEnteredBy" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                </div>
-                            </td>
-
-                            @* <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td> *@
-                            <td>@item.SaleBillNo<input type="hidden" value="@item.SaleBillYearCode" class="gridYearCode"/></td>
+                            <td>@item.SaleBillNo<input type="hidden" value="@item.SaleBillYearCode" class="gridYearCode" /></td>
                             <td>@(item.SaleBillDate == null ? string.Empty : item.SaleBillDate.Split(" ")[0])</td>
                             <td>@item.AccountName</td>
                             <td>@item.GSTNO</td>
@@ -528,7 +531,7 @@ else
             }
         </tbody>
     </table>
-
+    </div>
 }
 @{
 

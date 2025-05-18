@@ -1525,8 +1525,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "SaleQuoteNoBack" && typeProperty.PropertyInfo.Name != "DashboardTypeBack"&& typeProperty.PropertyInfo.Name != "BOMInd"
                         && typeProperty.PropertyInfo.Name != "DomesticExportNEPZBack" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "SearchBoxBack" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "SaleBillDataDashboard"
-                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords"
-                       
+                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords"&& typeProperty.PropertyInfo.Name != "ProducedUnprod"&& typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
