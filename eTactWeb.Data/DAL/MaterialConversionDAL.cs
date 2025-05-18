@@ -48,8 +48,6 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-
-
         public async Task<ResponseResult> SaveMaterialConversion(MaterialConversionModel model, DataTable GIGrid)
         {
             var _ResponseResult = new ResponseResult();

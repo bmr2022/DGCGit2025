@@ -635,6 +635,7 @@
 
                 FillEntryID();
                 TotalNoOfRows();
+                FillSlipNo();
             }
 
             
@@ -698,7 +699,7 @@
 
             $('#totalRows').text($('#divStockGrid tr').length);
            
-            FillSlipNo();
+            //FillSlipNo();
             FillBranch();
             FillStoreName();
             FillWorkCenterName();
@@ -706,8 +707,6 @@
             GetOriginalItemName();
             AltFillStoreName();
             FillAltWorkCenterName();
-            GetAltPartCode();
-            GetAltItemName();
 
             GetUnitAltUnit($('#OriginalItemCode').val());
 
@@ -1208,8 +1207,6 @@
            
           
         });
-        GetAltPartCode();
-        GetAltItemName();
         function FillEntryID() {
 
             var YearCode = $('#OpeningYearCode').val();
@@ -1224,6 +1221,7 @@
                     var obj = $.parseJSON(data);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
                             $('#EntryId').val(obj.Result[0].EntryId || 0);
+                            $('#SlipNo').val(obj.Result[0].EntryId || 0);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -1232,7 +1230,7 @@
             });
         }
         function FillSlipNo() {
-
+             
             var YearCode = $('#OpeningYearCode').val();
             $.ajax({
                 url: '@Url.Action("FillEntryID", "MaterialConversion")',

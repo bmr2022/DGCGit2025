@@ -20,7 +20,7 @@ namespace eTactWeb.DOM.Models
         public string Type { get; set; }
         public string BankDate { get; set; }
         public string DrAmt { get; set; }
-
+        public string? VoucherNo { get; set; }
         public string CrAmt { get; set; }
         public string ChequeNo { get; set; }
         public string entryid { get; set; }

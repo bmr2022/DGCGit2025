@@ -205,7 +205,7 @@ namespace eTactWeb.Controllers
             }
             else
             {
-                
+
             }
             if (Mode != "U")
             {
@@ -242,7 +242,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<JsonResult> GetGateMainData(string GateNo, string GateYearCode, int GateEntryId)
         {
             var JSON = await _ICustomerJWR.GetGateMainData(GateNo, GateYearCode, GateEntryId);
@@ -276,7 +275,7 @@ namespace eTactWeb.Controllers
                 {
                     if (item != null)
                     {
-                        if (CustomerJobWorkReceiveDetail == null)
+                        if (CustomerJobWorkReceiveDetail == null || CustomerJobWorkReceiveDetail.Count() == 0)
                         {
                             item.SeqNo += seqNo + 1;
                             MaterialGrid.Add(item);
@@ -291,8 +290,8 @@ namespace eTactWeb.Controllers
                         }
                         MainModel.CustomerJWRGrid = MaterialGrid;
 
-                        string serializedGrid = JsonConvert.SerializeObject(MainModel);
-                        HttpContext.Session.SetString("KeyReqThroughBOMGrid", serializedGrid);
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.CustomerJWRGrid);
+                        HttpContext.Session.SetString("KeyCustomerJWRDetailGrid", serializedGrid);
                     }
                 }
                 return PartialView("_CustomerJWRGrid", MainModel);
@@ -302,7 +301,6 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-
         public IActionResult EditItemRow(int SeqNo)
         {
             string modelJson = HttpContext.Session.GetString("KeyCustomerJWRDetailGrid");
@@ -438,9 +436,9 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                HttpContext.Session.Remove("KeyCustomerJWRDetailGrid"); 
+                HttpContext.Session.Remove("KeyCustomerJWRDetailGrid");
                 var model = new CustomerJWRQDashboard();
-                var Result = await _ICustomerJWR.GetDashboardData(FromDate,ToDate,VendorName,ChallanNo,PartCode,ItemName,MrnNo).ConfigureAwait(true);
+                var Result = await _ICustomerJWR.GetDashboardData(FromDate, ToDate, VendorName, ChallanNo, PartCode, ItemName, MrnNo).ConfigureAwait(true);
 
                 if (Result != null)
                 {
@@ -448,11 +446,11 @@ namespace eTactWeb.Controllers
                     DataSet DS = Result.Result;
                     if (DS != null)
                     {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "VendorName", "MrnNo", "MrnDate", "GateNo", "GateDate","ChallanNo",
-                            "ChallanDate","EntryId","YearCode","EntryBy","ReceByEmp","LastUpdatedByEmp","JobworkType","CC","UID"
-                            ,"GateYearCode","Remark","MRNQCCompleted","Complete","Closed","ActualEntryDate","UpdatedOn","EntryByMachineName");
+                        var DT = DS.Tables[0].DefaultView.ToTable(false, "VendorName", "MrnNo", "MrnDate", "GateNo", "GateDate", "ChallanNo",
+                            "ChallanDate", "EntryId", "YearCode", "EntryBy", "ReceByEmp", "LastUpdatedByEmp", "JobworkType", "CC", "UID"
+                            , "GateYearCode", "Remark", "MRNQCCompleted", "Complete", "Closed", "ActualEntryDate", "UpdatedOn", "EntryByMachineName");
                         model.CustomerJWRQDashboard = CommonFunc.DataTableToList<CustomerJWRDashboard>(DT, "CustomerJWR");
-                        
+
                         if (Flag == "False")
                         {
                             model.FromDate1 = FromDate;
@@ -474,19 +472,19 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetSearchData(string FromDate,string ToDate,string VendorName,string MrnNo,string ChallanNo,string ItemName, string PartCode)
+        public async Task<IActionResult> GetSearchData(string FromDate, string ToDate, string VendorName, string MrnNo, string ChallanNo, string ItemName, string PartCode)
         {
             //model.Mode = "Search";
             var model = new CustomerJWRQDashboard();
-            model = await _ICustomerJWR.GetSearchData(FromDate,ToDate,VendorName,MrnNo,ChallanNo,ItemName,PartCode);
+            model = await _ICustomerJWR.GetSearchData(FromDate, ToDate, VendorName, MrnNo, ChallanNo, ItemName, PartCode);
             model.DashboardType = "Summary";
             return PartialView("_CustomerJWRDashboardGrid", model);
         }
-        public async Task<IActionResult> GetSearchDetailData(string FromDate,string ToDate,string VendorName,string MrnNo,string ChallanNo,string ItemName, string PartCode)
+        public async Task<IActionResult> GetSearchDetailData(string FromDate, string ToDate, string VendorName, string MrnNo, string ChallanNo, string ItemName, string PartCode)
         {
             //model.Mode = "Search";
             var model = new CustomerJWRQDashboard();
-            model = await _ICustomerJWR.GetSearchDetailData(FromDate,ToDate,VendorName,MrnNo,ChallanNo,ItemName,PartCode);
+            model = await _ICustomerJWR.GetSearchDetailData(FromDate, ToDate, VendorName, MrnNo, ChallanNo, ItemName, PartCode);
             model.DashboardType = "Detail";
             return PartialView("_CustomerJWRDashboardGrid", model);
         }
@@ -499,7 +497,7 @@ namespace eTactWeb.Controllers
             {
                 CustomerJWRGrid = JsonConvert.DeserializeObject<List<CustomerJobWorkReceiveDetail>>(modelJson);
             }
-            
+
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (CustomerJWRGrid != null && CustomerJWRGrid.Count > 0)
@@ -529,7 +527,7 @@ namespace eTactWeb.Controllers
             }
             return PartialView("_CustomerJWRGrid", MainModel);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC,string EntryByMachineName, string FromDate = "", string ToDate = "", string VendorName = "", string MrnNo = "", string ChallanNo = "",string ItemName = "", string PartCode = "", string DashboardType = "")
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryByMachineName, string FromDate = "", string ToDate = "", string VendorName = "", string MrnNo = "", string ChallanNo = "", string ItemName = "", string PartCode = "", string DashboardType = "")
         {
             var Result = await _ICustomerJWR.DeleteByID(ID, YC, EntryByMachineName);
 
@@ -554,7 +552,7 @@ namespace eTactWeb.Controllers
             DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
             string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
 
-            return RedirectToAction("CustomerJWRDashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", VendorName = VendorName, MrnNo = MrnNo,  ChallanNo = ChallanNo, ItemName = ItemName, PartCode = PartCode, DashboardType = DashboardType });
+            return RedirectToAction("CustomerJWRDashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", VendorName = VendorName, MrnNo = MrnNo, ChallanNo = ChallanNo, ItemName = ItemName, PartCode = PartCode, DashboardType = DashboardType });
 
         }
     }
