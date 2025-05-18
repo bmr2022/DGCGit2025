@@ -47,7 +47,6 @@ else
             <td>@item.seqno</td>
             <td>@item.OriginalPartCode<input type="hidden" asp-for="OriginalItemCode" value="@item.OriginalItemCode" /></td>
             <td>@item.OriginalItemName<input type="hidden" asp-for="OriginalItemCode" value="@item.OriginalItemCode"/></td>
-
             <td>@item.StoreName<input type="hidden" asp-for="StoreId" value="@item.StoreId" /></td>
             <td>@item.WorkCenterName<input type="hidden" asp-for="WcId" value="@item.WcId" /></td>
             <td>@item.BatchNo</td>
@@ -55,13 +54,10 @@ else
             <td>@item.BatchStock</td>
             <td>@item.TotalStock</td>
             <td>@item.OriginalQty</td>
-            <td>@item.Unit</td>
-            
-
+            <td>@item.Unit</td>          
             <td>@item.AltPartCode <input type="hidden" asp-for="AltItemCode" class="AltItemCode" value="@item.AltItemCode" /></td>
             <td>@item.AltItemName <input type="hidden" asp-for="AltItemCode" class="AltItemCode" value="@item.AltItemCode" /></td>
             <td>@item.AltStock</td>
-
             <td>@item.AltStoreName<input type="hidden" asp-for="AltStoreId" value="@item.AltStoreId" /></td>
             <td>@item.AltWorkCenterName<input type="hidden" asp-for="AltWCID" value="@item.AltWCID" /></td>
             <td>@item.AltOriginalQty</td>

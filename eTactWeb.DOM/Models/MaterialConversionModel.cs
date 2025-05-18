@@ -67,7 +67,7 @@ namespace eTactWeb.DOM.Models
         public string OriginalItemCode { get; set; }
         
         public decimal OriginalQty { get; set; }
-        public string AltItemCode { get; set; }
+        public int AltItemCode { get; set; }
         public string AltUnit { get; set; }
         public decimal AltOriginalQty { get; set; }
         public int OriginalStoreId { get; set; }

@@ -851,408 +851,414 @@ namespace eTactWeb.Data.DAL
         }
         private static SaleBillModel PrepareView(DataSet DS, ref SaleBillModel? model, string Mode)
         {
-            var ItemGrid = new List<SaleBillDetail>();
-            var SaleBillGrid = new List<SaleBillDetail>();
-            var TaxGrid = new List<TaxModel>();
-            var customerJWAdj = new List<CustomerJobWorkChallanAdj>();
-            var DRCRGrid = new List<DbCrModel>();
-            var adjustGrid = new List<AdjustmentModel>();
-            DS.Tables[0].TableName = "saleBillModel";
-            DS.Tables[1].TableName = "saleBillDetail";
-            DS.Tables[2].TableName = "saleBillTaxDetail";
-            DS.Tables[3].TableName = "DRCRDetail";
-            DS.Tables[4].TableName = "AdjustmentDetail";
-            DS.Tables[5].TableName = "CustomerAdjDetail";
-
-            //DS.Tables[6].TableName = "AdjustmentDetail";
-            //DS.Tables[7].TableName = "CustomerAdjDetail";
-
-            int cnt = 0;
-
-            model.SaleBillEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillEntryId"]);
-            model.SaleBillYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillYearCode"]);
-            model.SaleBillEntryDate = DS.Tables[0].Rows[0]["SaleBillEntryDate"]?.ToString();
-            model.InvPrefix = DS.Tables[0].Rows[0]["InvPrefix"]?.ToString();
-            model.SaleBillJobwork = DS.Tables[0].Rows[0]["SaleBillJobwork"]?.ToString();
-            model.SaleBillNo = DS.Tables[0].Rows[0]["SaleBillNo"]?.ToString();
-            model.SaleBillDate = DS.Tables[0].Rows[0]["SaleBillDate"]?.ToString();
-            model.InvoiceTime = DS.Tables[0].Rows[0]["InvoiceTime"]?.ToString();
-            model.ExportInvoiceNo = DS.Tables[0].Rows[0]["ExportInvoiceNo"]?.ToString();
-            model.PerformaInvNo = DS.Tables[0].Rows[0]["PerformaInvNo"]?.ToString();
-            model.PerformaInvDate = DS.Tables[0].Rows[0]["PerformaInvDate"]?.ToString();
-            model.PerformaInvYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["PerformaInvYearCode"]);
-            model.BILLAgainstWarrenty = DS.Tables[0].Rows[0]["BILLAgainstWarrenty"]?.ToString();
-            model.RemovalDate = DS.Tables[0].Rows[0]["RemovalDate"]?.ToString();
-            model.RemovalTime = DS.Tables[0].Rows[0]["RemovalTime"]?.ToString();
-            model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]);
-            model.AccountName = DS.Tables[0].Rows[0]["Account_Name"]?.ToString();
-            model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
-            model.DomesticExportNEPZ = DS.Tables[0].Rows[0]["DomesticExportNEPZ"]?.ToString();
-            model.SupplyType = DS.Tables[0].Rows[0]["SupplyType"]?.ToString();
-            model.CustAddress = DS.Tables[0].Rows[0]["CustAddress"]?.ToString();
-            model.StateNameofSupply = DS.Tables[0].Rows[0]["StateNameofSupply"]?.ToString();
-            model.StateCode = DS.Tables[0].Rows[0]["StateCode"]?.ToString();
-            model.CityofSupply = DS.Tables[0].Rows[0]["CityofSupply"]?.ToString();
-            model.CountryOfSupply = DS.Tables[0].Rows[0]["CountryOfSupply"]?.ToString();
-            model.DistanceKM = Convert.ToInt32(DS.Tables[0].Rows[0]["DistanceKM"]);
-            model.vehicleNo = DS.Tables[0].Rows[0]["vehicleNo"]?.ToString();
-            model.TransporterName = DS.Tables[0].Rows[0]["TransporterName"]?.ToString();
-            model.TransporterdocNo = DS.Tables[0].Rows[0]["TransporterdocNo"]?.ToString();
-            model.TransporterId = Convert.ToInt32(DS.Tables[0].Rows[0]["TransporterId"]);
-            model.TransportModeBYRoadAIR = DS.Tables[0].Rows[0]["TransportModeBYRoadAIR"]?.ToString();
-            model.ConsigneeAccountcode = Convert.ToInt32(DS.Tables[0].Rows[0]["ConsigneeAccountcode"]);
-            model.ConsigneeAccountName = DS.Tables[0].Rows[0]["ConsigneeName"]?.ToString();
-            model.ConsigneeAddress = DS.Tables[0].Rows[0]["ConsigneeAddress"]?.ToString();
-            model.DispatchTo = DS.Tables[0].Rows[0]["DispatchTo"]?.ToString();
-            model.DispatchThrough = DS.Tables[0].Rows[0]["DispatchThrough"]?.ToString();
-            model.DocTypeAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["DocTypeAccountCode"]);
-            //model.DocTypeAccountName = DS.Tables[0].Rows[0]["Entrydate"]?.ToString();
-            model.PaymentTerm = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentTerm"]);
-            model.BillAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["BillAmt"]);
-            model.BillAmtWord = DS.Tables[0].Rows[0]["BillAmtWord"]?.ToString();
-            model.TaxableAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["TaxableAmt"]);
-            model.TaxbaleAmtInWord = DS.Tables[0].Rows[0]["TaxbaleAmtInWord"]?.ToString();
-            model.GSTAmount = Convert.ToInt32(DS.Tables[0].Rows[0]["GSTAmount"]);
-            model.RoundTypea = DS.Tables[0].Rows[0]["RoundType"]?.ToString();
-            model.RoundOffAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAmt"]);
-            model.DiscountPercent = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountPercent"]);
-            model.DiscountAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountAmt"]);
-            model.INVNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["INVNetAmt"]);
-            model.NetAmtInWords = DS.Tables[0].Rows[0]["NetAmtInWords"]?.ToString();
-            model.Remark = DS.Tables[0].Rows[0]["Remark"]?.ToString();
-            model.PermitNo = DS.Tables[0].Rows[0]["PermitNo"]?.ToString();
-            model.CashDisPer = Convert.ToInt32(DS.Tables[0].Rows[0]["CashDisPer"]);
-            model.CashDisRs = Convert.ToInt32(DS.Tables[0].Rows[0]["CashDisRs"]);
-            model.SoDelTime = DS.Tables[0].Rows[0]["SoDelTime"]?.ToString();
-            model.TypeJob = DS.Tables[0].Rows[0]["TypeJob"]?.ToString();
-            model.Approved = DS.Tables[0].Rows[0]["Approved"]?.ToString();
-            model.ApprovDate = DS.Tables[0].Rows[0]["ApprovDate"]?.ToString();
-            model.ApprovedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ApprovedBy"]);
-            model.currencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["currencyId"]);
-            model.ExchangeRate = Convert.ToInt32(DS.Tables[0].Rows[0]["ExchangeRate"]);
-            model.TypeItemServAssets = DS.Tables[0].Rows[0]["TypeItemServAssets"]?.ToString();
-            model.Shippingdate = DS.Tables[0].Rows[0]["Shippingdate"]?.ToString();
-            model.CancelBill = DS.Tables[0].Rows[0]["CancelBill"]?.ToString();
-            model.Canceldate = DS.Tables[0].Rows[0]["Canceldate"]?.ToString();
-            model.CancelBy = Convert.ToInt32(DS.Tables[0].Rows[0]["CancelBy"]);
-            model.Cancelreason = DS.Tables[0].Rows[0]["Cancelreason"]?.ToString();
-            model.BankName = DS.Tables[0].Rows[0]["BankName"]?.ToString();
-            model.Ewaybillno = DS.Tables[0].Rows[0]["Ewaybillno"]?.ToString();
-            model.FreightPaid = DS.Tables[0].Rows[0]["FreightPaid"]?.ToString();
-            model.dispatchLocation = DS.Tables[0].Rows[0]["dispatchLocation"]?.ToString();
-            model.currExchangeRate = Convert.ToInt32(DS.Tables[0].Rows[0]["ExchangeRate"]);
-            model.DispatchDelayReason = DS.Tables[0].Rows[0]["DispatchDelayReason"]?.ToString();
-            model.AttachmentFilePath1 = DS.Tables[0].Rows[0]["AttachmentFilePath1"]?.ToString();
-            model.AttachmentFilePath2 = DS.Tables[0].Rows[0]["AttachmentFilePath2"]?.ToString();
-            model.AttachmentFilePath3 = DS.Tables[0].Rows[0]["AttachmentFilePath3"]?.ToString();
-            model.DocketNo = DS.Tables[0].Rows[0]["DocketNo"]?.ToString();
-            model.DispatchDelayreson = DS.Tables[0].Rows[0]["DispatchDelayreson"]?.ToString();
-            model.Commodity = DS.Tables[0].Rows[0]["Commodity"]?.ToString();
-            model.EInvNo = DS.Tables[0].Rows[0]["EInvNo"]?.ToString();
-            model.EinvGenerated = DS.Tables[0].Rows[0]["EinvGenerated"]?.ToString();
-            model.CC = DS.Tables[0].Rows[0]["CC"]?.ToString();
-            model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
-            model.EntryByempId = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryByempId"]);
-            model.MachineName = DS.Tables[0].Rows[0]["MachineName"]?.ToString();
-            model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString();
-            model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]);
-            model.ActualEnteredByName = DS.Tables[0].Rows[0]["EntrybyEmp"]?.ToString();
-            model.EntryFreezToAccounts = DS.Tables[0].Rows[0]["EntryFreezToAccounts"]?.ToString();
-            model.PaymentCreditDay = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentCreditDay"]);
-            model.ChallanNo = DS.Tables[0].Rows[0]["ChallanNo"]?.ToString();
-            model.ChallanDate = DS.Tables[0].Rows[0]["ChallanDate"]?.ToString();
-            model.ChallanYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ChallanYearCode"]);
-            model.ChallanEntryid = Convert.ToInt32(DS.Tables[0].Rows[0]["ChallanEntryid"]);
-            model.BalanceSheetClosed = DS.Tables[0].Rows[0]["BalanceSheetClosed"]?.ToString();
-            model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
-            model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
-            model.SaleQuotyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotyearCode"]);
-            model.SaleQuotDate = DS.Tables[0].Rows[0]["SaleQuotDate"]?.ToString();
-
-            //if (model.AttachmentFilePath1 != null)
-            //{
-            //    byte[] fileBytes = File.ReadAllBytes(model.AttachmentFilePath1);
-            //    var memoryStream = new MemoryStream(fileBytes);
-
-            //    model.AttachmentFile1 = new FormFile(memoryStream, 0, memoryStream.Length, "file", Path.GetFileName(model.AttachmentFilePath1))
-            //    {
-            //        ContentType = "application/octet-stream"
-            //    };
-            //}
-
-            //if (model.AttachmentFilePath2 != null)
-            //{
-            //    byte[] fileBytes = File.ReadAllBytes(model.AttachmentFilePath2);
-            //    var memoryStream = new MemoryStream(fileBytes);
-
-            //    model.AttachmentFile2 = new FormFile(memoryStream, 0, memoryStream.Length, "file", Path.GetFileName(model.AttachmentFilePath2))
-            //    {
-            //        ContentType = "application/octet-stream"
-            //    };
-            //}
-
-            //if (model.AttachmentFilePath3 != null)
-            //{
-            //    byte[] fileBytes = File.ReadAllBytes(model.AttachmentFilePath3);
-            //    var memoryStream = new MemoryStream(fileBytes);
-
-            //    model.AttachmentFile3 = new FormFile(memoryStream, 0, memoryStream.Length, "file", Path.GetFileName(model.AttachmentFilePath3))
-            //    {
-            //        ContentType = "application/octet-stream"
-            //    };
-            //}
-
-            if (Mode == "U" || Mode == "V")
+            try
             {
-                if (DS.Tables[0].Rows[0]["UpdatedbyEmp"].ToString() != "")
-                {
-                    model.LastUpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString());
-                    model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedbyEmp"].ToString();
-                    model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString();
-                }
-            }
+                var ItemGrid = new List<SaleBillDetail>();
+                var SaleBillGrid = new List<SaleBillDetail>();
+                var TaxGrid = new List<TaxModel>();
+                var customerJWAdj = new List<CustomerJobWorkChallanAdj>();
+                var DRCRGrid = new List<DbCrModel>();
+                var adjustGrid = new List<AdjustmentModel>();
+                DS.Tables[0].TableName = "saleBillModel";
+                DS.Tables[1].TableName = "saleBillDetail";
+                DS.Tables[2].TableName = "saleBillTaxDetail";
+                DS.Tables[3].TableName = "DRCRDetail";
+                DS.Tables[4].TableName = "AdjustmentDetail";
+                DS.Tables[5].TableName = "CustomerAdjDetail";
 
-            if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
-            {
-                foreach (DataRow row in DS.Tables[1].Rows)
+                //DS.Tables[6].TableName = "AdjustmentDetail";
+                //DS.Tables[7].TableName = "CustomerAdjDetail";
+
+                int cnt = 0;
+
+                model.SaleBillEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillEntryId"]);
+                model.SaleBillYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleBillYearCode"]);
+                model.SaleBillEntryDate = DS.Tables[0].Rows[0]["SaleBillEntryDate"]?.ToString();
+                model.InvPrefix = DS.Tables[0].Rows[0]["InvPrefix"]?.ToString();
+                model.SaleBillJobwork = DS.Tables[0].Rows[0]["SaleBillJobwork"]?.ToString();
+                model.SaleBillNo = DS.Tables[0].Rows[0]["SaleBillNo"]?.ToString();
+                model.SaleBillDate = DS.Tables[0].Rows[0]["SaleBillDate"]?.ToString();
+                model.InvoiceTime = DS.Tables[0].Rows[0]["InvoiceTime"]?.ToString();
+                model.ExportInvoiceNo = DS.Tables[0].Rows[0]["ExportInvoiceNo"]?.ToString();
+                model.PerformaInvNo = DS.Tables[0].Rows[0]["PerformaInvNo"]?.ToString();
+                model.PerformaInvDate = DS.Tables[0].Rows[0]["PerformaInvDate"]?.ToString();
+                model.PerformaInvYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["PerformaInvYearCode"]);
+                model.BILLAgainstWarrenty = DS.Tables[0].Rows[0]["BILLAgainstWarrenty"]?.ToString();
+                model.RemovalDate = DS.Tables[0].Rows[0]["RemovalDate"]?.ToString();
+                model.RemovalTime = DS.Tables[0].Rows[0]["RemovalTime"]?.ToString();
+                model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]);
+                model.AccountName = DS.Tables[0].Rows[0]["Account_Name"]?.ToString();
+                model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
+                model.DomesticExportNEPZ = DS.Tables[0].Rows[0]["DomesticExportNEPZ"]?.ToString();
+                model.SupplyType = DS.Tables[0].Rows[0]["SupplyType"]?.ToString();
+                model.CustAddress = DS.Tables[0].Rows[0]["CustAddress"]?.ToString();
+                model.StateNameofSupply = DS.Tables[0].Rows[0]["StateNameofSupply"]?.ToString();
+                model.StateCode = DS.Tables[0].Rows[0]["StateCode"]?.ToString();
+                model.CityofSupply = DS.Tables[0].Rows[0]["CityofSupply"]?.ToString();
+                model.CountryOfSupply = DS.Tables[0].Rows[0]["CountryOfSupply"]?.ToString();
+                model.DistanceKM = Convert.ToInt32(DS.Tables[0].Rows[0]["DistanceKM"]);
+                model.vehicleNo = DS.Tables[0].Rows[0]["vehicleNo"]?.ToString();
+                model.TransporterName = DS.Tables[0].Rows[0]["TransporterName"]?.ToString();
+                model.TransporterdocNo = DS.Tables[0].Rows[0]["TransporterdocNo"]?.ToString();
+                model.TransporterId = Convert.ToInt32(DS.Tables[0].Rows[0]["TransporterId"]);
+                model.TransportModeBYRoadAIR = DS.Tables[0].Rows[0]["TransportModeBYRoadAIR"]?.ToString();
+                model.ConsigneeAccountcode = Convert.ToInt32(DS.Tables[0].Rows[0]["ConsigneeAccountcode"]);
+                model.ConsigneeAccountName = DS.Tables[0].Rows[0]["ConsigneeName"]?.ToString();
+                model.ConsigneeAddress = DS.Tables[0].Rows[0]["ConsigneeAddress"]?.ToString();
+                model.DispatchTo = DS.Tables[0].Rows[0]["DispatchTo"]?.ToString();
+                model.DispatchThrough = DS.Tables[0].Rows[0]["DispatchThrough"]?.ToString();
+                model.DocTypeAccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["DocTypeAccountCode"]);
+                //model.DocTypeAccountName = DS.Tables[0].Rows[0]["Entrydate"]?.ToString();
+                model.PaymentTerm = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentTerm"]);
+                model.BillAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["BillAmt"]);
+                model.BillAmtWord = DS.Tables[0].Rows[0]["BillAmtWord"]?.ToString();
+                model.TaxableAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["TaxableAmt"]);
+                model.TaxbaleAmtInWord = DS.Tables[0].Rows[0]["TaxbaleAmtInWord"]?.ToString();
+                model.GSTAmount = Convert.ToInt32(DS.Tables[0].Rows[0]["GSTAmount"]);
+                model.RoundTypea = DS.Tables[0].Rows[0]["RoundType"]?.ToString();
+                model.RoundOffAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAmt"]);
+                model.DiscountPercent = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountPercent"]);
+                model.DiscountAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountAmt"]);
+                model.INVNetAmt = Convert.ToInt32(DS.Tables[0].Rows[0]["INVNetAmt"]);
+                model.NetAmtInWords = DS.Tables[0].Rows[0]["NetAmtInWords"]?.ToString();
+                model.Remark = DS.Tables[0].Rows[0]["Remark"]?.ToString();
+                model.PermitNo = DS.Tables[0].Rows[0]["PermitNo"]?.ToString();
+                model.CashDisPer = Convert.ToInt32(DS.Tables[0].Rows[0]["CashDisPer"]);
+                model.CashDisRs = Convert.ToInt32(DS.Tables[0].Rows[0]["CashDisRs"]);
+                model.SoDelTime = DS.Tables[0].Rows[0]["SoDelTime"]?.ToString();
+                model.TypeJob = DS.Tables[0].Rows[0]["TypeJob"]?.ToString();
+                model.Approved = DS.Tables[0].Rows[0]["Approved"]?.ToString();
+                model.ApprovDate = DS.Tables[0].Rows[0]["ApprovDate"]?.ToString();
+                model.ApprovedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ApprovedBy"]);
+                model.currencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["currencyId"]);
+                model.ExchangeRate = Convert.ToInt32(DS.Tables[0].Rows[0]["ExchangeRate"]);
+                model.TypeItemServAssets = DS.Tables[0].Rows[0]["TypeItemServAssets"]?.ToString();
+                model.Shippingdate = DS.Tables[0].Rows[0]["Shippingdate"]?.ToString();
+                model.CancelBill = DS.Tables[0].Rows[0]["CancelBill"]?.ToString();
+                model.Canceldate = DS.Tables[0].Rows[0]["Canceldate"]?.ToString();
+                model.CancelBy = Convert.ToInt32(DS.Tables[0].Rows[0]["CancelBy"]);
+                model.Cancelreason = DS.Tables[0].Rows[0]["Cancelreason"]?.ToString();
+                model.BankName = DS.Tables[0].Rows[0]["BankName"]?.ToString();
+                model.Ewaybillno = DS.Tables[0].Rows[0]["Ewaybillno"]?.ToString();
+                model.FreightPaid = DS.Tables[0].Rows[0]["FreightPaid"]?.ToString();
+                model.dispatchLocation = DS.Tables[0].Rows[0]["dispatchLocation"]?.ToString();
+                model.currExchangeRate = Convert.ToInt32(DS.Tables[0].Rows[0]["ExchangeRate"]);
+                model.DispatchDelayReason = DS.Tables[0].Rows[0]["DispatchDelayReason"]?.ToString();
+                model.AttachmentFilePath1 = DS.Tables[0].Rows[0]["AttachmentFilePath1"]?.ToString();
+                model.AttachmentFilePath2 = DS.Tables[0].Rows[0]["AttachmentFilePath2"]?.ToString();
+                model.AttachmentFilePath3 = DS.Tables[0].Rows[0]["AttachmentFilePath3"]?.ToString();
+                model.DocketNo = DS.Tables[0].Rows[0]["DocketNo"]?.ToString();
+                model.DispatchDelayreson = DS.Tables[0].Rows[0]["DispatchDelayreson"]?.ToString();
+                model.Commodity = DS.Tables[0].Rows[0]["Commodity"]?.ToString();
+                model.EInvNo = DS.Tables[0].Rows[0]["EInvNo"]?.ToString();
+                model.EinvGenerated = DS.Tables[0].Rows[0]["EinvGenerated"]?.ToString();
+                model.CC = DS.Tables[0].Rows[0]["CC"]?.ToString();
+                model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"]);
+                model.EntryByempId = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryByempId"]);
+                model.MachineName = DS.Tables[0].Rows[0]["MachineName"]?.ToString();
+                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString();
+                model.ActualEnteredBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]);
+                model.ActualEnteredByName = DS.Tables[0].Rows[0]["EntrybyEmp"]?.ToString();
+                model.EntryFreezToAccounts = DS.Tables[0].Rows[0]["EntryFreezToAccounts"]?.ToString();
+                model.PaymentCreditDay = Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentCreditDay"]);
+                model.ChallanNo = DS.Tables[0].Rows[0]["ChallanNo"]?.ToString();
+                model.ChallanDate = DS.Tables[0].Rows[0]["ChallanDate"]?.ToString();
+                model.ChallanYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ChallanYearCode"]);
+                model.ChallanEntryid = Convert.ToInt32(DS.Tables[0].Rows[0]["ChallanEntryid"]);
+                model.BalanceSheetClosed = DS.Tables[0].Rows[0]["BalanceSheetClosed"]?.ToString();
+                model.SaleQuotNo = DS.Tables[0].Rows[0]["SaleQuotNo"]?.ToString();
+                model.SaleQuotEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotEntryID"]);
+                model.SaleQuotyearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["SaleQuotyearCode"]);
+                model.SaleQuotDate = DS.Tables[0].Rows[0]["SaleQuotDate"]?.ToString();
+
+                //if (model.AttachmentFilePath1 != null)
+                //{
+                //    byte[] fileBytes = File.ReadAllBytes(model.AttachmentFilePath1);
+                //    var memoryStream = new MemoryStream(fileBytes);
+
+                //    model.AttachmentFile1 = new FormFile(memoryStream, 0, memoryStream.Length, "file", Path.GetFileName(model.AttachmentFilePath1))
+                //    {
+                //        ContentType = "application/octet-stream"
+                //    };
+                //}
+
+                //if (model.AttachmentFilePath2 != null)
+                //{
+                //    byte[] fileBytes = File.ReadAllBytes(model.AttachmentFilePath2);
+                //    var memoryStream = new MemoryStream(fileBytes);
+
+                //    model.AttachmentFile2 = new FormFile(memoryStream, 0, memoryStream.Length, "file", Path.GetFileName(model.AttachmentFilePath2))
+                //    {
+                //        ContentType = "application/octet-stream"
+                //    };
+                //}
+
+                //if (model.AttachmentFilePath3 != null)
+                //{
+                //    byte[] fileBytes = File.ReadAllBytes(model.AttachmentFilePath3);
+                //    var memoryStream = new MemoryStream(fileBytes);
+
+                //    model.AttachmentFile3 = new FormFile(memoryStream, 0, memoryStream.Length, "file", Path.GetFileName(model.AttachmentFilePath3))
+                //    {
+                //        ContentType = "application/octet-stream"
+                //    };
+                //}
+
+                if (Mode == "U" || Mode == "V")
                 {
-                    SaleBillGrid.Add(new SaleBillDetail
+                    if (DS.Tables[0].Rows[0]["UpdatedbyEmp"].ToString() != "")
                     {
-                        SeqNo = Convert.ToInt32(row["SeqNo"]),
-                        ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
-                        PartCode = row["PartCode"]?.ToString(),
-                        BomNo = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
-                        BOMInd = row["BOMInd"]?.ToString(),
-                        ProducedUnprod = row["ProdUnProduced"]?.ToString(),
-                        Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
-                        ItemName = row["ItemName"]?.ToString(),
-                        CustOrderNo = row["CustOrderNo"]?.ToString(),
-                        SOYearCode = row["SOYearCode"] != DBNull.Value ? Convert.ToInt32(row["SOYearCode"]) : 0,
-                        SONO = row["SONO"]?.ToString(),
-                        StoreName = row["StoreName"]?.ToString(),
-                        SODate = row["SODate"]?.ToString(),
-                        SchNo = row["SchNo"]?.ToString(),
-                        Schdate = row["Schdate"]?.ToString(),
-                        SaleSchYearCode = row["SaleSchYearCode"] != DBNull.Value ? Convert.ToInt32(row["SaleSchYearCode"]) : 0,
-                        SOAmendNo = row["SOAmendNo"]?.ToString(),
-                        SOAmendDate = row["SOAmendDate"]?.ToString(),
-                        HSNNo = row["HSNNO"] != DBNull.Value ? Convert.ToInt32(row["HSNNO"]) : 0,
-                        Unit = row["Unit"]?.ToString(),
-                        NoofCase = row["NoofCase"] != DBNull.Value ? Convert.ToInt32(row["NoofCase"]) : 0,
-                        Qty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
-                        UnitOfRate = row["UnitOfRate"]?.ToString(),
-                        RateInOtherCurr = row["RateInOtherCurr"] != DBNull.Value ? Convert.ToInt32(row["RateInOtherCurr"]) : 0,
-                        Rate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
-                        AltUnit = row["AltUnit"]?.ToString(),
-                        AltQty = row["AltQty"] != DBNull.Value ? Convert.ToInt32(row["AltQty"]) : 0,
-                        ItemWeight = row["ItemWeight"] != DBNull.Value ? Convert.ToInt32(row["ItemWeight"]) : 0,
-                        NoofPcs = row["NoofPcs"] != DBNull.Value ? Convert.ToInt32(row["NoofPcs"]) : 0,
-                        CustomerPartCode = row["CustomerPartCode"]?.ToString(),
-                        MRP = row["MRP"] != DBNull.Value ? Convert.ToInt32(row["MRP"]) : 0,
-                        OriginalMRP = row["OriginalMRP"] != DBNull.Value ? Convert.ToInt32(row["OriginalMRP"]) : 0,
-                        SOPendQty = row["SOPendQty"] != DBNull.Value ? Convert.ToInt32(row["SOPendQty"]) : 0,
-                        AltSOPendQty = row["AltSOPendQty"] != DBNull.Value ? Convert.ToInt32(row["AltSOPendQty"]) : 0,
-                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
-                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
-                        ItemSize = row["ItemSize"]?.ToString(),
-                        Itemcolor = row["Itemcolor"]?.ToString(),
-                        StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,
-                        ItemNetAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0,
-                        AdviceNo = row["AdviceNo"]?.ToString(),
-                        AdviseEntryId = row["AdviseEntryId"] != DBNull.Value ? Convert.ToInt32(row["AdviseEntryId"]) : 0,
-                        AdviceYearCode = row["AdviceYearCode"] != DBNull.Value ? Convert.ToInt32(row["AdviceYearCode"]) : 0,
-                        AdviseDate = row["AdviseDate"]?.ToString(),
-                        ProcessId = row["ProcessId"] != DBNull.Value ? Convert.ToInt32(row["ProcessId"]) : 0,
-                        Batchno = row["batchno"]?.ToString(),
-                        Uniquebatchno = row["uniquebatchno"]?.ToString(),
-                        LotStock = row["LotStock"] != DBNull.Value ? Convert.ToInt32(row["LotStock"]) : 0,
-                        TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToInt32(row["TotalStock"]) : 0,
-                        AgainstProdPlanNo = row["AgainstProdPlanNo"]?.ToString(),
-                        AgainstProdPlanYearCode = row["AgainstProdPlanYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstProdPlanYearCode"]) : 0,
-                        AgaisntProdPlanDate = row["AgaisntProdPlanDate"]?.ToString(),
-                        GSTPer = row["GSTPer"] != DBNull.Value ? Convert.ToInt32(row["GSTPer"]) : 0,
-                        GSTType = row["GSTType"]?.ToString(),
-                        PacketsDetail = row["PacketsDetail"]?.ToString(),
-                        OtherDetail = row["OtherDetail"]?.ToString(),
-                        ItemRemark = row["ItemRemark"]?.ToString(),
-                        ProdSchno = row["prodSchno"]?.ToString(),
-                        ProdSchYearcode = row["ProdSchYearcode"] != DBNull.Value ? Convert.ToInt32(row["ProdSchYearcode"]) : 0,
-                        ProdSchEntryId = row["prodSchEntryId"] != DBNull.Value ? Convert.ToInt32(row["prodSchEntryId"]) : 0,
-                        ProdSchDate = row["ProdSchDate"]?.ToString(),
-                        SchdeliveryDate = row["SchdeliveryDate"]?.ToString(),
-                        CostCenterId = row["CostCenterid"] != DBNull.Value ? Convert.ToInt32(row["CostCenterid"]) : 0
-                    });
+                        model.LastUpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString());
+                        model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedbyEmp"].ToString();
+                        model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdatedDate"].ToString();
+                    }
                 }
-                SaleBillGrid = SaleBillGrid.OrderBy(item => item.SeqNo).ToList();
-                model.saleBillDetails = SaleBillGrid;
-                model.ItemDetailGrid = SaleBillGrid;
-            }
 
-            if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
-            {
-                foreach (DataRow row in DS.Tables[2].Rows)
+                if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
                 {
-                    TaxGrid.Add(new TaxModel
+                    foreach (DataRow row in DS.Tables[1].Rows)
                     {
-                        TxSeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
-                        TxType = row["Type"]?.ToString(),
-                        TxPartName = row["PartCode"]?.ToString(),
-                        TxItemName = row["Item_Name"]?.ToString(),
-                        TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
-                        TxTaxTypeName = row["TaxTypeID"]?.ToString(),
-                        TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
-                        TxAccountName = row["TaxAccountName"]?.ToString(),
-                        TxPercentg = row["TaxPer"] != DBNull.Value ? Convert.ToDecimal(row["TaxPer"]) : 0,
-                        TxRoundOff = row["RoundOff"]?.ToString(),
-                        TxAmount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
-                        TxOnExp = row["TaxonExp"] != DBNull.Value ? Convert.ToDecimal(row["TaxonExp"]) : 0,
-                        TxRefundable = row["TaxRefundable"]?.ToString(),
-                        TxAdInTxable = row["AddInTaxable"]?.ToString(),
-                        TxRemark = row["Remarks"]?.ToString()
-                    });
+                        SaleBillGrid.Add(new SaleBillDetail
+                        {
+                            SeqNo = Convert.ToInt32(row["SeqNo"]),
+                            ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
+                            PartCode = row["PartCode"]?.ToString(),
+                            BomNo = row["BomNo"] != DBNull.Value ? Convert.ToInt32(row["BomNo"]) : 0,
+                            BOMInd = row["BOMInd"]?.ToString(),
+                            ProducedUnprod = row["ProdUnProduced"]?.ToString(),
+                            Amount = row["ItemAmount"] != DBNull.Value ? Convert.ToDecimal(row["ItemAmount"]) : 0,
+                            ItemName = row["ItemName"]?.ToString(),
+                            CustOrderNo = row["CustOrderNo"]?.ToString(),
+                            SOYearCode = row["SOYearCode"] != DBNull.Value ? Convert.ToInt32(row["SOYearCode"]) : 0,
+                            SONO = row["SONO"]?.ToString(),
+                            StoreName = row["StoreName"]?.ToString(),
+                            SODate = row["SODate"]?.ToString(),
+                            SchNo = row["SchNo"]?.ToString(),
+                            Schdate = row["Schdate"]?.ToString(),
+                            SaleSchYearCode = row["SaleSchYearCode"] != DBNull.Value ? Convert.ToInt32(row["SaleSchYearCode"]) : 0,
+                            SOAmendNo = row["SOAmendNo"]?.ToString(),
+                            SOAmendDate = row["SOAmendDate"]?.ToString(),
+                            HSNNo = row["HSNNO"] != DBNull.Value ? Convert.ToInt32(row["HSNNO"]) : 0,
+                            Unit = row["Unit"]?.ToString(),
+                            NoofCase = row["NoofCase"] != DBNull.Value ? Convert.ToInt32(row["NoofCase"]) : 0,
+                            Qty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
+                            UnitOfRate = row["UnitOfRate"]?.ToString(),
+                            RateInOtherCurr = row["RateInOtherCurr"] != DBNull.Value ? Convert.ToInt32(row["RateInOtherCurr"]) : 0,
+                            Rate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
+                            AltUnit = row["AltUnit"]?.ToString(),
+                            AltQty = row["AltQty"] != DBNull.Value ? Convert.ToInt32(row["AltQty"]) : 0,
+                            ItemWeight = row["ItemWeight"] != DBNull.Value ? Convert.ToInt32(row["ItemWeight"]) : 0,
+                            NoofPcs = row["NoofPcs"] != DBNull.Value ? Convert.ToInt32(row["NoofPcs"]) : 0,
+                            CustomerPartCode = row["CustomerPartCode"]?.ToString(),
+                            MRP = row["MRP"] != DBNull.Value ? Convert.ToInt32(row["MRP"]) : 0,
+                            OriginalMRP = row["OriginalMRP"] != DBNull.Value ? Convert.ToInt32(row["OriginalMRP"]) : 0,
+                            SOPendQty = row["SOPendQty"] != DBNull.Value ? Convert.ToInt32(row["SOPendQty"]) : 0,
+                            AltSOPendQty = row["AltSOPendQty"] != DBNull.Value ? Convert.ToInt32(row["AltSOPendQty"]) : 0,
+                            DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
+                            DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
+                            ItemSize = row["ItemSize"]?.ToString(),
+                            Itemcolor = row["Itemcolor"]?.ToString(),
+                            StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,
+                            ItemNetAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0,
+                            AdviceNo = row["AdviceNo"]?.ToString(),
+                            AdviseEntryId = row["AdviseEntryId"] != DBNull.Value ? Convert.ToInt32(row["AdviseEntryId"]) : 0,
+                            AdviceYearCode = row["AdviceYearCode"] != DBNull.Value ? Convert.ToInt32(row["AdviceYearCode"]) : 0,
+                            AdviseDate = row["AdviseDate"]?.ToString(),
+                            ProcessId = row["ProcessId"] != DBNull.Value ? Convert.ToInt32(row["ProcessId"]) : 0,
+                            Batchno = row["batchno"]?.ToString(),
+                            Uniquebatchno = row["uniquebatchno"]?.ToString(),
+                            LotStock = row["LotStock"] != DBNull.Value ? Convert.ToInt32(row["LotStock"]) : 0,
+                            TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToInt32(row["TotalStock"]) : 0,
+                            AgainstProdPlanNo = row["AgainstProdPlanNo"]?.ToString(),
+                            AgainstProdPlanYearCode = row["AgainstProdPlanYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstProdPlanYearCode"]) : 0,
+                            AgaisntProdPlanDate = row["AgaisntProdPlanDate"]?.ToString(),
+                            GSTPer = row["GSTPer"] != DBNull.Value ? Convert.ToInt32(row["GSTPer"]) : 0,
+                            GSTType = row["GSTType"]?.ToString(),
+                            PacketsDetail = row["PacketsDetail"]?.ToString(),
+                            OtherDetail = row["OtherDetail"]?.ToString(),
+                            ItemRemark = row["ItemRemark"]?.ToString(),
+                            ProdSchno = row["prodSchno"]?.ToString(),
+                            ProdSchYearcode = row["ProdSchYearcode"] != DBNull.Value ? Convert.ToInt32(row["ProdSchYearcode"]) : 0,
+                            ProdSchEntryId = row["prodSchEntryId"] != DBNull.Value ? Convert.ToInt32(row["prodSchEntryId"]) : 0,
+                            ProdSchDate = row["ProdSchDate"]?.ToString(),
+                            SchdeliveryDate = row["SchdeliveryDate"]?.ToString(),
+                            CostCenterId = row["CostCenterid"] != DBNull.Value ? Convert.ToInt32(row["CostCenterid"]) : 0
+                        });
+                    }
+                    SaleBillGrid = SaleBillGrid.OrderBy(item => item.SeqNo).ToList();
+                    model.saleBillDetails = SaleBillGrid;
+                    model.ItemDetailGrid = SaleBillGrid;
                 }
-                model.TaxDetailGridd = TaxGrid;
-            }
 
-            //if (DS.Tables.Count != 0 && DS.Tables[3].Rows.Count > 0)
-            //{
-            //    foreach (DataRow row in DS.Tables[3].Rows)
-            //    {
-            //        DRCRGrid.Add(new DbCrModel
-            //        {
-            //            AccEntryId = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-            //            AccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0,
-            //            //SeqNo = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
-            //            //InvoiceNo = row["Type"]?.ToString(),
-            //            VoucherNo = row["BillVouchNo"]?.ToString(),
-            //            //AgainstInvNo = row["Type"]?.ToString(),
-            //            //AginstVoucherYearcode = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
-            //            AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
-            //            //DocTypeID = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
-            //            //BillQty = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
-            //            //Rate = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
-            //            //AccountAmount = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
-            //            //DRCR = row["Type"]?.ToString(),
-            //            AccountName = row["Account_Name"]?.ToString(),
-            //            //DrAmt = row["Type"] != DBNull.Value ? Convert.ToSingle(row["Type"]) : 0,
-            //            CrAmt = row["CrAmt"] != DBNull.Value ? Convert.ToSingle(row["CrAmt"]) : 0
-            //        });
-            //    }
-            //    model.DRCRGrid = DRCRGrid;
-            //}
-
-            if (DS.Tables.Count != 0 && DS.Tables[4].Rows.Count > 0)
-            {
-                var cnt1 = 1;
-                foreach (DataRow row in DS.Tables[4].Rows)
+                if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
                 {
-                    adjustGrid.Add(new AdjustmentModel
+                    foreach (DataRow row in DS.Tables[2].Rows)
                     {
-                        AdjSeqNo = cnt1,
-                        AdjModeOfAdjstment = row["ModOfAdjust"]?.ToString(),
-                        //AdjModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
-                        AdjNewRefNo = row["NewrefNo"]?.ToString(),
-                        AdjDescription = row["Description"]?.ToString(),
-                        //AdjDrCrName = row["AccEntryId"]?.ToString(),
-                        AdjDrCr = row["DR/CR"]?.ToString(),
-                        AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
-                        AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
-                        AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToInt32(row["BillAmt"]) : 0, // BillAmt
-                        //AdjRemainingAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        AdjOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
-                        AdjOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
-                        AdjDueDate = string.IsNullOrEmpty(row["DueDate"]?.ToString()) ? new DateTime() : Convert.ToDateTime(row["DueDate"]),
-                        //AdjPurchOrderNo = row["AccEntryId"]?.ToString(),
-                        //AdjPOYear = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        //AdjPODate = row["AccEntryId"] != DBNull.Value ? Convert.ToDateTime(row["AccEntryId"]) : new DateTime(),
-                        //AdjPageName = row["AccEntryId"]?.ToString(),
-                        //AdjAgnstAccEntryID = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        //AdjAgnstAccYearCode = row["yearcode"] != DBNull.Value ? Convert.ToInt32(row["yearcode"]) : 0,
-                        //AdjAgnstModeOfAdjstment = row["AccEntryId"]?.ToString(),
-                        //AdjAgnstModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
-                        //AdjAgnstNewRefNo = row["AccEntryId"]?.ToString(),
-                        AdjAgnstVouchNo = row["VoucherNo"]?.ToString(),
-                        AdjAgnstVouchType = row["VoucherType"]?.ToString(),
-                        //AdjAgnstDrCrName = row["AccEntryId"]?.ToString(),
-                        AdjAgnstDrCr = row["DR/CR"]?.ToString(),
-                        //AdjAgnstPendAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        AdjAgnstAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
-                        AdjAgnstTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToInt32(row["BillAmt"]) : 0,
-                        AdjAgnstRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToInt32(row["RemaingAmt"]) : 0,
-                        AdjAgnstOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
-                        AdjAgnstOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
-                        AdjAgnstVouchDate = row["voucherDate"] != DBNull.Value ? Convert.ToDateTime(row["voucherDate"]) : new DateTime(),
-                        AdjAgnstAccEntryID = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
-                        AdjAgnstAccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0
-                        //AdjAgnstTransType = row["AccEntryId"]?.ToString()
-                    });
-                    cnt1++;
+                        TaxGrid.Add(new TaxModel
+                        {
+                            TxSeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
+                            TxType = row["Type"]?.ToString(),
+                            TxPartName = row["PartCode"]?.ToString(),
+                            TxItemName = row["Item_Name"]?.ToString(),
+                            TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
+                            TxTaxTypeName = row["TaxTypeID"]?.ToString(),
+                            TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
+                            TxAccountName = row["TaxAccountName"]?.ToString(),
+                            TxPercentg = row["TaxPer"] != DBNull.Value ? Convert.ToDecimal(row["TaxPer"]) : 0,
+                            TxRoundOff = row["RoundOff"]?.ToString(),
+                            TxAmount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
+                            TxOnExp = row["TaxonExp"] != DBNull.Value ? Convert.ToDecimal(row["TaxonExp"]) : 0,
+                            TxRefundable = row["TaxRefundable"]?.ToString(),
+                            TxAdInTxable = row["AddInTaxable"]?.ToString(),
+                            TxRemark = row["Remarks"]?.ToString()
+                        });
+                    }
+                    model.TaxDetailGridd = TaxGrid;
                 }
 
-                if (model.adjustmentModel == null)
+                //if (DS.Tables.Count != 0 && DS.Tables[3].Rows.Count > 0)
+                //{
+                //    foreach (DataRow row in DS.Tables[3].Rows)
+                //    {
+                //        DRCRGrid.Add(new DbCrModel
+                //        {
+                //            AccEntryId = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                //            AccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0,
+                //            //SeqNo = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
+                //            //InvoiceNo = row["Type"]?.ToString(),
+                //            VoucherNo = row["BillVouchNo"]?.ToString(),
+                //            //AgainstInvNo = row["Type"]?.ToString(),
+                //            //AginstVoucherYearcode = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
+                //            AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
+                //            //DocTypeID = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
+                //            //BillQty = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
+                //            //Rate = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
+                //            //AccountAmount = row["Type"] != DBNull.Value ? Convert.ToInt32(row["Type"]) : 0,
+                //            //DRCR = row["Type"]?.ToString(),
+                //            AccountName = row["Account_Name"]?.ToString(),
+                //            //DrAmt = row["Type"] != DBNull.Value ? Convert.ToSingle(row["Type"]) : 0,
+                //            CrAmt = row["CrAmt"] != DBNull.Value ? Convert.ToSingle(row["CrAmt"]) : 0
+                //        });
+                //    }
+                //    model.DRCRGrid = DRCRGrid;
+                //}
+
+                if (DS.Tables.Count != 0 && DS.Tables[4].Rows.Count > 0)
                 {
-                    model.adjustmentModel = new AdjustmentModel();
-                }
-
-                model.adjustmentModel.AdjAdjustmentDetailGrid = adjustGrid;
-            }
-
-
-            if (DS.Tables.Count != 0 && DS.Tables[5].Rows.Count > 0)
-            {
-                foreach (DataRow row in DS.Tables[5].Rows)
-                {
-                    customerJWAdj.Add(new CustomerJobWorkChallanAdj //
+                    var cnt1 = 1;
+                    foreach (DataRow row in DS.Tables[4].Rows)
                     {
-                        EntryDate = row["EntryDate"]?.ToString(),
-                        CustJwRecEntryId = row["CustJwRecEntryId"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecEntryId"]) : 0,
-                        CustJwRecYearCode = row["CustJwRecYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecYearCode"]) : 0,
-                        CustJwRecChallanNo = row["CustJwRecChallanNo"]?.ToString(),
-                        CustJwRecEntryDate = row["CustJwRecEntryDate"]?.ToString(),
-                        RecItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
-                        RecPartCode = row["RecPartCode"]?.ToString(),
-                        RecItemName = row["RecItemName"]?.ToString(),
-                        FGPartCode = row["FGPartCode"]?.ToString(),
-                        FGItemName = row["FGItemName"]?.ToString(),
-                        CustJwIssEntryid = row["CustJwIssEntryid"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssEntryid"]) : 0,
-                        CustJwIssYearCode = row["CustJwIssYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssYearCode"]) : 0,
-                        CustJwIssChallanNo = row["CustJwIssChallanNo"]?.ToString(),
-                        CustJwIssChallanDate = row["CustJwIssChallanDate"]?.ToString(),
-                        AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
-                        FinishItemCode = row["FinishItemCode"] != DBNull.Value ? Convert.ToInt32(row["FinishItemCode"]) : 0,
-                        AdjQty = row["AdjQty"] != DBNull.Value ? Convert.ToSingle(row["AdjQty"]) : 0,
-                        CC = row["CC"]?.ToString(),
-                        UID = row["UID"] != DBNull.Value ? Convert.ToInt32(row["UID"]) : 0,
-                        AdjFormType = row["AdjFormType"]?.ToString(),
-                        TillDate = row["TillDate"]?.ToString(),
-                        TotIssQty = row["TotIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotIssQty"]) : 0,
-                        PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0,
-                        BOMQty = row["BOMQty"] != DBNull.Value ? Convert.ToSingle(row["BOMQty"]) : 0,
-                        BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
-                        BOMRevDate = row["BOMRevDate"]?.ToString(),
-                        ProcessID = row["ProcessID"] != DBNull.Value ? Convert.ToInt32(row["ProcessID"]) : 0,
-                        BOMInd = row["BOMInd"]?.ToString(),
-                        IssQty = row["IssQty"] != DBNull.Value ? Convert.ToSingle(row["IssQty"]) : 0,
-                        TotadjQty = row["TotadjQty"] != DBNull.Value ? Convert.ToSingle(row["TotadjQty"]) : 0,
-                        TotalIssQty = row["TotalIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotalIssQty"]) : 0,
-                        TotalRecQty = row["TotalRecQty"] != DBNull.Value ? Convert.ToSingle(row["TotalRecQty"]) : 0,
-                        RunnerItemCode = row["RunnerItemCode"] != DBNull.Value ? Convert.ToInt32(row["RunnerItemCode"]) : 0,
-                        ScrapItemCode = row["ScrapItemCode"] != DBNull.Value ? Convert.ToInt32(row["ScrapItemCode"]) : 0,
-                        IdealScrapQty = row["IdealScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IdealScrapQty"]) : 0,
-                        IssuedScrapQty = row["IssuedScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IssuedScrapQty"]) : 0,
-                        PreRecChallanNo = row["PreRecChallanNo"]?.ToString(),
-                        ScrapqtyagainstRcvqty = row["ScrapqtyagainstRcvqty"] != DBNull.Value ? Convert.ToSingle(row["ScrapqtyagainstRcvqty"]) : 0,
-                        Recbatchno = row["Recbatchno"]?.ToString(),
-                        Recuniquebatchno = row["Recuniquebatchno"]?.ToString(),
-                        Issbatchno = row["Issbatchno"]?.ToString(),
-                        Issuniquebatchno = row["Issuniquebatchno"]?.ToString(),
-                        ScrapAdjusted = row["ScrapAdjusted"]?.ToString()
-                    });
-                }
-                model.CustomerJobWorkChallanAdj = customerJWAdj;
-            }
+                        adjustGrid.Add(new AdjustmentModel
+                        {
+                            AdjSeqNo = cnt1,
+                            AdjModeOfAdjstment = row["ModOfAdjust"]?.ToString(),
+                            //AdjModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
+                            AdjNewRefNo = row["NewrefNo"]?.ToString(),
+                            AdjDescription = row["Description"]?.ToString(),
+                            //AdjDrCrName = row["AccEntryId"]?.ToString(),
+                            AdjDrCr = row["DR/CR"]?.ToString(),
+                            AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
+                            AdjAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
+                            AdjTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToInt32(row["BillAmt"]) : 0, // BillAmt
+                                                                                                                //AdjRemainingAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                            AdjOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
+                            AdjOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
+                            AdjDueDate = string.IsNullOrEmpty(row["DueDate"]?.ToString()) ? new DateTime() : Convert.ToDateTime(row["DueDate"]),
+                            //AdjPurchOrderNo = row["AccEntryId"]?.ToString(),
+                            //AdjPOYear = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                            //AdjPODate = row["AccEntryId"] != DBNull.Value ? Convert.ToDateTime(row["AccEntryId"]) : new DateTime(),
+                            //AdjPageName = row["AccEntryId"]?.ToString(),
+                            //AdjAgnstAccEntryID = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                            //AdjAgnstAccYearCode = row["yearcode"] != DBNull.Value ? Convert.ToInt32(row["yearcode"]) : 0,
+                            //AdjAgnstModeOfAdjstment = row["AccEntryId"]?.ToString(),
+                            //AdjAgnstModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
+                            //AdjAgnstNewRefNo = row["AccEntryId"]?.ToString(),
+                            AdjAgnstVouchNo = row["VoucherNo"]?.ToString(),
+                            AdjAgnstVouchType = row["VoucherType"]?.ToString(),
+                            //AdjAgnstDrCrName = row["AccEntryId"]?.ToString(),
+                            AdjAgnstDrCr = row["DR/CR"]?.ToString(),
+                            //AdjAgnstPendAmt = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                            AdjAgnstAdjstedAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToInt32(row["AdjustmentAmt"]) : 0,
+                            AdjAgnstTotalAmt = row["BillAmt"] != DBNull.Value ? Convert.ToInt32(row["BillAmt"]) : 0,
+                            AdjAgnstRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToInt32(row["RemaingAmt"]) : 0,
+                            AdjAgnstOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
+                            AdjAgnstOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
+                            AdjAgnstVouchDate = row["voucherDate"] != DBNull.Value ? Convert.ToDateTime(row["voucherDate"]) : new DateTime(),
+                            AdjAgnstAccEntryID = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                            AdjAgnstAccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0
+                            //AdjAgnstTransType = row["AccEntryId"]?.ToString()
+                        });
+                        cnt1++;
+                    }
 
-            return model;
+                    if (model.adjustmentModel == null)
+                    {
+                        model.adjustmentModel = new AdjustmentModel();
+                    }
+
+                    model.adjustmentModel.AdjAdjustmentDetailGrid = adjustGrid;
+                }
+
+
+                if (DS.Tables.Count != 0 && DS.Tables[5].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[5].Rows)
+                    {
+                        customerJWAdj.Add(new CustomerJobWorkChallanAdj //
+                        {
+                            EntryDate = row["EntryDate"]?.ToString(),
+                            CustJwRecEntryId = row["CustJwRecEntryId"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecEntryId"]) : 0,
+                            CustJwRecYearCode = row["CustJwRecYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwRecYearCode"]) : 0,
+                            CustJwRecChallanNo = row["CustJwRecChallanNo"]?.ToString(),
+                            CustJwRecEntryDate = row["CustJwRecEntryDate"]?.ToString(),
+                            RecItemCode = row["RecItemCode"] != DBNull.Value ? Convert.ToInt32(row["RecItemCode"]) : 0,
+                            RecPartCode = row["RecPartCode"]?.ToString(),
+                            RecItemName = row["RecItemName"]?.ToString(),
+                            FGPartCode = row["FGPartCode"]?.ToString(),
+                            FGItemName = row["FGItemName"]?.ToString(),
+                            CustJwIssEntryid = row["CustJwIssEntryid"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssEntryid"]) : 0,
+                            CustJwIssYearCode = row["CustJwIssYearCode"] != DBNull.Value ? Convert.ToInt32(row["CustJwIssYearCode"]) : 0,
+                            CustJwIssChallanNo = row["CustJwIssChallanNo"]?.ToString(),
+                            CustJwIssChallanDate = row["CustJwIssChallanDate"]?.ToString(),
+                            AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
+                            FinishItemCode = row["FinishItemCode"] != DBNull.Value ? Convert.ToInt32(row["FinishItemCode"]) : 0,
+                            AdjQty = row["AdjQty"] != DBNull.Value ? Convert.ToSingle(row["AdjQty"]) : 0,
+                            CC = row["CC"]?.ToString(),
+                            UID = row["UID"] != DBNull.Value ? Convert.ToInt32(row["UID"]) : 0,
+                            AdjFormType = row["AdjFormType"]?.ToString(),
+                            TillDate = row["TillDate"]?.ToString(),
+                            TotIssQty = row["TotIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotIssQty"]) : 0,
+                            PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0,
+                            BOMQty = row["BOMQty"] != DBNull.Value ? Convert.ToSingle(row["BOMQty"]) : 0,
+                            BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
+                            BOMRevDate = row["BOMRevDate"]?.ToString(),
+                            ProcessID = row["ProcessID"] != DBNull.Value ? Convert.ToInt32(row["ProcessID"]) : 0,
+                            BOMInd = row["BOMInd"]?.ToString(),
+                            IssQty = row["IssQty"] != DBNull.Value ? Convert.ToSingle(row["IssQty"]) : 0,
+                            TotadjQty = row["TotadjQty"] != DBNull.Value ? Convert.ToSingle(row["TotadjQty"]) : 0,
+                            TotalIssQty = row["TotalIssQty"] != DBNull.Value ? Convert.ToSingle(row["TotalIssQty"]) : 0,
+                            TotalRecQty = row["TotalRecQty"] != DBNull.Value ? Convert.ToSingle(row["TotalRecQty"]) : 0,
+                            RunnerItemCode = row["RunnerItemCode"] != DBNull.Value ? Convert.ToInt32(row["RunnerItemCode"]) : 0,
+                            ScrapItemCode = row["ScrapItemCode"] != DBNull.Value ? Convert.ToInt32(row["ScrapItemCode"]) : 0,
+                            IdealScrapQty = row["IdealScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IdealScrapQty"]) : 0,
+                            IssuedScrapQty = row["IssuedScrapQty"] != DBNull.Value ? Convert.ToSingle(row["IssuedScrapQty"]) : 0,
+                            PreRecChallanNo = row["PreRecChallanNo"]?.ToString(),
+                            ScrapqtyagainstRcvqty = row["ScrapqtyagainstRcvqty"] != DBNull.Value ? Convert.ToSingle(row["ScrapqtyagainstRcvqty"]) : 0,
+                            Recbatchno = row["Recbatchno"]?.ToString(),
+                            Recuniquebatchno = row["Recuniquebatchno"]?.ToString(),
+                            Issbatchno = row["Issbatchno"]?.ToString(),
+                            Issuniquebatchno = row["Issuniquebatchno"]?.ToString(),
+                            ScrapAdjusted = row["ScrapAdjusted"]?.ToString()
+                        });
+                    }
+                    model.CustomerJobWorkChallanAdj = customerJWAdj;
+                }
+
+                return model;
+            }catch (Exception ex)
+            {
+                throw new Exception("Error in PrepareAdjustChallanView: " + ex.Message);
+            }
         }
 
         private static AdjChallanDetail PrepareAdjustChallanView(DataSet DS)
