@@ -307,6 +307,8 @@ namespace eTactWeb.Controllers
             DisplayGrid.Columns.Add("TransferMatYearCode", typeof(int));
             DisplayGrid.Columns.Add("ItemCode", typeof(int));
             DisplayGrid.Columns.Add("IssueToStoreWC", typeof(string));
+            DisplayGrid.Columns.Add("BatchNo", typeof(string));
+            DisplayGrid.Columns.Add("Uniquebatchno", typeof(string));
 
             foreach (var Item in DisplayPendToReceive)
             {
@@ -317,6 +319,9 @@ namespace eTactWeb.Controllers
                     Item.TransferMatYearCode,
                     Item.ItemCode,
                     Item.IssueToStoreWC,
+
+                    Item.BatchNo,   
+                    Item.Uniquebatchno
                     });
             }
             DisplayGrid.Dispose();
