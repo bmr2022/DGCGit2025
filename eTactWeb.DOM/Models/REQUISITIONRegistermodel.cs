@@ -28,6 +28,7 @@ public class REQUISITIONRegisterDetail
    public string PartCode { get; set; }
    public string ItemName { get; set; }
    public decimal Qty { get; set;}
+   public decimal Rate { get; set;}
    public decimal PendQty { get; set;}
    public decimal AltQty { get; set;}
    public decimal TotalStock { get; set;}
