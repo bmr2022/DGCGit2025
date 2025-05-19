@@ -110,6 +110,7 @@ namespace eTactWeb.DOM.Models
         public string AccPasswordToAllowManualTax { get; set; }
         public string AccSaleBillManualTaxAllowed { get; set; }
         public string POClosePOAlwaysAgainstIndent { get; set; }
+        public string AccAllowtochangeDocumnetinPurchaseBill { get; set; }
         public string AccAllowBackdateVoucherEntry { get; set; }
         public string AccBackdateVoucherEntryPassword { get; set; }
         public string IndentReportName { get; set; }
