@@ -47,9 +47,20 @@
 							<td>@item.Perticuler<input id="AccountCode-@Cntr" type="hidden" value="@item.Account_Code"/></td>
 							<td id="VoucherNo-@Cntr">@item.VoucherNo</td>
 							<td id="VoucherType-@Cntr">@item.Type</td>
-							<td>
-								<span class="bank-date-text">@item.BankDate</span>
-								<input type="text" class="form-control bank-date-input" id="BankRecoDate-@Cntr" style="display:none;width:110px;" value="@item.BankDate" readonly/>
+							<td style="background-color:lightgoldenrodyellow; position: relative; display: flex; align-items: center; gap: 8px;">
+								<span class="bank-date-text" style="color:black;">@item.BankDate</span>
+
+								<input type="text" class="form-control bank-date-input" id="BankRecoDate-@Cntr"
+									   style="display:none; width:110px;" value="@item.BankDate" readonly />
+
+								<!-- Delete icon -->
+								<a class="table-link link-danger" onclick="RemoveRecodate(this.id)" id="@Cntr"
+								   style="display: inline-flex; align-items: center; justify-content: center;">
+									<span class="fa-stack">
+										<i class="fa fa-square fa-stack-2x"></i>
+										<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+									</span>
+								</a>
 							</td>
 							<td id="DrAmt-@Cntr">@item.DrAmt</td>
 							<td id="CrAmt-@Cntr">@item.CrAmt</td>
