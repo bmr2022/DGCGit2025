@@ -110,21 +110,21 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        //if (!GridDetail.Any(x => x.RejectionPlan == model.RejectionPlan))
-                        //{
-                        //    return StatusCode(207, "Duplicate");
-                        //}
-                        //else
-                        //{
-                        //    // model.SequenceNo = GridDetail.Count + 1;
-                        //    RoutingGrid = GridDetail.Where(x => x != null).ToList();
-                        //    SSGrid.AddRange(RoutingGrid);
-                        //    RoutingGrid.Add(model);
-                        //}
-                        model.SeqNo = GridDetail.Count + 1;
-                        RoutingGrid = GridDetail.Where(x => x != null).ToList();
-                        SSGrid.AddRange(RoutingGrid);
-                        RoutingGrid.Add(model);
+                        if (GridDetail.Any(x => x.SeqNo == model.SeqNo))
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+                            model.SeqNo = GridDetail.Count + 1;
+                            RoutingGrid = GridDetail.Where(x => x != null).ToList();
+                            SSGrid.AddRange(RoutingGrid);
+                            RoutingGrid.Add(model);
+                        }
+                        //model.SeqNo = GridDetail.Count + 1;
+                        //RoutingGrid = GridDetail.Where(x => x != null).ToList();
+                        //SSGrid.AddRange(RoutingGrid);
+                        //RoutingGrid.Add(model);
                     }
                     RoutingGrid = RoutingGrid.OrderBy(item => item.SeqNo).ToList();
                     MainModel.DTSSGrid = RoutingGrid;
@@ -142,6 +142,46 @@ namespace eTactWeb.Controllers
             {
                 throw ex;
             }
+        }
+        public async Task<JsonResult> EditItemRows(int SeqNo)
+        {
+            var MainModel = new ControlPlanModel();
+            string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
+            IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
+            if (jsonString != null)
+            {
+                GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
+            }
+            var SAGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
+            string JsonString = JsonConvert.SerializeObject(SAGrid);
+            return Json(JsonString);
+        }
+        public IActionResult DeleteItemRow(int SeqNo)
+        {
+            var MainModel = new ControlPlanModel();
+            string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
+            IList<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
+            if (jsonString != null)
+            {
+                ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
+            }
+            int Indx = Convert.ToInt32(SeqNo) - 1;
+
+            if (ControlPlanDetail != null && ControlPlanDetail.Count > 0)
+            {
+                ControlPlanDetail.RemoveAt(Convert.ToInt32(Indx));
+                Indx = 0;
+
+                foreach (var item in ControlPlanDetail)
+                {
+                    Indx++;
+                    // item.SequenceNo = Indx;
+                }
+                MainModel.DTSSGrid = ControlPlanDetail;
+
+                HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
+            }
+            return PartialView("_ControlPlanMainGrid", MainModel);
         }
     }
 }

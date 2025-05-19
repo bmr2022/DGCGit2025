@@ -1999,11 +1999,18 @@
                                         '">' + val.Store_Name + '</option>');
                                     $('#OkRecStore-' + i).val(val.Store).trigger("change");
                                 });
+                                var mainStore = obj.Result.Table.find(x => x.Store_type && x.Store_type.trim().toUpperCase() === "MAIN STORE");
+                                if (mainStore) {
+                                    $('#OkRecStore-' + i).val(mainStore.Store);
+                                }
                             }
                              
-                            $('#OkRecStore-' + i + ' option').filter(function () {
-                                return $(this).val() === obj.Result.Table[0].Store_Name;
-                            }).prop('selected', true);
+                            // $('#OkRecStore-' + i + ' option').filter(function () {
+                            //     return $(this).val() === obj.Result.Table[0].Store_Name;
+                            // }).prop('selected', true);
+
+                           
+
                             //$('#OkRecStore-' + i).val(obj.Result.Table[0].Store_Name);
                         }
                     }

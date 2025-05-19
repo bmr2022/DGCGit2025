@@ -54,7 +54,7 @@ namespace eTactWeb.Controllers
         string VoucherRotationDailyMonthYearly, string AllowBackDateWorkorderEntry,string AllowBackDateProductionScheduleEntry,
         string InProdScheduleShowSumOrDetail,string PoallowtoprintWithoutApproval,string POClosePOAlwaysAgainstIndent,
         string AccAllowtochangeDocumentinPurchaseBill,string ProdAllowMultiplePlanInProdSchOrNot,
-string AccPasswordToChangeDocumentinPurchaseBill,string IndentReportName,
+string AccPasswordToChangeDocumentinPurchaseBill,string IndentReportName,string AccAllowtochangeDocumnetinPurchaseBill,
 string AccAllowtochangeInvoiceNoDateinPurchaseBill,
 string AccPasswordToAllowManualTax,
 string AccSaleBillManualTaxAllowed,
@@ -183,6 +183,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 MainModel.ProdAllowMultiplePlanInProdSchOrNot = ProdAllowMultiplePlanInProdSchOrNot;
                 MainModel.IndentReportName = IndentReportName;
                 MainModel.IssueChaallanTaxIsMandatory = IssueChaallanTaxIsMandatory;
+                MainModel.AccAllowtochangeDocumnetinPurchaseBill = AccAllowtochangeDocumnetinPurchaseBill;
 
 
 

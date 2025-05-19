@@ -51,7 +51,7 @@ namespace eTactWeb.DOM.Models
         public string ItemimagePath { get; set; }
         public string DrawingNo { get; set; }
         public string DrawingNoImagePath { get; set; }
-        public List<ControlPlanDetailModel> DTSSGrid { get; set; }
+        public IList<ControlPlanDetailModel> DTSSGrid { get; set; }
     }
     public class ControlPlanDetailModel
     {

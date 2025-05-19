@@ -1249,7 +1249,7 @@
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item" href="#">Issue Material(Thr BOM) &raquo; </a>
+                            <a class="dropdown-item" href="#">Issue Material(Through BOM) &raquo; </a>
                             <ul class="submenu dropdown-menu">
                                 <li>
                                     <a class="dropdown-item" asp-action="PendingMaterialToIssueThrBOM" asp-controller="PendingMaterialToIssueThrBOM" id="MaterialtoIssueThrBOM">
@@ -1259,7 +1259,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item MaterialtoIssueThrBOM" asp-action="DashBoard" asp-controller="IssueThrBOM" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                    @* <a class="dropdown-item MaterialtoIssueThrBOM" asp-action="DashBoard" asp-controller="IssueThrBOM" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True"> *@
+                                        <a class="dropdown-item MaterialtoIssueThrBOM" asp-action="DashBoard" asp-controller="IssueThrBOM"  asp-route-Flag="True">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
                                     <input class="userRightsPermission" type="hidden" value="Material to Issue Thr BOM" />
@@ -1279,7 +1280,8 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item MaterialtoIssueWOBOM" asp-action="Dashboard" asp-controller="IssueWithoutBom" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                    @* <a class="dropdown-item MaterialtoIssueWOBOM" asp-action="Dashboard" asp-controller="IssueWithoutBom" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True"> *@
+                                        <a class="dropdown-item MaterialtoIssueWOBOM" asp-action="Dashboard" asp-controller="IssueWithoutBom"  asp-route-Flag="True">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
                                     <input class="userRightsPermission" type="hidden" value="Material to Issue WO BOM" />

@@ -177,6 +177,7 @@ namespace eTactWeb.Data.DAL
                                                                 PoallowtoprintWithoutApproval = dr["PoallowtoprintWithoutApproval"] != DBNull.Value ? dr["PoallowtoprintWithoutApproval"].ToString() : string.Empty,
                                                                 POClosePOAlwaysAgainstIndent = dr["POClosePOAlwaysAgainstIndent"] != DBNull.Value ? dr["POClosePOAlwaysAgainstIndent"].ToString() : string.Empty,
                                                                 IndentReportName = dr["IndentReportName"] != DBNull.Value ? dr["IndentReportName"].ToString() : string.Empty,
+                                                                AccAllowtochangeDocumnetinPurchaseBill = dr["AccAllowtochangeDocumnetinPurchaseBill"] != DBNull.Value ? dr["AccAllowtochangeDocumnetinPurchaseBill"].ToString() : string.Empty,
                                                             }).ToList();
                     }
 
@@ -551,6 +552,7 @@ namespace eTactWeb.Data.DAL
                     model.PoallowtoprintWithoutApproval = DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"].ToString();
                     model.POClosePOAlwaysAgainstIndent = DS.Tables[0].Rows[0]["POClosePOAlwaysAgainstIndent"].ToString();
                     model.IndentReportName = DS.Tables[0].Rows[0]["IndentReportName"].ToString();
+                    model.AccAllowtochangeDocumnetinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeDocumnetinPurchaseBill"].ToString();
                 }
                 if (Type == "SaleOrderDetail")
                 {
@@ -760,6 +762,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@PoallowtoprintWithoutApproval", model.PoallowtoprintWithoutApproval));
                         SqlParams.Add(new SqlParameter("@POClosePOAlwaysAgainstIndent", model.POClosePOAlwaysAgainstIndent));
                         SqlParams.Add(new SqlParameter("@IndentReportName", model.POClosePOAlwaysAgainstIndent));
+                        SqlParams.Add(new SqlParameter("@AccAllowtochangeDocumnetinPurchaseBill", model.AccAllowtochangeDocumnetinPurchaseBill));
                     }
                     if (model.Type == "SaleOrderDetail")
                     {

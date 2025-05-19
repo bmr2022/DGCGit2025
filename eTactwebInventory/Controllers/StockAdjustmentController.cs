@@ -739,6 +739,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> FillCurrentBatchINWIP(int ItemCode, int YearCode, int WCid, string TransDate, string batchno = "")
         {
+             TransDate = HttpContext.Session.GetString("ToDate");
             var JSON = await IStockAdjust.FillCurrentBatchINWIP(ItemCode, YearCode, WCid, batchno, TransDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
