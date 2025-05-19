@@ -444,6 +444,10 @@
                 $('#AdjPendAmt').val($('#NetTotal').val());
             }
 
+            if ($('#SaleBillJobwork').val() == 'S') {
+                $('#SaleBillJobwork').css("background-color", "#fff5d5");
+            }
+
             // isAccountCodeClear = false;
 
             if ($('#SaleBillJobwork').val() == 'J') {
@@ -650,7 +654,7 @@
             }
             debugger
             if ($('#Mode').val() == "U") {
-                if ($('#EInvNo').val() == "" && $('#EinvGenerated').val() == "") {
+                if ($('#EInvNo').val() == "Y" || $('#EinvGenerated').val() == "Y") {
                     $('#SaleBillJobwork').prop("disabled", true);
                     $('#GSTNO').prop("disabled", true);
                     $('#CustAddress').prop("disabled", true);
@@ -724,11 +728,14 @@
                 $('.jobWorkChalln').show();
                 $('.gridHiddenField').show();
                 FillJWCustomerList();
+                $('#SaleBillJobwork').css("background-color", "#fde5fc");
 
             } else {
                 $('.jobWorkChalln').hide();
                 $('.gridHiddenField').hide();
                 FillCustomerList($('#PN1').is(":checked"));
+                $('#SaleBillJobwork').css("background-color", "#fff5d5");
+
             }
         });
 
@@ -1524,6 +1531,12 @@
         $('#ProducedUnprod').change(function () {
             if ($('#ProducedUnprod').val() == 'Unprod') {
                 $("#BOMInd").val('I');
+                $('#BOMInd option[value="B"]').prop('disabled', true);
+                if ($('#SaleBillJobwork').val() == "J") {
+                    JWItemList($('#TypeItemServAssets').val());
+                }
+            } else {
+                $('#BOMInd option[value="B"]').prop('disabled', false);
             }
         });
 
@@ -1791,6 +1804,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
+                        debugger
                         //$('#EntryId').val(obj.Result[0].EntryId);
                         if (obj.Result.Table[0].AllowBAtchEditable == 'Y') {
                             $("#Batchno option:not(:eq(1))").prop("disabled", true);
@@ -1837,8 +1851,8 @@
                 var batchNo = $('#GridBatchNo-' + j).text();
 
                 itemGridArr.push({
-                    IC : iC,
-                    BatchNo : batchNo
+                    IC: iC,
+                    BatchNo: batchNo
                 });
             }
 
@@ -1848,9 +1862,9 @@
                 success: function (result, status, error) {
 
                     for (var j = 1; j <= itemGridArr.length; j++) {
-                        
-                        var IC = itemGridArr[j-1].IC;
-                        var BatchNo = itemGridArr[j-1].BatchNo;
+
+                        var IC = itemGridArr[j - 1].IC;
+                        var BatchNo = itemGridArr[j - 1].BatchNo;
 
                         var itemArrayLength = itemBatchArray.length;
 
@@ -1896,7 +1910,9 @@
         }
 
         $('#ItemSA').change(function () {
-            FillItems($('#TypeItemServAssets').val());
+            if ($('#SaleBillJobwork').val() == "S") {
+                FillItems($('#TypeItemServAssets').val());
+            }
             JWItemList($('#TypeItemServAssets').val());
         });
 
@@ -2215,6 +2231,10 @@
                         $('#PaymentCreditDay').val(obj.Result.Table[0].CreditDays);
 
                         DueDateCalculation();
+
+                        if ($('#StateCode').val() == "") {
+                            $.notify('StateCode is manadatory...!', "error");
+                        }
                     }
                 }
             });
@@ -2363,18 +2383,18 @@
                     $(this).find('.GridAdjDrCr').each(function () {
                         if ($(this).text().trim().toUpperCase() === 'CR') {
                             hasCR = true;
-                            return false; 
+                            return false;
                         }
                     });
 
                     if (hasCR) {
-                        return false; 
+                        return false;
                     }
                 });
 
                 if (hasCR) {
                     $.notify('AdjGrid should not have CR value...!', "error");
-                }else{
+                } else {
                     if (confirm("are you sure you want to save this entry?")) {
                         $("form").submit();
                     }
@@ -3126,7 +3146,7 @@
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                     
+
                     $('#Uniquebatchno').empty();
                     $('#Uniquebatchno').append('<option value="0" selected>-Select-</option>');
                     if (result != null) {
@@ -3228,7 +3248,7 @@
         }
 
         function DiscountPerCalculation() {
-             
+
             CalculateAmount();
             var discountPerVal = $('#DiscountPer').val() == '' ? 0 : parseFloat($('#DiscountPer').val());
             var discountPer = parseFloat(discountPerVal);
@@ -3239,13 +3259,13 @@
                 var finalAmount = (amount - discountAmt).toFixed(2);
                 $('#ItemAmount').val(finalAmount);
                 // $('#Amount').val($('#Amount').val() - $('#DiscountAmt').val());
-            }else{
+            } else {
                 $('#DiscountAmt').val(0);
             }
         }
 
         function DiscountAmtCalculation() {
-             
+
             CalculateAmount();
             var discAmtVal = $('#DiscountAmt').val() == '' ? 0 : parseFloat($('#DiscountAmt').val());
             var discAmt = parseFloat(discAmtVal);
@@ -3256,7 +3276,7 @@
                 var finalAmount = (amount - discountPer).toFixed(2);
                 $('#ItemAmount').val(finalAmount);
                 // $('#Amount').val($('#Amount').val() - $('#DiscountAmt').val());
-            }else{
+            } else {
                 $('#DiscountPer').val(0);
             }
         }
@@ -3627,7 +3647,7 @@
         }
 
         function PressBack() {
-             
+
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
