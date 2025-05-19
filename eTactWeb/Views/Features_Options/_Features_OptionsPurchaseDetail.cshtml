@@ -62,6 +62,9 @@
                  <th data-columnno="12" data-sortorder="asc" class="sortCol">
                     <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IndentReportName
                 </th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Allow to change Documnet
+                </th>
 
                 
 
@@ -113,6 +116,7 @@
                                            asp-route-PoallowtoprintWithoutApproval="@item.PoallowtoprintWithoutApproval"
                                            asp-route-POClosePOAlwaysAgainstIndent="@item.POClosePOAlwaysAgainstIndent"
                                            asp-route-IndentReportName="@item.IndentReportName"
+                                           asp-route-AccAllowtochangeDocumnetinPurchaseBill="@item.AccAllowtochangeDocumnetinPurchaseBill"
                                            
                                            onclick="confirmEdit(event)">
 
@@ -142,6 +146,7 @@
                             <td>@item.PoallowtoprintWithoutApproval</td>
                             <td>@item.POClosePOAlwaysAgainstIndent</td>
                             <td>@item.IndentReportName</td>
+                            <td>@item.AccAllowtochangeDocumnetinPurchaseBill</td>
                            
 
                         </tr>

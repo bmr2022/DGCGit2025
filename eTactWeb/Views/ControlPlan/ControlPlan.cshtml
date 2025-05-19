@@ -221,8 +221,8 @@
                                         <table class="table table-hover table-bordered table-striped">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                                 <tr>
-                                                    <th>Seq No</th>
                                                     <th>Action</th>
+                                                    <th>Seq No</th>
                                                     <th>Characteristic</th>
                                                     <th>EvMeasurTech</th>
                                                     <th>Specification From</th>
@@ -731,8 +731,71 @@
             });
         });
 
+        function EditItemRows(SeqNo) {
+            debugger
+            var RowCount = $('#divControlPlanGrid tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            else {
+                $.ajax({
+                    url: '/ControlPlan/EditItemRows',
+                    type: "POST",
+                    data: { SeqNo: SeqNo },
+                    success: function (data) {
 
+                        var obj = $.parseJSON(data);
+                        if (obj != null) {
+                            EditEachItem = true;
+                            $('#Characteristic').val(obj[0].Characteristic).trigger("change");
+                            $('#EvalutionMeasurmentTechnique').val(obj[0].EvalutionMeasurmentTechnique).trigger("change");
+                            $('#SpecificationFrom').val(obj[0].SpecificationFrom).trigger("change");
+                            $('#SpecificationTo').val(obj[0].SpecificationTo).trigger("change");
+                            $('#Operator').val(obj[0].Operator).trigger("change");
+                            $('#FrequencyofTesting').val(obj[0].FrequencyofTesting); 
+                            $('#InspectionBy').val(obj[0].InspectionBy).trigger("change");
 
+                            //   $('#divRoutingGrid tr#' + SeqNo).remove();
+
+                            var rowCount = $('#divControlPlanGrid tr').length;
+                            for (var i = 1; i <= rowCount + 1; i++) {
+                                $('#editItemGrid-' + i).css("pointer-events", "none");
+                                $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                            }
+
+                            DeleteItemRow(SeqNo);
+                        }
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+        }
+        async function DeleteItemRow(SeqNo) {
+            debugger
+            $.ajax({
+                url: '@Url.Action("DeleteItemRow")',
+                type: "POST",
+                data: { "SeqNo": SeqNo },
+                success: await function (data, status, xhr) {
+                    $('#divControlPlanGrid').html(data);
+                    $.notify("Process deleted from Grid", "info");
+                },
+                error: function (response, status, xhr) {
+
+                    $.notify("Cannot delete item that exists in Tax Grid!!!", "error");
+                },
+                failure: function (response, status, xhr) {
+                    alert(response.responseText);
+                    $.notify(response.responseText, "error");
+                }
+            });
+        }
         async function CheckDuplicate(n, v) {
             $.ajax({
                 url: "@Url.Action("isDuplicate", "AccountMaster")",
