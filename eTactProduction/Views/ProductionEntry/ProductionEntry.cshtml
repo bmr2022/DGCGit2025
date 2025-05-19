@@ -1788,6 +1788,11 @@
 
         })
 
+        document.getElementById('unTarget').addEventListener('focusout', function () {
+            const value = this.value;
+            document.getElementById('ProdQty').value = value;
+        });
+
         $('#ProdAgainstPlanManual').select2();
         $('#Shift').select2();
         $('#ItemName').select2();
