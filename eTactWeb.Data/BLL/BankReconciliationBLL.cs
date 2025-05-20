@@ -37,5 +37,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _BackReconciliationDAL.SaveBankReceipt(model, GIGrid);
         }
+
+        public async Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
+        {
+            return await _BackReconciliationDAL.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
+        }
     }
 }

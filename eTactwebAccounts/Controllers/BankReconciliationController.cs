@@ -8,6 +8,9 @@ using System.Net;
 using System.Data;
 using System.Globalization;
 using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+using System.Data.SqlClient;
+using System.Dynamic;
 
 namespace eTactWeb.Controllers
 {
@@ -132,6 +135,12 @@ namespace eTactWeb.Controllers
             var model = new BankReconciliationModel();
             model = await _IBackReconciliation.GetDetailsData(DateFrom, DateTo, chequeNo, NewOrEdit, Account_Code);
             return PartialView("_BankReconciliationGrid", model);
+        }
+        public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
+        {
+            var JSON = await _IBackReconciliation.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
     }
 }
