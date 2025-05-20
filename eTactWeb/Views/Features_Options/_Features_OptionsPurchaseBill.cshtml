@@ -6,30 +6,9 @@
                 <th>Sr#</th>
                 <th>Action</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendJWIssuePrintReportName
+                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Allow to change Documnet
                 </th>
-
-                <th data-columnno="2" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VendJWRecPrintReportName
-                </th>
-
-                <th data-columnno="3" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AllowBackDateJOBWorkIssue
-                </th>
-
-                <th data-columnno="4" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ALLOWBACKDATEJobworkRec
-                </th>
-
-                <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>vendorJWAdjustAutoOrManual
-                </th>
-                 <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FIFO Based Batch Inventory Job Issue
-                </th>
-
-
-
+               
             </tr>
         </thead>
         <tbody id="gateDashboardtable">
@@ -57,12 +36,8 @@
                                            asp-route-Mode="U"
                                            asp-route-ID="@Cntr"
                                            asp-route-Type="@item.Type"
-                                           asp-route-VendJWIssuePrintReportName="@item.VendJWIssuePrintReportName"
-                                           asp-route-VendJWRecPrintReportName="@item.VendJWRecPrintReportName"
-                                           asp-route-AllowBackDateJOBWorkIssue="@item.AllowBackDateJOBWorkIssue"
-                                           asp-route-ALLOWBACKDATEJobworkRec="@item.ALLOWBACKDATEJobworkRec"
-                                           asp-route-vendorJWAdjustAutoOrManual="@item.VendorJWAdjustAutoOrManual"
-                                           asp-route-FIFOBasedBatchInventoryInJobWorkIss="@item.FIFOBasedBatchInventoryInJobWorkIss"
+                                           asp-route-VoucherRotationDailyMonthYearly="@item.VoucherRotationDailyMonthYearly"
+                                           asp-route-AccAllowtochangeDocumnetinPurchaseBill="@item.AccAllowtochangeDocumnetinPurchaseBill"
                                            onclick="confirmEdit(event)">
 
                                             <span class="fa-stack">
@@ -76,14 +51,8 @@
 
                                 </div>
                             </td>
-                            <td>@item.VendJWIssuePrintReportName</td>
-                            <td>@item.VendJWRecPrintReportName</td>
-                            <td>@item.AllowBackDateJOBWorkIssue</td>
-                            <td>@item.ALLOWBACKDATEJobworkRec</td>
-                            <td>@item.VendorJWAdjustAutoOrManual</td>
-                            <td>@item.FIFOBasedBatchInventoryInJobWorkIss</td>
 
-
+                            <td>@item.AccAllowtochangeDocumnetinPurchaseBill</td>
 
                         </tr>
                     }

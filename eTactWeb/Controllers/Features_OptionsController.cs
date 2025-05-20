@@ -60,7 +60,7 @@ string AccPasswordToAllowManualTax,
 string AccSaleBillManualTaxAllowed,
 string AccAllowBackdateVoucherEntry,
 string AccBackdateVoucherEntryPassword,
-string AccAllowToChangeVoucherDateInPurchBill,
+string AccAllowToChangeVoucherDateInPurchBill,string salebillShowItemBatchFIFOBased,
 string AccPurchaseVoucherPrintoutFilename,string IssueChaallanTaxIsMandatory,
 string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJobWorkIss)
         {
@@ -184,6 +184,7 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
                 MainModel.IndentReportName = IndentReportName;
                 MainModel.IssueChaallanTaxIsMandatory = IssueChaallanTaxIsMandatory;
                 MainModel.AccAllowtochangeDocumnetinPurchaseBill = AccAllowtochangeDocumnetinPurchaseBill;
+                MainModel.salebillShowItemBatchFIFOBased = salebillShowItemBatchFIFOBased;
 
 
 
@@ -357,6 +358,10 @@ string AccPurchaseBillInvoicePrintoutFilename,string FIFOBasedBatchInventoryInJo
               if (Type == "AccountDetail")
               {
                  return PartialView("_Features_OptionsAccountDetail", model);
+              }
+               if (Type == "PurchaseBill")
+              {
+                 return PartialView("_Features_OptionsPurchaseBill", model);
               }
                
             return null;
