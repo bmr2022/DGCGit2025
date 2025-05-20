@@ -80,7 +80,6 @@ namespace eTactWeb.Data.DAL
                      }
                       if (Type == "MRNDetail")
                       {
-
                         oCmd.Parameters.AddWithValue("@flag", "MRNDashbaord");
                       }
                        if (Type == "CommonDetail")
@@ -131,9 +130,13 @@ namespace eTactWeb.Data.DAL
                          {
                           oCmd.Parameters.AddWithValue("@flag", "SaleBillDashbaord");
                          }
-                        if (Type == "AccountDetail")
+                         if (Type == "AccountDetail")
                          {
                           oCmd.Parameters.AddWithValue("@flag", "AccountDashbaord");
+                         }
+                          if (Type == "PurchaseBill")
+                         {
+                          oCmd.Parameters.AddWithValue("@flag", "PurchaseBillDashbaord");
                          }
                         
 
@@ -176,8 +179,16 @@ namespace eTactWeb.Data.DAL
                                                                 CheckPOPendFromPOonlyNotFromAmendment = dr["CheckPOPendFromPOonlyNotFromAmendment"] != DBNull.Value ? dr["CheckPOPendFromPOonlyNotFromAmendment"].ToString() : string.Empty,
                                                                 PoallowtoprintWithoutApproval = dr["PoallowtoprintWithoutApproval"] != DBNull.Value ? dr["PoallowtoprintWithoutApproval"].ToString() : string.Empty,
                                                                 POClosePOAlwaysAgainstIndent = dr["POClosePOAlwaysAgainstIndent"] != DBNull.Value ? dr["POClosePOAlwaysAgainstIndent"].ToString() : string.Empty,
-                                                                IndentReportName = dr["IndentReportName"] != DBNull.Value ? dr["IndentReportName"].ToString() : string.Empty,
-                                                                AccAllowtochangeDocumnetinPurchaseBill = dr["AccAllowtochangeDocumnetinPurchaseBill"] != DBNull.Value ? dr["AccAllowtochangeDocumnetinPurchaseBill"].ToString() : string.Empty,
+                                                                IndentReportName = dr["IndentReportName"] != DBNull.Value ? dr["IndentReportName"].ToString() : string.Empty
+                                                               
+                                                            }).ToList();
+                    } 
+                    if (Type == "PurchaseBill")
+                    {
+                        model.features_OptionsModelsGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                            select new Features_OptionsModel
+                                                            {
+                                                                AccAllowtochangeDocumnetinPurchaseBill = dr["AccAllowtochangeDocumnetinPurchaseBill"] != DBNull.Value ? dr["AccAllowtochangeDocumnetinPurchaseBill"].ToString() : string.Empty
                                                             }).ToList();
                     }
 
@@ -260,6 +271,7 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDateJOBWorkIssue = dr["AllowBackDateJOBWorkIssue"] != DBNull.Value ? dr["AllowBackDateJOBWorkIssue"].ToString() : string.Empty,
                                                                 ALLOWBACKDATEJobworkRec = dr["ALLOWBACKDATEJobworkRec"] != DBNull.Value ? dr["ALLOWBACKDATEJobworkRec"].ToString() : string.Empty,
                                                                 VendorJWAdjustAutoOrManual = dr["vendorJWAdjustAutoOrManual"] != DBNull.Value ? dr["vendorJWAdjustAutoOrManual"].ToString() : string.Empty,
+                                                                FIFOBasedBatchInventoryInJobWorkIss = dr["FIFOBasedBatchInventoryInJobWorkIss"] != DBNull.Value ? dr["FIFOBasedBatchInventoryInJobWorkIss"].ToString() : string.Empty,
 
                                                             }).ToList();
                        }
@@ -382,6 +394,9 @@ namespace eTactWeb.Data.DAL
                                                             {
                                                                 AllowBackDateSALEBILL = dr["AllowBackDateSALEBILL"] != DBNull.Value ? dr["AllowBackDateSALEBILL"].ToString() : string.Empty,
                                                                 VoucherRotationDailyMonthYearly = dr["VoucherRotationDailyMonthYearly"] != DBNull.Value ? dr["VoucherRotationDailyMonthYearly"].ToString() : string.Empty,
+                                                                AccSaleBillManualTaxAlloweed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
+                                                                AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
+                                                                salebillShowItemBatchFIFOBased = dr["salebillShowItemBatchFIFOBased"] != DBNull.Value ? dr["salebillShowItemBatchFIFOBased"].ToString() : string.Empty,
                                                                
                                                             }).ToList();
                         }
@@ -394,7 +409,7 @@ namespace eTactWeb.Data.DAL
                                                                 AccPasswordToChangeDocumentinPurchaseBill = dr["AccPasswordToChangeDocumentinPurchaseBill"] != DBNull.Value ? dr["AccPasswordToChangeDocumentinPurchaseBill"].ToString() : string.Empty,
                                                                 AccAllowtochangeInvoiceNoDateinPurchaseBill = dr["AccAllowtochangeInvoiceNoDateinPurchaseBill"] != DBNull.Value ? dr["AccAllowtochangeInvoiceNoDateinPurchaseBill"].ToString() : string.Empty,
                                                                 AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
-                                                                AccSaleBillManualTaxAllowed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
+                                                                //AccSaleBillManualTaxAllowed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
                                                                 AccAllowBackdateVoucherEntry = dr["AccAllowBackdateVoucherEntry"] != DBNull.Value ? dr["AccAllowBackdateVoucherEntry"].ToString() : string.Empty,
                                                                 AccBackdateVoucherEntryPassword = dr["AccBackdateVoucherEntryPassword"] != DBNull.Value ? dr["AccBackdateVoucherEntryPassword"].ToString() : string.Empty,
                                                                 AccAllowToChangeVoucherDateInPurchBill = dr["AccAllowTochangeVoucherDateInPurchBill"] != DBNull.Value ? dr["AccAllowTochangeVoucherDateInPurchBill"].ToString() : string.Empty,
@@ -435,6 +450,12 @@ namespace eTactWeb.Data.DAL
 
                     SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDPurchaseDashbaord"));
                 }
+                if (Type == "PurchaseBill")
+                {
+
+                    SqlParams.Add(new SqlParameter("@flag", "VIEWBYIDPurchaseBill"));
+                }
+
                  if (Type == "SaleOrderDetail")
                  {
 
@@ -552,8 +573,9 @@ namespace eTactWeb.Data.DAL
                     model.PoallowtoprintWithoutApproval = DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"].ToString();
                     model.POClosePOAlwaysAgainstIndent = DS.Tables[0].Rows[0]["POClosePOAlwaysAgainstIndent"].ToString();
                     model.IndentReportName = DS.Tables[0].Rows[0]["IndentReportName"].ToString();
-                    model.AccAllowtochangeDocumnetinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeDocumnetinPurchaseBill"].ToString();
+                   
                 }
+
                 if (Type == "SaleOrderDetail")
                 {
                     model.SaleInvoiceFileName = DS.Tables[0].Rows[0]["SaleInvoiceFileName"].ToString();
@@ -564,6 +586,10 @@ namespace eTactWeb.Data.DAL
                     model.SaleSchedulePrintReportName = DS.Tables[0].Rows[0]["SaleSchedulePrintReportName"].ToString();
                     model.SaleScheduleAmendPrintReportName = DS.Tables[0].Rows[0]["SaleScheduleAmendPrintReportName"].ToString();
 
+                } 
+                if (Type == "PurchaseBill")
+                {
+                    model.AccAllowtochangeDocumnetinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeDocumnetinPurchaseBill"].ToString();
                 } 
                 if (Type == "GateEntryDetail")
                 {
@@ -609,6 +635,7 @@ namespace eTactWeb.Data.DAL
                     model.AllowBackDateJOBWorkIssue = DS.Tables[0].Rows[0]["AllowBackDateJOBWorkIssue"].ToString();
                     model.ALLOWBACKDATEJobworkRec = DS.Tables[0].Rows[0]["ALLOWBACKDATEJobworkRec"].ToString();
                     model.VendorJWAdjustAutoOrManual = DS.Tables[0].Rows[0]["vendorJWAdjustAutoOrManual"].ToString();
+                    model.FIFOBasedBatchInventoryInJobWorkIss = DS.Tables[0].Rows[0]["FIFOBasedBatchInventoryInJobWorkIss"].ToString();
 
                 }
                 if (Type == "StockAdjDetail")
@@ -691,6 +718,9 @@ namespace eTactWeb.Data.DAL
                 {
                     model.AllowBackDateSALEBILL = DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"] != DBNull.Value ? DS.Tables[0].Rows[0]["AllowBackDateSALEBILL"].ToString() : string.Empty;
                     model.VoucherRotationDailyMonthYearly = DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"] != DBNull.Value ? DS.Tables[0].Rows[0]["VoucherRotationDailyMonthYearly"].ToString() : string.Empty;
+                    model.AccSaleBillManualTaxAlloweed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
+                    model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
+                    model.salebillShowItemBatchFIFOBased = DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"] != DBNull.Value ? DS.Tables[0].Rows[0]["salebillShowItemBatchFIFOBased"].ToString() : string.Empty;
                     
                 }
                   if (Type == "AccountDetail")
@@ -699,7 +729,7 @@ namespace eTactWeb.Data.DAL
                     model.AccPasswordToChangeDocumentinPurchaseBill = DS.Tables[0].Rows[0]["AccPasswordToChangeDocumentinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToChangeDocumentinPurchaseBill"].ToString() : string.Empty;
                     model.AccAllowtochangeInvoiceNoDateinPurchaseBill = DS.Tables[0].Rows[0]["AccAllowtochangeInvoiceNoDateinPurchaseBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowtochangeInvoiceNoDateinPurchaseBill"].ToString() : string.Empty;
                     model.AccPasswordToAllowManualTax = DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccPasswordToAllowManualTax"].ToString() : string.Empty;
-                    model.AccSaleBillManualTaxAllowed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
+                    //model.AccSaleBillManualTaxAllowed = DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty;
                     model.AccAllowBackdateVoucherEntry = DS.Tables[0].Rows[0]["AccAllowBackdateVoucherEntry"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowBackdateVoucherEntry"].ToString() : string.Empty;
                     model.AccBackdateVoucherEntryPassword = DS.Tables[0].Rows[0]["AccBackdateVoucherEntryPassword"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccBackdateVoucherEntryPassword"].ToString() : string.Empty;
                     model.AccAllowToChangeVoucherDateInPurchBill = DS.Tables[0].Rows[0]["AccAllowTochangeVoucherDateInPurchBill"] != DBNull.Value ? DS.Tables[0].Rows[0]["AccAllowTochangeVoucherDateInPurchBill"].ToString() : string.Empty;
@@ -743,6 +773,13 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@DuplicateItemName", model.DuplicateItemName));
                         SqlParams.Add(new SqlParameter("@ItemPartcodeGenerationFormat", model.ItemPartcodeGenerationFormat));
                     }
+                     if (model.Type == "PurchaseBill")
+                     {
+
+                        SqlParams.Add(new SqlParameter("@Flag", "UPDATEPurchaseBillDashbaord"));
+                         SqlParams.Add(new SqlParameter("@AccAllowtochangeDocumnetinPurchaseBill", model.AccAllowtochangeDocumnetinPurchaseBill));
+                     }
+
                     if (model.Type == "PurchaseDetail")
                     {
                    
@@ -762,7 +799,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@PoallowtoprintWithoutApproval", model.PoallowtoprintWithoutApproval));
                         SqlParams.Add(new SqlParameter("@POClosePOAlwaysAgainstIndent", model.POClosePOAlwaysAgainstIndent));
                         SqlParams.Add(new SqlParameter("@IndentReportName", model.POClosePOAlwaysAgainstIndent));
-                        SqlParams.Add(new SqlParameter("@AccAllowtochangeDocumnetinPurchaseBill", model.AccAllowtochangeDocumnetinPurchaseBill));
+                       
                     }
                     if (model.Type == "SaleOrderDetail")
                     {
@@ -827,6 +864,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@AllowBackDateJOBWorkIssue", model.AllowBackDateJOBWorkIssue));
                         SqlParams.Add(new SqlParameter("@ALLOWBACKDATEJobworkRec", model.ALLOWBACKDATEJobworkRec));
                         SqlParams.Add(new SqlParameter("@vendorJWAdjustAutoOrManual", model.VendorJWAdjustAutoOrManual));
+                        SqlParams.Add(new SqlParameter("@FIFOBasedBatchInventoryInJobWorkIss", model.FIFOBasedBatchInventoryInJobWorkIss));
                      }
                      if (model.Type == "StockAdjDetail")
                      {
@@ -919,6 +957,9 @@ namespace eTactWeb.Data.DAL
                             SqlParams.Add(new SqlParameter("@Flag", "UPDATESaleBill"));
                             SqlParams.Add(new SqlParameter("@AllowBackDateSALEBILL", model.AllowBackDateSALEBILL));
                             SqlParams.Add(new SqlParameter("@VoucherRotationDailyMonthYearly", model.VoucherRotationDailyMonthYearly));
+                            SqlParams.Add(new SqlParameter("@AccSaleBillManualTaxAlloweed", model.AccSaleBillManualTaxAlloweed));
+                            SqlParams.Add(new SqlParameter("@AccPasswordToAllowManualTax", model.AccPasswordToAllowManualTax));
+                            SqlParams.Add(new SqlParameter("@salebillShowItemBatchFIFOBased", model.salebillShowItemBatchFIFOBased));
 
                         }
                          if (model.Type == "AccountDetail")

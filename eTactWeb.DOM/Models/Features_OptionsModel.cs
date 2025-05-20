@@ -80,6 +80,9 @@ namespace eTactWeb.DOM.Models
         public string ALLOWBACKDATEJobworkRec { get; set; }
         public string AllowBackDateRECEIVEINSTORE { get; set; }
         public string AllowBackDateSALEBILL { get; set; }
+    
+        public string AccSaleBillManualTaxAlloweed { get; set; }
+        public string salebillShowItemBatchFIFOBased { get; set; }
         public string AllowBackDateDAILYPRODUCTION { get; set; }
         public string AllowBackDateTRANSFERMATERIAL { get; set; }
         public string CheckPOPendFromPOonlyNotFromAmendment { get; set; }
