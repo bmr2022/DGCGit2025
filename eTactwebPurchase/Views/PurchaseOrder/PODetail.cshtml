@@ -17,9 +17,7 @@
 			<h5>
 				<strong>@ViewData["Title"] - @Model.YearCode</strong>
 
-				<input type="checkbox" id="ShowOnlyAmendItemcheck"  />
-				<input type="hidden" asp-for="ShowOnlyAmendItem" value="@Model.ShowOnlyAmendItem" />
-
+				
 				<span class="d-flex float-end" style="margin-top:-2px;">
 					@if (Model.Mode != "V" && Model.Mode != "POC")
 					{
@@ -72,10 +70,15 @@
 							<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
 							Dashboard
 						</a>
-						<a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
+						@* <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
+							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+							PRINT
+						</a> *@
+						<a id="printButton" type="button" class="btn btn-sm btn-outline-light bg-gradient">
 							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 							PRINT
 						</a>
+
 					}
 
 
@@ -91,7 +94,11 @@
 						<button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel1" aria-expanded="true" aria-controls="BPanel1">
 							<i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
 							Required Parameter
-							<small class="p-3"></small>
+							<small class="p-5"></small>
+							show only Ammend Item
+							<input type="checkbox" id="ShowOnlyAmendItemcheck" />
+							<input type="hidden" asp-for="ShowOnlyAmendItem" value="@Model.ShowOnlyAmendItem" />
+
 						</button>
 					</h2>
 					<div id="BPanel1" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="HPanel1">
@@ -385,10 +392,10 @@
 {
 	<script>
 		var actualRate = 0;
-			 document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
-			document.getElementById('ShowOnlyAmendItem').value = this.checked ? 'Yes' : 'No';
-			console.log(this.checked ? 'Yes' : 'No');
-		});
+		// 	 document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+		// 	document.getElementById('ShowOnlyAmendItem').value = this.checked ? 'Yes' : 'No';
+		// 	console.log(this.checked ? 'Yes' : 'No');
+		// });
 
 		$(function () {
 			$('#EntryByMachineName').val($('#machineName').text());
@@ -729,6 +736,33 @@
 					// }).datepicker("setDate", formattedDate11);
 
 			}
+					
+		});
+		document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+			const value = this.checked ? 'Yes' : 'No';
+			document.getElementById('ShowOnlyAmendItem').value = value;
+			console.log(value);
+
+			// update the print button URL dynamically
+			const entryId = '@Model.EntryID';
+			const yearCode = '@Model.YearCode';
+			const poNo = '@Model.PONo';
+
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			document.getElementById('printButton').href = printUrl;
+		window.addEventListener('load', function () {
+			const isChecked = document.getElementById('ShowOnlyAmendItemcheck').checked;
+			const value = isChecked ? 'Yes' : 'No';
+			document.getElementById('ShowOnlyAmendItem').value = value;
+
+			const entryId = '@Model.EntryID';
+			const yearCode = '@Model.YearCode';
+			const poNo = '@Model.PONo';
+
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			document.getElementById('printButton').href = printUrl;
+		});
+
 
 			$('#POAAmendButton').click(function () {
 				$('form').submit();
