@@ -10,7 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IBankReconciliation
     {
-        Task<ResponseResult> SaveBankReceipt(BankReconciliationModel model, DataTable GIGrid);
+        Task<ResponseResult> SaveBankReceipt(List<BankReconciliationModel> model, DataTable GIGrid);
         Task<ResponseResult> GetBankName(string DateFrom, string DateTo,string NewOrEdit);
         public Task<BankReconciliationModel> GetDetailsData(string DateFrom, string DateTo, string chequeNo,string NewOrEdit,string Account_Code);
     }

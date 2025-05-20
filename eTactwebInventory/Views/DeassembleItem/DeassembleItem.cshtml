@@ -41,7 +41,7 @@
                 <strong>Deassemble Item</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-                    <a asp-action="ISTDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+                    <a asp-action="DeassembleDashBoard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-duotone fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
                     </a>
@@ -157,10 +157,7 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="FGStoreId" class="control-label" style="color: red;">Store Name</label>
-                                    @if (Model.Mode == "U" || Model.Mode == "V")
-                                    {
-                                        <input type="hidden" value="@Model.FGStoreId" id="FGStoreId" />
-                                    }
+                                   
                                     <select class="form-select" asp-for="FGStoreId">
                                         <option value="">-Select-</option>
                                     </select>
@@ -470,7 +467,7 @@
             $('#FinishPartCode').select2();
             $('#BomNo').select2();
             $('#FGStoreId').select2();
-            $('#FGStoreId').select2();
+            
             $('#FGBatchNo').select2();
             $('#FGUniqueBatchNo').select2();
             $('#RMItemName').select2();
@@ -496,9 +493,14 @@
             $('#ToWCID').prop("disabled", true);
             FillStore();
             FillRMStore();
-           
+                   FillBomNo();
             FillFGPartCode();
             FillFGItemName();
+                    FillFGStockBatchNo();
+                    FillFGStockUniqueBatchNo();
+                    FillMRNNO();
+                    FillRecStoreStock();
+            
 ;         
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
@@ -1160,7 +1162,7 @@
             e.preventDefault();
             EditEachItem = false;
 
-            var rowCount = $('#divISTGrid table tbody tr').length + 1; // assuming you append one more row
+            var rowCount = $('#divISTGrid  tr').length; // assuming you append one more row
             var Seqno = rowCount;
             
             if (!ValidateGrid()) return;
@@ -1230,7 +1232,7 @@
       
 
         $('#FGStoreId').change(function () {
-            FillRMStockBatchNo();
+            FillFGStockBatchNo();
             FillRecStoreStock();
         });
 

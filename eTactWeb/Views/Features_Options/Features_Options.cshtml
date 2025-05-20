@@ -221,13 +221,7 @@
                                             <option value="N">No</option>
                                         </select>
                                     </div>
-                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
-                                        <label asp-for="AccAllowtochangeDocumnetinPurchaseBill" class="form-label">Allow to change Documnet</label>
-                                        <select class="form-control" asp-for="AccAllowtochangeDocumnetinPurchaseBill" style="width:150px;">
-                                            <option value="Y">Yes</option>
-                                            <option value="N">No</option>
-                                        </select>
-                                    </div>
+                                    
 
                                 </div>
                             </div>
@@ -1036,7 +1030,7 @@
                                             <option value="N">No</option>
                                         </select>
                                     </div>
-                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="VoucherRotationDailyMonthYearly" class="form-label" style="width:400px;">Voucher Rotation DailyMonthYearly</label>
                                         <select class="form-control" asp-for="VoucherRotationDailyMonthYearly" >
                                             <option value="D">Daily</option>
@@ -1044,7 +1038,27 @@
                                             <option value="Y">Yearly</option>
                                         </select>
                                     </div>
-                                    
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="AccSaleBillManualTaxAlloweed" class="form-label" style="width:400px;">Voucher Rotation DailyMonthYearly</label>
+                                        <select class="form-control" asp-for="AccSaleBillManualTaxAlloweed">
+                                       
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="salebillShowItemBatchFIFOBased" class="form-label" style="width:400px;">salebill Show ItemBatch FIFOBased</label>
+                                        <select class="form-control" asp-for="salebillShowItemBatchFIFOBased">
+                                       
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                   
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="AccPasswordToAllowManualTax" class="form-label">Password To Allow ManualTax</label>
+                                        <input asp-for="AccPasswordToAllowManualTax" class="form-control" />
+                                    </div>
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 </div>
                             </div>
@@ -1087,13 +1101,11 @@
                                             <option value="N">No</option>
                                         </select>
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="AccPasswordToAllowManualTax" class="form-label">AccPassword To Allow ManualTax</label>
-                                        <select class="form-control" asp-for="AccPasswordToAllowManualTax" style="width:150px;">
-                                            <option value="Y">Yes</option>
-                                            <option value="N">No</option>
-                                        </select>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:400px;">
+                                        <label asp-for="AccPasswordToAllowManualTax" class="form-label">Password To Allow ManualTax</label>
+                                        <input asp-for="AccPasswordToAllowManualTax" class="form-control" />
                                     </div>
+                                   
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:400px;">
                                         <label asp-for="AccAllowToChangeVoucherDateInPurchBill" class="form-label">AccAllowToChangeVoucherDateInPurchBill</label>
                                         <select class="form-control" asp-for="AccAllowToChangeVoucherDateInPurchBill" style="width:300px;">
@@ -1132,6 +1144,35 @@
                                 </div>
                             </div>
 
+                        </div>
+                    </div>
+                    @* PurchaseBill *@
+                    <div class="accordion-item" id="PurchaseBillSection">
+                        <h2 class="accordion-header" id="H_ItemCategoryDetail">
+                            <button class="accordion-button text-light pnl1BG bg-gradient" data-type="PurchaseBill" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+                                    aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+                                <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Purchase Bill </strong>
+                                <small class="p-3"></small>
+                                <span style="height:25px; margin-left:700px;" type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient ">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    Update Purchase  Bill 
+                                </span>
+
+                            </button>
+                        </h2>
+                        <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="AccAllowtochangeDocumnetinPurchaseBill" class="form-label">Allow to change Documnet</label>
+                                        <select class="form-control" asp-for="AccAllowtochangeDocumnetinPurchaseBill" style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+                                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -1262,11 +1303,14 @@
             $('#PoallowtoprintWithoutApproval').select2();
             $('#AccAllowtochangeDocumentinPurchaseBill').select2();
             $('#AccAllowtochangeInvoiceNoDateinPurchaseBill').select2();
-            $('#AccPasswordToAllowManualTax').select2();
+
             $('#AccSaleBillManualTaxAllowed').select2();
             $('#AccAllowBackdateVoucherEntry').select2();
             $('#AccAllowToChangeVoucherDateInPurchBill').select2();
             $('#FIFOBasedBatchInventoryInJobWorkIss').select2();
+            $('#PurchaseBill').select2();
+            $('#AccSaleBillManualTaxAlloweed').select2();
+            $('#salebillShowItemBatchFIFOBased').select2();
 
             const fieldsToRemoveRules = [
                 'FlagSelectUpdate', 'Module', 'AutoGen_PartCode', 'DuplicateItemName', 'Allow_PO_Print', 'Po_File_Name',
@@ -1304,8 +1348,8 @@
                 'AccPurchaseBillInvoicePrintoutFilename', 'FromDate', 'ToDate', 'Searchbox', 'Type',
                 'AccAllowtochangeDocumentinPurchaseBill', 'AccPasswordToChangeDocumentinPurchaseBill',
                 'AccAllowtochangeInvoiceNoDateinPurchaseBill','AccPasswordToAllowManualTax','AccSaleBillManualTaxAllowed',
-                'AccAllowBackdateVoucherEntry','AccBackdateVoucherEntryPassword','AccAllowToChangeVoucherDateInPurchBill',
-                'AccPurchaseVoucherPrintoutFilename', 'AccPurchaseBillInvoicePrintoutFilename', 'FIFOBasedBatchInventoryInJobWorkIss'
+                'AccAllowBackdateVoucherEntry', 'AccBackdateVoucherEntryPassword', 'AccAllowToChangeVoucherDateInPurchBill', 'AccSaleBillManualTaxAlloweed',
+                'AccPurchaseVoucherPrintoutFilename', 'AccPurchaseBillInvoicePrintoutFilename', 'FIFOBasedBatchInventoryInJobWorkIss', 'PurchaseBill', 'salebillShowItemBatchFIFOBased'
             ];
 
             fieldsToRemoveRules.forEach(field => {
@@ -1320,8 +1364,8 @@
             console.log("selectedType:", selectedType)
              
             if (mode === "U") {
-                 
-                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection,#VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection,#AccountDetail").hide();
+
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection,#VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection,#AccountDetail,#PurchaseBillSection").hide();
 
                 
                 if (selectedType === "ItemDetail") {
@@ -1362,11 +1406,13 @@
                     $("#SaleBillSection").show();
                 } else if (selectedType === "AccountDetail") {
                     $("#AccountDetail").show();
+                } else if (selectedType === "PurchaseBill") {
+                    $("#PurchaseBillSection").show();
                 }
 
             } else {
 
-                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection, #VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection,#AccountDetail").show();
+                $("#ItemDetailSection, #PurchaseDetailSection, #SaleOrderDetailSection, #GateEntryDetailSection, #MRNDetailSection, #CommonSection, #RquisitionSection, #VendJwIssRecSection,#StockAdjSection,#IssWithBomSection,#IssChallanSection,#CustJobWorkSection,#PrintReportSection,#ProdEntrySection,#ProdPlanSchSection,#TransMtrFromWcRec,#SaleBillSection,#AccountDetail, #PurchaseBillSection").show();
             }
 
             // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name

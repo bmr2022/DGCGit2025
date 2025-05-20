@@ -124,26 +124,7 @@
                                     </select>
                                 </div>
                                 
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="ControlMethod" class="form-label">ControlMethod</label>
-                                    <select class="form-control" id="ControlMethod" asp-for="ControlMethod">
-                                        <option value="@Model.ControlMethod">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="Remarks" class="form-label">Remarks</label>
-                                    <input asp-for="Remarks" class="form-control" />
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="RejectionPlan" class="form-label">RejectionPlan</label>
-                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan">
-                                        <option value="@Model.RejectionPlan">-Select-</option>
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
-                                    <input asp-for="DrawingNo" class="form-control" />
-                                </div>
+                               
 
                             </div>
                         </div>
@@ -159,39 +140,37 @@
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" >
+                             
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Characteristic" class="form-label">Characteristic</label>
-                                    <select class="form-control" id="Characteristic" asp-for="ItemName" style="width:170px;">
-                                        <option value="@Model.Characteristic">-Select-</option>
-
-                                    </select>
+                                    <input asp-for="Characteristic" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="EvalutionMeasurmentTechnique" class="form-label">EvalutionMeasTech</label>
-                                    <select class="form-control" id="EvalutionMeasurmentTechnique" asp-for="EvalutionMeasurmentTechnique" style="width:190px;">
-                                        <option value="@Model.EvalutionMeasurmentTechnique">-Select-</option>
-
-                                    </select>
+                                    <input asp-for="EvalutionMeasurmentTechnique" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="ControlMethod" class="form-label">ControlMethod </label>
+                                    <input asp-for="ControlMethod" class="form-control" />
+                                </div>
+                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="SpecificationFrom" class="form-label">Specification From</label>
-                                    <select class="form-control" id="SpecificationFrom" asp-for="SpecificationFrom" style="width:170px;">
-                                        <option value="@Model.SpecificationFrom">-Select-</option>
-
-                                    </select>
+                                    <input asp-for="SpecificationFrom" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="SpecificationTo" class="form-label">Specification To</label>
-                                    <select class="form-control" id="SpecificationTo" asp-for="SpecificationTo" style="width:170px;">
-                                        <option value="@Model.SpecificationTo">-Select-</option>
-                                    </select>
-                                </div>
+                                 
+                                 
+                               
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Operator" class="form-label">Operator</label>
                                     <select class="form-control" id="Operator" asp-for="Operator" style="width:170px;">
                                         <option value="@Model.Operator">-Select-</option>
                                     </select>
                                 </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="SpecificationTo" class="form-label">Specification To</label>
+                                    <input asp-for="SpecificationTo" class="form-control" />
+                                </div>
+
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="FrequencyofTesting" class="form-label">Frequency</label>
                                     <input asp-for="FrequencyofTesting" class="form-control" />
@@ -201,6 +180,22 @@
                                     <select class="form-control" id="InspectionBy" asp-for="InspectionBy" style="width:170px;">
                                         <option value="@Model.InspectionBy">-Select-</option>
                                     </select>
+                                </div>
+                               
+                               
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="Remarks" class="form-label">Remarks</label>
+                                    <input asp-for="Remarks" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px;">
+                                    <label asp-for="RejectionPlan" class="form-label">RejectionPlan</label>
+                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan">
+                                        <option value="@Model.RejectionPlan">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
+                                    <input asp-for="DrawingNo" class="form-control" />
                                 </div>
                                 <div class=" col-4 col-auto">
                                     <div class="row justify-content-around">
@@ -230,6 +225,10 @@
                                                     <th>Specification To</th>
                                                     <th>Frequency</th>
                                                     <th>Inpected By</th>
+                                                    <th>Control Method</th>
+                                                    <th>Remarks</th>
+                                                    <th>Rejection Plan</th>
+                                                    <th>Drawing No</th>
 
                                                 </tr>
                                             </thead>
@@ -332,13 +331,13 @@
             $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
             $('#ItemName').select2();
             $('#PartCode').select2();
-            $('#Characteristic').select2();
+            //$('#Characteristic').select2();
             $('#Operator').select2();
-            $('#SpecificationTo').select2();
-            $('#SpecificationFrom').select2();
-            $('#EvalutionMeasurmentTechnique').select2();
+           // $('#SpecificationTo').select2();
+            //$('#SpecificationFrom').select2();
+            //$('#EvalutionMeasurmentTechnique').select2();
             $('#RejectionPlan').select2();
-            $('#ControlMethod').select2();
+           // $('#ControlMethod').select2();
             $('#InspectionBy').select2();
            
         });
@@ -355,7 +354,15 @@
         var HideShow = 0;
 
         $(function () {
-           
+            $('#FrequencyofTesting').on('input', function () {
+                let value = $(this).val();
+
+                if (!/^\d*$/.test(value)) {
+                    $.notify("Please enter a valid positive number only.", "error");
+                    $(this).val(''); 
+                    return;
+                }
+            });
         });
         function GetNewEntryId() {
             var Yearcode = $("#Yearcode").val();
@@ -649,6 +656,31 @@
             debugger
             e.preventDefault();
             EditEachItem = false;
+            function isNullOrEmpty(val) {
+                return val === undefined || val === null || val.trim() === "";
+            }
+
+            // Mandatory Field Validation
+            if (isNullOrEmpty($('#Characteristic').val())) {
+                $.notify("Characteristic is required.", "error");
+                $('#Characteristic').focus();
+                return false;
+            }
+            if (isNullOrEmpty($('#EvalutionMeasurmentTechnique').val())) {
+                $.notify("Evaluation Measurement Technique is required.", "error");
+                $('#EvalutionMeasurmentTechnique').focus();
+                return false;
+            }
+            if (isNullOrEmpty($('#ControlMethod').val())) {
+                $.notify("Control Method is required.", "error");
+                $('#ControlMethod').focus();
+                return false;
+            }
+            if (isNullOrEmpty($('#SpecificationFrom').val())) {
+                $.notify("Specification From is required.", "error");
+                $('#SpecificationFrom').focus();
+                return false;
+            }
             var seqnoarray = [];
             var rowsCounting = parseInt($('#divControlPlanGrid tr').length);
             $('#divControlPlanGrid tr').each(function (index, element) {
@@ -670,24 +702,31 @@
            
             var ItemData = {
                 "Characteristic": $('#Characteristic').val(),
-                "CharacteristicText": $('#Characteristic').find(':selected').text() == "-Select-" ? "" : $('#Characteristic').find(':selected').text(),
-
+                
                 "EvalutionMeasurmentTechnique": $('#EvalutionMeasurmentTechnique').val(),
-                "EvalutionMeasurmentTechniqueText": $('#EvalutionMeasurmentTechnique').find(':selected').text() == "-Select-" ? "" : $('#EvalutionMeasurmentTechnique').find(':selected').text(),
-
+                
                 "SpecificationFrom": $('#SpecificationFrom').val(),
-                "SpecificationFromText": $('#SpecificationFrom').find(':selected').text() == "-Select-" ? "" : $('#SpecificationFrom').find(':selected').text(),
-
+                
                 "SpecificationTo": $('#SpecificationTo').val(),
-                "SpecificationToText": $('#SpecificationTo').find(':selected').text() == "-Select-" ? "" : $('#SpecificationTo').find(':selected').text(),
-
+                
                 "Operator": $('#Operator').val(),
                 "OperatorText": $('#Operator').find(':selected').text() == "-Select-" ? "" : $('#Operator').find(':selected').text(),
 
                 "FrequencyofTesting": $('#FrequencyofTesting').val(), // input field, no need for .find()
 
                 "InspectionBy": $('#InspectionBy').val(),
-                "InspectionByText": $('#InspectionBy').find(':selected').text() == "-Select-" ? "" : $('#InspectionBy').find(':selected').text()
+                "InspectionByText": $('#InspectionBy').find(':selected').text() == "-Select-" ? "" : $('#InspectionBy').find(':selected').text(),
+
+                "ControlMethod": $('#ControlMethod').val(),
+                "ControlMethodText": $('#ControlMethod').find(':selected').text() == "-Select-" ? "" : $('#ControlMethod').find(':selected').text(),
+
+                "Remarks": $('#Remarks').val(),
+
+                "RejectionPlan": $('#RejectionPlan').val(),
+                "RejectionPlanText": $('#RejectionPlan').find(':selected').text() == "-Select-" ? "" : $('#RejectionPlan').find(':selected').text(),
+
+                "DrawingNo": $('#DrawingNo').val()
+
             }
             console.log(ItemData);
             $.ajax({
@@ -753,8 +792,12 @@
                             $('#SpecificationFrom').val(obj[0].SpecificationFrom).trigger("change");
                             $('#SpecificationTo').val(obj[0].SpecificationTo).trigger("change");
                             $('#Operator').val(obj[0].Operator).trigger("change");
-                            $('#FrequencyofTesting').val(obj[0].FrequencyofTesting); 
+                            $('#FrequencyofTesting').val(obj[0].FrequencyofTesting).trigger("change");
                             $('#InspectionBy').val(obj[0].InspectionBy).trigger("change");
+                            $('#ControlMethod').val(obj[0].ControlMethod).trigger("change");
+                            $('#Remarks').val(obj[0].Remarks).trigger("change");
+                            $('#RejectionPlan').val(obj[0].RejectionPlan).trigger("change");
+                            $('#DrawingNo').val(obj[0].DrawingNo).trigger("change");
 
                             //   $('#divRoutingGrid tr#' + SeqNo).remove();
 

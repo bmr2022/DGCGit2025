@@ -58,6 +58,7 @@
 
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
+		<Content Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 		<Content Remove="Views\Home\Dashboard.cshtml" />
 		<Content Remove="wwwroot\Scripts\CheckUserRights.js" />
 		
@@ -65,6 +66,7 @@
 
 	<ItemGroup>
 		<None Include="bundleconfig.json" />
+		<None Include="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 
 		<None Include="Views\Shared\_FormsButton.cshtml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -158,6 +160,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 	  <_ContentIncludedByDefault Remove="Views\Home\Dashboard.cshtml" />
 	  <_ContentIncludedByDefault Remove="wwwroot\Scripts\CheckUserRights.js" />
 	</ItemGroup>
@@ -200,6 +203,10 @@
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Views\Home\Dashboard.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 	</ItemGroup>
 
 </Project>
