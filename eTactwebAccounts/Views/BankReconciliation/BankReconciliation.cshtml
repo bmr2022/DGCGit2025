@@ -255,11 +255,28 @@
 		});
 
 		$('.submitBTN').click(function (e) {
-
+			debugger
 			e.preventDefault();
+			var rowCount = $('#divStockRegisterBody tr').length;
+			var ItemData = [];
+			 for (var i = 1; i <= rowCount; i++) {
+				ItemData.push({
+				"SeqNo": i,
+				"entryid": $('#AccEntryId-' + i).text(),
+				"AccYearCode": $('#AccYearCode-' + i).text(),
+				"VoucherNo": $('#VoucherNo-' + i).text(),
+				"Type": $('#VoucherType-' + i).text(),
+				"Account_Code": $('#AccountCode-' + i).val(),
+				"chequeNo": $('#ChequeNo-' + i).text(),
+				"DrAmt": parseFloat($('#DrAmt-' + i).text()),
+				"CrAmt": parseFloat($('#CrAmt-' + i).text()),
+				"ChequeClearDate": $('#BankRecoDate-' + i).val(),
+				});
+			}
 			$.ajax({
-				url: '@Url.Action("BankReconciliation", "BankReconciliation")',
 				type: 'POST',
+				url: '@Url.Action("BankReconciliation", "BankReconciliation")',
+				data: { model: ItemData },
 				success: function (response) {
 					$.notify('Bank Reco is Saved Successfully.', "success");
 					setTimeout(function () {
@@ -280,6 +297,7 @@
 		}
 
 		function RemoveRecodate(Id) {
+			debugger
 			// Get the input by ID
 			var input = document.getElementById("BankRecoDate-" + Id);
 			if (!input) return;
@@ -331,10 +349,7 @@
 				$dateInput.datepicker({
 				dateFormat: 'dd/M/yy',
 				minDate: minDate,
-				maxDate: maxDate,
-				onSelect: function () {
-					AddToBankRecoGrid(checkbox, SeqNo);
-				}
+				maxDate: maxDate
 			});
 			}
 
@@ -343,36 +358,6 @@
 			$dateInput.hide();
 			$dateText.show();
 		}
-		}
-
-		function AddToBankRecoGrid(checkbox,SeqNo){
-			debugger
-			var $checkbox = $(checkbox);
-			var ItemData = {
-				"SeqNo": SeqNo,
-				"entryid": $('#AccEntryId-' + SeqNo).text(),
-				"AccYearCode": $('#AccYearCode-' + SeqNo).text(),
-				"VoucherNo": $('#VoucherNo-' + SeqNo).text(),
-				"Type": $('#VoucherType-' + SeqNo).text(),
-				"Account_Code": $('#AccountCode-' + SeqNo).val(),
-				"chequeNo": $('#ChequeNo-' + SeqNo).text(),
-				"DrAmt": parseFloat($('#DrAmt-' + SeqNo).text()),
-				"CrAmt": parseFloat($('#CrAmt-' + SeqNo).text()),
-				"ChequeClearDate": $('#BankRecoDate-' + SeqNo).val(),
-				"IsChecked" : $checkbox.prop('checked')
-			};
-
-			$.ajax({
-			type: "POST",
-			url: '@Url.Action("AddBankRecotoGrid", "BankReconciliation")',
-			data: { model: ItemData },
-			success: function (result, status, xhr) {
-				console.log('successfully Added toggleDatePicker Grid');
-			},
-			error: function () {
-				$.notify('Something Went Wrong, Please Try Again.', "error");
-			}
-			});
 		}
 
 		function FillBankName() {
