@@ -485,6 +485,7 @@
             }
 
             if (ICName.length > 0) {
+                alert(ICName);
                 var ICNameArray = ICName;
                 var delimiter = ",";
                 var displayICName = ICNameArray.join(delimiter);
@@ -1201,7 +1202,8 @@
                     "StoreId": $('#MainGridStoreId-' + i).val(),
                     "StoreName": $('#MainGridStorename-' + i).val(),
                     "BatchNo": $('#MainGridBatchNo-' + i).val(),
-                    "uniqueBatchNo": $('#MainGridUniqueBatchNo-' + i).val(),
+                    // "uniqueBatchNo": $('#MainGridUniqueBatchNo-' + i).val(),
+                    "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
                     "IssueQty": $('#MainGridIssueQty-' + i).val(),
                     "Unit": $('#MainGridUnit-' + i).val(),
                     "LotStock": $('#MainGridLotStock-' + i).val(),
