@@ -35,8 +35,7 @@
 			</span>
 		</h5>
 	</div>
-	<div>
-	</div>
+
 	<div class="card-body bg-light pt-0">
 		<div class="accordion shadow-lg">
 			<div class="card-body">
@@ -81,7 +80,6 @@
 									</select>
 								</div>
 
-
 								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 									<label asp-for="chequeNo" class="form-label">Cheque No</label>
 									<select asp-for="chequeNo" class="form-control">
@@ -93,8 +91,6 @@
 										}
 									</select>
 								</div>
-
-
 
 								<div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
 									<label class="form-label">Global search</label>
@@ -137,76 +133,63 @@
 													<partial name="_BankReconciliationGrid" />
 												</div>
 											</div>
-											<div class="d-flex justify-content-start mt-2 text-right" style="margin-left: 600px;">
-												<div class="mr-2">
-													<label class="form-label">Open Bal As Company Book</label>
+											<div class="container">
+												<div class="row justify-content-center mb-3">
+													<!-- Open Bal As Company Book -->
+													<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 text-center">
+														<label class="form-label">Open Bal As Company Book</label><br />
+														<div class="d-flex justify-content-center">
+															<input id="openbal" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+															<input class="form-control text-center mb-1" style="width: 60px;" value="Dr" readonly />
+														</div>
+													</div>
 
-												</div>
-												<div class="mr-2">
-													<input id="openbal" class="form-control" style="width:150px" readonly />
+													<!-- Balance As Per Company Book -->
+													<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 text-center">
+														<label class="form-label">Balance As Per Company Book</label><br />
+														<div class="d-flex justify-content-center">
+															<input id="balcompanbook" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+															<input class="form-control text-center mb-1" style="width: 60px;" value="DR" readonly />
+														</div>
+													</div>
 
+													<!-- Amount Not Reflected in Bank -->
+													<div class="col-xl-6 col-lg-8 col-md-12 text-center">
+														<label class="form-label">Amount Not Reflected in Bank</label><br />
+														<div class="d-flex justify-content-center flex-wrap gap-2">
+															<div class="d-flex">
+																<input id="notreflectedDr" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+																<input class="form-control text-center mb-1" style="width: 60px;" value="DR" readonly />
+															</div>
+															<div class="d-flex">
+																<input id="notreflectedCr" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+																<input class="form-control text-center mb-1" style="width: 60px;" value="Cr" readonly />
+															</div>
+														</div>
+													</div>
 												</div>
-												<div class="mr-2">
-													<input class="form-control" value="Dr" style="width:40px" readonly />
-												</div>
-											</div>
-											<div class="d-flex justify-content-start mt-2 text-right" style="margin-left: 600px;">
-												<div class="mr-2">
-													<label class="form-label">Balance As Per Company Book</label>
 
-												</div>
-												<div class="mr-2">
-													<input id="balcompanbook" class="form-control" style="width:150px" readonly />
-
-												</div>
-												<div class="mr-2">
-													<input class="form-control" value="DR" style="width:40px" readonly />
-												</div>
-											</div>
-
-											<div class="d-flex justify-content-start mt-2 text-right" style="margin-left: 600px;">
-												<div class="mr-2">
-													<label class="form-label">Amount Not Reflected in Bank</label>
-
-												</div>
-												<div class="mr-2">
-													<input id="notreflected" class="form-control" style="width:150px" readonly />
-
-												</div>
-												<div class="mr-2">
-													<input class="form-control" value="DR" style="width:40px" readonly />
-												</div>
-												<div class="mr-2">
-													<input id="notreflected" class="form-control" style="width:150px" readonly />
-
-												</div>
-												<div class="mr-2">
-													<input class="form-control" value="Cr" style="width:40px" readonly />
-												</div>
-											</div>
-											<div class="d-flex justify-content-start mt-2 text-right" style="margin-left: 600px;">
-												<div class="mr-2">
-													<label class="form-label">Balance As Per Bank</label>
-
-												</div>
-												<div class="mr-2">
-													<input id="balbank" class="form-control" style="width:150px" readonly />
-
-												</div>
-												<div class="mr-2">
-													<input class="form-control" value="DR" style="width:40px" readonly />
+												<div class="row justify-content-center mb-3">
+													<!-- Balance As Per Bank -->
+													<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 text-center">
+														<label class="form-label">Balance As Per Bank</label><br />
+														<div class="d-flex justify-content-center">
+															<input id="balbank" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+															<input class="form-control text-center mb-1" style="width: 60px;" value="DR" readonly />
+														</div>
+													</div>
 												</div>
 											</div>
 										</div>
 									</div>
+								</div>
+							</div>
 						</form>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
-
 </div>
 
 @section Scripts
@@ -294,6 +277,35 @@
 
 			$(CurrentRow).css({ 'background-color': '#00bcd4' });
 			$("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+		}
+
+		function RemoveRecodate(Id) {
+			// Get the input by ID
+			var input = document.getElementById("BankRecoDate-" + Id);
+			if (!input) return;
+
+			// Clear the input value and hide it
+			input.value = "";
+			input.style.display = "none";
+
+			// Get the span sibling with class 'bank-date-text' inside the same <td>
+			var td = input.parentElement; // the <td>
+			var span = td.querySelector(".bank-date-text");
+			if (span) {
+				span.textContent = "";          // Clear the span text
+				span.style.display = "inline"; // Show the span again
+			}
+			// Find checkbox in the same <tr> and uncheck it if checked
+			var tr = td.closest("tr");
+			if (tr) {
+				var checkbox = tr.querySelector('input[type="checkbox"]');
+				if (checkbox && checkbox.checked) {
+					checkbox.checked = false;
+					// Optionally, trigger any change event if needed:
+					// checkbox.dispatchEvent(new Event('change'));
+				}
+			}
+			
 		}
 
 		function toggleDatePicker(checkbox, SeqNo) {

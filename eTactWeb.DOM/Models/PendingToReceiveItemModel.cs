@@ -31,5 +31,7 @@ namespace eTactWeb.DOM.Models
         public int TransferMatYearCode {  get; set; }
         public int ItemCode {  get; set; }
         public string? IssueToStoreWC {  get; set; }
+        public string? BatchNo {  get; set; }
+        public string? Uniquebatchno {  get; set; }
     }
 }

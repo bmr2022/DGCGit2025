@@ -12,6 +12,7 @@ using System.Text;
 using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace eTactWeb.Data.DAL
 {
@@ -36,18 +37,20 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var frmDt = CommonFunc.ParseFormattedDate(Fromdate);
+                var toDt = CommonFunc.ParseFormattedDate(Todate);
                 var SqlParams = new List<dynamic>();
                 if (Flag == "True")
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                    SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(Fromdate)));
-                    SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(Todate)));
+                    SqlParams.Add(new SqlParameter("@FromDate", frmDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 }
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "DASHBOARDGRID"));
-                    SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(Fromdate)));
-                    SqlParams.Add(new SqlParameter("@ToDate", ParseFormattedDate(Todate)));
+                    SqlParams.Add(new SqlParameter("@FromDate", frmDt));
+                    SqlParams.Add(new SqlParameter("@ToDate", toDt));
                 }
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueWithoutBomM", SqlParams);
