@@ -397,6 +397,37 @@
 		// 	console.log(this.checked ? 'Yes' : 'No');
 		// });
 
+		document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+			const value = this.checked ? 'Yes' : 'No';
+			document.getElementById('ShowOnlyAmendItem').value = value;
+			console.log(value);
+
+			// update the print button URL dynamically
+			const entryId = '@Model.EntryID';
+			const yearCode = '@Model.YearCode';
+			const poNo = '@Model.PONo';
+
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			document.getElementById('printButton').href = printUrl;
+		}); // <-- closing for the 'change' event listener
+
+		window.addEventListener('load', function () {
+			const isChecked = document.getElementById('ShowOnlyAmendItemcheck').checked;
+			const value = isChecked ? 'Yes' : 'No';
+			document.getElementById('ShowOnlyAmendItem').value = value;
+
+			const entryId = '@Model.EntryID';
+			const yearCode = '@Model.YearCode';
+			const poNo = '@Model.PONo';
+
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			document.getElementById('printButton').href = printUrl;
+		}); // <-- closing for the 'load' event listener
+
+
+
+
+
 		$(function () {
 			$('#EntryByMachineName').val($('#machineName').text());
 			$('.DH').fadeOut();
@@ -737,31 +768,7 @@
 
 			}
 					
-		});
-		document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
-			const value = this.checked ? 'Yes' : 'No';
-			document.getElementById('ShowOnlyAmendItem').value = value;
-			console.log(value);
-
-			// update the print button URL dynamically
-			const entryId = '@Model.EntryID';
-			const yearCode = '@Model.YearCode';
-			const poNo = '@Model.PONo';
-
-			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
-			document.getElementById('printButton').href = printUrl;
-		window.addEventListener('load', function () {
-			const isChecked = document.getElementById('ShowOnlyAmendItemcheck').checked;
-			const value = isChecked ? 'Yes' : 'No';
-			document.getElementById('ShowOnlyAmendItem').value = value;
-
-			const entryId = '@Model.EntryID';
-			const yearCode = '@Model.YearCode';
-			const poNo = '@Model.PONo';
-
-			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
-			document.getElementById('printButton').href = printUrl;
-		});
+		
 
 
 			$('#POAAmendButton').click(function () {
