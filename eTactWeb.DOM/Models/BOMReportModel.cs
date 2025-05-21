@@ -21,9 +21,9 @@ namespace eTactWeb.DOM.Models
         public string FGItemName { get; set; }          
         public string RMPartCode { get; set; }           
         public string RMItemName { get; set; }          
-        public int? NetReqQty { get; set; }           
+        public decimal? NetReqQty { get; set; }           
         public double? ReqQty { get; set; }           
-        public int? RMQty { get; set; }               
+        public decimal? RMQty { get; set; }               
         public int? BomRevNo { get; set; }             
         public int? ItemLvl { get; set; }               
         public int? BOMItemCode { get; set; }          
