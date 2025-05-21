@@ -208,7 +208,7 @@ namespace eTactwebInventory.Controllers
                     Item.RMStoreId,
                     Item.Remark,
                     Item.RMBatchNo ?? "",
-                    Item.RmUniqueBatchNo,
+                    Item.RmUniqueBatchNo?? "",
                     Item.IdealDeassQty ,
 
                     });
