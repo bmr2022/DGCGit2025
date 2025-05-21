@@ -165,7 +165,9 @@ namespace eTactWeb.Data.DAL
                         StoreName = row["StoreName"]?.ToString(),
                         //Stockable = row["Stockable"]?.ToString(),
                         BatchNo = row["BatchNo"]?.ToString(),
+                        Batchno = row["BatchNo"]?.ToString(),
                         UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
+                        Uniquebatchno = row["UniqueBatchNo"]?.ToString(),
                         //CostCenterName = row["CostCenterName"]?.ToString(),
                         LotStock = row["LotStock"] != DBNull.Value ? Convert.ToInt32(row["LotStock"]) : 0,
                         TotalStock = row["TotalStock"] != DBNull.Value ? Convert.ToInt32(row["TotalStock"]) : 0,
@@ -216,7 +218,7 @@ namespace eTactWeb.Data.DAL
                         AdjModeOfAdjstment = row["ModOfAdjust"]?.ToString(),
                         //AdjModeOfAdjstmentName = row["AccEntryId"]?.ToString(),
                         AdjNewRefNo = row["NewrfNo"]?.ToString(),
-                        //AdjDescription = row["Description"]?.ToString(),
+                        AdjDescription = row["Description"]?.ToString(),
                         //AdjDrCrName = row["AccEntryId"]?.ToString(),
                         AdjDrCr = row["DR/CR"]?.ToString(),
                         AdjPendAmt = row["AdjustmentAmt"] != DBNull.Value ? Convert.ToSingle(row["AdjustmentAmt"]) : 0,
@@ -225,7 +227,7 @@ namespace eTactWeb.Data.DAL
                         AdjRemainingAmt = row["RemaingAmt"] != DBNull.Value ? Convert.ToSingle(row["RemaingAmt"]) : 0,
                         AdjOpenEntryID = row["AgainstAccOpeningEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstAccOpeningEntryId"]) : 0,
                         AdjOpeningYearCode = row["AgainstOpeningVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(row["AgainstOpeningVoucheryearcode"]) : 0,
-                        AdjDueDate = string.IsNullOrEmpty(row["voucherDate"]?.ToString()) ? new DateTime() : Convert.ToDateTime(row["voucherDate    "]),
+                        AdjDueDate = string.IsNullOrEmpty(row["voucherDate"]?.ToString()) ? new DateTime() : CommonFunc.ParseDate(row["voucherDate"].ToString()),
                         //AdjPurchOrderNo = row["AccEntryId"]?.ToString(),
                         AdjPOYear = row["yearcode"] != DBNull.Value ? Convert.ToInt32(row["yearcode"]) : 0,
                         //AdjPODate = row["AccEntryId"] != DBNull.Value ? Convert.ToDateTime(row["AccEntryId"]) : new DateTime(),
@@ -592,8 +594,6 @@ namespace eTactWeb.Data.DAL
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@flag", "UPDATE"));
-                    SqlParams.Add(new SqlParameter("@UpdatedBy", model.LastUpdatedBy));
-                    SqlParams.Add(new SqlParameter("@LastUpdatedDate", upDt));
                 }
                 else
                 {
