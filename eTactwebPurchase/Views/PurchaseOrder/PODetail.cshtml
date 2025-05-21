@@ -406,8 +406,9 @@
 			const entryId = '@Model.EntryID';
 			const yearCode = '@Model.YearCode';
 			const poNo = '@Model.PONo';
+			const AmmNo = '@Model.AmmNo';
 
-			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}&AmmNo=${AmmNo}`;
 			document.getElementById('printButton').href = printUrl;
 		}); // <-- closing for the 'change' event listener
 

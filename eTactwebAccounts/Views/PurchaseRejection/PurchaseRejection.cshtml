@@ -382,7 +382,7 @@
                     <div class="accordion-body">
                         <partial name="_TaxDetail" />
                         <div class="row g-2 gx-3 justify-content-around">
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
                                     <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList" onchange="onNetTotalChange()">
                                     <option value="">-Select-</option>
@@ -395,7 +395,7 @@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                 <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                            </div>
+                            </div>*@
                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="NetTotal" class="form-label">Net Total</label>
                                     <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
@@ -597,13 +597,6 @@
             BasicItemGridTotal();
             GetCostCenter();
             DueDateCalculation();
-            const myInput = document.getElementById("TotalDiscountPercentage");
-            myInput.addEventListener("input", function (event) {
-                const inputValue = parseInt(event.target.value);
-                if (isNaN(inputValue) || inputValue > 100) {
-                    event.target.value = ""; // Clear the input value if it's not a valid number or greater than 100
-                }
-            });
             $('#GstRegUnreg').rules("remove", "required");
             $('#Transporter').rules("remove", "required");
             $('#HSNNo').rules("remove", "required");
