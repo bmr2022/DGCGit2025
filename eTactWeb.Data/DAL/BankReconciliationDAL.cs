@@ -132,5 +132,29 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                DateTime vchDt = new DateTime();
+                vchDt = ParseDate(VoucherDate);
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetLedgerBalance"));
+                SqlParams.Add(new SqlParameter("@Yearcode", OpeningYearCode));
+                SqlParams.Add(new SqlParameter("@Accountcode", AccountCode));
+                SqlParams.Add(new SqlParameter("@VoucherDate", ParseDate(VoucherDate)));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }

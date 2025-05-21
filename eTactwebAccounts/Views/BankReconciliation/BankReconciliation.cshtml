@@ -1,4 +1,10 @@
 ﻿@model eTactWeb.DOM.Models.BankReconciliationModel;
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+	var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
 @{
 	ViewData["Title"] = "BankReconciliation";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
@@ -140,7 +146,7 @@
 														<label class="form-label">Open Bal As Company Book</label><br />
 														<div class="d-flex justify-content-center">
 															<input id="openbal" class="form-control me-2 mb-1" style="width: 200px;" readonly />
-															<input class="form-control text-center mb-1" style="width: 60px;" value="Dr" readonly />
+															<input class="form-control text-center mb-1" style="width: 60px;" value="DR" readonly />
 														</div>
 													</div>
 
@@ -149,7 +155,7 @@
 														<label class="form-label">Balance As Per Company Book</label><br />
 														<div class="d-flex justify-content-center">
 															<input id="balcompanbook" class="form-control me-2 mb-1" style="width: 200px;" readonly />
-															<input class="form-control text-center mb-1" style="width: 60px;" value="DR" readonly />
+															<input class="form-control text-center mb-1" style="width: 60px;" value="DR" id="balcompanDRCR" readonly />
 														</div>
 													</div>
 
@@ -158,12 +164,12 @@
 														<label class="form-label">Amount Not Reflected in Bank</label><br />
 														<div class="d-flex justify-content-center flex-wrap gap-2">
 															<div class="d-flex">
-																<input id="notreflectedDr" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+																<input id="TotalDRAmount" class="form-control me-2 mb-1" style="width: 200px;" readonly />
 																<input class="form-control text-center mb-1" style="width: 60px;" value="DR" readonly />
 															</div>
 															<div class="d-flex">
-																<input id="notreflectedCr" class="form-control me-2 mb-1" style="width: 200px;" readonly />
-																<input class="form-control text-center mb-1" style="width: 60px;" value="Cr" readonly />
+																<input id="TotalCRAmount" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+																<input class="form-control text-center mb-1" style="width: 60px;" value="CR" readonly />
 															</div>
 														</div>
 													</div>
@@ -174,8 +180,8 @@
 													<div class="col-xl-3 col-lg-4 col-md-6 col-sm-12 text-center">
 														<label class="form-label">Balance As Per Bank</label><br />
 														<div class="d-flex justify-content-center">
-															<input id="balbank" class="form-control me-2 mb-1" style="width: 200px;" readonly />
-															<input class="form-control text-center mb-1" style="width: 60px;" value="DR" readonly />
+															<input id="balanceasperAmount" class="form-control me-2 mb-1" style="width: 200px;" readonly />
+															<input class="form-control text-center mb-1" style="width: 60px;" id="BalanceAsPerBankDRCR" readonly />
 														</div>
 													</div>
 												</div>
@@ -253,6 +259,62 @@
 			$('#DateTo').rules("remove", "required");
 
 		});
+
+		$('#BankName').change(function(){
+			GetLedgerBalance();
+		})
+
+		function GetLedgerBalance() {
+			var OpeningYearCode = @yearCode;
+			var AccountCode = parseInt($('#BankName').val());
+			var VoucherDate = $('#DateTo').val();
+			$.ajax({
+				url: '@Url.Action("GetLedgerBalance", "BankReconciliation")',
+				type: 'POST',
+				data: {
+					OpeningYearCode: OpeningYearCode,
+					AccountCode: AccountCode,
+					VoucherDate: VoucherDate
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+
+						$('#balcompanbook').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
+						$('#balcompanDRCR').val(obj.Result[0].TypeDrCr);
+					}
+					else {
+						$('#Balance').val(0);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load opening amount.');
+				}
+			});
+		}
+
+		function TotalAmountDRCR(){
+			var rowCount = $('#divStockRegisterBody tr').length;
+			var TotCr = 0;
+			var TotDr = 0;
+			for (var i = 1; i <= rowCount; i++) {
+				TotCr += $('#CrAmt-' + i).text() == '' ? 0 : parseFloat($('#CrAmt-' + i).text());
+				TotDr += $('#DrAmt-' + i).text() == '' ? 0 : parseFloat($('#DrAmt-' + i).text());
+			}
+			$('#TotalCRAmount').val(isNaN(TotCr) ? 0 : TotCr.toFixed(2));
+			$('#TotalDRAmount').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
+		}
+
+		function BalanceAsPerBank(){
+			if($('#balcompanDRCR').val() == 'DR'){
+				var TotDR = parseFloat($('#TotalDRAmount').val());
+				var TotCR = parseFloat($('#TotalCRAmount').val());
+				var DiffAmt = TotDR - TotCR;
+				$('#balanceasperAmount').val(DiffAmt);
+				$('#BalanceAsPerBankDRCR').val('DR');
+			}
+		}
 
 		$('.submitBTN').click(function (e) {
 			debugger
@@ -422,6 +484,8 @@
 					var totalRows = $('#divStockMainRegister tr').length;
 					$('#totalRows').text(totalRows);
 					countAllTotal();
+					TotalAmountDRCR();
+					BalanceAsPerBank();
 				},
 				error: function (xhr, status, error) {
 					console.error("Error fetching BOM tree data:", error);
