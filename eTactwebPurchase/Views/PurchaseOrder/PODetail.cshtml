@@ -644,7 +644,7 @@
 				// WEFDt = parseDateToFormat(WEFDt.split(" ")[0]);
 				// $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", WEFDt);
 
-
+				debugger
 				var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
 				var PODate = parseDateToFormat($('#PODate').val().split(" ")[0]);
 				var WEF = parseDateToFormat($('#WEF').val().split(" ")[0]);
@@ -654,9 +654,10 @@
 
 				/* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
 				var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
-				$('#EntryDate').datepicker("setDate", EntryDate);
-				$('#PODate').datepicker("setDate", PODate);
-				$('#WEF').datepicker("setDate", WEF);
+
+				$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+				$('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
+				$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", WEF);
 
 				// var POCloseDt = $('#POCloseDate').val().split("-").join("/");
 				// POCloseDt = parseDateToFormat(POCloseDt.split(" ")[0]);
@@ -672,9 +673,10 @@
 				// endOfFY = parseDateToFormat(endOfFY.split(" ")[0]);
 				// Format to dd/mm/yyyy
 				 var formattedDate = endOfFY.toLocaleDateString('en-GB');
-
+				 debugger
+				var poCloseDate = parseDateToFormat($('#POCloseDate').val().split(" ")[0]);
 				// Set it in the datepicker
-				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
+				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", poCloseDate);
 				///////////////////
 
 				var Ammdt = $('#AmmDate').val().split("-").join("/");
@@ -684,6 +686,13 @@
 				var AmendmentDt = $('#AmendmentDate').val().split("-").join("/");
 				AmendmentDt = parseDateToFormat(AmendmentDt.split(" ")[0]);
 				$('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
+
+				// Added recently 21/May/2025
+				$('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+				$('#WEF,#POCloseDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+
+				$('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
+				$('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
 
 			}
 			else if ($('#Mode').val() == "POA") {
