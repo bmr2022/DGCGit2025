@@ -1305,7 +1305,6 @@ public class PurchaseBillDAL
             SqlParams.Add(new SqlParameter("@GSTType", model.GSTType));
             SqlParams.Add(new SqlParameter("@TypeITEMSERVASSETS", model.TypeITEMSERVASSETS));
             SqlParams.Add(new SqlParameter("@PurchaseBillTypeMRNJWChallan", model.PurchaseBillTypeMRNJWChallan));
-
             SqlParams.Add(new SqlParameter("@DomesticImport", model.PBType));
             SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerms));
             SqlParams.Add(new SqlParameter("@Transporter", model.Transport));
