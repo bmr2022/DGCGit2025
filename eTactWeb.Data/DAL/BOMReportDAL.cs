@@ -250,8 +250,13 @@ namespace eTactWeb.Data.DAL
                                                         FGItemName = row["FGItemName"].ToString(),
                                                         RMPartCode = row["RMPartCode"].ToString(),
                                                         RMItemName = row["RMItemName"].ToString(),
+<<<<<<< HEAD
                                                         NetReqQty = Convert.ToDouble (row["NetReqQty"]),
                                                         RMQty = Convert.ToDouble(row["RMQty"]),
+=======
+                                                        NetReqQty = Convert.ToDecimal(row["NetReqQty"]),
+                                                        RMQty = Convert.ToDecimal(row["RMQty"]),
+>>>>>>> 0e1ec169265188bb196e03bfe55791598ba6ffe0
                                                         BomRevNo = Convert.ToInt32(row["BomRevNo"].ToString()),
                                                         ItemLvl = Convert.ToInt32(row["ItemLvl"]),
                                                         BOMItemCode = Convert.ToInt32(row["BOMITEMCODE"].ToString()),
@@ -275,7 +280,11 @@ namespace eTactWeb.Data.DAL
                                                         //RMPartCode = row["RMPartCode"].ToString(),
                                                         //RMItemName = row["RMItemName"].ToString(),
                                                         //BomRevNo = Convert.ToInt32(row["BomRevNo"].ToString()),
+<<<<<<< HEAD
                                                         NetReqQty = Convert.ToDouble(row["NetReqQty"]),
+=======
+                                                        NetReqQty = Convert.ToDecimal(row["NetReqQty"]),
+>>>>>>> 0e1ec169265188bb196e03bfe55791598ba6ffe0
                                                         //RMQty = Convert.ToInt32(row["RMQty"]),
                                                         //FGItemCode = Convert.ToInt32(row["FgItemCode"]),
                                                         //RMItemCode = Convert.ToInt32(row["RMItemCode"])

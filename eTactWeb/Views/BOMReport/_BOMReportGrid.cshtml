@@ -64,8 +64,8 @@ else
                                 <td>@item.RMPartCode</td>
                                 <td>@item.RMItemName</td>
 
-                                <td id="totQtyG-@Cntr">@item.RMQty</td>
-                                <td>@item.NetReqQty</td>
+                                <td id="totQtyG-@Cntr">@item.RMQty?.ToString("F3")</td>
+                                <td>@item.NetReqQty?.ToString("F3")</td>
                                 <td>@item.BomRevNo</td>
                                 <td>@item.ItemLvl</td>
 

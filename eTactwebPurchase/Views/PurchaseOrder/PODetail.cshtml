@@ -95,7 +95,7 @@
 							<i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
 							Required Parameter
 							<small class="p-5"></small>
-							show only Ammend Item
+							<div style="margin-left:750px">show only Ammend Item</div>
 							<input type="checkbox" id="ShowOnlyAmendItemcheck" />
 							<input type="hidden" asp-for="ShowOnlyAmendItem" value="@Model.ShowOnlyAmendItem" />
 
@@ -397,6 +397,37 @@
 		// 	console.log(this.checked ? 'Yes' : 'No');
 		// });
 
+		document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+			const value = this.checked ? 'Yes' : 'No';
+			document.getElementById('ShowOnlyAmendItem').value = value;
+			console.log(value);
+
+			// update the print button URL dynamically
+			const entryId = '@Model.EntryID';
+			const yearCode = '@Model.YearCode';
+			const poNo = '@Model.PONo';
+
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			document.getElementById('printButton').href = printUrl;
+		}); // <-- closing for the 'change' event listener
+
+		window.addEventListener('load', function () {
+			const isChecked = document.getElementById('ShowOnlyAmendItemcheck').checked;
+			const value = isChecked ? 'Yes' : 'No';
+			document.getElementById('ShowOnlyAmendItem').value = value;
+
+			const entryId = '@Model.EntryID';
+			const yearCode = '@Model.YearCode';
+			const poNo = '@Model.PONo';
+
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			document.getElementById('printButton').href = printUrl;
+		}); // <-- closing for the 'load' event listener
+
+
+
+
+
 		$(function () {
 			$('#EntryByMachineName').val($('#machineName').text());
 			$('.DH').fadeOut();
@@ -590,7 +621,7 @@
 			}
 
 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-				PendingIndentDetail(true);
+				// PendingIndentDetail(true);
 				//FillItems();
 				$('.DH').fadeIn();
 				$('#PN1').prop("disabled", "false");
@@ -618,7 +649,7 @@
 				var WEF = parseDateToFormat($('#WEF').val().split(" ")[0]);
 
 				console.log(EntryDate);
-				console.log(InvoiceDt);
+				// console.log(InvoiceDt);
 
 				/* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
 				var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
@@ -637,12 +668,12 @@
 				var fyEndYear = (today.getMonth() + 1) <= 3 ? today.getFullYear() : today.getFullYear() + 1;
 				var endOfFY = new Date(fyEndYear, 2, 31); // March = 2 (0-based)
 
-				endOfFY = parseDateToFormat(endOfFY.split(" ")[0]);
+				// endOfFY = parseDateToFormat(endOfFY.split(" ")[0]);
 				// Format to dd/mm/yyyy
-				// var formattedDate = endOfFY.toLocaleDateString('en-GB');
+				 var formattedDate = endOfFY.toLocaleDateString('en-GB');
 
 				// Set it in the datepicker
-				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", endOfFY);
+				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
 				///////////////////
 
 				var Ammdt = $('#AmmDate').val().split("-").join("/");
@@ -737,31 +768,7 @@
 
 			}
 					
-		});
-		document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
-			const value = this.checked ? 'Yes' : 'No';
-			document.getElementById('ShowOnlyAmendItem').value = value;
-			console.log(value);
-
-			// update the print button URL dynamically
-			const entryId = '@Model.EntryID';
-			const yearCode = '@Model.YearCode';
-			const poNo = '@Model.PONo';
-
-			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
-			document.getElementById('printButton').href = printUrl;
-		window.addEventListener('load', function () {
-			const isChecked = document.getElementById('ShowOnlyAmendItemcheck').checked;
-			const value = isChecked ? 'Yes' : 'No';
-			document.getElementById('ShowOnlyAmendItem').value = value;
-
-			const entryId = '@Model.EntryID';
-			const yearCode = '@Model.YearCode';
-			const poNo = '@Model.PONo';
-
-			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
-			document.getElementById('printButton').href = printUrl;
-		});
+		
 
 
 			$('#POAAmendButton').click(function () {
