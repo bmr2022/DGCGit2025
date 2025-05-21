@@ -73,9 +73,15 @@ namespace eTactWeb.DOM.Models
         public string fromBillDate { get; set; }
         public string toBillDate { get; set; }
         //below are defaults
-        public string AttachmentFilePath1 { get; set; } = string.Empty;
-        public string AttachmentFilePath2 { get; set; } = string.Empty;
-        public string AttachmentFilePath3 { get; set; } = string.Empty;
+        //public string AttachmentFilePath1 { get; set; } = string.Empty;
+        //public string AttachmentFilePath2 { get; set; } = string.Empty;
+        //public string AttachmentFilePath3 { get; set; } = string.Empty;
+        public IFormFile? PathOfFile1 { get; set; }
+        public string? PathOfFile1URL { get; set; }
+        public IFormFile? PathOfFile2 { get; set; }
+        public string? PathOfFile2URL { get; set; }
+        public IFormFile? PathOfFile3 { get; set; }
+        public string? PathOfFile3URL { get; set; }
         public string FinFromDate { get; set; }
         public string FinToDate { get; set; }
 

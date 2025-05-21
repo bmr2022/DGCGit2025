@@ -17,6 +17,9 @@ namespace eTactWeb.DOM.Models
         public string? ReportMode { get; set; }
         public string? IssueChallanNo { get; set; }
         public string? RecChallanNo { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<VendJWRegisterDetail>? VendJWRegisterDetails { get; set; }
     }
 }

@@ -532,11 +532,13 @@ namespace eTactWeb.Data.DAL
             model.DeassEntryDate = DS.Tables[0].Rows[0]["DeassEntryDate"].ToString();
             model.DeassYearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["DeassYearcode"].ToString());
             model.DeassSlipNo = DS.Tables[0].Rows[0]["DeassSlipNo"].ToString();
+            model.MaterialRecFrom = DS.Tables[0].Rows[0]["MaterialRecFrom"].ToString();
             model.FGStoreId = Convert.ToInt32(DS.Tables[0].Rows[0]["FGStoreId"].ToString());
             model.FGStoreName = DS.Tables[0].Rows[0]["FGStoreName"].ToString();
             model.FinishItemCode = Convert.ToInt32(DS.Tables[0].Rows[0]["FinishItemCode"].ToString());
             model.FinishItemName = DS.Tables[0].Rows[0]["FinishItemName"].ToString();
             model.FinishPartCode = DS.Tables[0].Rows[0]["FinishPartCode"].ToString();
+            model.BomNo = Convert.ToInt32(DS.Tables[0].Rows[0]["BomNo"].ToString());
             model.FGBatchNo = DS.Tables[0].Rows[0]["FGBatchNo"].ToString();
             model.FGUniqueBatchNo = DS.Tables[0].Rows[0]["FGUniqueBatchNo"].ToString();
             model.TotalStock = Convert.ToDecimal(DS.Tables[0].Rows[0]["TotalStock"].ToString());

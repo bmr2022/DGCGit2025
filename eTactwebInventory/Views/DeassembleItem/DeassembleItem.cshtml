@@ -138,132 +138,271 @@
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG PartCode </label>
-
                                     <input type="hidden" asp-for="FinishItemCode" value="@Model.FinishItemCode" id="FinishItemCode" />
 
-                                    <select class="form-select" asp-for="FinishPartCode">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="FinishPartCode" class="form-label">FG PartCode</label>
+
+                                        <input asp-for="FinishPartCode" value="@Model.FinishPartCode" class="form-control" readonly />
+
+                                        <input type="hidden" id="GateEntry" />
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG PartCode </label>
+
+
+                                        <select class="form-select" asp-for="FinishPartCode">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
-                                    <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG ItemName</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="FinishItemName" class="form-label">FG ItemName</label>
 
-                                    <select class="form-select" asp-for="FinishItemName">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                        <input asp-for="FinishItemName" value="@Model.FinishItemName" class="form-control" readonly />
+
+                                        
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="FinishItemCode" class="control-label" style="color: red;"> FG ItemName</label>
+
+                                        <select class="form-select" asp-for="FinishItemName">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="FGStoreId" class="control-label" style="color: red;">Store Name</label>
-                                   
-                                    <select class="form-select" asp-for="FGStoreId">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="FGStoreId" class="form-label">FG StoreName</label>
+
+                                        <input type="hidden" asp-for="FGStoreId" value="@Model.FGStoreId" class="form-control" readonly />
+                                        <input  asp-for="FGStoreName" value="@Model.FGStoreName" class="form-control" readonly />
+
+
+
+                                    }
+
+                                    else
+                                    {
+                                        <label asp-for="FGStoreId" class="control-label" style="color: red;">Store Name</label>
+
+                                        <select class="form-select" asp-for="FGStoreId">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
                                 </div>
 
                                 <div class="col-xl-1 col-lg-4 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="BomNo" class="control-label" style="color: red;"> BomNo</label>
+                                    @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="BomNo" class="form-label">BomNo</label>
 
-                                    <select class="form-select" asp-for="BomNo">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                        <input asp-for="BomNo" value="@Model.BomNo" class="form-control" readonly />
+
+
+
+                                    }
+
+                                    else
+                                    {
+                                        <label asp-for="BomNo" class="control-label" style="color: red;"> BomNo</label>
+
+                                        <select class="form-select" asp-for="BomNo">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
                                 </div>
 
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 ToWc">
-                                    <label asp-for="MaterialRecFrom" class="control-label" style="color: red;"> MaterialRecFrom</label>
+                                @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="MaterialRecFrom" class="form-label">MaterialRecFrom</label>
 
-                                    <select class="form-select" asp-for="MaterialRecFrom">
-                                        <option value="">-Select-</option>
-                                        <option value="Production">Production</option>
-                                        <option value="MRN">MRN</option>
-                                        <option value="None">None</option>
-                                    </select>
+                                        <input asp-for="MaterialRecFrom" value="@Model.MaterialRecFrom" class="form-control" readonly />
+
+
+
+                                    }
+
+                                    else
+                                    {
+                                        <label asp-for="MaterialRecFrom" class="control-label" style="color: red;"> MaterialRecFrom</label>
+
+                                        <select class="form-select" asp-for="MaterialRecFrom">
+                                            <option value="">-Select-</option>
+                                            <option value="Production">Production</option>
+                                            <option value="MRN">MRN</option>
+                                            <option value="None">None</option>
+                                        </select>
+                                    }
                                 </div>
 
 
 
+                                @if (Model.Mode != "U" || Model.Mode != "V")
+                                {
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN " style="display:none">
+                                        <label asp-for="MRNO" class="control-label" style="color: red;"> MRNO</label>
 
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN " style="display:none">
-                                    <label asp-for="MRNO" class="control-label" style="color: red;"> MRNO</label>
-
-                                    <select class="form-select" asp-for="MRNO">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
+                                        <select class="form-select" asp-for="MRNO">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
 
 
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN " style="display:none">
-                                    <label asp-for="MRNYearCode" class="control-label" style="color: red;"> MRNYearCode</label>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN " style="display:none">
+                                        <label asp-for="MRNYearCode" class="control-label" style="color: red;"> MRNYearCode</label>
 
-                                    <select class="form-select" asp-for="MRNYearCode">
-                                        <option value="">-Select-</option>
-                                    </select>
-                                </div>
+                                        <select class="form-select" asp-for="MRNYearCode">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN" style="display:none">
-                                    <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
-                                    <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN" style="display:none">
+                                        <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
+                                        <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN" style="display:none">
-                                    <label asp-for="MRNEntryID" class="form-label" style="color: blue;">MRNEntryID</label>
-                                    <input asp-for="MRNEntryID" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
-                                    <label asp-for="ProdSlipNO" class="form-label" style="color: blue;">ProdSlipNO</label>
-                                    <input asp-for="ProdSlipNO" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
-                                    <label asp-for="ProdDate" class="form-label" style="color: blue;">ProdDate</label>
-                                    <input asp-for="ProdDate" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
-                                    <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
-                                    <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
-                                    <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
-                                    <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 MRN" style="display:none">
+                                        <label asp-for="MRNEntryID" class="form-label" style="color: blue;">MRNEntryID</label>
+                                        <input asp-for="MRNEntryID" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                        <label asp-for="ProdSlipNO" class="form-label" style="color: blue;">ProdSlipNO</label>
+                                        <input asp-for="ProdSlipNO" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                        <label asp-for="ProdDate" class="form-label" style="color: blue;">ProdDate</label>
+                                        <input asp-for="ProdDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                        <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
+                                        <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                        <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
+                                        <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
-                                    <label asp-for="ProdEntryId" class="form-label" style="color: blue;">ProdEntryId</label>
-                                    <input asp-for="ProdEntryId" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                        <label asp-for="ProdEntryId" class="form-label" style="color: blue;">ProdEntryId</label>
+                                        <input asp-for="ProdEntryId" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    </div>
+                                }
+                                else
+                                {
+                                    
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="MRNO" class="form-label">MRNO</label>
 
+                                        <input asp-for="MRNO" value="@Model.MRNO" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <label asp-for="MRNYearCode" class="form-label">MRNYearCode</label>
+
+                                            <input asp-for="MRNYearCode" value="@Model.MRNYearCode" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <label asp-for="MRNDate" class="form-label">MRNDate</label>
+
+                                            <input asp-for="MRNDate" value="@Model.MRNDate" class="form-control" readonly />
+                                        </div>
+                                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                            <label asp-for="MRNEntryID" class="form-label">MRNEntryID</label>
+
+                                            <input asp-for="MRNEntryID" value="@Model.MRNEntryID" class="form-control" readonly />
+                                        </div>
+
+
+                                    
+                                        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                            <label asp-for="ProdSlipNO" class="form-label" style="color: blue;">ProdSlipNO</label>
+                                            <input asp-for="ProdSlipNO" class="form-control" readonly style="background-color: lightblue !important;" />
+                                        </div>
+                                        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                            <label asp-for="ProdDate" class="form-label" style="color: blue;">ProdDate</label>
+                                            <input asp-for="ProdDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                        </div>
+                                        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                            <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
+                                            <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                        </div>
+                                        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                            <label asp-for="ProdYearCode" class="form-label" style="color: blue;">ProdYearCode</label>
+                                            <input asp-for="ProdYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                        </div>
+
+                                        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 Production" style="display:none">
+                                            <label asp-for="ProdEntryId" class="form-label" style="color: blue;">ProdEntryId</label>
+                                            <input asp-for="ProdEntryId" class="form-control" readonly style="background-color: lightblue !important;" />
+                                        </div>
+
+
+                                    
+                                }
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
-                                    <label asp-for="FGBatchNo" class="control-label" style="color: red;"> FGBatchNo</label>
+                                @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="FGBatchNo" class="form-label">FGBatchNo</label>
 
-                                    <select class="form-select" asp-for="FGBatchNo">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                        <input asp-for="FGBatchNo" value="@Model.FGBatchNo" class="form-control" readonly />
+
+
+
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="FGBatchNo" class="control-label" style="color: red;"> FGBatchNo</label>
+
+                                        <select class="form-select" asp-for="FGBatchNo">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 ">
-                                    <label asp-for="FGUniqueBatchNo" class="control-label" style="color: red;"> FGUniqueBatchNo</label>
+                                @if (Model.Mode == "U" || Model.Mode == "V")
+                                    {
+                                        <label asp-for="FGUniqueBatchNo" class="form-label">FGUniqueBatchNo</label>
 
-                                    <select class="form-select" asp-for="FGUniqueBatchNo">
-                                        <option value="">-Select-</option>
-                                    </select>
+                                        <input asp-for="FGUniqueBatchNo" value="@Model.FGUniqueBatchNo" class="form-control" readonly />
+
+
+
+                                    }
+                                    else
+                                    {
+                                        <label asp-for="FGUniqueBatchNo" class="control-label" style="color: red;"> FGUniqueBatchNo</label>
+
+                                        <select class="form-select" asp-for="FGUniqueBatchNo">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    }
                                 </div>
 
                                 <div class="col-xl-1 col-lg-4 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="TotalStock" class="form-label" style="color: blue;">TotalStock</label>
-                                    <input asp-for="TotalStock" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    <input asp-for="TotalStock" value="@Model.TotalStock" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="FGQty" class="form-label" style="color: blue;">FGQty</label>
-                                    <input asp-for="FGQty" class="form-control"  />
+                                    <input asp-for="FGQty" class="form-control number"  />
                                 </div>
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="FGConvQty" class="form-label" style="color: blue;">FGConvQty</label>
-                                    <input asp-for="FGConvQty" class="form-control"   />
+                                    <input asp-for="FGConvQty" class="form-control number"   />
                                 </div>
 
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -331,22 +470,16 @@
                                                     </select>
                                                 </td>
                                                 <td><input asp-for="BomQty" class="form-control" style="width:80px;" readonly /></td>
-                                                <td><input asp-for="DeassQty" style="width:70px !important" /></td>
-                                                <td><input asp-for="IdealDeassQty" style="width:70px !important" readonly /></td>
+                                                <td><input asp-for="DeassQty" style="width:70px !important" class="form-control number"/></td>
+                                                <td><input asp-for="IdealDeassQty" style="width:70px !important" readonly class="form-control number" /></td>
                                                 <td><input asp-for="RMUnit" style="width:70px !important" readonly /></td>
                                                 <td><input asp-for="Remark" style="width:100px !important"  /></td>
 
                                                 <td>
-                                                    <select class="form-select" asp-for="RMBatchNo" style="width:100px;">
-                                                        <option value="0" disabled selected>-Select-</option>
-                                                        <option value="1">1</option>
-                                                    </select>
+                                                    <input asp-for="RMBatchNo" style="width:100px !important" readonly />
                                                 </td>
                                                 <td>
-                                                    <select class="form-select" asp-for="RmUniqueBatchNo">
-                                                        <option value="0" disabled selected>-Select-</option>
-                                                        <option value="1"  >1</option>
-                                                    </select>
+                                                    <input asp-for="RmUniqueBatchNo" style="width:100px !important" readonly />
                                                 </td>
                                                 
                                               
@@ -461,15 +594,23 @@
 @section Scripts
 {
     <script>
+        $(document).on('input', '.number', function () {
+            // Replace anything that's not a digit or a single decimal point
+            this.value = this.value.replace(/[^0-9.]/g, '')         // Remove invalid chars
+                .replace(/(\..*)\./g, '$1');     // Allow only one decimal
+        });
         $(document).ready(function () {
             /* GetFormRights(); */
-            $('#FinishItemName').select2();
-            $('#FinishPartCode').select2();
-            $('#BomNo').select2();
-            $('#FGStoreId').select2();
-            
-            $('#FGBatchNo').select2();
-            $('#FGUniqueBatchNo').select2();
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                $('#FinishItemName').select2();
+                $('#FinishPartCode').select2();
+                $('#BomNo').select2();
+                $('#FGStoreId').select2();
+
+                $('#FGBatchNo').select2();
+                $('#FGUniqueBatchNo').select2();
+            }
             $('#RMItemName').select2();
             $('#RmPartCode').select2();
 
@@ -800,8 +941,36 @@
             FillRMStockUniqueBatchNo();
             
         }); */
+
+        function ClearGridAjax() {
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearGridAjax")",
+                
+                dataType: "json",
+                async: false,
+                success: function (data, status, error) {
+                    console.log("Grid cleared");
+                    $('#divISTGrid').empty();
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
         $('#FGBatchNo').change(function () {
+            ClearGridAjax();
             FillFGStockUniqueBatchNo();
+            var selectedValue = $(this).val();
+            $('#RMBatchNo').val(selectedValue);
+
+        });
+
+        $('#FGUniqueBatchNo').change(function () {
+            ClearGridAjax();
+            var selectedValue = $(this).val();
+            $('#RmUniqueBatchNo').val(selectedValue);
 
         });
 

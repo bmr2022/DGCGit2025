@@ -61,7 +61,7 @@
                                 </div>*@
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="IssueChallanType" class="form-label">Challan Type</label>
-                                    <select class="form-select" asp-for="IssueChallanType">
+                                    <select class="form-select" asp-for="IssueChallanType" onchange="GetRCRegisterData()">
                                         <option disabled value="">-Select-</option>
                                         <option selected value="REC">Receive</option>
                                         <option value="ISSUE">Issue</option>
@@ -275,9 +275,15 @@
             GetServerDate();
             console.log('before'+$('#FromDate').val());
             console.log('before'+$('#ToDate').val());
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(getFirstDayOfMonth));
 
+            // $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            //$('#totalRows').text($('#divStockRegisterBody tr').length);
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            
             console.log('after'+$('#FromDate').val());
             console.log('after'+$('#ToDate').val());
             $('#ReportMode').select2();
@@ -418,7 +424,49 @@
             });
         });
 
+        function loadPage(pageNumber) {
+            debugger
+            var ReportType = $('#ReportMode').val();
+
+            var formData = $('#SParam').serializeArray();
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: '@Url.Action("GetJWRegisterData", "VendJWRegister")',
+                data: formData,
+                success: function (result) {
+                    $('#divRCRegister').empty();
+                    $('#divRCRegister').html(result);
+                    $('#totalRows').text($('#divRCRegister tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            var dashboardType = $('#ReportMode').val();
+            var IssueChallanType = $('#IssueChallanType').val();
+            $.ajax({
+                url: "/VendJWRegister/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, IssueChallanType: IssueChallanType },
+                success: function (data) {
+
+                    $('#divRCRegister').empty();
+                    $('#divRCRegister').html(data);
+                    $('#totalRows').text($('#divRCRegister tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        
         function DeleteRow(i) {
+       
             var indexToRemove = i - 1;
             $('#SAGridRow-' + i).remove();
             $('#ReportTable tbody tr').each(function (index) {
@@ -694,13 +742,8 @@
         //         }
         //     });
         // }
-        function formatDate1(date) {
-            var day = ("0" + date.getDate()).slice(-2);
-            var month = ("0" + (date.getMonth() + 1)).slice(-2);
-            var year = date.getFullYear();
-            var dateString = day + "/" + month + "/" + year;
-            return dateString;
-        }
+        
+
 
 
         function GetServerDate() {
@@ -742,26 +785,26 @@
 
 
 
-        var currentSearchColumn = null;
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup');
-        });
+        // var currentSearchColumn = null;
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup');
+        // });
 
-        $("#search-box").on("keyup", function () {
+        // $("#search-box").on("keyup", function () {
 
-            var value = $(this).val().toLowerCase();
-            $("#divStockRegisterBody tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
-            countAllTotal();
-            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
-        });
+        //     var value = $(this).val().toLowerCase();
+        //     $("#divStockRegisterBody tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        //     countAllTotal();
+        //     $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+        // });
 
 
         $(document).on("click", ".sortCol", function () {

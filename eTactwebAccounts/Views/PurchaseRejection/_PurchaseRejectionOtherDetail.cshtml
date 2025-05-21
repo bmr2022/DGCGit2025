@@ -100,7 +100,7 @@
             <label asp-for="EinvGenerated" class="form-label">E-Invoice Generated</label>
             <input asp-for="EinvGenerated" class="form-control" />
         </div> *@
-        <div class="col-md-2">
+        @* <div class="col-md-2">
             <label asp-for="AttachmentFilePath1" class="form-label">Attachment File Path 1</label>
             <input asp-for="AttachmentFilePath1" class="form-control" />
         </div>
@@ -111,6 +111,36 @@
         <div class="col-md-2">
             <label asp-for="AttachmentFilePath3" class="form-label">Attachment File Path 3</label>
             <input asp-for="AttachmentFilePath3" class="form-control" />
+        </div> *@
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile1" class="form-label">PathOfFile1</label>
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile1" type="file" data-val="false">
+                @if (Model.PathOfFile1URL != null && Model.PathOfFile1URL != "")
+                {
+                    <a href="@Model.PathOfFile1URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile2" class="form-label">PathOfFile2</label>
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile2" type="file" data-val="false">
+                @if (Model.PathOfFile2URL != null && Model.PathOfFile2URL != "")
+                {
+                    <a href="@Model.PathOfFile2URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+            <label asp-for="PathOfFile3" class="form-label">PathOfFile3</label>
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile3" type="file" data-val="false">
+                @if (Model.PathOfFile3URL != null && Model.PathOfFile2URL != "")
+                {
+                    <a href="@Model.PathOfFile3URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
         </div>
     </div>
 </div>
