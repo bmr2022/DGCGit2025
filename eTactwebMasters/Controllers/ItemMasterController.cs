@@ -504,8 +504,8 @@ public class ItemMasterController : Controller
                         else
                         {
                             item.SeqNo = ItemViewModel.Count + 1;
-                            ItemGrid = ItemViewModel.Where(x => x != null).ToList();
-                            SSGrid.AddRange(ItemGrid);
+                            //ItemGrid = ItemViewModel.Where(x => x != null).ToList();
+                            //SSGrid.AddRange(ItemGrid);
                             ItemGrid.Add(item);
                         }
                     }

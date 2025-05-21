@@ -98,7 +98,14 @@ namespace eTactwebInventory.Controllers
             MainModel.GlobalSearchBack = Searchbox;
             return View(MainModel);
         }
+        public async Task<JsonResult> ClearGridAjax()
+        {
+            HttpContext.Session.Remove("KeyDeassembleItemGrid");
 
+            var JSON = await _IDeassembleItem.FillFGItemName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
@@ -206,9 +213,9 @@ namespace eTactwebInventory.Controllers
 
                     Item.RMUnit ?? "",
                     Item.RMStoreId,
-                    Item.Remark,
+                    Item.Remark ?? "",
                     Item.RMBatchNo ?? "",
-                    Item.RmUniqueBatchNo,
+                    Item.RmUniqueBatchNo?? "",
                     Item.IdealDeassQty ,
 
                     });

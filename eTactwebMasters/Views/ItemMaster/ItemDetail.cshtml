@@ -122,7 +122,14 @@
                                         }
                                         else
                                         {
-                                            <input asp-for="PartCode" class="form-control" data-val="false" readonly />
+                                            if (Model.FeatureOption.AllowPartCode == false)
+                                            {
+                                                <input asp-for="PartCode" style="background-color:rgb(248,255,178);" class="form-control" data-val="false" readonly />
+                                            }
+                                            if (Model.FeatureOption.AllowPartCode == true)
+                                            {
+                                                <input asp-for="PartCode" style="background-color:aqua;" class="form-control" data-val="false" onchange="CheckDuplicate('Part Code',this.id);" />
+                                            }
                                         }
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-8 col-sm-6 col-xs-12">

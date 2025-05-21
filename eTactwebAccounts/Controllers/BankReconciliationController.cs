@@ -8,6 +8,9 @@ using System.Net;
 using System.Data;
 using System.Globalization;
 using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+using System.Data.SqlClient;
+using System.Dynamic;
 
 namespace eTactWeb.Controllers
 {
@@ -41,18 +44,12 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpPost]
-        public async Task<IActionResult> BankReconciliation(BankReconciliationModel model)
+        public async Task<IActionResult> BankReconciliation(List<BankReconciliationModel> model)
         {
             try
             {
                 var GIGrid = new DataTable();
-                string modelJson = HttpContext.Session.GetString("KeyBankReconciliationGrid");
-                List<BankReconciliationModel> BankReconciliationGrid = new List<BankReconciliationModel>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    BankReconciliationGrid = JsonConvert.DeserializeObject<List<BankReconciliationModel>>(modelJson);
-                }
-                GIGrid = GetDetailTable(BankReconciliationGrid);
+                GIGrid = GetDetailTable(model);
 
                 var Result = await _IBackReconciliation.SaveBankReceipt(model, GIGrid);
                 if (Result != null)
@@ -139,73 +136,11 @@ namespace eTactWeb.Controllers
             model = await _IBackReconciliation.GetDetailsData(DateFrom, DateTo, chequeNo, NewOrEdit, Account_Code);
             return PartialView("_BankReconciliationGrid", model);
         }
-        public IActionResult AddBankRecotoGrid(BankReconciliationModel model)
+        public async Task<JsonResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate)
         {
-            try
-            {
-                string modelJson = HttpContext.Session.GetString("KeyBankReconciliationGrid");
-                List<BankReconciliationModel> BankReconciliationGrid = new List<BankReconciliationModel>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    BankReconciliationGrid = JsonConvert.DeserializeObject<List<BankReconciliationModel>>(modelJson);
-                }
-
-                var MainModel = new BankReconciliationModel();
-                var WorkOrderPGrid = new List<BankReconciliationModel>();
-                var BankRecoGrid = new List<BankReconciliationModel>();
-                var SSGrid = new List<BankReconciliationModel>();
-
-                if (model != null && model.IsChecked == true)
-                {
-                    if (BankReconciliationGrid == null || BankReconciliationGrid.Count() == 0)
-                    {
-                        model.SeqNo = 1;
-                        BankRecoGrid.Add(model);
-                    }
-                    else
-                    {
-                        if (BankReconciliationGrid.Any(x => x.entryid == model.entryid && x.AccYearCode == model.AccYearCode && x.VoucherNo == model.VoucherNo))
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
-                        else
-                        {
-                            model.SeqNo = BankReconciliationGrid.Count + 1;
-                            BankRecoGrid = BankReconciliationGrid.Where(x => x != null).ToList();
-                            SSGrid.AddRange(BankRecoGrid);
-                            BankRecoGrid.Add(model);
-                        }
-                    }
-                    MainModel.BankReconciliationGrid = BankRecoGrid;
-
-                    string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReconciliationGrid);
-                    HttpContext.Session.SetString("KeyBankReconciliationGrid", serializedGrid);
-                }
-                else
-                {
-                    int Indx = Convert.ToInt32(model.SeqNo) - 1;
-
-                    if (BankReconciliationGrid != null && BankReconciliationGrid.Count > 0)
-                    {
-                        BankReconciliationGrid.RemoveAt(Convert.ToInt32(Indx));
-                        Indx = 0;
-
-                        foreach (var item in BankReconciliationGrid)
-                        {
-                            Indx++;
-                        }
-                        MainModel.BankReconciliationGrid = BankReconciliationGrid.OrderBy(x => x.SeqNo).ToList();
-
-                        string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReconciliationGrid);
-                        HttpContext.Session.SetString("KeyBankReconciliationGrid", serializedGrid);
-                    }
-                }
-                return PartialView("_BankReconciliationGrid", MainModel);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            var JSON = await _IBackReconciliation.GetLedgerBalance(OpeningYearCode, AccountCode, VoucherDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
     }
 }
