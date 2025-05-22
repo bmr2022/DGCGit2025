@@ -1125,7 +1125,7 @@ public class BomController : Controller
             {
                 if (item != null)
                 {
-                    if (ItemViewModel == null)
+                    if (ItemViewModel == null || ItemViewModel.Count() == 0)
                     {
                         item.SeqNo += seqNo + 1;
                         ItemGrid.Add(item);
