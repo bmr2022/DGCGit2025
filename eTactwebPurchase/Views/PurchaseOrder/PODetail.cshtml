@@ -406,8 +406,9 @@
 			const entryId = '@Model.EntryID';
 			const yearCode = '@Model.YearCode';
 			const poNo = '@Model.PONo';
+			const AmmNo = '@Model.AmmNo';
 
-			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}`;
+			const printUrl = `/PurchaseOrder/PrintReport?EntryId=${entryId}&YearCode=${yearCode}&PONO=${poNo}&ShowOnlyAmendItem=${value}&AmmNo=${AmmNo}`;
 			document.getElementById('printButton').href = printUrl;
 		}); // <-- closing for the 'change' event listener
 
@@ -620,7 +621,7 @@
 				$('#IN1').trigger("change");
 			}
 
-			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+			if ($('#Mode').val() == "U" || $('#Mode').val() == "V"||$('#Mode').val() == "C") {
 				// PendingIndentDetail(true);
 				//FillItems();
 				$('.DH').fadeIn();
@@ -643,7 +644,7 @@
 				// WEFDt = parseDateToFormat(WEFDt.split(" ")[0]);
 				// $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", WEFDt);
 
-
+				debugger
 				var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
 				var PODate = parseDateToFormat($('#PODate').val().split(" ")[0]);
 				var WEF = parseDateToFormat($('#WEF').val().split(" ")[0]);
@@ -653,9 +654,10 @@
 
 				/* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
 				var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
-				$('#EntryDate').datepicker("setDate", EntryDate);
-				$('#PODate').datepicker("setDate", PODate);
-				$('#WEF').datepicker("setDate", WEF);
+
+				$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+				$('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
+				$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", WEF);
 
 				// var POCloseDt = $('#POCloseDate').val().split("-").join("/");
 				// POCloseDt = parseDateToFormat(POCloseDt.split(" ")[0]);
@@ -671,9 +673,10 @@
 				// endOfFY = parseDateToFormat(endOfFY.split(" ")[0]);
 				// Format to dd/mm/yyyy
 				 var formattedDate = endOfFY.toLocaleDateString('en-GB');
-
+				 debugger
+				var poCloseDate = parseDateToFormat($('#POCloseDate').val().split(" ")[0]);
 				// Set it in the datepicker
-				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
+				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", poCloseDate);
 				///////////////////
 
 				var Ammdt = $('#AmmDate').val().split("-").join("/");
@@ -683,6 +686,13 @@
 				var AmendmentDt = $('#AmendmentDate').val().split("-").join("/");
 				AmendmentDt = parseDateToFormat(AmendmentDt.split(" ")[0]);
 				$('#AmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AmendmentDt);
+
+				// Added recently 21/May/2025
+				$('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+				$('#WEF,#POCloseDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+
+				$('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
+				$('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
 
 			}
 			else if ($('#Mode').val() == "POA") {
@@ -2056,7 +2066,7 @@
 						$('#AccountCode').append('<option value="' + val.Account_Code + '" data-gstregister="' + val.GSTRegistered + '" data-state="' + val.State + '">' + val.Account_Name + '</option>');
 						//$('#VendorAddress').val('');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA") {
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA" || $('#Mode').val() == "C") {
 						var accountCode = @Html.Raw(Json.Serialize(Model.AccountCode));
 						$('#AccountCode').val(accountCode).trigger('change.select2');
 					} else {

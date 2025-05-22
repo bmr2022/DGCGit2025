@@ -1464,8 +1464,13 @@ public class TaxController : Controller
             {
                 throw;
             }
-
-            if (_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid))
+            _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+            if (!string.IsNullOrEmpty(modelTxGridJson))
+            {
+                TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+            }
+            if (TaxGrid != null)
             {
                 if (ListOfItems != null)
                 {

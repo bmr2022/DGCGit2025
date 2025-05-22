@@ -989,7 +989,8 @@
                     success: function (data) {
 
                         if (data != null) {
-                            if ("@Model.FeatureOption.AllowPartCode" == true || "@Model.FeatureOption.AllowPartCode" == "True") {
+                            console.log("@Model.FeatureOption.AllowPartCode")
+                            if (@Model.FeatureOption.AllowPartCode != True || "@Model.FeatureOption.AllowPartCode" != "True") {
                                 var obj = $.parseJSON(data);
                                 console.log(obj);
                                 $('#PartCode').val(obj.Result.Table[0].partcode);

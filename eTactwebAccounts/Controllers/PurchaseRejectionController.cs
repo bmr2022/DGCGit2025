@@ -201,11 +201,61 @@ namespace eTactWeb.Controllers
                             AdjDetailDT = CommonController.GetAdjDetailTable(AdjGrid.AdjAdjustmentDetailGrid.ToList(), model.PurchaseRejEntryId, model.PurchaseRejYearCode, model.AccountCode);
                         }
                     }
-                    string serverFolderPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "SaleBill");
-                    if (!Directory.Exists(serverFolderPath))
+
+                    if (model.PathOfFile1 != null)
                     {
-                        Directory.CreateDirectory(serverFolderPath);
+                        string ImagePath = "Uploads/PurchaseRejection/";
+
+                        if (!Directory.Exists(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath))
+                        {
+                            Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
+                        }
+
+                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile1.FileName;
+                        model.PathOfFile1URL = "/" + ImagePath;
+                        string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
+                        using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
+                        {
+                            await model.PathOfFile1.CopyToAsync(FileStream);
+                        }
                     }
+
+                    if (model.PathOfFile2 != null)
+                    {
+                        string ImagePath = "Uploads/PurchaseRejection/";
+
+                        if (!Directory.Exists(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath))
+                        {
+                            Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
+                        }
+
+                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
+                        model.PathOfFile2URL = "/" + ImagePath;
+                        string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
+                        using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
+                        {
+                            await model.PathOfFile2.CopyToAsync(FileStream);
+                        }
+                    }
+
+                    if (model.PathOfFile3 != null)
+                    {
+                        string ImagePath = "Uploads/PurchaseRejection/";
+
+                        if (!Directory.Exists(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath))
+                        {
+                            Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
+                        }
+
+                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
+                        model.PathOfFile3URL = "/" + ImagePath;
+                        string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
+                        using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
+                        {
+                            await model.PathOfFile3.CopyToAsync(FileStream);
+                        }
+                    }
+
 
                     var Result = await _purchRej.SavePurchaseRejection(model, PRGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, DTAgainstBillDetail);
 

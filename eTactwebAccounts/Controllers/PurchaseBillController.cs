@@ -12,6 +12,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NuGet.Packaging;
 using static eTactWeb.DOM.Models.Common;
+using static eTactWeb.Data.Common.CommonFunc;
 using OfficeOpenXml;
 using System.Data;
 using Newtonsoft.Json.Linq;
@@ -701,7 +702,7 @@ public class PurchaseBillController : Controller
             SlidingExpiration = TimeSpan.FromMinutes(55),
             Size = 1024,
         };
-        if(type== "TAXDetail")
+        if (type == "TAXDetail")
         {
             _MemoryCache.Set("KeyPurchaseBillList_TAXDetail", modelList, cacheEntryOptions);
         }
@@ -1494,144 +1495,74 @@ public class PurchaseBillController : Controller
 
         foreach (PBItemDetail Item in itemDetailList)
         {
-            DateTime poDate = new DateTime(2000, 1, 1);
-            DateTime schDate = new DateTime(2000, 1, 1);
-            DateTime MIRDate = new DateTime(2000, 1, 1);
-            DateTime ProjectDate = new DateTime(2000, 1, 1);
-            DateTime AgainstImportInvDate = new DateTime(2000, 1, 1);
-            string poDt = "";
-            string schDt = "";
-            string mirDt = "";
-            string projectDt = "";
-            string againstImportInvDt = "";
-
-            #region Formats
-            string[] formats = {
-                "dd-MM-yyyy HH:mm:ss",
-                "dd/MM/yyyy HH:mm:ss",
-                "yyyy-MM-dd HH:mm:ss",
-                "MM/dd/yyyy HH:mm:ss",
-                "dd-MM-yyyy",
-                "dd/MM/yyyy",
-                "yyyy-MM-dd",
-                "MM/dd/yyyy"
-            };
-            #endregion
-
-            if (Item.PODate != null)
-            {
-                //poDate = DateTime.Parse(Item.PODate, new CultureInfo("en-GB"));
-                DateTime.TryParse(Item.PODate, CultureInfo.InvariantCulture, out poDate);
-                poDt = poDate.ToString("yyyy/MM/dd");
-            }
-            else
-            {
-                poDt = DateTime.Today.ToString();
-            }
-            if (Item.SchDate != null)
-            {
-                //schDate = DateTime.Parse(Item.SchDate, new CultureInfo("en-GB"));
-                DateTime.TryParse(Item.SchDate, CultureInfo.InvariantCulture, out schDate);
-                schDt = schDate.ToString("yyyy/MM/dd");
-            }
-            else
-            {
-                schDt = DateTime.Today.ToString();
-            }
-            if (Item.MIRDATE != null)
-            {
-                //MIRDate = DateTime.Parse(Item.MIRDATE, new CultureInfo("en-GB"));
-                //DateTime.TryParse(Item.MIRDATE, CultureInfo.InvariantCulture, out MIRDate);
-                DateTime.TryParseExact(Item.MIRDATE, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out MIRDate);
-                mirDt = MIRDate.ToString("yyyy/MM/dd");
-            }
-            else
-            {
-                mirDt = DateTime.Today.ToString();
-            }
-            if (Item.ProjectDate != null)
-            {
-                //ProjectDate = DateTime.Parse(Item.ProjectDate, new CultureInfo("en-GB"));
-                DateTime.TryParse(Item.ProjectDate, CultureInfo.InvariantCulture, out ProjectDate);
-                projectDt = ProjectDate.ToString("yyyy/MM/dd");
-            }
-            else
-            {
-                projectDt = DateTime.Today.ToString();
-            }
-            if (Item.AgainstImportInvDate != null)
-            {
-                //AgainstImportInvDate = DateTime.Parse(Item.AgainstImportInvDate, new CultureInfo("en-GB"));
-                DateTime.TryParse(Item.AgainstImportInvDate, CultureInfo.InvariantCulture, out AgainstImportInvDate);
-                againstImportInvDt = AgainstImportInvDate.ToString("yyyy/MM/dd");
-            }
-            else
-            {
-                againstImportInvDt = DateTime.Today.ToString();
-            }
+            DateTime poDate = ParseSafeDate(Item.PODate);
+            DateTime schDate = ParseSafeDate(Item.SchDate);
+            DateTime mirDate = ParseSafeDate(Item.MIRDATE);
+            DateTime projectDate = ParseSafeDate(Item.ProjectDate);
+            DateTime againstImportInvDate = ParseSafeDate(Item.AgainstImportInvDate);
 
             Table.Rows.Add(
-                new object[]
-                {
-                    EntryID ?? 0,
-                    YearCode ?? 0,
-                    Item.SeqNo,
-                    0, // Item.Parentcode
-                    Item.DocTypeID > 0 ? Convert.ToInt32(Item.DocTypeID) : 0,
-                    Item.ItemCode ?? 0,
-                    Item.Unit ?? string.Empty,
-                    Item.NoOfCase > 0 ? Convert.ToInt32(Item.NoOfCase != null ? Item.NoOfCase : 0) : 0,
-                    Item.BillQty > 0 ? Math.Round(Convert.ToDecimal(Item.BillQty), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.RecQty > 0 ? Math.Round(Item.RecQty ?? 0, 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.rejectedQty > 0 ? Math.Round(Convert.ToDecimal(Item.rejectedQty != null ? Item.rejectedQty : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.AltRecQty > 0 ? Math.Round(Convert.ToDecimal(Item.AltRecQty != null ? Item.AltRecQty : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.AltUnit ?? string.Empty,
-                    Item.BillRate > 0 ? Math.Round(Convert.ToDecimal(Item.BillRate != null ? Item.BillRate : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.MRP > 0 ? Math.Round(Convert.ToDecimal(Item.MRP != null ? Item.MRP : 0), 2, MidpointRounding.AwayFromZero) : 0, // Item.MRP
-                    Item.UnitRate ?? string.Empty,
-                    Item.RateIncludingTax > 0 ? Math.Round(Convert.ToDecimal(Item.RateIncludingTax != null ? Item.RateIncludingTax : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.OtherRateCurr > 0 ? Math.Round(Item.OtherRateCurr, 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.RateOfConvFactor > 0 ? Convert.ToInt32(Item.RateOfConvFactor != null ? Item.RateOfConvFactor : 0) : 0,
-                    Item.CostCenter > 0 ? Item.CostCenter : 0,
-                    Item.AssessRate > 0 ? Math.Round(Convert.ToDecimal(Item.AssessRate != null ? Item.AssessRate : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    0f, // Item.AssesAmount
-                    Item.DisPer > 0 ? Math.Round(Convert.ToDecimal(Item.DisPer), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.DisAmt > 0 ? Math.Round(Convert.ToDecimal(Item.DisAmt), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.Amount > 0 ? Math.Round(Convert.ToDecimal(Item.Amount != null ? Item.Amount : 0), 2, MidpointRounding.AwayFromZero) : 0, //amount
-                    Item.ItemSize ?? string.Empty, // Item.Itemsize
-                    Item.Color ?? string.Empty,
-                    Item.ItemModel ?? string.Empty, // Item.ItemModel
-                    Item.DepartmentId > 0 ? Convert.ToInt32(Item.DepartmentId) : 0, // Item.Deaprtmentid
-                    Item.Description ?? string.Empty,
-                    string.Empty, // Item.DebitNoteType
-                    Item.Process > 0 ? Item.Process : 0,
-                    Item.NewPoRate,
-                    Item.pono ?? string.Empty,
-                    Item.poyearcode ?? 0,
-                    !string.IsNullOrEmpty(Item.PODate) ? poDate : poDt,
-                    Item.schno ?? string.Empty,
-                    Item.schyearcode ?? 0,
-                    !string.IsNullOrEmpty(Item.SchDate) ? schDate : schDt,
-                    Item.PoAmendNo?.ToString() ?? string.Empty, // Item.POAmmNo
-                    Item.PORate > 0 ? Math.Round(Convert.ToDecimal(Item.PORate != null ? Item.PORate : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    string.Empty, // Item.POType
-                    Item.MIRNO ?? string.Empty, // Item.MIRNO
-                    Item.MIRYEARCODE > 0 ? Convert.ToInt32(Item.MIRYEARCODE) : 0, // Item.MIRYearCode
-                    mirDt, // Item.MIRDate
-                    string.Empty, // Item.AllowDebitNote
-                    string.Empty, // Item.DebitNotePending
-                    Item.ProjectNo ?? string.Empty, // Item.ProjectNo
-                    projectDt, // Item.ProjectDate
-                    Item.ProjectyearCode > 0 ? Convert.ToInt32(Item.ProjectyearCode) : 0, // Item.ProjectYearCode
-                    Item.AgainstImportAccountCode > 0 ? Convert.ToInt32(Item.AgainstImportAccountCode) : 0, // Item.AgainstImportAccountCode
-                    Item.AgainstImportInvoiceNo?.ToString() ?? string.Empty, // Item.AgainstImportInvoiceNo
-                    Item.AgainstImportYearCode > 0 ? Convert.ToInt32(Item.AgainstImportYearCode) : 0, // Item.AgainstImportYearCode
-                    againstImportInvDt, // Item.AgainstImportInvDate
-                    Item.HSNNO.ToString(),
-                    Item.AcceptedQty > 0 ? Math.Round(Convert.ToDecimal(Item.AcceptedQty != null ? Item.AcceptedQty : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.ReworkQty > 0 ? Math.Round(Convert.ToDecimal(Item.ReworkQty != null ? Item.ReworkQty : 0), 2, MidpointRounding.AwayFromZero) : 0,
-                    Item.HoldQty > 0 ? Math.Round(Convert.ToDecimal(Item.HoldQty != null ? Item.HoldQty : 0), 2, MidpointRounding.AwayFromZero) : 0
-                });
+            new object[]
+            {
+                EntryID ?? 0,
+                YearCode ?? 0,
+                Item.SeqNo,
+                0,
+                Item.DocTypeID > 0 ? Convert.ToInt32(Item.DocTypeID) : 0,
+                Item.ItemCode ?? 0,
+                Item.Unit ?? string.Empty,
+                Item.NoOfCase > 0 ? Convert.ToInt32(Item.NoOfCase ?? 0) : 0,
+                Item.BillQty > 0 ? Math.Round(Convert.ToDecimal(Item.BillQty), 2) : 0,
+                Item.RecQty > 0 ? Math.Round(Item.RecQty ?? 0, 2) : 0,
+                Item.rejectedQty > 0 ? Math.Round(Convert.ToDecimal(Item.rejectedQty ?? 0), 2) : 0,
+                Item.AltRecQty > 0 ? Math.Round(Convert.ToDecimal(Item.AltRecQty ?? 0), 2) : 0,
+                Item.AltUnit ?? string.Empty,
+                Item.BillRate > 0 ? Math.Round(Convert.ToDecimal(Item.BillRate ?? 0), 2) : 0,
+                Item.MRP > 0 ? Math.Round(Convert.ToDecimal(Item.MRP ?? 0), 2) : 0,
+                Item.UnitRate ?? string.Empty,
+                Item.RateIncludingTax > 0 ? Math.Round(Convert.ToDecimal(Item.RateIncludingTax ?? 0), 2) : 0,
+                Item.OtherRateCurr > 0 ? Math.Round(Item.OtherRateCurr, 2) : 0,
+                Item.RateOfConvFactor > 0 ? Convert.ToInt32(Item.RateOfConvFactor ?? 0) : 0,
+                Item.CostCenter > 0 ? Item.CostCenter : 0,
+                Item.AssessRate > 0 ? Math.Round(Convert.ToDecimal(Item.AssessRate ?? 0), 2) : 0,
+                0f,
+                Item.DisPer > 0 ? Math.Round(Convert.ToDecimal(Item.DisPer), 2) : 0,
+                Item.DisAmt > 0 ? Math.Round(Convert.ToDecimal(Item.DisAmt), 2) : 0,
+                Item.Amount > 0 ? Math.Round(Convert.ToDecimal(Item.Amount ?? 0), 2) : 0,
+                Item.ItemSize ?? string.Empty,
+                Item.Color ?? string.Empty,
+                Item.ItemModel ?? string.Empty,
+                Item.DepartmentId > 0 ? Convert.ToInt32(Item.DepartmentId) : 0,
+                Item.Description ?? string.Empty,
+                string.Empty,
+                Item.Process > 0 ? Item.Process : 0,
+                Item.NewPoRate,
+                Item.pono ?? string.Empty,
+                Item.poyearcode ?? 0,
+                poDate,
+                Item.schno ?? string.Empty,
+                Item.schyearcode ?? 0,
+                schDate,
+                Item.PoAmendNo?.ToString() ?? string.Empty,
+                Item.PORate > 0 ? Math.Round(Convert.ToDecimal(Item.PORate ?? 0), 2) : 0,
+                string.Empty,
+                Item.MIRNO ?? string.Empty,
+                Item.MIRYEARCODE > 0 ? Convert.ToInt32(Item.MIRYEARCODE) : 0,
+                mirDate,
+                string.Empty,
+                string.Empty,
+                Item.ProjectNo ?? string.Empty,
+                projectDate,
+                Item.ProjectyearCode > 0 ? Convert.ToInt32(Item.ProjectyearCode) : 0,
+                Item.AgainstImportAccountCode > 0 ? Convert.ToInt32(Item.AgainstImportAccountCode) : 0,
+                Item.AgainstImportInvoiceNo?.ToString() ?? string.Empty,
+                Item.AgainstImportYearCode > 0 ? Convert.ToInt32(Item.AgainstImportYearCode) : 0,
+                againstImportInvDate,
+                Item.HSNNO.ToString(),
+                Item.AcceptedQty > 0 ? Math.Round(Convert.ToDecimal(Item.AcceptedQty ?? 0), 2) : 0,
+                Item.ReworkQty > 0 ? Math.Round(Convert.ToDecimal(Item.ReworkQty ?? 0), 2) : 0,
+                Item.HoldQty > 0 ? Math.Round(Convert.ToDecimal(Item.HoldQty ?? 0), 2) : 0
+            });
         }
 
         DS.Tables.Add(Table);
