@@ -36,7 +36,7 @@ else
             </td>
             <td>@item.TDSSeqNo</td>
             <td id="tdsGridType-@item.TDSSeqNo">@item.TDSTaxTypeName</td>
-            <td id="tdsGridName-@item.TDSSeqNo">@item.TDSAccountName</td>
+            <td id="tdsGridName-@item.TDSSeqNo"><input type="hidden" value="@item.TDSAccountCode" id="tdsAccountCode-@item.TDSSeqNo"/>@item.TDSAccountName</td>
             <td>@item.TDSPercentg</td>
             @if (@item.TDSRoundOff == "Y")
             {

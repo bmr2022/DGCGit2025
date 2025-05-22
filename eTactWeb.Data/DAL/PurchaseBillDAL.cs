@@ -580,7 +580,7 @@ public class PurchaseBillDAL
                                                  DocumentName = dr["DocumentType"].ToString(),
                                                  PartCode = dr["PartCode"].ToString(),
                                                  ItemName = dr["ItemName"].ToString(),
-                                                 HSNNO = dr["HSNNO"].ToString(),
+                                                 HSNNO = dr["HSNNO"].ToString()
                                              }).OrderBy(a => a.EntryID).ToList();
             }
         }
