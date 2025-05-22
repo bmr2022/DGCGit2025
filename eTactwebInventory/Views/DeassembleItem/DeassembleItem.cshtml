@@ -635,12 +635,15 @@
             FillStore();
             FillRMStore();
                    FillBomNo();
+
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') { 
             FillFGPartCode();
             FillFGItemName();
                     FillFGStockBatchNo();
                     FillFGStockUniqueBatchNo();
                     FillMRNNO();
                     FillRecStoreStock();
+            }
             
 ;         
 
