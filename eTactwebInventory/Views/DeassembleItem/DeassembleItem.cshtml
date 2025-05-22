@@ -1132,13 +1132,21 @@
             //      var batchStock = parseFloat($('#LotStockQty').val());
 
             var Err = 0;
-            if ($('#PartCode').prop('selectedIndex') == 0 || $('#ItemCode').prop('selectedIndex') == 0) {
-                AddErrorCls('PartCode'), AddErrorCls('ItemCode');
+            if ($('#RmPartCode').prop('selectedIndex') == 0 || $('#RMItemName').prop('selectedIndex') == 0) {
+                AddErrorCls('RmPartCode'), AddErrorCls('RMItemName');
                 $.notify('Please select PartCode and ItemName.', 'error');
                 Err = 1;
             }
             else {
-                RemoveErrorCls('PartCode'), RemoveErrorCls('ItemCode');
+                RemoveErrorCls('RmPartCode'), RemoveErrorCls('RMItemName');
+            }
+            if ($('#RMStoreId').prop('selectedIndex') == 0) {
+                AddErrorCls('RMStoreId');
+                $.notify('Please select Store', 'error');
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('RMStoreId');
             }
 
             if ($('#IssueToStoreWC').val() == 'S') {
