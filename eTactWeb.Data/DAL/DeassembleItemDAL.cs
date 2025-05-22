@@ -548,6 +548,15 @@ namespace eTactWeb.Data.DAL
             model.CreatedByEmp = Convert.ToInt32(DS.Tables[0].Rows[0]["CreatedByEmp"].ToString());
             model.CreatedByEmpName = DS.Tables[0].Rows[0]["CreatedByEmpName"].ToString();
             model.CreatedOn = DS.Tables[0].Rows[0]["CreatedOn"].ToString();
+            model.MRNEntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["MRNEntryID"].ToString());
+            model.MRNYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MRNYearCode"].ToString());
+            model.MRNO = DS.Tables[0].Rows[0]["MRNO"].ToString();
+            model.MRNDate = DS.Tables[0].Rows[0]["MRNDate"].ToString();
+            model.ProdSlipNO = Convert.ToInt32(DS.Tables[0].Rows[0]["ProdSlipNO"].ToString());
+            model.ProdDate = DS.Tables[0].Rows[0]["ProdDate"].ToString();
+            model.ProdYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ProdYearCode"].ToString());
+            model.ProdEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["ProdEntryId"].ToString());
+            model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
             
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
 

@@ -621,7 +621,7 @@
 				$('#IN1').trigger("change");
 			}
 
-			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+			if ($('#Mode').val() == "U" || $('#Mode').val() == "V"||$('#Mode').val() == "C") {
 				// PendingIndentDetail(true);
 				//FillItems();
 				$('.DH').fadeIn();
@@ -2066,7 +2066,7 @@
 						$('#AccountCode').append('<option value="' + val.Account_Code + '" data-gstregister="' + val.GSTRegistered + '" data-state="' + val.State + '">' + val.Account_Name + '</option>');
 						//$('#VendorAddress').val('');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA") {
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "POA" || $('#Mode').val() == "C") {
 						var accountCode = @Html.Raw(Json.Serialize(Model.AccountCode));
 						$('#AccountCode').val(accountCode).trigger('change.select2');
 					} else {

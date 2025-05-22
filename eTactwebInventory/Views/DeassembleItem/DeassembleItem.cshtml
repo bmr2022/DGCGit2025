@@ -601,7 +601,7 @@
         });
         $(document).ready(function () {
             /* GetFormRights(); */
-
+            console.log('before'+$('#TotalStock').val());
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                 $('#FinishItemName').select2();
                 $('#FinishPartCode').select2();
@@ -613,13 +613,14 @@
             }
             $('#RMItemName').select2();
             $('#RmPartCode').select2();
-
+             console.log('after1' + $('#TotalStock').val());
             $('#FGQty').on('input', function () {
                 $('#FGConvQty').val($(this).val());
             });
             $('#FGConvQty').on('input', function () {
                  calculateDeassQty();
             });
+             console.log('after2' + $('#TotalStock').val());
 
             var FGConvQty = parseFloat($('#FGConvQty').val());
             var BomQty = parseFloat($('#BomQty').val());
@@ -632,16 +633,20 @@
 
             $('#Remark').rules("remove", "required");
             $('#ToWCID').prop("disabled", true);
-            FillStore();
+            
             FillRMStore();
                    FillBomNo();
+               console.log('after3' + $('#TotalStock').val());  
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                FillStore();
             FillFGPartCode();
             FillFGItemName();
                     FillFGStockBatchNo();
                     FillFGStockUniqueBatchNo();
                     FillMRNNO();
-                    FillRecStoreStock();
-            
+                    /* FillRecStoreStock(); */
+            }
+            console.log('after' + $('#TotalStock').val());
 ;         
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
@@ -777,6 +782,9 @@
             GetItemPartCode(ID);
             FillMRNNO();
             FillRecStoreStock();
+            if ($('#Mode').val() != 'U' || $('#Mode').val() != 'V') {
+                ClearGridAjax();
+            }
         }
 
         function PartCodeChange(ID) {
@@ -792,6 +800,9 @@
             FillFGStockUniqueBatchNo();
             FillMRNNO();
             FillRecStoreStock();
+            if ($('#Mode').val() != 'U' || $('#Mode').val() != 'V') {
+                ClearGridAjax();
+            }
         }
 
         function SetPartCodeItemName(ID) {
@@ -820,6 +831,7 @@
                 $.notify('Quantity must be less then TotalStock ', 'error');
                 $(this).val('');
             }
+            ClearGridAjax();
         });
 
         $('#FGConvQty').on('input', function () {
@@ -830,6 +842,7 @@
                 $.notify('FGConvQty must be less then TotalStock ', 'error');
                 $(this).val('');
             }
+            ClearGridAjax();
         });
 
         function calculateDeassQty() {
@@ -991,8 +1004,18 @@
 
         $('#submitBTN').click(function (event) {
             event.preventDefault();
+
+            var FGQty = parseFloat($('#FGQty').val());
+            var TotalStock = parseFloat($("#TotalStock").val());
+
+            if (FGQty > TotalStock) {
+                $.notify('Quantity must be less then TotalStock ', 'error');
+
+            }
+            else { 
            
                 $("form").submit();
+            }
            
         });
 
@@ -1129,71 +1152,24 @@
             //      var batchStock = parseFloat($('#LotStockQty').val());
 
             var Err = 0;
-            if ($('#PartCode').prop('selectedIndex') == 0 || $('#ItemCode').prop('selectedIndex') == 0) {
-                AddErrorCls('PartCode'), AddErrorCls('ItemCode');
+            if ($('#RmPartCode').prop('selectedIndex') == 0 || $('#RMItemName').prop('selectedIndex') == 0) {
+                AddErrorCls('RmPartCode'), AddErrorCls('RMItemName');
                 $.notify('Please select PartCode and ItemName.', 'error');
                 Err = 1;
             }
             else {
-                RemoveErrorCls('PartCode'), RemoveErrorCls('ItemCode');
+                RemoveErrorCls('RmPartCode'), RemoveErrorCls('RMItemName');
             }
-
-            if ($('#IssueToStoreWC').val() == 'S') {
-                if ($('#FromStoreId').prop('selectedIndex') == 0) {
-                    AddErrorCls('FromStoreId');
-                    $.notify('Please select FromStore.', 'error');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('FromStoreId');
-                }
-            } else {
-                if ($('#ToWCID').prop('selectedIndex') == 0) {
-                    $.notify('Please select To WorkCenter.', 'error');
-                    AddErrorCls('ToWCID');
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('ToWCID');
-                }
-            }
-
-            if ($('#BatchNo').prop('selectedIndex') == 0) {
-                AddErrorCls('BatchNo');
-                $.notify('Please select BatchNo.', 'error');
+            if ($('#RMStoreId').prop('selectedIndex') == 0) {
+                AddErrorCls('RMStoreId');
+                $.notify('Please select Store', 'error');
                 Err = 1;
             }
             else {
-                RemoveErrorCls('BatchNo');
+                RemoveErrorCls('RMStoreId');
             }
 
-            if ($('#UniqueBatchNo').prop('selectedIndex') == 0) {
-                AddErrorCls('UniqueBatchNo');
-                $.notify('Please select UniqueBatchNo.', 'error');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('UniqueBatchNo');
-            }
-
-            if (parseFloat($('#Qty').val()) == 0 || $('#Qty').val() == '') {
-                AddErrorCls('Qty');
-                $.notify('Qty cannot be 0.', 'error');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('Qty');
-            }
-
-
-            if (parseFloat($('#Qty').val()) > MinValue) {
-                AddErrorCls('Qty');
-                $.notify('Qty cannot be less than Stock.', 'error');
-                Err = 1;
-            }
-            else {
-                RemoveErrorCls('Qty');
-            }
+            
 
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
@@ -1395,12 +1371,13 @@
         
 
 
-        $('#SlipDate').change(function () {
-            ClearGrid();
-        });
+       
       
 
         $('#FGStoreId').change(function () {
+            /* if ($('#Mode').val() != 'U' || $('#Mode').val() != 'V') {
+                ClearGridAjax();
+            } */
             FillFGStockBatchNo();
             FillRecStoreStock();
         });
