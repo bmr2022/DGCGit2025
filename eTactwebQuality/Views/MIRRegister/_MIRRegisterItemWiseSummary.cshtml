@@ -6,6 +6,11 @@
 
                 <th>Action VendSumm</th>
                 <th>Sr#</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>VendorName
+                </th>
 
                 
                 <th data-columnno="1" data-sortorder="asc" class="sortCol">
@@ -17,6 +22,11 @@
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Part Code
+                </th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>MRNNO
                 </th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
@@ -79,8 +89,10 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
+                            <td>@item.VendorName</td>
                             <td>@item.ItemName</td>
                             <td>@item.PartCode</td>
+                            <td>@item.MRNNo</td>
 
                             <td id="Qty-@Cntr">@item.BillQty</td>
                             <td id="RecQty-@Cntr">@item.RecQty</td>

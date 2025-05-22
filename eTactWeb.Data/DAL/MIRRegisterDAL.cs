@@ -217,6 +217,9 @@ namespace eTactWeb.Data.DAL
                             model.MIRRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                        select new MIRRegisterDetail
                                                        {
+                                                           VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? "" : dr["VendorName"].ToString(),
+                                                           MRNNo = string.IsNullOrEmpty(dr["MRNNO"].ToString()) ? "" : dr["MRNNO"].ToString(),
+
                                                            PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                            ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
                                                            AcceptedQty = Convert.ToDecimal(dr["AcceptedQty"].ToString()),
