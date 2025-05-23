@@ -24,12 +24,21 @@
                     @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
                     <div class="col-auto">
                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="MRNTag" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            MRN Tag
+                        </a>
+
+                    </div>
+                     <div class="col-auto">
+                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
                         <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
 
                     </div>
+
                     <div class="col-auto">
                         @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
                         <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReportShortExcess" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo" asp-route-AccountCode="@Model.AccountID">
@@ -38,6 +47,7 @@
                         </a>
 
                     </div>
+
                     <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
                         Dashboard
