@@ -24,6 +24,9 @@ namespace eTactWeb.DOM.Models
         public string? IssueDate { get; set; }
         public string? GlobalSearch { get; set; }
         public string? FromStore { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<TextValue>? ReqList { get; set; }
         public IList<TextValue>? ItemList { get; set; }
         public IList<TextValue>? PartCodeList { get; set; }

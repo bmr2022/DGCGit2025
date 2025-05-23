@@ -105,6 +105,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@storeid", StoreId));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("GetDataForRequitionThroughBOM", SqlParams);
+            
+            
             }
             catch (Exception ex)
             {
