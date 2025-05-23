@@ -332,7 +332,7 @@
 		}
 
 		$('#GenerateMRP').click(function () {
-
+			var IncludeProjection = $("#IncludeProjection").val();
 			FillStore();
 			FillWorkCenter();
 			var RowCount = $('#divPendingMRPbody tr').length;
@@ -425,7 +425,8 @@
 					"ForMonthYear": ForMonthYear,
 					"StoreId": SelectedStorevalues,
 					"WcId": SelectedWcValues,
-					"ScheduleNo": schnoyearValue
+					"ScheduleNo": schnoyearValue,
+					"IncludeProjection": IncludeProjection
 				});
 			}
 			console.log(data);
