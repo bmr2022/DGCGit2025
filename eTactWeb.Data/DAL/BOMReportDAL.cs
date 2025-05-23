@@ -308,7 +308,7 @@ namespace eTactWeb.Data.DAL
                                                         RMUnit = row["RMUnit"] != DBNull.Value ? row["FGUnit"].ToString() : string.Empty,
                                                         RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
                                                         RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
-                                                        NetReqQty = row["NetReqQty"] != DBNull.Value ? Convert.ToDecimal(row["NetReqQty"]) : 0,
+                                                        NetReqQty = row["NetReqQty"] != DBNull.Value ? Convert.ToDouble(row["NetReqQty"]) : 0,
                                                         //RMQty = Convert.ToInt32(row["Qty"]),
                                                         SubBOM = row["SubBOM"]?.ToString(),
                                                         BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
@@ -337,12 +337,9 @@ namespace eTactWeb.Data.DAL
                                                         RMUnit = row["RMUnit"] != DBNull.Value ? row["FGUnit"].ToString() : string.Empty,
                                                         RMPartCode = row["RMPartCode"] != DBNull.Value ? row["RMPartCode"].ToString() : string.Empty,
                                                         RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
-<<<<<<< HEAD
+                                                          
                                                         NetReqQty = row["NetReqQty"] != DBNull.Value ? Convert.ToDouble(row["NetReqQty"]) : 0,
-=======
-                                                        NetReqQty = row["NetReqQty"] != DBNull.Value ? Convert.ToDecimal(row["NetReqQty"]) : 0,
->>>>>>> 9efdf80ef11b368fb3fb90dd7ee335bd668e26c5
-                                                        SubBOM = row["SubBOM"]?.ToString(),
+                                                         SubBOM = row["SubBOM"]?.ToString(),
                                                         BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
                                                         StoreStock = row["StoreStock"] != DBNull.Value ? Convert.ToDouble(row["StoreStock"]) : 0.0,
                                                         WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToDouble(row["WIPStock"]) : 0.0,
