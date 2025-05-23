@@ -155,11 +155,13 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId)
+        public async Task<JsonResult> ShowDetail(string FromDate, string ToDate, string ReqNo, int YearCode, int ItemCode, string WoNo, int WorkCenter, int DeptName, int ReqYear, string IssueDate, string GlobalSearch, string FromStore, int StoreId, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var JSON = await _IPendingMaterialToIssueThrBOM.ShowDetail(FromDate, ToDate, ReqNo, YearCode, ItemCode, WoNo, WorkCenter, DeptName, ReqYear, IssueDate, GlobalSearch, FromStore, StoreId);
             string JsonString = JsonConvert.SerializeObject(JSON);
+
             return Json(JsonString);
+            //return Json(JSON);
         }
 
 
