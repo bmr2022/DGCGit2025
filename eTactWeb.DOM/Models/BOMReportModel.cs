@@ -21,9 +21,9 @@ namespace eTactWeb.DOM.Models
         public string FGItemName { get; set; }          
         public string RMPartCode { get; set; }           
         public string RMItemName { get; set; }          
-        public decimal? NetReqQty { get; set; }           
+         public double? NetReqQty { get; set; }           
         public double? ReqQty { get; set; }           
-        public decimal? RMQty { get; set; }               
+        public double? RMQty { get; set; }        
         public int? BomRevNo { get; set; }             
         public int? ItemLvl { get; set; }               
         public int? BOMItemCode { get; set; }          
@@ -45,11 +45,11 @@ namespace eTactWeb.DOM.Models
 
         // Fields for 'DirectBOM' flag
         public int? BomNo { get; set; }                 
-        public int Qty { get; set; }                  
+        public double Qty { get; set; }                  
 
         // Fields for 'BOMSTOCK' flag
-        public float? StoreRecQty { get; set; }        
-        public float? StoreIssueQty { get; set; }        
+        public double? StoreRecQty { get; set; }        
+        public double? StoreIssueQty { get; set; }        
         public double? StoreStock { get; set; }         
         public long? StoreId { get; set; }               
         public float? WIPRecQty { get; set; }            
