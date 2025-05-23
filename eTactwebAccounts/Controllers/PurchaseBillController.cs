@@ -468,12 +468,11 @@ public class PurchaseBillController : Controller
 
         return RedirectToAction(nameof(DashBoard));
     }
-    public async Task<JsonResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
+    public async Task<JsonResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string EnteredBy, string InvNo = "", bool? IsDetail = false)
     {
         int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-        string EntryByMachineName = HttpContext.Session.GetString("EmpName");
         DateTime EntryDate = DateTime.Today;
-        var Result = await IPurchaseBill.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo, EntryBy, EntryByMachineName, EntryDate);
+        var Result = await IPurchaseBill.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo,EntryBy, EnteredBy, EntryDate);
 
         var rslt = string.Empty;
         if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
@@ -905,7 +904,7 @@ public class PurchaseBillController : Controller
                 if (model != null)
                 {
                     MainModel = model;
-                    if (model != null && model.ItemDetailGridd == null)
+                    if (model != null && model.ItemDetailGridd == null || model.ItemDetailGridd.Count() == 0)
                     {
                         ItemGrid = new List<PBItemDetail>();
                     }
