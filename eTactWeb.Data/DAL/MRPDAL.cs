@@ -44,8 +44,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SONO", model.sono));
                 SqlParams.Add(new SqlParameter("@SOYearcode", model.SOYearCode));
                 SqlParams.Add(new SqlParameter("@schNo", model.ScheduleNo));
-                //SqlParams.Add(new SqlParameter("@IncludeProjection", model.IncludeProjection));
-                SqlParams.Add(new SqlParameter("@IncludeProjection",'Y'));
+                SqlParams.Add(new SqlParameter("@IncludeProjection", model.IncludeProjection));
+                //SqlParams.Add(new SqlParameter("@IncludeProjection",'Y'));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_PendingSOForMRP", SqlParams);
             }
             catch (Exception ex)
