@@ -432,7 +432,7 @@
 		$(function () {
 			$('#EntryByMachineName').val($('#machineName').text());
 			$('.DH').fadeOut();
-			if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
+			if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0 &&'@Model.Mode' != 'C') {
 				GetTaxPartItem();
 				// FillItems();
 				$('#lblItemNetAmount').text($('#ItemNetAmount').val());
@@ -2044,7 +2044,7 @@
 				});
 			}
 
-			btnClearTax();
+			// btnClearTax();
 			if ($('#TxTaxType').val() != '-Select-') {
 				GetTaxAccountName("TAX");
 			}
