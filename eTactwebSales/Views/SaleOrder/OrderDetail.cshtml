@@ -1763,6 +1763,8 @@
             /* 			$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                         $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
 
+                        debugger
+
             formattedDate1 = parseDateToFormat(formattedDate1);
             formattedDate2 = parseDateToFormat(formattedDate2);
 
@@ -1960,9 +1962,9 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     
-                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                     debugger
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                 }
             });
         }
