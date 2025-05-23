@@ -1,0 +1,56 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="05/22/2025 21:24:28" ReportInfo.Modified="05/23/2025 16:00:58" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection1" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0t4dbpm9aekdEf62ygZHdojlQqek764bZ9INGkvHUPUV9JTunflcrPqDFJ1YAwGY/kDsdebzutLqfV6XGCFOn9PvE+IP0ZTJ2fMB+yoJo+FqxBnmdWREjjJ+UiRxshE5+/7QWYeFK8GhWAA2IBDJqQsk5gGu0SGlvyDcwj/+nHRsupa1KcguQHspNFQ/nkuf0A==" ConnectionStringExpression="[MyParameter]">
+      <TableDataSource Name="Table" Alias="spGetMRNDetail" DataType="System.Int32" Enabled="true" SelectCommand="exec SPPrintReportMrnTag @MRNEntryId=@entryidparam,@MRNYearCode=@MrnYearcodeparam">
+        <Column Name="Account_Name" DataType="System.String"/>
+        <Column Name="Item_Name" DataType="System.String"/>
+        <Column Name="partcode" DataType="System.String"/>
+        <Column Name="Item_Code" DataType="System.Int64"/>
+        <Column Name="mrnno" DataType="System.String"/>
+        <Column Name="InvNo" DataType="System.String"/>
+        <Column Name="InvDate" DataType="System.DateTime"/>
+        <Column Name="MRNYearCode" DataType="System.Int64"/>
+        <Column Name="MRNEntryDate" DataType="System.DateTime"/>
+        <Column Name="BillQty" DataType="System.Decimal"/>
+        <Column Name="StdPacking" DataType="System.Double"/>
+        <Column Name="MRNEntryId" DataType="System.Int64"/>
+        <CommandParameter Name="entryidparam" Expression="entryidparam"/>
+        <CommandParameter Name="MrnYearcodeparam" Expression="MrnYearcodeparam"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+    <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
+  </Dictionary>
+  <ReportPage Name="Page1" PaperWidth="830" PaperHeight="550" LeftMargin="0.3" TopMargin="0.3" RightMargin="0.3" BottomMargin="0.3" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="3135.13" Height="66.15">
+      <TextObject Name="Text1" Top="9.45" Width="302.4" Height="18.9" Text="MATERIAL IDENTIFICATION TAG" HorzAlign="Center" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text2" Top="37.8" Width="311.85" Height="18.9" Text="Auto Component" HorzAlign="Center" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="69.35" Width="3135.13" Height="18.9">
+      <TextObject Name="Text9" Left="113.4" Width="94.5" Height="18.9" Text="Item_Name" Font="Arial, 10pt"/>
+      <TextObject Name="Text10" Left="463.05" Width="94.5" Height="18.9" Text="InvDate" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <DataBand Name="Data1" Top="91.45" Width="3135.13" Height="151.2" DataSource="Table">
+      <TextObject Name="Text3" Top="9.45" Width="113.4" Height="18.9" Text="Part No" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Top="28.35" Width="113.4" Height="18.9" Text="Part Name" Font="Arial, 10pt"/>
+      <TextObject Name="Text5" Top="47.25" Width="113.4" Height="18.9" Text="Supplied By" Font="Arial, 10pt"/>
+      <TextObject Name="Text6" Top="75.6" Width="113.4" Height="18.9" Text="Invoice No" Font="Arial, 10pt"/>
+      <TextObject Name="Text7" Top="94.5" Width="113.4" Height="18.9" Text="MRN No" Font="Arial, 10pt"/>
+      <TextObject Name="Text8" Top="113.4" Width="113.4" Height="18.9" Text="Lot Qty" Font="Arial, 10pt"/>
+      <TextObject Name="Text19" Left="387.45" Top="132.3" Width="56.7" Height="18.9" Text="Sign" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Left="387.45" Top="75.6" Width="66.15" Height="18.9" Text="Inv Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="387.45" Top="94.5" Width="85.05" Height="18.9" Text="MRN Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text22" Left="387.45" Top="113.4" Width="66.15" Height="18.9" Text="Std Qty:" Font="Arial, 10pt"/>
+      <TextObject Name="Text23" Left="122.85" Top="9.45" Width="236.25" Height="18.9" Text="[spGetMRNDetail.partcode]" Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Left="113.4" Top="28.35" Width="245.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.Item_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text25" Left="113.4" Top="47.25" Width="245.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.Account_Name]" Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Left="113.4" Top="75.6" Width="245.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.InvNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text27" Left="113.4" Top="94.5" Width="245.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.mrnno]" Font="Arial, 10pt"/>
+      <TextObject Name="Text28" Left="113.4" Top="113.4" Width="245.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.BillQty]" Format="Currency" Format.UseLocale="true" Format.DecimalDigits="2" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+      <TextObject Name="Text29" Left="444.15" Top="75.6" Width="189" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.InvDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text30" Left="472.5" Top="94.5" Width="207.9" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.MRNEntryDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="453.6" Top="113.4" Width="198.45" Height="18.9" CanGrow="true" CanBreak="false" Text="[spGetMRNDetail.StdPacking]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 10pt" Trimming="EllipsisCharacter"/>
+    </DataBand>
+    <PageFooterBand Name="PageFooter1" Top="245.85" Width="3135.13"/>
+  </ReportPage>
+</Report>
