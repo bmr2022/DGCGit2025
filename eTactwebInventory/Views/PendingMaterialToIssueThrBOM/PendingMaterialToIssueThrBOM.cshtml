@@ -542,7 +542,7 @@
         });
         let detailData = []; 
         let currentPage = 1;
-        const pageSize = 10;
+        const pageSize = 50;
         /* function showDetail() {
              
             $('#checkLabel,#TryAltItem').hide();
@@ -786,6 +786,8 @@
         }
     });
 }
+            
+
 function renderPage(page) {
     debugger;
     $('#divPendIssueGrid').empty();
@@ -800,6 +802,7 @@ function renderPage(page) {
             (item.ItemName && item.ItemName.toLowerCase().includes(searchValue))
         );
     });
+               
 
     var start = (page - 1) * pageSize;
     var end = start + pageSize;
@@ -909,22 +912,10 @@ function renderPage(page) {
                         $('#checkLabel,#TryAltItem').show();
                     }
 
-
-
-    $('#divPendIssueGrid').append(html1);
-
-    
-    //$('#totalRows').text(filteredData.length);
                 var cumulativeTotal = Math.min(page * pageSize, filteredData.length);
             $('#totalRows').text(cumulativeTotal);
 
-    if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
-        $('#TransertoIssBtn').css("pointer-events", "none");
-    } else {
-        $('#TransertoIssBtn').css("pointer-events", "auto");
-        $('#checkLabel,#TryAltItem').show();
-    }
-
+   
     ColorCodingStockandIssue();
 }
 
