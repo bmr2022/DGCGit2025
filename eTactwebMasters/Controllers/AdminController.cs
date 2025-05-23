@@ -547,7 +547,9 @@ public class AdminController : Controller, IAsyncDisposable
                 MainModel.UserRights = existingRights;
 
                 if (duplicates.Any())
-                    TempData["DuplicateMenus"] = string.Join(", ", duplicates);
+                {
+                    TempData["Duplicate"] = "Duplicate rights not allowed for: " + string.Join(", ", duplicates);
+                }
 
                 return PartialView("_UserRightGrid", MainModel);
             }

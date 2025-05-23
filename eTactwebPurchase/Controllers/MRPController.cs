@@ -437,13 +437,15 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("MonthYear", typeof(int));
             DTSSGrid.Columns.Add("BOMExist", typeof(string));
             //DateTime DeliveryDt = new DateTime();
-            foreach (var Item in DetailList)
+            if (DetailList != null)
             {
-                var SODate = ParseDate(Item.SODAte);
-                string uniqueString = Guid.NewGuid().ToString();
-                DTSSGrid.Rows.Add(
-                    new object[]
-                    {
+                foreach (var Item in DetailList)
+                {
+                    var SODate = ParseDate(Item.SODAte);
+                    string uniqueString = Guid.NewGuid().ToString();
+                    DTSSGrid.Rows.Add(
+                        new object[]
+                        {
                    0,
                    0,
                     Item.SONo ?? "",
@@ -457,7 +459,8 @@ namespace eTactWeb.Controllers
                     Item.Months ?? "",
                     Item.MonthYear,
                     Item.BOMExist ?? "",
-                    });
+                        });
+                }
             }
             DTSSGrid.Dispose();
             return DTSSGrid;
@@ -481,13 +484,15 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("BOMQty", typeof(float));
             DTSSGrid.Columns.Add("BOMEffDate", typeof(string));
             //DateTime DeliveryDt = new DateTime();
-            foreach (var Item in DetailList)
+            if (DetailList != null)
             {
-                var BomEffDt = ParseDate(Item.BOMEffDate);
-                string uniqueString = Guid.NewGuid().ToString();
-                DTSSGrid.Rows.Add(
-                    new object[]
-                    {
+                foreach (var Item in DetailList)
+                {
+                    var BomEffDt = ParseDate(Item.BOMEffDate);
+                    string uniqueString = Guid.NewGuid().ToString();
+                    DTSSGrid.Rows.Add(
+                        new object[]
+                        {
                    0,
                    0,
                     Item.FGItemCode,
@@ -501,7 +506,8 @@ namespace eTactWeb.Controllers
                     Item.FGQty,
                     Item.BOMQty,
                     BomEffDt.ToString("yyyy/MM/dd") ?? "",
-                    });
+                        });
+                }
             }
             DTSSGrid.Dispose();
             return DTSSGrid;

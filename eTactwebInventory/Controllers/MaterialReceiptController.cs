@@ -98,6 +98,29 @@ namespace eTactWeb.Controllers
             webReport.Report.Refresh();
             return View(webReport);
         }
+        public IActionResult MRNTag(int EntryId = 0, int YearCode = 0, string MrnNo = "", int AccountCode = 0)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            // var ReportName = _IMaterialReceipt.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\MRNTAGFinal.frx"); 
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+           // webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            //webReport.Report.SetParameterValue("accountcodeparam", AccountCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
 
 
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string MrnNo = "")

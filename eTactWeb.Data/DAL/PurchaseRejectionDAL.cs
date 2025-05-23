@@ -89,9 +89,10 @@ namespace eTactWeb.Data.DAL
             model.CurrencyId = !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["CurrencyId"].ToString()) && DS.Tables[0].Rows[0]["CurrencyId"].ToString() !=  "0" ? Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString()) : 0;
             model.ExchangeRate = DS.Tables[0].Rows[0]["ExchangeRate"].ToString();
             model.PaymentTerm = DS.Tables[0].Rows[0]["PaymentTerm"]?.ToString();
-            //model.PaymentCreditDay = DS.Tables[0].Rows[0]["PaymentCreditDay"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PaymentCreditDay"]) : 0;
+            model.PaymentCreditDay = DS.Tables[0].Rows[0]["CreditDays"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["CreditDays"]) : 0;
             model.GSTNO = DS.Tables[0].Rows[0]["GSTNO"]?.ToString();
-            //model.GstRegUnreg = DS.Tables[0].Rows[0]["GstRegUnreg"]?.ToString();
+            model.GSTType = DS.Tables[0].Rows[0]["GSTType"]?.ToString();
+            model.GSTRegistered = DS.Tables[0].Rows[0]["GSTRegistered"]?.ToString();
             model.DomesticExportNEPZ = DS.Tables[0].Rows[0]["DomesticExportNEPZ"]?.ToString();
             model.Transporter = DS.Tables[0].Rows[0]["Transporter"]?.ToString();
             model.Vehicleno = DS.Tables[0].Rows[0]["Vehicleno"]?.ToString();
@@ -283,8 +284,8 @@ namespace eTactWeb.Data.DAL
                         AgainstPurchaseVoucherNo = row["AgainstPurchaseVoucherNo"]?.ToString(),
                         PurchaseBillType = row["DebitNotePurchaseRejection"]?.ToString(),
                         ItemCode = row["PurchaseRejItemCode"] != DBNull.Value ? Convert.ToInt32(row["PurchaseRejItemCode"]) : 0,
-                        //PartCode = row["PartCode"]?.ToString(),
-                        //ItemName = row["itemNamePartCode"]?.ToString(),
+                        PartCode = row["PartCode"]?.ToString(),
+                        ItemName = row["ItemName"]?.ToString(),
                         BillQty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
                         Unit = row["Unit"]?.ToString(),
                         BillRate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,

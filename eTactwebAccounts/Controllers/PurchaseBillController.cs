@@ -1623,6 +1623,8 @@ public class PurchaseBillController : Controller
     private static DataTable GetTDSDetailTable(List<TDSModel> TDSDetailList, PurchaseBillModel MainModel)
     {
         DataTable Table = new();
+
+        #region Columns
         Table.Columns.Add("PurchBillEntryId", typeof(int));
         Table.Columns.Add("PurchBillYearCode", typeof(int));
         Table.Columns.Add("SeqNo", typeof(int));
@@ -1647,43 +1649,15 @@ public class PurchaseBillController : Controller
         Table.Columns.Add("BankYearCode", typeof(int));
         Table.Columns.Add("RemainingAmt", typeof(float));
         Table.Columns.Add("RoundoffAmt", typeof(float));
+        #endregion
 
         if (TDSDetailList != null && TDSDetailList.Count > 0)
         {
             foreach (TDSModel Item in TDSDetailList)
             {
-                DateTime InvoiceDate = new DateTime(2000, 1, 1);
-                DateTime challanDate = new DateTime(2000, 1, 1);
-                DateTime BankVoucherDate = new DateTime(2000, 1, 1);
-                string InvoiceDt = "";
-                string challanDt = "";
-                string BankVoucherDt = "";
-
-                #region Formats
-                string[] formats = {
-                    "dd-MM-yyyy HH:mm:ss",
-                    "dd/MM/yyyy HH:mm:ss",
-                    "yyyy-MM-dd HH:mm:ss",
-                    "MM/dd/yyyy HH:mm:ss",
-                    "dd-MM-yyyy",
-                    "dd/MM/yyyy",
-                    "yyyy-MM-dd",
-                    "MM/dd/yyyy"
-                };
-                #endregion
-
-                if (MainModel.InvDate != null)
-                {
-                    DateTime.TryParseExact(MainModel.InvDate, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out InvoiceDate);
-                    //DateTime.TryParse(MainModel.InvDate, CultureInfo.InvariantCulture, out InvoiceDate);
-                    InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
-                }
-                else
-                {
-                    InvoiceDt = DateTime.Today.ToString();
-                }
-                challanDt = DateTime.Today.ToString();
-                BankVoucherDt = DateTime.Today.ToString();
+                DateTime invoiceDate = ParseSafeDate(MainModel.InvDate);
+                DateTime challanDate = DateTime.Today;
+                DateTime bankVoucherDate = DateTime.Today;
 
                 Table.Rows.Add(
                     new object[]
@@ -1692,7 +1666,7 @@ public class PurchaseBillController : Controller
                     MainModel.YearCode > 0 ? MainModel.YearCode : 0,
                     Item.TDSSeqNo,
                     MainModel.InvNo ?? string.Empty,
-                    InvoiceDt,
+                    invoiceDate,
                     !string.IsNullOrEmpty(MainModel.PurchVouchNo) ? MainModel.PurchVouchNo : string.Empty,
                     MainModel.AccountCode,
                     Item.TDSTaxType,
@@ -1705,16 +1679,17 @@ public class PurchaseBillController : Controller
                     Item.TDSRemark ?? string.Empty,
                     "PurchaseBill",
                     string.Empty,
-                    challanDt,
+                    challanDate,
                     string.Empty,
-                    BankVoucherDt,
+                    bankVoucherDate,
                     0,
                     0,
                     0f,
-                    Item.TDSRoundOffAmt ?? 0,
+                    Item.TDSRoundOffAmt ?? 0
                     });
             }
         }
+
         return Table;
     }
     private static DataTable GetDbCrDetailTable(PurchaseBillModel MainModel)

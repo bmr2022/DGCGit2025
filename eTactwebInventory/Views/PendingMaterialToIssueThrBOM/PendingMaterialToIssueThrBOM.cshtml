@@ -112,7 +112,7 @@
 
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label asp-for="GlobalSearch" class="form-label">Global Search</label>
-                                <input type="text" class="form-control" asp-for="GlobalSearch" id="search-box" value="@Model.GlobalSearch" placeholder="Search..." />
+                                <input type="text" class="form-control" asp-for="GlobalSearch" id="search-box" onkeyup="renderPage(1)" value="@Model.GlobalSearch" placeholder="Search..." />
                             </div>
 
                             <div class=" d-flex justify-content-center mt-3" width="inherit">
@@ -191,7 +191,8 @@
                     </table>
                 </div>
                 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
-            </div>
+            <div id="paginationControls"></div>
+
         </div>
     </div>
 </div>
@@ -269,7 +270,7 @@
 
             // showDetail();
         });
-
+       
         $(document).on("click", ".sortCol", function () {
 
             var $column = $(this).parent().closest("th");
@@ -539,8 +540,10 @@
             }
 
         });
-
-        function showDetail() {
+        let detailData = []; 
+        let currentPage = 1;
+        const pageSize = 50;
+        /* function showDetail() {
              
             $('#checkLabel,#TryAltItem').hide();
             $('#TryAltItem').prop("checked", false);
@@ -702,6 +705,488 @@
                 },
                 error: function (errMsg) {
                     $.notify(errMsg, { position: "top center", className: "error" });
+              }
+            });
+        }
+        */
+        function showDetail() {
+
+    $('#checkLabel,#TryAltItem').hide();
+    $('#TryAltItem').prop("checked", false);
+
+    if ($('#FromStore').val() == null) {
+        AddErrorCls('FromStore');
+    } else {
+        RemoveErrorCls('FromStore');
+    }
+
+    var fromDate = $('#FromDate').val();
+    var toDate = $('#ToDate').val();
+    var parts = toDate.split('/');
+    var ReqNo = $('#ReqNo').find(':selected').text() == '-Select-' ? null : $('#ReqNo').find(':selected').text();
+    var WorkCenter = $('#WorkCenter').val() == '' ? 0 : parseInt($('#WorkCenter').val());
+    var DeptName = $('#DeptName').val() == '' ? 0 : parseInt($('#DeptName').val());
+    var ToDate = $('#ToDate').val();
+    var ItemCode = $('#ItemName').val();
+    var wono = '';
+    var reqYearCode = $('#ReqYearCode').val();
+    var GlobalSearch = $('#search-box').val();
+    var FromStore = $('#FromStore').find(':selected').text() == '-Select-' ? null : $('#FromStore').find(':selected').text();
+    var storeId = $('#FromStore').val();
+    var issuedDate = $('#IssueDate').val();
+    var ItemName = $('#ItemName :selected').text().split("-")[0];
+
+    var today = new Date();
+    var year = today.getFullYear();
+    var month = today.getMonth() + 1; // Months are 0-based in JS
+    var financialYearStart, financialYearEnd;
+
+    if (month < 4) {
+        financialYearStart = (year - 1);
+        financialYearEnd = year;
+    } else {
+        financialYearStart = year;
+        financialYearEnd = (year + 1);
+    }
+
+    var YearCode = financialYearStart;
+
+    $.ajax({
+        url: "@Url.Action("ShowDetail")",
+        type: "POST",
+        async: false,
+        data: {
+            FromDate: fromDate,
+            ToDate: toDate,
+            ReqNo: ReqNo,
+            YearCode: YearCode,
+            ItemCode: ItemCode,
+            WoNo: wono,
+            WorkCenter: WorkCenter,
+            DeptName: DeptName,
+            ReqYear: reqYearCode,
+            IssueDate: issuedDate,
+            GlobalSearch: GlobalSearch,
+            FromStore: FromStore,
+            StoreId: storeId
+        },
+        success: function (data) {
+            if (data != null) {
+                var obj = $.parseJSON(data);
+                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                    detailData = obj.Result.Table;
+                    currentPage = 1;
+                    renderPage(currentPage);
+                    renderPaginationControls();
+                }
+            }
+        },
+        error: function (errMsg) {
+            $.notify(errMsg, { position: "top center", className: "error" });
+        }
+    });
+}
+            
+
+function renderPage(page) {
+    debugger;
+    $('#divPendIssueGrid').empty();
+
+    
+    var searchValue = $('#search-box').val().toLowerCase();
+
+    
+    var filteredData = detailData.filter(function (item) {
+        return (
+            (item.PartCode && item.PartCode.toLowerCase().includes(searchValue)) ||
+            (item.ItemName && item.ItemName.toLowerCase().includes(searchValue))
+        );
+    });
+               
+
+    var start = (page - 1) * pageSize;
+    var end = start + pageSize;
+    var pageData = filteredData.slice(start, end);
+
+    var html1 = '';
+                for (var i = 0; i < pageData.length; i++) {
+                        let item = pageData[i];
+                        // Use your existing row building code here, but adjust IDs/indexes for global uniqueness
+                        // For example, use (start + i) as index instead of i
+
+                        html1 += '<tr style="white-space:nowrap;" id="PendingGrid' + (start + i) + '" onclick= "selection(this)">'
+                            + '<td class="styled-cell"><a style="" onclick="showToTransfer(' + (start + i) + ')">' + item.ReqNo + '</a></td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly size="7%" class="styled-input" id="PartCode' + (start + i) + '" value="' + escapeHtml(item.PartCode) + '">'
+                            + '<input class="styled-input" type="hidden" id="ReqNo' + (start + i) + '" value=' + item.ReqNo + ' />'
+                            + '<input class="styled-input" type="hidden" id="ItemCode' + (start + i) + '" value=' + item.itemcode + ' />'
+                            + '<input type="hidden" id="IssuedAlternateItem' + (start + i) + '" value="N" />'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input size="60%" readonly class="styled-input" id="ItemName' + (start + i) + '" value="' + escapeHtml(item.ItemName ?? '') + '" >'
+                            + '</td>'
+                            + '<td class="styled-cell" style="width:30px !important;">'
+                            + '<input readonly class="styled-input styled-qty" id="ReqQty' + (start + i) + '" value=' + item.ReqQty + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="PendQty' + (start + i) + '" value=' + item.PendQty + '>'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="PQty' + (start + i) + '" value=' + item.PendAfterIssue + '  >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input  readonly class="styled-input styled-qty" id="Unit' + (start + i) + '" value=' + item.Unit + '>'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="StdPacking' + (start + i) + '" value=' + item.StdPacking + ' readonly >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input styled-qty" readonly id="Stock' + (start + i) + '" value=' + item.ToatlStock + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input styled-qty" readonly id="BatchStock' + (start + i) + '" value=' + item.BatchStock + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input" type="hidden" id="StoreId' + (start + i) + '" value=' + item.storeid + ' />'
+                            + '<input readonly class="styled-input" style="width:100px !important" id="StoreName' + (start + i) + '" value=' + JSON.stringify(item.StoreName) + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="IssueQty' + (start + i) + '" value=' + item.IssueQty + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input"id="BatchNo' + (start + i) + '" value="' + escapeHtml(item.BatchNo) + '">'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input size="40%" readonly class="styled-input"id="UniqueBatchNo' + (start + i) + '" value=' + escapeHtml(item.UniqueBatchNo) + '>'
+                            + '</td>'
+                            + '<input type="hidden" class="styled-input"id="Batchdate' + (start + i) + '" value=' + item.Batchdate + ' >'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="ReqYearCode' + (start + i) + '"  value=' + item.ReqYearCode + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input"id="ReqDate' + (start + i) + '" value=' + item.ReqDate.split("T")[0] + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="AltQty' + (start + i) + '" value=' + item.AltQty + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="AltUnit' + (start + i) + '" value=' + item.AltUnit + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input readonly class="styled-input styled-qty" id="Rate' + (start + i) + '" value=' + item.Rate + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input" readonly id="Remark' + (start + i) + '" value=' + item.Remark + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input" readonly id="AltItemName' + (start + i) + '" />'
+                            + '<input class="styled-input" type="hidden" readonly id="AltItemCode' + (start + i) + '" value=' + item.AltItemCode + '>'
+                            + '<input type="hidden" id="OriginalItemCode' + (start + i) + '" value="0" />'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input" id="AltPartCode' + (start + i) + '" />'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input" readonly id="CostCenterId' + (start + i) + '" value=' + item.CostCenterId + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input" readonly id="ItemSize' + (start + i) + '" value=' + item.ItemSize + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input" readonly id="ItemColor' + (start + i) + '" value=' + item.ItemColor + ' >'
+                            + '</td>'
+                            + '<td class="styled-cell">'
+                            + '<input class="styled-input" readonly id="WorkCenter' + (start + i) + '" value=' + item.WorkCenter + ' >'
+                            + '<input class="styled-input" readonly id="WCId' + (start + i) + '" value=' + item.WCId + ' >'
+                            + '</td>'
+                            + '</tr>';
+                    }
+
+                    $('#divPendIssueGrid').append(html1);
+
+                    // Other UI stuff that you want to do on each page render
+                    if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
+                        $('#TransertoIssBtn').css("pointer-events", "none");
+                    } else {
+                        $('#TransertoIssBtn').css("pointer-events", "auto");
+                        $('#checkLabel,#TryAltItem').show();
+                    }
+
+                var cumulativeTotal = Math.min(page * pageSize, filteredData.length);
+            $('#totalRows').text(cumulativeTotal);
+
+   
+    ColorCodingStockandIssue();
+}
+
+
+        // function renderPage(page) {
+        //     debugger
+        //     $('#divPendIssueGrid').empty();
+        //     var start = (page - 1) * pageSize;
+        //     var end = start + pageSize;
+        //     var pageData = detailData.slice(start, end);
+
+        //     var html1 = '';
+        //     for (var i = 0; i < pageData.length; i++) {
+        //         let item = pageData[i];
+        //         // Use your existing row building code here, but adjust IDs/indexes for global uniqueness
+        //         // For example, use (start + i) as index instead of i
+
+        //         html1 += '<tr style="white-space:nowrap;" id="PendingGrid' + (start + i) + '" onclick= "selection(this)">'
+        //             + '<td class="styled-cell"><a style="" onclick="showToTransfer(' + (start + i) + ')">' + item.ReqNo + '</a></td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly size="7%" class="styled-input" id="PartCode' + (start + i) + '" value="' + escapeHtml(item.PartCode) + '">'
+        //             + '<input class="styled-input" type="hidden" id="ReqNo' + (start + i) + '" value=' + item.ReqNo + ' />'
+        //             + '<input class="styled-input" type="hidden" id="ItemCode' + (start + i) + '" value=' + item.itemcode + ' />'
+        //             + '<input type="hidden" id="IssuedAlternateItem' + (start + i) + '" value="N" />'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input size="60%" readonly class="styled-input" id="ItemName' + (start + i) + '" value="' + escapeHtml(item.ItemName ?? '') + '" >'
+        //             + '</td>'
+        //             + '<td class="styled-cell" style="width:30px !important;">'
+        //             + '<input readonly class="styled-input styled-qty" id="ReqQty' + (start + i) + '" value=' + item.ReqQty + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="PendQty' + (start + i) + '" value=' + item.PendQty + '>'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="PQty' + (start + i) + '" value=' + item.PendAfterIssue + '  >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input  readonly class="styled-input styled-qty" id="Unit' + (start + i) + '" value=' + item.Unit + '>'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="StdPacking' + (start + i) + '" value=' + item.StdPacking + ' readonly >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input styled-qty" readonly id="Stock' + (start + i) + '" value=' + item.ToatlStock + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input styled-qty" readonly id="BatchStock' + (start + i) + '" value=' + item.BatchStock + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input" type="hidden" id="StoreId' + (start + i) + '" value=' + item.storeid + ' />'
+        //             + '<input readonly class="styled-input" style="width:100px !important" id="StoreName' + (start + i) + '" value=' + JSON.stringify(item.StoreName) + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="IssueQty' + (start + i) + '" value=' + item.IssueQty + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input"id="BatchNo' + (start + i) + '" value="' + escapeHtml(item.BatchNo) + '">'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input size="40%" readonly class="styled-input"id="UniqueBatchNo' + (start + i) + '" value=' + escapeHtml(item.UniqueBatchNo) + '>'
+        //             + '</td>'
+        //             + '<input type="hidden" class="styled-input"id="Batchdate' + (start + i) + '" value=' + item.Batchdate + ' >'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="ReqYearCode' + (start + i) + '"  value=' + item.ReqYearCode + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input"id="ReqDate' + (start + i) + '" value=' + item.ReqDate.split("T")[0] + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="AltQty' + (start + i) + '" value=' + item.AltQty + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="AltUnit' + (start + i) + '" value=' + item.AltUnit + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input readonly class="styled-input styled-qty" id="Rate' + (start + i) + '" value=' + item.Rate + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input" readonly id="Remark' + (start + i) + '" value=' + item.Remark + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input" readonly id="AltItemName' + (start + i) + '" />'
+        //             + '<input class="styled-input" type="hidden" readonly id="AltItemCode' + (start + i) + '" value=' + item.AltItemCode + '>'
+        //             + '<input type="hidden" id="OriginalItemCode' + (start + i) + '" value="0" />'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input" id="AltPartCode' + (start + i) + '" />'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input" readonly id="CostCenterId' + (start + i) + '" value=' + item.CostCenterId + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input" readonly id="ItemSize' + (start + i) + '" value=' + item.ItemSize + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input" readonly id="ItemColor' + (start + i) + '" value=' + item.ItemColor + ' >'
+        //             + '</td>'
+        //             + '<td class="styled-cell">'
+        //             + '<input class="styled-input" readonly id="WorkCenter' + (start + i) + '" value=' + item.WorkCenter + ' >'
+        //             + '<input class="styled-input" readonly id="WCId' + (start + i) + '" value=' + item.WCId + ' >'
+        //             + '</td>'
+        //             + '</tr>';
+        //     }
+
+        //     $('#divPendIssueGrid').append(html1);
+
+        //     // Other UI stuff that you want to do on each page render
+        //     if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
+        //         $('#TransertoIssBtn').css("pointer-events", "none");
+        //     } else {
+        //         $('#TransertoIssBtn').css("pointer-events", "auto");
+        //         $('#checkLabel,#TryAltItem').show();
+        //     }
+
+        //     ColorCodingStockandIssue();
+        //     $('#totalRows').text(detailData.length);
+        // }
+        function renderPaginationControls() {
+    $('#paginationControls').empty();
+    let totalPages = Math.ceil(detailData.length / pageSize);
+
+    if (totalPages <= 1) return;
+
+    let paginationHtml = '';
+
+    const btnStyle = 'style="margin:3px; padding:10px 16px; font-size:16px; color:#fff; background-color:#007bff; border:none; border-radius:5px; cursor:pointer;"';
+    const disabledStyle = 'style="margin:3px; padding:10px 16px; font-size:16px; background-color:#ccc; color:#fff; border:none; border-radius:5px;"';
+
+    if (currentPage > 1) {
+        paginationHtml += `<button onclick="goToPage(${currentPage - 1})" ${btnStyle}>Prev</button>`;
+    }
+
+    paginationHtml += `<button ${currentPage === 1 ? disabledStyle : btnStyle} ${currentPage !== 1 ? `onclick="goToPage(1)"` : ''}>1</button>`;
+
+    if (totalPages >= 2) {
+        if (currentPage === 2) {
+            paginationHtml += `<button disabled ${disabledStyle}>2</button>`;
+        } else if (currentPage > 2) {
+            paginationHtml += `<button onclick="goToPage(2)" ${btnStyle}>2</button>`;
+        }
+    }
+
+    if (currentPage > 3 && currentPage < totalPages - 1) {
+        paginationHtml += `<span style="margin:3px; font-size:16px;">...</span>`;
+    }
+
+    if (currentPage > 2 && currentPage < totalPages) {
+        paginationHtml += `<button disabled ${disabledStyle}>${currentPage}</button>`;
+    }
+
+    if (currentPage < totalPages - 2) {
+        paginationHtml += `<span style="margin:3px; font-size:16px;">...</span>`;
+    }
+
+    if (totalPages > 2) {
+        paginationHtml += `<button ${currentPage === totalPages ? disabledStyle : btnStyle} ${currentPage !== totalPages ? `onclick="goToPage(${totalPages})"` : ''}>${totalPages}</button>`;
+    }
+
+    if (currentPage < totalPages) {
+        paginationHtml += `<button onclick="goToPage(${currentPage + 1})" ${btnStyle}>Next</button>`;
+    }
+
+    $('#paginationControls').append(paginationHtml);
+}
+
+
+        function goToPage(page) {
+            currentPage = page;
+            renderPage(currentPage);
+            renderPaginationControls();
+        }
+
+        function loadPage(pageNumber) {
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var parts = toDate ? toDate.split('/') : [];
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth() + 1; // JS months are 0-based
+            var financialYearStart = (month < 4) ? (year - 1) : year;
+            var financialYearEnd = (month < 4) ? year : (year + 1);
+
+            var formData = {
+                FromDate: fromDate,
+                ToDate: toDate,
+                ReqNo: $('#ReqNo').find(':selected').text() == '-Select-' ? null : $('#ReqNo').find(':selected').text(),
+                WorkCenter: $('#WorkCenter').val() == '' ? 0 : parseInt($('#WorkCenter').val()),
+                DeptName: $('#DeptName').val() == '' ? 0 : parseInt($('#DeptName').val()),
+                ItemCode: $('#ItemName').val(),
+                ItemName: $('#ItemName :selected').text().split("-")[0],
+                ReqYearCode: $('#ReqYearCode').val(),
+                GlobalSearch: $('#search-box').val(),
+                FromStore: $('#FromStore').find(':selected').text() == '-Select-' ? null : $('#FromStore').find(':selected').text(),
+                StoreId: $('#FromStore').val(),
+                IssueDate: $('#IssueDate').val(),
+                YearCode: financialYearStart,
+                PageNumber: pageNumber
+            };
+
+            $.ajax({
+                type: 'GET',
+                url: "@Url.Action("ShowDetail")",
+                data: formData,
+                success: function (data) {
+                    if (data != null) {
+                        $('#divPendIssueGrid').empty();
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var html1 = '';
+                            for (var i = 0; i < obj.Result.Table.length; i++) {
+                                var row = obj.Result.Table[i];
+                                html1 += `<tr style="white-space:nowrap; margin-top:4px; margin-bottom:4px;" id="PendingGrid${i}" onclick="selection(this)">
+                                    <td class="styled-cell"><a onclick="showToTransfer(${i})">${row.ReqNo}</a></td>
+                                    <td class="styled-cell">
+                                        <input readonly size="7%" class="styled-input" id="PartCode${i}" value="${escapeHtml(row.PartCode)}">
+                                        <input type="hidden" id="ReqNo${i}" value="${row.ReqNo}" />
+                                        <input type="hidden" id="ItemCode${i}" value="${row.itemcode}" />
+                                        <input type="hidden" id="IssuedAlternateItem${i}" value="N" />
+                                    </td>
+                                    <td class="styled-cell"><input size="60%" readonly class="styled-input" id="ItemName${i}" value="${escapeHtml(row.ItemName ?? '')}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="ReqQty${i}" value="${row.ReqQty}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="PendQty${i}" value="${row.PendQty}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="PQty${i}" value="${row.PendAfterIssue}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="Unit${i}" value="${row.Unit}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="StdPacking${i}" value="${row.StdPacking}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="Stock${i}" value="${row.ToatlStock}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="BatchStock${i}" value="${row.BatchStock}"></td>
+                                    <td class="styled-cell">
+                                        <input type="hidden" id="StoreId${i}" value="${row.storeid}" />
+                                        <input readonly class="styled-input" style="width:100px !important" id="StoreName${i}" value="${row.StoreName}">
+                                    </td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="IssueQty${i}" value="${row.IssueQty}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input" id="BatchNo${i}" value="${escapeHtml(row.BatchNo)}"></td>
+                                    <td class="styled-cell"><input size="40%" readonly class="styled-input" id="UniqueBatchNo${i}" value="${escapeHtml(row.UniqueBatchNo)}"></td>
+                                    <input type="hidden" id="Batchdate${i}" value="${row.Batchdate}">
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="ReqYearCode${i}" value="${row.ReqYearCode}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input" id="ReqDate${i}" value="${row.ReqDate.split("T")[0]}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="AltQty${i}" value="${row.AltQty}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="AltUnit${i}" value="${row.AltUnit}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input styled-qty" id="Rate${i}" value="${row.Rate}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input" id="Remark${i}" value="${row.Remark}"></td>
+                                    <td class="styled-cell">
+                                        <input readonly class="styled-input" id="AltItemName${i}" />
+                                        <input type="hidden" id="AltItemCode${i}" value="${row.AltItemCode}">
+                                        <input type="hidden" id="OriginalItemCode${i}" value="0" />
+                                    </td>
+                                    <td class="styled-cell"><input class="styled-input" id="AltPartCode${i}" /></td>
+                                    <td class="styled-cell"><input readonly class="styled-input" id="CostCenterId${i}" value="${row.CostCenterId}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input" id="ItemSize${i}" value="${row.ItemSize}"></td>
+                                    <td class="styled-cell"><input readonly class="styled-input" id="ItemColor${i}" value="${row.ItemColor}"></td>
+                                    <td class="styled-cell">
+                                        <input readonly class="styled-input" id="WorkCenter${i}" value="${row.WorkCenter}">
+                                        <input readonly class="styled-input" id="WCId${i}" value="${row.WCId}">
+                                    </td>
+                                </tr>`;
+                            }
+
+                            $('#divPendIssueGrid').append(html1);
+
+                            if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
+                                $('#TransertoIssBtn').css("pointer-events", "none");
+                            } else {
+                                $('#TransertoIssBtn').css("pointer-events", "auto");
+                                $('#checkLabel,#TryAltItem').show();
+                            }
+
+                            ColorCodingStockandIssue();
+                            $('#totalRows').text($('#divPendIssueGrid tr').length);
+                        }
+                    }
                 }
             });
         }
@@ -723,68 +1208,68 @@
 
         var currentSearchColumn = null;
 
-        $("#search-box").on("keyup", function () {
+        // $("#search-box").on("keyup", function () {
 
-            var value = $(this).val().toLowerCase();
-            $("#divPendIssueGrid tr").filter(function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#divPendIssueGrid tr").filter(function () {
 
-                if (currentSearchColumn !== null) {
+        //         if (currentSearchColumn !== null) {
 
-                    var rowContainsValue = false;
-                    $(this).find('td').eq(currentSearchColumn).each(function () {
-                        var columnInput = $(this).find('input, select, a');
-                        var columnInputValue = "";
+        //             var rowContainsValue = false;
+        //             $(this).find('td').eq(currentSearchColumn).each(function () {
+        //                 var columnInput = $(this).find('input, select, a');
+        //                 var columnInputValue = "";
 
-                        if (columnInput.is('input')) {
-                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
-                        } else if (columnInput.is('select')) {
-                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
-                        } else if (columnInput.is('a')) {
-                            columnInputValue = (columnInput.text() == "" || columnInput.text() == undefined) ? "" : columnInput.text().toLowerCase();
-                        }
+        //                 if (columnInput.is('input')) {
+        //                     columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+        //                 } else if (columnInput.is('select')) {
+        //                     columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+        //                 } else if (columnInput.is('a')) {
+        //                     columnInputValue = (columnInput.text() == "" || columnInput.text() == undefined) ? "" : columnInput.text().toLowerCase();
+        //                 }
 
-                        if (columnInputValue.indexOf(value) > -1) {
-                            rowContainsValue = true;
-                            return false;
-                        }
-                    });
+        //                 if (columnInputValue.indexOf(value) > -1) {
+        //                     rowContainsValue = true;
+        //                     return false;
+        //                 }
+        //             });
 
-                    $(this).toggle(rowContainsValue);
+        //             $(this).toggle(rowContainsValue);
 
-                } else {
-                    var rowContainsValue = false;
+        //         } else {
+        //             var rowContainsValue = false;
 
-                    $(this).find('td').each(function () {
+        //             $(this).find('td').each(function () {
 
-                        var columnInput = $(this).find('input, select,a');
-                        var columnInputValue = "";
+        //                 var columnInput = $(this).find('input, select,a');
+        //                 var columnInputValue = "";
 
-                        if (columnInput.is('input')) {
-                            columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
-                        } else if (columnInput.is('select')) {
-                            columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
-                        }
-                        else if (columnInput.is('a')) {
-                            columnInputValue = (columnInput.text() == "" || columnInput.text() == undefined) ? "" : columnInput.text().toLowerCase();
-                        }
+        //                 if (columnInput.is('input')) {
+        //                     columnInputValue = (columnInput.val() == "" || columnInput.val() == undefined) ? "" : columnInput.val().toLowerCase();
+        //                 } else if (columnInput.is('select')) {
+        //                     columnInputValue = (columnInput.find('option:selected').text() == "" || columnInput.find('option:selected').text() == undefined) ? "" : columnInput.find('option:selected').text().toLowerCase();
+        //                 }
+        //                 else if (columnInput.is('a')) {
+        //                     columnInputValue = (columnInput.text() == "" || columnInput.text() == undefined) ? "" : columnInput.text().toLowerCase();
+        //                 }
 
-                        if (columnInputValue.indexOf(value) > -1) {
-                            rowContainsValue = true;
-                            return false;
-                        }
+        //                 if (columnInputValue.indexOf(value) > -1) {
+        //                     rowContainsValue = true;
+        //                     return false;
+        //                 }
 
-                    });
+        //             });
 
-                    $(this).toggle(rowContainsValue);
-                }
-            });
-        });
+        //             $(this).toggle(rowContainsValue);
+        //         }
+        //     });
+        // });
 
-        $(document).on("click", "th[data-columnno]", function () {
+        // $(document).on("click", "th[data-columnno]", function () {
 
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        // });
 
         function showToTransfer(i) {
              
