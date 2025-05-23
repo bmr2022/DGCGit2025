@@ -2,16 +2,11 @@
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
-using Newtonsoft.Json.Linq;
-using eTactWeb.DOM.Models;
-using System.Net;
-using System.Data;
-using System.Globalization;
 using Newtonsoft.Json;
-using System.Runtime.Caching;
-using System.Reflection;
-using System.Xml.Linq;
-
+using eTactWeb.DOM.Models;
+using System.Globalization;
+using ClosedXML.Excel;
+using System;
 namespace eTactWeb.Controllers
 {
     public class PORegisterController : Controller
@@ -95,9 +90,9 @@ namespace eTactWeb.Controllers
             };
 
             _MemoryCache.Set("KeyPOList", modelList, cacheEntryOptions);
-          
-            //string serializedGrid = JsonConvert.SerializeObject(model.PORegisterDetails);
-            //HttpContext.Session.SetString("KeyPORegsiterList", serializedGrid);
+
+            string serializedGrid = JsonConvert.SerializeObject(modelList);
+            HttpContext.Session.SetString("KeyPOList", serializedGrid);
             return PartialView("_PORegisterGrid", model);
         }
         [HttpGet]
@@ -251,5 +246,352 @@ namespace eTactWeb.Controllers
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
+
+
+        public async Task<IActionResult> ExportPOStockRegisterToExcel(string ReportType)
+        {
+            string modelJson = HttpContext.Session.GetString("KeyPOList");
+            List<PORegisterDetail> stockRegisterList = new List<PORegisterDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<PORegisterDetail>>(modelJson);
+            }
+
+            if (stockRegisterList == null)
+                return NotFound("No data available to export.");
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("PO Register");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<PORegisterDetail>>>
+            {
+                { "LISTOFSCHEDULESUMMARY", EXPORTLISTOFSCHEDULESUMMARY },
+                { "LISTOFPO", EXPORTLISTOFPO },
+
+                { "LISTOFSCHEDULE", EXPORTLISTOFSCHEDULE },
+                { "SUMM", EXPORTSUMM },
+                { "DETAIL", EXPORTDETAIL },
+                { "SUMMRATEING", EXPORTSUMMRATEING },
+                //{ "SUMMRATEING", EXPORTSUMMRATEING },
+                //{ "SUMMRATEING", EXPORTSUMMRATEING },
+                //{ "SUMMRATEING", EXPORTSUMMRATEING },
+                //{ "SUMMRATEING", EXPORTSUMMRATEING },
+                //{ "SUMMRATEING", EXPORTSUMMRATEING },
+                //{ "CONSOLIDATED", EXPORTCONSOLIDATED },
+                //{ "PARTYWISECONSOLIDATED", EXPORTPARTYWISECONSOLIDATED },
+                //{ "ITEMWISECONSOLIDATED", EXPORTITEMWISECONSOLIDATED },
+                //{ "PRICEHISTORY", EXPORTPRICEHISTORY },
+                //{ "SUMMRATEING", EXPORTSUMMRATEING },
+                // Add more report types here if needed
+            };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, stockRegisterList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "POStockRegisterReport.xlsx"
+            );
+        }
+
+
+        private void EXPORTLISTOFSCHEDULESUMMARY(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+            "Sr#", "PONO", "PO Date", "Schedule No", "Schedule Date", "Vendor",
+"Schedule Effective From Date", "Schedule Effective Till Date",
+"PO Effective Date", "PO Close Date", "PO Amendment Effective Date",
+"Order Type", "Delivery Terms", "Delivery Date", "PO FOR", "Currency"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.PONO;
+                sheet.Cell(row, 3).Value = item.PODate;
+                sheet.Cell(row, 4).Value = item.SchNO;
+                sheet.Cell(row, 5).Value = item.Schdate;
+                sheet.Cell(row, 6).Value = item.Vendor;
+                sheet.Cell(row, 7).Value = item.ScheduleEffectiveFromDate;
+                sheet.Cell(row, 8).Value = item.ScheduleEffectiveTillDate;
+                sheet.Cell(row, 9).Value = item.POEffDate;
+                sheet.Cell(row, 10).Value = item.POclosedate;
+                sheet.Cell(row, 11).Value = item.poAmmeffdate;
+                sheet.Cell(row, 12).Value = item.ordertype;
+                sheet.Cell(row, 13).Value = item.Deliveryterms;
+                sheet.Cell(row, 14).Value = item.deliveryDate;
+                sheet.Cell(row, 15).Value = item.POFOR;
+                sheet.Cell(row, 16).Value = item.Currency;
+                
+                row++;
+            }
+        }
+
+        private void EXPORTLISTOFPO(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+            "srNo", "PONO", "PODate", "POtype", "POQty", "POEffDate", "POclosedate", "poAmmeffdate", "ordertype", "Vendor",
+                "PartCode", "ItemName", "unit", "Rate", "DisPer", "DisAmt", "ItemAmount", "Ammendmentno", "Ammendmentdate", 
+                "Assrate", "Deliveryterms", "deliveryDate", "POQty", "POFOR", "Currency", "Ammno", "AmmDate"
+
+
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.PONO;
+                sheet.Cell(row, 3).Value = item.PODate;
+                sheet.Cell(row, 4).Value = item.POtype;
+                sheet.Cell(row, 5).Value = item.POQty;
+                sheet.Cell(row, 6).Value = item.POEffDate;
+                sheet.Cell(row, 7).Value = item.POclosedate;
+                sheet.Cell(row, 8).Value = item.poAmmeffdate;
+                sheet.Cell(row, 9).Value = item.ordertype;
+                sheet.Cell(row, 10).Value = item.Vendor;
+                sheet.Cell(row, 11).Value = item.PartCode;
+                sheet.Cell(row, 12).Value = item.ItemName;
+                sheet.Cell(row, 13).Value = item.unit;
+                sheet.Cell(row, 14).Value = item.Rate;
+                sheet.Cell(row, 15).Value = item.DisPer;
+                sheet.Cell(row, 16).Value = item.DisAmt;
+                sheet.Cell(row, 17).Value = item.ItemAmount;
+                sheet.Cell(row, 18).Value = item.Ammendmentno;
+                sheet.Cell(row, 19).Value = item.Ammendmentdate;
+                sheet.Cell(row, 20).Value = item.Assrate;
+                sheet.Cell(row, 21).Value = item.Deliveryterms;
+                sheet.Cell(row, 22).Value = item.deliveryDate;
+                sheet.Cell(row, 23).Value = item.POQty;
+                sheet.Cell(row, 24).Value = item.POFOR;
+                sheet.Cell(row, 25).Value = item.Currency;
+                sheet.Cell(row, 26).Value = item.Ammno;
+                sheet.Cell(row, 27).Value = item.AmmDate;
+
+
+
+
+                row++;
+            }
+        }
+
+
+
+        private void EXPORTLISTOFSCHEDULE(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+            "srNo", "PONO", "PODate", "SchNO", "Schdate", "ScheduleEffectiveFromDate", "ScheduleEffectiveTillDate", 
+                "POtype", "POEffDate", "POclosedate", "poAmmeffdate", "ordertype", "Vendor", "PartCode", "ItemName", "unit",
+                "Rate", "SchQty", "DisPer", "DisAmt", "ItemAmount", "Assrate", "Deliveryterms", "deliveryDate", "POFOR", "Currency", "Ammno", "AmmDate"
+
+
+
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.PONO;
+                sheet.Cell(row, 3).Value = item.PODate == null ? string.Empty : item.PODate.Split(" ")[0];
+                sheet.Cell(row, 4).Value = item.SchNO;
+                sheet.Cell(row, 5).Value = item.Schdate == null ? string.Empty : item.Schdate.Split(" ")[0];
+                sheet.Cell(row, 6).Value = item.ScheduleEffectiveFromDate == null ? string.Empty : item.ScheduleEffectiveFromDate.Split(" ")[0];
+                sheet.Cell(row, 7).Value = item.ScheduleEffectiveTillDate == null ? string.Empty : item.ScheduleEffectiveTillDate.Split(" ")[0];
+                sheet.Cell(row, 8).Value = item.POtype;
+                sheet.Cell(row, 9).Value = item.POEffDate == null ? string.Empty : item.POEffDate.Split(" ")[0];
+                sheet.Cell(row, 10).Value = item.POclosedate == null ? string.Empty : item.POclosedate.Split(" ")[0];
+                sheet.Cell(row, 11).Value = item.poAmmeffdate == null ? string.Empty : item.poAmmeffdate.Split(" ")[0];
+                sheet.Cell(row, 12).Value = item.ordertype;
+                sheet.Cell(row, 13).Value = item.Vendor;
+                sheet.Cell(row, 14).Value = item.PartCode;
+                sheet.Cell(row, 15).Value = item.ItemName;
+                sheet.Cell(row, 16).Value = item.unit;
+                sheet.Cell(row, 17).Value = item.Rate;
+                sheet.Cell(row, 18).Value = item.SchQty;
+                sheet.Cell(row, 19).Value = item.DisPer;
+                sheet.Cell(row, 20).Value = item.DisAmt;
+                sheet.Cell(row, 21).Value = item.ItemAmount;
+                sheet.Cell(row, 22).Value = item.Assrate;
+                sheet.Cell(row, 23).Value = item.Deliveryterms;
+                sheet.Cell(row, 24).Value = item.deliveryDate == null ? string.Empty : item.deliveryDate.Split(" ")[0];
+                sheet.Cell(row, 25).Value = item.POFOR;
+                sheet.Cell(row, 26).Value = item.Currency;
+                sheet.Cell(row, 27).Value = item.Ammno;
+                sheet.Cell(row, 28).Value = item.AmmDate == null ? string.Empty : item.AmmDate.Split(" ")[0];
+
+
+
+                row++;
+            }
+        }
+
+
+        private void EXPORTSUMM(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+           "srNo", "Vendor", "PONO", "POEffDate", "POEndDate", "POFOR", "SchNO", "Schdate", "SchYear", "PartCode", "ItemName", "Currency",
+                "PORate", "POQty", "POValue", "RECQty", "QCOKQty", "PendQty", "MinLevel", "unit", "Minlvldays", "ItemGroup", "ItemCategory"
+
+
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.Vendor;
+                sheet.Cell(row, 3).Value = item.PONO;
+                sheet.Cell(row, 4).Value = item.POEffDate == null ? string.Empty : item.POEffDate.Split(" ")[0];
+                sheet.Cell(row, 5).Value = item.POEndDate == null ? string.Empty : item.POEndDate.Split(" ")[0];
+                sheet.Cell(row, 6).Value = item.POFOR;
+                sheet.Cell(row, 7).Value = item.SchNO;
+                sheet.Cell(row, 8).Value = item.Schdate == null ? string.Empty : item.Schdate.Split(" ")[0];
+                sheet.Cell(row, 9).Value = item.SchYear;
+                sheet.Cell(row, 10).Value = item.PartCode;
+                sheet.Cell(row, 11).Value = item.ItemName;
+                sheet.Cell(row, 12).Value = item.Currency;
+                sheet.Cell(row, 13).Value = item.PORate;
+                sheet.Cell(row, 14).Value = item.POQty;
+                sheet.Cell(row, 15).Value = item.POValue;
+                sheet.Cell(row, 16).Value = item.RECQty;
+                sheet.Cell(row, 17).Value = item.QCOKQty;
+                sheet.Cell(row, 18).Value = item.PendQty;
+                sheet.Cell(row, 19).Value = item.MinLevel;
+                sheet.Cell(row, 20).Value = item.unit;
+                sheet.Cell(row, 21).Value = item.Minlvldays;
+                sheet.Cell(row, 22).Value = item.ItemGroup;
+                sheet.Cell(row, 23).Value = item.ItemCategory;
+
+
+
+
+                row++;
+            }
+        }
+
+        private void EXPORTDETAIL(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+            "srNo", "PONO", "PODate", "Account_name", "POFOR", "SchNO", "Schdate", "PartCode", "ItemName", "POQty", "Currency",
+                "PORate", "MRNNo", "MRNDATE", "GateNo", "GateYearCode", "GateDate", "BillQty", "RECQty", "AcceptedQty", "InvNo",
+                "INVDate", "MIRNo", "MIRDate", "BatchNo", "UniqueBatchno", "ItemGroup", "ItemCategory", "POYearCode", "SchYear", "DOMESTICIMPORT"
+
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.PONO;
+                sheet.Cell(row, 3).Value = item.PODate;
+                sheet.Cell(row, 4).Value = item.Account_name;
+                sheet.Cell(row, 5).Value = item.POFOR;
+                sheet.Cell(row, 6).Value = item.SchNO;
+                sheet.Cell(row, 7).Value = item.Schdate;
+                sheet.Cell(row, 8).Value = item.PartCode;
+                sheet.Cell(row, 9).Value = item.ItemName;
+                sheet.Cell(row, 10).Value = item.POQty;
+                sheet.Cell(row, 11).Value = item.Currency;
+                sheet.Cell(row, 12).Value = item.PORate;
+                sheet.Cell(row, 13).Value = item.MRNNo;
+                sheet.Cell(row, 14).Value = item.MRNDATE;
+                sheet.Cell(row, 15).Value = item.GateNo;
+                sheet.Cell(row, 16).Value = item.GateYearCode;
+                sheet.Cell(row, 17).Value = item.GateDate;
+                sheet.Cell(row, 18).Value = item.BillQty;
+                sheet.Cell(row, 19).Value = item.RECQty;
+                sheet.Cell(row, 20).Value = item.AcceptedQty;
+                sheet.Cell(row, 21).Value = item.InvNo;
+                sheet.Cell(row, 22).Value = item.INVDate;
+                sheet.Cell(row, 23).Value = item.MIRNo;
+                sheet.Cell(row, 24).Value = item.MIRDate;
+                sheet.Cell(row, 25).Value = item.BatchNo;
+                sheet.Cell(row, 26).Value = item.UniqueBatchno;
+                sheet.Cell(row, 27).Value = item.ItemGroup;
+                sheet.Cell(row, 28).Value = item.ItemCategory;
+                sheet.Cell(row, 29).Value = item.POYearCode;
+                sheet.Cell(row, 30).Value = item.SchYear;
+                sheet.Cell(row, 31).Value = item.DOMESTICIMPORT;
+
+
+
+                row++;
+            }
+        }
+
+        private void EXPORTSUMMRATEING(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+            "srNo", "ItemName", "PartCode", "Currency", "POQty", "POValue", "RECQty", "RecValue", "QCOKQty", "BalQty", "BalValue", "Rating", "PartyName"
+
+
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.ItemName;
+                sheet.Cell(row, 3).Value = item.PartCode;
+                sheet.Cell(row, 4).Value = item.Currency;
+                sheet.Cell(row, 5).Value = item.POQty;
+                sheet.Cell(row, 6).Value = item.POValue;
+                sheet.Cell(row, 7).Value = item.RECQty;
+                sheet.Cell(row, 8).Value = item.RecValue;
+                sheet.Cell(row, 9).Value = item.QCOKQty;
+                sheet.Cell(row, 10).Value = item.BalQty;
+                sheet.Cell(row, 11).Value = item.BalValue;
+                sheet.Cell(row, 12).Value = item.Rating;
+                sheet.Cell(row, 13).Value = item.PartyName;
+
+
+                row++;
+            }
+        }
+
+
+
+
+
+
     }
 }

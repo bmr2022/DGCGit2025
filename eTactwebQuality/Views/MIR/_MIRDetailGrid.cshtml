@@ -26,7 +26,9 @@ else
             <td><input type="number" onchange="ToggleRejRecStore(@item.SeqNo);RejectedQtyChange(@item.SeqNo,@item.ItemCode)" style="width:50px !important;" id="RejectedQty-@item.SeqNo" /></td>
             <td><input style="width:50px !important;" type="number" id="AltRejectedQty-@item.SeqNo" /></td>
             <td><select style="width:150px;height:25px" id="RejRecStore-@item.SeqNo" onchange="RejStoreChange(@item.SeqNo)"></select></td>
+            <td><input id="Remarks-@item.SeqNo" /></td>
             <td><input id="RejReason-@item.SeqNo" /></td>
+           
             <td><input type="number" style="width:50px !important;" onchange="ToggleHoldStore(@item.SeqNo);HoldQtyChange(@item.SeqNo,@item.ItemCode)" id="HoldQty-@item.SeqNo" /></td>
             <td><select style="width:150px;height:25px" id="HoldStoreId-@item.SeqNo" onchange="HoldStoreChange(@item.SeqNo)"></select></td>
             <td><input style="width:50px !important;" onchange="ToggleReworkStore(@item.SeqNo);ReworkQtyChange(@item.SeqNo,@item.ItemCode)" id="ReworkQty-@item.SeqNo" /></td>
@@ -41,7 +43,7 @@ else
             <td><input style="width:70px;" id="Unit-@item.SeqNo" value="@item.Unit" readonly></td>
             <td><input style="width:70px;" id="AltUnit-@item.SeqNo" readonly value="@item.AltUnit"></td>
             <td><input style="width:70px !important;" id="AltRecQty-@item.SeqNo" value="@item.ALtRecQty" readonly></td>
-            <td><input id="Remarks-@item.SeqNo" /></td>
+           
             <td><select style="width:150px;height:25px" id="DefaultType-@item.SeqNo"></select></td>
             <td><select style="width:150px;height:25px" id="ApprovedByEmp-@item.SeqNo"></select></td>
             <td><input readonly id="ProcessId-@item.SeqNo" /></td>
