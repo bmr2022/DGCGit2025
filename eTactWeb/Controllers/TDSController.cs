@@ -692,7 +692,7 @@ public class TDSController : Controller
                 {
                     TotalTDSAmt = TdsGrid.Sum(x => x.TDSAmount);
                 }
-                TotalTDSAmt = TotalTDSAmt + MainModel.ItemNetAmount;
+                    TotalTDSAmt = TotalTDSAmt + MainModel.ItemNetAmount;
                 MainModel.TotalTDSAmt = TotalTDSAmt;
 
 
