@@ -51,7 +51,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> BomQty(int RMItemCode)
+        public async Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, float FGQty)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -60,6 +60,9 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Flag", "FILLBOMQTY"));
                 SqlParams.Add(new SqlParameter("@RMItemCode", RMItemCode));
+                SqlParams.Add(new SqlParameter("@FinishItemCode", FinishItemCode));
+                SqlParams.Add(new SqlParameter("@bomNo", bomNo));
+                SqlParams.Add(new SqlParameter("@FGQty", FGQty));
 
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DeassembleItemMainDetail", SqlParams);

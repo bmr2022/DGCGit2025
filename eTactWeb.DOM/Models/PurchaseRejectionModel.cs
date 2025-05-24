@@ -208,10 +208,124 @@ namespace eTactWeb.DOM.Models
     }
     public class AccPurchaseRejectionDashboard : AccPurchaseRejectionModel
     {
+        public string? SummaryDetail { get; set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
         public string? FromDate1 { get; set; }
         public string? ToDate1 { get; set; }
         public string? Searchbox { get; set; }
-        public string SummaryDetail { get; set; }
-        public List<AccPurchaseRejectionDashboard> PurchaseRejectionDashboard { get; set; }
+        public IList<TextValue>? VoucherNoList { get; set; }
+        public IList<TextValue>? InvoiceNoList { get; set; }
+        public IList<TextValue>? VendorNameList { get; set; }
+        public IList<TextValue>? PartCodeList { get; set; }
+        //public IList<TextValue>? ItemNameList { get; set; }
+        public string? DashboardType { get; set; }
+
+        //pagintion
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public int TotalRecords { get; set; }
+
+
+        //Dashboard Grid
+        public IList<AccPurchaseRejectionDashboard> PurchaseRejectionDashboard { get; set; }
+        public int? PurchaseRejEntryId { get; set; }
+        public int? SeqNo { get; set; }
+        public string? ActualEntryByEmpName { get; set; }
+        public string? UpdatedByEmpName { get; set; }
+
+        public string? PurchaseRejEntryDate { get; set; }
+        public DateTime? ActualEntryDate { get; set; }
+        public string? DebitNotePurchaseRejection { get; set; }
+        public string? InvoiceNo { get; set; }
+        public DateTime? InvoiceDate { get; set; }
+        public string? PurchaserejVoucherNo { get; set; }
+        public string? VoucherNo { get; set; }
+        //public string? VoucherDate { get; set; }
+        public string? VendorName { get; set; }
+        public string? VendoreAddress { get; set; }
+        public string? StateName { get; set; }
+        public int? StateCode { get; set; }
+        public string? CreditDays { get; set; }
+        public string? PurchaseRejYearCode { get; set; }
+        public string? PurchaserejRemark { get; set; }
+        public string? PaymentTerm { get; set; }
+        public string? Transporter { get; set; }
+        public string? Vehicleno { get; set; }
+        public string? Distance { get; set; }
+        public string? SubVoucherName { get; set; }
+        public string? DomesticExportNEPZ { get; set; }
+        public string? City { get; set; }
+        public string? Country { get; set; }
+        public string? Currency { get; set; }
+        public string? ExchangeRate { get; set; }
+        public float? BillAmt { get; set; }
+        public float? Taxableamt { get; set; }
+        public float? InvNetAmt { get; set; }
+        public float? RoundOffAmt { get; set; }
+        public string? RoundoffType { get; set; }
+        public string? BalanceSheetClosed { get; set; }
+        public string? LastUpdationDate { get; set; }
+        public string? MachineName { get; set; }
+        public string? CC { get; set; }
+        public string? Uid { get; set; }
+
+        //Detail List
+        public string? PartCode { get; set; }
+        public string? ItemName { get; set; }
+        public string? HSNNO { get; set; }
+        public string? Unit { get; set; }
+        public string? NoOfCase { get; set; }
+        public string BillQty { get; set; }
+        public string RecQty { get; set; }
+        public string? Rate { get; set; }
+        public string? PORate { get; set; }
+        public string? DiscountPer { get; set; }
+        public string? DiscountAmt { get; set; }
+        //[Column(TypeName = "decimal(10, 4)")]
+
+        public decimal? Amount { get; set; }
+        public string? PONo { get; set; }
+        public string? PODate { get; set; }
+        public string? POType { get; set; }
+        public string? SchNo { get; set; }
+        public string? SchDate { get; set; }
+        public string? ItemSize { get; set; }
+        public string? OtherDetail { get; set; }
+        public string? MRP { get; set; }
+        public string? RateUnit { get; set; }
+        public string? RateIncludingTaxes { get; set; }
+        public string? AmtinOtherCurr { get; set; }
+        public string? RateConversionFactor { get; set; }
+        public string? CostCenterName { get; set; }
+        public string? ItemColor { get; set; }
+        public string? ItemModel { get; set; }
+        public string? POYearCode { get; set; }
+        public string? SchYearCode { get; set; }
+        public string? POAmmNo { get; set; }
+        public string? PoRate { get; set; }
+        public string? ProjectNo { get; set; }
+        public string? ProjectDate { get; set; }
+        public string? ProjectYearCode { get; set; }
+        public string? AgainstImportAccountCode { get; set; }
+        public string? AgainstImportInvoiceNo { get; set; }
+        public string? AgainstImportYearCode { get; set; }
+        public string? AgainstImportInvDate { get; set; }
+        public string? PurchBillEntryId { get; set; }
+        public int? PurchBillYearCode { get; set; }
+        public string? ItemOrService { get; set; }
+        public string? PurchaseBillDirectPB { get; set; }
+        public string? ExpenseHead { get; set; }
+        public decimal? ExpenseAmt { get; set; }
+        //Tax detail
+        public string? CGSTHead { get; set; }
+        public decimal? CGSTper { get; set; }
+        public decimal? CGSTAmt { get; set; }
+        public string? SGSTHead { get; set; }
+        public decimal? SGSTper { get; set; }
+        public decimal? SGSTAmt { get; set; }
+        public string? IGSTHead { get; set; }
+        public decimal? IGSTper { get; set; }
+        public decimal? IGSTAmt { get; set; }
     }
 }

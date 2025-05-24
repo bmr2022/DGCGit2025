@@ -11,7 +11,7 @@ namespace eTactWeb.Services.Interface
     public interface IDeassembleItem
     {
         Task<ResponseResult> NewEntryId();
-        Task<ResponseResult> BomQty(int RMItemCode);
+        Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, float FGQty);
 
         Task<ResponseResult> FillMRNNO(int FGItemCode,int yearcode);
         Task<ResponseResult> FillMRNYearCode(int FGItemCode,int yearcode,string MRNNO);
