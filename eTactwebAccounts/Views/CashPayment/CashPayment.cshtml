@@ -162,9 +162,6 @@
                                                     <th style="color:yellow">Type*</th>
                                                     <th style="color:yellow">Ledger Name*</th>
                                                     <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
-                                                    <th>Intrument</th>
-                                                    <th>Intrument No</th>
-                                                    <th>Intrument Date</th>
                                                     <th style="color:yellow">Mode of Adjustment*</th>
                                                     <th style="color:yellow">Amount*</th>
                                                     <th>Amount (OC)</th>
@@ -207,9 +204,6 @@
                                                 <th>Sr NO</th>
                                                 <th>Ledger Name</th>
                                                 <th>Balance&nbsp;DR/CR</th>
-                                                <th title="Instrument">Inst</th>
-                                                <th title="Intrument No">Inst No</th>
-                                                <th title="Intrument Date">Inst Date</th>
                                                 <th title="Mode of Adjustment">Mode of Adj</th>
                                                 <th>Amount&nbsp;Type</th>
                                                 <th>Amount (OC)</th>
@@ -784,9 +778,10 @@
         });
 
         function calculateTotalBalance() {
-
+            debugger
             let drTotal = 0;
             let crTotal = 0;
+
             const rowCount = $('#divCashPaymentDetail tr').length;
             for (let i = 1; i <= rowCount; i++) {
 
@@ -795,6 +790,8 @@
 
                 if (drcr.toLowerCase() === "dr") {
                     drTotal += AdjAmt;
+
+
                 } else if (drcr.toLowerCase() === "cr") {
                     crTotal += AdjAmt;
                 }
@@ -802,6 +799,7 @@
 
             $('#DrAmt').val(drTotal.toFixed(2));
             $('#CrAmt').val(crTotal.toFixed(2));
+            $('#VoucherAmt').val(crTotal.toFixed(2));
         }
 
         function ClearGrid() {
@@ -829,7 +827,7 @@
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
             CheckBankType();
-            BindModeOfAdjust();
+            //BindModeOfAdjust();
             AdjustAmountForAddToGridForDRCR();
         });
 
@@ -903,7 +901,6 @@
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 
                         $('#Balance').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
-                        $('#VoucherAmt').val(parseFloat(obj.Result[0].OpeningBal).toFixed(2));
                         $('#DRCR').val(obj.Result[0].TypeDrCr);
                     }
                     else {
@@ -1712,25 +1709,6 @@
                     RemoveErrorCls('Balance');
                 }
             }
-            if ($('#BankType').val() == "Assets") {
-
-                if ($('#InsNo').val() == null || $('#InsNo').val() == "") {
-                    AddErrorCls('InsNo');
-                    $.notify("InsNo is required.", "error");
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('InsNo');
-                }
-                if ($('#Intrument').prop('selectedIndex') == 0) {
-                    AddErrorCls('Intrument');
-                    $.notify("Intrument is required.", "error");
-                    Err = 1;
-                }
-                else {
-                    RemoveErrorCls('Intrument');
-                }
-            }
 
             if ($('#ModeOfAdjustment').val() == "Advance") {
                 if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
@@ -1911,9 +1889,6 @@
                         if (ModeOfAdjustment == "Against Ref") {
                             $('#LedgerName').val(obj[0].AccountCode).trigger("change");
                             $('#AccountCode').val(obj[0].AccountCode);
-                            $('#Intrument').val(obj[0].Intrument).trigger("change");
-                            $('#InsNo').val(obj[0].InsNo);
-                            $('#InsDate').val(obj[0].InsDate);
                             $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
                             $('#SeqNo').val(obj[0].SeqNo);
                             PopUpForPendingVouchers("EditMode", SrNO);
@@ -1927,9 +1902,6 @@
                                 $('#AccountCode').val(obj[0].AccountCode);
                                 $('#Balance').val(obj[0].Balance);
                                 $('#DRCR').val(obj[0].DRCR);
-                                $('#Intrument').val(obj[0].Intrument).trigger("change");
-                                $('#InsNo').val(obj[0].InsNo);
-                                $('#InsDate').val(obj[0].InsDate);
                                 $('#ModeOfAdjustment').val(obj[0].ModeOfAdjustment).trigger("change");
                                 $('#AdjustmentAmt').val(obj[0].AdjustmentAmt);
                                 $('#AdjustmentAmtOthCur').val(obj[0].AdjustmentAmtOthCur);

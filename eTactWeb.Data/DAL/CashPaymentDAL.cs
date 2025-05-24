@@ -654,6 +654,7 @@ namespace eTactWeb.Data.DAL
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
             model.DrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["DrAmt"].ToString());
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
+            model.VoucherAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["CrAmt"].ToString());
             model.BankRECO = DS.Tables[0].Rows[0]["chequeClearDate"].ToString().Split(" ")[0];
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
@@ -682,8 +683,8 @@ namespace eTactWeb.Data.DAL
                         CurrentValue = Convert.ToDecimal(row["CurrentValue"].ToString()),
                         LedgerName = row["LedgerName"].ToString(),
                         AccountCode = Convert.ToInt32(row["Accountcode"].ToString()),
-                        //DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
-                        //CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
+                        DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
+                        CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
                         AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         ChequeDate = row["chequeDate"].ToString(),

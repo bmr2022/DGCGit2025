@@ -25,19 +25,6 @@
         </div>
     </td>
     <td>
-        <select class="form-control" asp-for="Intrument" style="width:100px;">
-            <option value="@Model.Intrument">-Select-</option>
-            @if (Model.Mode == "U" || Model.Mode == "V")
-            {
-                <option value="@Model.Intrument" selected>@Model.Intrument</option>
-            }
-        </select>
-    </td>
-    <td><input asp-for="InsNo" class="form-control" /></td>
-    <td>
-        <input asp-for="InsDate" class="form-control" readonly />
-    </td>
-    <td>
         <select class="form-control" asp-for="ModeOfAdjustment" style="width:100px;">
             @if (Model.Mode == "U" || Model.Mode == "V")
             {

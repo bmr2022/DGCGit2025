@@ -68,7 +68,6 @@ namespace eTactwebAccounts.Controllers
             MainModel.DashboardTypeBack = DashboardType;
             return View(MainModel);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
@@ -139,7 +138,6 @@ namespace eTactwebAccounts.Controllers
                 return View("Error", ResponseResult);
             }
         }
-
         private static DataTable GetDetailTable(IList<BankPaymentModel> DetailList)
         {
             try

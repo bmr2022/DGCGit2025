@@ -571,11 +571,6 @@ namespace eTactWeb.Data.DAL
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
             model.VoucherAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["CrAmt"].ToString());
             model.BankRECO = DS.Tables[0].Rows[0]["chequeClearDate"].ToString().Split(" ")[0];
-            //model.VoucherType = DS.Tables[0].Rows[0]["VoucherType"].ToString();
-            //model.VoucherDocNo = DS.Tables[0].Rows[0]["VoucherDocNo"].ToString();
-            //model.BillVouchNo = DS.Tables[0].Rows[0]["BillVouchNo"].ToString();
-            //model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
-
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
             {
