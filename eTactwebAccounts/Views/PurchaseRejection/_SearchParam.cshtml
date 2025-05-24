@@ -3,89 +3,89 @@
 <div class="row">
     <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
         <div class="row">
-            <div class="col">
+            @* <div class="col">
                 <label class="form-label">From Date</label>
                 <input asp-for="FromDate" maxlength="10" class="form-control" />
             </div>
             <div class="col">
                 <label class="form-label">To Date</label>
                 <input asp-for="ToDate" maxlength="10" class="form-control" />
-            </div>
+            </div> *@
             <input asp-for="FromDate1" type="hidden" />
             <input asp-for="ToDate1" type="hidden" />
         </div>
     </div>
     <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
+      @*   <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
         <select class="form-select" asp-for="DashboardType">
             <option value="" disabled>-Select-</option>
             <option value="Summary" selected>Summary</option>
             <option value="Detail">Detail</option>
             <option value="TAXDetail">TAXDetail</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="MRNType" class="form-label">MRN Type</label>
+       @*  <label asp-for="MRNType" class="form-label">MRN Type</label>
         <select class="form-select" asp-for="MRNType">
             <option value="MRN">MRN</option>
             <option value="JWMRN">JW MRN</option>
             <option value="ServiceGateEntry">Service Gate Entry</option>
             <option value="ALL">ALL</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="DocumentName" class="form-label">Document Name</label>
+      @*   <label asp-for="DocumentName" class="form-label">Document Name</label>
         <select class="form-select" asp-for="DocumentName" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.DocumentNameList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="VendorName" class="form-label">Vendor Name</label>
+       @*  <label asp-for="VendorName" class="form-label">Vendor Name</label>
         <select class="form-select" asp-for="VendorName" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.VendorNameList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="VoucherNo" class="form-label">Voucher NO</label>
+       @*  <label asp-for="VoucherNo" class="form-label">Voucher NO</label>
         <select class="form-select" asp-for="VoucherNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.VoucherNoList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+       @*  <label asp-for="InvoiceNo" class="form-label">Invoice No</label>
         <select class="form-select" asp-for="InvoiceNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.InvoiceNoList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="MRNNo" class="form-label">MRN No</label>
+       @*  <label asp-for="MRNNo" class="form-label">MRN No</label>
         <select class="form-select" asp-for="MRNNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.MRNNoList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-xxl-2 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
-        <label asp-for="GateNo" class="form-label">Gate No</label>
+       @*  <label asp-for="GateNo" class="form-label">Gate No</label>
         <select class="form-select" asp-for="GateNo" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.GateNoList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="PartCode" class="form-label">Part Code</label>
+        @* <label asp-for="PartCode" class="form-label">Part Code</label>
         <select class="form-select" asp-for="PartCode" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.PartCodeList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="ItemName" class="form-label">Item Name</label>
+       @*  <label asp-for="ItemName" class="form-label">Item Name</label>
         <select class="form-select" asp-for="ItemName" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.ItemNameList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
-        <label asp-for="HSNNO" class="form-label">HSN No</label>
+        @* <label asp-for="HSNNO" class="form-label">HSN No</label>
         <select class="form-select" asp-for="HSNNO" style="heigt:190px;width:190px;" asp-items="@(new SelectList(Model.HSNNOList,"Value","Text"))">
             <option value="0">-Select-</option>
-        </select>
+        </select> *@
     </div>
     @* <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
         <label asp-for="DocumentName" class="form-label">Document</label>
