@@ -234,9 +234,9 @@ namespace eTactwebInventory.Controllers
             return Json(JsonString);
         }
 
-        public async Task<JsonResult> BomQty(int RMItemCode)
+        public async Task<JsonResult> BomQty(int RMItemCode,int FinishItemCode, int bomNo,float FGQty)
         {
-            var JSON = await _IDeassembleItem.BomQty(RMItemCode);
+            var JSON = await _IDeassembleItem.BomQty(RMItemCode, FinishItemCode, bomNo, FGQty);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
