@@ -104,7 +104,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        HttpContext.Session.Remove("KeyBankReceiptGridEdit");   
+                        HttpContext.Session.Remove("KeyBankReceiptGridEdit");
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -247,8 +247,8 @@ namespace eTactWeb.Controllers
                 Item.CrAmt ,
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
-                Item.ChequeDate != null ? Item.ChequeDate : null,
-                Item.BankRECO,
+                Item.ChequeClearDate == null ? null : ParseFormattedDate(Item.ChequeClearDate),
+                Item.ChequeClearDate == null ? null : ParseFormattedDate(Item.ChequeClearDate),
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -606,7 +606,7 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult AddBankReceiptAdjustDetail(List<BankReceiptModel> model,string Mode)
+        public IActionResult AddBankReceiptAdjustDetail(List<BankReceiptModel> model, string Mode)
         {
             try
             {
@@ -716,7 +716,7 @@ namespace eTactWeb.Controllers
                 {
                     GridDetail = JsonConvert.DeserializeObject<List<BankReceiptModel>>(modelJson);
                 }
-                
+
                 var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
                 string JsonString = JsonConvert.SerializeObject(SAGrid);
                 return Json(JsonString);
@@ -733,7 +733,7 @@ namespace eTactWeb.Controllers
                 {
                     BankReceiptGrid = JsonConvert.DeserializeObject<List<BankReceiptModel>>(modelJson);
                 }
-                
+
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
                 if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
@@ -790,7 +790,7 @@ namespace eTactWeb.Controllers
                     {
                         BankReceiptGrid = JsonConvert.DeserializeObject<List<BankReceiptModel>>(modelJson);
                     }
-                    
+
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
                     if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
@@ -846,12 +846,12 @@ namespace eTactWeb.Controllers
             model = await _IBankReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
             return PartialView("_BankReceiptDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate,string LedgerName,string VoucherNo, string AgainstVoucherRefNo,string AgainstVoucherNo)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
         {
             HttpContext.Session.Remove("KeyBankReceiptGrid");
             HttpContext.Session.Remove("KeyBankReceiptGridEdit");
             var model = new BankReceiptModel();
-            model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate,LedgerName,VoucherNo,AgainstVoucherRefNo,AgainstVoucherNo);
+            model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
             return PartialView("_BankReceiptDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
