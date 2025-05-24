@@ -171,6 +171,7 @@
                                     <br />
                                     <select class="form-select" multiple="multiple" asp-for="HSN" asp-items="@(new SelectList(Model.HSNList,"Value","Text"))"></select>
                                 </div>
+                               
                             </div>
                         </div>
                     </div>
@@ -282,12 +283,13 @@
 {
     <script>
         $(document).ready(function () {
+            $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             if ('@Model.Mode' == "U") {
                 $('#TaxTypeName').val($("#TaxType option:selected").text());
 
             }
             GetFormRights();
-            $("#EffectiveDate").datepicker({ dateFormat: 'dd/mm/yy' });
+            //$("#EffectiveDate").datepicker({ dateFormat: 'dd/mm/yy' });
             $('.hasDatepicker').datepicker("option", "showAnim", "clip");
 
             $("#HSN").multiselect({
@@ -324,6 +326,9 @@
             //    $("form :input").prop("disabled", false);
             //});
         });
+
+
+       
 
         function GetFormRights() {
             $.ajax({

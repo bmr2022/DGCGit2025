@@ -197,8 +197,14 @@
                                     <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
                                     <input asp-for="DrawingNo" class="form-control" />
                                 </div>
-                                <div class=" col-4 col-auto">
-                                    <div class="row justify-content-around">
+                                <div class="col-auto" style="padding-left:10%;">
+                                    <label class="form-label">Copy This BOM</label>
+                                    <div class="form-check form-switch">
+                                        <input asp-for="CopyControlPlan" class="form-check-input" type="checkbox" role="switch" onchange="CopyControlPlanFunc(this);" />
+                                    </div>
+                                </div>
+                                <div class="col mt-3">
+                                    <div class="row justify-content-end">
                                         <div class="col-auto">
                                             <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
                                                 <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
@@ -352,6 +358,33 @@
         var IsSDSC = 0;
         var IsErr = 0;
         var HideShow = 0;
+        function CopyControlPlanFunc(ID) {
+            if (ID.checked == true) {
+                $('#PartCode').removeAttr('disabled');
+                $('#ItemName').removeAttr('disabled');
+               // $('#FG1').removeAttr('disabled');
+                $('#Mode').val('');
+                var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
+                $('.col-auto')[4].innerHTML = pp;
+                $.datepicker.formatDate('dd/mm/yy', new Date());
+
+                $("#EntryDate").datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
+                //$('#EntryDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
+                $('#EffectiveDate').val($.datepicker.formatDate('mm/dd/yy', new Date()));
+            }
+            else {
+                $('#PartCode').prop('disabled', true);
+                $('ItemName').prop('disabled', true);
+               // $('#FG1').prop('disabled', true);
+            }
+        }
+
+        $("button[type='submit']").click(function () {
+            $('#PartCode').removeProp('disabled');
+            $('#ItemName').removeProp('disabled');
+            //$('#FG1').removeProp('disabled');
+            $("form :input").prop("disabled", false);
+        });
 
         $(function () {
             $('#FrequencyofTesting').on('input', function () {
