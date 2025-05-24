@@ -27,13 +27,12 @@
                     <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                 </div>
                 <div class="ShowAllDiv">
-
                     <partial name="_IMGrid" />
                 </div>
 
 
             </div>
-            <div class="card-footer d-flex justify-content-between align-items-center">
+            @* <div class="card-footer d-flex justify-content-between align-items-center">
                 <div>
                     <button type="button" class="btn btn-link bg-graident" onclick="back();">
                         <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK
@@ -81,7 +80,7 @@
                         }
                     </ul>
                 }
-            </div>
+            </div> *@
     </form>
 </div>
 
@@ -265,28 +264,30 @@
                 });
             }
         }
-
+        var isGlobalSearch = false;
+        var globalSearchString = "";
         $("#search-box").on("input", function () {
-
             var searchString = $(this).val().trim();
+            var ShowAll = $('#ShowAllSwitch').is(':checked');
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
 
             $.ajax({
-                url: "/ItemMaster/GlobalSearch?searchString=" + searchString,
+                url: "/ItemMaster/GlobalSearch",
                 type: "GET",
-                data: { searchString: searchString },
+                data: { searchString: searchString, pageNumber: 1, ShowAll: ShowAll }, // Always reset to first page on new search
                 success: function (data) {
-
                     $('#divDashboardGrid').empty();
-                    $('.ShowAllDiv').empty();
-                    $('.ShowAllDiv').append(data);
+                    $('.ShowAllDiv').empty().append(data);
                     var dashGrid = $('#divDashboardGrid tr').length;
                     $('#totalRows').text(dashGrid);
                 },
                 error: function () {
-                    alert("Error fetching search results.");
+                    console.log("Error fetching search results.");
                 }
             });
         });
+
 
         // var currentSearchColumn = null;
         // $("#search-box").on("keyup", function () {
@@ -365,6 +366,77 @@
                 table.children('#divDashboardGrid').append(row);
             });
         }
+        // function loadPage(pageNumber) {
+
+        //     debugger
+        //     var dashboardType = $('#POServType').val();
+        //     var url = '';
+
+        //     if (dashboardType === "Item") {
+        //         url = '@Url.Action("GetSearchData", "ItemMaster")';
+        //     } else if (dashboardType === "Services") {
+        //         url = '@Url.Action("GetSearchData", "ItemMaster")';
+        //     } else if (dashboardType === "Assets") {
+        //         url = '@Url.Action("GetSearchData", "ItemMaster")';
+        //     } else  {
+        //         url = '@Url.Action("Dashboard", "ItemMaster")';
+        //     } 
+
+        //     var formData = $('#SParam').serializeArray();
+        //     formData.push({ name: 'pageNumber', value: pageNumber });
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: url,
+        //         data: formData,
+        //         headers: { 'X-Requested-With': 'XMLHttpRequest' },
+        //         success: function (result) {
+        //             $('#divDashboardGrid').empty();
+        //             $('.ShowAllDiv').empty();
+        //             $('.ShowAllDiv').html(result);
+        //             $('#totalRows').text($('#divDashboardGrid tr').length);
+        //             //countAllTotal();
+        //         }
+        //     });
+        // }
+        function loadPage(pageNumber) {
+            debugger
+            var url = '';
+            var ShowAll = $('#ShowAllSwitch').is(':checked');
+            var data = $('#SParam').serializeArray();
+            data.push({ name: 'pageNumber', value: pageNumber });
+            data.push({ name: 'ShowAll', value: ShowAll });
+            if (isGlobalSearch) {
+                url = '/ItemMaster/GlobalSearch';
+                data = [
+                    { name: 'searchString', value: globalSearchString },
+                    { name: 'pageNumber', value: pageNumber },
+                    { name: 'ShowAll', value: ShowAll }
+                ];
+            } else {
+                var dashboardType = $('#POServType').val();
+
+                if (dashboardType === "Item" || dashboardType === "Services" || dashboardType === "Assets") {
+                    url = '@Url.Action("GetSearchData", "ItemMaster")';
+                } else if ($('#ShowAllSwitch').is(':checked')) {
+                    url = '@Url.Action("GetAllColumns", "ItemMaster")';
+                }
+                else {
+                    url = '@Url.Action("Dashboard", "ItemMaster")';
+                }
+            }
+
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: data,
+                headers: { 'X-Requested-With': 'XMLHttpRequest' },
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('.ShowAllDiv').empty().html(result);
+                    $('#totalRows').text($('#divDashboardGrid tr').length);
+                }
+            });
+        }
 
         $('#ShowAllSwitch').change(function () {
             if ($(this).is(':checked') == true) {
@@ -416,50 +488,6 @@
 }
 
 <style>
-    .pagination {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        list-style: none;
-        padding: 0;
-        margin: 20px auto;
-        gap: 5px; /* Space between buttons */
-        white-space: nowrap; /* Keeps it in a single line */
-    }
-
-    .page-item {
-        display: inline-block;
-    }
-
-    .page-link {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        width: 40px;
-        height: 40px;
-        text-decoration: none;
-        color: black;
-        border: 1px solid #ddd;
-        font-size: 16px;
-        background-color: white;
-        border-radius: 5px;
-        transition: background 0.3s;
-    }
-
-    .page-item.active .page-link {
-        background-color: #4CAF50;
-        color: white;
-        border: 1px solid #4CAF50;
-    }
-
-    .page-item.disabled .page-link {
-        background-color: #f0f0f0;
-        color: #999;
-        cursor: default;
-    }
-
-    .page-link:hover:not(.disabled):not(.active) {
-        background-color: #ddd;
-    }
+   
 
 </style>

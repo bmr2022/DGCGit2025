@@ -49,6 +49,7 @@ namespace eTactWeb.DOM.Models
         public string RejectionPlan { get; set; }
 
         public string ItemimagePath { get; set; }
+        public bool CopyControlPlan { get; set; }
         public string DrawingNo { get; set; }
         public string DrawingNoImagePath { get; set; }
         public IList<ControlPlanDetailModel> DTSSGrid { get; set; }
