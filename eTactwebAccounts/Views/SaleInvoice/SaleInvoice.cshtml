@@ -886,7 +886,7 @@
                     "model": adjustedData,
                     "YearCode": YearCode,
                     "EntryDate": EntryDate,
-                    "ChallanDate": ChallanDate,
+                    "ChallanDate": ChallanDate, 
                     "AccountCode": AccountCode,
                     "ItemCode": itemCode
                 },
@@ -945,7 +945,7 @@
             var itemCode = $('#ItemCode').val();
             var adjustedData = [];
 
-            $("#divSaleBillList").each(function () {
+            $("#divSaleBillList tr").each(function () {
 
                 var row = $(this);
                 var rowData = {
@@ -3207,16 +3207,25 @@
             MinValue = Math.min(TotalStock, LotStock, pendQty);
             MinQtyVal = MinValue;
 
-            if (TotalStock > LotStock) {
-                LowestStock = "LotStock";
-            } else {
-                LowestStock = "TotalStock";
+            // if (TotalStock > LotStock) {
+            //     LowestStock = "LotStock";
+            // } else {
+            //     LowestStock = "TotalStock";
+            // }
+
+            if (MinValue === TotalStock) {
+                LowestStock = 'TotalStock';
+            } else if (MinValue === LotStock) {
+                LowestStock = 'LotStock';
+            } else if (MinValue === pendQty) {
+                LowestStock = 'pendQty';
             }
+
 
             if (parseFloat($('#Qty').val()) > MinQtyVal) {
                 AddErrorCls('Qty');
                 Err = 1;
-                $.notify("Qty should more then lowest Stock...!", "error");
+                $.notify("Qty should more then " + LowestStock + "  ...!", "error");
                 return false;
             }
             else {

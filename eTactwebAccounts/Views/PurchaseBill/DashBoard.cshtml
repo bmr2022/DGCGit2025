@@ -493,8 +493,8 @@
         //         window.location.href = linkurl;
         //     }
         //}
-        
-        function deleteItem(entryID, yearCode, purchVouchNo, invNo, isDetail, cnt) {
+
+        function deleteItem(entryID, yearCode, purchVouchNo,EnteredBy, invNo, isDetail, cnt) {
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
             sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
@@ -517,6 +517,7 @@
                     ID: entryID,
                     YC: yearCode,
                     PurchVoucherNo: purchVouchNo,
+                    EnteredBy: EnteredBy,
                     InvNo: invNo,
                     IsDetail: isDetail
                 },

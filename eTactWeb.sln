@@ -34,6 +34,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebAccounts", "eTactwe
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "eTactwebHR", "eTactwebHR\eTactwebHR.csproj", "{3712CADF-2D32-F887-D3D8-48D52AA2D00B}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{BDC45C4E-F796-4D05-B41D-9E60BD624D65}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU

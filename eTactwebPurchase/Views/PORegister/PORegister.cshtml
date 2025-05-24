@@ -822,7 +822,7 @@
             });
         }
 
-        $('#sendToExcel').click(function () {
+       /*  $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
             console.log(table);
             TableToExcel.convert(table[0], {
@@ -831,8 +831,13 @@
                     name: 'ReportTable'
                 }
             });
-        });
+        }); */
 
+
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportMode').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/PORegister/ExportPOStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
 
         function GetServerDate() {
             $.ajax({

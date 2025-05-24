@@ -562,6 +562,7 @@ public class PurchaseBillDAL
                                                  BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
                                                  PORemarks = dr["PORemarks"].ToString(),
                                                  UID = dr["Uid"].ToString(),
+                                                 EntryByMachine = dr["EntryByMachine"].ToString(),
                                                  ItemOrService = dr["Item/Service"].ToString(),
                                                  UpdatedByName = dr["EntryByMachine"].ToString(),
                                                  UpdatedBy = string.IsNullOrEmpty(dr["LastUpdatedBy"].ToString()) ? 0 : Convert.ToInt32(dr["LastUpdatedBy"].ToString()),
