@@ -199,11 +199,11 @@
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
                                                     <label class="form-label">Total Rec Qty</label>
-                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                    <input id="totRecQty" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
                                                     <label class="form-label">Total Short/Excess</label>
-                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                    <input id="totshrotexcess" class="form-control" readonly />
                                                 </div>
                                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
                                                     <label class="form-label">Total Amount</label>
@@ -608,7 +608,7 @@
                      $('#divStockMainRegister').empty();
                     $('#divStockMainRegister').html(result);
                     $('#totalRows').text($('#divStockMainRegister tr').length - 1);
-                     // countAllTotal();
+                      countAllTotal();
                 }
             });
         }
@@ -852,19 +852,22 @@
         }
 
         function countAllTotal() {
-             
-            var rowCount = $('#divStockRegisterBody tr').length;
+
+            var rowCount = $('#divStockMainRegister tr').length;
             var OpnStk = 0;
             var TotStk = 0;
             var IssQty = 0;
             var RecQty = 0;
             var rate = 0;
             var totAmount =0;
+            var totShortExccessQty = 0;
             for (var i = 1; i <= rowCount; i++) {
                 OpnStk += $('#opnStk-' + i).text() =='' ? 0 : parseFloat($('#opnStk-' + i).text());
-                TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text());
+               
                 IssQty += $('#issQty-' + i).text() == '' ? 0 : parseFloat($('#issQty-' + i).text());
                 RecQty += $('#recQty-' + i).text() == '' ? 0 : parseFloat($('#recQty-' + i).text());
+
+                totShortExccessQty += $('#shortexcessQty-' + i).text() == '' ? 0 : parseFloat($('#shortexcessQty-' + i).text());
                 //rate += $('#rate-' + i).text() == '' ? 0 : parseFloat($('#rate-' + i).text());
                 totAmount += $('#amount-' + i).text() == '' ? 0 : parseFloat($('#amount-' + i).text());
                 //if(totAmount < 0){
@@ -872,7 +875,9 @@
                 //}
             }
 
-            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2)); 
+            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2));
+            $('#totRecQty').val(isNaN(RecQty) ? 0 : RecQty.toFixed(2));
+            $('#totshrotexcess').val(isNaN(totShortExccessQty) ? 0 : totShortExccessQty.toFixed(2));
             $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
         }
 

@@ -306,11 +306,21 @@
 			$('#TotalDRAmount').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
 		}
 
-		function BalanceAsPerBank(){
+		function BalanceAsPerBank()
+		{
 			if($('#balcompanDRCR').val() == 'DR'){
+				var BalanceAsPerComBook = parseFloat($('#balcompanbook').val());
 				var TotDR = parseFloat($('#TotalDRAmount').val());
 				var TotCR = parseFloat($('#TotalCRAmount').val());
-				var DiffAmt = TotDR - TotCR;
+				var DiffAmt = BalanceAsPerComBook - TotDR + TotCR;
+				$('#balanceasperAmount').val(DiffAmt);
+				$('#BalanceAsPerBankDRCR').val('DR');
+			}
+			if($('#balcompanDRCR').val() == 'CR'){
+				var BalanceAsPerComBook = parseFloat($('#balcompanbook').val());
+				var TotDR = parseFloat($('#TotalDRAmount').val());
+				var TotCR = parseFloat($('#TotalCRAmount').val());
+				var DiffAmt = BalanceAsPerComBook - TotCR + TotDR;
 				$('#balanceasperAmount').val(DiffAmt);
 				$('#BalanceAsPerBankDRCR').val('DR');
 			}

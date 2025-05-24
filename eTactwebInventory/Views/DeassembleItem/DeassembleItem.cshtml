@@ -2174,12 +2174,15 @@
 
         function BomQty() {
             var RMItemCode = $('#RmPartCode').val();
+            var FinishItemCode = $('#FinishPartCode').val();
+            var bomNo = $('#BomNo').val();
+            var FGQty = $('#FGQty').val();
            
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("BomQty")",
                 dataType: "json",
-                data: { RMItemCode: RMItemCode },
+                data: { RMItemCode: RMItemCode, FinishItemCode: FinishItemCode, bomNo: bomNo, FGQty: FGQty },
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);

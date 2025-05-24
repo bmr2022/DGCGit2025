@@ -24,9 +24,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _IDeassembleItemDAL.NewEntryId();
         }
-        public async Task<ResponseResult> BomQty(int RMItemCode)
+        public async Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, float FGQty)
         {
-            return await _IDeassembleItemDAL.BomQty(RMItemCode);
+            return await _IDeassembleItemDAL.BomQty(RMItemCode,  FinishItemCode,  bomNo,  FGQty);
         }
         public async Task<ResponseResult> FillMRNNO(int FGItemCode, int yearcode)
         {
