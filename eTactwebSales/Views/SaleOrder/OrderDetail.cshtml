@@ -146,9 +146,10 @@
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
                                             <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
                                         </div>
-                                        <select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled>
+                                        <select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly >
                                             <option value="">-Select-</option>
                                         </select>
+                                        <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="Address" class="form-label" style="color:  red;">Address</label>
@@ -1607,6 +1608,11 @@
                 var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
                 $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(SOClosedate));
                 $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
+                
+                debugger
+                $('#PN1').prop("checked", true);
+                $('#PN1').change();
+      
             }
             var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
             $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
@@ -1617,6 +1623,7 @@
                 NewEntryId();
                  
                 GetServerDate();
+                
                 $('#OtherRateCurr').prop('readonly', true);
                 $('#Rate').prop('readonly', false);
 
@@ -2765,6 +2772,7 @@
         }
 
         $('#PN1').change(function () {
+            debugger
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPartyList")",
@@ -2778,6 +2786,13 @@
                         $('#AccountCode').append('<option value="' + val.value + '">' + val.text + '</option>');
                         $('#Address').val(''), $('#DeliveryAddress').val('');
                     });
+
+                    debugger
+                    if ($('#Mode').val() == "SOA") {
+                        $('#AccountCode').prop("disabled", false);
+                        $('#AccountCode').val($('#hiddenAccountCode').val());
+                        $('#AccountCode').prop("disabled", true);
+                    }
                 },
                 error: function (req, status, error) {
                     alert(error);
