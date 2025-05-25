@@ -294,6 +294,7 @@
                                         <select class="form-select" asp-for="AccountCode" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
                                             <option value="">-Select-</option>
                                         </select>
+                                        <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="Address" class="form-label" style="color:  red;">Address</label>
@@ -558,6 +559,7 @@
                                                     <th>Rate</th>
                                                     <th>FX Rate</th>
                                                     <th>Rate/Unit</th>
+                                                    <th>Delivery Date</th>
                                                     <th>Disc%</th>
                                                     <th>Disc Rs</th>
                                                     <th>Amount</th>
@@ -971,6 +973,10 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="SORemark" class="form-label">Remark</label>
                                     <input asp-for="SORemark" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryByMachineName" class="form-label">Machine Name</label>
+                                    <input asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" readonly />
                                 </div>
                                 @if (Model.Mode == "SOA" || Model.Mode == "SAU")
                                 {
@@ -1618,7 +1624,7 @@
             $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
             $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
             // NewEntryId();
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOA" && $('#Mode').val() != "SAU") {
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOA" && $('#Mode').val() != "SAU" && $('#Mode').val() != "SOC") {
 
                 NewEntryId();
                  
@@ -2784,14 +2790,17 @@
                     $('#AccountCode').append('<option>-Select-</option>');
                     $.each(data, function (key, val) {
                         $('#AccountCode').append('<option value="' + val.value + '">' + val.text + '</option>');
-                        $('#Address').val(''), $('#DeliveryAddress').val('');
                     });
 
                     debugger
-                    if ($('#Mode').val() == "SOA") {
+                    if ($('#Mode').val() == "SOA" || $('#Mode').val() == "U" || $('#Mode').val() == "N") {
                         $('#AccountCode').prop("disabled", false);
                         $('#AccountCode').val($('#hiddenAccountCode').val());
                         $('#AccountCode').prop("disabled", true);
+                    }
+
+                    if ($('#Mode').val() != "SOA" && $('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOC") {
+                        $('#Address').val(''), $('#DeliveryAddress').val('');
                     }
                 },
                 error: function (req, status, error) {
