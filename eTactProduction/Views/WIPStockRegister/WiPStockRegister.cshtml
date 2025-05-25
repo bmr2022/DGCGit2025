@@ -607,7 +607,7 @@
 			  });
 		  }); */
 		$('#sendToExcel').click(function () {
-			var reportType = $('#ReportType').val(); // assuming there's a dropdown or input with id="ReportType"
+			var reportType = $('#ReportType').val(); 
 			window.location.href = '/WIPStockRegister/ExportWIPStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
 		});
 		  function FillItemGroup() {
