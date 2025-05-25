@@ -784,6 +784,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", DTTaxGrid));
                 SqlParams.Add(new SqlParameter("@DTBuyerGrid", MultiBuyersDT));
                 SqlParams.Add(new SqlParameter("@RoundOff", model.TotalRoundOff));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@CreatedBy", model.CreatedBy));
 
                 // await myConnection.OpenAsync();

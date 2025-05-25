@@ -173,7 +173,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-               
+
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     model.LastUpdationDate = DateTime.Now.ToString("dd/MM/yyyy");
@@ -540,7 +540,7 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-               
+
                 var SqlParams = new List<dynamic>();
                 var date = CommonFunc.ParseFormattedDate((DateTime.Now).ToString("dd/MM/yyyy"));
                 SqlParams.Add(new SqlParameter("@accountName", accountName ?? ""));
@@ -1255,7 +1255,8 @@ namespace eTactWeb.Data.DAL
                 }
 
                 return model;
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 throw new Exception("Error in PrepareAdjustChallanView: " + ex.Message);
             }
@@ -1391,12 +1392,17 @@ namespace eTactWeb.Data.DAL
                             }
                         });
 
-                    var custJobWorkModel = model.CustomerJobWorkChallanAdj.FirstOrDefault(x => bomItemGrid.Select(i => i.ItemCode).Contains(x.RecItemCode));
-                    if (custJobWorkModel is not null)
+                    //var custJobWorkModel = model.CustomerJobWorkChallanAdj.FirstOrDefault(x => bomItemGrid.Select(i => i.ItemCode).Contains(x.RecItemCode));
+
+                    if (custJobWorkChallanAdjGrid is not null)
                     {
-                        custJobWorkModel.BOMInd = row["BOMIND"].ToString();
-                        custJobWorkModel.FinishItemCode = Convert.ToInt32(row["FinishItemCode"]);
+                        for (var i = 0;i< custJobWorkChallanAdjGrid.Count;i++)
+                        {
+                            custJobWorkChallanAdjGrid[i].BOMInd = row["BOMIND"].ToString();
+                            custJobWorkChallanAdjGrid[i].FinishItemCode = Convert.ToInt32(row["FinishItemCode"]);
+                        }
                     }
+
                 }
                 model.BomCustomerJWIssChallanAdj = bomItemGrid;
                 model.CustomerJobWorkChallanAdj = custJobWorkChallanAdjGrid;

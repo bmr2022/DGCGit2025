@@ -272,17 +272,11 @@ namespace eTactWeb.Controllers
                 { "SUMM", EXPORTSUMM },
                 { "DETAIL", EXPORTDETAIL },
                 { "SUMMRATEING", EXPORTSUMMRATEING },
-                //{ "SUMMRATEING", EXPORTSUMMRATEING },
-                //{ "SUMMRATEING", EXPORTSUMMRATEING },
-                //{ "SUMMRATEING", EXPORTSUMMRATEING },
-                //{ "SUMMRATEING", EXPORTSUMMRATEING },
-                //{ "SUMMRATEING", EXPORTSUMMRATEING },
-                //{ "CONSOLIDATED", EXPORTCONSOLIDATED },
-                //{ "PARTYWISECONSOLIDATED", EXPORTPARTYWISECONSOLIDATED },
-                //{ "ITEMWISECONSOLIDATED", EXPORTITEMWISECONSOLIDATED },
-                //{ "PRICEHISTORY", EXPORTPRICEHISTORY },
-                //{ "SUMMRATEING", EXPORTSUMMRATEING },
-                // Add more report types here if needed
+                 { "CONSOLIDATED", EXPORTCONSOLIDATED },
+                 { "PARTYWISECONSOLIDATED", EXPORTPARTYWISECONSOLIDATED },
+                 { "ITEMWISECONSOLIDATED", EXPORTITEMWISECONSOLIDATED },
+                 { "PRICEHISTORY", EXPORTPRICEHISTORY },
+               
             };
 
             if (reportGenerators.TryGetValue(ReportType, out var generator))
@@ -311,10 +305,10 @@ namespace eTactWeb.Controllers
         private void EXPORTLISTOFSCHEDULESUMMARY(IXLWorksheet sheet, IList<PORegisterDetail> list)
         {
             string[] headers = {
-            "Sr#", "PONO", "PO Date", "Schedule No", "Schedule Date", "Vendor",
-"Schedule Effective From Date", "Schedule Effective Till Date",
-"PO Effective Date", "PO Close Date", "PO Amendment Effective Date",
-"Order Type", "Delivery Terms", "Delivery Date", "PO FOR", "Currency"
+                "Sr#", "PONO", "PO Date", "Schedule No", "Schedule Date", "Vendor",
+                "Schedule Effective From Date", "Schedule Effective Till Date",
+                "PO Effective Date", "PO Close Date", "PO Amendment Effective Date",
+                "Order Type", "Delivery Terms", "Delivery Date", "PO FOR", "Currency"
             };
 
 
@@ -587,7 +581,136 @@ namespace eTactWeb.Controllers
                 row++;
             }
         }
+         private void EXPORTCONSOLIDATED(IXLWorksheet sheet, IList<PORegisterDetail> list)
+         {
+            string[] headers = {
+                "srNo", "ItemName", "PartCode", "ItemName", "POQty", 
+                "RECQty", "QCOKQty", "PendQty", "MinLevel","Unit","Minlvldays", "Rating", "ItemGroup","ItemCategory"
+            };
 
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.ItemName;
+                sheet.Cell(row, 3).Value = item.PartCode;
+                sheet.Cell(row, 4).Value = item.ItemName;
+                sheet.Cell(row, 5).Value = item.POQty;
+                sheet.Cell(row, 6).Value = item.RECQty;
+                sheet.Cell(row, 7).Value = item.QCOKQty;
+                sheet.Cell(row,8).Value = item.PendQty;     
+                sheet.Cell(row, 9).Value = item.MinLevel;
+                sheet.Cell(row, 10).Value = item.unit;
+                sheet.Cell(row, 11).Value = item.Minlvldays;
+                sheet.Cell(row, 12).Value = item.Rating;
+                sheet.Cell(row, 13).Value = item.ItemGroup; 
+                sheet.Cell(row, 14).Value = item.ItemCategory; 
+
+                row++;
+            }
+          }
+
+       private void EXPORTPARTYWISECONSOLIDATED(IXLWorksheet sheet, IList<PORegisterDetail> list)
+         {
+            string[] headers = {
+                "srNo", "Vendor Name", "POQty", "RECQty", "QCOKQty",
+                "PendQty"
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.Account_name;
+                sheet.Cell(row, 3).Value = item.POQty;
+                sheet.Cell(row, 4).Value = item.RECQty;
+                sheet.Cell(row, 5).Value = item.QCOKQty;
+                sheet.Cell(row, 6).Value = item.PendQty;
+                row++;
+            }
+       }
+        private void EXPORTITEMWISECONSOLIDATED(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+                "srNo","PartCode", "ItemName", "POQty","POValue","RECQty","RecValue","QCOKQty",
+                "PendQty","MinLevel","unit", "Minlvldays","Rating","ItemGroup","ItemCategory"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.PartCode;
+                sheet.Cell(row, 3).Value = item.ItemName;
+                sheet.Cell(row, 4).Value = item.POQty;
+                sheet.Cell(row, 5).Value = item.POValue;
+                sheet.Cell(row, 6).Value = item.RECQty;
+                sheet.Cell(row, 7).Value = item.RecValue;
+                sheet.Cell(row, 8).Value = item.QCOKQty;
+                sheet.Cell(row, 9).Value = item.PendQty;
+                sheet.Cell(row, 10).Value = item.MinLevel;
+                sheet.Cell(row, 11).Value = item.unit;
+                sheet.Cell(row, 12).Value = item.Minlvldays;
+                sheet.Cell(row, 13).Value = item.Rating;
+                sheet.Cell(row, 14).Value = item.ItemGroup;
+                sheet.Cell(row, 15).Value = item.ItemCategory;
+
+                row++;
+            }
+        }
+        private void EXPORTPRICEHISTORY(IXLWorksheet sheet, IList<PORegisterDetail> list)
+        {
+            string[] headers = {
+               "srNo", "PartyName", "PONO", "PODate", "ItemName", "PartCode",
+                "PoRate", "Currency", "POQty", "DisPer", "DisAmt",
+                "POValue", "POEffDate", "POCloseDate", "POEntryId", "YearCode"
+            };
+
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.PartyName;
+                sheet.Cell(row, 3).Value = item.PONO;
+                sheet.Cell(row, 4).Value = item.PODate?.Split(' ')[0] ?? string.Empty;
+                sheet.Cell(row, 5).Value = item.ItemName;
+                sheet.Cell(row, 6).Value = item.PartCode;
+                sheet.Cell(row, 7).Value = item.PORate;
+                sheet.Cell(row, 8).Value = item.Currency;
+                sheet.Cell(row, 9).Value = item.POQty;
+                sheet.Cell(row, 10).Value = item.DisPer;
+                sheet.Cell(row, 11).Value = item.DisAmt;
+                sheet.Cell(row, 12).Value = item.POValue;
+                sheet.Cell(row, 13).Value = item.poAmmeffdate?.Split(' ')[0] ?? string.Empty;
+                sheet.Cell(row, 14).Value = item.POclosedate?.Split(' ')[0] ?? string.Empty;
+                sheet.Cell(row, 15).Value = item.POEntryId;
+                sheet.Cell(row, 16).Value = item.POYearCode;
+
+
+                row++;
+            }
+        }
+
+       
 
 
 

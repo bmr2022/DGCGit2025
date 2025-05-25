@@ -326,6 +326,7 @@ namespace eTactWeb.DOM.Models
         public int SOItemCode { get; set; }
         public int SONo { get; set; }
         public string? SORemark { get; set; }
+        public string EntryByMachineName { get; set; }
         //[Required(ErrorMessage = "SO FOR CAN NOT BE BLANK")]
 
         public string? SOType { get; set; }
