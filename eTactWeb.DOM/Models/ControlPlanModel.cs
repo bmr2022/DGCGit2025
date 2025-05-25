@@ -52,11 +52,14 @@ namespace eTactWeb.DOM.Models
         public bool CopyControlPlan { get; set; }
         public string DrawingNo { get; set; }
         public string DrawingNoImagePath { get; set; }
+        public int CreatedBy { get; set; }
         public IList<ControlPlanDetailModel> DTSSGrid { get; set; }
     }
     public class ControlPlanDetailModel
     {
         public int SeqNo { get; set; }
+        public int CntPlanEntryId { get; set; }
+        public int CntPlanYearCode { get; set; }
         public string Characteristic { get; set; }
         public string EvalutionMeasurmentTechnique { get; set; }
         public string SpecificationFrom { get; set; }

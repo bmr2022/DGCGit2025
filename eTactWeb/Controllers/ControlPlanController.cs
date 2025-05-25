@@ -4,6 +4,8 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -54,6 +56,123 @@ namespace eTactWeb.Controllers
             }
 
             return View(MainModel);
+        }
+        [Route("{controller}/Index")]
+        [HttpPost]
+        public async Task<IActionResult> ControlPlan(ControlPlanModel model)
+        {
+            try
+            {
+                var GIGrid = new DataTable();
+                string modelJson = HttpContext.Session.GetString("KeyControlPlanGrid");
+                List<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(modelJson);
+                }
+
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                if (model.Mode == "U")
+                {
+                    GIGrid = GetDetailTable(ControlPlanDetail);
+                }
+                else
+                {
+                    GIGrid = GetDetailTable(ControlPlanDetail);
+                }
+                var Result = "";// await _IControlPlan.SaveControlPlan(model, GIGrid);
+                if (Result != null)
+                {
+                    //if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    //{
+                    //    ViewBag.isSuccess = true;
+                    //    TempData["200"] = "200";
+                    //    HttpContext.Session.Remove("KeyControlPlanGrid");
+                    //}
+                    //else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                    //{
+                    //    ViewBag.isSuccess = true;
+                    //    TempData["202"] = "202";
+                    //}
+                    //else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    //{
+                    //    ViewBag.isSuccess = false;
+                    //    TempData["500"] = "500";
+                    //    _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                    //    return View("Error", Result);
+                    //}
+                }
+
+                return RedirectToAction(nameof(ControlPlan));
+
+            }
+            catch (Exception ex)
+            {
+                // Log and return the error
+                LogException<ControlPlanController>.WriteException(_logger, ex);
+                var ResponseResult = new ResponseResult
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+                return View("Error", ResponseResult);
+            }
+        }
+        private static DataTable GetDetailTable(IList<ControlPlanDetailModel> DetailList)
+        {
+            try
+            {
+                var GIGrid = new DataTable();
+
+                GIGrid.Columns.Add("CntPlanEntryId", typeof(long));
+                GIGrid.Columns.Add("CntPlanYearCode", typeof(long));
+                GIGrid.Columns.Add("SeqNo", typeof(long));
+                GIGrid.Columns.Add("Characteristic", typeof(string));
+                GIGrid.Columns.Add("EvalutionMeasurementTechnique", typeof(string));
+                GIGrid.Columns.Add("SpecificationFrom", typeof(string));
+                GIGrid.Columns.Add("Operator", typeof(string));
+                GIGrid.Columns.Add("SpecificationTo", typeof(string));
+                GIGrid.Columns.Add("FrequencyOfTesting", typeof(string));
+                GIGrid.Columns.Add("InspectionBy", typeof(string));
+                GIGrid.Columns.Add("ControlMethod", typeof(string));
+                GIGrid.Columns.Add("RejectionPlan", typeof(string));
+                GIGrid.Columns.Add("Remarks", typeof(string));
+                GIGrid.Columns.Add("ItemimagePath", typeof(string));
+                GIGrid.Columns.Add("DrawingNo", typeof(string));
+                GIGrid.Columns.Add("DrawingNoImagePath", typeof(string));
+
+                foreach (var Item in DetailList)
+                {
+                    GIGrid.Rows.Add(
+                        new object[]
+                        {
+                  Item.CntPlanEntryId,
+Item.CntPlanYearCode,
+Item.SeqNo,
+Item.Characteristic,
+Item.EvalutionMeasurmentTechnique,
+Item.SpecificationFrom,
+Item.Operator,
+Item.SpecificationTo,
+Item.FrequencyofTesting,
+Item.InspectionBy,
+Item.ControlMethod,
+Item.RejectionPlan,
+Item.Remarks,
+Item.ItemimagePath,
+Item.DrawingNo,
+Item.DrawingNoImagePath,
+
+                        });
+                }
+                GIGrid.Dispose();
+                return GIGrid;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
         public async Task<JsonResult> GetNewEntryId(int Yearcode)
         {

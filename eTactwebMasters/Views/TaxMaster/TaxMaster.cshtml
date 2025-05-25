@@ -140,7 +140,7 @@
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" id="sgst-head-wrapper">
                                     <label asp-for="SGSTHead" class="control-label">SGST Head</label>
                                     <select class="form-select" asp-for="SGSTHead" asp-items="@(new SelectList(Model.SGSTHeadList,"Value","Text"))">
                                         <option value="0">-Select-</option>
@@ -283,11 +283,12 @@
 {
     <script>
         $(document).ready(function () {
-            $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#EffectiveDate').datepicker({ dateFormat: 'mm/dd/yy' }).datepicker("setDate", 'now');
             if ('@Model.Mode' == "U") {
                 $('#TaxTypeName').val($("#TaxType option:selected").text());
 
             }
+            toggleSGSTHead();
             GetFormRights();
             //$("#EffectiveDate").datepicker({ dateFormat: 'dd/mm/yy' });
             $('.hasDatepicker').datepicker("option", "showAnim", "clip");
@@ -360,6 +361,26 @@
                 }
             });
         }
+        function toggleSGSTHead() {
+            var taxCategory = $('#TaxCategory').val();
+
+            if (taxCategory === 'SGST' || taxCategory === 'IGST') {
+                // Hide and remove required attribute
+                $('#sgst-head-wrapper').hide();
+                $('#SGSTHead').prop('required', false);
+            } else if (taxCategory === 'CGST') {
+                // Show and make required
+                $('#sgst-head-wrapper').show();
+                $('#SGSTHead').prop('required', true);
+            } else {
+                // Default: Show but not mandatory
+                $('#sgst-head-wrapper').show();
+                $('#SGSTHead').prop('required', false);
+            }
+        }
+        $('#TaxCategory').change(function () {
+            toggleSGSTHead();
+        });
 
         $('#TaxType').on('change', function () {
 
