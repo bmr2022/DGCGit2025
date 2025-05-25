@@ -37,7 +37,8 @@ namespace eTactwebAccounts.Controllers
             var MainModel = new CashPaymentModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
+            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
@@ -66,7 +67,6 @@ namespace eTactwebAccounts.Controllers
             MainModel.DashboardTypeBack = DashboardType;
             return View(MainModel);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
@@ -81,7 +81,7 @@ namespace eTactwebAccounts.Controllers
                 {
                     CashPaymentGrid = JsonConvert.DeserializeObject<List<CashPaymentModel>>(cashModel);
                 }
-                string cashEditModel = HttpContext.Session.GetString("KeyCashPaymentGridEdir");
+                string cashEditModel = HttpContext.Session.GetString("KeyCashPaymentGridEdit");
                 List<CashPaymentModel> CashPaymentGridEdit = new List<CashPaymentModel>();
                 if (!string.IsNullOrEmpty(cashEditModel))
                 {
@@ -253,8 +253,8 @@ namespace eTactwebAccounts.Controllers
                 Item.CrAmt ,
                 Item.EntryBankCash,
                 Item.VoucherType ?? string.Empty,
-                Item.ChequeDate != null ? Item.ChequeDate : null,
-                Item.ChequeClearDate != null ? Item.ChequeDate : null,
+                string.IsNullOrEmpty(Item.ChequeClearDate) ? null : ParseFormattedDate(Item.ChequeClearDate),
+                string.IsNullOrEmpty(Item.ChequeClearDate) ? null : ParseFormattedDate(Item.ChequeClearDate),
                 Item.UID ,
                 Item.CC ?? string.Empty,
                 Item.TDSNatureOfPayment ?? string.Empty,
@@ -311,7 +311,7 @@ namespace eTactwebAccounts.Controllers
                 Item.ProjectNo ,
                 Item.ProjectYearcode ,
                 Item.ProjectDate = DateTime.Now.ToString("dd/MMM/yyyy"),
-                Item.ActualEntryBy ,
+                Item.ActualEntryby ,
                 Item.ActualEntryDate = DateTime.Now.ToString("dd/MMM/yyyy"),
                 Item.UpdatedBy ,
                 Item.UpdatedOn ,
@@ -885,9 +885,9 @@ namespace eTactwebAccounts.Controllers
             HttpContext.Session.SetString("KeyCashPaymentGridPopUpData", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType  )
         {
-            var Result = await _ICashPayment.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate);
+            var Result = await _ICashPayment.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate,VoucherType);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

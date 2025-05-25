@@ -97,7 +97,6 @@
                                     <label asp-for="SubVoucherName" class="form-label" style="width:130px;color:red;">SubVoucher Name*</label>
                                     <input type="hidden" asp-for="SubVoucherID" />
                                     <select class="form-control" asp-for="SubVoucherName" style="width:130px;">
-                                        @* <option value="">Cash-Payment</option> *@
                                         <option selected value="Cash-Payment">Cash-Payment</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -128,10 +127,6 @@
                                     <label asp-for="ExRate" class="form-label">ExRate</label>
                                     <input asp-for="ExRate" class="form-control" readonly />
                                 </div>
-                               @*  <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="BankRECO" class="form-label">Bank Reco</label>
-                                    <input asp-for="BankRECO" class="form-control" readonly />
-                                </div> *@
                             </div>
                         </div>
                     </div>
@@ -286,6 +281,7 @@
                                     </div>
                                     <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="ActualEntryBy" class="form-label">Actual Entry By </label>
+                                        <input asp-for="ActualEntryby" value="@Model.ActualEntryby" type="hidden" />
                                         <input asp-for="ActualEntryBy" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -827,7 +823,6 @@
             $('#AccountCode').val($('#LedgerName').val())
             GetLedgerBalance();
             CheckBankType();
-            //BindModeOfAdjust();
             AdjustAmountForAddToGridForDRCR();
         });
 
@@ -1792,7 +1787,7 @@
                 "SOYear": $('#SOYear').val(),
                 "DrAmt": $('#DrAmt').val(),
                 "CrAmt": $('#CrAmt').val(),
-                "ActualEntryby": $('#ActualEntryBy').val(),
+                "ActualEntryby": $('#ActualEntryby').val(),
                 "EntryByMachine": $('#EntryByMachine').val(),
                 "CurrencyId": parseInt($('#CurrencyId').val()),
                 "ActualEntryDate": $('#ActualEntryDate').val(),

@@ -319,6 +319,7 @@ namespace eTactWeb.Data.DAL
                 var InsDate = CommonFunc.ParseFormattedDate(model.InsDate);
 
                 var sqlParams = new List<dynamic>();
+                sqlParams.Add(new SqlParameter("@voucherNo", model.VoucherNo));
                 if (model.Mode == "U" || model.Mode == "V")
                 {
                     sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
@@ -513,7 +514,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -525,6 +526,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@Vouchertype", VoucherType));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -710,6 +712,8 @@ namespace eTactWeb.Data.DAL
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
+                        EntryByMachine = row["EntryByMachine"].ToString(),
+                        BankType = row["UnderGroup"].ToString(),
                         DRCR = row["CRDDR"].ToString(),
                         Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
                         Type = row["DRCRTYPE"].ToString(),
