@@ -1615,7 +1615,7 @@
                 $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(SOClosedate));
                 $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
                 
-                debugger
+                
                 $('#PN1').prop("checked", true);
                 $('#PN1').change();
       
@@ -1776,8 +1776,6 @@
             /* 			$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                         $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now'); */
 
-                        debugger
-
             formattedDate1 = parseDateToFormat(formattedDate1);
             formattedDate2 = parseDateToFormat(formattedDate2);
 
@@ -1802,6 +1800,7 @@
                 $(this).val(dateText);
             }
             }); */
+
             var date = new Date();
             // $('#SODate').datepicker('setDate', new Date());
             //             $('#SODate').datepicker({
@@ -1975,7 +1974,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     debugger
+                     
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                     $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                 }
@@ -2778,7 +2777,7 @@
         }
 
         $('#PN1').change(function () {
-            debugger
+            
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPartyList")",
@@ -2792,7 +2791,7 @@
                         $('#AccountCode').append('<option value="' + val.value + '">' + val.text + '</option>');
                     });
 
-                    debugger
+                    
                     if ($('#Mode').val() == "SOA" || $('#Mode').val() == "U" || $('#Mode').val() == "N") {
                         $('#AccountCode').prop("disabled", false);
                         $('#AccountCode').val($('#hiddenAccountCode').val());

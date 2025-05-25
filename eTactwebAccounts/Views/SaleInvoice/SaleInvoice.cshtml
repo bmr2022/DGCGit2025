@@ -652,7 +652,7 @@
                     "uniquebatchno": uniquebatchnoo
                 });
             }
-            debugger
+            
             if ($('#Mode').val() == "U") {
                 if ($('#EInvNo').val() == "Y" || $('#EinvGenerated').val() == "Y") {
                     $('#SaleBillJobwork').prop("disabled", true);
@@ -874,7 +874,7 @@
 
                 adjustedData.push(rowData);
             });
-
+            debugger
             console.log("Adustdata:", adjustedData);
 
             $.ajax({
@@ -1104,7 +1104,7 @@
         });
 
         function PasswordCheck() {
-            debugger
+            
             if ($('#taxPassword').val() != allowManualPassword) {
                 $.notify('please correct password...!', "error");
             } else {
@@ -1159,7 +1159,7 @@
                 url: "@Url.Action("AllowTaxPassword")",
                 dataType: "json",
                 success: function (result, status, error) {
-                    debugger
+                    
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result.length > 0) {
@@ -1494,7 +1494,7 @@
                 RemoveErrorCls('Uniquebatchno');
                 RemoveErrorCls('Qty');
             }
-
+            debugger
             if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
                 if (parseFloat($('#Qty').val()) > parseFloat($('#SOPendQty').val())) {
                     $.notify('Bill Qty should not more then Pend Qty...!', "error");
@@ -1804,7 +1804,7 @@
 
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        debugger
+                        
                         //$('#EntryId').val(obj.Result[0].EntryId);
                         if (obj.Result.Table[0].AllowBAtchEditable == 'Y') {
                             $("#Batchno option:not(:eq(1))").prop("disabled", true);
@@ -3221,7 +3221,7 @@
                 LowestStock = 'pendQty';
             }
 
-
+            debugger
             if (parseFloat($('#Qty').val()) > MinQtyVal) {
                 AddErrorCls('Qty');
                 Err = 1;
