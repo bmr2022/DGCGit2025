@@ -70,6 +70,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Schno", Schno);
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                     oCmd.Parameters.AddWithValue("@invoiceNo", invoiceNo);
+                    oCmd.Parameters.AddWithValue("@Mrnno", MRNno);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

@@ -112,6 +112,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> FillMRNNo(string FromDate, string ToDate)
+        {
+            var JSON = await _IMRNRegister.FillMRNNo(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetServerDate()
         {
             try

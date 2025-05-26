@@ -547,142 +547,303 @@
 
 
 
-        $('#sendToPDF').click(async function () {
+        // $('#sendToPDF').click(async function () {
              
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+        //     const { jsPDF } = window.jspdf;
+        //     const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
-            // Get dynamic values
-            var reportTypeText = $('#ReportType').find(":selected").text();
-            var reportTypeValue = $('#ReportType').val();
-            var fromDate = $('#FromDate').val();
-            var toDate = $('#ToDate').val();
-            var WorkCenter = $('#WCID').find(":selected").text();
-            var PartCode = $('#PartCode').val();
-            var ItemName = $('#ItemName').val();
-            var ItemGroup = $('#ItemGroup').val();
-            var ItemType = $('#ItemType').val();
-            var BatchNo = $('#BatchNo').val();
-            var UniqueBatchNo = $('#UniqueBatchNo').val();
-            var ShiftName = $('#ShiftName').val();
+        //     // Get dynamic values
+        //     var reportTypeText = $('#ReportType').find(":selected").text();
+        //     var reportTypeValue = $('#ReportType').val();
+        //     var fromDate = $('#FromDate').val();
+        //     var toDate = $('#ToDate').val();
+        //     var WorkCenter = $('#WCID').find(":selected").text();
+        //     var PartCode = $('#PartCode').val();
+        //     var ItemName = $('#ItemName').val();
+        //     var ItemGroup = $('#ItemGroup').val();
+        //     var ItemType = $('#ItemType').val();
+        //     var BatchNo = $('#BatchNo').val();
+        //     var UniqueBatchNo = $('#UniqueBatchNo').val();
+        //     var ShiftName = $('#ShiftName').val();
 
-            // Report Title
-            doc.setFontSize(16).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 40);
+        //     // Report Title
+        //     doc.setFontSize(16).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 40);
 
-            // Date Range
-            doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
-            doc.setFontSize(10).text(`ShiftName :${ShiftName}`, 40, 73);
+        //     // Date Range
+        //     doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+        //     doc.setFontSize(10).text(`ShiftName :${ShiftName}`, 40, 73);
 
-            let currentY = 75;
-            const headerFields = [
-                { label: 'Work Center', value: (WorkCenter && WorkCenter !== '-Select-') ? WorkCenter : '' },
-                { label: 'Part Code', value: PartCode || '' },
-                { label: 'Item Name', value: ItemName || '' },
-                { label: 'Item Group', value: ItemGroup || '' },
-                { label: 'Item Type', value: ItemType || '' },
-                { label: 'Batch No', value: BatchNo || '' },
-                { label: 'Unique BatchNo', value: UniqueBatchNo || '' },
-            ];
+        //     let currentY = 75;
+        //     const headerFields = [
+        //         { label: 'Work Center', value: (WorkCenter && WorkCenter !== '-Select-') ? WorkCenter : '' },
+        //         { label: 'Part Code', value: PartCode || '' },
+        //         { label: 'Item Name', value: ItemName || '' },
+        //         { label: 'Item Group', value: ItemGroup || '' },
+        //         { label: 'Item Type', value: ItemType || '' },
+        //         { label: 'Batch No', value: BatchNo || '' },
+        //         { label: 'Unique BatchNo', value: UniqueBatchNo || '' },
+        //     ];
 
-            // Filter out any fields with empty values
-            const filled = headerFields.filter(field => field.value);
+        //     // Filter out any fields with empty values
+        //     const filled = headerFields.filter(field => field.value);
 
-            // If there is at least one non-empty value, print the header
-            if (filled.length > 0) {
-                filled.forEach(field => {
-                    doc.setFontSize(10)
-                        .text(`${field.label}: ${field.value}`, 40, currentY);
-                    currentY += 15;
-                });
-            }
-            // Fetch data
-            var resp = await fetch('/ProductionEntryReport/GetDataForPDF');
-            var rows = await resp.json();
+        //     // If there is at least one non-empty value, print the header
+        //     if (filled.length > 0) {
+        //         filled.forEach(field => {
+        //             doc.setFontSize(10)
+        //                 .text(`${field.label}: ${field.value}`, 40, currentY);
+        //             currentY += 15;
+        //         });
+        //     }
+        //     // Fetch data
+        //     var resp = await fetch('/ProductionEntryReport/GetDataForPDF');
+        //     var rows = await resp.json();
 
-            // Declare headers and body
-            let headers = [];
-            let body = [];
+        //     // Declare headers and body
+        //     let headers = [];
+        //     let body = [];
 
-            // Handle report type logic
-            switch (reportTypeValue) {
+        //     // Handle report type logic
+        //     switch (reportTypeValue) {
                
-                case 'Date Wise FG Consolidated':
-                    console.log(`First FGPartCode: ${rows[0].fgPartCode}`, 40, currentY + 20);
-                    console.log(rows);
+        //         case 'Date Wise FG Consolidated':
+        //             console.log(`First FGPartCode: ${rows[0].fgPartCode}`, 40, currentY + 20);
+        //             console.log(rows);
 
-                    headers = [
-                        "Sr#", "prodEntryId", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
-                         "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr"
-                    ];
-                    body = rows.map((r, i) => [
-                        i + 1,
-                        r.prodEntryId ?? '',
-                        r.prodDate ?? '',
-                        r.newProdRework ?? '',
-                        r.fgPartCode ?? '',
-                        r.fgItemName ?? '',
-                        r.workcenter ?? '',                        
-                        r.fgProdQty ?? '',
-                        r.fgokQty ?? '',
-                        r.fgRejQty ?? '',
-                        r.transferToWCSTr ?? ''
+        //             headers = [
+        //                 "Sr#", "prodEntryId", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
+        //                  "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr"
+        //             ];
+        //             body = rows.map((r, i) => [
+        //                 i + 1,
+        //                 r.prodEntryId ?? '',
+        //                 r.prodDate ?? '',
+        //                 r.newProdRework ?? '',
+        //                 r.fgPartCode ?? '',
+        //                 r.fgItemName ?? '',
+        //                 r.workcenter ?? '',                        
+        //                 r.fgProdQty ?? '',
+        //                 r.fgokQty ?? '',
+        //                 r.fgRejQty ?? '',
+        //                 r.transferToWCSTr ?? ''
                         
-                    ]);
-                    break;
+        //             ]);
+        //             break;
 
-                // Add more cases for different report types here if needed
-                default:
-                    headers = ["Sr#", "Item Name", "Total Stock"];
-                    body = rows.map((r, i) => [i + 1, r.FGItemName, r.FGProdQty]);
-                    break;
-            }
+        //         // Add more cases for different report types here if needed
+        //         default:
+        //             headers = ["Sr#", "Item Name", "Total Stock"];
+        //             body = rows.map((r, i) => [i + 1, r.FGItemName, r.FGProdQty]);
+        //             break;
+        //     }
 
-            // Generate table
-            doc.autoTable({
-                startY: 75,
-                head: [headers],
-                body: body,
-                theme: 'grid',
-                margin: { left: 40, right: 40 },
-                styles: {
-                    fontSize: 7,
-                    cellPadding: 3,
-                    overflow: 'linebreak',
-                    halign: 'center',
-                    valign: 'middle'
-                },
-                headStyles: {
-                    fillColor: [41, 128, 185],
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                tableWidth: 'auto',
-                columnStyles: {
-                    0: { cellWidth: 24 },
-                    1: { cellWidth: 80 },
-                    2: { cellWidth: 60 },
-                    3: { cellWidth: 90 },
-                    // Extend more if needed
-                },
-                showHead: 'everyPage'
-            });
+        //     // Generate table
+        //     doc.autoTable({
+        //         startY: 75,
+        //         head: [headers],
+        //         body: body,
+        //         theme: 'grid',
+        //         margin: { left: 40, right: 40 },
+        //         styles: {
+        //             fontSize: 7,
+        //             cellPadding: 3,
+        //             overflow: 'linebreak',
+        //             halign: 'center',
+        //             valign: 'middle'
+        //         },
+        //         headStyles: {
+        //             fillColor: [41, 128, 185],
+        //             textColor: 255,
+        //             fontStyle: 'bold'
+        //         },
+        //         tableWidth: 'auto',
+        //         columnStyles: {
+        //             0: { cellWidth: 24 },
+        //             1: { cellWidth: 80 },
+        //             2: { cellWidth: 60 },
+        //             3: { cellWidth: 90 },
+        //             // Extend more if needed
+        //         },
+        //         showHead: 'everyPage'
+        //     });
 
-            // Footer section (ISSUE BY, QC MANAGER, RECEIVE BY, REMARKS)
-            const finalY = doc.lastAutoTable.finalY + 30;
-            doc.setFontSize(10);
-            doc.text('ISSUE BY', 40, finalY);
-            doc.text('Q.C. MANAGER', 340, finalY);
-            doc.text('RECEIVE BY', 540, finalY);
+        //     // Footer section (ISSUE BY, QC MANAGER, RECEIVE BY, REMARKS)
+        //     const finalY = doc.lastAutoTable.finalY + 30;
+        //     doc.setFontSize(10);
+        //     doc.text('ISSUE BY', 40, finalY);
+        //     doc.text('Q.C. MANAGER', 340, finalY);
+        //     doc.text('RECEIVE BY', 540, finalY);
 
             
 
-            // Remarks section
-            doc.setFontSize(9).text('REMARKS', 40, finalY + 35);
-            doc.line(40, finalY + 40, 550, finalY + 40);
+        //     // Remarks section
+        //     doc.setFontSize(9).text('REMARKS', 40, finalY + 35);
+        //     doc.line(40, finalY + 40, 550, finalY + 40);
 
-            // Save the PDF
-            doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+        //     // Save the PDF
+        //     doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+        // });
+
+
+
+$('#sendToPDF').click(async function () {
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+    // Get dynamic values
+    var reportTypeText = $('#ReportType').find(":selected").text();
+    var reportTypeValue = $('#ReportType').val();
+    var fromDate = $('#FromDate').val();
+    var toDate = $('#ToDate').val();
+    var WorkCenter = $('#WCID').find(":selected").text();
+    var PartCode = $('#PartCode').val();
+    var ItemName = $('#ItemName').val();
+    var ItemGroup = $('#ItemGroup').val();
+    var ItemType = $('#ItemType').val();
+    var BatchNo = $('#BatchNo').val();
+    var UniqueBatchNo = $('#UniqueBatchNo').val();
+    var ShiftName = $('#ShiftName').val();
+
+    // Report Title
+    doc.setFontSize(16).text('PRODUCED MATERIAL TRANSFER REPORT', 200, 40);
+
+    // Date Range
+    doc.setFontSize(10).text(`For the duration From: ${fromDate}     To: ${toDate}`, 40, 58);
+    doc.setFontSize(10).text(`ShiftName :${ShiftName}`, 40, 73);
+
+    let currentY = 90;
+    const headerFields = [
+        { label: 'Work Center', value: (WorkCenter && WorkCenter !== '-Select-') ? WorkCenter : '' },
+        { label: 'Part Code', value: PartCode || '' },
+        { label: 'Item Name', value: ItemName || '' },
+        { label: 'Item Group', value: ItemGroup || '' },
+        { label: 'Item Type', value: ItemType || '' },
+        { label: 'Batch No', value: BatchNo || '' },
+        { label: 'Unique BatchNo', value: UniqueBatchNo || '' },
+    ];
+
+    // Filter out any fields with empty values
+    const filled = headerFields.filter(field => field.value);
+
+    // If there is at least one non-empty value, print the header
+    if (filled.length > 0) {
+        filled.forEach(field => {
+            doc.setFontSize(10)
+                .text(`${field.label}: ${field.value}`, 40, currentY);
+            currentY += 15;
         });
+    }
+
+    // Fetch data
+    let rows = [];
+    try {
+        var resp = await fetch('/ProductionEntryReport/GetDataForPDF');
+        if (!resp.ok) throw new Error('Failed to fetch data');
+        rows = await resp.json();
+    } catch (error) {
+        alert("Error fetching data: " + error.message);
+        return;
+    }
+
+    // Declare headers and body
+    let headers = [];
+    let body = [];
+    let foot = [];
+
+    // Handle report type logic
+    switch (reportTypeValue) {
+        case 'Date Wise FG Consolidated':
+            headers = [
+                "Sr#", "prodEntryId", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
+                "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr"
+            ];
+
+            // Build body
+            body = rows.map((r, i) => [
+                i + 1,
+                r.prodEntryId ?? '',
+                r.prodDate ?? '',
+                r.newProdRework ?? '',
+                r.fgPartCode ?? '',
+                r.fgItemName ?? '',
+                r.workcenter ?? '',
+                r.fgProdQty ?? '',
+                r.fgokQty ?? '',
+                r.fgRejQty ?? '',
+                r.transferToWCSTr ?? ''
+            ]);
+
+            // Calculate totals
+            let totalFGProdQty = 0;
+            let totalFGOKQty = 0;
+            let totalFGRejQty = 0;
+
+            rows.forEach(r => {
+                totalFGProdQty += Number(r.fgProdQty) || 0;
+                totalFGOKQty += Number(r.fgokQty) || 0;
+                totalFGRejQty += Number(r.fgRejQty) || 0;
+            });
+
+            // Footer row with totals
+            foot = [[
+                '', '', '', '', '', '', 'Total:',
+                totalFGProdQty.toFixed(2),
+                totalFGOKQty.toFixed(2),
+                totalFGRejQty.toFixed(2),
+                ''
+            ]];
+            break;
+
+        default:
+            headers = ["Sr#", "Item Name", "Total Stock"];
+            body = rows.map((r, i) => [i + 1, r.FGItemName, r.FGProdQty]);
+
+            // Optional totals for default
+            let totalDefaultQty = rows.reduce((acc, r) => acc + (Number(r.FGProdQty) || 0), 0);
+            foot = [['', 'Total:', totalDefaultQty.toFixed(2)]];
+            break;
+    }
+
+    // Generate table
+    doc.autoTable({
+        startY: currentY + 10,
+        head: [headers],
+        body: body,
+        foot: foot,
+        theme: 'grid',
+        margin: { left: 40, right: 40 },
+        styles: {
+            fontSize: 7,
+            cellPadding: 3,
+            overflow: 'linebreak',
+            halign: 'center',
+            valign: 'middle'
+        },
+        headStyles: {
+            fillColor: [41, 128, 185],
+            textColor: 255,
+            fontStyle: 'bold'
+        },
+        tableWidth: 'auto',
+        showHead: 'everyPage'
+    });
+
+    // Footer section (ISSUE BY, QC MANAGER, RECEIVE BY, REMARKS)
+    const finalY = doc.lastAutoTable.finalY + 30;
+    doc.setFontSize(10);
+    doc.text('ISSUE BY', 40, finalY);
+    doc.text('Q.C. MANAGER', 340, finalY);
+    doc.text('RECEIVE BY', 540, finalY);
+
+    // Remarks section
+    doc.setFontSize(9).text('REMARKS', 40, finalY + 35);
+    doc.line(40, finalY + 40, 550, finalY + 40);
+
+    // Save the PDF
+    doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+});
+
 
 
 
