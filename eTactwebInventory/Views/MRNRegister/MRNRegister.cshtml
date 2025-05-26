@@ -536,7 +536,30 @@
                    
                 },
                 showHead: 'everyPage'
+
+
             });
+            // Step 2: Footer only on last page, aligned left, center, right
+            const pageCount = doc.internal.getNumberOfPages();
+            doc.setPage(pageCount); // Go to last page
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const footerY = doc.internal.pageSize.getHeight() - 30;
+
+            doc.setFontSize(10);
+
+            // Left
+            doc.text("Issued By: ___________________", 40, footerY);
+
+            // Center (centered around middle of page)
+            const centerText = "Checked By: ___________________";
+            const centerX = pageWidth / 2 - (doc.getTextWidth(centerText) / 2);
+            doc.text(centerText, centerX, footerY);
+
+            // Right
+            const rightText = "Received By: ___________________";
+            const rightX = pageWidth - doc.getTextWidth(rightText) - 40;
+            doc.text(rightText, rightX, footerY);
 
             // Save the PDF
             doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
