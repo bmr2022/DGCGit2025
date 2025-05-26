@@ -681,24 +681,45 @@
                     $("form").submit();
                 }
             });
-
-            function GetServerDate() {
-                $.ajax({
-                    type: "GET",
-                    url: "@Url.Action("GetServerDate")",
-                    async: false,
-                    success: function (result, status, error) {
-                        console.log(result);
-                        if (result != null) {
-
+           function GetServerDate() 
+           {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false, // Note: async:false is deprecated, consider using async/await
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                        alert("Server Date: " + result);
                         $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         $('#manufactureDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                         $('#ExpiryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
-                        $('#manufactureDate').datepicker("option", "maxDate", result);
-                        }
+                        $('#manufactureDate').datepicker("option", "maxDate", parseDateToFormat(result));
                     }
-                });
-            }
+                }
+            });
+        }
+
+
+            // function GetServerDate() 
+            // {
+            //     $.ajax({
+            //         type: "GET",
+            //         url: "@Url.Action("GetServerDate")",
+            //         async: false,
+            //         success: function (result, status, error) {
+            //             console.log(result);
+            //             if (result != null)
+            //             {
+            //             alert("Server Date: " + result);
+            //             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+            //             $('#manufactureDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+            //             $('#ExpiryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+            //             $('#manufactureDate').datepicker("option", "maxDate", result);
+            //             }
+            //         }
+            //     });
+            // }
 
             $('#UpdateButton').click(function (e) {
 
@@ -827,7 +848,8 @@
                     $('#divMRNGrid').empty();
                     CountTotVendBatchQty();
                 }
-                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") 
+                {
 
                     // var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                     // var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
@@ -1906,7 +1928,7 @@
                 const formattedDate = `${day}/${month < 10 ? '0' : ''}${month}/${year}`;
 
                 console.log(formattedDate); // Output: "17/08/2023"
-                $('#EntryDate').datepicker("option", "minDate", formattedDate);
+                //$('#EntryDate').datepicker("option", "minDate", formattedDate);
             }
 
             $('.GridButton').click(function () {

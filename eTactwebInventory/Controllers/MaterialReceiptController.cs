@@ -549,9 +549,11 @@ namespace eTactWeb.Controllers
                 //var dt = time.ToString(format);
                 //return Json(formattedDate);
 
-                var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
+                //  var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
+                 var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss"));
                 //return Json(DateTime.Now.ToString("yyyy-MM-dd"));
-                return Json(time);
+                 return Json(time);
+                //return Json(DateTime.Now.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture));
 
             }
             catch (HttpRequestException ex)
