@@ -77,5 +77,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.SavePurchaseRejection(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, DTAgainstBillDetail);
         }
+        public async Task<AccPurchaseRejectionDashboard> GetDashBoardData()
+        {
+            return await _purchRejDAL.GetDashBoardData();
+        }
     }
 }

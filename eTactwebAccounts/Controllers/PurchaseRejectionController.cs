@@ -9,6 +9,7 @@ using System.Data;
 using System.Net;
 using System.Globalization;
 using Microsoft.AspNetCore.Http;
+using NuGet.Packaging;
 
 namespace eTactWeb.Controllers
 {
@@ -16,6 +17,7 @@ namespace eTactWeb.Controllers
     {
         private readonly IPurchaseRejection _purchRej;
         private readonly ILogger<PurchaseRejectionController> _logger;
+        private readonly IDataLogic IDataLogic;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
         public PurchaseRejectionController(IPurchaseRejection purchRej, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger)
@@ -533,6 +535,63 @@ namespace eTactWeb.Controllers
             }
 
             return Table;
+        }
+        [Route("{controller}/Dashboard")]
+        public async Task<IActionResult> DashBoard(string FromDate = "", string ToDate = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "", string Flag = "True")
+        {
+            HttpContext.Session.Remove("PurchaseBill");
+            HttpContext.Session.Remove("TaxGrid");
+            HttpContext.Session.Remove("KeyTaxGrid");
+
+            var _List = new List<TextValue>();
+
+            var MainModel = await _purchRej.GetDashBoardData();
+            AccPurchaseRejectionDashboard model = new AccPurchaseRejectionDashboard();
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            DateTime today = DateTime.Now;
+            var commonparams = new Dictionary<string, object>()
+        {
+            { "@Fromdate", firstDayOfMonth },
+            { "@ToDate", today }
+        };
+            MainModel = await BindDashboardList(MainModel, commonparams);
+            MainModel.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+            MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
+            if (Flag != "True")
+            {
+                MainModel.FromDate = FromDate;
+                MainModel.ToDate = ToDate;
+                MainModel.VendorName = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "0";
+                MainModel.VoucherNo = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "0";
+                MainModel.InvoiceNo = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "0";
+                MainModel.PartCode = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "0";
+                MainModel.Searchbox = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
+            }
+            return View(MainModel);
+        }
+        public async Task<AccPurchaseRejectionDashboard> BindDashboardList(AccPurchaseRejectionDashboard MainModel, Dictionary<string, object> commonparams)
+        {
+            //var docnameparams = new Dictionary<string, object>() { { "@flag", "FillDocumentDASHBOARD" } };
+            //docnameparams.AddRange(commonparams);
+            //MainModel.DocumentNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", docnameparams, true);
+
+            var vendornameparams = new Dictionary<string, object>() { { "@flag", "FILLVENDORNAMEASHBOARD" } };
+            vendornameparams.AddRange(commonparams);
+            MainModel.VendorNameList = await IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vendornameparams, true);
+
+            var vouchnoparams = new Dictionary<string, object>() { { "@flag", "FILLVOUCHERDASHBOARD" } };
+            vouchnoparams.AddRange(commonparams);
+            MainModel.VoucherNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vouchnoparams, true);
+
+            var invparams = new Dictionary<string, object>() { { "@flag", "FILLINVOICEDASHBOARD" } };
+            invparams.AddRange(commonparams);
+            MainModel.InvoiceNoList = await IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", invparams, true);
+
+            var partcodeparams = new Dictionary<string, object>() { { "@flag", "FILLPartCodeDASHBOARD" } };
+            partcodeparams.AddRange(commonparams);
+            MainModel.PartCodeList = await IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, true);
+            return MainModel;
         }
         public async Task<JsonResult> NewEntryId(int YearCode)
         {
