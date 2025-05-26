@@ -1,0 +1,62 @@
+﻿@model eTactWeb.DOM.Models.CashReceiptModel;
+
+@if (Model.CashReceiptGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.CashReceiptGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a class="table-link link-primary" onclick="EditItemRows(@item.SrNO);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+            <td>@item.SrNO</td>
+            <td id="GridLedgerName-@Cntr">@item.LedgerName<input type="hidden" id="AccountCode-@Cntr" value="@item.AccountCode" /><input type="hidden" id="BankType-@Cntr" value="@item.BankType" /></td>
+            <td>
+                <p class="inline-text" id="BalanceG-@Cntr">@item.Balance</p>
+                <p class="inline-text" id="DrCrG-@Cntr">@item.DRCR</p>
+            </td>
+            <td id="ModeOfAdjustment-@Cntr">@item.ModeOfAdjustment</td>
+            <td style="background-color:lightgoldenrodyellow;color:#2e2828">
+                <p class="inline-text" id="AdjAmtG-@Cntr">@item.AdjustmentAmt</p>
+                <p class="inline-text" id="Type-@Cntr">@item.Type</p>
+            </td>
+            <td>@item.AdjustmentAmtOthCur</td>
+            <td>@item.CostCenterName<input type="hidden" value="@item.CostCenterId" /></td>
+            <td>@item.PartyWiseNaration</td>
+            <td>@item.CustOrderNo</td>
+            <td>@item.SoDate</td>
+            <td>@item.SOYear</td>
+            <td id="AgainstVoucherNo-@Cntr">@item.AgainstVoucherNo</td>
+            <td id="AgainstVoucheryearCode-@Cntr">@item.AgainstVoucheryearCode</td>
+            <td>@item.AgainstVoucherDate</td>
+            <td>@item.AgainstVoucherType</td>
+            <td id="AgainstVoucherEntryId-@Cntr">@item.AgainstVoucherEntryId</td>
+            <td>@item.VoucherBillAmt</td>
+            <td>@item.PendBillAmt</td>
+        </tr>
+    }
+}
+<style>
+    .inline-text {
+        display: inline-block;
+        margin: 0 5px; /* Adjust spacing */
+    }
+</style>
