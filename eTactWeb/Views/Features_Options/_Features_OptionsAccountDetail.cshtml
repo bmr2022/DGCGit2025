@@ -5,36 +5,21 @@
             <tr>
                 <th>Sr#</th>
                 <th>Action</th>
+               
                 <th data-columnno="1" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccAllowtochangeDocumentinPurchaseBill
-                </th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccPasswordToChangeDocumentinPurchaseBill
-                </th>
-                <th data-columnno="3" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccAllowtochangeInvoiceNoDateinPurchaseBill
-                </th>
-                <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccPasswordToAllowManualTax
                 </th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <th data-columnno="2" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccSaleBillManualTaxAllowed
                 </th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <th data-columnno="3" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccAllowBackdateVoucherEntry
                 </th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccBackdateVoucherEntryPassword
                 </th>
-                <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccAllowToChangeVoucherDateInPurchBill
-                </th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccPurchaseVoucherPrintoutFilename
-                </th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> AccPurchaseBillInvoicePrintoutFilename
-                </th>
+              
+               
 
             </tr>
         </thead>
@@ -63,16 +48,12 @@
                                            asp-route-Mode="U"
                                            asp-route-ID="@Cntr"
                                            asp-route-Type="@item.Type"
-                                           asp-route-AccAllowtochangeDocumentinPurchaseBill="@item.AccAllowtochangeDocumentinPurchaseBill"
-                                           asp-route-AccPasswordToChangeDocumentinPurchaseBill="@item.AccPasswordToChangeDocumentinPurchaseBill"
-                                           asp-route-AccAllowtochangeInvoiceNoDateinPurchaseBill="@item.AccAllowtochangeInvoiceNoDateinPurchaseBill"
+                                          
                                            asp-route-AccPasswordToAllowManualTax="@item.AccPasswordToAllowManualTax"
                                            asp-route-AccSaleBillManualTaxAllowed="@item.AccSaleBillManualTaxAllowed"
                                            asp-route-AccAllowBackdateVoucherEntry="@item.AccAllowBackdateVoucherEntry"
                                            asp-route-AccBackdateVoucherEntryPassword="@item.AccBackdateVoucherEntryPassword"
-                                           asp-route-AccAllowToChangeVoucherDateInPurchBill="@item.AccAllowToChangeVoucherDateInPurchBill"
-                                           asp-route-AccPurchaseVoucherPrintoutFilename="@item.AccPurchaseVoucherPrintoutFilename"
-                                           asp-route-AccPurchaseBillInvoicePrintoutFilename="@item.AccPurchaseBillInvoicePrintoutFilename"
+                                          
                                            onclick="confirmEdit(event)">
 
                                             <span class="fa-stack">
@@ -86,16 +67,12 @@
 
                                 </div>
                             </td>
-                            <td>@item.AccAllowtochangeDocumentinPurchaseBill</td>
-                            <td>@item.AccPasswordToChangeDocumentinPurchaseBill</td>
-                            <td>@item.AccAllowtochangeInvoiceNoDateinPurchaseBill</td>
+                            
                             <td>@item.AccPasswordToAllowManualTax</td>
                             <td>@item.AccSaleBillManualTaxAllowed</td>
                             <td>@item.AccAllowBackdateVoucherEntry</td>
                             <td>@item.AccBackdateVoucherEntryPassword</td>
-                            <td>@item.AccAllowToChangeVoucherDateInPurchBill</td>
-                            <td>@item.AccPurchaseVoucherPrintoutFilename</td>
-                            <td>@item.AccPurchaseBillInvoicePrintoutFilename</td>
+                          
 
 
 

@@ -248,6 +248,7 @@
             $('#invoiceNo').select2();
             $('#VendorName').select2();
             $('#ReportType').select2();
+            $('#MRNno').select2();
             FillGateNo();
 
             FillItemNamePartcode();
@@ -256,6 +257,7 @@
             FillInvoice();
             FillPONO();
             FillSchNo();
+            FillMRNNo();
 
             GetMRNRegisterData();//INITIAL - ON LOAD METHOD
         });
@@ -534,7 +536,30 @@
                    
                 },
                 showHead: 'everyPage'
+
+
             });
+            // Step 2: Footer only on last page, aligned left, center, right
+            const pageCount = doc.internal.getNumberOfPages();
+            doc.setPage(pageCount); // Go to last page
+
+            const pageWidth = doc.internal.pageSize.getWidth();
+            const footerY = doc.internal.pageSize.getHeight() - 30;
+
+            doc.setFontSize(10);
+
+            // Left
+            doc.text("Issued By: ___________________", 40, footerY);
+
+            // Center (centered around middle of page)
+            const centerText = "Checked By: ___________________";
+            const centerX = pageWidth / 2 - (doc.getTextWidth(centerText) / 2);
+            doc.text(centerText, centerX, footerY);
+
+            // Right
+            const rightText = "Received By: ___________________";
+            const rightX = pageWidth - doc.getTextWidth(rightText) - 40;
+            doc.text(rightText, rightX, footerY);
 
             // Save the PDF
             doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
@@ -602,7 +627,7 @@
                 url: "@Url.Action("GetMRNRegisterData")",
                 async: false,
                 data: {
-                    "MRNType": $('#MRNType').val(), "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": "", "MRNno": $('#MRNno').val() == '0' ? '' : $('#MRNno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val()
+                    "MRNType": $('#MRNType').val(), "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": inputValue, "MRNno": $('#MRNno').val() == '0' ? '' : $('#MRNno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "Schno": $('#SchNo').val() == '0' ? '' : $('#Schno').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val()
                 },
                 success: function (result, status, error) {
                      $('#divStockMainRegister').empty();
@@ -663,7 +688,7 @@
                             $('#MRNno').empty();
                             $('#MRNno').append('<option value="0" selected>-Select-</option>');
                             $.each(obj.Result, function (index, val) {
-                                $('#MRNno').append('<option value="' + val.MRNno +  '">' + val.MRNno + '</option>');
+                                $('#MRNno').append('<option value="' + val.MRNNo + '">' + val.MRNNo + '</option>');
                             });
                         }
                     }

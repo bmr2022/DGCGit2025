@@ -5,10 +5,25 @@
             <tr>
                 <th>Sr#</th>
                 <th>Action</th>
-                <th data-columnno="1" data-sortorder="asc" class="sortCol">
-                    <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Allow to change Documnet
+            
+                <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Allow to change Doc in PurchaseBill
                 </th>
-               
+                <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Password To Change Doc in PurchaseBill
+                </th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Allow to change InvoiceNo Date in PurchaseBill
+                </th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Allow To Change VoucherDate In PurchBill
+                </th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Purchase Voucher Printout Filename
+                </th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Purchase Bill Invoice Printout Filename
+                </th>
             </tr>
         </thead>
         <tbody id="gateDashboardtable">
@@ -36,8 +51,14 @@
                                            asp-route-Mode="U"
                                            asp-route-ID="@Cntr"
                                            asp-route-Type="@item.Type"
+                                           asp-route-AccAllowtochangeDocumentinPurchaseBill="@item.AccAllowtochangeDocumentinPurchaseBill"
+                                           asp-route-AccPasswordToChangeDocumentinPurchaseBill="@item.AccPasswordToChangeDocumentinPurchaseBill"
+                                           asp-route-AccAllowtochangeInvoiceNoDateinPurchaseBill="@item.AccAllowtochangeInvoiceNoDateinPurchaseBill"
                                            asp-route-VoucherRotationDailyMonthYearly="@item.VoucherRotationDailyMonthYearly"
                                            asp-route-AccAllowtochangeDocumnetinPurchaseBill="@item.AccAllowtochangeDocumnetinPurchaseBill"
+                                           asp-route-AccAllowToChangeVoucherDateInPurchBill="@item.AccAllowToChangeVoucherDateInPurchBill"
+                                           asp-route-AccPurchaseVoucherPrintoutFilename="@item.AccPurchaseVoucherPrintoutFilename"
+                                           asp-route-AccPurchaseBillInvoicePrintoutFilename="@item.AccPurchaseBillInvoicePrintoutFilename"
                                            onclick="confirmEdit(event)">
 
                                             <span class="fa-stack">
@@ -53,7 +74,14 @@
                             </td>
 
                             <td>@item.AccAllowtochangeDocumnetinPurchaseBill</td>
-
+                           
+                            <td>@item.AccPasswordToChangeDocumentinPurchaseBill</td>
+                            
+                            <td>@item.AccAllowtochangeInvoiceNoDateinPurchaseBill</td>
+                      
+                            <td>@item.AccAllowToChangeVoucherDateInPurchBill</td>
+                            <td>@item.AccPurchaseVoucherPrintoutFilename</td>
+                            <td>@item.AccPurchaseBillInvoicePrintoutFilename</td>
                         </tr>
                     }
                 }

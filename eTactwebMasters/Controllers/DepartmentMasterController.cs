@@ -90,6 +90,13 @@ namespace eTactWeb.Controllers
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
                         return View("Error", Result);
                     }
+                    else if (Result.StatusText == "Failed" && (int)Result.StatusCode == 400)
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["400"] = "Department is already linked to requisitions and cannot be updated";
+                        TempData.Keep("400");
+                        //return View(model); 
+                    }
                 }
 
                 return RedirectToAction(nameof(DepartmentMasterDashBoard));
@@ -169,6 +176,13 @@ namespace eTactWeb.Controllers
             {
                 ViewBag.isSuccess = true;
                 TempData["423"] = "423";
+            }
+            else if (Result.StatusText == "Failed" && (int)Result.StatusCode == 400)
+            {
+                ViewBag.isSuccess = false;
+                TempData["400"] = "Department is already linked to requisitions and cannot be updated";
+                TempData.Keep("400");
+                //return View(model); 
             }
             else
             {
