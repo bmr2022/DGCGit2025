@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -37,9 +38,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _ControlPlanDAL.GetCharacteristic();
         }
-         public async Task<ResponseResult> GetEvMeasureTech()
+        public async Task<ResponseResult> GetEvMeasureTech()
         {
             return await _ControlPlanDAL.GetEvMeasureTech();
+        }
+        public async Task<ResponseResult> SaveControlPlan(ControlPlanModel model, DataTable GIGrid)
+        {
+            return await _ControlPlanDAL.SaveControlPlan(model, GIGrid);
         }
 
     }

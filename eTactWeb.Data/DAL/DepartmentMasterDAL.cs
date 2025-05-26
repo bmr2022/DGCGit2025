@@ -66,6 +66,7 @@ namespace eTactWeb.Data.DAL
         public async Task<ResponseResult> SaveDeptMaster(DepartmentMasterModel model)
         {
             var _ResponseResult = new ResponseResult();
+            var entdt = CommonFunc.ParseFormattedDate(model.Entry_Date);
             try
             {
                 var SqlParams = new List<dynamic>();
@@ -74,7 +75,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Flag", "Update"));
                     SqlParams.Add(new SqlParameter("@DeptId", model.DeptId > 0 ? model.DeptId : (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@DeptName", string.IsNullOrEmpty(model.DeptName) ? DBNull.Value : model.DeptName));
-                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(model.Entry_Date) ? DBNull.Value : model.Entry_Date));
+                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(entdt) ? DBNull.Value : entdt));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@DeptType", string.IsNullOrEmpty(model.DeptType) ? DBNull.Value : model.DeptType));
                     SqlParams.Add(new SqlParameter("@departmentcode", string.IsNullOrEmpty(model.departmentcode) ? DBNull.Value : model.departmentcode));
@@ -84,7 +85,8 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Flag", "Insert"));
                     SqlParams.Add(new SqlParameter("@DeptId", model.DeptId > 0 ? model.DeptId : (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@DeptName", string.IsNullOrEmpty(model.DeptName) ? DBNull.Value : model.DeptName));
-                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(model.Entry_Date) ? DBNull.Value : model.Entry_Date));
+
+                    SqlParams.Add(new SqlParameter("@EntryDate", string.IsNullOrEmpty(entdt) ? DBNull.Value : entdt));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@DeptType", string.IsNullOrEmpty(model.DeptType) ? DBNull.Value : model.DeptType));
                     SqlParams.Add(new SqlParameter("@departmentcode", string.IsNullOrEmpty(model.departmentcode) ? DBNull.Value : model.departmentcode));
