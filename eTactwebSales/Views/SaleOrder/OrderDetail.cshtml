@@ -1615,7 +1615,6 @@
                 $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(SOClosedate));
                 $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
                 
-                
                 $('#PN1').prop("checked", true);
                 $('#PN1').change();
       
@@ -1700,12 +1699,14 @@
             //$("#AmmDate").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker();
 
             $('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
+            debugger
             $('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
             $('#SODate').val(parseDateToFormat($('#SODate').val().split(' ')[0]));
             //alert($('#WEF').val());
             $('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
             // $('#WEF').val($('#WEF').val().split(' ')[0]);
             //$('#SOCloseDate').val($('#SOCloseDate').val().split(' ')[0]);
+            debugger
             $('#SOConfirmDate').val(parseDateToFormat($('#SOConfirmDate').val().split(' ')[0]));
             $('#SODeliveryDate').val(parseDateToFormat($('#SODeliveryDate').val().split(' ')[0]));
             $('#AmmEffDate,#QDate,#SODate,#SOConfirmDate,#SODeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
@@ -1719,6 +1720,8 @@
             var hiddenCurrency = $('#hiddenCurrency').val();
             if ($('#Mode').val() == 'U' || $('#Mode').val() == 'V') {
                 $('#CurrencyID').val(hiddenCurrency);
+                $('#PN1').prop("checked", true);
+                $('#PN1').change();
             }
 
             var soGridrow = $('#divSaleItemGrid tr').length;
@@ -2777,7 +2780,6 @@
         }
 
         $('#PN1').change(function () {
-            
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPartyList")",
@@ -2791,8 +2793,7 @@
                         $('#AccountCode').append('<option value="' + val.value + '">' + val.text + '</option>');
                     });
 
-                    
-                    if ($('#Mode').val() == "SOA" || $('#Mode').val() == "U" || $('#Mode').val() == "N") {
+                    if ($('#Mode').val() == "SOA" || $('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         $('#AccountCode').prop("disabled", false);
                         $('#AccountCode').val($('#hiddenAccountCode').val());
                         $('#AccountCode').prop("disabled", true);
