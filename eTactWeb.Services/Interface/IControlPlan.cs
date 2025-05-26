@@ -15,6 +15,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetPartCode();
         Task<ResponseResult> GetEvMeasureTech();
         Task<ResponseResult> GetCharacteristic();
-       // Task<ResponseResult> SaveControlPlan(ControlPlanModel model, DataTable GIGrid);
+        Task<ResponseResult> SaveControlPlan(ControlPlanModel model, DataTable GIGrid);
     }
 }

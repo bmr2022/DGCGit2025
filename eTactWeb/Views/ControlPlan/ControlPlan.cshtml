@@ -9,7 +9,7 @@
     <h3 class="h3 mb-0 text-white lh-1">Account Master</h3>
     </div>
     </div>*@
-<form asp-action="Form" asp-controller="ControlPlan" autocomplete="off" class="form-horizontal" asp-antiforgery=false>
+<form asp-action="ControlPlan" asp-controller="ControlPlan" autocomplete="off" class="form-horizontal" asp-antiforgery=false>
     <div class="card rounded shadow-lg">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h4>
@@ -349,7 +349,18 @@
             $('#RejectionPlan').select2();
            // $('#ControlMethod').select2();
             $('#InspectionBy').select2();
-           
+            $('#Characteristic').rules("remove", "required");
+            $('#EvalutionMeasurmentTechnique').rules("remove", "required");
+            $('#ControlMethod').rules("remove", "required");
+            $('#SpecificationFrom').rules("remove", "required");
+            $('#Operator').rules("remove", "required");
+            $('#SpecificationTo').rules("remove", "required");
+            $('#FrequencyofTesting').rules("remove", "required");
+            $('#InspectionBy').rules("remove", "required");
+            $('#Remarks').rules("remove", "required");
+            $('#RejectionPlan').rules("remove", "required");
+            $('#DrawingNo').rules("remove", "required");
+
         });
 
         $('#ItemName').change(function () {
@@ -359,36 +370,36 @@
             $('#ItemCode').val($('#PartCode').val());
         });
 
-        var IsSDSC = 0;
-        var IsErr = 0;
-        var HideShow = 0;
-        function CopyControlPlanFunc(ID) {
-            if (ID.checked == true) {
-                $('#PartCode').removeAttr('disabled');
-                $('#ItemName').removeAttr('disabled');
-               // $('#FG1').removeAttr('disabled');
-                $('#Mode').val('');
-                var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
-                $('.col-auto')[4].innerHTML = pp;
-                $.datepicker.formatDate('dd/mm/yy', new Date());
+        // var IsSDSC = 0;
+        // var IsErr = 0;
+        // var HideShow = 0;
+        // function CopyControlPlanFunc(ID) {
+        //     if (ID.checked == true) {
+        //         $('#PartCode').removeAttr('disabled');
+        //         $('#ItemName').removeAttr('disabled');
+        //        // $('#FG1').removeAttr('disabled');
+        //         $('#Mode').val('');
+        //         var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
+        //         $('.col-auto')[4].innerHTML = pp;
+        //         $.datepicker.formatDate('dd/mm/yy', new Date());
 
-                $("#EntryDate").datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
-                //$('#EntryDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
-                $('#EffectiveDate').val($.datepicker.formatDate('mm/dd/yy', new Date()));
-            }
-            else {
-                $('#PartCode').prop('disabled', true);
-                $('ItemName').prop('disabled', true);
-               // $('#FG1').prop('disabled', true);
-            }
-        }
+        //         $("#EntryDate").datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
+        //         //$('#EntryDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
+        //         $('#EffectiveDate').val($.datepicker.formatDate('mm/dd/yy', new Date()));
+        //     }
+        //     else {
+        //         $('#PartCode').prop('disabled', true);
+        //         $('ItemName').prop('disabled', true);
+        //        // $('#FG1').prop('disabled', true);
+        //     }
+        // }
 
-        $("button[type='submit']").click(function () {
-            $('#PartCode').removeProp('disabled');
-            $('#ItemName').removeProp('disabled');
-            //$('#FG1').removeProp('disabled');
-            $("form :input").prop("disabled", false);
-        });
+        // $("button[type='submit']").click(function () {
+        //     $('#PartCode').removeProp('disabled');
+        //     $('#ItemName').removeProp('disabled');
+        //     //$('#FG1').removeProp('disabled');
+        //     $("form :input").prop("disabled", false);
+        // });
 
         $(function () {
             $('#FrequencyofTesting').on('input', function () {

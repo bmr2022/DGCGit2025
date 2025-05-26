@@ -80,27 +80,27 @@ namespace eTactWeb.Controllers
                 {
                     GIGrid = GetDetailTable(ControlPlanDetail);
                 }
-                var Result = "";// await _IControlPlan.SaveControlPlan(model, GIGrid);
+                var Result =  await _IControlPlan.SaveControlPlan(model, GIGrid);
                 if (Result != null)
                 {
-                    //if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
-                    //{
-                    //    ViewBag.isSuccess = true;
-                    //    TempData["200"] = "200";
-                    //    HttpContext.Session.Remove("KeyControlPlanGrid");
-                    //}
-                    //else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
-                    //{
-                    //    ViewBag.isSuccess = true;
-                    //    TempData["202"] = "202";
-                    //}
-                    //else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                    //{
-                    //    ViewBag.isSuccess = false;
-                    //    TempData["500"] = "500";
-                    //    _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
-                    //    return View("Error", Result);
-                    //}
+                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["200"] = "200";
+                        HttpContext.Session.Remove("KeyControlPlanGrid");
+                    }
+                    else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["202"] = "202";
+                    }
+                    else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["500"] = "500";
+                        _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                        return View("Error", Result);
+                    }
                 }
 
                 return RedirectToAction(nameof(ControlPlan));
@@ -144,25 +144,31 @@ namespace eTactWeb.Controllers
 
                 foreach (var Item in DetailList)
                 {
+                    string evalTech = Item.EvalutionMeasurmentTechnique;
+                    if (!string.IsNullOrWhiteSpace(evalTech) && evalTech.Length > 1)
+                    {
+                        evalTech = evalTech.Substring(0, 1); 
+                    }
                     GIGrid.Rows.Add(
                         new object[]
                         {
-                  Item.CntPlanEntryId,
-Item.CntPlanYearCode,
-Item.SeqNo,
-Item.Characteristic,
-Item.EvalutionMeasurmentTechnique,
-Item.SpecificationFrom,
-Item.Operator,
-Item.SpecificationTo,
-Item.FrequencyofTesting,
-Item.InspectionBy,
-Item.ControlMethod,
-Item.RejectionPlan,
-Item.Remarks,
-Item.ItemimagePath,
-Item.DrawingNo,
-Item.DrawingNoImagePath,
+                    Item.CntPlanEntryId,
+                    Item.CntPlanYearCode,
+                    Item.SeqNo,
+                    Item.Characteristic,
+                     evalTech, 
+                    //Item.EvalutionMeasurmentTechnique,
+                    Item.SpecificationFrom,
+                    Item.Operator,
+                    Item.SpecificationTo,
+                    Item.FrequencyofTesting,
+                    Item.InspectionBy,
+                    Item.ControlMethod,
+                    Item.RejectionPlan,
+                    Item.Remarks,
+                    Item.ItemimagePath,
+                    Item.DrawingNo,
+                    Item.DrawingNoImagePath,
 
                         });
                 }

@@ -20,7 +20,7 @@ namespace eTactWeb.DOM.Models
         public string? CntPlanEntryDate { get; set; }
         public string? EffectiveDate { get; set; }
         public int CntPlanYearCode { get; set; }
-        public int ControlPlanNo { get; set; } 
+        
         public string RevNo { get; set; }
         public string ForInOutInprocess { get; set; } = "";
         public int ItemCode { get; set; }
