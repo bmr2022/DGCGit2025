@@ -854,13 +854,14 @@
 
 
         $(document).ready(function () {
-
+            debugger
            
             $(':input:visible').each(function () {
                 $(this).attr('tabindex', '0');
             });
 
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") 
+            {
                 $('#POType').rules("remove", "required");
                 $('#AC1').prop("checked", true);
                 document.getElementById("EntryDate").removeAttribute("readonly");
@@ -874,14 +875,16 @@
                 var address = $('#hiddenAddress').val();
                 $('#Address').val(address);
                 fillPONumber();
-                console.log("before parse EntryDate" + $("#EntryDate").val());
+                alert("before parse EntryDate " + $("#EntryDate").val());
+               /*  console.log("before parse EntryDate" + $("#EntryDate").val()); */
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                console.log("EntryDate" + EntryDate);
+             /*    console.log("EntryDate" + EntryDate); */
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                console.log("after parse EntryDate" + $("#EntryDate").val());
+              /*   console.log("after parse EntryDate" + $("#EntryDate").val()); */
+              alert("after parse EntryDate " + $("#EntryDate").val());
 
 
-                console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
+              /*   console.log("before parse InvoiceDate" + $("#InvoiceDate").val()); */
                 var InvoiceDate = parseDateToFormat($('#InvoiceDate').val().split(" ")[0]);
                 console.log("InvoiceDate" + InvoiceDate);
                 $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", InvoiceDate);
@@ -897,7 +900,8 @@
                 }
 
             }
-            else {
+            else 
+            {
                 GetServerDate();
                 fillEntryandGate();
                 $(".ChallanElements").css("display", "none");
@@ -1058,9 +1062,10 @@
 
                             var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
                             var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split("-").join("/"));
-                                 
+                            alert(EntryDate);
                             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
                             $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(InvoiceDt));
+                           
 
                         }
                         $("#InvoiceDate").datepicker("option", "minDate", formatDate(threeMonthsAgo));

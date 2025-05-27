@@ -758,7 +758,11 @@ $('#sendToPDF').click(async function () {
                 "Sr#", "prodEntryId", "ProdDate", "NewProdRework", "FGPartCode", "FGItemName", "Workcenter",
                 "FGProdQty", "FGOKQty", "FGRejQty", "TransferToWCSTr"
             ];
-
+                    rows.sort((a, b) => {
+                        const codeA = (a.fgPartCode || '').toLowerCase();
+                        const codeB = (b.fgPartCode || '').toLowerCase();
+                        return codeA.localeCompare(codeB);
+                    });
             // Build body
             body = rows.map((r, i) => [
                 i + 1,

@@ -1915,6 +1915,17 @@
                         <li>
                             <a class="dropdown-item" href="#">Cash Receipt &raquo; </a>
                             <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-controller="CashReceipt" asp-action="CashReceipt" id="CashReceipt">
+                                        <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Cash Receipt
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item CashReceipt" asp-controller="CashReceipt" asp-action="CashReceiptDashBoard">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> DashBoard
+                                    </a>
+                                </li>
+                                <input class="userRightsPermission" type="hidden" value="Cash Receipt" />
                             </ul>
                         </li>
 

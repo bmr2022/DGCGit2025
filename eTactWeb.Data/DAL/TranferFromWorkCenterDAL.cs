@@ -343,10 +343,10 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                DateTime TransDt = DateTime.ParseExact(TransDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                string TransDt = CommonFunc.ParseFormattedDate(TransDate);
                 SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@transDate", TransDt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@transDate", TransDt));
                 SqlParams.Add(new SqlParameter("@WCID", WcId));
                 SqlParams.Add(new SqlParameter("@batchno", BatchNo));
 
