@@ -312,11 +312,11 @@
         $("#search-box").on("input", function () {
 
             var searchString = $(this).val().trim();
-            var dashboardType = $('#DashboardType').val();
+            //var dashboardType = $('#DashboardType').val();
             $.ajax({
                 url: "/PurchaseRejection/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString, dashboardType: dashboardType },
+                data: { searchString: searchString },
                 success: function (data) {
 
                     $('#divDashboardGrid').empty();
@@ -329,31 +329,10 @@
                 }
             });
         });
-        function GetSummaryData(){
+        function GetSearchData(){
             var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
-                type: "POST",
-                data: $('#SParam').serializeArray(),
-                success: function (data) {
-                    LockedFinancialYear();
-                    $('#divDashboardGrid').empty().append(data);
-                    CheckApprovedOrNot();
-                    var dashGrid = $('#PRDashboardGrid tr').length - 1;
-                    $('#totalRows').text(dashGrid);
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
-        function GetDetailData(){
-            var data = $('#SParam').serialize();
-            $.ajax({
-                url: '@Url.Action("GetDetailData")',
                 type: "POST",
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
@@ -413,7 +392,6 @@
             }
         });
         function sortTable(columnIndex, ascending) {
-
             var table = $('#PRDashboardGrid');
             var rows = table.find('#divDashboardGrid1 > tr').toArray();
 
@@ -460,17 +438,17 @@
         function deleteItem(entryID, yearCode, purchVouchNo,EnteredBy, invNo, isDetail, cnt) {
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
-            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
-            sessionStorage.setItem('MRNTypeBack', $('#MRNType').val());
-            sessionStorage.setItem('DocumentNameBack', $('#DocumentName').val());
+            //sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            //sessionStorage.setItem('MRNTypeBack', $('#MRNType').val());
+            //sessionStorage.setItem('DocumentNameBack', $('#DocumentName').val());
             sessionStorage.setItem('VendorNameBack', $('#VendorName').val());
             sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
             sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNo').val());
-            sessionStorage.setItem('MRNNoBack', $('#MRNNo').val());
-            sessionStorage.setItem('GateNoBack', $('#GateNo').val());
+            //sessionStorage.setItem('MRNNoBack', $('#MRNNo').val());
+            //sessionStorage.setItem('GateNoBack', $('#GateNo').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCode').val());
-            sessionStorage.setItem('ItemNameBack', $('#ItemName').val());
-            sessionStorage.setItem('HSNNoBack', $('#HSNNo').val());
+            //sessionStorage.setItem('ItemNameBack', $('#ItemName').val());
+            //sessionStorage.setItem('HSNNoBack', $('#HSNNo').val());
             sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
 
             $.ajax({

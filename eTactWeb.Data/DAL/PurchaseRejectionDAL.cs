@@ -4,6 +4,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -773,6 +774,99 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
 
+            return DashBoardData;
+        }
+        public async Task<AccPurchaseRejectionDashboard> GetSearchData(AccPurchaseRejectionDashboard model)
+        {
+            var DashBoardData = new AccPurchaseRejectionDashboard();
+            DataSet? oDataSet = new DataSet();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    DateTime now = DateTime.Now;
+                    DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+                    DateTime fromDate = CommonFunc.ParseSafeDate(model.FromDate);
+                    DateTime toDate = CommonFunc.ParseSafeDate(model.ToDate);//DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    SqlCommand oCmd = new SqlCommand("AccSPPurchaseRejectionMainDetail", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@fromBilldate", fromDate);
+                    oCmd.Parameters.AddWithValue("@ToBilldate", toDate);
+                    //oCmd.Parameters.AddWithValue("@PurchVoucherNo", !string.IsNullOrEmpty(model.PurchaseRejectionVoucherNo) ? (model.PurchaseRejectionVoucherNo != "0" ? model.PurchaseRejectionVoucherNo : string.Empty) : string.Empty);
+                    //oCmd.Parameters.AddWithValue("@InvNo", !string.IsNullOrEmpty(model.InvoiceNo) ? (model.InvoiceNo != "0" ? model.InvoiceNo : string.Empty) : string.Empty);
+                    //oCmd.Parameters.AddWithValue("@partcode", !string.IsNullOrEmpty(model.PartCode) ? (model.PartCode != "0" ? model.PartCode : string.Empty) : string.Empty);
+                    //oCmd.Parameters.AddWithValue("@Vendorname", !string.IsNullOrEmpty(model.VendorName) ? (model.VendorName != "0" ? model.VendorName : string.Empty) : string.Empty);
+                    //oCmd.Parameters.AddWithValue("@DocumentType", string.Empty);
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    DashBoardData.PurchaseRejectionDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                                select new AccPurchaseRejectionDashboard
+                                                                {
+                                                                    PurchaseRejEntryId = !string.IsNullOrEmpty(dr["PurchaseRejEntryId"].ToString()) ? Convert.ToInt32(dr["PurchaseRejEntryId"]) : 0,
+                                                                    EID = !string.IsNullOrEmpty(dr["PurchaseRejEntryId"].ToString()) ? dr["PurchaseRejEntryId"].ToString() : "",
+                                                                    //PurchaseRejEntryDate = string.IsNullOrEmpty(dr["PurchaseRejEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["PurchaseRejEntryDate"]),
+                                                                    PurchaseRejEntryDate = string.IsNullOrEmpty(dr["PurchaseRejEntryDate"].ToString()) ? string.Empty : dr["PurchaseRejEntryDate"].ToString(),
+                                                                    DebitNotePurchaseRejection = string.IsNullOrEmpty(dr["DebitNotePurchaseRejection"].ToString()) ? string.Empty : dr["DebitNotePurchaseRejection"].ToString(),
+                                                                    PurchaserejVoucherNo = string.IsNullOrEmpty(dr["PurchaserejVoucherNo"].ToString()) ? string.Empty : dr["PurchaserejVoucherNo"].ToString(),
+                                                                    VoucherNo = string.IsNullOrEmpty(dr["VoucherNo"].ToString()) ? string.Empty : dr["VoucherNo"].ToString(),
+                                                                    VendorName = string.IsNullOrEmpty(dr["VendorName"].ToString()) ? string.Empty : dr["VendorName"].ToString(),
+                                                                    InvoiceNo = dr["InvoiceNo"].ToString(),
+                                                                    InvoiceDate = string.IsNullOrEmpty(dr["InvoiceDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["InvoiceDate"]),
+                                                                    CreditDays = dr["CreditDays"].ToString(),
+                                                                    GSTNO = dr["GSTNO"].ToString(),
+                                                                    PurchaserejRemark = dr["PurchaserejRemark"].ToString(),
+                                                                    PaymentTerm = dr["PaymentTerm"].ToString(),
+                                                                    Transporter = dr["Transporter"].ToString(),
+                                                                    Vehicleno = dr["Vehicleno"].ToString(),
+                                                                    Distance = dr["Distance"].ToString(),
+                                                                    RoundoffType = dr["RoundoffType"].ToString(),
+                                                                    MachineName = dr["MachineName"].ToString(),
+                                                                    ActualEntryByEmpName = dr["ActualEntryByEmpName"].ToString(),
+                                                                    CC = dr["CC"].ToString(),
+                                                                    DomesticExportNEPZ = dr["DomesticExportNEPZ"].ToString(),
+                                                                    PurchaseRejYearCode = !string.IsNullOrEmpty(dr["PurchaseRejYearCode"].ToString()) ? Convert.ToInt32(dr["PurchaseRejYearCode"]) : 0,
+                                                                    StateCode = !string.IsNullOrEmpty(dr["StateCode"].ToString()) ? Convert.ToInt32(dr["StateCode"]) : 0,
+                                                                    SubVoucherName = !string.IsNullOrEmpty(dr["SubVoucherName"].ToString()) ? dr["SubVoucherName"].ToString() : "",
+                                                                    ExchangeRate = dr["ExchangeRate"].ToString(),
+                                                                    City = dr["City"].ToString(),
+                                                                    Country = dr["Country"].ToString(),
+                                                                    Currency = dr["Currency"].ToString(),
+                                                                    VendoreAddress = dr["VendoreAddress"].ToString(),
+                                                                    StateName = dr["StateName"].ToString(),
+                                                                    BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
+                                                                    UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
+                                                                    UpdatedOn = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdationDate"]),
+                                                                    LastUpdationDate = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? string.Empty : dr["LastUpdationDate"].ToString(),
+                                                                    CreatedBy = string.IsNullOrEmpty(dr["Uid"].ToString()) ? 0 : Convert.ToInt32(dr["Uid"].ToString()),
+                                                                    CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                                    ActualEntryDate = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
+                                                                    BillAmt = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
+                                                                    Taxableamt = !string.IsNullOrEmpty(dr["Taxableamt"].ToString()) ? Convert.ToSingle(dr["Taxableamt"]) : 0,
+                                                                    InvNetAmt = !string.IsNullOrEmpty(dr["InvNetAmt"].ToString()) ? Convert.ToSingle(dr["InvNetAmt"]) : 0,
+                                                                    RoundOffAmt = !string.IsNullOrEmpty(dr["RoundOffAmt"].ToString()) ? Convert.ToSingle(dr["RoundOffAmt"]) : 0
+                                                                }).OrderBy(a => a.PurchaseRejEntryId).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
             return DashBoardData;
         }
     }
