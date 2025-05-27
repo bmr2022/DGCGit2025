@@ -101,5 +101,25 @@ namespace eTactWeb.Data.BLL
         {
             return await _JournalVoucherDAL.GetSODate(SONO, accountcode, VoucherDate, SOYearCode);
         }
+        public async Task<ResponseResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _JournalVoucherDAL.FillLedgerInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillBankInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _JournalVoucherDAL.FillBankInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _JournalVoucherDAL.FillVoucherNoInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillAgainstVoucherRefNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _JournalVoucherDAL.FillAgainstVoucherRefNoInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillAgainstVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _JournalVoucherDAL.FillAgainstVoucherNoInDashboard(FromDate, ToDate, VoucherType);
+        }
     }
 }

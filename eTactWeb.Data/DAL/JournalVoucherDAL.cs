@@ -741,5 +741,110 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillLedgerInDashboard"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillBankInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillBankInDashboard"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillVoucherNoInDashboard"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillAgainstVoucherRefNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillAgainstVoucherRefNoInDashboard"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillAgainstVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillAgainstVoucherNoInDashboard"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@VoucherType", "JOURNAL-VOUCHER"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }

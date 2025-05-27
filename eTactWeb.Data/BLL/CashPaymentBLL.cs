@@ -106,5 +106,25 @@ namespace eTactWeb.Data.BLL
             return await _CashPaymentDAL.CheckAmountBeforeSave(VoucherDate, YearCode, AgainstVoucherYearCode, AgainstVoucherEntryId, AgainstVoucherNo, AccountCode);
 
         }
+        public async Task<ResponseResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _CashPaymentDAL.FillLedgerInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillBankInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _CashPaymentDAL.FillBankInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _CashPaymentDAL.FillVoucherNoInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillAgainstVoucherRefNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _CashPaymentDAL.FillAgainstVoucherRefNoInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillAgainstVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _CashPaymentDAL.FillAgainstVoucherNoInDashboard(FromDate, ToDate, VoucherType);
+        }
     }
 }

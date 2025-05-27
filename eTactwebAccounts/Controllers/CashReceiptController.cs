@@ -878,5 +878,35 @@ namespace eTactwebAccounts.Controllers
             return RedirectToAction("CashReceiptDashBoard");
 
         }
+        public async Task<JsonResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var JSON = await _ICashReceipt.FillLedgerInDashboard(FromDate, ToDate, VoucherType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillBankInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var JSON = await _ICashReceipt.FillBankInDashboard(FromDate, ToDate, VoucherType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var JSON = await _ICashReceipt.FillVoucherNoInDashboard(FromDate, ToDate, VoucherType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillAgainstVoucherRefNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var JSON = await _ICashReceipt.FillAgainstVoucherRefNoInDashboard(FromDate, ToDate, VoucherType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillAgainstVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var JSON = await _ICashReceipt.FillAgainstVoucherNoInDashboard(FromDate, ToDate, VoucherType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }
