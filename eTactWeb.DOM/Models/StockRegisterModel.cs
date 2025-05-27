@@ -34,6 +34,8 @@ namespace eTactWeb.DOM.Models
         public int? StoreId { get; set; }
         public int? ItemCode { get; set; }
 
+        public string? TransSlipNo { get; set; }
+
         public string? package { get; set; }
         public string? TransactionType { get; set; }
         public string? TransDate { get; set; }

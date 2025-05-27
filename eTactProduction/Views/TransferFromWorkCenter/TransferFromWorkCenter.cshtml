@@ -1551,14 +1551,14 @@
         function GetBatchNo() {
 
             var dateValue = $('#TransferMatEntrydate').val();
-            var [day, month, year] = dateValue.split('/');
+            /* var [day, month, year] = dateValue.split('/');
             day = day.padStart(2, '0'); // Ensure day has two digits
             month = month.padStart(2, '0'); // Ensure month has two digits
-            var formattedDate = `${day}/${month}/${year}`;
+            var formattedDate = `${day}/${month}/${year}`; */
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetBatchNumber")',
-                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: formattedDate, BatchNo: $('#BatchNo').val() },
+                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: dateValue, BatchNo: $('#BatchNo').val() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
@@ -1620,14 +1620,14 @@
 
         $('#BatchNo').change(function () {
             var dateValue = $('#TransferMatEntrydate').val();
-            var [day, month, year] = dateValue.split('/');
+           /*  var [day, month, year] = dateValue.split('/');
             day = day.padStart(2, '0'); // Ensure day has two digits
             month = month.padStart(2, '0'); // Ensure month has two digits
-            var formattedDate = `${day}/${month}/${year}`;
+            var formattedDate = `${day}/${month}/${year}`; */
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetBatchNumber")',
-                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: formattedDate, BatchNo: $('#BatchNo').val() },
+                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: dateValue, BatchNo: $('#BatchNo').val() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
