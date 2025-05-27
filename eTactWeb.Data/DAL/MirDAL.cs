@@ -44,7 +44,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetOkRecStore(int ItemCode)
+        public async Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -52,6 +52,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillOkRecStore"));
                 SqlParams.Add(new SqlParameter("@itemcode", ItemCode));
+                SqlParams.Add(new SqlParameter("@ShowAllStore", ShowAllStore));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SPMIR", SqlParams);
             }
@@ -539,6 +540,31 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Todate", toDt));
                 SqlParams.Add(new SqlParameter("@MRNJWCustJW", MRNCustJW));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(SPName, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> AddPassWord()
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                //DateTime fromdt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime todt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                
+                SqlParams.Add(new SqlParameter("@Flag", "ALLOWSHOWALLSTORE"));
+               
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPMIR", SqlParams);
             }
             catch (Exception ex)
             {

@@ -28,9 +28,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MIRDal.GetFormRights(ID);
         }
-        public async Task<ResponseResult> GetOkRecStore(int ItemCode)
+        public async Task<ResponseResult> GetOkRecStore(int ItemCode, string ShowAllStore)
         {
-            return await _MIRDal.GetOkRecStore(ItemCode);
+            return await _MIRDal.GetOkRecStore(ItemCode, ShowAllStore);
         }
         public async Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName)
         {
@@ -47,6 +47,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetMRNNo(string Flag, string SPName, string FromDate, string ToDate, string MRNCustJW)
         {
             return await _MIRDal.GetMRNNo(Flag, SPName, FromDate, ToDate, MRNCustJW);
+        }
+
+        public async Task<ResponseResult> AddPassWord()
+        {
+            return await _MIRDal.AddPassWord();
         }
         public async Task<ResponseResult> GetMRNData(string Flag, string SPName, string MRNNO, int MRNYearCode,int GateNo,int GateYear,int GateEntryId, string MRNCustJW)
         {
