@@ -81,5 +81,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.GetDashBoardData();
         }
+        public async Task<AccPurchaseRejectionDashboard> GetSearchData(AccPurchaseRejectionDashboard model)
+        {
+            return await _purchRejDAL.GetSearchData(model);
+        }
     }
 }

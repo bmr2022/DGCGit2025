@@ -21,5 +21,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillDetailFromPopupGrid(DataTable model, int itemCode, int poopCt);
         Task<ResponseResult> SavePurchaseRejection(AccPurchaseRejectionModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable DTAgainstBillDetail);
         Task<AccPurchaseRejectionDashboard> GetDashBoardData();
+        Task<AccPurchaseRejectionDashboard> GetSearchData(AccPurchaseRejectionDashboard model);
     }
 }
