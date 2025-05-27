@@ -89,6 +89,7 @@ namespace eTactWeb.Data.DAL
                                                          TransDate = string.IsNullOrEmpty(dr["TRansDAte"].ToString()) ? "" : dr["TRansDAte"].ToString(),
                                                          PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                          ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
+                                                         TransSlipNo = string.IsNullOrEmpty(dr["TrasMatSlipNo"].ToString()) ? "" : dr["TrasMatSlipNo"].ToString(),
                                                          OpnStk = Convert.ToDecimal(dr["OpnStk"].ToString()),
                                                          RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
                                                          IssQty = Convert.ToDecimal(dr["IssQty"].ToString()),
