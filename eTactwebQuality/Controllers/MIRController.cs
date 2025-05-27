@@ -667,15 +667,22 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetOkRecStore(int ItemCode)
+        public async Task<JsonResult> GetOkRecStore(int ItemCode,string ShowAllStore)
         {
-            var JSON = await _IMirModule.GetOkRecStore(ItemCode);
+            var JSON = await _IMirModule.GetOkRecStore(ItemCode, ShowAllStore);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetMRNNo(string FromDate, string ToDate, string MRNCustJW)
         {
             var JSON = await _IMirModule.GetMRNNo("PENDINGMRNFORMIR", "SPMIR", FromDate, ToDate, MRNCustJW);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> AddPassWord()
+        {
+            var JSON = await _IMirModule.AddPassWord();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
