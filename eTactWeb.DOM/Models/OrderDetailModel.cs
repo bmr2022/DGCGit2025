@@ -262,6 +262,8 @@ namespace eTactWeb.DOM.Models
         public int AmmYearCode { get; set; }
         public string? EntryTime { get; set; }
 
+        public int CreatedBy { get; set; }
+        public string? CreatedByName { get; set; }
         public int MMainCustomerId { get; set; }
         public int MBillToAccountCode { get; set; }
         public string MBillToAccountName { get; set; }
@@ -346,6 +348,9 @@ namespace eTactWeb.DOM.Models
         public decimal TotalDiscountPercentage { get; set; }
         public string? TotalRoundOff { get; set; }
         public string? TransportMode { get; set; }
+
+        public int UpdatedBy { get; set; }
+        public string? UpdatedByName { get; set; }
 
         public IList<SelectListItem> TransportModeList
         {
