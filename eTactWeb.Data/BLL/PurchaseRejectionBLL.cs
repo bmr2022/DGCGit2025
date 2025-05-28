@@ -85,5 +85,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.GetSearchData(model);
         }
+        public async Task<ResponseResult> CheckLockYear(int YearCode)
+        {
+            return await _purchRejDAL.CheckLockYear(YearCode);
+        }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _purchRejDAL.GetFormRights(ID);
+        }
     }
 }

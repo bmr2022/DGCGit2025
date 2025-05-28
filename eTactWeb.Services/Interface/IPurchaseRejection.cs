@@ -22,5 +22,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SavePurchaseRejection(AccPurchaseRejectionModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable DTAgainstBillDetail);
         Task<AccPurchaseRejectionDashboard> GetDashBoardData();
         Task<AccPurchaseRejectionDashboard> GetSearchData(AccPurchaseRejectionDashboard model);
+        Task<ResponseResult> CheckLockYear(int YearCode);
+        Task<ResponseResult> GetFormRights(int uId);
     }
 }
