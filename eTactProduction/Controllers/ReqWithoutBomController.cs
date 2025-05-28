@@ -611,6 +611,12 @@ namespace eTactWeb.Controllers
                 _List = new List<TextValue>();
                 foreach (DataRow row in oDataSet.Tables[6].Rows)
                 {
+                    if (string.IsNullOrEmpty(model.Mode) || (model.Mode != "U" && model.Mode != "V"))
+                        if (row["Store_Type"]?.ToString() == "MAIN STORE")
+                    {
+                       
+                        model.StoreId = Convert.ToInt32(row["EntryID"]);
+                    }
                     _List.Add(new TextValue
                     {
                         Value = row["EntryID"].ToString(),
