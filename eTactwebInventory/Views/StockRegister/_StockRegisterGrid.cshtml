@@ -67,6 +67,7 @@ else
                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Qty</th>
                     <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tot Stk</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Trans SlipNo</th>
                     <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
@@ -134,6 +135,7 @@ else
                                     <td id="totStk-@Cntr">@item.TotStk</td>
 
                                 }
+                                <td>@item.TransSlipNo</td>
                                 <td>@item.Unit</td>
                                 <td id="rate-@Cntr">@item.Rate</td>
                                 <td id="amount-@Cntr">@item.Amount</td>

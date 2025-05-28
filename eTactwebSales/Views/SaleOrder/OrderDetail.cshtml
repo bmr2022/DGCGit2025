@@ -146,7 +146,7 @@
                                         <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="width:180px">
                                             <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
                                         </div>
-                                        <select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly >
+                                        <select class="form-select" asp-for="AccountCode" style="width:220px;" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly>
                                             <option value="">-Select-</option>
                                         </select>
                                         <input type="hidden" value="@Model.AccountCode" id="hiddenAccountCode" />
@@ -201,7 +201,7 @@
                                             <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
                                         </div>
                                         <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))" readonly disabled>
-                                            <option value="">-Select-</option>
+                                            <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -350,7 +350,7 @@
                                             <input asp-for="PN2" class="form-check-input" type="checkbox" role="switch" />Show All
                                         </div>
                                         <select class="form-select" asp-for="ConsigneeAccountCode" data-val="false" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
-                                            <option value="">-Select-</option>
+                                            <option value="0">-Select-</option>
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -451,6 +451,10 @@
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Description" class="form-label">Description</label>
                                         <input asp-for="Description" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="DeliveryDate" class="form-label">DeliveryDate</label>
+                                        <input asp-for="DeliveryDate" class="form-control" readonly />
                                     </div>
                                     @* <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12"> *@
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -553,13 +557,13 @@
                                                     <th>Item Name</th>
                                                     <th>HSN No</th>
                                                     <th>Qty</th>
+                                                    <th>Delivery Date</th>
                                                     <th>Unit</th>
                                                     <th>Alt Qty</th>
                                                     <th>Alt Unit</th>
                                                     <th>Rate</th>
                                                     <th>FX Rate</th>
                                                     <th>Rate/Unit</th>
-                                                    <th>Delivery Date</th>
                                                     <th>Disc%</th>
                                                     <th>Disc Rs</th>
                                                     <th>Amount</th>
@@ -681,6 +685,10 @@
                                         <input asp-for="Description" class="form-control" />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="DeliveryDate" class="form-label">DeliveryDate</label>
+                                        <input asp-for="DeliveryDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="StoreName" class="form-label">Store Name</label>
                                         <select class="form-select" asp-for="StoreName" asp-items="@(new SelectList(Model.StoreList,"Value","Text"))" onchange="StoreChange()">
                                             <option value="">-Select-</option>
@@ -689,10 +697,6 @@
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="StockQty" class="form-label">Stock Qty</label>
                                         <input asp-for="StockQty" class="form-control" readonly disabled />
-                                    </div>
-                                    <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="DeliveryDate" class="form-label">DeliveryDate</label>
-                                        <input asp-for="DeliveryDate" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:150px">
                                         <button type="button" class="ItemBtn btn btn-sm btn-outline-danger mt-3">
@@ -713,13 +717,13 @@
                                             <input id="files" class="Execllbl BtnUploadExl btn btn-sm btn-outline-success" style="display:none;" type="file">
                                         </div>
                                     </div>
-
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center" style="width:130px">
                                         <button type="button" class="Schedule btn btn-sm btn-outline-success mt-3">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> SCHEDULE
                                         </button>
                                     </div>
                                     <div class="clearfix"></div>
+
                                     <div class="AF col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                         <label asp-for="AmendmentReason" class="form-label">Amendment Reason</label>
                                         <input asp-for="AmendmentReason" class="form-control" />
@@ -1118,7 +1122,7 @@
     }
 
     /* .select2-dropdown {
-            z-index: 9999 !important; /* Adjust the value as needed */
+                z-index: 9999 !important; /* Adjust the value as needed */
     background-color: #e0f2f1 !important;
     }
 
@@ -1614,10 +1618,15 @@
                 var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
                 $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(SOClosedate));
                 $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(SOClosedate));
-                
+
                 $('#PN1').prop("checked", true);
                 $('#PN1').change();
-      
+                debugger
+                
+                var consigneeAC = $('#ConsigneeAccountCode').find(':selected').text();
+                if (consigneeAC == "-Select-") {
+                    $('#ConsigneeAccountCode').text('');
+                }
             }
             var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
             $('#SOCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SOCloseDate').val()));
@@ -1626,9 +1635,9 @@
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SOA" && $('#Mode').val() != "SAU" && $('#Mode').val() != "SOC") {
 
                 NewEntryId();
-                 
+
                 GetServerDate();
-                
+
                 $('#OtherRateCurr').prop('readonly', true);
                 $('#Rate').prop('readonly', false);
 
@@ -1977,7 +1986,7 @@
                 url: "@Url.Action("GetServerDate")",
                 async: false,
                 success: function (result, status, error) {
-                     
+
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                     $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
                 }
@@ -2786,7 +2795,7 @@
                 data: { Check: $('#PN1').is(':checked') == true ? 'T' : 'F' },
                 dataType: "json",
                 success: function (data, status, error) {
-                     
+
                     $('#AccountCode').empty();
                     $('#AccountCode').append('<option>-Select-</option>');
                     $.each(data, function (key, val) {
@@ -2914,7 +2923,7 @@
                 dataType: "json",
                 success: function (data, status, error) {
                     $('#ConsigneeAccountCode').empty();
-                    $('#ConsigneeAccountCode').append('<option>-Select-</option>');
+                    $('#ConsigneeAccountCode').append('<option value="0">-Select-</option>');
                     $.each(data, function (key, val) {
                         $('#ConsigneeAccountCode').append('<option value="' + val.value + '">' + val.text + '</option>');
                         $('#ConsigneeAddress').val('');

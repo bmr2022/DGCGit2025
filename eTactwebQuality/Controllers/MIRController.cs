@@ -58,7 +58,6 @@ namespace eTactWeb.Controllers
             }
             return View(MainModel);
         }
-
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
@@ -667,15 +666,22 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetOkRecStore(int ItemCode)
+        public async Task<JsonResult> GetOkRecStore(int ItemCode,string ShowAllStore)
         {
-            var JSON = await _IMirModule.GetOkRecStore(ItemCode);
+            var JSON = await _IMirModule.GetOkRecStore(ItemCode, ShowAllStore);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetMRNNo(string FromDate, string ToDate, string MRNCustJW)
         {
             var JSON = await _IMirModule.GetMRNNo("PENDINGMRNFORMIR", "SPMIR", FromDate, ToDate, MRNCustJW);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> AddPassWord()
+        {
+            var JSON = await _IMirModule.AddPassWord();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -691,7 +697,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
         public async Task<IActionResult> GetMIRMainItem(string MRNNo, int MRNYearCode, int GateNo, int GateYear, int GateEntryId, string MRNCustJW, int start = 0, int pageSize = 0)
         {
             _MemoryCache.Remove("KeyMIRGridOnLoad");
@@ -716,9 +721,6 @@ namespace eTactWeb.Controllers
             }
             return PartialView("_MIRDetailGrid", model);
         }
-
-
-
         //public async Task<JsonResult> GetMIRMainItem(string MRNNo, int MRNYearCode, int GateNo, int GateYear, int GateEntryId,string MRNCustJW,int start=0,int pageSize=0)
         //{
         //    var JSON= await _IMirModule.GetMIRMainItem("MIRMAINITEM", "SPMIR", MRNNo, MRNYearCode, GateNo, GateYear, GateEntryId, MRNCustJW);
@@ -746,7 +748,6 @@ namespace eTactWeb.Controllers
             model.DashboardType = "Detail";
             return PartialView("_MIRDashboardGrid", model);
         }
-
         public JsonResult FillGridFromMemoryCache()
         {
             try
@@ -847,6 +848,5 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-
     }
 }

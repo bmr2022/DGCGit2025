@@ -94,48 +94,28 @@
                 $('#ToDate').val(convertedToDateText);
 
             }
-            $('#DashboardType').select2();
-            $('#MRNType').select2();
-            $('#DocumentName').select2();
+            //$('#DashboardType').select2();
             $('#VendorName').select2();
             $('#VoucherNo').select2();
             $('#InvoiceNo').select2();
-            $('#MRNNo').select2();
-            $('#GateNo').select2();
             $('#PartCode').select2();
-            $('#ItemName').select2();
-            $('#HSNNO').select2();
 
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
-            var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
-            var MRNTypeBack = sessionStorage.getItem('MRNTypeBack');
-            var DocumentNameBack = sessionStorage.getItem('DocumentNameBack');
             var VendorNameBack = sessionStorage.getItem('VendorNameBack');
             var VoucherNoBack = sessionStorage.getItem('VoucherNoBack');
             var InvoiceNoBack = sessionStorage.getItem('InvoiceNoBack');
-            var MRNNoBack = sessionStorage.getItem('MRNNoBack');
-            var GateNoBack = sessionStorage.getItem('GateNoBack');
             var PartCodeBack = sessionStorage.getItem('PartCodeBack');
-            var ItemNameBack = sessionStorage.getItem('ItemNameBack');
-            var HSNNoBack = sessionStorage.getItem('HSNNoBack');
             var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
 
             if (FromDateBack != null && FromDateBack != '') {
 
                 $('#FromDate').val(FromDateBack).trigger('change');
                 $('#ToDate').val(ToDateBack).trigger('change');
-                $('#DashboardType').val(DashboardTypeBack).trigger('change');
-                $('#MRNType').val(MRNTypeBack).change();
-                $('#DocumentName').val(DocumentNameBack).trigger('change');
                 $('#VendorName').val(VendorNameBack).trigger('change');
                 $('#VoucherNo').val(VoucherNoBack).trigger('change');
                 $('#InvoiceNo').val(InvoiceNoBack).trigger('change');
-                $('#MRNNo').val(MRNNoBack).trigger('change');
-                $('#GateNo').val(GateNoBack).trigger('change');
                 $('#PartCode').val(PartCodeBack).trigger('change');
-                $('#ItemName').val(ItemNameBack).trigger('change');
-                $('#HSNNo').val(HSNNoBack).trigger('change');
                 $('#search-box').val(GlobalSearchBack);
             }
             GetSearchData();
@@ -143,17 +123,10 @@
 
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
-            sessionStorage.removeItem('DashboardTypeBack');
-            sessionStorage.removeItem('MRNTypeBack');
-            sessionStorage.removeItem('DocumentNameBack');
             sessionStorage.removeItem('VendorNameBack');
             sessionStorage.removeItem('VoucherNoBack');
             sessionStorage.removeItem('InvoiceNoBack');
-            sessionStorage.removeItem('MRNNoBack');
-            sessionStorage.removeItem('GateNoBack');
             sessionStorage.removeItem('PartCodeBack');
-            sessionStorage.removeItem('ItemNameBack');
-            sessionStorage.removeItem('HSNNoBack');
             sessionStorage.removeItem('GlobalSearchBack');
         });
 
@@ -161,7 +134,7 @@
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&MRNType=" + $('#MRNType').val() + "&DocumentName=" + $('#DocumentName').val() + "&VendorName=" + $('#VendorName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&MRNNo=" + $('#MRNNo').val() + "&GateNo=" + $('#GateNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&VendorName=" + $('#VendorName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&Searchbox=" + $('#search-box').val();
             window.location.href = linkUrl;
         }
 
@@ -319,18 +292,8 @@
             });
         }
         function loadPage(pageNumber) {
-
-
-            var dashboardType = $('#DashboardType').val();
             var url = '';
-
-            if (dashboardType === "Summary") {
-                url = '@Url.Action("GetSearchData", "PurchaseRejection")';
-            } else if (dashboardType === "Detail") {
-                url = '@Url.Action("GetDetailData", "PurchaseRejection")';
-            } else if (dashboardType === "TAXDetail") {
-                url = '@Url.Action("GetDetailData", "PurchaseRejection")';
-            }
+           url = '@Url.Action("GetSearchData", "PurchaseRejection")';
 
             var formData = $('#SParam').serializeArray();
             formData.push({ name: 'pageNumber', value: pageNumber });
@@ -349,11 +312,11 @@
         $("#search-box").on("input", function () {
 
             var searchString = $(this).val().trim();
-            var dashboardType = $('#DashboardType').val();
+            //var dashboardType = $('#DashboardType').val();
             $.ajax({
                 url: "/PurchaseRejection/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString, dashboardType: dashboardType },
+                data: { searchString: searchString },
                 success: function (data) {
 
                     $('#divDashboardGrid').empty();
@@ -366,31 +329,10 @@
                 }
             });
         });
-        function GetSummaryData(){
+        function GetSearchData(){
             var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetSearchData")',
-                type: "POST",
-                data: $('#SParam').serializeArray(),
-                success: function (data) {
-                    LockedFinancialYear();
-                    $('#divDashboardGrid').empty().append(data);
-                    CheckApprovedOrNot();
-                    var dashGrid = $('#PRDashboardGrid tr').length - 1;
-                    $('#totalRows').text(dashGrid);
-                },
-                error: function (response) {
-                    alert(response.responseText);
-                },
-                failure: function (response) {
-                    alert(response.responseText);
-                }
-            });
-        }
-        function GetDetailData(){
-            var data = $('#SParam').serialize();
-            $.ajax({
-                url: '@Url.Action("GetDetailData")',
                 type: "POST",
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
@@ -450,7 +392,6 @@
             }
         });
         function sortTable(columnIndex, ascending) {
-
             var table = $('#PRDashboardGrid');
             var rows = table.find('#divDashboardGrid1 > tr').toArray();
 
@@ -497,17 +438,17 @@
         function deleteItem(entryID, yearCode, purchVouchNo,EnteredBy, invNo, isDetail, cnt) {
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
-            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
-            sessionStorage.setItem('MRNTypeBack', $('#MRNType').val());
-            sessionStorage.setItem('DocumentNameBack', $('#DocumentName').val());
+            //sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
+            //sessionStorage.setItem('MRNTypeBack', $('#MRNType').val());
+            //sessionStorage.setItem('DocumentNameBack', $('#DocumentName').val());
             sessionStorage.setItem('VendorNameBack', $('#VendorName').val());
             sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
             sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNo').val());
-            sessionStorage.setItem('MRNNoBack', $('#MRNNo').val());
-            sessionStorage.setItem('GateNoBack', $('#GateNo').val());
+            //sessionStorage.setItem('MRNNoBack', $('#MRNNo').val());
+            //sessionStorage.setItem('GateNoBack', $('#GateNo').val());
             sessionStorage.setItem('PartCodeBack', $('#PartCode').val());
-            sessionStorage.setItem('ItemNameBack', $('#ItemName').val());
-            sessionStorage.setItem('HSNNoBack', $('#HSNNo').val());
+            //sessionStorage.setItem('ItemNameBack', $('#ItemName').val());
+            //sessionStorage.setItem('HSNNoBack', $('#HSNNo').val());
             sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
 
             $.ajax({

@@ -155,5 +155,6 @@ namespace eTactWeb.DOM.Models
         public decimal TotalPopDrAmt { get; set; }
         public decimal TotalPopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
+        public string? Bank { get; set; }
     }
 }

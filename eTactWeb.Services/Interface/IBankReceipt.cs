@@ -30,6 +30,11 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillSONO(string accountcode, string VoucherDate);
         Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate);
         Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode);
+        Task<ResponseResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillBankInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillAgainstVoucherRefNoInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillAgainstVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType);
 
     }
 }

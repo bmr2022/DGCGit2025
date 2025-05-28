@@ -120,9 +120,9 @@ namespace eTactWeb.Controllers
             model.ToDate = HttpContext.Session.GetString("ToDate");
             oDataSet = await _IPendingToReceiveItem.BindProdSlipNo("PRODSLIPNO", model.FromDate, model.ToDate);
             model.ProdSlipNoList = new List<TextValue>();
-            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[1].Rows.Count > 0)
             {
-                foreach (DataRow row in oDataSet.Tables[0].Rows)
+                foreach (DataRow row in oDataSet.Tables[1].Rows)
                 {
                     _List.Add(new TextValue
                     {
@@ -198,9 +198,9 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-        public async Task<JsonResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate,string partcode,string itemname)
+        public async Task<JsonResult> GetDataForPendingReceiveItem(string Flag, string FromDate, string ToDate,string partcode,string itemname, string slipno)
         {
-            var JSON = await _IPendingToReceiveItem.GetDataForPendingReceiveItem(Flag, FromDate, ToDate,partcode,itemname);
+            var JSON = await _IPendingToReceiveItem.GetDataForPendingReceiveItem(Flag, FromDate, ToDate,partcode,itemname, slipno);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

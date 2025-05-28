@@ -102,6 +102,8 @@
                                     <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
                                     <label asp-for="EntryId" class="form-label">Entry Id</label>
                                     <input asp-for="EntryId " class="form-control" readonly />
+                                    <input type="hidden" id="AddPassWord" />
+                                    <input type="hidden" id="ShowAllStore" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="YearCode" class="form-label">Year Code</label>
@@ -284,7 +286,14 @@
                                                         <th>Rec Qty</th>
                                                         <th>Acc Qty &nbsp;<input id="AcceptedQtySHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                         <th>Alt Acc Qty</th>
-                                                        <th>OkRecStore &nbsp;<input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                        <th>OkRecStore &nbsp;<input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
+                                                            
+                                                                <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige">
+                                                                    
+                                                                     Password
+                                                                </button>
+                                                            
+                                                        </th>
                                                         <th>Rej Qty &nbsp;<input id="RejectedQtySHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                         <th>Alt Rej Qty</th>
                                                         <th>Rej Rec Store &nbsp;<input id="SHARej" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
@@ -492,11 +501,50 @@
     </div>
 </div>
 
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Enter Password:</h6>
+                                            <input type="password" class="form-control" id="BackDatePassword" placeholder="Enter Password" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-success" onclick="PasswordCheck();">Done</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts {
     <script>
         $(document).ready(function () {
             $('#loader').hide();
             $('#loader-container').hide();
+            AddPassWord();
 
             //$('#loader').show();
             // for arrow on next row
@@ -538,6 +586,8 @@
                     }
                 }
             });
+
+
 
 
             $('form').on('keydown', function (event) {
@@ -641,6 +691,27 @@
             }
         });
 
+
+        $('.BtnPassword').click(function () {
+            // if(isAllowTaxPass == "Y"){
+            $('#PasswordAllowPopup').modal("show");
+            // }
+        });
+
+        function PasswordCheck() {
+            var AddPassWord = $('#AddPassWord').val();
+            if ($('#BackDatePassword').val() != AddPassWord) {
+                $.notify('please enter correct password...!', "error");
+            } else {
+                $('#ShowAllStore').val("Y");
+                FillOkRecStore();
+
+
+                $('#PasswordAllowPopup').modal('hide');
+            }
+            $('#BackDatePassword').val("");
+        }
+
         $('#MIRDate').on("change", function () {
             var selectedDate = $(this).datepicker("getDate");
             $('#EntryDate').datepicker("setDate", selectedDate);
@@ -711,6 +782,7 @@
                 }
             });
         }
+
 
         function alertDOO() {
             // alert("Hello");
@@ -818,6 +890,35 @@
             $('#GateEntry').val($(this).find(":selected").data('entry-no'));
             $('#MRNDate').val($(this).find(":selected").data('mrn-date'));
         });
+
+
+        function AddPassWord() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("AddPassWord")",
+               
+                async: false,
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                           
+                            $.each(obj.Result, function (index, val) {
+
+                                $('#AddPassWord').val(val.passforshowallstoreinqc);
+                                console.log($('#AddPassWord').val());
+                               
+                                
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
 
 
         function GetMRNData(dataParams) {
@@ -1979,12 +2080,12 @@
         }
 
         function FillOkRecStore(i) {
-             
+            var ShowAllStore = $('#ShowAllStore').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetOkRecStore")",
                 dataType: "json",
-                data: { "ItemCode": parseInt($('#ItemCode-' + i).val()) },
+                data: { "ItemCode": parseInt($('#ItemCode-' + i).val()), "ShowAllStore": ShowAllStore },
                 async: false,
                 success: function (result, status, error) {
 

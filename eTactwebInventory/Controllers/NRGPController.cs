@@ -485,6 +485,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
+        public async Task<JsonResult> IssueChaallanTaxIsMandatory()
+        {
+            var JSON = await _IIssueNRGP.IssueChaallanTaxIsMandatory();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetVendorList()
         {
             var JSON = await _IIssueNRGP.GetVendorList();

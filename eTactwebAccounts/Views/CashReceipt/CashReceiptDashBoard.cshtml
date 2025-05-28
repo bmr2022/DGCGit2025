@@ -38,19 +38,33 @@
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="LedgerName" class="form-label">Ledger Name</label>
-                                <input asp-for="LedgerName" class="form-control" />
+                                <select class="form-select" asp-for="LedgerName">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="Bank" class="form-label">Bank</label>
+                                <select class="form-select" asp-for="Bank">
+                                    <option value="">-Select-</option>
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="VoucherNo" class="form-label">Voucher No</label>
-                                <input asp-for="VoucherNo" class="form-control" />
+                                <select class="form-select" asp-for="VoucherNo">
+                                    <option value="">-Select-</option>
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="AgainstVoucherRefNo" class="form-label">Against Voucher RefNo</label>
-                                <input asp-for="AgainstVoucherRefNo" class="form-control" />
+                                <select class="form-select" asp-for="AgainstVoucherRefNo">
+                                    <option value="">-Select-</option>
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="AgainstVoucherNo" class="form-label">Against Voucher No</label>
-                                <input asp-for="AgainstVoucherNo" class="form-control" />
+                                <select class="form-select" asp-for="AgainstVoucherNo">
+                                    <option value="">-Select-</option>
+                                </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
@@ -129,7 +143,17 @@
                 $('#DashboardType').val(DashboardTypeBack);
              }
 
+            $('#LedgerName').select2();
+            $('#Bank').select2();
+            $('#VoucherNo').select2();
+            $('#AgainstVoucherRefNo').select2();
+            $('#AgainstVoucherNo').select2();
             GetSearchData();
+            FillLedgerInDashboard();
+            FillBankInDashboard();
+            FillVoucherNoInDashboard();
+            FillAgainstVoucherNoInDashboard();
+            FillAgainstVoucherRefNoInDashboard();
 
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
@@ -140,55 +164,6 @@
             sessionStorage.removeItem('GlobalSearchBack');
             sessionStorage.removeItem('DashboardTypeBack');
 
-        });
-
-        $(function () {
-
-            if ($('#gateDashboardtable tr').length < 1) {
-                var dashGrid = 0;
-                $('#totalRows').text(dashGrid);
-            } else {
-                var dashGrid = $('#gateDashboardtable tr').length;
-                $('#totalRows').text(dashGrid);
-            }
-
-            AutoComplete('VBooktransDetail', 'LedgerName', 'LedgerName', null);
-            AutoComplete('VBooktransDetail', 'ClosingYearCode', 'ClosingYearCode', null);
-            AutoComplete('VBooktransDetail', 'DrCr', 'DrCr', null);
-            AutoComplete('VBooktransDetail', 'EntryByEmployee', 'EntryByEmployee', null);
-            AutoComplete('VBooktransDetail', 'ActualEntryDate', 'ActualEntryDate', null);
-            AutoComplete('VBooktransDetail', 'UpdatedByEmployee', 'UpdatedByEmployee', null);
-            AutoComplete('VBooktransDetail', 'Updationdate', 'Updationdate', null);
-            AutoComplete('VBooktransDetail', 'EntryByMachine', 'EntryByMachine', null);
-
-            // if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
-
-            //     var inputFromDateString = $('#FromDate1').val().split(" ")[0];
-            //     var inputToDateString = $('#ToDate1').val().split(" ")[0];
-
-            //     var originalFromDate = new Date(inputFromDateString);
-            //     var originalToDate = new Date(inputToDateString);
-
-
-            //     //fromdate
-            //     var day = originalFromDate.getDate();
-            //     var month = originalFromDate.getMonth() + 1;
-            //     var year = originalFromDate.getFullYear();
-
-            //     var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
-
-            //     //todate
-            //     var day = originalToDate.getDate();
-            //     var month = originalToDate.getMonth() + 1; // Months are zero-based
-            //     var year = originalToDate.getFullYear();
-
-            //     var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
-
-
-            //     $('#FromDate').val(convertedFromDateText);
-            //     $('#ToDate').val(convertedToDateText);
-
-            // }
         });
 
         function GetSearchData() {
@@ -343,6 +318,101 @@
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
             window.location.href = linkUrl;
+        }
+
+         function FillLedgerInDashboard() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillLedgerInDashboard", "CashReceipt")',
+                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                async: false,
+                dataType: "json",
+                success: function (response, status, error) {
+                    var obj = $.parseJSON(response);
+                    $.each(obj.Result, function (key, val) {
+                        $('#LedgerName').append('<option value = "' + val.Accountcode + '"> ' + val.LedgerName + ' </option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillBankInDashboard() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillBankInDashboard", "CashReceipt")',
+                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                async: false,
+                dataType: "json",
+                success: function (response, status, error) {
+                    var obj = $.parseJSON(response);
+                    $.each(obj.Result, function (key, val) {
+                        $('#Bank').append('<option value = "' + val.Accountcode + '"> ' + val.LedgerName + ' </option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillVoucherNoInDashboard() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillVoucherNoInDashboard", "CashReceipt")',
+                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                async: false,
+                dataType: "json",
+                success: function (response, status, error) {
+                    var obj = $.parseJSON(response);
+                    $.each(obj.Result, function (key, val) {
+                        $('#VoucherNo').append('<option value = "' + val.VoucherNo + '"> ' + val.VoucherNo + ' </option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillAgainstVoucherRefNoInDashboard() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillAgainstVoucherRefNoInDashboard", "CashReceipt")',
+                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                async: false,
+                dataType: "json",
+                success: function (response, status, error) {
+                    var obj = $.parseJSON(response);
+                    $.each(obj.Result, function (key, val) {
+                        $('#AgainstVoucherRefNo').append('<option value = "' + val.againstVoucherRefNo + '"> ' + val.againstVoucherRefNo + ' </option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillAgainstVoucherNoInDashboard() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillAgainstVoucherNoInDashboard", "CashReceipt")',
+                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                async: false,
+                dataType: "json",
+                success: function (response, status, error) {
+                    var obj = $.parseJSON(response);
+                    $.each(obj.Result, function (key, val) {
+                        $('#AgainstVoucherNo').append('<option value = "' + val.AgainstVoucherNo + '"> ' + val.AgainstVoucherNo + ' </option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
         }
 
     </script>

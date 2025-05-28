@@ -247,7 +247,7 @@ namespace eTactWeb.DOM.Models
         public string? StateName { get; set; }
         public int? StateCode { get; set; }
         public string? CreditDays { get; set; }
-        public string? PurchaseRejYearCode { get; set; }
+        public int? PurchaseRejYearCode { get; set; }
         public string? PurchaserejRemark { get; set; }
         public string? PaymentTerm { get; set; }
         public string? Transporter { get; set; }

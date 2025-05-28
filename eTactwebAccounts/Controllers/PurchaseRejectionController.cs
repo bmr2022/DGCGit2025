@@ -9,6 +9,8 @@ using System.Data;
 using System.Net;
 using System.Globalization;
 using Microsoft.AspNetCore.Http;
+using NuGet.Packaging;
+using System.Runtime.Caching;
 
 namespace eTactWeb.Controllers
 {
@@ -16,6 +18,8 @@ namespace eTactWeb.Controllers
     {
         private readonly IPurchaseRejection _purchRej;
         private readonly ILogger<PurchaseRejectionController> _logger;
+        private readonly IDataLogic _IDataLogic;
+        private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
         public PurchaseRejectionController(IPurchaseRejection purchRej, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger)
@@ -533,6 +537,164 @@ namespace eTactWeb.Controllers
             }
 
             return Table;
+        }
+        [Route("{controller}/Dashboard")]
+        public async Task<IActionResult> PRDashBoard(string FromDate = "", string ToDate = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "", string Flag = "True")
+        {
+            HttpContext.Session.Remove("PurchaseBill");
+            HttpContext.Session.Remove("TaxGrid");
+            HttpContext.Session.Remove("KeyTaxGrid");
+
+            var _List = new List<TextValue>();
+
+            var MainModel = await _purchRej.GetDashBoardData();
+            AccPurchaseRejectionDashboard model = new AccPurchaseRejectionDashboard();
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
+            DateTime today = DateTime.Now;
+            var commonparams = new Dictionary<string, object>()
+        {
+            { "@Fromdate", firstDayOfMonth },
+            { "@ToDate", today }
+        };
+            MainModel = await BindDashboardList(MainModel, commonparams);
+            MainModel.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+            MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
+            if (Flag != "True")
+            {
+                MainModel.FromDate = FromDate;
+                MainModel.ToDate = ToDate;
+                MainModel.VendorName = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "0";
+                MainModel.VoucherNo = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "0";
+                MainModel.InvoiceNo = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "0";
+                MainModel.PartCode = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "0";
+                MainModel.Searchbox = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
+            }
+            return View(MainModel);
+        }
+        public async Task<IActionResult> GetSearchData(AccPurchaseRejectionDashboard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        {
+            model = await _purchRej.GetSearchData(model);
+            //model.DashboardType = "Summary";
+            var modelList = model?.PurchaseRejectionDashboard ?? new List<AccPurchaseRejectionDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.PurchaseRejectionDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<AccPurchaseRejectionDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.PurchaseRejectionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            //_MemoryCache.Set("KeyPurchaseRejectionlList", modelList, cacheEntryOptions);
+            return PartialView("_PRDashBoardGrid", model);
+        }
+        public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 50)
+        {
+            AccPurchaseRejectionDashboard model = new AccPurchaseRejectionDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_PRDashBoardGrid", new List<AccPurchaseRejectionDashboard>());
+            }
+            string cacheKey = $"KeyPurchaseRejectionlList";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<AccPurchaseRejectionDashboard> purchaseRejectionDashboard) || purchaseRejectionDashboard == null)
+            {
+                return PartialView("_PRDashBoardGrid", new List<AccPurchaseRejectionDashboard>());
+            }
+
+            List<AccPurchaseRejectionDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = purchaseRejectionDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = purchaseRejectionDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = purchaseRejectionDashboard.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.PurchaseRejectionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            
+            return PartialView("_PRDashBoardGrid", model);
+        }
+        public async Task<AccPurchaseRejectionDashboard> BindDashboardList(AccPurchaseRejectionDashboard MainModel, Dictionary<string, object> commonparams)
+        {
+            //var docnameparams = new Dictionary<string, object>() { { "@flag", "FillDocumentDASHBOARD" } };
+            //docnameparams.AddRange(commonparams);
+            //MainModel.DocumentNameList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", docnameparams, true);
+            MainModel.VendorNameList = new List<TextValue>();
+            MainModel.VoucherNoList = new List<TextValue>();
+            MainModel.InvoiceNoList = new List<TextValue>();
+            MainModel.PartCodeList = new List<TextValue>();
+            var vendornameparams = new Dictionary<string, object>() { { "@flag", "FILLVENDORNAMEASHBOARD" } };
+            vendornameparams.AddRange(commonparams);
+            //MainModel.VendorNameList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vendornameparams, false, true);
+
+            var vouchnoparams = new Dictionary<string, object>() { { "@flag", "FILLVOUCHERDASHBOARD" } };
+            vouchnoparams.AddRange(commonparams);
+            //MainModel.VoucherNoList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vouchnoparams, true);
+
+            var invparams = new Dictionary<string, object>() { { "@flag", "FILLINVOICEDASHBOARD" } };
+            invparams.AddRange(commonparams);
+            //MainModel.InvoiceNoList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", invparams, true);
+
+            var partcodeparams = new Dictionary<string, object>() { { "@flag", "FILLPartCodeDASHBOARD" } };
+            partcodeparams.AddRange(commonparams);
+            //MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, true);
+            return MainModel;
         }
         public async Task<JsonResult> NewEntryId(int YearCode)
         {

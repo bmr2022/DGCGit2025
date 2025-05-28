@@ -118,6 +118,29 @@ namespace eTactWeb.Data.DAL
 
             return Result;
         }
+
+        public async Task<ResponseResult> IssueChaallanTaxIsMandatory()
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "IssueChaallanTaxIsMandatory"));
+              
+
+                Result = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
         public async Task<ResponseResult> GetBatchInventory()
         {
             var Result = new ResponseResult();
@@ -541,7 +564,9 @@ namespace eTactWeb.Data.DAL
             model.PurchaseBillDate = DS.Tables[0].Rows[0]["PurchaseBilDate"].ToString();
             model.PurchaseBillYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseBillYearCode"]);
             model.Distance = Convert.ToInt32(DS.Tables[0].Rows[0]["Distance"]);
-            model.IssByEmpCode = Convert.ToInt32(DS.Tables[0].Rows[0]["IssByEmpId"]);
+            model.IssByEmpCode = DS.Tables[0].Rows[0]["IssByEmpId"] != DBNull.Value
+    ? Convert.ToInt32(DS.Tables[0].Rows[0]["IssByEmpId"])
+    : 0;
             model.IssByEmpCodeName = DS.Tables[0].Rows[0]["IssByEmpName"].ToString();
 
             if (Mode == "U")

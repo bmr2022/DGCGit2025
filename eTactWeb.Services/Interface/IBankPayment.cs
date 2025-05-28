@@ -20,7 +20,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillPONO(string accountcode, string VoucherDate);
         Task<ResponseResult> GetPODetail(int PONO,string accountcode,string VoucherDate);
         Task<ResponseResult> GetPODate(int PONO, string accountcode, string VoucherDate,string POYearCode);
-
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
         Task<ResponseResult> SaveBankPayment(BankPaymentModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
@@ -31,5 +30,10 @@ namespace eTactWeb.Services.Interface
         Task<BankPaymentModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable);
         Task<BankPaymentModel> GetViewByID(int ID, int YearCode, string VoucherNo);
         Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode);
+        Task<ResponseResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillBankInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillAgainstVoucherRefNoInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillAgainstVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType);
     }
 }
