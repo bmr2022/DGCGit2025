@@ -33,6 +33,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueNRGPDAL.FillEntryandChallanNo(YearCode, RGPNRGP);
         }
+
+        public async Task<ResponseResult> IssueChaallanTaxIsMandatory()
+        {
+            return await _IssueNRGPDAL.IssueChaallanTaxIsMandatory();
+        }
         public async Task<ResponseResult> GetBatchInventory()
         {
             return await _IssueNRGPDAL.GetBatchInventory();

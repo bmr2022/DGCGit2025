@@ -125,6 +125,7 @@
                                     <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                                     <input type="hidden" asp-for="Mode" value="@Model.Mode" />
                                     <input type="hidden" asp-for="SEQNo" id="hiddenSeqNo" />
+                                    <input type="hidden" id="IssueChaallanTaxIsMandatory" />
                                     <label asp-for="EntryId" class="form-label">Entry Id</label>
                                     <input asp-for="EntryId" class="form-control" value="@Model.EntryId" readonly />
                                 </div>
@@ -678,13 +679,21 @@
                 }
             }
             //ValidateSubmit();
+            var IssueChaallanTaxIsMandatory = $('#IssueChaallanTaxIsMandatory').val();
+            if (IssueChaallanTaxIsMandatory == 'Y') {
+                if ($('#divTaxGrid tr td').length <= 1) {
+                    $.notify('tax Grid Should Have Atleast 1 Item...!', "error");
+                    return false;
+                }
+            }
+
+
+
             if ($('#divIssueNRGPGrid tr td').length <= 1) {
                 $.notify('IssueNRGP Grid Should Have Atleast 1 Item...!', "error");
             }
-           /*  else if ($('#divTaxGrid tr td').length <= 1)
-            {
-                $.notify('tax Grid Should Have Atleast 1 Item...!', "error");
-            } */
+            
+            
             else if (CheckTaxFileds) {
                 $.notify('Please Fill Tax Fields Property!', "error");
             }
@@ -1000,6 +1009,7 @@
             $('#AccountCode').select2();
             FillVendorList();
             $('.AF').fadeOut();
+            IssueChaallanTaxIsMandatory();
 
 
             // var finFromDate = $('#FinFromDate').val();
@@ -1699,6 +1709,26 @@
                         }
                          $('#EntryId').val(obj.Result[0].EntryId);
                         $('#ChallanNo').val(obj.Result[0].ChallanNo);
+                    }
+                }
+            });
+        }
+
+
+         function IssueChaallanTaxIsMandatory() {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("IssueChaallanTaxIsMandatory")",
+               
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        $('#IssueChaallanTaxIsMandatory').val(obj.Result[0].IssueChaallanTaxIsMandatory);
+                       
                     }
                 }
             });
