@@ -23,6 +23,7 @@ namespace eTactWeb.Services.Interface
         string GetUnit(string IC, string Mode);
         Task<ResponseResult> SaveBomData(DataTable DT, BomModel model);
         Task<ResponseResult> SaveMultipleBomData(DataTable BomDetailGrid);
+        Task<ResponseResult> GetByProdItemName(int MainItemcode);
 
     }
 }

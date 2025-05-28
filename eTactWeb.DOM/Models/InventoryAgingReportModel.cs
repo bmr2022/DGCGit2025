@@ -19,9 +19,14 @@ namespace eTactWeb.DOM.Models
         public string BatchNo { get; set; }
         public string UniqueBatchNo { get; set; }
         public decimal Rate { get; set; }
+        public decimal TotalAmt { get; set; }
         public decimal TotalValue { get; set; }
+        public decimal TotalStock { get; set; }
         public string Unit { get; set; }
         public string PartyName { get; set; }
+        public string Type_Item { get; set; }
+        public string Group_Name { get; set; }
+        public int Foduration { get; set; }
         public string? LastMovementDate { get; set; }
         public int InvDays { get; set; }
         public string AgingStatus { get; set; }
@@ -49,10 +54,13 @@ namespace eTactWeb.DOM.Models
         public int Aging_61_90 { get; set; }
         public int Aging_90_180 { get; set; }
         public int Aging_180_360 { get; set; }
+        public int Aging_91 { get; set; }
         public int Aging_Above360 { get; set; }
         public int StoreStock { get; set; }
         public int WIPStock { get; set; }
-
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<InventoryAgingReportModel> InventoryAgingReportGrid { get; set; }
     }
 }
