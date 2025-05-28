@@ -123,8 +123,8 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    command.Parameters.AddWithValue("@FromentryDate", FromentryDate);
-                    command.Parameters.AddWithValue("@ToEntryDate", ToEntryDate);
+                    command.Parameters.AddWithValue("@FromentryDate", ParseFormattedDate(FromentryDate));
+                    command.Parameters.AddWithValue("@ToEntryDate", ParseFormattedDate(ToEntryDate));
                     command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
 
 
