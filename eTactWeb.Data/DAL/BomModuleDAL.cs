@@ -136,7 +136,25 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetByProdItemName(int MainItemcode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetByProdItem"));
+                SqlParams.Add(new SqlParameter("@FinishItemCode", MainItemcode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_Bom", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
+            return _ResponseResult;
+        }
         public async Task<BomModel> EditBomDetail(string FIC, int BMNo, string Flag)
         {
             BomModel? model = new BomModel();
@@ -655,6 +673,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@UID", model.UID);
                     oCmd.Parameters.AddWithValue("@CC", model.CC);
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
+                    //oCmd.Parameters.AddWithValue("@ByprodItemcode1", model.ByprodItemCode1);
+                    //oCmd.Parameters.AddWithValue("@ByprodItemcQty1", model.ByProdQty1);
+                    //oCmd.Parameters.AddWithValue("@ByprodItemcode2", model.ByprodItemCode2);
+                    //oCmd.Parameters.AddWithValue("@ByprodItemcQty2", model.ByProdQty2);
+
                     oCmd.Parameters.AddWithValue("@EntryByMachineName", model.EntryByMachineName);
                     if (model.Mode == "Update")
                     {

@@ -409,6 +409,11 @@
                                     <label asp-for="Unit" class="form-label" style="color: blue;">Unit</label>
                                     <input asp-for="Unit" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
+                                <div class="col-xl-1 col-lg-3 col-md-2 col-sm-6 col-xs-12">
+                                    <button type="button" class=" btn btn-sm btn-outline-danger mt-1 mb-1" id="ShowBOMDetai">
+                                        <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> Show BOM Detai
+                                    </button>
+                                </div>
 
                                
                             </div>
@@ -431,7 +436,7 @@
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
-                            <div class="card">
+                            <div class="card" id="firstGrid">
                                 <div class="card-body overflow-auto pb-0">
                                     <table class="table table-hover table-bordered table-striped" id="TableGrid">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
@@ -489,6 +494,39 @@
                                     </table>
                                 </div>
                             </div>
+                           
+
+
+                            <div class="card" id="secondGrid" style="display:none">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped" >
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>RM Store Name<input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />Same Store</label></th>
+
+                                                <th style="align-items:left;">RM PartCode</th>
+                                                <th style="align-items:left;">RM ItemName</th>
+                                                <th>BomQty</th>
+                                                <th>DeassQty</th>
+                                                <th>IdealDeassQty</th>
+                                                <th>Unit</th>
+                                                <th>Remark</th>
+                                                <th>RMBatchNo</th>
+                                                <th>RmUniqueBatchNo</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="DivRMAndBomDetailGrid">
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+
+
+
+
                             <div class="progress my-3 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -497,8 +535,13 @@
                                 <div class="col-md-2">
                                     <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
                                 </div>
-                                <div class="col-md-2">
-                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
+                                <div class="col-md-2" id="firstButton">
+                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1" >
+                                        <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                </div>
+                                <div class="col-md-2" id="secondButton" style="display:none">
+                                    <button type="button" class="GridButton1 btn btn-sm btn-outline-danger mt-1 mb-1" >
                                         <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
                                     </button>
                                 </div>
@@ -955,6 +998,17 @@
             
         }); */
 
+        $("#ShowBOMDetai").click(function () {
+            // Hide first grid and button
+            $("#firstGrid").hide();
+            $("#firstButton").hide();
+
+            // Show second grid and button
+            $("#secondGrid").show();
+            $("#secondButton").show();
+            FILLRMAndBomDetail();
+        });
+
         function ClearGridAjax() {
             
             $.ajax({
@@ -999,7 +1053,160 @@
         $('#MRNYearCode').change(function () {
             FillMRNDetail();
         });
+        var SameStore = false;
+        $('#SHA').change(function () {
 
+            var RowCount = $('#DivRMAndBomDetailGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#StoreName' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameStore = true;
+            } else {
+                SameStore = false;
+            }
+        });
+        function StoreChange(i) {
+
+            var Store = $('#StoreName' + i).val();
+            if (SameStore) {
+                var RowCount = $('#DivRMAndBomDetailGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#StoreName' + j).val(Store);
+                }
+            }
+        }
+
+        function FILLRMAndBomDetail() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FILLRMAndBomDetail")",
+                data: { "FinishItemCode": $('#FinishPartCode').val(), "bomNo": $('#BomNo').val(), "FGQty": $('#FGQty').val() },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        for (var i = 0; i < obj.Result.length; i++) {
+                            var resultItem = obj.Result[i];
+
+                            for (var key in resultItem) {
+                                if (resultItem[key] === null) {
+                                    resultItem[key] = "";
+                                }
+                            }
+                        }
+                        var html = '';
+                        $('#DivRMAndBomDetailGrid').empty();
+                        var i = 1;
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                html += '<tr>' +
+
+                                    '<td><select id="StoreName' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="StoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +
+
+                                    '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly><input type="hidden" id="Item_Code' + i + '" value=' + val.Item_Code + '></td>' +
+
+                                    '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly class="textbox"></td>' +
+                                    '<td><input id="BomQty' + i + '" value=' + val.BomQty + ' style="width:60px;" class="textbox number" readonly></td>' +
+                                    '<td><input id="Deassembleqty' + i + '" value=' + val.Deassembleqty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number" onchange="GateAmount();" oninput="handleInput(this)"></td>' +
+
+
+
+                                    '<td><input id="IdealQty' + i + '" value=' + val.IdealQty + ' readonly  style="width:60px;background-color:#ffd6dd;" class="textbox number" onchange="GateAmount();" oninput="handleInput(this)"></td>' +
+                                    '<td><input id="Unit' + i + '" value=' + val.Unit + ' readonly style="width:70px;" class="textbox"></td>' +
+                                    '<td><input id="Remark' + i + '" value="" style="width:120px;" class="textbox"></td>' +
+                                    '<td><input id="RMBatchNo' + i + '" value="" readonly style="width:60px;" class="textbox"></td>' +
+                                    '<td><input id="RmUniqueBatchNo' + i + '" value="" readonly class="textbox" style="width:60px;"></td>' +
+
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#DivRMAndBomDetailGrid').append(html);
+                            FillRMStore();
+                           
+                        }
+                    }
+                }
+            });
+        }
+
+        $('.GridButton1').click(function (e) {
+            e.preventDefault();
+            EditEachItem = false;
+
+            var ItemData = [];
+            var seqnoarray = [];
+            $('#divISTGrid tr').each(function (index, element) {
+
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('th').data('seqno') == undefined ? 0 : currentRow.find('th').data('seqno');
+                if (seqnoText != 0) {
+                    seqnoarray.push(parseInt(seqnoText));
+                }
+            });
+
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+                highestValue = Math.max(...seqnoarray);
+            }
+
+            /* if (!ValidateGrid()) return; */
+            var RowCount = $('#DivRMAndBomDetailGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                ItemData.push({
+                    "RMItemCode": parseInt($('#Item_Code' + i).val()),
+                    "RmPartCode": $('#PartCode' + i).val(),
+                    "RMItemName": $('#ItemName' + i).val(),
+                    
+                    "RMUnit": $('#Unit' + i).val(),
+                    "BomQty": $('#BomQty' + i).val(),
+                    "IdealDeassQty": $('#IdealQty' + i).val(),
+                    "DeassQty": $('#Deassembleqty' + i).val(),
+                    "RMStoreId": $('#StoreName' + i).val(),
+                    "Remark": $('#Remark' + i).val(),
+                    "RMStoreName": $('#StoreName' + i).find(':selected').text() == "-Select-" ? "" : $('#StoreName' + i).find(':selected').text(),
+                   
+                });
+            }
+            console.log(ItemData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddDeassembleDetail1")',
+                data: { "model": ItemData },
+                // statusCode: {
+                //     207: function () {
+                //         $.notify('Duplicate Item...!', "info");
+                //     }
+                // },
+                statusCode: {
+                    207: function (xhr) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            var msg = `Duplicate Item Found: RMItemCode ${response.RMItemCode}, RMStoreId ${response.RMStoreId}`;
+                            $.notify(msg, "info");
+                        } catch (e) {
+                            $.notify("Duplicate Item...!", "info");
+                        }
+                    }
+                },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+
+                        $('#divISTGrid').html(result);
+                        $('#DivRMAndBomDetailGrid').empty();
+                        /* TotalNetAmount(); */
+                        //$('#Storeid,#Wcid').prop("disabled", false);
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
 
 
         $('#submitBTN').click(function (event) {
@@ -2118,6 +2325,17 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#RMStoreId').append('<option value="' + val.storeid + '">' + val.store_name + '</option>');
                             });
+                            var RowCount = $('#DivRMAndBomDetailGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#StoreName' + i).empty();
+                                $('#StoreName' + i).append('<option value="" disabled selected>-Select-</option>');
+
+                                $.each(obj.Result, function (index, val) {
+                                    $('#StoreName' + i).append('<option value="' + val.storeid + '">' + val.store_name + '</option>');
+                                });
+                            }
+
+
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var RMStoreId = "@Model.RMStoreId";
                                 $('#RMStoreId').val(RMStoreId).trigger("change");
@@ -2140,8 +2358,8 @@
                 async: false,
                 success: function (result, status, error) {
 
-                    $('#DeassEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
-                    $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+                    $('#DeassEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (result));
+                    $('#CreatedOn').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (result));
 
 
 

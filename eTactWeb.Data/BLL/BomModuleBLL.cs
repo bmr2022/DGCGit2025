@@ -102,4 +102,8 @@ public class BomModuleBLL : IBomModule
     {
         return await _BomModuleDAL.SaveBomData(DT, model);
     }
+    public async Task<ResponseResult> GetByProdItemName(int MainItemcode)
+    {
+        return await _BomModuleDAL.GetByProdItemName(MainItemcode);
+    }
 }

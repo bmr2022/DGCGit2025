@@ -227,6 +227,10 @@ public class BomController : Controller
                 _Table.Columns.Add("RunnerQty", typeof(decimal));
                 _Table.Columns.Add("BurnQty", typeof(decimal));
                 _Table.Columns.Add("CustJWmandatory", typeof(string));
+                _Table.Columns.Add("ByprodItemcode1", typeof(int));
+                _Table.Columns.Add("ByprodItemcode2", typeof(int));
+                _Table.Columns.Add("ByprodItemcQty1", typeof(decimal));
+                _Table.Columns.Add("ByprodItemcQty2", typeof(decimal));
 
                 //_Table = Repository.Common.ToDataTable(BomList);
 
@@ -256,7 +260,11 @@ public class BomController : Controller
                     _Item.RunnerItemCode,
                     _Item.RunnerQty,
                     _Item.BurnQty,
-                    _Item.CustJwAdjustmentMandatory ?? ""
+                    _Item.CustJwAdjustmentMandatory ?? "",
+                    _Item.ByprodItemCode1,
+                    _Item.ByprodItemCode2,
+                    _Item.ByProdQty1,
+                    _Item.ByProdQty2
                     });
                 }
 
@@ -323,6 +331,13 @@ public class BomController : Controller
                 SeqNo = 1,
                 FinishItemCode = model.FinishItemCode,
                 FinishedItemName = model.FinishedItemName,
+                ByprodItemCode1 = model.ByprodItemCode1,
+                ByprodItemName1 = model.ByprodItemName1,
+                ByprodItemCode2 = model.ByprodItemCode2,
+                ByprodItemName2 = model.ByprodItemName2,
+                ByProdQty1 = model.ByProdQty1,
+                ByProdQty2 = model.ByProdQty2,
+
                 BOMName = model.BOMName,
                 BomNo = model.BomNo,
                 BomQty = model.BomQty,
@@ -356,6 +371,7 @@ public class BomController : Controller
                 Scrap = model.Scrap,
                 BurnQty = model.BurnQty,
                 CustJwAdjustmentMandatory = model.CustJwAdjustmentMandatory
+
             });
             model.BomList = _List;
             HttpContext.Session.SetString("BomList", JsonConvert.SerializeObject(model.BomList));
@@ -373,6 +389,13 @@ public class BomController : Controller
                     SeqNo = model.BomList.Count + 1,
                     FinishItemCode = model.FinishItemCode,
                     FinishedItemName = model.FinishedItemName,
+                    ByprodItemCode1 = model.ByprodItemCode1,
+                    ByprodItemName1 = model.ByprodItemName1,
+                    ByprodItemCode2 = model.ByprodItemCode2,
+                    ByprodItemName2 = model.ByprodItemName2,
+                    ByProdQty1 = model.ByProdQty1,
+                    ByProdQty2 = model.ByProdQty2,
+
                     BOMName = model.BOMName,
                     BomNo = model.BomNo,
                     BomQty = model.BomQty,
@@ -418,137 +441,100 @@ public class BomController : Controller
         return PartialView("_BomGrid", model);
     }
     //BOMDashboard--
-    public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string Search = "", int pageNumber = 1, int pageSize = 50)
+    public async Task<IActionResult> Dashboard()
     {
-        //BomDashboard model = new BomDashboard
-        //{
-        //    FGPartCodeList = await _IDataLogic.GetDropDownList("ALLGOODS", "CODELIST", "SP_GetDropDownList"),
-        //    FGItemNameList = await _IDataLogic.GetDropDownList("ALLGOODS", "NAMELIST", "SP_GetDropDownList"),
-
-        // RMPartCodeList = await _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "CODELIST",
-        // "SP_GetDropDownList"), RMItemNameList = await
-        // _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "NAMELIST", "SP_GetDropDownList"),        //    DTDashboard = await _IBom.GetBomDashboard("Dashboard"),
-        //};
-
         var model = new BomDashboard();
-        var oDataSet = await _IBom.GetBomDashboard("Dashboard").ConfigureAwait(false);
 
-        if (oDataSet.Tables.Count != 0)
-        {
-            model.DTDashboard = oDataSet.Tables[0];
+        // Dropdowns only
+        model.FGPartCodeList = await _IDataLogic.GetDropDownList("ALLGOODS", "CODELIST", "SP_GetDropDownList");
+        model.FGItemNameList = await _IDataLogic.GetDropDownList("ALLGOODS", "NAMELIST", "SP_GetDropDownList");
 
-            model.FGPartCodeList = (from DataRow dr in oDataSet.Tables[0].Rows.Cast<DataRow>()
-                                    select new TextValue()
-                                    {
-                                        Text = dr["FGPartCode"].ToString(),
-                                        Value = dr["FGPartCode"].ToString(),
-                                    }).DistinctBy(x => x.Value).ToList();
+        model.RMPartCodeList = await _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "CODELIST", "SP_GetDropDownList");
+        model.RMItemNameList = await _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "NAMELIST", "SP_GetDropDownList");
 
-            model.FGItemNameList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                    select new TextValue()
-                                    {
-                                        Text = dr["FGItem"].ToString(),
-                                        Value = dr["FGItem"].ToString(),
-                                    }).DistinctBy(x => x.Value).ToList();
-
-            model.RMPartCodeList = (from DataRow dr in oDataSet.Tables[0].Rows.Cast<DataRow>()
-                                    select new TextValue()
-                                    {
-                                        Text = dr["RMPartCode"].ToString(),
-                                        Value = dr["RMPartCode"].ToString(),
-                                    }).DistinctBy(x => x.Value).ToList();
-
-            model.RMItemNameList = (from DataRow dr in oDataSet.Tables[0].Rows
-                                    select new TextValue()
-                                    {
-                                        Text = dr["RMItemName"].ToString(),
-                                        Value = dr["RMItemName"].ToString(),
-                                    }).DistinctBy(x => x.Value).ToList();
-        }
-        MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-            SlidingExpiration = TimeSpan.FromMinutes(55),
-            Size = 1024,
-        };
-
-        //model.FGPartCode = FGPartCode;
-        //model.FGItemName = FGItemName;
-        //model.RMPartCode = RMPartCode;
-        //model.RMItemName = RMItemName;
-        //model.BomRevNo = BomRevNo;
-        //model.DashboardType = DashboardType;
-
-        //model.DTDashboard = model.DTDashboard == null ? new System.Data.DataTable() : model.DTDashboard;
-        //var DTDashboardPage = model.DTDashboard;
-        //HttpContext.Session.SetString("KeyBomList", JsonConvert.SerializeObject(DTDashboardPage));
-        //_MemoryCache.Set("KeyBOMList_Summary", JsonConvert.SerializeObject(DTDashboardPage), cacheEntryOptions);
-        //model.TotalRecords = model.DTDashboard.Rows.Count;
-        //model.PageNumber = pageNumber;
-        //model.PageSize = pageSize;
-
-        //var pagedRows = model.DTDashboard.AsEnumerable()
-        //                         .Skip((pageNumber - 1) * pageSize)
-        //                         .Take(pageSize);
-
-        //model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : model.DTDashboard.Clone();
-
-        return View(model);
+        return View(model); 
     }
-   
-    //public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+
+    //public async Task<IActionResult> Dashboard(string FGPartCode = "", string FGItemName = "", string RMPartCode = "", string RMItemName = "", string BomRevNo = "", string DashboardType = "", string Search = "", int pageNumber = 1, int pageSize = 50)
     //{
-    //    BomDashboard model = new BomDashboard();
-    //    DataTable bomViewModel = new DataTable();
-    //    string bomData = HttpContext.Session.GetString("KeyBomList");
-    //    if (string.IsNullOrWhiteSpace(searchString))
+    //    //BomDashboard model = new BomDashboard
+    //    //{
+    //    //    FGPartCodeList = await _IDataLogic.GetDropDownList("ALLGOODS", "CODELIST", "SP_GetDropDownList"),
+    //    //    FGItemNameList = await _IDataLogic.GetDropDownList("ALLGOODS", "NAMELIST", "SP_GetDropDownList"),
+
+    //    // RMPartCodeList = await _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "CODELIST",
+    //    // "SP_GetDropDownList"), RMItemNameList = await
+    //    // _IDataLogic.GetDropDownList("UNFINISHEDGOODS", "NAMELIST", "SP_GetDropDownList"),        //    DTDashboard = await _IBom.GetBomDashboard("Dashboard"),
+    //    //};
+
+    //    var model = new BomDashboard();
+    //    var oDataSet = await _IBom.GetBomDashboard("Dashboard").ConfigureAwait(false);
+
+    //    if (oDataSet.Tables.Count != 0)
     //    {
-    //        return PartialView("_BomDashboardGrid", model); // return empty model (or paginated full list)
-    //    }
+    //        model.DTDashboard = oDataSet.Tables[0];
 
-    //    if (bomViewModel == null)
+    //        model.FGPartCodeList = (from DataRow dr in oDataSet.Tables[0].Rows.Cast<DataRow>()
+    //                                select new TextValue()
+    //                                {
+    //                                    Text = dr["FGPartCode"].ToString(),
+    //                                    Value = dr["FGPartCode"].ToString(),
+    //                                }).DistinctBy(x => x.Value).ToList();
+
+    //        model.FGItemNameList = (from DataRow dr in oDataSet.Tables[0].Rows
+    //                                select new TextValue()
+    //                                {
+    //                                    Text = dr["FGItem"].ToString(),
+    //                                    Value = dr["FGItem"].ToString(),
+    //                                }).DistinctBy(x => x.Value).ToList();
+
+    //        model.RMPartCodeList = (from DataRow dr in oDataSet.Tables[0].Rows.Cast<DataRow>()
+    //                                select new TextValue()
+    //                                {
+    //                                    Text = dr["RMPartCode"].ToString(),
+    //                                    Value = dr["RMPartCode"].ToString(),
+    //                                }).DistinctBy(x => x.Value).ToList();
+
+    //        model.RMItemNameList = (from DataRow dr in oDataSet.Tables[0].Rows
+    //                                select new TextValue()
+    //                                {
+    //                                    Text = dr["RMItemName"].ToString(),
+    //                                    Value = dr["RMItemName"].ToString(),
+    //                                }).DistinctBy(x => x.Value).ToList();
+    //    }
+    //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
     //    {
-    //        return PartialView("_BomDashboardGrid", model); // no data in memory
-    //    }
+    //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+    //        SlidingExpiration = TimeSpan.FromMinutes(55),
+    //        Size = 1024,
+    //    };
 
-    //    // Clone the structure of the original DataTable
-    //    DataTable filteredTable = bomViewModel.Clone();
+    //    //model.FGPartCode = FGPartCode;
+    //    //model.FGItemName = FGItemName;
+    //    //model.RMPartCode = RMPartCode;
+    //    //model.RMItemName = RMItemName;
+    //    //model.BomRevNo = BomRevNo;
+    //    //model.DashboardType = DashboardType;
 
-    //    // Filter rows based on the search string (case-insensitive)
-    //    foreach (DataRow row in bomViewModel.Rows)
-    //    {
-    //        foreach (DataColumn column in bomViewModel.Columns)
-    //        {
-    //            if (column.DataType == typeof(string))
-    //            {
-    //                var cellValue = row[column]?.ToString();
-    //                if (!string.IsNullOrEmpty(cellValue) &&
-    //                    cellValue.Contains(searchString, StringComparison.OrdinalIgnoreCase))
-    //                {
-    //                    filteredTable.ImportRow(row);
-    //                    break; // match found in this row, no need to check other columns
-    //                }
-    //            }
-    //        }
-    //    }
+    //    //model.DTDashboard = model.DTDashboard == null ? new System.Data.DataTable() : model.DTDashboard;
+    //    //var DTDashboardPage = model.DTDashboard;
+    //    //HttpContext.Session.SetString("KeyBomList", JsonConvert.SerializeObject(DTDashboardPage));
+    //    //_MemoryCache.Set("KeyBOMList_Summary", JsonConvert.SerializeObject(DTDashboardPage), cacheEntryOptions);
+    //    //model.TotalRecords = model.DTDashboard.Rows.Count;
+    //    //model.PageNumber = pageNumber;
+    //    //model.PageSize = pageSize;
 
-    //    // Total records after search
-    //    model.TotalRecords = filteredTable.Rows.Count;
-    //    model.PageNumber = pageNumber;
-    //    model.PageSize = pageSize;
+    //    //var pagedRows = model.DTDashboard.AsEnumerable()
+    //    //                         .Skip((pageNumber - 1) * pageSize)
+    //    //                         .Take(pageSize);
 
-    //    // Paging the filtered rows
-    //    var pagedRows = filteredTable.AsEnumerable()
-    //                                 .Skip((pageNumber - 1) * pageSize)
-    //                                 .Take(pageSize);
+    //    //model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : model.DTDashboard.Clone();
 
-    //    model.DTDashboard = pagedRows.Any() ? pagedRows.CopyToDataTable() : filteredTable.Clone();
-
-    //    return PartialView("_BomDashboardGrid", model);
+    //    return View(model);
     //}
 
 
-	public static DataTable ToDataTable<T>(List<T> items)
+    public static DataTable ToDataTable<T>(List<T> items)
 	{
 		DataTable table = new DataTable(typeof(T).Name);
 
@@ -1293,5 +1279,11 @@ public class BomController : Controller
         }
         MRGrid.Dispose();
         return MRGrid;
+    }
+    public async Task<JsonResult> GetByProdItemName(int MainItemcode)
+    {
+        var JSON = await _IBom.GetByProdItemName(MainItemcode);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
     }
 }

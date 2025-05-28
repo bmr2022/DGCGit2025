@@ -51,6 +51,33 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> FILLRMAndBomDetail(int FinishItemCode, int bomNo, decimal FGQty)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+               
+                var SqlParams = new List<dynamic>();
+                
+                    SqlParams.Add(new SqlParameter("@Flag", "FILLRMAndBomDetail"));
+                
+                SqlParams.Add(new SqlParameter("@FinishItemCode", FinishItemCode));
+                SqlParams.Add(new SqlParameter("@bomNo", bomNo));
+                SqlParams.Add(new SqlParameter("@FGQty", FGQty));
+               
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DeassembleItemMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, float FGQty)
         {
             var _ResponseResult = new ResponseResult();

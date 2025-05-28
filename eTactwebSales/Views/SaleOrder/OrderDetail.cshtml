@@ -929,6 +929,18 @@
                                     <label asp-for="DeliveryTerms" class="form-label">Delivery Terms</label>
                                     <input asp-for="DeliveryTerms" class="form-control" />
                                 </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CreatedByName" class="form-label">Created By</label>
+                                    <input asp-for="CreatedByName" class="form-control" />
+                                    <input type="hidden" asp-for="CreatedBy" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedByName" class="form-label">Updated By</label>
+                                    <input asp-for="UpdatedByName" class="form-control" />
+                                    <input type="hidden" asp-for="UpdatedBy" />
+                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="PreparedBy" class="form-label">Prepared By</label>
                                     @*<select class="form-select" asp-for="PreparedBy" asp-items="@(new SelectList(Model.PreparedByList,"Value","Text"))">
@@ -1045,7 +1057,6 @@
                                     </button>
                                 </div>
                             }
-
                             else
                             {
                                 <div class="col-auto">
