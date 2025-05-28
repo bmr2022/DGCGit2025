@@ -39,9 +39,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _InventoryAgingReportDAL.FillWorkCenterName( FromDate,  ToDate,  CurrentDate,  Storeid);
         }
-        public async Task<InventoryAgingReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate, string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid)
+        public async Task<InventoryAgingReportModel> GetInventoryAgingReportDetailsData(string fromDate, string toDate, string CurrentDate, int WorkCenterid, string ReportType, int RMItemCode, int Storeid, int Foduration)
         {
-            return await _InventoryAgingReportDAL.GetInventoryAgingReportDetailsData(fromDate, toDate, CurrentDate, WorkCenterid, ReportType, RMItemCode, Storeid);
+            return await _InventoryAgingReportDAL.GetInventoryAgingReportDetailsData(fromDate, toDate, CurrentDate, WorkCenterid, ReportType, RMItemCode, Storeid,  Foduration);
         }
     }
 }

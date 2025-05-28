@@ -68,6 +68,14 @@ namespace eTactWeb.DOM.Models
         public string? RMItemName { get; set; }
         public string? AltPartcode1 { get; set; }
         public string? AltPartcode2 { get; set; }
+        public string? Byprodpartcode1 { get; set; }
+        public string? ByprodItemName1 { get; set; }
+        public int? ByprodItemCode1 { get; set; }
+        public decimal? ByProdQty1 { get; set; }
+         public string? Byprodpartcode2 { get; set; }
+        public string? ByprodItemName2 { get; set; }
+        public decimal? ByProdQty2 { get; set; }
+        public int? ByprodItemCode2 { get; set; }
 
         [Required]
         public decimal BomQty { get; set; }

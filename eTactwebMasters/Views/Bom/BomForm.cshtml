@@ -179,6 +179,10 @@
             $('#AltItemName1').select2();
             $('#AltItemCode2').select2();
             $('#AltItemName2').select2();
+            $('#Byprodpartcode1').select2();
+            $('#ByprodItemCode1').select2();
+            $('#Byprodpartcode2').select2();
+            $('#ByprodItemCode2').select2();
 
             GetFormRights();
             $("#EntryDate").attr('style', 'pointer-events:none;');
@@ -258,8 +262,263 @@
             $('#FinishedItemName').rules("remove", "required");
             $('#ItemCode').rules("remove", "required");
             $('#Qty').rules("remove", "required");
+            $('#Byprodpartcode1').rules("remove", "required");
+            $('#ByprodItemCode1').rules("remove", "required");
+            $('#Byprodpartcode2').rules("remove", "required");
+            $('#ByprodItemCode2').rules("remove", "required");
+            $('#ByProdQty1').rules("remove", "required");
+            $('#ByProdQty2').rules("remove", "required");
+            $('#Mode').rules("remove", "required");
             //$('#element').keyup(myFunction).keypress(myFunction).blur(myFunction).change(myFunction)
         });
+        debugger
+        $('#Byprodpartcode1').change(function () {
+            debugger
+            $('#ByprodItemCode1').val($('#Byprodpartcode1').val());  
+        });
+        $('#ByprodItemName1').change(function () {
+            $('#ByprodItemCode1').val($('#ByprodItemName1').val());
+        });
+        $('#Byprodpartcode2').change(function () {
+            $('#ByprodItemCode2').val($('#Byprodpartcode2').val());
+        });
+        $('#ByprodItemName2').change(function () {
+            $('#ByprodItemCode2').val($('#ByprodItemName2').val());
+        });
+
+        $('#ByProdQty1').on('input', function () {
+            let value = $(this).val();
+
+            if (!/^\d*\.?\d*$/.test(value)) {
+                $(this).val('');
+                
+            }
+        });
+        $('#ByProdQty2').on('input', function () {
+            let value = $(this).val();
+
+            if (!/^\d*\.?\d*$/.test(value)) {
+                $(this).val('');
+               
+            }
+        });
+
+
+        $('#FinishedItemName').change(function () {
+            GetByProdPartCode();
+            GetByProdItemName();
+            GetByProdPartCode2();
+            GetByProdItemName2();
+
+        })
+
+        function GetByProdPartCode() {
+            debugger
+            var MainItemcode = $('#FinishedItemName').val();
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var MainItemcode = '@Model.FinishedItemName'
+            }
+            $.ajax({
+                url: '@Url.Action("GetByProdItemName", "Bom")',
+                type: 'GET',
+                data: { MainItemcode: MainItemcode },
+                success: function (response) {
+
+                    var ByprodpartcodeDropdown = $('#Byprodpartcode1');
+                    var obj = $.parseJSON(response);
+                    ByprodpartcodeDropdown.empty();
+                    ByprodpartcodeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ByprodpartcodeDropdown.append('<option value="' + item.itemcode + '">' + item.Partcode + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var Byprodpartcode1 = '@Model.Byprodpartcode1';
+                        $('#Byprodpartcode1').val(Byprodpartcode1).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+        $(document).on('select2:select', '#ByprodItemCode1,#Byprodpartcode1', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ByprodItemCode1') {
+                AltItemNameChange(cntId);
+            }
+            else {
+                AltPartCodeChange(cntId);
+            }
+        });
+
+        function AltItemNameChange(ID) {
+            SetAltPartCodeItemName(ID);
+        }
+
+        function AltPartCodeChange(ID) {
+            $.when(SetAltPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetAltPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "Byprodpartcode1") {
+                    $("#ByprodItemCode1").val(v).trigger("change");
+                }
+
+                if (ID == "ByprodItemCode1") {
+                    $("#Byprodpartcode1").val(v).trigger("change");
+                }
+            }
+        }
+
+
+        function GetByProdItemName() {
+            var MainItemcode = $('#FinishedItemName').val();
+
+            if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                MainItemcode = '@Model.FinishedItemName';
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetByProdItemName", "Bom")',
+                type: 'GET',
+                data: { MainItemcode: MainItemcode },
+                success: function (response) {
+                    var $dropdown = $('#ByprodItemCode1');
+                    var obj = $.parseJSON(response);
+
+                    $dropdown.empty();
+                    $dropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        $dropdown.append('<option value="' + item.itemcode + '">' + item.ItemName + '</option>');
+                    });
+
+                    // If in update/view mode, trigger change to set display
+                    if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                        $dropdown.val('@Model.ByprodItemCode1');
+                        $dropdown.trigger("change");
+                    }
+                },
+                error: function () {
+                    alert('Failed to load by-product item names.');
+                }
+            });
+        }
+
+        //end of proditem1
+        function GetByProdPartCode2() {
+            debugger
+            var MainItemcode = $('#FinishedItemName').val();
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var MainItemcode = '@Model.FinishedItemName'
+            }
+            $.ajax({
+                url: '@Url.Action("GetByProdItemName", "Bom")',
+                type: 'GET',
+                data: { MainItemcode: MainItemcode },
+                success: function (response) {
+
+                    var ByprodpartcodeDropdown = $('#Byprodpartcode2');
+                    var obj = $.parseJSON(response);
+                    ByprodpartcodeDropdown.empty();
+                    ByprodpartcodeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        ByprodpartcodeDropdown.append('<option value="' + item.itemcode + '">' + item.Partcode + '</option>');
+                    });
+
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var Byprodpartcode1 = '@Model.Byprodpartcode2';
+                        $('#Byprodpartcode2').val(Byprodpartcode1).trigger("change");
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load alternate part codes.');
+                }
+            });
+        }
+        $(document).on('select2:select', '#ByprodItemCode2,#Byprodpartcode2', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ByprodItemCode2') {
+                AltItemNameChange(cntId);
+            }
+            else {
+                AltPartCodeChange(cntId);
+            }
+        });
+
+        function AltItemNameChange(ID) {
+            SetAltPartCodeItemName(ID);
+        }
+
+        function AltPartCodeChange(ID) {
+            $.when(SetAltPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetAltPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "Byprodpartcode2") {
+                    $("#ByprodItemCode2").val(v).trigger("change");
+                }
+
+                if (ID == "ByprodItemCode2") {
+                    $("#Byprodpartcode2").val(v).trigger("change");
+                }
+            }
+        }
+
+        function GetByProdItemName2() {
+            var MainItemcode = $('#FinishedItemName').val();
+
+            if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                MainItemcode = '@Model.FinishedItemName';
+            }
+
+            $.ajax({
+                url: '@Url.Action("GetByProdItemName", "Bom")',
+                type: 'GET',
+                data: { MainItemcode: MainItemcode },
+                success: function (response) {
+                    var $dropdown = $('#ByprodItemCode2');
+                    var obj = $.parseJSON(response);
+
+                    $dropdown.empty();
+                    $dropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, item) {
+                        $dropdown.append('<option value="' + item.itemcode + '">' + item.ItemName + '</option>');
+                    });
+
+                    // If in update/view mode, trigger change to set display
+                    if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                        $dropdown.val('@Model.ByprodItemCode2');
+                        $dropdown.trigger("change");
+                    }
+                },
+                error: function () {
+                    alert('Failed to load by-product item names.');
+                }
+            });
+        }
+
+        //end of proditem2
+
+
+
+
+
+
 
         $(document).on('select2:select', '#FinishItemCode,#FinishedItemName', function (e) {
              
@@ -735,8 +994,10 @@
         }
 
         function BindBom() {
+            debugger
             var BomData = {
                 "ItemCode": $('#ItemCode').val(),
+                "Mode": $('#Mode').val(),
                 "ICName": $('#ItemCode option:selected').text(),
                 "ItemName": $('#ItemName option:selected').text(),
                 "Qty": $('#Qty').val(),
@@ -748,6 +1009,17 @@
                 "AltItemName1": $('#AltItemName1 option:selected').text(),
                 "AltQty1": $('#AltQty1').val(),
                 "UsedStageId": $('#UsedStageId').val(),
+
+                "ByprodItemCode1": $('#ByprodItemCode1').val(),
+                "ByprodItemName1": $('#ByprodItemCode1 option:selected').text(),
+
+                "ByprodItemCode2": $('#ByprodItemCode2').val(),
+                "ByprodItemName2": $('#ByprodItemCode2 option:selected').text(),
+
+
+                
+                "ByProdQty1": $('#ByProdQty1').val(),
+                "ByProdQty2": $('#ByProdQty2').val(),
 
                 "AltItemCode2": $('#AltItemCode2 option:selected').val(),
                 "AICName2": $('#AltItemCode2 option:selected').text(),
@@ -769,7 +1041,7 @@
                 "BurnQty": $('#BurnQty').val(),
                 "CustJwAdjustmentMandatory":$('#CustJwAdjustmentMandatory').val()
             }
-
+            console.log("BomDataGrid", BomData);
             $.ajax({
                 url: '@Url.Action("BomGrid","Bom")',
                 type: "POST",
@@ -932,6 +1204,9 @@
                         //$('#FinishItemName').val(obj[0].FinishItemCode);
                         //$('#BomQty').val(obj[0].BomQty);
                         $('#ItemCode').val(obj[0].ItemCode).change();
+                        $('#ByprodItemCode1').val(obj[0].ByprodItemcode1).change();
+                        $('#ByprodItemCode2').val(obj[0].ByprodItemcode2).change();
+                        
                         if (obj[0].AltItemCode1 != 0) {
                             $('#AltItemCode1').val(obj[0].AltItemCode1).trigger('change');
                             $('#AltItemName1').val(obj[0].AltItemCode1).trigger('change');
@@ -942,6 +1217,12 @@
                         }
 
                         $('#ItemName').val(obj[0].ItemCode).trigger('change');
+                        $('#ByprodItemName1').val(obj[0].ByprodItemcode1).trigger('change');
+                        $('#ByprodItemName2').val(obj[0].ByprodItemcode2).trigger('change');
+
+                        $('#ByProdQty1').val(obj[0].ByprodItemcQty1);
+                        $('#ByProdQty2').val(obj[0].ByprodItemcQty2);
+                        
                         $('#AltQty1').val(obj[0].AltQty1);
                         $('#AltQty2').val(obj[0].AltQty2);
                         $/*('#BOMName').val(obj[0].BOMName);*/
@@ -963,6 +1244,7 @@
                         $('#Location').val(obj[0].Location);
                         $('#MPNNo').val(obj[0].MPNNo);
                         $('#UsedStageId').val(obj[0].UsedStageId);
+                        $('#Mode').val();
                         DelSeqNo = SeqNo;
                         $('#divBomGrid .' + DelSeqNo).remove();
                         //if($('#divBomGrid')[0].childElementCount==0)

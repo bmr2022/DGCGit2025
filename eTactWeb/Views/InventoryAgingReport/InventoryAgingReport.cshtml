@@ -34,15 +34,11 @@
 
                                         <div class="col">
                                             <!-- Set proper width -->
-                                            <label class="form-label">From Date</label>
+                                            <label class="form-label">Till Date</label>
                                             <input asp-for="FromDate" class="form-control" style="width: 100%;" />
                                         </div>
 
-                                        <div class="col">
-                                            <!-- Set proper width -->
-                                            <label class="form-label">To Date</label>
-                                            <input asp-for="ToDate" class="form-control" style="width: 100%;" />
-                                        </div>
+                                       
                                     </div>
 
                                 </div>
@@ -50,16 +46,15 @@
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
                                         <option disabled value="">-Select-</option>
-                                        <option value="Aging(SLAB WISE)" selected>Slab Wise</option>
-                                        <option value="Aging(Detail)">Detail</option>
+                                        <option value="AginingDataSummary" selected>Summary</option>
+                                        <option value="AginingDataBatchWise">BatchWise</option>
                                        
-
                                     </select>
 
                                 </div>
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="RMPartCode" class="form-label">RM Part Code</label>
+                                    <label asp-for="RMPartCode" class="form-label"> Part Code</label>
                                     <input type="hidden" asp-for="@Model.Itemcode" />
                                     <select asp-for="RMPartCode" class="form-select">
                                         <option value="@Model.RMPartCode">-Select-</option>
@@ -67,7 +62,7 @@
                                 </div>
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="RMItemName" class="form-label">RM Item Name</label>
+                                    <label asp-for="RMItemName" class="form-label"> Item Name</label>
                                     <input type="hidden" asp-for="@Model.Itemcode" />
                                     <select asp-for="RMItemName" class="form-select">
                                         <option value="@Model.RMPartCode">-Select-</option>
@@ -82,14 +77,48 @@
                                     </select>
                                     <span asp-validation-for="StoreName" class="text-danger"></span>
                                 </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Foduration" class="form-label">For duration</label>
+                                    
+                                    <select asp-for="Foduration" class="form-select" style="width:190px;" required>
+                                        <option value="">-Select-</option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
 
+
+                                    </select>
+                                    <span asp-validation-for="StoreName" class="text-danger"></span>
+                                </div>
+@* 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="WorkCenterName" class="form-label">Work Center Name</label>
                                     <input type="hidden" asp-for="@Model.WorkCenterId" />
                                     <select asp-for="WorkCenterName" class="form-select" style="width:190px;">
                                         <option value="@Model.WorkCenterId">-Select-</option>
                                     </select>
-                                </div>
+                                </div> *@
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
@@ -154,21 +183,22 @@
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
-            $('#CurrentDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", 'now');
+            //$('#CurrentDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            //$('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", 'now');
            
             $('#RMItemName').select2();
             $('#RMPartCode').select2();
             $('#StoreName').select2();
             $('#ReportType').select2();
-            $('#WorkCenterName').select2();
+           // $('#WorkCenterName').select2();
+            $('#Foduration').select2();
 
 
            // FillFGItemName();
            // FillFGPartCode();
             FillRMPartCode();
             FillRMItemName();
-            FillWorkCenterName();
+           // FillWorkCenterName();
             FillStoreName();
             //GetInventoryAgingDetailsData();
             // handleReportType();
@@ -178,7 +208,7 @@
                 var reportType = $('#ReportType').val();
 
                 $("#divStockRegisterBody tr").each(function () {
-                    if (reportType == "Aging(Detail)") {
+                    if (reportType == "AginingDataBatchWise") {
                         $(this).css("background-color", "#e5ccff");
                     }
                     // else if (reportType == "BatchWise Stock+WIP Valuation") {
@@ -197,7 +227,7 @@
                 $("#divStockRegisterBody tr").each(function () {
                     var reportType = $('#ReportType').val();
 
-                    if (reportType == "Aging(Detail)") {
+                    if (reportType == "AginingDataBatchWise") {
                         $(this).css("background-color", "#e5ccff");
                     }
                     // else if (reportType == "BatchWise Stock+WIP Valuation") {
@@ -242,15 +272,15 @@
                 },
                 success: function (response, status, error) {
 
-                    var ledgerDropdown = $('#RMItemName');
+                    var ItemNameDropdown = $('#RMItemName');
                     var obj = $.parseJSON(response);
-                    ledgerDropdown.empty();
-                    ledgerDropdown.append('<option value="">--Select--</option>');
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
 
 
                     $.each(obj.Result, function (index, ledger) {
 
-                        ledgerDropdown.append('<option value="' + ledger.Itemcode + '">' + ledger.Item_Name + '</option>');
+                        ItemNameDropdown.append('<option value="' + ledger.itemCode + '">' + ledger.ItemName + '</option>');
                     });
 
                 },
@@ -274,14 +304,14 @@
                 },
                 success: function (response, status, error) {
 
-                    var ledgerDropdown = $('#RMPartCode');
+                    var PartCodeDropdown = $('#RMPartCode');
                     var obj = $.parseJSON(response);
-                    ledgerDropdown.empty();
-                    ledgerDropdown.append('<option value="">--Select--</option>');
+                    PartCodeDropdown.empty();
+                    PartCodeDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, ledger) {
 
-                        ledgerDropdown.append('<option value="' + ledger.Itemcode + '">' + ledger.PartCode + '</option>');
+                        PartCodeDropdown.append('<option value="' + ledger.itemCode + '">' + ledger.Partcode + '</option>');
                     });
 
                 },
@@ -344,7 +374,7 @@
 
                     $.each(obj.Result, function (index, store) {
 
-                        storeNameDropdown.append('<option value="' + store.storeid + '">' + store.Store_Name + '</option>');
+                        storeNameDropdown.append('<option value="' + store.EntryID + '">' + store.Store_Name + '</option>');
                     });
 
                 },
@@ -393,11 +423,17 @@
             var Storeid = $('#StoreName').val();
             var WorkCenterid = $('#WorkCenterName').val();
             var CurrentDate = $('#CurrentDate').val();
+            var Foduration = $('#Foduration').val();
             //var RMItemName = $('#RMItemName').val();
             if (Storeid === '') {
                 $.notify('Store Name is mandatory to display the report!', 'error');
                 return false; // Stop the function if StoreName is empty
             }
+            if (Foduration === '') {
+                $.notify('Foduration is mandatory to display the report!', 'error');
+                return false; 
+            }
+
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetInventoryAgingReportDetailsData", "InventoryAgingReport")',
@@ -423,7 +459,60 @@
                 }
             });
         }
+        var isGlobalSearch = false;
+        var globalSearchString = "";
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
+            var dashboardType = $('#ReportMode').val();
+            $.ajax({
+                url: "/InventoryAgingReport/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                success: function (data) {
 
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(data);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        function loadPage(pageNumber) {
+            debugger
+            var url = '';
+            var ReportType = $('#ReportType').val();
+            var formData = $('#SParam').serializeArray();
+            if (isGlobalSearch) {
+                url = '/InventoryAgingReport/GlobalSearch';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            }
+            else{
+                url = '@Url.Action("GetInventoryAgingReportDetailsData", "InventoryAgingReport")';
+            }
+           
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: url ,
+                data: formData,
+                success: function (result) {
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+
+       
         // function GetServerDate() {
         //     $.ajax({
         //         type: "GET",
