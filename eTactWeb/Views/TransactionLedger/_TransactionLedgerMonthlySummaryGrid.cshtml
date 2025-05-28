@@ -39,17 +39,13 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-
-                            <td>@item.MOnthFullName</td>
-                            <td>@item.TotalDr</td>
-                            <td>@item.TotalCr</td>
+                            <td onclick="GetMonthWiseData('@item.MOnthFullName')" style="cursor: pointer;color:blue">@item.MOnthFullName</td>
+                            <td id="totDrG-@Cntr">@item.TotalDr</td>
+                            <td id="totCrG-@Cntr">@item.TotalCr</td>
                             <td>@item.ClosingAmt</td>
                             <td>@item.Dr_CR</td>
                             <td>@item.YearCode</td>
                             <td>@item.SeqNo</td>
-
-
-
                         </tr>
                     }
                 }
