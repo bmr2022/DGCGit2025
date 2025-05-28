@@ -32,5 +32,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName);
         Task<DeassembleItemModel> GetViewByID(int ID, string Mode, int YC);
 
+        Task<ResponseResult> FILLRMAndBomDetail(int FinishItemCode, int bomNo, decimal FGQty);
+
     }
 }

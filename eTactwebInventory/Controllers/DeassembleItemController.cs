@@ -107,6 +107,13 @@ namespace eTactwebInventory.Controllers
             return Json(JsonString);
         }
 
+        public async Task<JsonResult> FILLRMAndBomDetail(int FinishItemCode, int bomNo, decimal FGQty)
+        {
+            var JSON = await _IDeassembleItem.FILLRMAndBomDetail( FinishItemCode,  bomNo,  FGQty);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
@@ -306,6 +313,70 @@ namespace eTactwebInventory.Controllers
             var JSON = await _IDeassembleItem.FillStockBatchNo(ItemCode, StoreName, YearCode, batchno, FinStartDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        public IActionResult AddDeassembleDetail1(List<DeassembleItemDetail> model)
+        {
+            try
+            {
+                var MainModel = new DeassembleItemModel();
+                var RCGrid = new List<DeassembleItemDetail>();
+                var ReceiveChallanGrid = new List<DeassembleItemDetail>();
+
+                var SeqNo = 0;
+                foreach (var item in model)
+                {
+                    string modelJson = HttpContext.Session.GetString("KeyDeassembleItemGrid");
+                    IList<DeassembleItemDetail> RCDetail = new List<DeassembleItemDetail>();
+                    if (modelJson != null)
+                    {
+                        RCDetail = JsonConvert.DeserializeObject<List<DeassembleItemDetail>>(modelJson);
+                    }
+
+                    if (model != null)
+                    {
+                        if (RCDetail == null)
+                        {
+                            //item.SeqNo += SeqNo + 1;
+                            RCGrid.Add(item);
+                        }
+                        else
+                        {
+                            if (RCDetail.Any(x => x.RMItemCode == item.RMItemCode  && x.RMStoreId == item.RMStoreId))
+                            {
+                                //return StatusCode(207, "Duplicate");
+                                var duplicateInfo = new
+                                {
+                                    item.RMItemCode,
+                                    item.RMStoreId,
+                                    
+                                };
+                            }
+                            else
+                            {
+                                //item.SeqNo = RCDetail.Count + 1;
+                                RCGrid = RCDetail.Where(x => x != null).ToList();
+                                ReceiveChallanGrid.AddRange(RCGrid);
+                                RCGrid.Add(item);
+                            }
+                        }
+                        RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
+                        MainModel.DeassembleItemDetail = RCGrid;
+
+                        HttpContext.Session.SetString("KeyDeassembleItemGrid", JsonConvert.SerializeObject(MainModel.DeassembleItemDetail));
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Receive Challan List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_DeassembleItemGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
         }
 
 

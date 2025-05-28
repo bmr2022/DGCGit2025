@@ -33,6 +33,11 @@ namespace eTactWeb.Data.BLL
             return await _IDeassembleItemDAL.FillMRNNO( FGItemCode,  yearcode);
         }
 
+        public async Task<ResponseResult> FILLRMAndBomDetail(int FinishItemCode, int bomNo, decimal FGQty)
+        {
+            return await _IDeassembleItemDAL.FILLRMAndBomDetail(FinishItemCode,bomNo,FGQty);
+        }
+
         public async Task<ResponseResult> FillMRNYearCode(int FGItemCode, int yearcode, string MRNNO)
         {
             return await _IDeassembleItemDAL.FillMRNYearCode(FGItemCode, yearcode,MRNNO);
