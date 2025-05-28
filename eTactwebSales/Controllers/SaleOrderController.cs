@@ -849,12 +849,15 @@ public class SaleOrderController : Controller
 		//return PartialView("_ViewReport", webReport);
 		model.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 		model.PreparedByName = HttpContext.Session.GetString("EmpName");
+		
+		model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+		model.CreatedByName = HttpContext.Session.GetString("EmpName");
+
 		model.FinFromDate = HttpContext.Session.GetString("FromDate");
 		if (Mode != "SOA" && Mode != "SAU")
 			model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 		else
 		{
-
 			model.YearCode = YC;
 			model.AmmYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 		}
@@ -1002,7 +1005,9 @@ public class SaleOrderController : Controller
 					else if (model.Mode == "U")
 					{
 						model.Mode = "Update";
-					}
+                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                        model.CreatedByName = HttpContext.Session.GetString("EmpName");
+                    }
 					else
 					{
 						model.Mode = model.Mode;
