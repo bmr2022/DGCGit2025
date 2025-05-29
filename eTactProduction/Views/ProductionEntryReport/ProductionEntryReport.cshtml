@@ -128,6 +128,16 @@
                                     
                                     <select asp-for="ShiftName" class="form-select"></select>
                                 </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:130px">
+                                    <label asp-for="TransStoreID" class="form-label">TransStoreName</label>
+
+                                    <select asp-for="TransStoreID" class="form-select"></select>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:130px">
+                                    <label asp-for="TransWCID" class="form-label">TransWorkCenter</label>
+
+                                    <select asp-for="TransWCID" class="form-select"></select>
+                                </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" >
                                     <label class="form-label">Global search</label>
                                     <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
@@ -221,7 +231,10 @@
             FillOperatorName();
             FillProcess();
             FillShiftName();
+            filltranstore();
+            filltranworkcenter();
             GetProductionReport();
+            
             $('#ReportType').on('select2:open', function () {
                 setTimeout(function () {
                     $('.select2-results__option').each(function (index) {
@@ -247,6 +260,8 @@
             $('#Process').select2();
             $('#ReportType').select2();
             $('#ShiftName').select2();
+            $('#TransStoreID').select2();
+            $('#TransWCID').select2();
         });
         GetProductionReportName();
         $('#FromDate').change(function(){
@@ -391,7 +406,7 @@
                 type: "POST",
                 url: "@Url.Action("GetProductionEntryReport")",
                 async: false,
-                data: { "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "FGPartCode": $('#FGPartCode').val(), "FGItemName": $('#FGItemName').val(), "RMPartCode": $('#RMPartCode').val(), "RMItemName": $('#RMItemName').val(), "ProdSlipNo": $('#ProdSlipNo').val(), "ProdPlanNo": $('#ProdPlanNo').val(), "ProdSchNo": $('#ProdSchNo').val(), "ReqNo": $('#ReqNo').val(), "WorkCenter": $('#WorkCenter').val(), "MachineName": $('#MachineName').val(), "OperatorName": $('#OperatorName').val(), "Process": $('#Process').val(), "ShiftName": $('#ShiftName').val() },
+                data: { "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "FGPartCode": $('#FGPartCode').val(), "FGItemName": $('#FGItemName').val(), "RMPartCode": $('#RMPartCode').val(), "RMItemName": $('#RMItemName').val(), "ProdSlipNo": $('#ProdSlipNo').val(), "ProdPlanNo": $('#ProdPlanNo').val(), "ProdSchNo": $('#ProdSchNo').val(), "ReqNo": $('#ReqNo').val(), "WorkCenter": $('#WorkCenter').val(), "MachineName": $('#MachineName').val(), "OperatorName": $('#OperatorName').val(), "Process": $('#Process').val(), "ShiftName": $('#ShiftName').val(), "StoreID": $('#TransStoreID').val(), "WCID": $('#TransWCID').val() },
                 success: function (result, status, error) {
                     $('#divproductionReportGrid').empty();
                     $('#divproductionReportGrid').html(result);
@@ -1245,6 +1260,8 @@ $('#sendToPDF').click(async function () {
             });
         }
 
+
+
         function FillProcess() {
             $.ajax({
                 type: "POST",
@@ -1284,6 +1301,52 @@ $('#sendToPDF').click(async function () {
                             $.each(obj.Result, function (index, val) {
                                 $('#ShiftName').append('<option value="' + val.ShiftName +
                                     '">' + val.ShiftName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function filltranstore() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("filltranstore")",
+                dataType: "JSON",
+
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#TransStoreID').empty();
+                            $('#TransStoreID').append('<option value=" " selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#TransStoreID').append('<option value="' + val.storeid +
+                                    '">' + val.store_name + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function filltranworkcenter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("filltranworkcenter")",
+                dataType: "JSON",
+
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#TransWCID').empty();
+                            $('#TransWCID').append('<option value=" " selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#TransWCID').append('<option value="' + val.WCID +
+                                    '">' + val.WorkCenterDescription + '</option>');
                             });
                         }
                     }

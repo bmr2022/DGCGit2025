@@ -288,7 +288,47 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType,string FromDate, string ToDate, string FGPartCode, string FGItemName,string RMPartCode,string RMItemName, string ProdSlipNo, string ProdPlanNo,string ProdSchNo, string ReqNo, string WorkCenter,string MachineName,string OperatorName,string Process,string ShiftName)
+
+        public async Task<ResponseResult> filltranstore()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "filltranstore"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPreportProductionEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> filltranworkcenter()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "filltranworkcenter"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPreportProductionEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ProductionEntryReportModel> GetProductionEntryReport(string ReportType,string FromDate, string ToDate, string FGPartCode, string FGItemName,string RMPartCode,string RMItemName, string ProdSlipNo, string ProdPlanNo,string ProdSchNo, string ReqNo, string WorkCenter,string MachineName,string OperatorName,string Process,string ShiftName, int StoreID, int WCID)
         {
             DataSet? oDataSet = new DataSet();
             var model = new ProductionEntryReportModel();
@@ -319,6 +359,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Operator", OperatorName);
                     oCmd.Parameters.AddWithValue("@ShiftName", ShiftName);
                     oCmd.Parameters.AddWithValue("@machineName", MachineName);
+                    oCmd.Parameters.AddWithValue("@StoreID", StoreID);
+                    oCmd.Parameters.AddWithValue("@WCID", WCID);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
