@@ -320,7 +320,7 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
                                     <label asp-for="IssuedByDepCode" class="form-label" style="color:red">Issue by Dep*</label>
                                     <select class="form-select" asp-for="IssuedByDepCode" style="width: 100%;">
-                                        <option value="">-Select-</option>
+                                       @*  <option value="">-Select-</option> *@
                                     </select>
                                 </div>
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
@@ -786,7 +786,7 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#IssuedByDepCode').empty();
                             $('#IssuedByDepCode').val('');
-                            $('#IssuedByDepCode').append('<option disabled value="" selected>-Select-</option>');
+                            $('#IssuedByDepCode').append('<option disabled value="" >-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#IssuedByDepCode').append('<option value="' + val.EntryId +
                                     '" data-depttype="' + val.DeptType + '">' + val.DeptName + '</option>');
@@ -814,6 +814,7 @@
             if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
                 GetNewEntry();
                 fillGridFromMemoryCache();
+                GETDepartMent();
                 var rowCount = $('#divIssueWOBOMGrid tr').length;
 
                 for (var i = 1; i <= rowCount; i++) {
@@ -1132,6 +1133,35 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#EntryId').val(obj.Result[0].EntryId);
                             $('#IssueSlipNo').val(obj.Result[0].IssueSlipNo);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
+        function GETDepartMent() {
+            var ReqNo = $('#ReqNo').val();
+            var ReqYearCode = $('#ReqyearCode').val();
+            $.ajax({
+                url: "@Url.Action("GETDepartMent")",         
+                type: "POST",
+                data: { "ReqNo": ReqNo, "ReqYearCode": ReqYearCode },
+                success: function (data) {
+                    console.log("data"+data);
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            var deptId = obj.Result.Table[0].FromDepartmentId;
+                            $('#IssuedByDepCode').val(deptId).trigger('change');
+                            // $('#IssuedByDepCode').val(obj.Result[0].FromDepartmentId);
+                            // $('#IssuedByDepCode').val(obj.Result.Table[0].FromDepartmentId);
+                            // $('#IssuedByDepCode').text(obj.Result.Table[0].DeptName);
+                            console.log($('#IssuedByDepCode').val());
+                           
                         }
                     }
                     console.log("success");
