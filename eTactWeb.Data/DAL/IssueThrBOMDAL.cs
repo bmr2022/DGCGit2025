@@ -73,6 +73,28 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetReqByName(string reqno, int yearcode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "FILLREQBYNAME"));
+                SqlParams.Add(new SqlParameter("@reqno", reqno));
+                SqlParams.Add(new SqlParameter("@yearcode", yearcode));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<DataSet> FillEmployee(string Flag)
         {
             var oDataSet = new DataSet();

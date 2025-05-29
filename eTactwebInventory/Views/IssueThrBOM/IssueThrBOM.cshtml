@@ -574,6 +574,7 @@
             if ('@Model.Mode' != "U" && '@Model.Mode' != "V") {
                 GetNewEntry();
                 fillIssueThrGridFromMemoryCache();
+                GetReqByName();
 
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
@@ -755,6 +756,32 @@
                 }
             });
         }
+
+        function GetReqByName() {
+            var reqno = $('#ReqNo').val();
+            var yearcode = $('#ReqyearCode').val();
+
+            $.ajax({
+                url: "@Url.Action("GetReqByName")",
+                type: "POST",
+                data: { "reqno": reqno, "yearcode": yearcode },
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RecByEmpCode').val(obj.Result[0].eneterdby);
+                            $('#RecByEmpCodeName').val(obj.Result[0].eneterdby);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
 
         function fillIssueThrGridFromMemoryCache() {
               
