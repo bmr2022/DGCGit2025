@@ -54,6 +54,11 @@
                     </span>Shor Exc Qty
                 </th>
 
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Rate
+                </th>
                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon">
                     <i class="fa" aria-hidden="true"></i></span>Unit</th>
                 <th data-columnno="6" data-sortorder="asc" class="sortCol">
@@ -61,6 +66,7 @@
                         <i class="fa" aria-hidden="true"></i>
                     </span>Item Amt
                 </th>
+
 
                 <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon">
                     <i class="fa" aria-hidden="true"></i></span>Toatl Amt</th> 
@@ -146,9 +152,10 @@
                             <td id="opnStk-@Cntr">@item.BillQty</td>
                             <td id="recQty-@Cntr">@item.RecQty</td>
                             <td id="shortexcessQty-@Cntr">@item.ShortExcessQty</td>
+                            <td >@item.Rate</td>
                             <td>@item.Unit</td>
-                            <td id="amount-@Cntr">@item.Amount</td>
-                            <td>@item.TotalAmt</td>
+                            <td>@item.Amount</td>
+                            <td id="amount-@Cntr">@item.TotalAmt</td>
                             <td>@item.NetAmout</td>
                              <td>@item.Remark</td>
                             <td>@item.ActualEntryByEmp</td>

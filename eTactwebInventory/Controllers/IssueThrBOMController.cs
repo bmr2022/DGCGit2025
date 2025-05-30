@@ -313,6 +313,13 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        public async Task<JsonResult> GetReqByName(string reqno, int yearcode)
+        {
+            var JSON = await _IIssueThrBOM.GetReqByName(reqno, yearcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         public async Task<JsonResult> FillProjectNo()
         {
             var JSON = await _IIssueThrBOM.FillProjectNo();

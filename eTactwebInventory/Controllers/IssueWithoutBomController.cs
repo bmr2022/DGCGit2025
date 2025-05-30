@@ -782,6 +782,7 @@ namespace eTactWeb.Controllers
              string JsonString = JsonConvert.SerializeObject(JSON);
              return Json(JsonString);
         }
+        
         public async Task<IActionResult> DeleteByID(int ID, int YC,int ActualEntryBy,string EntryByMachine, string FromDate, string ToDate, string REQNo, string WCName, string PartCode, string ItemName)
         {
             var getData = _IIssueWOBOM.GetDataForDelete(ID,YC);
@@ -838,6 +839,13 @@ namespace eTactWeb.Controllers
         {
             int YC = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var JSON = await _IIssueWOBOM.GetNewEntry(YC);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GETDepartMent(string ReqNo, int ReqYearCode)
+        {
+            var JSON = await _IIssueWOBOM.GETDepartMent(ReqNo, ReqYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

@@ -25,6 +25,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssuewithoutBomDAL.FillBranch();
         }
+        public async Task<ResponseResult> GETDepartMent(string ReqNo, int ReqYearCode)
+        {
+            return await _IssuewithoutBomDAL.GETDepartMent( ReqNo,  ReqYearCode);
+        }
         public async Task<ResponseResult> SaveIssueWithoutBom(IssueWithoutBom model, DataTable MRGRid)
         {
             return await _IssuewithoutBomDAL.SaveIssueWithoutBom(model, MRGRid);
