@@ -1,0 +1,458 @@
+﻿@model eTactWeb.DOM.Models.ReOfferItemModel
+
+@{
+    ViewData["Title"] = "Reoffer Item";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+    .disabled-link {
+        pointer-events: none; /* Disables clicking */
+        color: gray; /* Makes it look disabled */
+        text-decoration: none; /* Removes underline */
+        cursor: not-allowed; /* Changes cursor */
+    }
+
+    .custom-input {
+        width: 120%; /* Adjust the width as needed */
+        max-width: 500px; /* Adjust the max-width as needed */
+    }
+
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="ReOfferItem" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>Reoffer Item</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+                    <a asp-action="ReOfferItemDashBoard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+                        <i class="fa-duotone fa-grid-horizontal fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="SlipNoBack" type="hidden" value="@Model.SlipNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="BatchNoback" type="hidden" value="@Model.BatchNoback" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                    @* <partial name="_FormsButton" />*@
+                </span>
+            </h5>
+        </div>
+        <div>
+        </div>
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item" id="GI_Grid">
+                    <h2 class="accordion-header" id="H_RParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_RParameter" aria-expanded="true" aria-controls="B_RParameter">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                        </button>
+                    </h2>
+                    <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3 align-items-center">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width = 50%">
+                                    <input type="hidden" value="@Model.FinFromDate" asp-for="FinFromDate" />
+                                    <input type="hidden" value="@Model.FinToDate" asp-for="FinToDate" />
+                                    <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                    <input type="hidden" asp-for="SeqNo" id="hiddenSeqNo" />
+                                    @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"> *@
+                                    @* class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-xs-12" *@
+                                    <label asp-for="ReofferEntryId" class="form-label" style="color: blue;">Entry ID</label>
+                                    <input asp-for="ReofferEntryId" class="form-control" readonly />
+                                </div>
+                                @* <div class="col-lg"> *@
+                                <div class="col-xl-1 col-lg-4 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ReofferEntrydate" class="form-label" style="color: blue;">Entry Date</label>
+                                    <input asp-for="ReofferEntrydate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-1 col-lg-4 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ReofferYearcode" class="form-label" style="color: blue;">Year Code</label>
+                                    <input asp-for="ReofferYearcode" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ReofferNo" class="form-label" style="color: blue;">ReofferNo</label>
+                                    <input asp-for="ReofferNo" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                    <label asp-for="QcType" class="control-label" style="color: red;"> QcType </label>
+                                    <select class="form-select" asp-for="QcType">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    
+                                </div>
+                                
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                    <label asp-for="MIRNo" class="control-label" style="color: red;"> MIR No </label>
+                                    <select class="form-select" asp-for="MIRNo">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                    <label asp-for="MIRYearCode" class="control-label" style="color: red;"> MIRYearCode </label>
+                                    <select class="form-select" asp-for="MIRYearCode">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                    
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MirEntryid" class="form-label" style="color: blue;">MirEntryid</label>
+                                    <input asp-for="MirEntryid" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MIRDate" class="form-label" style="color: blue;">MIRDate</label>
+                                    <input asp-for="MIRDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRNNO" class="form-label" style="color: blue;">MRNNO</label>
+                                    <input asp-for="MRNNO" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
+                                    <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BillNo" class="form-label" style="color: blue;">BillNo</label>
+                                    <input asp-for="BillNo" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="BillDate" class="form-label" style="color: blue;">BillDate</label>
+                                    <input asp-for="BillDate" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountCode" class="form-label" style="color: blue;">AccountCode</label>
+                                    <input asp-for="AccountCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_SAGrid">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                        </button>
+                    </h2>
+
+                    <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                          
+
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <div class="col-md-2">
+                                    <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+                                </div>
+                                
+                            </div>
+
+                           
+                        </div>
+
+
+                    </div>
+                </div>
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EnteredByEmpName" class="form-label">EnteredByEmpName</label>
+                                    <input asp-for="EnteredByEmpName" class="form-control" readonly />
+                                    <input type="hidden" asp-for="EnteredByEmpId" class="form-control" readonly />
+                                    <input type="hidden" asp-for="ActualEnteredBy" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryDate" class="form-label" style="color: blue;">ActualEntryDate</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedByName" class="form-label" style="color: blue;">UpdatedBy</label>
+                                    <input asp-for="UpdatedByName" class="form-control" readonly />
+                                    <input type="hidden" asp-for="UpdatedBy" class="form-control" readonly />
+                                </div
+
+
+                                <div class="col-xl-2  col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="UpdatedOn" class="form-label">UpdatedOn</label>
+                                    <input asp-for="UpdatedOn" class="form-control" readonly />
+                                </div>
+                               
+                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">CC</label>
+                                    <input asp-for="CC " class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryByMachineName" class="form-label" style="color: blue;">EntryByMachineName</label>
+                                    <input asp-for="EntryByMachineName " class="form-control" value="@Environment.MachineName" readonly />
+                                </div>
+                               
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+
+
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).on('input', '.number', function () {
+            // Replace anything that's not a digit or a single decimal point
+            this.value = this.value.replace(/[^0-9.]/g, '')         // Remove invalid chars
+                .replace(/(\..*)\./g, '$1');     // Allow only one decimal
+        });
+        $(document).ready(function () {
+             $('#QcType').select2();
+             $('#MIRNo').select2();
+            FILLQCTYPE();
+            FILLMIRNO();
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                
+                var EntryDate = parseDateToFormat($('#ReofferEntrydate').val().split(" ")[0]);
+                
+                var ActualEntryDate = parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]);
+              
+                $('#ReofferEntrydate').datepicker("setDate", EntryDate);
+               
+                $('#ActualEntryDate').datepicker("setDate", ActualEntryDate);
+            }
+            else {
+                GetServerDate();
+                GETNEWENTRY();
+                
+            }
+
+        });
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate", "Routing")",
+                async: false,
+                success: function (result, status, error) {
+
+                    $('#ReofferEntrydate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (result));
+                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (result));
+
+
+
+                    $('#ReofferEntrydate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
+
+
+                    $('#ReofferEntrydate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
+                }
+            });
+        }
+         function GETNEWENTRY() {
+             var ReofferYearcode = $('#ReofferYearcode').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GETNEWENTRY")",
+                dataType: "json",
+                data : { ReofferYearcode: ReofferYearcode },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#ReofferEntryId').val("");
+                        $('#ReofferEntryId').val(obj.Result[0].EntryId);
+                        $('#ReofferNo').val("");
+                        $('#ReofferNo').val(obj.Result[0].ReoffeNo);
+                    }
+                }
+            });
+        }
+
+        function FILLQCTYPE() {
+           
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FILLQCTYPE")",
+                dataType: "json",
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#QcType').empty();
+                            $('#QcType').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#QcType').append('<option value="' + val.QC + '">' + val.QC + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var QcType = "@Model.QcType";
+                                $('#QcType').val(QcType).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FILLMIRNO() {
+           
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FILLMIRNO")",
+                dataType: "json",
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MIRNo').empty();
+                            $('#MIRNo').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#QcType').append('<option value="' + val.MIRNO + '">' + val.MIRNO + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var MIRNo = "@Model.MIRNo";
+                                $('#MIRNo').val(MIRNo).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+       
+
+       
+
+        
+
+        $('#submitBTN').click(function (event) {
+            event.preventDefault();
+
+            var FGQty = parseFloat($('#FGQty').val());
+            var TotalStock = parseFloat($("#TotalStock").val());
+
+            if (FGQty > TotalStock) {
+                $.notify('Quantity must be less then TotalStock ', 'error');
+
+            }
+            else {
+
+                $("form").submit();
+            }
+
+        });
+
+
+
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('SlipNoBack', $('#SlipNoBack').val());
+            sessionStorage.setItem('BatchNoBack', $('#BatchNoBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+
+            window.history.back();
+        }
+
+    </script>
+}

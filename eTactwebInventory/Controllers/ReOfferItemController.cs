@@ -1,0 +1,120 @@
+﻿using eTactWeb.Data.Common;
+using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+using eTactWeb.DOM.Models;
+using System.Net;
+using System.Data;
+using System.Globalization;
+using FastReport.Web;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
+using eTactWeb.Controllers;
+
+namespace eTactwebInventory.Controllers
+{
+    public class ReOfferItemController : Controller
+    {
+        public WebReport webReport;
+        public IDataLogic IDataLogic { get; }
+        public IReofferItem _IReofferItem { get; }
+        public IWebHostEnvironment IWebHostEnvironment { get; }
+        public ILogger<ReOfferItemController> Logger { get; }
+        private EncryptDecrypt EncryptDecrypt { get; }
+        private readonly IConfiguration iconfiguration;
+        public ReOfferItemController(IReofferItem iReofferItem, IConfiguration configuration, IDataLogic iDataLogic, ILogger<ReOfferItemController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        {
+            _IReofferItem = iReofferItem;
+            IDataLogic = iDataLogic;
+            Logger = logger;
+            EncryptDecrypt = encryptDecrypt;
+            IWebHostEnvironment = iWebHostEnvironment;
+            iconfiguration = configuration;
+        }
+
+        [HttpGet]
+        [Route("{controller}/Index")]
+        public async Task<IActionResult> ReOfferItem(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string SlipNo = "", string BatchNo = "", string PartCode = "", string ItemName = "", string Searchbox = "", string SummaryDetail = "")
+        {
+            //RoutingModel model = new RoutingModel();  
+            ViewData["Title"] = "ReOfferItem";
+            TempData.Clear();
+            HttpContext.Session.Remove("KeyReOfferItemGrid");
+            var MainModel = new ReOfferItemModel();
+
+            MainModel.FinFromDate = ParseDate(HttpContext.Session.GetString("FromDate")).ToString().Replace("-", "/");
+            MainModel.FinToDate = ParseDate(HttpContext.Session.GetString("ToDate")).ToString().Replace("-", "/");
+            MainModel.CC = HttpContext.Session.GetString("Branch");
+            MainModel.ReofferYearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                //MainModel = await _IDeassembleItem.GetViewByID(ID, Mode, YC);
+                MainModel.Mode = Mode;
+                MainModel.ID = ID;
+                
+
+            }
+          
+            
+            if (Mode != "U")
+            {
+
+                MainModel.EnteredByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.EnteredByEmpName = HttpContext.Session.GetString("EmpName");
+
+            }
+            else
+            {
+
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.UpdatedByName = HttpContext.Session.GetString("EmpName");
+
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.ReofferItemDetail);
+            HttpContext.Session.SetString("KeyReOfferItemGrid", serializedGrid);
+
+            MainModel.FromDateBack = FromDate;
+            MainModel.ToDateBack = ToDate;
+            MainModel.SlipNoBack = SlipNo;
+            MainModel.BatchNoback = BatchNo;
+            MainModel.PartCodeBack = PartCode;
+            MainModel.ItemNameBack = ItemName;
+            MainModel.DashboardTypeBack = SummaryDetail;
+            MainModel.GlobalSearchBack = Searchbox;
+            return View(MainModel);
+        }
+        public async Task<JsonResult> GETNEWENTRY(int ReofferYearcode)
+        {
+            var JSON = await _IReofferItem.GETNEWENTRY( ReofferYearcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FILLQCTYPE()
+        {
+            var JSON = await _IReofferItem.FILLQCTYPE();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FILLMIRNO()
+        {
+            var JSON = await _IReofferItem.FILLMIRNO();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+    }
+}

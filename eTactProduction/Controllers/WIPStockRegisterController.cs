@@ -53,7 +53,8 @@ namespace eTactWeb.Controllers
 				{ "WIPSTOCKSUMMARY", ExportWipStockSummary },
 				{ "SHOWALLWIPSTOCKSUMMARY", ExportShowAllWipStockSummary },
 				{ "SHOWONLYISSUEDATA", ExportShowOnlyIssue },
-				{ "SHOWONLYRECDATA", ExportShowOnlyRec }
+				{ "SHOWONLYRECDATA", ExportShowOnlyRec },
+				{ "WIPSTOCKDETAIL", ExportWIPSTOCKDETAIL },
                 // Add more report types here if needed
             };
 
@@ -78,7 +79,56 @@ namespace eTactWeb.Controllers
 				"WIPStockRegisterReport.xlsx"
 			);
 		}
-		private void ExportWipStockSummary(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
+
+        private void ExportWIPSTOCKDETAIL(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
+        {
+            string[] headers = {
+            "SeqNo", "WorkCenterName", "TransactionType", "TransDate", "BillNo", "BillDate", "PartCode", "ItemName", "OpnStk", "RecQty", 
+                "IssQty", "TotStk", "Unit", "AltRecQty", "AltIssQty", "AltStock", "AltUnit", "Rate", "Amount", "BatchNo", "UniquebatchNo", 
+                "EntryId", "FromWc", "FromStore", "ToWC", "ToStore"
+
+            };
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                
+                sheet.Cell(row, 2).Value = item.WorkCenterName;
+                sheet.Cell(row, 3).Value = item.TransactionType;
+                sheet.Cell(row, 4).Value = item.TransDate;
+                sheet.Cell(row, 5).Value = item.BillNo;
+                sheet.Cell(row, 6).Value = item.BillDate;
+                sheet.Cell(row, 7).Value = item.PartCode;
+                sheet.Cell(row, 8).Value = item.ItemName;
+                sheet.Cell(row, 9).Value = item.OpnStk;
+                sheet.Cell(row, 10).Value = item.RecQty;
+                sheet.Cell(row, 11).Value = item.IssQty;
+                sheet.Cell(row, 12).Value = item.TotStk;
+                sheet.Cell(row, 13).Value = item.Unit;
+                sheet.Cell(row, 14).Value = item.AltRecQty;
+                sheet.Cell(row, 15).Value = item.AltIssQty;
+                sheet.Cell(row, 16).Value = item.AltStock;
+                sheet.Cell(row, 17).Value = item.AltUnit;
+                sheet.Cell(row, 18).Value = item.Rate;
+                sheet.Cell(row, 19).Value = item.Amount;
+                sheet.Cell(row, 20).Value = item.BatchNo;
+                sheet.Cell(row, 21).Value = item.UniquebatchNo;
+                sheet.Cell(row, 22).Value = item.EntryId;
+                sheet.Cell(row, 23).Value = item.FromWc;
+                sheet.Cell(row, 24).Value = item.FromStore;
+                sheet.Cell(row, 25).Value = item.ToWC;
+                sheet.Cell(row, 26).Value = item.ToStore;
+
+                row++;
+            }
+        }
+
+        private void ExportWipStockSummary(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
 		{
 			string[] headers = {
 	        "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty", "Iss Qty", "Tot Stk",
