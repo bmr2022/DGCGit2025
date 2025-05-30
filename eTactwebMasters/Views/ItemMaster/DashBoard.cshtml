@@ -210,10 +210,14 @@
             });
         }
 
+        // $('#sendToExcel').click(function () {
+        //     $("#IMData").table2excel({
+        //         filename: "IMData.xls"
+        //     });
+        // });
         $('#sendToExcel').click(function () {
-            $("#IMData").table2excel({
-                filename: "IMData.xls"
-            });
+            var showAll = $('#ShowAllSwitch').is(':checked');
+            window.location.href = '/ItemMaster/ExportItemMasterToExcel?showAll=' + showAll;
         });
 
 

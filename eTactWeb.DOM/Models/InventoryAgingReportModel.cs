@@ -31,7 +31,7 @@ namespace eTactWeb.DOM.Models
         public int InvDays { get; set; }
         public string AgingStatus { get; set; }
         public long AccountCode { get; set; }
-        public long ItemCode { get; set; }
+        //public long ItemCode { get; set; }
         public decimal ZeroToThirty { get; set; }
         public decimal ThirtyOneToSixty { get; set; }
         public decimal SixtyOneToNinety { get; set; }

@@ -34,9 +34,12 @@ namespace eTactWeb.Controllers
             TempData.Clear();
             var MainModel = new ControlPlanModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.CntPlanEntryDate = HttpContext.Session.GetString("ToDate");
+            MainModel.CntPlanYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
+            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
             //MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
             // MainModel.ActualEntryDate = HttpContext.Session.GetString("EntryDate");
 
@@ -152,23 +155,39 @@ namespace eTactWeb.Controllers
                     GIGrid.Rows.Add(
                         new object[]
                         {
+                    //Item.CntPlanEntryId,
+                    //Item.CntPlanYearCode,
+                    //Item.SeqNo,
+                    //Item.Characteristic,
+                    // evalTech, 
+                    ////Item.EvalutionMeasurmentTechnique,
+                    //Item.SpecificationFrom,
+                    //Item.Operator,
+                    //Item.SpecificationTo,
+                    //Item.FrequencyofTesting,
+                    //Item.InspectionBy,
+                    //Item.ControlMethod,
+                    //Item.RejectionPlan,
+                    //Item.Remarks,
+                    //Item.ItemimagePath,
+                    //Item.DrawingNo,
+                    //Item.DrawingNoImagePath,
                     Item.CntPlanEntryId,
-                    Item.CntPlanYearCode,
-                    Item.SeqNo,
+                    Item.CntPlanYearCode ,
+                    Item.SeqNo ,
                     Item.Characteristic,
-                     evalTech, 
-                    //Item.EvalutionMeasurmentTechnique,
-                    Item.SpecificationFrom,
+                    evalTech ,
+                    Item.SpecificationFrom ,
                     Item.Operator,
-                    Item.SpecificationTo,
-                    Item.FrequencyofTesting,
-                    Item.InspectionBy,
-                    Item.ControlMethod,
-                    Item.RejectionPlan,
-                    Item.Remarks,
-                    Item.ItemimagePath,
-                    Item.DrawingNo,
-                    Item.DrawingNoImagePath,
+                    Item.SpecificationTo ,
+                    Item.FrequencyofTesting ,
+                    Item.InspectionBy == null ? "InspectionBy" : "InspectionBy",
+                    Item.ControlMethod ,
+                    Item.RejectionPlan == null ? "RejectionPlan" : "RejectionPlan",
+                    Item.Remarks ,
+                    Item.ItemimagePath == null ? "ItemimagePath" : "ItemimagePath",
+                    Item.DrawingNo ,
+                    Item.DrawingNoImagePath == null ? "DrawingNoImagePath" : "DrawingNoImagePath"
 
                         });
                 }

@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using ClosedXML.Excel;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -174,6 +175,127 @@ namespace eTactWeb.Controllers
                 return PartialView("_InventoryAgingReportDetailGrid", model);
             }
            
+        }
+        public async Task<IActionResult> ExportInventoryAgeingToExcel(string ReportType)
+        {
+            //string modelJson = HttpContext.Session.GetString("KeyPOList");
+            if (!_MemoryCache.TryGetValue("KeyInventoryAgeingList", out List<InventoryAgingReportModel> modelList))
+            {
+                return NotFound("No data available to export.");
+            }
+
+           
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("PO Register");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<InventoryAgingReportModel>>>
+            {
+                { "AginingDataSummary", EXPORT_InventoryAgingReportSummaryGrid },
+                { "AginingDataBatchWise", EXPORT_InventoryAgingReportBatchWiseGrid }
+
+            };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, modelList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "InventoryAgeingReport.xlsx"
+            );
+        }
+        private void EXPORT_InventoryAgingReportSummaryGrid(IXLWorksheet sheet, IList<InventoryAgingReportModel> list)
+        {
+            string[] headers = {
+                "#Sr","Store Name", "Part Code", "Item Name", "Unit", "Total Stock", "Rate", "Total Amount",
+                "0–30", "31–60", "61–90", ">=91", "Type Item", "Group Name"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.StoreName;
+                sheet.Cell(row, 3).Value = item.PartCode;
+                sheet.Cell(row, 4).Value = item.ItemName;
+                sheet.Cell(row, 5).Value = item.Unit;
+                sheet.Cell(row, 6).Value = item.TotalStock;
+                sheet.Cell(row, 7).Value = item.Rate;
+                sheet.Cell(row, 8).Value = item.TotalAmt;
+                sheet.Cell(row, 9).Value = item.Aging_0_30;
+                sheet.Cell(row, 10).Value = item.Aging_31_60;
+                sheet.Cell(row, 11).Value = item.Aging_61_90;
+                sheet.Cell(row, 12).Value = item.Aging_91;
+                sheet.Cell(row, 13).Value = item.Type_Item;
+                sheet.Cell(row, 14).Value = item.Group_Name;
+
+
+                row++;
+            }
+        }
+        private void EXPORT_InventoryAgingReportBatchWiseGrid(IXLWorksheet sheet, IList<InventoryAgingReportModel> list)
+        {
+            string[] headers = {
+                "#Sr", "Store Name", "Part Code", "Item Name", "Unit", "Total Stock", "Rate", "Total Amount",
+    "0-30", "31-60", "61-90", "≥91", "Batch No", "Unique Batch No", "Type Item", "Group Name"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.StoreName;
+                sheet.Cell(row, 3).Value = item.PartCode;
+                sheet.Cell(row, 4).Value = item.ItemName;
+                sheet.Cell(row, 5).Value = item.Unit;
+                sheet.Cell(row, 6).Value = item.TotalStock;
+                sheet.Cell(row, 7).Value = item.Rate;
+                sheet.Cell(row, 8).Value = item.TotalAmt;
+
+                sheet.Cell(row, 9).Value = item.Aging_0_30;
+                sheet.Cell(row, 10).Value = item.Aging_31_60;
+                sheet.Cell(row, 11).Value = item.Aging_61_90;
+                sheet.Cell(row, 12).Value = item.Aging_91;
+                sheet.Cell(row, 13).Value = item.BatchNo;
+                sheet.Cell(row, 14).Value = item.UniqueBatchNo;
+                sheet.Cell(row, 15).Value = item.Type_Item;
+                sheet.Cell(row, 16).Value = item.Group_Name;
+
+
+
+                row++;
+            }
+        }
+        [HttpGet]
+        public IActionResult GetInventoryAgingReportForPDF()
+        {
+            if (_MemoryCache.TryGetValue("KeyInventoryAgeingList", out List<InventoryAgingReportModel> stockRegisterList))
+            {
+                return Json(stockRegisterList);
+            }
+            return Json(new List<InventoryAgingReportModel>());
         }
 
     }
