@@ -76,6 +76,13 @@
                     </h2>
                     <div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
                         <div class="accordion-body">
+                            <input asp-for="EntryByMachine" type="hidden" class="form-control" value="@Environment.MachineName"  />
+                            <input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode"  />
+                            <input asp-for="CntPlanEntryDate" type="hidden" class="form-control" value="@Model.CntPlanEntryDate" />
+                            <input asp-for="CntPlanYearCode" type="hidden" class="form-control" value="@Model.CntPlanYearCode" />
+                            <input asp-for="CC" type="hidden" class="form-control" value="@Model.CC" />
+                            <input asp-for="ActualEntryDate" type="hidden" class="form-control" value="@Model.ActualEntryDate" />
+                            <input asp-for="ActualEntryBy" type="hidden" class="form-control" value="@Model.ActualEntryBy" />
                             <div class="row g-3">
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
                                     <label asp-for="CntPlanEntryId" class="form-label">Entry Id</label>
@@ -113,6 +120,8 @@
                                         }
                                     </select>
                                 </div>
+                                
+
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="ItemName" class="form-label"> Item Name</label>
                                     <select class="form-control" id="ItemName" asp-for="ItemName">
@@ -123,8 +132,8 @@
                                         }
                                     </select>
                                 </div>
-                                
-                               
+
+                                <input type="hidden" id="ItemCode" name="ItemCode" value="@Model.ItemCode" />
 
                             </div>
                         </div>
@@ -163,7 +172,10 @@
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Operator" class="form-label">Operator</label>
                                     <select class="form-control" id="Operator" asp-for="Operator" style="width:170px;">
-                                        <option value="@Model.Operator">-Select-</option>
+                                        <option value="">-Select-</option>
+                                        <option value="s">+</option>
+                                        <option value="m">*</option>
+                                        <option value="d">/</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -773,7 +785,10 @@
                 "RejectionPlan": $('#RejectionPlan').val(),
                 "RejectionPlanText": $('#RejectionPlan').find(':selected').text() == "-Select-" ? "" : $('#RejectionPlan').find(':selected').text(),
 
-                "DrawingNo": $('#DrawingNo').val()
+                "DrawingNo": $('#DrawingNo').val(),
+                "CntPlanEntryDate": $('#CntPlanEntryDate').val(),
+                "CntPlanYearCode": $('#CntPlanYearCode').val(),
+                "CntPlanEntryId": $('#CntPlanEntryId').val(),
 
             }
             console.log(ItemData);
