@@ -320,7 +320,7 @@
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
                                     <label asp-for="IssuedByDepCode" class="form-label" style="color:red">Issue by Dep*</label>
                                     <select class="form-select" asp-for="IssuedByDepCode" style="width: 100%;">
-                                       @*  <option value="">-Select-</option> *@
+                                        <option value="">-Select-</option> 
                                     </select>
                                 </div>
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
@@ -786,7 +786,7 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#IssuedByDepCode').empty();
                             $('#IssuedByDepCode').val('');
-                            $('#IssuedByDepCode').append('<option disabled value="" >-Select-</option>');
+                            $('#IssuedByDepCode').append('<option disabled value="" selected >-Select-</option>');
                             $.each(obj.Result, function (index, val) {
                                 $('#IssuedByDepCode').append('<option value="' + val.EntryId +
                                     '" data-depttype="' + val.DeptType + '">' + val.DeptName + '</option>');

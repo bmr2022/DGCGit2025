@@ -220,6 +220,7 @@ namespace eTactWeb.Data.DAL
                                                            Currency = string.IsNullOrEmpty(dr["Currency"].ToString()) ? "" : dr["Currency"].ToString(),
                                                            TotalAmt = Convert.ToDecimal(dr["TotalAmt"].ToString()),
                                                            NetAmout = Convert.ToDecimal(dr["NetAmt"].ToString()),
+                                                           Rate = Convert.ToDecimal(dr["rate"].ToString()),
 
                                                        }).ToList();
                         }
