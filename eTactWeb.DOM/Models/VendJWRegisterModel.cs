@@ -84,7 +84,7 @@ namespace eTactWeb.DOM.Models
     public string Closed { get; set; }
     public string Types { get; set; }
     public string CompletlyReceive { get; set; }
-    public string BatchNo { get; set; }
+    //public string BatchNo { get; set; }
     public float IssQty { get; set; }
     public string RemarkDetail { get; set; }
     public int StoreId { get; set; }
@@ -111,11 +111,11 @@ namespace eTactWeb.DOM.Models
     public string IssueChallanNo { get; set; }
     public string IssuePartCode { get; set; }
     public string IssueItemName { get; set; }
-    public int AdjQty { get; set; }
-    public int PendQty { get; set; }
-    public string BOMInd { get; set; }
+    //public int AdjQty { get; set; }
+    //public int PendQty { get; set; }
+    //public string BOMInd { get; set; }
     public int TotRecQty { get; set; }
-    public string CLOSED { get; set; }
+    //public string CLOSED { get; set; }
 }
 
 

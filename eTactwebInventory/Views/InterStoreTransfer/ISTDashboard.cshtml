@@ -73,6 +73,9 @@
                                 <a class="btn btn-sm btn-outline-danger" asp-controller="InterStoreTransfer" asp-action="Dashboard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
+                                <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                    <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                </button>
                                 @*<div class="ms-auto d-flex align-items-center">
                                     <div class="col-auto">
                                         <label class="form-label me-2">Global search</label>
@@ -259,6 +262,137 @@
                 }
             });
         }
+        $('#sendToPDF').click(async function () {
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var slipNo = $('#SlipNo').val();
+            var partCode = $('#PartCode').val();
+            var itemName = $('#ItemName').val();
+            var batchNo = $('#Batchno').val();
+            var summaryDetailText = $('#SummaryDetail option:selected').text();
+            var summaryDetailValue = $('#SummaryDetail').val();
+
+
+
+            // Report Title
+            doc.setFontSize(16).text(summaryDetailText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            // Fetch data
+            /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
+            va r rows = await resp.json();*/
+
+            var resp = await fetch('/InterStoreTransfer/GetInterStoreDashboardListForPDF');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); // Log full error
+                console.error("Error body:", errorText);
+                return; // Exit early
+            }
+
+            var rows = await resp.json();
+
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (summaryDetailValue) {
+                case 'Summary':/*done*/
+                    headers = [
+                        "#Sr", "Slip No", "Slip Date", "IssuetoStoreWc", "From StoreName", "To StoreName", "To WCName",
+                        "Remark", "EntryId", "YearCode", "EntrDate", "Actual EntryBy", "Actual EntryDate",
+                        "Last UpdatedBy", "Last UpdatedDate", "Branch", "Machine Name"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.slipNo, item.slipDate?.split(" ")[0] ?? "", item.issueToStoreWC, item.fromStoreName, item.toStorename,
+                        item.toWCName, item.remark, item.entryId, item.yearCode, item.entryDate?.split(" ")[0] ?? "", item.actualEntryByName,
+                        item.actualEntryDate?.split(" ")[0] ?? "", item.lastUpdatedByName, item.lastUpdatetionDate?.split(" ")[0] ?? "", item.cc, item.machineName
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 15 },   // S.No.
+                        1: { cellWidth: 60 },   // Slip No
+                        2: { cellWidth: 40 },   // Slip Date
+                        3: { cellWidth: 50 },   // IssueToStoreWC
+                        4: { cellWidth: 50 },   // From Store Name
+                        5: { cellWidth: 50 },   // To Store Name
+                        6: { cellWidth: 45 },   // To WC Name
+                        7: { cellWidth: 60 },   // Remark
+                        8: { cellWidth: 25 },   // EntryId
+                        9: { cellWidth: 25 },   // YearCode
+                        10: { cellWidth: 40 },  // Entry Date
+                        11: { cellWidth: 60 },  // Actual Entry By
+                        12: { cellWidth: 40 },  // Actual Entry Date
+                        13: { cellWidth: 60 },  // Last Updated By
+                        14: { cellWidth: 40 },  // Last Updated Date
+                        15: { cellWidth: 30 },  // CC (Branch)
+                        16: { cellWidth: 40 }   // Machine Name
+                    };
+                    break;
+               
+
+                default:
+                    $.notify(summaryDetailValue + " report has no data to display!", "error");
+                    return;
+            }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15,
+                head: [headers],
+                body: body,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: columnStyles,
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`PO_${summaryDetailValue.replace(/\s+/g, '_')}.pdf`);
+
+        });
 
         var currentSearchColumn = null;
 
@@ -436,4 +570,7 @@
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
 }

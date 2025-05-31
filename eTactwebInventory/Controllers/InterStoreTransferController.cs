@@ -13,6 +13,7 @@ using FastReport.Web;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using System.Configuration;
+using System.Runtime.Caching;
 
 
 namespace eTactWeb.Controllers
@@ -24,9 +25,10 @@ namespace eTactWeb.Controllers
         public IInterStoreTransfer IInterStore { get; }
         public IWebHostEnvironment IWebHostEnvironment { get; }
         public ILogger<InterStoreTransferController> Logger { get; }
+        private readonly IMemoryCache _memoryCache;
         private EncryptDecrypt EncryptDecrypt { get; }
         private readonly IConfiguration iconfiguration;
-        public InterStoreTransferController(IInterStoreTransfer iInterStore, IConfiguration configuration, IDataLogic iDataLogic, ILogger<InterStoreTransferController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment)
+        public InterStoreTransferController(IInterStoreTransfer iInterStore, IConfiguration configuration, IDataLogic iDataLogic, ILogger<InterStoreTransferController> logger, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IMemoryCache memoryCache)
         {
             IInterStore = iInterStore;
             IDataLogic = iDataLogic;
@@ -34,6 +36,7 @@ namespace eTactWeb.Controllers
             EncryptDecrypt = encryptDecrypt;
             IWebHostEnvironment = iWebHostEnvironment;
             iconfiguration = configuration;
+            _memoryCache = memoryCache;
         }
 
         [HttpGet]
@@ -411,14 +414,14 @@ namespace eTactWeb.Controllers
 
         public async Task<IActionResult> GetSearchData(ISTDashboard model)
         {
-            model.FromDate = ParseFormattedDate(model.FromDate);    
+            model.FromDate = ParseFormattedDate(model.FromDate);
             model.ToDate = ParseFormattedDate(model.ToDate);
             var Result = await IInterStore.GetDashboardData(model);
-            if (Result.Result !=null)
+            if (Result.Result != null)
             {
                 DataSet DS = Result.Result;
 
-                var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode","EntryDate",
+                var DT = DS.Tables[0].DefaultView.ToTable(true, "EntryId", "Yearcode", "EntryDate",
                         "SlipNo", "SlipDate", "IssueToStoreWC", "Remark", "ActualEntryDate", "ItemCode", "Partcode", "ItemName", "LastUpdatetionDate", "FromStoreName",
                         "ToStorename", "TOWCName", "ActualEntryByName", "LastUpdatedByName", "TransferReason", "CC", "MAchineName", "TotalStockQty", "LotStockQty",
                         "Qty", "Unit", "AltQty", "Rate", "Batchno", "Uniquebatchno", "ReasonOfTransfer", "RecStoreStock", "AltUnit", "ToStoreId", "ToWCID", "ActualEntryBy", "LastUpdatedBy");
@@ -432,9 +435,19 @@ namespace eTactWeb.Controllers
                         .ToList();
                 }
             }
+            _memoryCache.Set("InterstoreList", model.ISTDashboardGrid);
             return PartialView("_ISTDashboardGrid", model);
         }
-
+       
+        [HttpGet]
+        public IActionResult GetInterStoreDashboardListForPDF()
+        {
+            if (_memoryCache.TryGetValue("InterstoreList", out List<InterStoreDashboard> interStoreTransList))
+            {
+                return Json(interStoreTransList);
+            }
+            return Json(new List<InterStoreDashboard>());
+        }
         private static DataTable GetDetailTable(IList<InterStoreTransferDetail> DetailList)
         {
             var DTSSGrid = new DataTable();

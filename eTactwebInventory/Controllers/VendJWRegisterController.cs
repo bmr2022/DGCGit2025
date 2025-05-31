@@ -219,5 +219,15 @@ namespace eTactWeb.Controllers
                 return PartialView("_VenderJWReceiveGrid", model);
             }
         }
+
+        [HttpGet]
+        public IActionResult GetVendJWRegisterForPDF()
+        {
+            if (_MemoryCache.TryGetValue("KeyVendJWList", out List<VendJWRegisterDetail> jwRegisterList))
+            {
+                return Json(jwRegisterList);
+            }
+            return Json(new List<VendJWRegisterDetail>());
+        }
     }
 }

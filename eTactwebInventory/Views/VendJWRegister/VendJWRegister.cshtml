@@ -130,6 +130,9 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="RCRegister" asp-action="RCRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
                                 </div>
                             </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
@@ -464,7 +467,280 @@
                 }
             });
         });
-        
+        $('#sendToPDF').click(async function () {
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            var fromDate = $('#FromDate').val();
+
+            var reportTypeText = $('#ReportMode option:selected').text();
+            var reportTypeValue = $('#ReportMode').val();
+
+            var challanTypeValue = $('#IssueChallanType').val();
+            var challanTypeText = $('#IssueChallanType option:selected').text();
+
+            var issueChallanNo = $('#IssueChallanNo').val();
+            var recChallanNo = $('#RecChallanNo').val();
+            var partyName = $('#PartyName').val();
+            var partCode = $('#PartCode').val();
+            var itemName = $('#ItemName').val();
+            var fromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}  To: ${ToDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            // Fetch data
+            /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
+            va r rows = await resp.json();*/
+
+            var resp = await fetch('/VendJWRegister/GetVendJWRegisterForPDF');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); 
+                console.error("Error body:", errorText);
+                return; 
+            }
+
+            var rows = await resp.json();
+
+            let headers = [];
+            let body = [];
+
+            switch (reportTypeValue) {
+                case 'JOBWORKReceiveSUMMARY':
+                    headers = [
+                        "Sr#", "Vendor Name", "Invoice No", "Invoice Date", "MRN No",
+                        "Gate No", "Gate Year Code", "GateDate", "QCCompleted", "Totalamt", "EneterdByEmpName",
+                        "UpdatedByEmpName", "NetAmt", "entryid", "YearCode", "ToStore"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.account_Name, item.jInvNo, item.invDate ? item.invDate.split(" ")[0] : "", item.mrnNo,
+                        item.gateno, item.gateyearcode, item.gateDate ? item.gateDate.split(" ")[0] : "", item.qcCompleted, item.totalamt, item.eneterdByEmpName,
+                        item.updatedByEmpName, item.netAmt, item.entryid, item.yearCode, item.toStore
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 80 },   // Account Name
+                        2: { cellWidth: 50 },   // Invoice No
+                        3: { cellWidth: 40 },   // Invoice Date
+                        4: { cellWidth: 40 },   // MRN No
+                        5: { cellWidth: 40 },   // Gate No
+                        6: { cellWidth: 40 },   // Gate Year Code
+                        7: { cellWidth: 40 },   // Gate Date
+                        8: { cellWidth: 30 },   // QC Completed
+                        9: { cellWidth: 40 },   // Total Amount
+                        10: { cellWidth: 60 },  // Entered By
+                        11: { cellWidth: 60 },  // Updated By
+                        12: { cellWidth: 40 },  // Net Amount
+                        13: { cellWidth: 30 },  // Entry ID
+                        14: { cellWidth: 30 },  // Year Code
+                        15: { cellWidth: 50 }   // To Store
+                    };
+                    break;
+                case 'JOBWORKReceiveItemWiseSUMM':
+                    headers = [
+                        "#Sr", "Vendor Name", "PartCode", "Itemname", "BillQty", "RecQty",
+                        "JWRate", "JW Rate Unit", "Unit", "Process Unit", "Amount"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.account_Name, item.partcode, item.itemname, item.billQty, item.recQty,
+                        item.jwRate, item.jwRateUnit, item.unit, item.processUnit, item.itemAmount
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // account_Name
+                        1: { cellWidth: 70 },  // partcode
+                        2: { cellWidth: 70 },  // itemname
+                        3: { cellWidth: 70 },  // billQty
+                        4: { cellWidth: 30 },  // recQty
+                        5: { cellWidth: 30 },  // jwRate
+                        6: { cellWidth: 50 },  // jwRateUnit
+                        7: { cellWidth: 30 },  // unit
+                        8: { cellWidth: 30 },  // processUnit
+                        9: { cellWidth: 50 }  // itemAmount
+                        10: { cellWidth: 30 }  // itemAmount
+                    };
+                    break;
+                case 'JOBWORKRecoSummary':
+                    headers = [
+                        "#Sr", "Issue Challan No", "Challan Date", "Vendor Name", "Issue Part Code",
+                        "Issue Item name", "Issue Qty", "Adjust Qty", "Pend Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.issueChallanNo, item.challanDate ? item.challanDate.split(" ")[0] : "", 
+                        item.account_Name, item.issuePartCode, item.issueItemName, item.issQty, 
+                        item.adjqTY, item.pendqty
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // issueChallanNo
+                        1: { cellWidth: 30 },  // challanDate
+                        2: { cellWidth: 40 },  // account_Name
+                        3: { cellWidth: 70 },  // issuePartCode
+                        4: { cellWidth: 70 },  // issueItemName
+                        5: { cellWidth: 70 },  // issQty
+                        6: { cellWidth: 30 },  // adjqTY
+                        7: { cellWidth: 30 },  // pendqty
+                        7: { cellWidth: 30 },  // pendqty
+                    };
+                    break;
+
+                case 'JOBWORKRecoDETAIL':
+                    headers = [
+                        "#Sr", "Issue Challan No", "Challan Date", "Vendor Name", "Issue Part Code",
+                        "Issue Item name", "Issue Qty", "Adjust Qty", "Pend Qty",
+                        "Rec Challan No", "Rec Challan Date", "Bom Ind", "Rec Item Name",
+                        "Rec Part Code", "Total Rec Qty", "Types", "Completely Receive", "Closed"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.issueChallanNo, item.challanDate ? item.challanDate.split(" ")[0] : "", item.account_Name, item.issuePartCode, item.issueItemName, item.issQty, item.adjqTY,
+                        item.pendqty, item.recChallanno, item.recChallanDate ? item.recChallanDate.split(" ")[0] : "", item.bOMInd, item.recItemName, item.recPartCode, item.totRecQty, item.types,
+                        item.completlyReceive, item.closed
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // Index (i + 1)
+                        1: { cellWidth: 30 },  // issueChallanNo
+                        2: { cellWidth: 40 },  // challanDate
+                        3: { cellWidth: 80 },  // account_Name
+                        4: { cellWidth: 50 },  // issuePartCode
+                        5: { cellWidth: 80 },  // issueItemName
+                        6: { cellWidth: 30 },  // issQty
+                        7: { cellWidth: 30 },  // adjqTY
+                        8: { cellWidth: 30 },  // pendqty
+                        9: { cellWidth: 40 },  // recChallanno
+                        10: { cellWidth: 35 }, // recChallanDate
+                        11: { cellWidth: 25 }, // bOMInd
+                        12: { cellWidth: 70 }, // recItemName
+                        13: { cellWidth: 50 }, // recPartCode
+                        14: { cellWidth: 40 }, // totRecQty
+                        15: { cellWidth: 40 }, // types
+                        16: { cellWidth: 50 }, // completlyReceive
+                        17: { cellWidth: 30 }, // closed
+                    };
+                break;
+                case 'JOBWORKISSUEITEMDETAIL':
+                    headers = [
+                        "#Sr", "ItemName", "PartCode", "IssQty", "Unit", "Amount",
+                        "FORPROCESS", "STORENAME", "PurchasePrice", "PendQty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.itemname, item.partcode, item.issQty, item.unit,
+                        item.amount, item.forprocess, item.storename,
+                        item.purchasePrice, item.pendqty
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // Index (i + 1)
+                        1: { cellWidth: 70 },  // itemname
+                        2: { cellWidth: 60 },  // partcode
+                        3: { cellWidth: 30 },  // issQty
+                        4: { cellWidth: 30 },  // unit
+                        5: { cellWidth: 40 },  // amount
+                        6: { cellWidth: 70 },  // forprocess
+                        7: { cellWidth: 70 },  // storename
+                        8: { cellWidth: 40 },  // purchasePrice
+                        9: { cellWidth: 30 }   // pendqty
+                    };
+                break;
+                case 'JOBWORKISSUEPatyITEMDETAIL':
+                    headers = [
+                        "#Sr", "VendorName", "ItemName", "PartCode", "IssQty", "Unit", "Amount",
+                        "FORPROCESS", "STORENAME", "PurchasePrice", "PendQty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.account_Name, item.itemname, item.partcode, item.issQty, item.unit, item.amount,
+                        item.forprocess, item.storename, item.purchasePrice, item.pendqty
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // Index (i + 1)
+                        1: { cellWidth: 90 },  // Account_Name
+                        2: { cellWidth: 90 },  // Itemname
+                        3: { cellWidth: 50 },  // Partcode
+                        4: { cellWidth: 30 },  // IssQty
+                        5: { cellWidth: 30 },  // Unit
+                        6: { cellWidth: 40 },  // Amount
+                        7: { cellWidth: 60 },  // FORPROCESS
+                        8: { cellWidth: 70 },  // STORENAME
+                        9: { cellWidth: 40 },  // PurchasePrice
+                        10: { cellWidth: 40 }  // PendQty
+                    };
+                break;
+
+                default:
+                    $.notify(reportTypeValue + " report has no data to display!", "error");
+                    return;
+            }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15,
+                head: [headers],
+                body: body,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: columnStyles,
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`PO_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
+
+        });
         function DeleteRow(i) {
        
             var indexToRemove = i - 1;
@@ -835,5 +1111,7 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 }
