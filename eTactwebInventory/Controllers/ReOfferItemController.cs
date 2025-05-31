@@ -115,6 +115,71 @@ namespace eTactwebInventory.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FILLMIRYearCode(string MIRNO)
+        {
+            var JSON = await _IReofferItem.FILLMIRYearCode(MIRNO);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> FILLMIRData(string MIRNO, int MIRYearCode)
+        {
+            var JSON = await _IReofferItem.FILLMIRData(MIRNO,  MIRYearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> BINDSTORE()
+        {
+            var JSON = await _IReofferItem.BINDSTORE();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetItemDeatil(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir)
+        {
+            var JSON = await _IReofferItem.GetItemDeatil( MIRNO,  MIRYearCode,  accountcode,  ReofferMir);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetItemQty(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir, int itemcode)
+        {
+            var JSON = await _IReofferItem.GetItemQty(MIRNO, MIRYearCode, accountcode, ReofferMir, itemcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> FillOkRecStore(int itemcode, string ShowAllStore)
+        {
+            var JSON = await _IReofferItem.FillOkRecStore( itemcode,  ShowAllStore);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> ALLOWSHOWALLSTORE()
+        {
+            var JSON = await _IReofferItem.ALLOWSHOWALLSTORE();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> RejSTORE()
+        {
+            var JSON = await _IReofferItem.RejSTORE();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> RewSTORE()
+        {
+            var JSON = await _IReofferItem.RewSTORE();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> HoldSTORE()
+        {
+            var JSON = await _IReofferItem.HoldSTORE();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
     }
 }

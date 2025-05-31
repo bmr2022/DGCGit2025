@@ -32,6 +32,50 @@ namespace eTactWeb.Data.BLL
         {
             return await _IReOfferItemDAL.FILLMIRNO();
         }
+        public async Task<ResponseResult> FILLMIRYearCode(string MIRNO)
+        {
+            return await _IReOfferItemDAL.FILLMIRYearCode(MIRNO);
+        }
+        public async Task<ResponseResult> FILLMIRData(string MIRNO, int MIRYearCode)
+        {
+            return await _IReOfferItemDAL.FILLMIRData(MIRNO,  MIRYearCode);
+        }
+        public async Task<ResponseResult> BINDSTORE()
+        {
+            return await _IReOfferItemDAL.BINDSTORE();
+        }
+        public async Task<ResponseResult> GetItemDeatil(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir)
+        {
+            return await _IReOfferItemDAL.GetItemDeatil( MIRNO,  MIRYearCode,  accountcode,  ReofferMir);
+        }
+
+        public async Task<ResponseResult> GetItemQty(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir, int itemcode)
+        {
+            return await _IReOfferItemDAL.GetItemQty(MIRNO, MIRYearCode, accountcode, ReofferMir,itemcode);
+        }
+        public async Task<ResponseResult> FillOkRecStore(int itemcode, string ShowAllStore)
+        {
+            return await _IReOfferItemDAL.FillOkRecStore( itemcode,  ShowAllStore);
+        }
+        public async Task<ResponseResult> ALLOWSHOWALLSTORE()
+        {
+            return await _IReOfferItemDAL.ALLOWSHOWALLSTORE();
+        }
+        
+        public async Task<ResponseResult> RejSTORE()
+        {
+            return await _IReOfferItemDAL.RejSTORE();
+        }
+
+        public async Task<ResponseResult> RewSTORE()
+        {
+            return await _IReOfferItemDAL.RewSTORE();
+        }
+        public async Task<ResponseResult> HoldSTORE()
+        {
+            return await _IReOfferItemDAL.HoldSTORE();
+        }
+
     }
 
 }

@@ -50,6 +50,7 @@ namespace eTactWeb.DOM.Models
             public string? HoldRejrewStatus { get; set; }
 
             public int? AccountCode { get; set; }
+            public string? AccountName { get; set; }
 
             public int? QCStore { get; set; }
 
@@ -100,30 +101,26 @@ namespace eTactWeb.DOM.Models
 
         public int? SeqNo { get; set; }
 
-      
         public string? PONo { get; set; }
 
         public int? POYearCode { get; set; }
 
-       
         public string? SchNo { get; set; }
 
         public int? SchYearCode { get; set; }
 
-        
         public string? MRNno { get; set; }
 
         public int? mrnYearCode { get; set; }
 
-        
         public string? MRNJWCUSTJW { get; set; }
 
         public int? Itemcode { get; set; }
+        public string? ItemName { get; set; }
+        public string? PartCode { get; set; }
 
-        
         public string? Unit { get; set; }
 
-    
         public string? AltUnit { get; set; }
 
         public decimal? BillQty { get; set; }

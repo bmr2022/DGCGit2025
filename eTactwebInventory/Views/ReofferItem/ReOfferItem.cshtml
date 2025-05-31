@@ -118,6 +118,8 @@
                                     <input type="hidden" value="@Model.FinToDate" asp-for="FinToDate" />
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
                                     <input type="hidden" asp-for="SeqNo" id="hiddenSeqNo" />
+                                    <input type="hidden" id="AddPassWord" />
+                                    <input type="hidden" id="ShowAllStore" />
                                     @* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"> *@
                                     @* class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-xs-12" *@
                                     <label asp-for="ReofferEntryId" class="form-label" style="color: blue;">Entry ID</label>
@@ -164,34 +166,51 @@
                                     
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MirEntryid" class="form-label" style="color: blue;">MirEntryid</label>
                                     <input asp-for="MirEntryid" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
 
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MIRDate" class="form-label" style="color: blue;">MIRDate</label>
                                     <input asp-for="MIRDate" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MRNNO" class="form-label" style="color: blue;">MRNNO</label>
                                     <input asp-for="MRNNO" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
                                     <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="BillNo" class="form-label" style="color: blue;">BillNo</label>
                                     <input asp-for="BillNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="BillDate" class="form-label" style="color: blue;">BillDate</label>
                                     <input asp-for="BillDate" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AccountCode" class="form-label" style="color: blue;">AccountCode</label>
-                                    <input asp-for="AccountCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                    <label asp-for="AccountCode" class="form-label" style="color: blue;">AccountName</label>
+                                    <input asp-for="AccountName" class="form-control" readonly style="background-color: lightblue !important;" />
+
+                                    <input asp-for="AccountCode" type="hidden" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="HoldRejrewStatus" class="form-label" style="color: blue;">HoldRejrewStatus</label>
+                                    <input asp-for="HoldRejrewStatus" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                    <label asp-for="QCStore" class="control-label" style="color: red;"> QCStore </label>
+                                    <select class="form-select" asp-for="QCStore">
+                                        <option value="">-Select-</option>
+                                    </select>
+
+                                    
                                 </div>
 
                             </div>
@@ -215,6 +234,151 @@
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                           
+                                                        <div class="card" id="firstGrid">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped" id="TableGrid">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
+                                            <tr>
+                                               
+                                                <th>PartCode</th>
+                                                <th>ItemName</th>
+                                                <th>PONo</th>
+                                                <th>POYearCode</th>
+                                                <th>PODate</th>
+                                                <th>SchNo</th>
+                                                <th>SchYearCode</th>
+                                                <th>schdate</th>
+                                                <th>Unit</th>
+                                                <th>AltUnit</th>
+                                                <th>BillQty</th>
+                                                <th>RecQty</th>
+                                                <th>AltRecQty</th>
+                                                <th>PrevAcceptedQty</th>
+                                                <th>AcceptedQty</th>
+                                                <th>AltAcceptedQty</th>
+                                                <th>OkRecStore &nbsp;<input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
+                                                            
+                                                                <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige">
+                                                                    
+                                                                     Password
+                                                                </button>
+                                                            
+                                                        </th>
+                                                <th>DeviationQty</th>
+                                                <th>ResponsibleEmpForDeviation</th>
+                                                <th>PreviousRejectedQty</th>
+                                                <th>RejectedQty</th>
+                                                <th>AltRejectedQty</th>
+                                                <th>RejRecStore</th>
+                                                <th>Remarks</th>
+                                                <th>Defaulttype</th>
+                                                <th>ApprovedByEmp</th>
+                                                <th>PreviousHoldQty</th>
+                                                <th>HoldQty</th>
+                                                <th>HoldStoreId</th>
+                                                <th>ProcessId</th>
+                                                <th>PreviousReworkqty</th>
+                                                <th>Reworkqty</th>
+                                                <th>RewokStoreId</th>
+                                                <th>Color</th>
+                                                <th>ItemSize</th>
+                                                <th>ResponsibleFactor</th>
+                                                <th>SupplierBatchno</th>
+                                                <th>shelfLife</th>
+                                                <th>BatchNo</th>
+                                                <th>uniqueBatchno</th>
+                                                <th>AllowDebitNote</th>
+                                                <th>Rate</th>
+                                                <th>rateinother</th>
+                                                <th>FilePath</th>
+                                               
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody id="GridControls">
+                                            <tr>
+                                                <td>
+                                                    <select class="form-select" asp-for="PartCode" style="width:160px;">
+                                                        <option value="0">-Select-</option>
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select class="form-select" asp-for="ItemName" style="width:250px;">
+                                                        <option value="0">-Select-</option>
+                                                    </select>
+                                                </td>
+                                               
+
+                                                <td><input asp-for="PONo" class="form-control" style="width:80px;" readonly /></td>
+                                                <td><input asp-for="POYearCode" style="width:70px !important" class="form-control"/></td>
+                                                <td><input asp-for="PODate" style="width:70px !important" readonly class="form-control" /></td>
+                                                <td><input asp-for="SchNo" style="width:70px !important" readonly /></td>
+                                                <td><input asp-for="SchYearCode" style="width:100px !important"  /></td>
+                                                <td><input asp-for="schdate" style="width:100px !important"  /></td>
+                                                <td><input asp-for="Unit" style="width:100px !important"  /></td>
+                                                <td><input asp-for="AltUnit" style="width:100px !important"  /></td>
+                                                <td><input asp-for="BillQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="RecQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="AltRecQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="PrevAcceptedQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="AcceptedQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="AltAcceptedQty" style="width:100px !important"  /></td>
+                                                
+                                                <td>
+                                                    <select class="form-select" asp-for="OkRecStore" style="width:250px;">
+                                                        <option value="0">-Select-</option>
+                                                    </select>
+                                                </td>
+                                                <td><input asp-for="DeviationQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="ResponsibleEmpForDeviation" style="width:100px !important"  /></td>
+                                                <td><input asp-for="PreviousRejectedQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="RejectedQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="AltRejectedQty" style="width:100px !important"  /></td>
+                                                <td>
+                                                    <select class="form-select" asp-for="RejRecStore" style="width:250px;">
+                                                        <option value="0">-Select-</option>
+                                                    </select>
+                                                </td>
+                                                <td><input asp-for="Remarks" style="width:100px !important"  /></td>
+                                                <td><input asp-for="Defaulttype" style="width:100px !important"  /></td>
+                                                <td><input asp-for="ApprovedByEmp" style="width:100px !important"  /></td>
+                                                <td><input asp-for="PreviousHoldQty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="HoldQty" style="width:100px !important"  /></td>
+                                                <td>
+                                                    <select class="form-select" asp-for="HoldStoreId" style="width:250px;">
+                                                        <option value="0">-Select-</option>
+                                                    </select>
+                                                </td>
+                                                <td><input asp-for="ProcessId" style="width:100px !important"  /></td>
+                                                <td><input asp-for="PreviousReworkqty" style="width:100px !important"  /></td>
+                                                <td><input asp-for="Reworkqty" style="width:100px !important"  /></td>
+                                                
+                                                <td>
+                                                    <select class="form-select" asp-for="RewokStoreId" style="width:250px;">
+                                                        <option value="0">-Select-</option>
+                                                    </select>
+                                                </td>
+                                                <td><input asp-for="Color" style="width:100px !important"  /></td>
+                                                <td><input asp-for="ItemSize" style="width:100px !important"  /></td>
+                                                <td><input asp-for="ResponsibleFactor" style="width:100px !important"  /></td>
+                                                <td><input asp-for="SupplierBatchno" style="width:100px !important"  /></td>
+                                                <td><input asp-for="shelfLife" style="width:100px !important"  /></td>
+                                                <td><input asp-for="BatchNo" style="width:100px !important"  /></td>
+                                                <td><input asp-for="uniqueBatchno" style="width:100px !important"  /></td>
+                                                <td><input asp-for="AllowDebitNote" style="width:100px !important"  /></td>
+                                                <td><input asp-for="Rate" style="width:100px !important"  /></td>
+                                                <td><input asp-for="rateinother" style="width:100px !important"  /></td>
+                                                <td><input asp-for="FilePath" style="width:100px !important"  /></td>
+                                                
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+
+
 
                             <div class="progress my-3 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -224,8 +388,74 @@
                                 <div class="col-md-2">
                                     <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
                                 </div>
+                                <div class="col-md-2" id="firstButton">
+                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1" >
+                                        <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                </div>
                                 
                             </div>
+                                                        <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <table class="table table-hover table-bordered table-striped IssueNRGPTb">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Action</th>
+                                                <th>SR#</th>
+                                                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
+<th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
+<th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
+<th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POYearCode</th>
+<th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
+<th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNo</th>
+<th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYearCode</th>
+<th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>schdate</th>
+<th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+<th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltUnit</th>
+<th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillQty</th>
+<th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecQty</th>
+<th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltRecQty</th>
+<th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevAcceptedQty</th>
+<th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AcceptedQty</th>
+<th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltAcceptedQty</th>
+<th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OkRecStore</th>
+<th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeviationQty</th>
+<th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ResponsibleEmpForDeviation</th>
+<th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousRejectedQty</th>
+<th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejectedQty</th>
+<th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltRejectedQty</th>
+<th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejRecStore</th>
+<th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+<th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Defaulttype</th>
+<th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedByEmp</th>
+<th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousHoldQty</th>
+<th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldQty</th>
+<th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldStoreId</th>
+<th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProcessId</th>
+<th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousReworkqty</th>
+<th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Reworkqty</th>
+<th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RewokStoreId</th>
+<th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
+<th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemSize</th>
+<th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ResponsibleFactor</th>
+<th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SupplierBatchno</th>
+<th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>shelfLife</th>
+<th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+<th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>uniqueBatchno</th>
+<th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AllowDebitNote</th>
+<th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+<th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>rateinother</th>
+<th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FilePath</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divISTGrid">
+                                           
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
 
                            
                         </div>
@@ -287,6 +517,43 @@
 
 
 </div>
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Enter Password:</h6>
+                                            <input type="password" class="form-control" id="BackDatePassword" placeholder="Enter Password" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-success" onclick="PasswordCheck();">Done</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @section Scripts
 {
@@ -299,8 +566,25 @@
         $(document).ready(function () {
              $('#QcType').select2();
              $('#MIRNo').select2();
+             $('#MIRYearCode').select2();
+             $('#QCStore').select2();
+             $('#ItemName').select2();
+             $('#PartCode').select2();
+             $('#OkRecStore').select2();
+             $('#RejRecStore').select2();
+             $('#RewokStoreId').select2();
+             $('#HoldStoreId').select2();
+
+             
             FILLQCTYPE();
             FILLMIRNO();
+            FILLMIRYearCode();
+            BINDSTORE();
+            AddPassWord();
+            RejSTORE();
+            RewSTORE();
+            HoldSTORE();
+
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
                 
@@ -319,6 +603,106 @@
             }
 
         });
+        $('#MIRNo').change(function () { 
+            FILLMIRYearCode();
+            FILLMIRData();
+        });
+        $('#MIRYearCode').change(function () { 
+            FILLMIRData();
+            GetItemName();
+            GetPartCode();
+        });
+         $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            console.log(cntId);
+            if (cntId == 'ItemName') {
+                ItemNameChange(cntId);
+               
+            }
+            else if (cntId == 'PartCode') {
+                PartCodeChange(cntId);
+               
+            }
+            $('#Itemcode').val($('#ItemName').val());
+             GetItemQty();
+             FillOkRecStore();
+            
+        });
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+            
+                /* GetPartCode(ID); */
+           
+           
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+                /* GetPartCode(ID); */
+            });
+           
+           
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+         $('.BtnPassword').click(function () {
+            // if(isAllowTaxPass == "Y"){
+            $('#PasswordAllowPopup').modal("show");
+            // }
+        });
+        function PasswordCheck() {
+            var AddPassWord = $('#AddPassWord').val();
+            if ($('#BackDatePassword').val() != AddPassWord) {
+                $.notify('please enter correct password...!', "error");
+            } else {
+                $('#ShowAllStore').val("Y");
+                FillOkRecStore();
+
+
+                $('#PasswordAllowPopup').modal('hide');
+            }
+            $('#BackDatePassword').val("");
+        }
+        function AddPassWord() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ALLOWSHOWALLSTORE")",
+               
+                async: false,
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                           
+                            $.each(obj.Result, function (index, val) {
+
+                                $('#AddPassWord').val(val.passforshowallstoreinqc);
+                                console.log($('#AddPassWord').val());
+                               
+                                
+                            });
+                        }
+                    }
+                }
+            });
+        }
         function GetServerDate() {
             $.ajax({
                 type: "GET",
@@ -403,7 +787,7 @@
                             $('#MIRNo').append('<option value="" disabled selected>-Select-</option>');
 
                             $.each(obj.Result, function (index, val) {
-                                $('#QcType').append('<option value="' + val.MIRNO + '">' + val.MIRNO + '</option>');
+                                $('#MIRNo').append('<option value="' + val.MIRNO + '">' + val.MIRNO + '</option>');
                             });
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var MIRNo = "@Model.MIRNo";
@@ -414,8 +798,350 @@
                 }
             });
         }
+         function FILLMIRYearCode() {
+             var MIRNO = $('#MIRNo').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FILLMIRYearCode")",
+                dataType: "json",
+                data: { MIRNO: MIRNO },
+                async: false,
+                
+                success: function (result, status, error) {
 
-       
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MIRYearCode').empty();
+                            $('#MIRYearCode').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#MIRYearCode').append('<option value="' + val.MIRYearCode + '">' + val.MIRYearCode + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var MIRYearCode = "@Model.MIRYearCode";
+                                $('#MIRYearCode').val(MIRYearCode).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function BINDSTORE() {
+             
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BINDSTORE")",
+                dataType: "json",
+               
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#QCStore').empty();
+                            $('#QCStore').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#QCStore').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var QCStore = "@Model.QCStore";
+                                $('#QCStore').val(QCStore).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetItemName() {
+             var MIRNO=$('#MIRNo').val();
+             var MIRYearCode=$('#MIRYearCode').val();
+            var accountcode = $('#AccountCode').val();
+            var ReofferMir = $('#QcType').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemDeatil")",
+                dataType: "json",
+               data: { MIRNO: MIRNO, MIRYearCode: MIRYearCode, accountcode: accountcode, ReofferMir: ReofferMir },
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ItemName').empty();
+                            $('#ItemName').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemName').append('<option value="' + val.itemCode + '">' + val.Item_Name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var ItemName = "@Model.ItemName";
+                                $('#ItemName').val(ItemName).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+         function GetPartCode() {
+             var MIRNO=$('#MIRNo').val();
+             var MIRYearCode=$('#MIRYearCode').val();
+            var accountcode = $('#AccountCode').val();
+            var ReofferMir = $('#QcType').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemDeatil")",
+                dataType: "json",
+               data: { MIRNO: MIRNO, MIRYearCode: MIRYearCode, accountcode: accountcode, ReofferMir: ReofferMir },
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#PartCode').append('<option value="' + val.itemCode + '">' + val.PartCode + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var PartCode = "@Model.PartCode";
+                                $('#PartCode').val(PartCode).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillOkRecStore() {
+             var itemcode=$('#PartCode').val();
+             var ShowAllStore=$('#ShowAllStore').val();
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillOkRecStore")",
+                dataType: "json",
+               data: { itemcode: itemcode, ShowAllStore: ShowAllStore },
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#OkRecStore').empty();
+                            $('#OkRecStore').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#OkRecStore').append('<option value="' + val.Store + '">' + val.Store_Name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var OkRecStore = "@Model.OkRecStore";
+                                $('#OkRecStore').val(OkRecStore).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function RejSTORE() {
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("RejSTORE")",
+                dataType: "json",
+               
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RejRecStore').empty();
+                            $('#RejRecStore').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#RejRecStore').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var RejRecStore = "@Model.RejRecStore";
+                                $('#RejRecStore').val(RejRecStore).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function RewSTORE() {
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("RewSTORE")",
+                dataType: "json",
+               
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RewokStoreId').empty();
+                            $('#RewokStoreId').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#RewokStoreId').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var RewokStoreId = "@Model.RewokStoreId";
+                                $('#RewokStoreId').val(RewokStoreId).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function HoldSTORE() {
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("HoldSTORE")",
+                dataType: "json",
+               
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#HoldStoreId').empty();
+                            $('#HoldStoreId').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#HoldStoreId').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var HoldStoreId = "@Model.HoldStoreId";
+                                $('#HoldStoreId').val(HoldStoreId).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function FILLMIRData() {
+             var MIRNO = $('#MIRNo').val();
+             var MIRYearCode = $('#MIRYearCode').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FILLMIRData")",
+                dataType: "json",
+                data : { MIRNO: MIRNO, MIRYearCode: MIRYearCode },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        console.log("result"+result);
+                        
+                        $('#MirEntryid').val("");
+                        $('#MirEntryid').val(obj.Result[0].MIREntryId);
+                        $('#AccountName').val("");
+                        $('#AccountName').val(obj.Result[0].Account_Name);
+                        $('#AccountCode').val("");
+                        $('#AccountCode').val(obj.Result[0].Account_Code);
+                        
+                       
+                         var MIRDate = new Date(obj.Result[0].MIRDate);
+                         var formattedDate1 = ("0" + MIRDate.getDate()).slice(-2) + "/" + ("0" + (MIRDate.getMonth() + 1)).slice(-2) + "/" + MIRDate.getFullYear();
+
+                        $('#MIRDate').val("");
+                        $('#MIRDate').val(formattedDate1);
+                        $('#MRNNO').val("");
+                        $('#MRNNO').val(obj.Result[0].MRNNO);
+                       
+                        var MRNDate = new Date(obj.Result[0].MRNDate);
+                         var formattedDate2 = ("0" + MRNDate.getDate()).slice(-2) + "/" + ("0" + (MRNDate.getMonth() + 1)).slice(-2) + "/" + MRNDate.getFullYear();
+
+                        $('#MRNDate').val("");
+                            $('#MRNDate').val(formattedDate2);
+                            $('#BillNo').val("");
+                            $('#BillNo').val(obj.Result[0].INVNo);
+
+                            var BillDate = new Date(obj.Result[0].Invdate);
+                         var formattedDate3 = ("0" + BillDate.getDate()).slice(-2) + "/" + ("0" + (BillDate.getMonth() + 1)).slice(-2) + "/" + BillDate.getFullYear();
+
+
+                           
+                            $('#BillDate').val("");
+                            $('#BillDate').val(formattedDate3);
+                    }
+                }
+            });
+        }
+
+        function GetItemQty() {
+             var MIRNO=$('#MIRNo').val();
+             var MIRYearCode=$('#MIRYearCode').val();
+            var accountcode = $('#AccountCode').val();
+            var ReofferMir = $('#QcType').val();
+            var itemcode = $('#PartCode').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemQty")",
+                dataType: "json",
+                data : { MIRNO: MIRNO, MIRYearCode: MIRYearCode, accountcode: accountcode, ReofferMir: ReofferMir,itemcode:itemcode },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        console.log("result"+result);
+                        
+                        $('#BillQty').val("");
+                        $('#BillQty').val(obj.Result[0].BillQty);
+                        $('#AcceptedQty').val("");
+                        $('#AcceptedQty').val(obj.Result[0].AcceptedQty);
+                        $('#AltAcceptedQty').val("");
+                        $('#AltAcceptedQty').val(obj.Result[0].AcceptedQty);
+                        $('#HoldQty').val("");
+                        $('#HoldQty').val(obj.Result[0].HoldQty);
+                         $('#Reworkqty').val("");
+                        $('#Reworkqty').val(obj.Result[0].Reworkqty);
+                         $('#RecQty').val("");
+                        $('#RecQty').val(obj.Result[0].RecQty);
+                        $('#AltRecQty').val("");
+                        $('#AltRecQty').val(obj.Result[0].RecQty);
+                        $('#BatchNo').val("");
+                        $('#BatchNo').val(obj.Result[0].BatchNo);
+                         $('#uniqueBatchno').val("");
+                        $('#uniqueBatchno').val(obj.Result[0].uniqueBatchno);
+                         $('#Unit').val("");
+                        $('#Unit').val(obj.Result[0].Unit);
+                        $('#AltUnit').val("");
+                        $('#AltUnit').val(obj.Result[0].Unit);
+                        $('#RejectedQty').val("");
+                        $('#RejectedQty').val(obj.Result[0].RejectedQty);
+                        $('#AltRejectedQty').val("");
+                        $('#AltRejectedQty').val(obj.Result[0].RejectedQty);
+                        
+                       
+                         
+                    }
+                }
+            });
+        }
+
 
        
 
@@ -437,6 +1163,8 @@
             }
 
         });
+                
+
 
 
 
