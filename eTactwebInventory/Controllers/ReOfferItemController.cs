@@ -180,6 +180,66 @@ namespace eTactwebInventory.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> BINDEMP()
+        {
+            var JSON = await _IReofferItem.BINDEMP();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult AddReOfferDetail(ReofferItemDetail model)
+        {
+            try
+            {
+                string modelJson = HttpContext.Session.GetString("KeyReOfferItemGrid");
+                List<ReofferItemDetail> ISTDetail = new List<ReofferItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<ReofferItemDetail>>(modelJson);
+                }
+
+                var MainModel = new ReOfferItemModel();
+                var ISTGrid = new List<ReofferItemDetail>();
+                var ISTList = new List<ReofferItemDetail>();
+
+                if (model != null)
+                {
+                    if (ISTDetail == null)
+                    {
+                        // model.SeqNo = 1;
+                        ISTGrid.Add(model);
+                    }
+                    else
+                    {
+                        if (ISTDetail.Any(x => x.Itemcode == model.Itemcode))
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+
+                            ISTGrid = ISTDetail.Where(x => x != null).ToList();
+                            ISTList.AddRange(ISTGrid);
+                            ISTGrid.Add(model);
+                        }
+                    }
+
+                    ISTGrid = ISTGrid.OrderBy(item => item.SeqNo).ToList();
+                    MainModel.ReofferItemDetail = ISTGrid;
+
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ReofferItemDetail);
+                    HttpContext.Session.SetString("KeyReOfferItemGrid", serializedGrid);
+                }
+                else
+                {
+                    ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                }
+                return PartialView("_ReOfferItemGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
 
     }
 }

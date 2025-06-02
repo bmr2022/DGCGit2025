@@ -23,5 +23,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> RejSTORE();
         Task<ResponseResult> RewSTORE();
         Task<ResponseResult> HoldSTORE();
+        Task<ResponseResult> BINDEMP();
     }
 }

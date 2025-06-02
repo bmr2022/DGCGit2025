@@ -341,7 +341,12 @@
                                                 </td>
                                                 <td><input asp-for="Remarks" style="width:100px !important"  /></td>
                                                 <td><input asp-for="Defaulttype" style="width:100px !important"  /></td>
-                                                <td><input asp-for="ApprovedByEmp" style="width:100px !important"  /></td>
+                                                
+                                                 <td>
+                                                    <select class="form-select" asp-for="ApprovedByEmp" style="width:250px;">
+                                                        <option value="0">-Select-</option>
+                                                    </select>
+                                                </td>
                                                 <td><input asp-for="PreviousHoldQty" style="width:100px !important"  /></td>
                                                 <td><input asp-for="HoldQty" style="width:100px !important"  /></td>
                                                 <td>
@@ -450,7 +455,7 @@
                                             </tr>
                                         </thead>
                                         <tbody id="divISTGrid">
-                                           
+                                            <partial name="_ReOfferItemGrid" />
                                         </tbody>
                                     </table>
                                 </div>
@@ -574,6 +579,7 @@
              $('#RejRecStore').select2();
              $('#RewokStoreId').select2();
              $('#HoldStoreId').select2();
+             $('#ApprovedByEmp').select2();
 
              
             FILLQCTYPE();
@@ -584,6 +590,7 @@
             RejSTORE();
             RewSTORE();
             HoldSTORE();
+            BINDEMP();
 
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
@@ -1042,6 +1049,36 @@
             });
         }
 
+        function BINDEMP() {
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("BINDEMP")",
+                dataType: "json",
+               
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ApprovedByEmp').empty();
+                            $('#ApprovedByEmp').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#ApprovedByEmp').append('<option value="' + val.Emp_Id + '">' + val.EmpNameCode + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var ApprovedByEmp = "@Model.ApprovedByEmp";
+                                $('#ApprovedByEmp').val(ApprovedByEmp).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
         function FILLMIRData() {
              var MIRNO = $('#MIRNo').val();
              var MIRYearCode = $('#MIRYearCode').val();
@@ -1142,6 +1179,95 @@
             });
         }
 
+        $('.GridButton').click(function (e) {
+
+    e.preventDefault();
+    EditEachItem = false;
+
+    var rowCount = $('#divISTGrid  tr').length; // assuming you append one more row
+    var Seqno = rowCount;
+    
+    /* if (!ValidateGrid()) return; */
+   
+    var SchData = {
+       
+            "Itemcode": $('#PartCode').val(),
+    "PartCode":$('#PartCode :selected').text(),
+    "ItemName": $('#ItemName :selected').text(),
+    "PONo": $('#PONo').val(),
+    "POYearCode": $('#POYearCode').val(),
+    "PODate": $('#PODate').val(),
+    "SchNo": $('#SchNo').val(),
+    "SchYearCode": $('#SchYearCode').val(),
+    "schdate": $('#schdate').val(),
+    "Unit": $('#Unit').val(),
+    "AltUnit": $('#AltUnit').val(),
+    "BillQty": parseFloat($('#BillQty').val()),
+    "RecQty": parseFloat($('#RecQty').val()),
+    "AltRecQty": parseFloat($('#AltRecQty').val()),
+    "PrevAcceptedQty": parseFloat($('#PrevAcceptedQty').val()),
+    "AcceptedQty": parseFloat($('#AcceptedQty').val()),
+    "AltAcceptedQty": parseFloat($('#AltAcceptedQty').val()),
+    "OkRecStore": $('#OkRecStore').val(),
+    "OkRecStoreName": $('#OkRecStore :selected').text(),
+    "DeviationQty": parseFloat($('#DeviationQty').val()),
+    "ResponsibleEmpForDeviation": $('#ResponsibleEmpForDeviation :selected').text(),
+    "PreviousRejectedQty": parseFloat($('#PreviousRejectedQty').val()),
+    "RejectedQty": parseFloat($('#RejectedQty').val()),
+    "AltRejectedQty": parseFloat($('#AltRejectedQty').val()),
+    "RejRecStore": $('#RejRecStore').val(),
+    "RejRecStoreName": $('#RejRecStore :selected').text(),
+    "Remarks": $('#Remarks').val(),
+    "Defaulttype": $('#Defaulttype :selected').text(),
+    "ApprovedByEmp": $('#ApprovedByEmp').val(),
+    "ApprovedByEmpName": $('#ApprovedByEmp :selected').text(),
+    "PreviousHoldQty": parseFloat($('#PreviousHoldQty').val()),
+    "HoldQty": parseFloat($('#HoldQty').val()),
+    "HoldStoreId": $('#HoldStoreId').val(),
+    "HoldStoreName":  $('#HoldStoreId :selected').text(),
+    "ProcessId": $('#ProcessId').val(),
+    "PreviousReworkqty": parseFloat($('#PreviousReworkqty').val()),
+    "Reworkqty": parseFloat($('#Reworkqty').val()),
+    "RewokStoreId": $('#RewokStoreId').val(),
+    "RewokStoreName":  $('#RewokStoreId :selected').text(),
+    "Color": $('#Color :selected').text(),
+    "ItemSize": $('#ItemSize :selected').text(),
+    "ResponsibleFactor": $('#ResponsibleFactor :selected').text(),
+    "SupplierBatchno": $('#SupplierBatchno :selected').text(),
+    "shelfLife": $('#shelfLife').val(),
+    "BatchNo": $('#BatchNo :selected').text(),
+    "uniqueBatchno": $('#uniqueBatchno :selected').text(),
+    "AllowDebitNote": $('#AllowDebitNote').is(':checked'),
+    "Rate": parseFloat($('#Rate').val()),
+    "rateinother": parseFloat($('#rateinother').val()),
+    "FilePath": $('#FilePath').val(),
+
+
+
+
+
+        "SeqNo": Seqno
+    }
+    $.ajax({
+        type: "POST",
+        url: '@Url.Action("AddReOfferDetail")',
+        data: SchData,
+        statusCode: {
+            207: function () {
+                $.notify('Duplicate Item...!', "info");
+            }
+        },
+        success: function (result, status, xhr) {
+            if (xhr.status == 200 && xhr.responseText == result) {
+                $('#divISTGrid').html(result);
+                
+            }
+        },
+        error: function (result, status, xhr) {
+            $.notify('Something Went Wrong, Please Try Again.', "error");
+        }
+    });
+});
 
        
 

@@ -650,20 +650,20 @@
             var entrydate = parseDateToFormat($("#EntryDate").val());
             var InvoiceDate = parseDateToFormat($("#InvoiceDate").val());
 
-            if (parseDate(finfromdate) > parseDate(entrydate)) {
+            if ((finfromdate) > (entrydate)) {
                 $.notify('Entrydate should be in financial year...!', "error");
                 return;
             }
-            if (parseDate(fintodate) < parseDate(entrydate)) {
+            if ((fintodate) < (entrydate)) {
                 $.notify('Entrydate should be in financial year...!', "error");
                 return;
             }
 
-            if (parseDate(finfromdate) > parseDate(InvoiceDate)) {
+            if ((finfromdate) > (InvoiceDate)) {
                 $.notify('challanDate should be in financial year...!', "error");
                 return;
             }
-            if (parseDate(fintodate) < parseDate(InvoiceDate)) {
+            if ((fintodate) < (InvoiceDate)) {
                 $.notify('InvoiceDate should be in financial year...!', "error");
                 return;
             }

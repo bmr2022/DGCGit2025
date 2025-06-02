@@ -75,6 +75,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IReOfferItemDAL.HoldSTORE();
         }
+        public async Task<ResponseResult> BINDEMP()
+        {
+            return await _IReOfferItemDAL.BINDEMP();
+        }
 
     }
 
