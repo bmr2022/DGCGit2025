@@ -1242,10 +1242,6 @@
     "rateinother": parseFloat($('#rateinother').val()),
     "FilePath": $('#FilePath').val(),
 
-
-
-
-
         "SeqNo": Seqno
     }
     $.ajax({
@@ -1268,6 +1264,34 @@
         }
     });
 });
+
+function DeleteItemRow(SeqNo) {
+           
+            var allowDeletion = true;
+           
+            if (allowDeletion) {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemRow")',
+                    type: "POST",
+                    async: false,
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                    success: function (data, status, xhr) {
+                        $('#divISTGrid').html(data);
+                        
+                    },
+                    error: function (response, status, xhr) {
+                        alert(response.responseText);
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response, status, xhr) {
+                        alert(response.responseText);
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
+
+           
+        }
 
        
 

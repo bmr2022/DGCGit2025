@@ -137,17 +137,19 @@
                                     @if (Model.ReqNo != null)
                                     {
                                         <select asp-for="ProdAgainstPlanManual" class="form-select">
-                                            <option value="PRODSCHEDULE">Against Plan Sch</option>
-                                            <option selected value="REQUISITION">Against Requisition</option>
                                             <option value="UNPLANNED">UnPlanned</option>
+                                            <option value="PRODSCHEDULE">Against Plan Sch</option>
+                                            <option  value="REQUISITION">Against Requisition</option>
+                                            
                                         </select>
                                     }
                                     else
                                     {
                                         <select asp-for="ProdAgainstPlanManual" class="form-select">
-                                            <option selected value="PRODSCHEDULE">Against Plan Sch</option>
-                                            <option value="REQUISITION">Against Requisition</option>
                                             <option value="UNPLANNED">UnPlanned</option>
+                                            <option  value="PRODSCHEDULE">Against Plan Sch</option>
+                                            <option value="REQUISITION">Against Requisition</option>
+                                           
                                         </select>
                                     }
                                 </div>
@@ -1828,6 +1830,36 @@
         $('#AltPartCode').select2();
         $('#RmPartCode').select2();
         $('#RmItemName').select2();
+
+
+        $('#ProdSchdiv').hide();
+        $('#ProdSchYeardiv').hide();
+        $('#ProdSchDatediv').hide();
+        $('#ProdPlandiv').hide();
+        $('#ProdPlanYeardiv').hide();
+        $('#ProdPlanDatediv').hide();
+        $('#ParentProdSchdiv').hide();
+        $('#ParentProdSchYeardiv').hide();
+        $('#ReqNodiv').hide();
+        $('#ReqYeardiv').hide();
+        $('#ReqDatediv').hide();
+        $('#plannedtarget').hide();
+        $('#unplannedtarget').show();
+        $('#ProdSch').val('');
+        $('#ProdSchYear').val('');
+        $('#ProdPlan').val('');
+        $('#ProdPlanYear').val('');
+        $('#ProdPlanDate').val('');
+        $('#ReqNo').val('');
+        $('#ReqYear').val('');
+        $('#ReqDate').val('');
+        if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+            $('#TargetQty').val(0);
+            $('#ProdQty').val(0);
+            $('#PendQty').val(0);
+        }
+        GetItem();
+        GetPartCode();
 
         $('#ProdAgainstPlanManual').change(function () {
 
@@ -4455,7 +4487,7 @@
                         var BomEffecDate = obj.Result[0].EffectiveDate;
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BOMNo').empty();
-                            $('#BOMNo').append('<option>-Select-</option>');
+                            /* $('#BOMNo').append('<option>-Select-</option>'); */
                             var BomNo = "@Model.BOMNo";
                             BomNo = BomNo ? parseInt(BomNo, 10) : 0;
                             $.each(obj.Result, function (index, val) {

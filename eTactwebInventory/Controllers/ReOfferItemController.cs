@@ -240,6 +240,80 @@ namespace eTactwebInventory.Controllers
                 throw ex;
             }
         }
+        public async Task<JsonResult> EditItemRows(int SeqNo)
+        {
+            var MainModel = new DeassembleItemModel();
+            string modelJson = HttpContext.Session.GetString("KeyReOfferItemGrid");
+            List<ReofferItemDetail> ReofferItemDetail = new List<ReofferItemDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                ReofferItemDetail = JsonConvert.DeserializeObject<List<ReofferItemDetail>>(modelJson);
+            }
+            var ISTGrid = ReofferItemDetail.Where(x => x.SeqNo == SeqNo);
+            string JsonString = JsonConvert.SerializeObject(ISTGrid);
+            return Json(JsonString);
+        }
+        public IActionResult DeleteItemRow(int SeqNo, string Mode)
+        {
+            var MainModel = new ReOfferItemModel();
+            if (Mode == "U")
+            {
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                string modelJson = HttpContext.Session.GetString("KeyReOfferItemGrid");
+                List<ReofferItemDetail> ISTDetail = new List<ReofferItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<ReofferItemDetail>>(modelJson);
+                }
+
+                if (ISTDetail != null && ISTDetail.Count > 0)
+                {
+                    ISTDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in ISTDetail)
+                    {
+                        Indx++;
+                        //item.SeqNo = Indx;
+                    }
+                    MainModel.ReofferItemDetail = ISTDetail;
+
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ReofferItemDetail);
+                    HttpContext.Session.SetString("KeyReOfferItemGrid", serializedGrid);
+                }
+            }
+            else
+            {
+                string modelJson = HttpContext.Session.GetString("KeyReOfferItemGrid");
+                List<ReofferItemDetail> ISTDetail = new List<ReofferItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<ReofferItemDetail>>(modelJson);
+                }
+
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (ISTDetail != null && ISTDetail.Count > 0)
+                {
+                    ISTDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in ISTDetail)
+                    {
+                        Indx++;
+                        //item.SeqNo = Indx;
+                    }
+                    MainModel.ReofferItemDetail = ISTDetail;
+
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.ReofferItemDetail);
+                    HttpContext.Session.SetString("KeyReOfferItemGrid", serializedGrid);
+                }
+            }
+            return PartialView("_ReOfferItemGrid", MainModel);
+        }
 
     }
 }
