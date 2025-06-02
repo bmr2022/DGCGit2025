@@ -624,11 +624,11 @@
             var entrydate = parseDateToFormat($("#EntryDate").val());
             
 
-            if (parseDate(finfromdate) > parseDate(entrydate)) {
+            if ((finfromdate) > (entrydate)) {
                 $.notify('Entrydate should be in financial year...!', "error");
                 return;
             }
-            if (parseDate(fintodate) < parseDate(entrydate)) {
+            if ((fintodate) < (entrydate)) {
                 $.notify('Entrydate should be in financial year...!', "error");
                 return;
             }          

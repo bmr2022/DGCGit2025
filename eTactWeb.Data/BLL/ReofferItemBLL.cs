@@ -79,6 +79,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IReOfferItemDAL.BINDEMP();
         }
+        public async Task<ResponseResult> FillPODetail(string MIRNO, int MIRYearCode, int accountcode, int itemcode)
+        {
+            return await _IReOfferItemDAL.FillPODetail( MIRNO,  MIRYearCode,  accountcode,  itemcode);
+        }
 
     }
 

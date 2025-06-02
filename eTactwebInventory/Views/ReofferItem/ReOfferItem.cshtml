@@ -634,6 +634,7 @@
             $('#Itemcode').val($('#ItemName').val());
              GetItemQty();
              FillOkRecStore();
+             FillPODetail();
             
         });
         function ItemNameChange(ID) {
@@ -1179,6 +1180,53 @@
             });
         }
 
+        function FillPODetail() {
+             var MIRNO=$('#MIRNo').val();
+             var MIRYearCode=$('#MIRYearCode').val();
+            var accountcode = $('#AccountCode').val();
+           
+            var itemcode = $('#PartCode').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPODetail")",
+                dataType: "json",
+                data : { MIRNO: MIRNO, MIRYearCode: MIRYearCode, accountcode: accountcode,itemcode:itemcode },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        console.log("result"+result);
+                        
+                        $('#PONo').val("");
+                        $('#PONo').val(obj.Result[0].PONO);
+                        $('#POYearCode').val("");
+                        $('#POYearCode').val(obj.Result[0].POYearcode);
+                       
+                        var PODate = new Date(obj.Result[0].PODate);
+                         var formattedDate1 = ("0" + PODate.getDate()).slice(-2) + "/" + ("0" + (PODate.getMonth() + 1)).slice(-2) + "/" + PODate.getFullYear();
+
+                        $('#PODate').val("");
+                            $('#PODate').val(formattedDate1);
+                        
+                        $('#SchNo').val("");
+                        $('#SchNo').val(obj.Result[0].schno);
+                         $('#SchYearCode').val("");
+                        $('#SchYearCode').val(obj.Result[0].schYearCode);
+                         
+
+                         var schdate = new Date(obj.Result[0].schdate);
+                         var formattedDate2 = ("0" + schdate.getDate()).slice(-2) + "/" + ("0" + (schdate.getMonth() + 1)).slice(-2) + "/" + schdate.getFullYear();
+
+                        $('#schdate').val("");
+                            $('#schdate').val(formattedDate2);
+                        
+                        
+                       
+                         
+                    }
+                }
+            });
+        }
+
         $('.GridButton').click(function (e) {
 
     e.preventDefault();
@@ -1291,6 +1339,90 @@ function DeleteItemRow(SeqNo) {
             }
 
            
+        }
+         var EditEachItem = false;
+         function EditItemRows(SeqNo) {
+            var RowCount = $('#divISTGrid tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            else {
+                $.ajax({
+                    url: '@Url.Action("EditItemRows")',
+                    type: "POST",
+                    data: { SeqNo: SeqNo },
+                    async: false,
+                    success: function (data) {
+                        var obj = $.parseJSON(data);
+                        if (obj != null) {
+                            EditEachItem = true;
+                           
+                           $('#PartCode').val(obj[0].itemcode).trigger("change");
+                            $('#ItemName').val(obj[0].itemcode).trigger("change");
+                            $('#PONo').val(obj[0].PONo);
+                            $('#POYearCode').val(obj[0].POYearCode);
+                            $('#PODate').val(obj[0].PODate);
+                            $('#SchNo').val(obj[0].SchNo);
+                            $('#SchYearCode').val(obj[0].SchYearCode);
+                            $('#schdate').val(obj[0].schdate);
+                            $('#Unit').val(obj[0].Unit);
+                            $('#AltUnit').val(obj[0].AltUnit);
+                            $('#BillQty').val(obj[0].BillQty);
+                            $('#RecQty').val(obj[0].RecQty);
+                            $('#AltRecQty').val(obj[0].AltRecQty);
+                            $('#PrevAcceptedQty').val(obj[0].PrevAcceptedQty);
+                            $('#AcceptedQty').val(obj[0].AcceptedQty);
+                            $('#AltAcceptedQty').val(obj[0].AltAcceptedQty);
+                            $('#OkRecStore').val(obj[0].OkRecStore).trigger("change");
+                            $('#DeviationQty').val(obj[0].DeviationQty);
+                            $('#ResponsibleEmpForDeviation').val(obj[0].ResponsibleEmpForDeviation);
+                            $('#PreviousRejectedQty').val(obj[0].PreviousRejectedQty);
+                            $('#RejectedQty').val(obj[0].RejectedQty);
+                            $('#AltRejectedQty').val(obj[0].AltRejectedQty);
+                            $('#RejRecStore').val(obj[0].RejRecStore).trigger("change");
+                            $('#Remarks').val(obj[0].Remarks);
+                            $('#Defaulttype').val(obj[0].Defaulttype);
+                            $('#ApprovedByEmp').val(obj[0].ApprovedByEmp).trigger("change");
+                            $('#PreviousHoldQty').val(obj[0].PreviousHoldQty);
+                            $('#HoldQty').val(obj[0].HoldQty);
+                            $('#HoldStoreId').val(obj[0].HoldStoreId).trigger("change");
+                            $('#ProcessId').val(obj[0].ProcessId);
+                            $('#PreviousReworkqty').val(obj[0].PreviousReworkqty);
+                            $('#Reworkqty').val(obj[0].Reworkqty);
+                            $('#RewokStoreId').val(obj[0].RewokStoreId).trigger("change");
+                            $('#Color').val(obj[0].Color);
+                            $('#ItemSize').val(obj[0].ItemSize);
+                            $('#ResponsibleFactor').val(obj[0].ResponsibleFactor);
+                            $('#SupplierBatchno').val(obj[0].SupplierBatchno);
+                            $('#shelfLife').val(obj[0].shelfLife);
+                            $('#BatchNo').val(obj[0].BatchNo);
+                            $('#uniqueBatchno').val(obj[0].uniqueBatchno);
+                            $('#AllowDebitNote').val(obj[0].AllowDebitNote);
+                            $('#Rate').val(obj[0].Rate);
+                            $('#rateinother').val(obj[0].rateinother);
+                            $('#FilePath').val(obj[0].FilePath);
+
+                           
+                            var rowCount = $('#divISTGrid tr').length;
+                            for (var i = 1; i <= rowCount + 1; i++) {
+                                $('#editItemGrid-' + i).css("pointer-events", "none");
+                                $('#editItemGrid-' + i).css("cursor", "not-allowed");
+                            }
+
+                           /*  GetPrevQty(); */
+                            DeleteItemRow(SeqNo);
+                            
+                        }
+                    },
+                    error: function (response) {
+                        $.notify(response.responseText, "error");
+                    },
+                    failure: function (response) {
+                        $.notify(response.responseText, "error");
+                    }
+                });
+            }
         }
 
        

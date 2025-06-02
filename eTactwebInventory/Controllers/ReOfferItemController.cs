@@ -186,6 +186,12 @@ namespace eTactwebInventory.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillPODetail(string MIRNO, int MIRYearCode, int accountcode, int itemcode)
+        {
+            var JSON = await _IReofferItem.FillPODetail( MIRNO,  MIRYearCode,  accountcode,  itemcode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult AddReOfferDetail(ReofferItemDetail model)
         {
             try

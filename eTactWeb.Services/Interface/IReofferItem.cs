@@ -24,5 +24,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> RewSTORE();
         Task<ResponseResult> HoldSTORE();
         Task<ResponseResult> BINDEMP();
+        Task<ResponseResult> FillPODetail(string MIRNO, int MIRYearCode, int accountcode, int itemcode);
     }
 }
