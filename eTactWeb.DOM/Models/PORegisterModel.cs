@@ -32,6 +32,7 @@ namespace eTactWeb.DOM.Models
         public string DOMESTICIMPORT { get; set; }
         public string PONO { get; set; }
         public int POYearCode { get; set; }
+        public int HSNNO { get; set; }
         public string PODate { get; set; }
         public string POtype { get; set; }
         public string POclosedate { get; set; }
