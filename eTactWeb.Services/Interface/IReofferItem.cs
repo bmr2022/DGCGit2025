@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,5 +26,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> HoldSTORE();
         Task<ResponseResult> BINDEMP();
         Task<ResponseResult> FillPODetail(string MIRNO, int MIRYearCode, int accountcode, int itemcode);
+        Task<ResponseResult> SaveReoffer(ReOfferItemModel model, DataTable ISTGrid);
     }
 }

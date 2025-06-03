@@ -1432,17 +1432,10 @@ function DeleteItemRow(SeqNo) {
         $('#submitBTN').click(function (event) {
             event.preventDefault();
 
-            var FGQty = parseFloat($('#FGQty').val());
-            var TotalStock = parseFloat($("#TotalStock").val());
-
-            if (FGQty > TotalStock) {
-                $.notify('Quantity must be less then TotalStock ', 'error');
-
-            }
-            else {
+           
 
                 $("form").submit();
-            }
+            
 
         });
                 

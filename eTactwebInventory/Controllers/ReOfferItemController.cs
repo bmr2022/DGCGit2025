@@ -97,6 +97,214 @@ namespace eTactwebInventory.Controllers
             MainModel.GlobalSearchBack = Searchbox;
             return View(MainModel);
         }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [Route("{controller}/Index")]
+        public async Task<IActionResult> ReOfferItem(ReOfferItemModel model)
+        {
+            try
+            {
+                var ISTGrid = new DataTable();
+
+                string modelJson = HttpContext.Session.GetString("KeyReOfferItemGrid");
+                List<ReofferItemDetail> ISTDetail = new List<ReofferItemDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ISTDetail = JsonConvert.DeserializeObject<List<ReofferItemDetail>>(modelJson);
+                }
+
+                if (ISTDetail == null)
+                {
+                    ModelState.Clear();
+                    ModelState.TryAddModelError("ReofferItemDetail", "ReofferItem Grid Should Have Atleast 1 Item...!");
+                    return View("ReOfferItem", model);
+                }
+                else
+                {
+
+
+                    ISTGrid = GetDetailTable(ISTDetail);
+                    var Result = await _IReofferItem.SaveReoffer(model, ISTGrid);
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            HttpContext.Session.Remove("KeyReOfferItemGrid");
+                            return RedirectToAction(nameof(ReOfferItem));
+                        }
+                        if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                            HttpContext.Session.Remove("KeyReOfferItemGrid");
+                            return RedirectToAction(nameof(ReOfferItem));
+                        }
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            ViewBag.isSuccess = false;
+                            TempData["2627"] = "2627";
+                            return RedirectToAction(nameof(ReOfferItem));
+                        }
+                    }
+                    return RedirectToAction(nameof(ReOfferItem));
+                }
+            }
+            catch (Exception ex)
+            {
+                LogException<ReOfferItemController>.WriteException(Logger, ex);
+
+
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+
+                return View("Error", ResponseResult);
+                //return View(model);
+            }
+        }
+        private static string SafeString(string input, int maxLength)
+        {
+            return string.IsNullOrEmpty(input) ? "" : input.Length > maxLength ? input.Substring(0, maxLength) : input;
+        }
+        private static DataTable GetDetailTable(IList<ReofferItemDetail> DetailList)
+        {
+            var DTSSGrid = new DataTable();
+
+            DTSSGrid.Columns.Add("ReofferEntryId", typeof(int));          // bigint
+            DTSSGrid.Columns.Add("ReofferYearcode", typeof(int));
+            DTSSGrid.Columns.Add("MIREntryId", typeof(int));
+            DTSSGrid.Columns.Add("MIRYearCode", typeof(int));
+            DTSSGrid.Columns.Add("SeqNo", typeof(int));
+            DTSSGrid.Columns.Add("PONo", typeof(string));                 // nvarchar(100)
+            DTSSGrid.Columns.Add("POYearCode", typeof(int));
+            DTSSGrid.Columns.Add("SchNo", typeof(string));                // nvarchar(100)
+            DTSSGrid.Columns.Add("SchYearCode", typeof(int));
+            DTSSGrid.Columns.Add("MRNno", typeof(string));                // nvarchar(200)
+            DTSSGrid.Columns.Add("mrnYearCode", typeof(int));            // nullable, consider nullable long if needed
+            DTSSGrid.Columns.Add("MRNJWCUSTJW", typeof(string));          // nullable nvarchar(100)
+            DTSSGrid.Columns.Add("Itemcode", typeof(int));
+            DTSSGrid.Columns.Add("Unit", typeof(string));                  // nvarchar(3)
+            DTSSGrid.Columns.Add("AltUnit", typeof(string));               // nvarchar(3)
+            DTSSGrid.Columns.Add("BillQty", typeof(float));               // float
+            DTSSGrid.Columns.Add("RecQty", typeof(float));
+            DTSSGrid.Columns.Add("AltRecQty", typeof(float));
+            DTSSGrid.Columns.Add("PrevAcceptedQty", typeof(float));
+            DTSSGrid.Columns.Add("AcceptedQty", typeof(float));
+            DTSSGrid.Columns.Add("AltAcceptedQty", typeof(float));
+            DTSSGrid.Columns.Add("OkRecStore", typeof(int));
+            DTSSGrid.Columns.Add("DeviationQty", typeof(float));
+            DTSSGrid.Columns.Add("ResponsibleEmpForDeviation", typeof(int));
+            DTSSGrid.Columns.Add("PreviousRejectedQty", typeof(double));
+            DTSSGrid.Columns.Add("RejectedQty", typeof(float));
+            DTSSGrid.Columns.Add("AltRejectedQty", typeof(float));
+            DTSSGrid.Columns.Add("RejRecStore", typeof(int));
+            DTSSGrid.Columns.Add("Remarks", typeof(string));              // nvarchar(50)
+            DTSSGrid.Columns.Add("Defaulttype", typeof(string));           // nvarchar(50)
+            DTSSGrid.Columns.Add("ApprovedByEmp", typeof(int));
+            DTSSGrid.Columns.Add("PreviousHoldQty", typeof(float));
+            DTSSGrid.Columns.Add("HoldQty", typeof(float));
+            DTSSGrid.Columns.Add("HoldStoreId", typeof(int));
+            DTSSGrid.Columns.Add("ProcessId", typeof(int));
+            DTSSGrid.Columns.Add("PreviousReworkqty", typeof(float));
+            DTSSGrid.Columns.Add("Reworkqty", typeof(float));
+            DTSSGrid.Columns.Add("RewokStoreId", typeof(int));
+            DTSSGrid.Columns.Add("Color", typeof(string));                 // nvarchar(100)
+            DTSSGrid.Columns.Add("ItemSize", typeof(string));              // nvarchar(100)
+            DTSSGrid.Columns.Add("ResponsibleFactor", typeof(string));     // nvarchar(15)
+            DTSSGrid.Columns.Add("SupplierBatchno", typeof(string));       // nvarchar(100)
+            DTSSGrid.Columns.Add("shelfLife", typeof(decimal));             // decimal(10,2)
+            DTSSGrid.Columns.Add("BatchNo", typeof(string));                // nvarchar(100)
+            DTSSGrid.Columns.Add("uniqueBatchno", typeof(string));          // nvarchar(100)
+            DTSSGrid.Columns.Add("AllowDebitNote", typeof(string));         // nvarchar(1)
+            DTSSGrid.Columns.Add("Rate", typeof(float));
+            DTSSGrid.Columns.Add("rateinother", typeof(float));
+            DTSSGrid.Columns.Add("PODate", typeof(string));
+            DTSSGrid.Columns.Add("FilePath", typeof(string));               // nvarchar(200)
+            DTSSGrid.Columns.Add("schdate", typeof(string));              // nullable? If yes, handle DBNull.Value when adding rows
+
+            int seqNo = 0;
+            foreach (var Item in DetailList)
+            {
+                try
+                {
+                    string uniqueString = Guid.NewGuid().ToString();
+                    DTSSGrid.Rows.Add(
+                        new object[]
+                        {
+                 0,
+            0,
+            0,
+            0,
+            seqNo++,
+            SafeString(Item.PONo, 100),
+            Item.POYearCode ?? 0,
+            SafeString(Item.SchNo, 100),
+            Item.SchYearCode ?? 0,
+            SafeString("", 200),
+            0,
+            SafeString("", 100),
+            Item.Itemcode ?? 0,
+            SafeString(Item.Unit, 3),
+            SafeString(Item.AltUnit, 3),
+            Item.BillQty ?? 0,
+            Item.RecQty ?? 0,
+            Item.AltRecQty ?? 0,
+            Item.PrevAcceptedQty ?? 0,
+            Item.AcceptedQty ?? 0,
+            Item.AltAcceptedQty ?? 0,
+            Item.OkRecStore ?? 0,
+            Item.DeviationQty ?? 0,
+            Item.ResponsibleEmpForDeviation ?? 0,
+            Item.PreviousRejectedQty ?? 0,
+            Item.RejectedQty ?? 0,
+            Item.AltRejectedQty ?? 0,
+            Item.RejRecStore ?? 0,
+            SafeString(Item.Remarks, 50),
+            SafeString(Item.Defaulttype, 50),
+            Item.ApprovedByEmp ?? 0,
+            Item.PreviousHoldQty ?? 0,
+            Item.HoldQty ?? 0,
+            Item.HoldStoreId ?? 0,
+            Item.ProcessId ?? 0,
+            Item.PreviousReworkqty ?? 0,
+            Item.Reworkqty ?? 0,
+            Item.RewokStoreId ?? 0,
+            SafeString(Item.Color, 100),
+            SafeString(Item.ItemSize, 100),
+            SafeString(Item.ResponsibleFactor, 15),
+            SafeString(Item.SupplierBatchno, 100),
+            Item.shelfLife ?? 0,
+            SafeString(Item.BatchNo, 100),
+            SafeString(Item.uniqueBatchno, 100),
+            SafeString(Item.AllowDebitNote, 1),
+            Item.Rate ?? 0,
+            Item.rateinother ?? 0,
+            CommonFunc.ParseFormattedDate( Item.PODate ?? ""),
+            SafeString(Item.FilePath, 200),
+            CommonFunc.ParseFormattedDate( Item.schdate ?? ""),
+                     
+
+
+                        });
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"❌ Error adding row: PO No: {Item.PONo}, Itemcode: {Item.Itemcode}, Error: {ex.Message}");
+                    throw; // rethrow to stop execution, or comment this out to continue and skip bad rows
+                }
+            }
+            DTSSGrid.Dispose();
+            return DTSSGrid;
+        }
+
+
         public async Task<JsonResult> GETNEWENTRY(int ReofferYearcode)
         {
             var JSON = await _IReofferItem.GETNEWENTRY( ReofferYearcode);

@@ -1,4 +1,5 @@
 ﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -370,5 +371,76 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> SaveReoffer(ReOfferItemModel model, DataTable ISTGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+
+                var SqlParams = new List<dynamic>();
+                //DateTime entDt = new DateTime();
+                //DateTime SADt = new DateTime();
+
+                var entDt = CommonFunc.ParseFormattedDate(model.ReofferEntrydate);
+                var MRNDate = CommonFunc.ParseFormattedDate(model.MRNDate);
+                var MIRDate = CommonFunc.ParseFormattedDate(model.MIRDate);
+                var BillDate = CommonFunc.ParseFormattedDate(model.BillDate);
+
+                var ActualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                //var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+
+                if (model.Mode == "U" || model.Mode == "V")
+                {
+                    SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
+                    SqlParams.Add(new SqlParameter("@UpdatedOn", model.UpdatedOn));
+                }
+                else
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
+                }
+
+                SqlParams.Add(new SqlParameter("@ReofferEntryId", model.ReofferEntryId));
+                SqlParams.Add(new SqlParameter("@ReofferYearcode", model.ReofferYearcode));
+                SqlParams.Add(new SqlParameter("@ReofferNo", model.ReofferNo));
+                SqlParams.Add(new SqlParameter("@ReofferEntrydate", entDt));
+                SqlParams.Add(new SqlParameter("@QcType", model.QcType));
+                SqlParams.Add(new SqlParameter("@MirEntryid", model.MirEntryid));
+                SqlParams.Add(new SqlParameter("@MIRNo", model.MIRNo));
+                SqlParams.Add(new SqlParameter("@MIRDate", MIRDate));
+                SqlParams.Add(new SqlParameter("@MIRYearCode", model.MIRYearCode));
+                SqlParams.Add(new SqlParameter("@MRNNO", model.MRNNO));
+                SqlParams.Add(new SqlParameter("@MRNDate", MRNDate));
+                SqlParams.Add(new SqlParameter("@MrnYearCode", model.MrnYearCode));
+                SqlParams.Add(new SqlParameter("@MRNJOBWORK", model.MRNJOBWORK));
+                SqlParams.Add(new SqlParameter("@BillNo", model.BillNo));
+                SqlParams.Add(new SqlParameter("@BillDate", BillDate));
+                SqlParams.Add(new SqlParameter("@HoldRejrewStatus", model.HoldRejrewStatus));
+                SqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
+                SqlParams.Add(new SqlParameter("@QCStore", model.QCStore));
+                SqlParams.Add(new SqlParameter("@CC", model.CC));
+                SqlParams.Add(new SqlParameter("@UID", model.UID));
+                SqlParams.Add(new SqlParameter("@EnteredByEmpId", model.EnteredByEmpId));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachineName));
+                
+
+
+
+
+
+                SqlParams.Add(new SqlParameter("@DTItemGrid", ISTGrid));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPReofferMIRMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
     }
 }

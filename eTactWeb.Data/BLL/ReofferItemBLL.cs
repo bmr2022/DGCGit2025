@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -82,6 +83,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillPODetail(string MIRNO, int MIRYearCode, int accountcode, int itemcode)
         {
             return await _IReOfferItemDAL.FillPODetail( MIRNO,  MIRYearCode,  accountcode,  itemcode);
+        }
+        public async Task<ResponseResult> SaveReoffer(ReOfferItemModel model, DataTable ISTGrid)
+        {
+            return await _IReOfferItemDAL.SaveReoffer(model, ISTGrid);
         }
 
     }
