@@ -650,23 +650,7 @@
             var entrydate = parseDateToFormat($("#EntryDate").val());
             var InvoiceDate = parseDateToFormat($("#InvoiceDate").val());
 
-            if ((finfromdate) > (entrydate)) {
-                $.notify('Entrydate should be in financial year...!', "error");
-                return;
-            }
-            if ((fintodate) < (entrydate)) {
-                $.notify('Entrydate should be in financial year...!', "error");
-                return;
-            }
-
-            if ((finfromdate) > (InvoiceDate)) {
-                $.notify('challanDate should be in financial year...!', "error");
-                return;
-            }
-            if ((fintodate) < (InvoiceDate)) {
-                $.notify('InvoiceDate should be in financial year...!', "error");
-                return;
-            }
+           
 
 
             if ($('#divSaleItemGrid tr td').length <= 1) {
