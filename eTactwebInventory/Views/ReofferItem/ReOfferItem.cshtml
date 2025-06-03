@@ -180,6 +180,10 @@
                                     <input asp-for="MRNNO" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="MrnYearCode" class="form-label" style="color: blue;">MrnYearCode</label>
+                                    <input asp-for="MrnYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
                                     <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -1109,6 +1113,8 @@
                         $('#MIRDate').val(formattedDate1);
                         $('#MRNNO').val("");
                         $('#MRNNO').val(obj.Result[0].MRNNO);
+                        $('#MrnYearCode').val("");
+                        $('#MrnYearCode').val(obj.Result[0].MRNYearcode);
                        
                         var MRNDate = new Date(obj.Result[0].MRNDate);
                          var formattedDate2 = ("0" + MRNDate.getDate()).slice(-2) + "/" + ("0" + (MRNDate.getMonth() + 1)).slice(-2) + "/" + MRNDate.getFullYear();

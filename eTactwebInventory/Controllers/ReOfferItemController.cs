@@ -229,7 +229,7 @@ namespace eTactwebInventory.Controllers
             DTSSGrid.Columns.Add("FilePath", typeof(string));               // nvarchar(200)
             DTSSGrid.Columns.Add("schdate", typeof(string));              // nullable? If yes, handle DBNull.Value when adding rows
 
-            int seqNo = 0;
+            int seqNo = 1;
             foreach (var Item in DetailList)
             {
                 try
