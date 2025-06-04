@@ -265,7 +265,7 @@
         $('#sendToPDF').click(async function () {
              
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
 
             // Get dynamic values
             var reportTypeText = $('#ReportType').find(":selected").text();
@@ -451,17 +451,17 @@
                 break;
                 case 'Short Excess Register':
                     headers = [
-                        "Sr#", "MRN No", "MRN Date", "MRN Type", "Gate No", "Gate Date", "Invoice No", "Invoice Date", "Account Name",
-                        "PO No", "PO Date", "Part Code", "Item Name", "Bill Quantity", "Received Quantity",
-                        "Short/Excess Quantity", "Unit", "Rate", "Total Amount", "Net Amount"
+                        "Sr#", "MRN No", "MRN Date", "Gate No", "Gate Date", "InvNo", "Invoice Date", "Account Name",
+                         "Part Code", "Item Name", "Bill Qty", "Rec Qty",
+                        "Sh/ExQty", "Unit", "Rate", "Total amt"
                     ];
 
                     console.log("Data:", rows);
                     
                     body = rows.map((r, i) => [
-                        i + 1, r.mrnNo, r.mrnDate, r.mrnType, r.gateNo, r.gDate, r.invoiceNo, r.invoiceDate, r.account_Name,
-                        r.poNo, r.poDate,r.partCode, r.itemName, r.billQty, r.recQty, r.shortExcessQty, r.unit,
-                        r.rate, r.totalAmt, r.netAmount
+                        i + 1, r.mrnNo, parseDateToFormat(r.mrnDate), r.gateNo, r.gDate, r.invoiceNo, r.invoiceDate, r.account_Name,
+                        r.partCode, r.itemName, r.billQty, r.recQty, r.shortExcessQty, r.unit,
+                        r.rate, r.totalAmt
                     ]);
                 break;
 
@@ -495,11 +495,12 @@
                 body: body,
                 styles: { cellWidth: 'wrap' },
                 theme: 'grid',
-                margin: { left: 30, right: 30 },
+                margin: { left: 10, right: 10 },
+                tableWidth: 'wrap',
                 styles: {
                     fontSize: 7,
                     textColor: [0, 0, 0],
-                    cellPadding: 1,        
+                    cellPadding: 2,        
                     overflow: 'linebreak',
                     halign: 'center',
                     valign: 'middle'
