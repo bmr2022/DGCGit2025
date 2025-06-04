@@ -80,6 +80,8 @@ namespace eTactWeb.DOM.Models
         public string? SchDate { get; set; }
         public decimal?BillQty { get; set;}
         public decimal? RecQty { get; set; } 
+        public decimal? DeviationQty { get; set; } 
+
         public decimal TotalBillQty {  get; set; }
         public decimal ShortExcessQty {  get; set; }
         public string? Unit { get; set; }

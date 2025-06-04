@@ -50,6 +50,7 @@ namespace eTactWeb.DOM.Models
             public string? HoldRejrewStatus { get; set; }
 
             public int? AccountCode { get; set; }
+            public string? AccountName { get; set; }
 
             public int? QCStore { get; set; }
 
@@ -83,8 +84,13 @@ namespace eTactWeb.DOM.Models
         public string BatchNoback { get; set; }
         public string DashboardTypeBack { get; set; }
         public string GlobalSearchBack { get; set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
+        public string? ReportType { get; set; }
+        public string? Searchbox { get; set; }
 
         public IList<ReofferItemDetail> ReofferItemDetail { get; set; }
+        public IList<ReOfferItemModel> reofferdashboard { get; set; }
 
 
     }
@@ -100,30 +106,26 @@ namespace eTactWeb.DOM.Models
 
         public int? SeqNo { get; set; }
 
-      
         public string? PONo { get; set; }
 
         public int? POYearCode { get; set; }
 
-       
         public string? SchNo { get; set; }
 
         public int? SchYearCode { get; set; }
 
-        
         public string? MRNno { get; set; }
 
         public int? mrnYearCode { get; set; }
 
-        
         public string? MRNJWCUSTJW { get; set; }
 
         public int? Itemcode { get; set; }
+        public string? ItemName { get; set; }
+        public string? PartCode { get; set; }
 
-        
         public string? Unit { get; set; }
 
-    
         public string? AltUnit { get; set; }
 
         public decimal? BillQty { get; set; }
@@ -139,6 +141,7 @@ namespace eTactWeb.DOM.Models
         public decimal? AltAcceptedQty { get; set; }
 
         public int? OkRecStore { get; set; }
+        public string? OkRecStoreName { get; set; }
 
         public decimal? DeviationQty { get; set; }
 
@@ -151,6 +154,7 @@ namespace eTactWeb.DOM.Models
         public decimal? AltRejectedQty { get; set; }
 
         public int? RejRecStore { get; set; }
+        public string? RejRecStoreName { get; set; }
 
   
         public string? Remarks { get; set; }
@@ -159,12 +163,14 @@ namespace eTactWeb.DOM.Models
         public string? Defaulttype { get; set; }
 
         public int? ApprovedByEmp { get; set; }
+        public string? ApprovedByEmpName { get; set; }
 
         public decimal? PreviousHoldQty { get; set; }
 
         public decimal? HoldQty { get; set; }
 
         public int? HoldStoreId { get; set; }
+        public string? HoldStoreName { get; set; }
 
         public int? ProcessId { get; set; }
 
@@ -173,6 +179,7 @@ namespace eTactWeb.DOM.Models
         public decimal? Reworkqty { get; set; }
 
         public int? RewokStoreId { get; set; }
+        public string? RewokStoreName { get; set; }
 
        
         public string? Color { get; set; }

@@ -452,17 +452,16 @@
                 case 'Short Excess Register':
                     headers = [
                         "Sr#", "MRN No", "MRN Date", "MRN Type", "Gate No", "Gate Date", "Invoice No", "Invoice Date", "Account Name",
-                        "PO No", "PO Date", "Schedule No", "Part Code", "Item Name", "Bill Quantity", "Received Quantity",
-                        "Short/Excess Quantity", "Unit", "Rate", "Total Amount", "Net Amount", "Currency", "Department Name",
-                        "Alt Quantity", "Alt Unit", "Batch No", "Unique Batch No"
+                        "PO No", "PO Date", "Part Code", "Item Name", "Bill Quantity", "Received Quantity",
+                        "Short/Excess Quantity", "Unit", "Rate", "Total Amount", "Net Amount"
                     ];
 
                     console.log("Data:", rows);
                     
                     body = rows.map((r, i) => [
-                        i + 1, r.mrnNo, r.mrnDate, r.mrnType, r.gateNo, r.gDate, r.invoiceNo, r.invoiceDate, r.accountName,
-                        r.poNo, r.poDate, r.schNo, r.partCode, r.itemName, r.billQty, r.recQty, r.shortExcessQty, r.unit,
-                        r.rate, r.totalAmt, r.netAmount, r.currency, r.depName, r.altQty, r.altUnit, r.batchNo, r.uniqueBatchNo
+                        i + 1, r.mrnNo, r.mrnDate, r.mrnType, r.gateNo, r.gDate, r.invoiceNo, r.invoiceDate, r.account_Name,
+                        r.poNo, r.poDate,r.partCode, r.itemName, r.billQty, r.recQty, r.shortExcessQty, r.unit,
+                        r.rate, r.totalAmt, r.netAmount
                     ]);
                 break;
 
@@ -496,9 +495,10 @@
                 body: body,
                 styles: { cellWidth: 'wrap' },
                 theme: 'grid',
-                margin: { left: 40, right: 40 },
+                margin: { left: 30, right: 30 },
                 styles: {
-                    fontSize: 5,           
+                    fontSize: 7,
+                    textColor: [0, 0, 0],
                     cellPadding: 1,        
                     overflow: 'linebreak',
                     halign: 'center',
@@ -510,7 +510,7 @@
                     fontStyle: 'bold'
                 },
                 tableWidth: 'auto',
-                columnStyles: {
+                /* columnStyles: {
                     0: { cellWidth: 30 },   // Column 1: Sr#
                     1: { cellWidth: 50 },   // Column 2: VendorName
                     2: { cellWidth: 50 },   // Column 3: MRNNo
@@ -534,7 +534,7 @@
                     20: { cellWidth: 40 },  // Column 21: ActualEntryDate
                    
                    
-                },
+                }, */
                 showHead: 'everyPage'
 
 

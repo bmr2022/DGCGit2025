@@ -647,24 +647,7 @@
             var entrydate=parseDateToFormat($("#EntryDate").val());
             var challanDate = parseDateToFormat($("#ChallanDate").val());
 
-            if (parseDate(finfromdate) > parseDate(entrydate)) {
-                $.notify('Entrydate should be in financial year...!', "error");
-                return;
-            }
-            if (parseDate(fintodate) < parseDate(entrydate))
-            {
-                $.notify('Entrydate should be in financial year...!', "error");
-                return;
-            }
-
-            if (parseDate(finfromdate) > parseDate(challanDate)) {
-                $.notify('challanDate should be in financial year...!', "error");
-                return;
-            }
-            if (parseDate(fintodate) < parseDate(challanDate)) {
-                $.notify('challanDate should be in financial year...!', "error");
-                return;
-            }
+            
 
 
             if (!ValidateSubmit()) return;
@@ -1116,6 +1099,7 @@
             FillLoadItems();
            
             BasicTotal();
+            FillChallanType();
              
            var CurrentTime = new Date();
             var Hours = CurrentTime.getHours();
