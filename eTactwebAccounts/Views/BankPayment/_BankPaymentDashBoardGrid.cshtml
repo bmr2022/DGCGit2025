@@ -11,7 +11,7 @@
         <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
             <tr>
                 <th>Sr#</th>
-                <th style="width:50px !important">Action</th>
+                <th class="sticky-action" style="width:50px !important">Action</th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SubVoucherName</th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
@@ -42,7 +42,7 @@
                         Cntr = Cntr + 1;
                         <tr onclick="selection(this)">
                             <td>@Cntr</td>
-                            <td style="text-align:center;white-space: nowrap;">
+                            <td class="sticky-action" style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
                                         <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="BankPayment" asp-route-Mode="V" onclick="BackButtonData(event);">
