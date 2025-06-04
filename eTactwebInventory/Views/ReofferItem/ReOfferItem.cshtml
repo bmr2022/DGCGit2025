@@ -157,7 +157,7 @@
                                     
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
                                     <label asp-for="MIRYearCode" class="control-label" style="color: red;"> MIRYearCode </label>
                                     <select class="form-select" asp-for="MIRYearCode">
@@ -175,7 +175,7 @@
                                     <label asp-for="MIRDate" class="form-label" style="color: blue;">MIRDate</label>
                                     <input asp-for="MIRDate" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MRNNO" class="form-label" style="color: blue;">MRNNO</label>
                                     <input asp-for="MRNNO" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -187,7 +187,7 @@
                                     <label asp-for="MRNDate" class="form-label" style="color: blue;">MRNDate</label>
                                     <input asp-for="MRNDate" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="BillNo" class="form-label" style="color: blue;">BillNo</label>
                                     <input asp-for="BillNo" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
@@ -202,20 +202,7 @@
                                     <input asp-for="AccountCode" type="hidden" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
 
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="HoldRejrewStatus" class="form-label" style="color: blue;">HoldRejrewStatus</label>
-                                    <input asp-for="HoldRejrewStatus" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
-
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-
-                                    <label asp-for="QCStore" class="control-label" style="color: red;"> QCStore </label>
-                                    <select class="form-select" asp-for="QCStore">
-                                        <option value="">-Select-</option>
-                                    </select>
-
-                                    
-                                </div>
+                               
 
                             </div>
 
@@ -295,91 +282,10 @@
                                                 <th>Rate</th>
                                                 <th>rateinother</th>
                                                 <th>FilePath</th>
-                                               
-                                                
+                
                                             </tr>
                                         </thead>
-                                        <tbody id="GridControls">
-                                            <tr>
-                                                <td>
-                                                    <select class="form-select" asp-for="PartCode" style="width:160px;">
-                                                        <option value="0">-Select-</option>
-                                                    </select>
-                                                </td>
-                                                <td>
-                                                    <select class="form-select" asp-for="ItemName" style="width:250px;">
-                                                        <option value="0">-Select-</option>
-                                                    </select>
-                                                </td>
-                                               
-
-                                                <td><input asp-for="PONo" class="form-control" style="width:80px;" readonly /></td>
-                                                <td><input asp-for="POYearCode" style="width:70px !important" class="form-control"/></td>
-                                                <td><input asp-for="PODate" style="width:70px !important" readonly class="form-control" /></td>
-                                                <td><input asp-for="SchNo" style="width:70px !important" readonly /></td>
-                                                <td><input asp-for="SchYearCode" style="width:100px !important"  /></td>
-                                                <td><input asp-for="schdate" style="width:100px !important"  /></td>
-                                                <td><input asp-for="Unit" style="width:100px !important"  /></td>
-                                                <td><input asp-for="AltUnit" style="width:100px !important"  /></td>
-                                                <td><input asp-for="BillQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="RecQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="AltRecQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="PrevAcceptedQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="AcceptedQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="AltAcceptedQty" style="width:100px !important"  /></td>
-                                                
-                                                <td>
-                                                    <select class="form-select" asp-for="OkRecStore" style="width:250px;">
-                                                        <option value="0">-Select-</option>
-                                                    </select>
-                                                </td>
-                                                <td><input asp-for="DeviationQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="ResponsibleEmpForDeviation" style="width:100px !important"  /></td>
-                                                <td><input asp-for="PreviousRejectedQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="RejectedQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="AltRejectedQty" style="width:100px !important"  /></td>
-                                                <td>
-                                                    <select class="form-select" asp-for="RejRecStore" style="width:250px;">
-                                                        <option value="0">-Select-</option>
-                                                    </select>
-                                                </td>
-                                                <td><input asp-for="Remarks" style="width:100px !important"  /></td>
-                                                <td><input asp-for="Defaulttype" style="width:100px !important"  /></td>
-                                                
-                                                 <td>
-                                                    <select class="form-select" asp-for="ApprovedByEmp" style="width:250px;">
-                                                        <option value="0">-Select-</option>
-                                                    </select>
-                                                </td>
-                                                <td><input asp-for="PreviousHoldQty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="HoldQty" style="width:100px !important"  /></td>
-                                                <td>
-                                                    <select class="form-select" asp-for="HoldStoreId" style="width:250px;">
-                                                        <option value="0">-Select-</option>
-                                                    </select>
-                                                </td>
-                                                <td><input asp-for="ProcessId" style="width:100px !important"  /></td>
-                                                <td><input asp-for="PreviousReworkqty" style="width:100px !important"  /></td>
-                                                <td><input asp-for="Reworkqty" style="width:100px !important"  /></td>
-                                                
-                                                <td>
-                                                    <select class="form-select" asp-for="RewokStoreId" style="width:250px;">
-                                                        <option value="0">-Select-</option>
-                                                    </select>
-                                                </td>
-                                                <td><input asp-for="Color" style="width:100px !important"  /></td>
-                                                <td><input asp-for="ItemSize" style="width:100px !important"  /></td>
-                                                <td><input asp-for="ResponsibleFactor" style="width:100px !important"  /></td>
-                                                <td><input asp-for="SupplierBatchno" style="width:100px !important"  /></td>
-                                                <td><input asp-for="shelfLife" style="width:100px !important"  /></td>
-                                                <td><input asp-for="BatchNo" style="width:100px !important"  /></td>
-                                                <td><input asp-for="uniqueBatchno" style="width:100px !important"  /></td>
-                                                <td><input asp-for="AllowDebitNote" style="width:100px !important"  /></td>
-                                                <td><input asp-for="Rate" style="width:100px !important"  /></td>
-                                                <td><input asp-for="rateinother" style="width:100px !important"  /></td>
-                                                <td><input asp-for="FilePath" style="width:100px !important"  /></td>
-                                                
-                                            </tr>
+                                         <tbody id="DivDetailGrid">
                                         </tbody>
                                     </table>
                                 </div>
@@ -625,6 +531,7 @@
             FILLMIRData();
             GetItemName();
             GetPartCode();
+            GetItemData();
         });
          $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
 
@@ -787,6 +694,7 @@
 
         function FILLMIRNO() {
             var ReofferMir = $('#QcType').val();
+             $('#MIRNo').empty();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FILLMIRNO")",
@@ -939,6 +847,103 @@
                 }
             });
         }
+
+        function GetItemData() {
+            var MIRNO=$('#MIRNo').val();
+             var MIRYearCode=$('#MIRYearCode').val();
+            var accountcode = $('#AccountCode').val();
+            var ReofferMir = $('#QcType').val();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemData")",
+                data: { MIRNO: MIRNO, MIRYearCode: MIRYearCode, accountcode: accountcode, ReofferMir: ReofferMir },
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        for (var i = 0; i < obj.Result.length; i++) {
+                            var resultItem = obj.Result[i];
+
+                            for (var key in resultItem) {
+                                if (resultItem[key] === null) {
+                                    resultItem[key] = "";
+                                }
+                            }
+                        }
+                        var html = '';
+                        $('#DivDetailGrid').empty();
+                        var i = 1;
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                html += '<tr>' +
+
+                               '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly></td>' +
+                                '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly class="textbox"><input type="hidden" id="itemCode' + i + '" value=' + val.itemCode + '></td>' +
+                                '<td><input id="PONO' + i + '" value=' + val.PONO + ' readonly class="textbox"></td>' +
+                                '<td><input id="POYearcode' + i + '" value=' + val.POYearcode + ' readonly class="textbox"></td>' +
+                                '<td><input id="PODate' + i + '" value=' + val.PODate + ' readonly class="textbox"></td>' +
+                                '<td><input id="schno' + i + '" value=' + val.schno + ' readonly class="textbox"></td>' +
+                                '<td><input id="schYearCode' + i + '" value=' + val.schYearCode + ' readonly class="textbox"></td>' +
+                                '<td><input id="schdate' + i + '" value=' + val.schdate + ' readonly class="textbox"></td>' +
+                                '<td><input id="Unit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="AltUnit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="BillQty' + i + '" value=' + val.BillQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="AltRecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="PrevAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="AcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  oninput="handleInput(this)"></td>' +
+                                '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  oninput="handleInput(this)"></td>' +
+                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+                                '<td><input id="DeviationQty' + i + '" style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="ResponsibleEmpForDeviation' + i + '"  class="textbox"></td>' +
+                                '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly class="textbox number"></td>' +
+                                '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty + ' class="textbox number"></td>' +
+                                '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' class="textbox number"></td>' +
+                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+
+                                
+                                '<td><input id="Remarks' + i + '"  class="textbox" style="width:120px;"></td>' +
+                                '<td><input id="Defaulttype' + i + '" class="textbox"></td>' +
+                                '<td><select id="ApprovedByEmp' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="ApprovedByEmpChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+
+                                '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' readonly class="textbox number"></td>' +
+                                '<td><input id="HoldQty' + i + '" value=' + val.HoldQty + ' class="textbox number"></td>' +
+                                '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+
+                                '<td><input id="ProcessId' + i + '"  class="textbox"></td>' +
+                                '<td><input id="PreviousReworkqty' + i + '" value=' + val.Reworkqty + ' readonly class="textbox number"></td>' +
+                                '<td><input id="Reworkqty' + i + '" value=' + val.Reworkqty + ' class="textbox number"></td>' +
+                                '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+
+                                '<td><input id="Color' + i + '" class="textbox"></td>' +
+                                '<td><input id="ItemSize' + i + '"  class="textbox"></td>' +
+                                '<td><input id="ResponsibleFactor' + i + '"  class="textbox"></td>' +
+                                '<td><input id="SupplierBatchno' + i + '"  class="textbox"></td>' +
+                                '<td><input id="shelfLife' + i + '"  class="textbox"></td>' +
+                                '<td><input id="BatchNo' + i + '" value=' + val.BatchNo + ' class="textbox"></td>' +
+                                '<td><input id="uniqueBatchno' + i + '" value=' + val.uniqueBatchno + ' class="textbox"></td>' +
+                                '<td><input id="AllowDebitNote' + i + '"  class="textbox"></td>' +
+                               
+                                '<td><input id="Rate' + i + '"  class="textbox number"></td>' +
+                                '<td><input id="rateinother' + i + '" class="textbox number"></td>' +
+                                '<td>' +
+                                    (val.FilePath
+                                        ? '<a href="' + val.FilePath + '" target="_blank">View</a>'
+                                        : '-') +
+                                '</td>'
+                                    '</tr>';
+                                i++;
+                            });
+                            $('#DivDetailGrid').append(html);
+                           
+                           
+                        }
+                    }
+                }
+            });
+        }
+
         function FillOkRecStore() {
              var itemcode=$('#PartCode').val();
              var ShowAllStore=$('#ShowAllStore').val();
@@ -1087,6 +1092,7 @@
                 }
             });
         }
+        
 
         function FILLMIRData() {
              var MIRNO = $('#MIRNo').val();

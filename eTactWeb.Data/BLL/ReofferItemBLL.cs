@@ -49,6 +49,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IReOfferItemDAL.GetItemDeatil( MIRNO,  MIRYearCode,  accountcode,  ReofferMir);
         }
+        public async Task<ResponseResult> GetItemData(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir)
+        {
+            return await _IReOfferItemDAL.GetItemData(MIRNO, MIRYearCode, accountcode, ReofferMir);
+        }
 
         public async Task<ResponseResult> GetItemQty(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir, int itemcode)
         {

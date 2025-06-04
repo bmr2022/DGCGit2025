@@ -349,6 +349,12 @@ namespace eTactwebInventory.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetItemData(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir)
+        {
+            var JSON = await _IReofferItem.GetItemData(MIRNO, MIRYearCode, accountcode, ReofferMir);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         public async Task<JsonResult> GetItemQty(string MIRNO, int MIRYearCode, int accountcode, string ReofferMir, int itemcode)
         {

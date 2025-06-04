@@ -18,6 +18,7 @@ namespace eTactWeb.Services.Interface
        
         Task<ResponseResult> FILLMIRData(string MIRNO,int MIRYearCode);
         Task<ResponseResult> GetItemDeatil(string MIRNO,int MIRYearCode,int accountcode,string ReofferMir);
+        Task<ResponseResult> GetItemData(string MIRNO,int MIRYearCode,int accountcode,string ReofferMir);
         Task<ResponseResult> GetItemQty(string MIRNO,int MIRYearCode,int accountcode,string ReofferMir,int itemcode);
         Task<ResponseResult> FillOkRecStore(int itemcode,string ShowAllStore);
         Task<ResponseResult> ALLOWSHOWALLSTORE();
