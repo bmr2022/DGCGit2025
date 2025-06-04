@@ -247,7 +247,7 @@
                                                 <th>PrevAcceptedQty</th>
                                                 <th>AcceptedQty</th>
                                                 <th>AltAcceptedQty</th>
-                                                <th>OkRecStore &nbsp;<input id="SHA" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
+                                                <th>OkRecStore &nbsp;<input id="SHA1" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
                                                             
                                                                 <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige">
                                                                     
@@ -260,17 +260,17 @@
                                                 <th>PreviousRejectedQty</th>
                                                 <th>RejectedQty</th>
                                                 <th>AltRejectedQty</th>
-                                                <th>RejRecStore</th>
+                                                <th>RejRecStore<input id="SHA2" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th>Remarks</th>
                                                 <th>Defaulttype</th>
-                                                <th>ApprovedByEmp</th>
+                                                <th>ApprovedByEmp<input id="SHA5" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th>PreviousHoldQty</th>
-                                                <th>HoldQty</th>
-                                                <th>HoldStoreId</th>
+                                                <th>HoldQty </th>
+                                                <th>HoldStoreId<input id="SHA3" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th>ProcessId</th>
                                                 <th>PreviousReworkqty</th>
                                                 <th>Reworkqty</th>
-                                                <th>RewokStoreId</th>
+                                                <th>RewokStoreId<input id="SHA4" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th>Color</th>
                                                 <th>ItemSize</th>
                                                 <th>ResponsibleFactor</th>
@@ -894,39 +894,39 @@
                                 '<td><input id="PrevAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="AcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  oninput="handleInput(this)"></td>' +
                                 '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  oninput="handleInput(this)"></td>' +
-                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
-                                '<td><input id="DeviationQty' + i + '" style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="ResponsibleEmpForDeviation' + i + '"  class="textbox"></td>' +
+                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+                                '<td><input id="DeviationQty' + i + '" value="" style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="ResponsibleEmpForDeviation' + i + '" value="" class="textbox"></td>' +
                                 '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly class="textbox number"></td>' +
                                 '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty + ' class="textbox number"></td>' +
                                 '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' class="textbox number"></td>' +
-                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
 
                                 
-                                '<td><input id="Remarks' + i + '"  class="textbox" style="width:120px;"></td>' +
-                                '<td><input id="Defaulttype' + i + '" class="textbox"></td>' +
-                                '<td><select id="ApprovedByEmp' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="ApprovedByEmpChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+                                '<td><input id="Remarks' + i + '"  value=""  class="textbox" style="width:120px;"></td>' +
+                                '<td><input id="Defaulttype' + i + '"  value="" class="textbox"></td>' +
+                                '<td><select id="ApprovedByEmp' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="ApprovedByEmpChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
                                 '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' readonly class="textbox number"></td>' +
                                 '<td><input id="HoldQty' + i + '" value=' + val.HoldQty + ' class="textbox number"></td>' +
-                                '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+                                '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
-                                '<td><input id="ProcessId' + i + '"  class="textbox"></td>' +
+                                '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
                                 '<td><input id="PreviousReworkqty' + i + '" value=' + val.Reworkqty + ' readonly class="textbox number"></td>' +
                                 '<td><input id="Reworkqty' + i + '" value=' + val.Reworkqty + ' class="textbox number"></td>' +
-                                '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>'    
+                                '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
-                                '<td><input id="Color' + i + '" class="textbox"></td>' +
-                                '<td><input id="ItemSize' + i + '"  class="textbox"></td>' +
-                                '<td><input id="ResponsibleFactor' + i + '"  class="textbox"></td>' +
-                                '<td><input id="SupplierBatchno' + i + '"  class="textbox"></td>' +
-                                '<td><input id="shelfLife' + i + '"  class="textbox"></td>' +
+                                '<td><input id="Color' + i + '"  value="" class="textbox"></td>' +
+                                '<td><input id="ItemSize' + i + '"  value=""  class="textbox"></td>' +
+                                '<td><input id="ResponsibleFactor' + i + '"  value="" class="textbox"></td>' +
+                                '<td><input id="SupplierBatchno' + i + '"  value="" class="textbox"></td>' +
+                                '<td><input id="shelfLife' + i + '"  value="" class="textbox"></td>' +
                                 '<td><input id="BatchNo' + i + '" value=' + val.BatchNo + ' class="textbox"></td>' +
                                 '<td><input id="uniqueBatchno' + i + '" value=' + val.uniqueBatchno + ' class="textbox"></td>' +
-                                '<td><input id="AllowDebitNote' + i + '"  class="textbox"></td>' +
+                                '<td><input id="AllowDebitNote' + i + '"  value="" class="textbox"></td>' +
                                
-                                '<td><input id="Rate' + i + '"  class="textbox number"></td>' +
-                                '<td><input id="rateinother' + i + '" class="textbox number"></td>' +
+                                '<td><input id="Rate' + i + '"  value="" class="textbox number"></td>' +
+                                '<td><input id="rateinother' + i + '"  value="" class="textbox number"></td>' +
                                 '<td>' +
                                     (val.FilePath
                                         ? '<a href="' + val.FilePath + '" target="_blank">View</a>'
@@ -936,6 +936,11 @@
                                 i++;
                             });
                             $('#DivDetailGrid').append(html);
+                            FillOkRecStore();
+                            RejSTORE();
+                            RewSTORE();
+                            HoldSTORE();
+                            BINDEMP();
                            
                            
                         }
@@ -960,12 +965,18 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#OkRecStore').empty();
-                            $('#OkRecStore').append('<option value="" disabled selected>-Select-</option>');
+                           
 
-                            $.each(obj.Result, function (index, val) {
-                                $('#OkRecStore').append('<option value="' + val.Store + '">' + val.Store_Name + '</option>');
-                            });
+                            var RowCount = $('#DivDetailGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#OkRecStore' + i).empty();
+                                $('#OkRecStore' + i).append('<option value="" disabled selected>-Select-</option>');
+
+                                $.each(obj.Result, function (index, val) {
+                                    $('#OkRecStore' + i).append('<option value="' + val.Store + '">' + val.Store_Name + '</option>');
+                                });
+                            }
+
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var OkRecStore = "@Model.OkRecStore";
                                 $('#OkRecStore').val(OkRecStore).trigger("change");
@@ -974,6 +985,121 @@
                     }
                 }
             });
+        }
+        var SameOkRecStore = false;
+        $('#SHA1').change(function () {
+
+            var RowCount = $('#DivDetailGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#OkRecStore' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameOkRecStore = true;
+            } else {
+                SameOkRecStore = false;
+            }
+        });
+        function OkRecStoreChange(i) {
+
+            var OkRecStore = $('#OkRecStore' + i).val();
+            if (SameOkRecStore) {
+                var RowCount = $('#DivDetailGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#OkRecStore' + j).val(OkRecStore);
+                }
+            }
+        }
+        var SameRejRecStore = false;
+         $('#SHA2').change(function () {
+
+            var RowCount = $('#DivDetailGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#RejRecStore' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameRejRecStore = true;
+            } else {
+                SameRejRecStore = false;
+            }
+        });
+        function RejRecStoreChange(i) {
+
+            var RejRecStore = $('#RejRecStore' + i).val();
+            if (SameRejRecStore) {
+                var RowCount = $('#DivDetailGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#RejRecStore' + j).val(RejRecStore);
+                }
+            }
+        }
+        var SameHoldStoreId = false;
+         $('#SHA3').change(function () {
+
+            var RowCount = $('#DivDetailGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#HoldStoreId' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameHoldStoreId = true;
+            } else {
+                SameHoldStoreId = false;
+            }
+        });
+        function HoldStoreIdChange(i) {
+
+            var HoldStoreId = $('#HoldStoreId' + i).val();
+            if (SameHoldStoreId) {
+                var RowCount = $('#DivDetailGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#HoldStoreId' + j).val(HoldStoreId);
+                }
+            }
+        }
+        var SameRewokStoreId = false;
+         $('#SHA4').change(function () {
+
+            var RowCount = $('#DivDetailGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#RewokStoreId' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameRewokStoreId = true;
+            } else {
+                SameRewokStoreId = false;
+            }
+        });
+        function RewokStoreIdChange(i) {
+
+            var RewokStoreId = $('#RewokStoreId' + i).val();
+            if (SameRewokStoreId) {
+                var RowCount = $('#DivDetailGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#RewokStoreId' + j).val(RewokStoreId);
+                }
+            }
+        }
+        var SameApprovedByEmp = false;
+         $('#SHA5').change(function () {
+
+            var RowCount = $('#DivDetailGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                $('#ApprovedByEmp' + i).val('');
+            }
+            if ($('#SHA').prop("checked") == true) {
+                SameApprovedByEmp = true;
+            } else {
+                SameApprovedByEmp = false;
+            }
+        });
+        function RewokStoreIdChange(i) {
+
+            var ApprovedByEmp = $('#ApprovedByEmp' + i).val();
+            if (SameApprovedByEmp) {
+                var RowCount = $('#DivDetailGrid tr').length;
+                for (var j = 1; j <= RowCount; j++) {
+                    $('#ApprovedByEmp' + j).val(ApprovedByEmp);
+                }
+            }
         }
         function RejSTORE() {
             
@@ -989,12 +1115,16 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#RejRecStore').empty();
-                            $('#RejRecStore').append('<option value="" disabled selected>-Select-</option>');
+                           
+                             var RowCount = $('#DivDetailGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#RejRecStore' + i).empty();
+                                $('#RejRecStore' + i).append('<option value="" disabled selected>-Select-</option>');
 
-                            $.each(obj.Result, function (index, val) {
-                                $('#RejRecStore').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
-                            });
+                                $.each(obj.Result, function (index, val) {
+                                    $('#RejRecStore' + i).append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
+                                });
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var RejRecStore = "@Model.RejRecStore";
                                 $('#RejRecStore').val(RejRecStore).trigger("change");
@@ -1018,12 +1148,16 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#RewokStoreId').empty();
-                            $('#RewokStoreId').append('<option value="" disabled selected>-Select-</option>');
+                           
+                            var RowCount = $('#DivDetailGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#RewokStoreId' + i).empty();
+                                $('#RewokStoreId' + i).append('<option value="" disabled selected>-Select-</option>');
 
-                            $.each(obj.Result, function (index, val) {
-                                $('#RewokStoreId').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
-                            });
+                                $.each(obj.Result, function (index, val) {
+                                    $('#RewokStoreId' + i).append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
+                                });
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var RewokStoreId = "@Model.RewokStoreId";
                                 $('#RewokStoreId').val(RewokStoreId).trigger("change");
@@ -1047,12 +1181,16 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#HoldStoreId').empty();
-                            $('#HoldStoreId').append('<option value="" disabled selected>-Select-</option>');
+                           
+                            var RowCount = $('#DivDetailGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#HoldStoreId' + i).empty();
+                                $('#HoldStoreId' + i).append('<option value="" disabled selected>-Select-</option>');
 
-                            $.each(obj.Result, function (index, val) {
-                                $('#HoldStoreId').append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
-                            });
+                                $.each(obj.Result, function (index, val) {
+                                    $('#HoldStoreId' + i).append('<option value="' + val.entryid + '">' + val.store_name + '</option>');
+                                });
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var HoldStoreId = "@Model.HoldStoreId";
                                 $('#HoldStoreId').val(HoldStoreId).trigger("change");
@@ -1077,12 +1215,16 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#ApprovedByEmp').empty();
-                            $('#ApprovedByEmp').append('<option value="" disabled selected>-Select-</option>');
+                            
+                            var RowCount = $('#DivDetailGrid tr').length;
+                            for (var i = 1; i <= RowCount; i++) {
+                                $('#ApprovedByEmp' + i).empty();
+                                $('#ApprovedByEmp' + i).append('<option value="" disabled selected>-Select-</option>');
 
-                            $.each(obj.Result, function (index, val) {
-                                $('#ApprovedByEmp').append('<option value="' + val.Emp_Id + '">' + val.EmpNameCode + '</option>');
-                            });
+                                $.each(obj.Result, function (index, val) {
+                                    $('#ApprovedByEmp' + i).append('<option value="' + val.Emp_Id + '">' + val.EmpNameCode + '</option>');
+                                });
+                            }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var ApprovedByEmp = "@Model.ApprovedByEmp";
                                 $('#ApprovedByEmp').val(ApprovedByEmp).trigger("change");
