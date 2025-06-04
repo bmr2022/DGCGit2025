@@ -304,7 +304,10 @@
                                     <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
                                 </div>
                                 <div class="col-md-2" id="firstButton">
-                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1" >
+                                    <button type="button" style="display:none" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1" >
+                                        <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                    <button type="button" class="GridButton1 btn btn-sm btn-outline-danger mt-1 mb-1" >
                                         <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
                                     </button>
                                 </div>
@@ -885,7 +888,7 @@
                                 '<td><input id="PODate' + i + '" value=' + val.PODate + ' readonly class="textbox"></td>' +
                                 '<td><input id="schno' + i + '" value=' + val.schno + ' readonly class="textbox"></td>' +
                                 '<td><input id="schYearCode' + i + '" value=' + val.schYearCode + ' readonly class="textbox"></td>' +
-                                '<td><input id="schdate' + i + '" value=' + val.schdate + ' readonly class="textbox"></td>' +
+                                '<td><input id="schdate' + i + '" value="" readonly class="textbox"></td>' +
                                 '<td><input id="Unit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
                                 '<td><input id="AltUnit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
                                 '<td><input id="BillQty' + i + '" value=' + val.BillQty + ' readonly style="width:60px;" class="textbox number"></td>' +
@@ -993,7 +996,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#OkRecStore' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA1').prop("checked") == true) {
                 SameOkRecStore = true;
             } else {
                 SameOkRecStore = false;
@@ -1016,7 +1019,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#RejRecStore' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA2').prop("checked") == true) {
                 SameRejRecStore = true;
             } else {
                 SameRejRecStore = false;
@@ -1039,7 +1042,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#HoldStoreId' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA3').prop("checked") == true) {
                 SameHoldStoreId = true;
             } else {
                 SameHoldStoreId = false;
@@ -1062,7 +1065,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#RewokStoreId' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA4').prop("checked") == true) {
                 SameRewokStoreId = true;
             } else {
                 SameRewokStoreId = false;
@@ -1085,13 +1088,13 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#ApprovedByEmp' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA5').prop("checked") == true) {
                 SameApprovedByEmp = true;
             } else {
                 SameApprovedByEmp = false;
             }
         });
-        function RewokStoreIdChange(i) {
+        function ApprovedByEmpChange(i) {
 
             var ApprovedByEmp = $('#ApprovedByEmp' + i).val();
             if (SameApprovedByEmp) {
@@ -1384,6 +1387,151 @@
                 }
             });
         }
+
+
+                $('.GridButton1').click(function (e) {
+            e.preventDefault();
+            EditEachItem = false;
+
+            var ItemData = [];
+            var seqnoarray = [];
+            $('#DivDetailGrid tr').each(function (index, element) {
+
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('th').data('seqno') == undefined ? 0 : currentRow.find('th').data('seqno');
+                if (seqnoText != 0) {
+                    seqnoarray.push(parseInt(seqnoText));
+                }
+            });
+
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+                highestValue = Math.max(...seqnoarray);
+            }
+
+            /* if (!ValidateGrid()) return; */
+            var RowCount = $('#DivDetailGrid tr').length;
+
+            if (RowCount == 0) {
+                $.notify('Please Add Item in Grid', "error");
+                return;
+            }
+            /* if (RowCount > 0) {
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#Deassembleqty' + i).val() == '' || $('#Deassembleqty' + i).val() == '0') {
+                        $.notify('Please Enter Deassemble Qty', "error");
+                        return;
+                    }
+                }
+            }
+            if (RowCount > 0) {
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#StoreName' + i).val() == '' || $('#StoreName' + i).val() == null) {
+                        $.notify('Please Select Store', "error");
+                        return;
+                    }
+                }
+            } */
+
+            for (var i = 1; i <= RowCount; i++) {
+                ItemData.push({
+
+
+  PartCode: $('#PartCode' + i).val(),
+  ItemName: $('#ItemName' + i).val(),
+  itemCode: $('#itemCode' + i).val(),
+  PONO: $('#PONO' + i).val(),
+  POYearcode: $('#POYearcode' + i).val(),
+  PODate: $('#PODate' + i).val(),
+  schno: $('#schno' + i).val(),
+  schYearCode: $('#schYearCode' + i).val(),
+  schdate: $('#schdate' + i).val(),
+  RMUnit: $('#Unit' + i).val(),
+  AltUnit: $('#AltUnit' + i).val(),
+  BillQty: $('#BillQty' + i).val(),
+  RecQty: $('#RecQty' + i).val(),
+  AltRecQty: $('#AltRecQty' + i).val(),
+  PrevAcceptedQty: $('#PrevAcceptedQty' + i).val(),
+  AcceptedQty: $('#AcceptedQty' + i).val(),
+  AltAcceptedQty: $('#AltAcceptedQty' + i).val(),
+  OkRecStore: $('#OkRecStore' + i).val(),
+ OkRecStoreName: $('#OkRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#OkRecStore' + i).find(':selected').text(),
+
+  DeviationQty: $('#DeviationQty' + i).val(),
+  ResponsibleEmpForDeviation: $('#ResponsibleEmpForDeviation' + i).val(),
+  PreviousRejectedQty: $('#PreviousRejectedQty' + i).val(),
+  RejectedQty: $('#RejectedQty' + i).val(),
+  AltRejectedQty: $('#AltRejectedQty' + i).val(),
+  RejRecStore: $('#RejRecStore' + i).val(),
+   RejRecStoreName: $('#RejRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#RejRecStore' + i).find(':selected').text(),
+
+  Remarks: $('#Remarks' + i).val(),
+  Defaulttype: $('#Defaulttype' + i).val(),
+  ApprovedByEmp: $('#ApprovedByEmp' + i).val(),
+     ApprovedByEmpName: $('#ApprovedByEmp' + i).find(':selected').text() == "-Select-" ? "" : $('#ApprovedByEmp' + i).find(':selected').text(),
+
+  PreviousHoldQty: $('#PreviousHoldQty' + i).val(),
+  HoldQty: $('#HoldQty' + i).val(),
+  HoldStoreId: $('#HoldStoreId' + i).val(),
+  HoldStoreName: $('#HoldStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#HoldStoreId' + i).find(':selected').text(),
+  ProcessId: $('#ProcessId' + i).val(),
+  PreviousReworkqty: $('#PreviousReworkqty' + i).val(),
+  Reworkqty: $('#Reworkqty' + i).val(),
+  RewokStoreId: $('#RewokStoreId' + i).val(),
+  RewokStoreName: $('#RewokStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#RewokStoreId' + i).find(':selected').text(),
+  Color: $('#Color' + i).val(),
+  ItemSize: $('#ItemSize' + i).val(),
+  ResponsibleFactor: $('#ResponsibleFactor' + i).val(),
+  SupplierBatchno: $('#SupplierBatchno' + i).val(),
+  shelfLife: $('#shelfLife' + i).val(),
+  BatchNo: $('#BatchNo' + i).val(),
+  uniqueBatchno: $('#uniqueBatchno' + i).val(),
+  AllowDebitNote: $('#AllowDebitNote' + i).val(),
+  Rate: $('#Rate' + i).val(),
+  rateinother: $('#rateinother' + i).val(),
+  FilePath:  ''
+                });
+            }
+            console.log(ItemData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddReOfferDetail1")',
+                data: { "model": ItemData },
+                // statusCode: {
+                //     207: function () {
+                //         $.notify('Duplicate Item...!', "info");
+                //     }
+                // },
+                statusCode: {
+                    207: function (xhr) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            var msg = `Duplicate Item Found: itemCode ${response.itemCode}, `;
+                            $.notify(msg, "info");
+                        } catch (e) {
+                            $.notify("Duplicate Item...!", "info");
+                        }
+                    }
+                },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+
+                        $('#divISTGrid').html(result);
+                        $('#DivDetailGrid').empty();
+                        /* TotalNetAmount(); */
+                        //$('#Storeid,#Wcid').prop("disabled", false);
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+
+
 
         $('.GridButton').click(function (e) {
 

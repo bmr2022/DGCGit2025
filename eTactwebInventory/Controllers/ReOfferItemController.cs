@@ -460,6 +460,71 @@ namespace eTactwebInventory.Controllers
                 throw ex;
             }
         }
+        public IActionResult AddReOfferDetail1(List<ReofferItemDetail> model)
+        {
+            try
+            {
+                var MainModel = new ReOfferItemModel();
+                var RCGrid = new List<ReofferItemDetail>();
+                var ReceiveChallanGrid = new List<ReofferItemDetail>();
+
+                var SeqNo = 0;
+                foreach (var item in model)
+                {
+                    string modelJson = HttpContext.Session.GetString("KeyReOfferItemGrid");
+                    IList<ReofferItemDetail> RCDetail = new List<ReofferItemDetail>();
+                    if (modelJson != null)
+                    {
+                        RCDetail = JsonConvert.DeserializeObject<List<ReofferItemDetail>>(modelJson);
+                    }
+
+                    if (model != null)
+                    {
+                        if (RCDetail == null)
+                        {
+                            //item.SeqNo += SeqNo + 1;
+                            RCGrid.Add(item);
+                        }
+                        else
+                        {
+                            if (RCDetail.Any(x => x.Itemcode == item.Itemcode))
+                            {
+                                //return StatusCode(207, "Duplicate");
+                                var duplicateInfo = new
+                                {
+                                    item.Itemcode,
+                                    
+
+                                };
+                            }
+                            else
+                            {
+                                //item.SeqNo = RCDetail.Count + 1;
+                                RCGrid = RCDetail.Where(x => x != null).ToList();
+                                ReceiveChallanGrid.AddRange(RCGrid);
+                                RCGrid.Add(item);
+                            }
+                        }
+                        RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
+                        MainModel.ReofferItemDetail = RCGrid;
+
+                        HttpContext.Session.SetString("KeyReOfferItemGrid", JsonConvert.SerializeObject(MainModel.ReofferItemDetail));
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Receive Challan List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_ReOfferItemGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new DeassembleItemModel();
