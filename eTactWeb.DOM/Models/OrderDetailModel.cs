@@ -352,6 +352,18 @@ namespace eTactWeb.DOM.Models
         public int UpdatedBy { get; set; }
         public string? UpdatedByName { get; set; }
 
+        public string FromDateBack { get; set; }
+        public string ToDateBack { get; set; }
+        public string DashboardTypeBack { get; set; }
+        public string CustomerNameBack { get; set; }
+        public string CustomerOrderNoBack { get; set; }
+        public string BranchBack { get; set; }
+        public string SONOBack { get; set; }
+        public string OrderTypeBack { get; set; }
+        public string SoTypeBack { get; set; }
+        public string PartCodeBack { get; set; }
+        public string ItemNameBack { get; set; }
+
         public IList<SelectListItem> TransportModeList
         {
             get => _TransportMode;
