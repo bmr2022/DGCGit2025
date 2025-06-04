@@ -442,5 +442,129 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            var responseResult = new ResponseResult();
+            try
+            {
+                var sqlParams = new List<dynamic>
+        {
+            new SqlParameter("@Flag", "DASHBOARD")
+        };
+
+                responseResult = await _IDataLogic.ExecuteDataSet("SPReofferMIRMainDetail", sqlParams).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                dynamic error = new ExpandoObject();
+                error.Message = ex.Message;
+                error.Source = ex.Source;
+            }
+            return responseResult;
+        }
+
+
+        public async Task<ReOfferItemModel> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            DataSet? oDataSet = new DataSet();
+            var model = new ReOfferItemModel();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SPReofferMIRMainDetail", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@Fromdate", CommonFunc.ParseFormattedDate(FromDate));
+                    oCmd.Parameters.AddWithValue("@todate", CommonFunc.ParseFormattedDate(ToDate));
+                    oCmd.Parameters.AddWithValue("@reporttype", ReportType);
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (ReportType == "SUMMARY")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.reofferdashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                               select new ReOfferItemModel
+                                                               {
+                                                                   ReofferEntryId = dr["ReofferEntryId"] != DBNull.Value ? Convert.ToInt32(dr["ReofferEntryId"]) : (int?)null,
+                                                                   ReofferYearcode = dr["ReofferYearcode"] != DBNull.Value ? Convert.ToInt32(dr["ReofferYearcode"]) : (int?)null,
+                                                                   ReofferNo = dr["ReofferNo"]?.ToString(),
+                                                                   ReofferEntrydate = CommonFunc.ParseFormattedDate(dr["ReofferEntrydate"]?.ToString()),
+                                                                   QcType = dr["QcType"]?.ToString() ?? "",
+                                                                   MirEntryid = dr["MirEntryid"] != DBNull.Value ? Convert.ToInt32(dr["MirEntryid"]) : (int?)null,
+                                                                   MIRNo = dr["MIRNo"]?.ToString(),
+                                                                   MIRDate = CommonFunc.ParseFormattedDate(dr["MIRDate"]?.ToString()),
+                                                                   MIRYearCode = dr["MIRYearCode"] != DBNull.Value ? Convert.ToInt32(dr["MIRYearCode"]) : (int?)null,
+                                                                   MRNNO = dr["MRNNO"]?.ToString(),
+                                                                   MRNDate = CommonFunc.ParseFormattedDate(dr["MRNDate"]?.ToString()),
+                                                                   MrnYearCode = dr["MrnYearCode"] != DBNull.Value ? Convert.ToInt32(dr["MrnYearCode"]) : (int?)null,
+                                                                   MRNJOBWORK = dr["MRNJOBWORK"]?.ToString(),
+                                                                   BillNo = dr["BillNo"]?.ToString(),
+                                                                   BillDate = CommonFunc.ParseFormattedDate(dr["BillDate"]?.ToString()),
+                                                                   HoldRejrewStatus = dr["HoldRejrewStatus"]?.ToString(),
+                                                                   AccountName = dr["Account_Name"]?.ToString(),
+                                                                   AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : (int?)null,
+                                                                   QCStore = dr["QCStore"] != DBNull.Value ? Convert.ToInt32(dr["QCStore"]) : (int?)null,
+                                                                   CC = dr["CC"]?.ToString(),
+                                                                   EnteredByEmpId = dr["EnteredByEmpId"] != DBNull.Value ? Convert.ToInt32(dr["EnteredByEmpId"]) : (int?)null,
+                                                                   EnteredByEmpName = dr["ActualEnteredByName"]?.ToString(),
+                                                                   ActualEntryDate = CommonFunc.ParseFormattedDate(dr["ActualEntryDate"]?.ToString()),
+                                                                   ActualEnteredBy = dr["ActualEnteredBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEnteredBy"]) : (int?)null,
+                                                                   EntryByMachineName = dr["EntryByMachineName"]?.ToString(),
+                                                                   UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : (int?)null,
+                                                                   UpdatedByName = dr["UpdatedByName"]?.ToString(),
+                                                                   UpdatedOn = CommonFunc.ParseFormattedDate(dr["UpdatedOn"]?.ToString())
+
+
+                                                               }).ToList();
+                                                               
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
+            return model;
+        }
+
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName)
+        {
+            var _ResponseResult = new ResponseResult();
+            var etrDt = CommonFunc.ParseFormattedDate(EntryDate);
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@ReofferEntryId", ID));
+                SqlParams.Add(new SqlParameter("@ReofferYearcode", YC));
+                SqlParams.Add(new SqlParameter("@ReofferEntrydate", etrDt));
+                SqlParams.Add(new SqlParameter("@EnteredByEmpId", ActualEntryBy));
+                SqlParams.Add(new SqlParameter("@EntryByMachineName", MachineName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPReofferMIRMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
     }
 }

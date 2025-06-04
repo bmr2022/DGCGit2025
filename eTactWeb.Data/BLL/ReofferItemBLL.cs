@@ -88,6 +88,19 @@ namespace eTactWeb.Data.BLL
         {
             return await _IReOfferItemDAL.SaveReoffer(model, ISTGrid);
         }
+        public async Task<ReOfferItemModel> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _IReOfferItemDAL.GetDashBoardDetailData(FromDate, ToDate, ReportType);
+        }
+
+        public async Task<ResponseResult> GetDashboardData()
+        {
+            return await _IReOfferItemDAL.GetDashboardData();
+        }
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName)
+        {
+            return await _IReOfferItemDAL.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName);
+        }
 
     }
 

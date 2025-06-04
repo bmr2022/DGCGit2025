@@ -27,5 +27,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> BINDEMP();
         Task<ResponseResult> FillPODetail(string MIRNO, int MIRYearCode, int accountcode, int itemcode);
         Task<ResponseResult> SaveReoffer(ReOfferItemModel model, DataTable ISTGrid);
+        Task<ReOfferItemModel> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType);
+        Task<ResponseResult> GetDashboardData();
+        Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName);
     }
 }

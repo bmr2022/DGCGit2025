@@ -84,8 +84,13 @@ namespace eTactWeb.DOM.Models
         public string BatchNoback { get; set; }
         public string DashboardTypeBack { get; set; }
         public string GlobalSearchBack { get; set; }
+        public string? FromDate { get; set; }
+        public string? ToDate { get; set; }
+        public string? ReportType { get; set; }
+        public string? Searchbox { get; set; }
 
         public IList<ReofferItemDetail> ReofferItemDetail { get; set; }
+        public IList<ReOfferItemModel> reofferdashboard { get; set; }
 
 
     }

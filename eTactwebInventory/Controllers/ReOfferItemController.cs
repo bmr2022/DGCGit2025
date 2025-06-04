@@ -528,6 +528,69 @@ namespace eTactwebInventory.Controllers
             }
             return PartialView("_ReOfferItemGrid", MainModel);
         }
+        [HttpGet]
+        [Route("ReOfferItemDashBoard")]
+        public async Task<IActionResult> ReOfferItemDashBoard()
+        {
+            try
+            {
+                var model = new ReOfferItemModel();
+                var result = await _IReofferItem.GetDashboardData().ConfigureAwait(true);
+                DateTime now = DateTime.Now;
+
+                if (result != null && result.Result != null)
+                {
+                    DataSet ds = result.Result;
+                    if (ds != null && ds.Tables.Count > 0)
+                    {
+                        var dt = ds.Tables[0];
+                        model.reofferdashboard = CommonFunc.DataTableToList<ReOfferItemModel>(dt, "ReOfferItem");
+                    }
+
+                }
+
+                return View(model);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
+
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            //model.Mode = "Search";
+            var model = new ReOfferItemModel();
+            model = await _IReofferItem.GetDashBoardDetailData(FromDate, ToDate, ReportType);
+            if (ReportType == "SUMMARY")
+            {
+                return PartialView("_DashBoardSummaryGrid", model);
+            }
+            else
+            {
+                return PartialView("_DashBoardDetailGrid", model);
+            }
+            return null;
+
+        }
+        public async Task<IActionResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName, string SummaryDetail, string FromDate = "", string ToDate = "", string SlipNo = "", string PartCode = "", string ItemName = "", string BatchNo = "")
+        {
+            var Result = await _IReofferItem.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName).ConfigureAwait(false);
+
+            if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+            return RedirectToAction("ReOfferItemDashBoard", new { Flag = "false", FromDate = FromDate, ToDate = ToDate, SlipNo = SlipNo, PartCode = PartCode, ItemName = ItemName, BatchNo = BatchNo, SummaryDetail = SummaryDetail });
+        }
 
     }
 }
