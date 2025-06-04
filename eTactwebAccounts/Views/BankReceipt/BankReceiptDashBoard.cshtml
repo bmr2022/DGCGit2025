@@ -330,7 +330,7 @@
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
                     $.each(obj.Result, function (key, val) {
-                        $('#LedgerName').append('<option value = "' + val.Accountcode + '"> ' + val.LedgerName + ' </option>');
+                        $('#LedgerName').append('<option value = "' + val.LedgerName + '"> ' + val.LedgerName + ' </option>');
                     });
                 },
                 error: function (xhr, status, error) {
@@ -349,7 +349,7 @@
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
                     $.each(obj.Result, function (key, val) {
-                        $('#Bank').append('<option value = "' + val.Accountcode + '"> ' + val.LedgerName + ' </option>');
+                        $('#Bank').append('<option value = "' + val.LedgerName + '"> ' + val.LedgerName + ' </option>');
                     });
                 },
                 error: function (xhr, status, error) {
