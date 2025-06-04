@@ -587,7 +587,7 @@
 
              
             FILLQCTYPE();
-            FILLMIRNO();
+            /* FILLMIRNO(); */
             FILLMIRYearCode();
             BINDSTORE();
             AddPassWord();
@@ -613,6 +613,9 @@
                 
             }
 
+        });
+        $('#QcType').change(function () { 
+            FILLMIRNO();
         });
         $('#MIRNo').change(function () { 
             FILLMIRYearCode();
@@ -783,11 +786,12 @@
         }
 
         function FILLMIRNO() {
-           
+            var ReofferMir = $('#QcType').val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FILLMIRNO")",
                 dataType: "json",
+                data: { ReofferMir: ReofferMir },
                 async: false,
                 
                 success: function (result, status, error) {

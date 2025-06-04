@@ -29,9 +29,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _IReOfferItemDAL.FILLQCTYPE();
         }
-        public async Task<ResponseResult> FILLMIRNO()
+        public async Task<ResponseResult> FILLMIRNO(string ReofferMir)
         {
-            return await _IReOfferItemDAL.FILLMIRNO();
+            return await _IReOfferItemDAL.FILLMIRNO( ReofferMir);
         }
         public async Task<ResponseResult> FILLMIRYearCode(string MIRNO)
         {

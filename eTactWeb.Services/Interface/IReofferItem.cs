@@ -12,7 +12,7 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> GETNEWENTRY(int ReofferYearcode);
         Task<ResponseResult> FILLQCTYPE();
-        Task<ResponseResult> FILLMIRNO();
+        Task<ResponseResult> FILLMIRNO(string ReofferMir);
         Task<ResponseResult> BINDSTORE();
         Task<ResponseResult> FILLMIRYearCode(string MIRNO);
        

@@ -68,7 +68,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FILLMIRNO()
+        public async Task<ResponseResult> FILLMIRNO(string ReofferMir)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -76,6 +76,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "FILLMIRNO"));
+                SqlParams.Add(new SqlParameter("@ReofferMir", ReofferMir));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPReofferMIRMainDetail", SqlParams);
             }

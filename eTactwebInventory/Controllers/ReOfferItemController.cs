@@ -317,9 +317,9 @@ namespace eTactwebInventory.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FILLMIRNO()
+        public async Task<JsonResult> FILLMIRNO(string ReofferMir)
         {
-            var JSON = await _IReofferItem.FILLMIRNO();
+            var JSON = await _IReofferItem.FILLMIRNO(ReofferMir);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
