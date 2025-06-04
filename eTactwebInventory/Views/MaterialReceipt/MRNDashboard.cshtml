@@ -272,54 +272,96 @@
             sessionStorage.removeItem('PoNoBack');
         });
 
-        var currentSearchColumn = null;
+        // var currentSearchColumn = null;
 
-        $("#search-box").on("keyup", function () {
-            var value = $(this).val().toLowerCase();
-            $("#mrnTbody tr").filter(function () {
-                if (currentSearchColumn !== null) {
-                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
-                    $(this).toggle(columnText.indexOf(value) > -1);
-                } else {
-                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
-                }
-            });
+        // $("#search-box").on("keyup", function () {
+        //     var value = $(this).val().toLowerCase();
+        //     $("#mrnTbody tr").filter(function () {
+        //         if (currentSearchColumn !== null) {
+        //             var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+        //             $(this).toggle(columnText.indexOf(value) > -1);
+        //         } else {
+        //             $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+        //         }
+        //     });
+        // });
+
+
+        // $(document).on("click", "th[data-columnno]", function () {
+        //     currentSearchColumn = $(this).data('columnno');
+        //     $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        // });
+
+          $('#sendToExcel').click(function () {
+            var reportType = $('#DashboardType').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/MaterialReceipt/ExportMaterialReceiptDataToExcel?ReportType=' + encodeURIComponent(reportType);
         });
 
-
-        $(document).on("click", "th[data-columnno]", function () {
-            currentSearchColumn = $(this).data('columnno');
-            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
         function loadPage(pageNumber) {
-
-             
             var dashboardType = $('#DashboardType').val();
-            var url = '';
-            var formData = $('#SParam').serialize();
-            if (dashboardType === "Summary") {
-                url = '@Url.Action("GetSearchData", "MaterialReceipt")';
-            } else if (dashboardType === "Detail") {
-                url = '@Url.Action("MRNDetailDashboard", "MaterialReceipt")';
+            var searchString = $('#search-box').val().trim(); // get the current search box value
+
+            let url = '';
+            let data = $('#SParam').serialize() + '&pageNumber=' + pageNumber;
+
+            if (searchString !== '') {
+                url = '/MaterialReceipt/GlobalSearch';
+                data += '&searchString=' + encodeURIComponent(searchString) + '&dashboardType=' + dashboardType;
+            } else {
+                if (dashboardType === "Summary") {
+                    url = '@Url.Action("GetSearchData", "MaterialReceipt")';
+                } else if (dashboardType === "Detail") {
+                    url = '@Url.Action("MRNDetailDashboard", "MaterialReceipt")';
+                }
             }
 
-
-            formData += '&pageNumber=' + pageNumber;
-
-            // formData.push({ name: 'pageNumber', value: pageNumber });
-            console.log("Fromdata ", formData)
             $.ajax({
                 type: 'GET',
                 url: url,
-                data: formData,
+                data: data,
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
                     $('#totalRows').text($('#gateDashboardtable tr').length);
-                    //countAllTotal();
+                },
+                error: function () {
+                    console.error("Error loading data.");
                 }
             });
         }
+
+
+
+        // function loadPage(pageNumber) {
+
+             
+        //     var dashboardType = $('#DashboardType').val();
+        //     var url = '';
+        //     var searchString = $('#search-box').val();
+        //     var formData = $('#SParam').serialize();
+        //     if (dashboardType === "Summary") {
+        //         url = '@Url.Action("GetSearchData", "MaterialReceipt")';
+        //     } else if (dashboardType === "Detail") {
+        //         url = '@Url.Action("MRNDetailDashboard", "MaterialReceipt")';
+        //     }
+
+
+        //     formData += '&pageNumber=' + pageNumber;
+
+        //     // formData.push({ name: 'pageNumber', value: pageNumber });
+        //     console.log("Fromdata ", formData)
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: url,
+        //         data: formData,
+        //         success: function (result) {
+        //             $('#divDashboardGrid').empty();
+        //             $('#divDashboardGrid').html(result);
+        //             $('#totalRows').text($('#gateDashboardtable tr').length);
+        //             //countAllTotal();
+        //         }
+        //     });
+        // }
         var currentSearchColumn = null;
         $("#search-box").on("input", function () {
              
@@ -542,11 +584,14 @@
             });
         }
 
-        $('#sendToExcel').click(function () {
-            $("#MRNTable").table2excel({
-                filename: "MRNData.xls"
-            });
-        });
+        // $('#sendToExcel').click(function () {
+        //     $("#MRNTable").table2excel({
+        //         filename: "MRNData.xls"
+        //     });
+        // });
+
+
+      
 
         $(document).on("click", ".sortCol", function () {
              ;
