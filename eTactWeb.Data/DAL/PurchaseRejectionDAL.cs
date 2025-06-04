@@ -752,7 +752,7 @@ namespace eTactWeb.Data.DAL
                                                      Currency = dr["Currency"].ToString(),
                                                      VendoreAddress = dr["VendoreAddress"].ToString(),
                                                      StateName = dr["StateName"].ToString(),
-                                                     BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
+                                                     BalanceSheetClosed = "N",
                                                      UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
                                                      UpdatedOn = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdationDate"]),
                                                      LastUpdationDate = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? string.Empty : dr["LastUpdationDate"].ToString(),
@@ -786,8 +786,8 @@ namespace eTactWeb.Data.DAL
                 {
                     DateTime now = DateTime.Now;
                     DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-                    DateTime fromDate = CommonFunc.ParseSafeDate(model.FromDate);
-                    DateTime toDate = CommonFunc.ParseSafeDate(model.ToDate);//DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    string fromDate = CommonFunc.ParseFormattedDate(model.FromDate.ToString());
+                    string toDate = CommonFunc.ParseFormattedDate(model.ToDate.ToString());//DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)
                     SqlCommand oCmd = new SqlCommand("AccSPPurchaseRejectionMainDetail", myConnection)
                     {
                         CommandType = CommandType.StoredProcedure
@@ -843,7 +843,7 @@ namespace eTactWeb.Data.DAL
                                                                     Currency = dr["Currency"].ToString(),
                                                                     VendoreAddress = dr["VendoreAddress"].ToString(),
                                                                     StateName = dr["StateName"].ToString(),
-                                                                    BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
+                                                                    BalanceSheetClosed = "N",
                                                                     UpdatedByEmpName = dr["UpdatedByEmpName"].ToString(),
                                                                     UpdatedOn = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["LastUpdationDate"]),
                                                                     LastUpdationDate = string.IsNullOrEmpty(dr["LastUpdationDate"].ToString()) ? string.Empty : dr["LastUpdationDate"].ToString(),
@@ -868,6 +868,46 @@ namespace eTactWeb.Data.DAL
                 oDataSet.Dispose();
             }
             return DashBoardData;
+        }
+        public async Task<ResponseResult> CheckLockYear(int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "CheckLockYear"));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@Module", "purchase"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_PurchaseBillMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetFormRights(int userId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userId));
+                SqlParams.Add(new SqlParameter("@MainMenu", "PO"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
     }
 }

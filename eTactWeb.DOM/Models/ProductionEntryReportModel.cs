@@ -26,6 +26,8 @@ namespace eTactWeb.DOM.Models
         public string? Process {  get; set; }
         public string? ReportType { get; set; }
         public string? ShiftName { get; set; }
+        public int? TransStoreID { get; set; }
+        public int? TransWCID { get; set; }
         public IList<ProductionEntryReportDetail>? ProductionEntryReportDetail { get; set; }
     }
     public class ProductionEntryReportDetail

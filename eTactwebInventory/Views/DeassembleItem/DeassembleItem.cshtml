@@ -661,7 +661,7 @@
                 $('#FGConvQty').val($(this).val());
             });
             $('#FGConvQty').on('input', function () {
-                 calculateDeassQty();
+                 /* calculateDeassQty(); */
             });
              console.log('after2' + $('#TotalStock').val());
 
@@ -922,7 +922,7 @@
            /*  FillRMStockBatchNo();
             FillRMStockUniqueBatchNo(); */
             BomQty();
-            calculateDeassQty();
+            /* calculateDeassQty(); */
         }
 
         function RMPartCodeChange(ID) {
@@ -933,7 +933,7 @@
            /*  FillRMStockBatchNo();
             FillRMStockUniqueBatchNo(); */
             BomQty();
-            calculateDeassQty();
+            /* calculateDeassQty(); */
         }
 
         function SetRMPartCodeItemName(ID) {
@@ -1156,6 +1156,28 @@
 
             /* if (!ValidateGrid()) return; */
             var RowCount = $('#DivRMAndBomDetailGrid tr').length;
+
+            if (RowCount == 0) {
+                $.notify('Please Add Item in Grid', "error");
+                return;
+            }
+            if (RowCount > 0) {
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#Deassembleqty' + i).val() == '' || $('#Deassembleqty' + i).val() == '0') {
+                        $.notify('Please Enter Deassemble Qty', "error");
+                        return;
+                    }
+                }
+            }
+            if (RowCount > 0) {
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#StoreName' + i).val() == '' || $('#StoreName' + i).val() == null) {
+                        $.notify('Please Select Store', "error");
+                        return;
+                    }
+                }
+            }
+
             for (var i = 1; i <= RowCount; i++) {
                 ItemData.push({
                     "RMItemCode": parseInt($('#Item_Code' + i).val()),
@@ -2405,10 +2427,14 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#BomQty').val("");
+                        $('#DeassQty').val("");
+                        $('#IdealDeassQty').val("");
                         $('#BomQty').val(obj.Result[0].bomqty);
+                        $('#DeassQty').val(obj.Result[0].bomqty);
+                        $('#IdealDeassQty').val(obj.Result[0].bomqty);
                        
                     }
-                    calculateDeassQty();
+                    /* calculateDeassQty(); */
                 }
             });
         }

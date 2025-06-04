@@ -834,10 +834,10 @@
         }); */
 
 
-        $('#sendToExcel').click(function () {
-            var reportType = $('#ReportMode').val(); // assuming there's a dropdown or input with id="ReportType"
-            window.location.href = '/PORegister/ExportPOStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
-        });
+            $('#sendToExcel').click(function () {
+                var reportType = $('#ReportMode').val(); // assuming there's a dropdown or input with id="ReportType"
+                window.location.href = '/PORegister/ExportPOStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
+            });
 
         function GetServerDate() {
             $.ajax({

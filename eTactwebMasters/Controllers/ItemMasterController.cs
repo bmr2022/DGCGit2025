@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.Drawing.Printing;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers;
 
@@ -121,6 +122,178 @@ public class ItemMasterController : Controller
         model.MasterList = allData.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         return PartialView("_IMGridAllColumns", model);
     }
+    public IActionResult ExportItemMasterToExcel(bool showAll)
+     {
+        string modelListJson = HttpContext.Session.GetString("KeyItemListSearch");
+
+        List<ItemMasterModel> modelList = new List<ItemMasterModel>();
+        if (!string.IsNullOrEmpty(modelListJson))
+        {
+            modelList = JsonConvert.DeserializeObject<List<ItemMasterModel>>(modelListJson);
+        }
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Item Master");
+
+        // Choose export method based on 'showAll'
+        if (showAll)
+        {
+            EXPORT_AllColumnsGrid(worksheet, modelList);
+        }
+        else
+        {
+            EXPORT_SearchGrid(worksheet, modelList);
+        }
+
+        worksheet.Columns().AdjustToContents();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        return File(
+            stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            "ItemMasterReport.xlsx"
+        );
+    }
+
+    private void EXPORT_SearchGrid(IXLWorksheet sheet, IList<ItemMasterModel> list)
+    {
+        string[] headers = {
+                "#Sr","Item Code", "Part Code", "Item Name", "Item Group", "Item Category", "Unit", "Alt.Unit", "HSN Code",
+        "Minimum Level", "Maximum Level", "Std Packing", "Prod In Workcenter", "Prod Inhouse JW",
+        "Batch No", "Entry Date", "Created By", "Created On", "Updated By", "Updated On",
+        "Old PartCode", "Voltage Value", "Serial No", "Package"
+            };
+
+
+
+        for (int i = 0; i < headers.Length; i++)
+            sheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2, srNo = 1;
+        foreach (var item in list)
+        {
+            sheet.Cell(row, 1).Value = srNo++;
+            sheet.Cell(row, 2).Value = item.Item_Code;
+            sheet.Cell(row, 3).Value = item.PartCode;
+            sheet.Cell(row, 4).Value = item.Item_Name;
+            sheet.Cell(row, 5).Value = item.ItemGroup;
+            sheet.Cell(row, 6).Value = item.TypeName;
+            sheet.Cell(row, 7).Value = item.Unit;
+            sheet.Cell(row, 8).Value = item.AlternateUnit;
+            sheet.Cell(row, 9).Value = item.HSNNO;
+            sheet.Cell(row, 10).Value = item.MinimumLevel;
+            sheet.Cell(row, 11).Value = item.MaximumLevel;
+            sheet.Cell(row, 12).Value = item.StdPacking;
+            sheet.Cell(row, 13).Value = item.ProdWorkCenterDescription;
+            sheet.Cell(row, 14).Value = item.ProdInhouseJW;
+            sheet.Cell(row, 15).Value = item.BatchNO;
+            sheet.Cell(row, 16).Value = item.EntryDate;
+            sheet.Cell(row, 17).Value = item.CreatedByName;
+            sheet.Cell(row, 18).Value = item.CreatedOn?.ToString("yyyy-MM-dd");
+            sheet.Cell(row, 19).Value = item.UpdatedByName;
+            sheet.Cell(row, 20).Value = item.UpdatedOn?.ToString("yyyy-MM-dd");
+            sheet.Cell(row, 21).Value = item.SerialNo;
+            sheet.Cell(row, 22).Value = item.VoltageVlue;
+            sheet.Cell(row, 23).Value = item.OldPartCode;
+            sheet.Cell(row, 24).Value = item.Package;
+
+            row++;
+        }
+    }
+
+    private void EXPORT_AllColumnsGrid(IXLWorksheet sheet, IList<ItemMasterModel> list)
+    {
+        string[] headers = {
+                "#Sr","Item_Code", "PartCode", "Item_Name", "ParentCode", "ItemGroup", "EntryDate",
+    "LastUpdatedDate", "LeadTime", "CC", "Unit", "SalePrice", "PurchasePrice",
+    "CostPrice", "WastagePercent", "WtSingleItem", "NoOfPcs", "QcReq", "TypeName",
+    "ItemType", "ImageURL", "UID", "DrawingNo", "MinimumLevel", "MaximumLevel",
+    "ReorderLevel", "YearCode", "AlternateUnit", "RackID", "BinNo", "ItemSize",
+    "Colour", "NeedPO", "StdPacking", "PackingType", "ModelNo", "YearlyConsumedQty",
+    "DispItemName","PurchaseAccountcode","SaleAccountcode","MinLevelDays","MaxLevelDays","EmpName",
+    "DailyRequirment","Stockable","WipStockable","Store","ProductLifeInus","ItemDesc","MaxWipStock",
+    "NeedSo","BomRequired","HSNNO","Universal Part Code","Universal Description","CreatedByName","CreatedOn","UpdatedByName",
+    "UpdatedOn","Active"
+            };
+
+
+
+        for (int i = 0; i < headers.Length; i++)
+            sheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2, srNo = 1;
+        foreach (var item in list)
+        {
+            sheet.Cell(row, 1).Value = srNo++;
+            sheet.Cell(row, 2).Value = item.Item_Code;
+            sheet.Cell(row, 3).Value = item.PartCode;
+            sheet.Cell(row, 4).Value = item.Item_Name;
+            sheet.Cell(row, 5).Value = item.ParentCode;
+            sheet.Cell(row, 6).Value = item.ItemGroup;
+            sheet.Cell(row, 7).Value = item.EntryDate;
+            sheet.Cell(row, 8).Value = item.LastUpdatedDate;
+            sheet.Cell(row, 9).Value = item.LeadTime;
+            sheet.Cell(row, 10).Value = item.CC;
+            sheet.Cell(row, 11).Value = item.Unit;
+            sheet.Cell(row, 12).Value = item.SalePrice;
+            sheet.Cell(row, 13).Value = item.PurchasePrice;
+            sheet.Cell(row, 14).Value = item.CostPrice;
+            sheet.Cell(row, 15).Value = item.WastagePercent;
+            sheet.Cell(row, 16).Value = item.WtSingleItem;
+            sheet.Cell(row, 17).Value = item.NoOfPcs;
+            sheet.Cell(row, 18).Value = item.QcReq;
+            sheet.Cell(row, 19).Value = item.ItemType;
+            sheet.Cell(row, 20).Value = item.TypeName;
+            sheet.Cell(row, 21).Value = item.ImageURL;
+            sheet.Cell(row, 22).Value = item.UID;
+            sheet.Cell(row, 23).Value = item.DrawingNo;
+            sheet.Cell(row, 24).Value = item.MinimumLevel;
+            sheet.Cell(row, 25).Value = item.MaximumLevel;
+            sheet.Cell(row, 26).Value = item.ReorderLevel;
+            sheet.Cell(row, 27).Value = item.YearCode;
+            sheet.Cell(row, 28).Value = item.AlternateUnit;
+            sheet.Cell(row, 29).Value = item.RackID;
+            sheet.Cell(row, 30).Value = item.BinNo;
+            sheet.Cell(row, 31).Value = item.ItemSize;
+            sheet.Cell(row, 32).Value = item.Colour;
+            sheet.Cell(row, 33).Value = item.NeedPO;
+            sheet.Cell(row, 34).Value = item.StdPacking;
+            sheet.Cell(row, 35).Value = item.PackingType;
+            sheet.Cell(row, 36).Value = item.ModelNo;
+            sheet.Cell(row, 37).Value = item.YearlyConsumedQty;
+            sheet.Cell(row, 38).Value = item.DispItemName;
+            sheet.Cell(row, 39).Value = item.PurchaseAccountcode;
+            sheet.Cell(row, 40).Value = item.SaleAccountcode;
+            sheet.Cell(row, 41).Value = item.MinLevelDays;
+            sheet.Cell(row, 42).Value = item.MaxLevelDays;
+            sheet.Cell(row, 43).Value = item.EmpName;
+            sheet.Cell(row, 44).Value = item.DailyRequirment;
+            sheet.Cell(row, 45).Value = item.Stockable;
+            sheet.Cell(row, 46).Value = item.WipStockable;
+            sheet.Cell(row, 47).Value = item.Store;
+            sheet.Cell(row, 48).Value = item.ProductLifeInus;
+            sheet.Cell(row, 49).Value = item.ItemDesc;
+            sheet.Cell(row, 50).Value = item.MaxWipStock;
+            sheet.Cell(row, 51).Value = item.NeedSo;
+            sheet.Cell(row, 52).Value = item.BomRequired;
+            sheet.Cell(row, 53).Value = item.HSNNO;
+            sheet.Cell(row, 54).Value = item.UniversalPartCode;
+            sheet.Cell(row, 55).Value = item.UniversalDescription;
+            sheet.Cell(row, 56).Value = item.CreatedByName;
+            sheet.Cell(row, 57).Value = item.CreatedOn?.ToString("yyyy-MM-dd");
+            sheet.Cell(row, 58).Value = item.UpdatedByName;
+            sheet.Cell(row, 59).Value = item.UpdatedOn?.ToString("yyyy-MM-dd");
+            sheet.Cell(row, 60).Value = item.Active;
+
+
+            row++;
+        }
+    }
+
+
     public async Task<JsonResult> GetFormRights()
     {
         var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));

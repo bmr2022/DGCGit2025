@@ -201,7 +201,7 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    if (ReportType == "BOMSTOCK"|| ReportType == "BOMSTOCK(WITH SUB BOM)"|| ReportType == "BOMSTOCK(DIRECT CHILD)")
+                    if (ReportType == "BOMSTOCK"|| ReportType == "BOMSTOCK(WITH SUB BOM)"|| ReportType == "BOMSTOCK(DIRECT CHILD)"||ReportType== "BOMTREE")
                     {
                         command.Parameters.AddWithValue("@Flag", ReportType);
                         command.Parameters.AddWithValue("@CurrentDate", currentDt);
@@ -250,7 +250,8 @@ namespace eTactWeb.Data.DAL
                                                         FGItemName = row["FGItemName"].ToString(),
                                                         RMPartCode = row["RMPartCode"].ToString(),
                                                         RMItemName = row["RMItemName"].ToString(),
- 
+                                                        StoreStock = Convert.ToDouble(row["StoreStock"]),
+
                                                         NetReqQty = Convert.ToDouble (row["NetReqQty"]),
                                                         RMQty = Convert.ToDouble(row["RMQty"]),
                                                          BomRevNo = Convert.ToInt32(row["BomRevNo"].ToString()),

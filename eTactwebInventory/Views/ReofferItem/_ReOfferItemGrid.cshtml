@@ -1,0 +1,99 @@
+﻿@model eTactWeb.DOM.Models.ReOfferItemModel
+
+
+@if (Model.ReofferItemDetail == null)
+{
+    <tr class="text-center">
+        <td colspan="19" class="text-black-50"><strong class="text-danger">NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.ReofferItemDetail)
+    {
+        Cntr = Cntr + 1;
+
+        <tr class="small @item.SeqNo" style="white-space:nowrap">
+            <td style="width:4%">
+                @if (Model.Mode == "V" && Model.ID > 0)
+                {
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+
+                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+
+            </td>
+
+            @* <th data-seqno="@item.SeqNo">@item.SeqNo <input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></th> *@
+            <td>@Cntr<input type="hidden" id="SeqNo-@Cntr" value="@item.SeqNo" /></td>
+            <td>@item.PartCode</td>
+            <td>@item.ItemName</td>
+            <td>@item.PONo</td>
+            <td>@item.POYearCode</td>
+            <td>@item.PODate</td>
+            <td>@item.SchNo</td>
+            <td>@item.SchYearCode</td>
+            <td>@item.schdate</td>
+            <td>@item.Unit</td>
+            <td>@item.AltUnit</td>
+            <td>@item.BillQty</td>
+            <td>@item.RecQty</td>
+            <td>@item.AltRecQty</td>
+            <td>@item.PrevAcceptedQty</td>
+            <td>@item.AcceptedQty</td>
+            <td>@item.AltAcceptedQty</td>
+            <td>@item.OkRecStoreName</td>
+            <td>@item.DeviationQty</td>
+            <td>@item.ResponsibleEmpForDeviation</td>
+            <td>@item.PreviousRejectedQty</td>
+            <td>@item.RejectedQty</td>
+            <td>@item.AltRejectedQty</td>
+            <td>@item.RejRecStoreName</td>
+            <td>@item.Remarks</td>
+            <td>@item.Defaulttype</td>
+            <td>@item.ApprovedByEmpName</td>
+            <td>@item.PreviousHoldQty</td>
+            <td>@item.HoldQty</td>
+            <td>@item.HoldStoreName</td>
+            <td>@item.ProcessId</td>
+            <td>@item.PreviousReworkqty</td>
+            <td>@item.Reworkqty</td>
+            <td>@item.RewokStoreName</td>
+            <td>@item.Color</td>
+            <td>@item.ItemSize</td>
+            <td>@item.ResponsibleFactor</td>
+            <td>@item.SupplierBatchno</td>
+            <td>@item.shelfLife</td>
+            <td>@item.BatchNo</td>
+            <td>@item.uniqueBatchno</td>
+            <td>@item.AllowDebitNote</td>
+            <td>@item.Rate</td>
+            <td>@item.rateinother</td>
+            <td>@item.FilePath</td>
+
+        </tr>
+
+    }
+}
+
+

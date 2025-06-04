@@ -179,6 +179,7 @@ namespace eTactWeb.Data.DAL
                                                            RejectedQty = Convert.ToDecimal(dr["RejectedQty"].ToString()),
                                                            HoldQty = Convert.ToDecimal(dr["HoldQty"].ToString()),
                                                            Reworkqty = Convert.ToDecimal(dr["ReworkQty"].ToString()),
+                                                           DeviationQty = Convert.ToDecimal(dr["DeviationQty"].ToString()),
                                                            BillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
                                                            RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
                                                            Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),

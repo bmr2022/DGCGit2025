@@ -1815,6 +1815,25 @@
                         </li>
 
                         <li><hr class="dropdown-divider"></li>
+                        <li>
+                            <a class="dropdown-item" href="#">ReOffer Item &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="ReOfferItem" asp-controller="ReOfferItem" id="">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                        ReOffer 
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item " asp-action="ReOfferItemDashBoard" asp-controller="ReOfferItem">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                    <input class="userRightsPermission" type="hidden" value="ReOfferItem" />
+
+                                </li>
+                            </ul>
+                        </li>
                        @*  <li>
                             <a class="dropdown-item" href="#">Incoming Inspection &raquo; </a>
                             <ul class="submenu dropdown-menu">

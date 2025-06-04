@@ -12,6 +12,7 @@ namespace eTactWeb.Services.Interface
     {
         Task<ResponseResult> FillBranch();
         Task<ResponseResult> GetIsStockable(int ItemCode);
+        Task<ResponseResult> GETDepartMent(string ReqNo,int ReqYearCode);
         Task<ResponseResult> SaveIssueWithoutBom(IssueWithoutBom model, DataTable MRGrid);
 
         Task<ResponseResult> DeleteByID(int ID, int YC, int ActualEntryBy, string EntryByMachine);

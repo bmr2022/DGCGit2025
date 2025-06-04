@@ -22,11 +22,13 @@ namespace eTactWeb.Controllers
         private readonly IMemoryCache _MemoryCache;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public PurchaseRejectionController(IPurchaseRejection purchRej, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger)
+        public PurchaseRejectionController(IPurchaseRejection purchRej, IDataLogic iDataLogic, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger, IMemoryCache memoryCache)
         {
             _purchRej = purchRej;
+            _IDataLogic = iDataLogic;
             _IWebHostEnvironment = IWebHostEnvironment;
             _logger = logger;
+            _MemoryCache = memoryCache;
         }
 
         [HttpGet]
@@ -554,8 +556,8 @@ namespace eTactWeb.Controllers
             DateTime today = DateTime.Now;
             var commonparams = new Dictionary<string, object>()
         {
-            { "@Fromdate", firstDayOfMonth },
-            { "@ToDate", today }
+            { "@fromBilldate", ParseFormattedDate(firstDayOfMonth.ToString()) },
+            { "@ToBilldate", ParseFormattedDate(today.ToString()) }
         };
             MainModel = await BindDashboardList(MainModel, commonparams);
             MainModel.FromDate = new DateTime(DateTime.Today.Year, 4, 1).ToString("dd/MM/yyyy").Replace("-", "/");
@@ -624,7 +626,7 @@ namespace eTactWeb.Controllers
                 Size = 1024,
             };
 
-            //_MemoryCache.Set("KeyPurchaseRejectionlList", modelList, cacheEntryOptions);
+            _MemoryCache.Set("KeyPurchaseRejectionlList", modelList, cacheEntryOptions);
             return PartialView("_PRDashBoardGrid", model);
         }
         public IActionResult GlobalSearch(string searchString, int pageNumber = 1, int pageSize = 50)
@@ -679,21 +681,22 @@ namespace eTactWeb.Controllers
             MainModel.VoucherNoList = new List<TextValue>();
             MainModel.InvoiceNoList = new List<TextValue>();
             MainModel.PartCodeList = new List<TextValue>();
-            var vendornameparams = new Dictionary<string, object>() { { "@flag", "FILLVENDORNAMEASHBOARD" } };
+            var vendornameparams = new Dictionary<string, object>() { { "@Flag", "FILLVENDORNAMEASHBOARD" } };
             vendornameparams.AddRange(commonparams);
-            //MainModel.VendorNameList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vendornameparams, false, true);
+            MainModel.VendorNameList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vendornameparams, true);
 
-            var vouchnoparams = new Dictionary<string, object>() { { "@flag", "FILLVOUCHERDASHBOARD" } };
+            var vouchnoparams = new Dictionary<string, object>() { { "@Flag", "FILLVOUCHERDASHBOARD" } };
             vouchnoparams.AddRange(commonparams);
-            //MainModel.VoucherNoList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vouchnoparams, true);
+            MainModel.VoucherNoList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vouchnoparams, false, false);
 
-            var invparams = new Dictionary<string, object>() { { "@flag", "FILLINVOICEDASHBOARD" } };
+            var invparams = new Dictionary<string, object>() { { "@Flag", "FILLINVOICEDASHBOARD" } };
             invparams.AddRange(commonparams);
-            //MainModel.InvoiceNoList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", invparams, true);
+            MainModel.InvoiceNoList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", invparams, true, false);
 
-            var partcodeparams = new Dictionary<string, object>() { { "@flag", "FILLPartCodeDASHBOARD" } };
+            var partcodeparams = new Dictionary<string, object>() { { "@Flag", "FILLPartCodeDASHBOARD" } };
             partcodeparams.AddRange(commonparams);
-            //MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, true);
+            //MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, false, false);
+            MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, true);
             return MainModel;
         }
         public async Task<JsonResult> NewEntryId(int YearCode)
@@ -1042,6 +1045,19 @@ namespace eTactWeb.Controllers
             }
 
             return PartialView("_PurchaseRejectionGrid", MainModel);
+        }
+        public async Task<JsonResult> CheckLockYear(int YearCode)
+        {
+            var JSON = await _purchRej.CheckLockYear(YearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _purchRej.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
     }
 }

@@ -454,37 +454,15 @@ namespace eTactWeb.Controllers
         {
             try
             {
-                DateTime time = DateTime.Now;
-                string format = "MMM ddd d HH:mm yyyy";
-                string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime time = DateTime.Now;
+                //string format = "MMM ddd d HH:mm yyyy";
+                //string formattedDate = time.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
 
-                var dt = time.ToString(format);
-                return Json(formattedDate);
-                //string apiUrl = "https://worldtimeapi.org/api/ip";
+                //var dt = time.ToString(format);
+                var time = CommonFunc.ParseFormattedDate(DateTime.Now.ToString());
+                return Json(DateTime.Now.ToString("yyyy-MM-dd"));
+                // return Json(formattedDate);
 
-                //using (HttpClient client = new HttpClient())
-                //{
-                //    HttpResponseMessage response = await client.GetAsync(apiUrl);
-
-                //    if (response.IsSuccessStatusCode)
-                //    {
-                //        string content = await response.Content.ReadAsStringAsync();
-                //        JObject jsonObj = JObject.Parse(content);
-
-                //        string datetimestring = (string)jsonObj["datetime"];
-                //        var formattedDateTime = datetimestring.Split(" ")[0];
-
-                //        DateTime parsedDate = DateTime.ParseExact(formattedDateTime, "yyyy-MM-dd", CultureInfo.InvariantCulture);
-                //        string formattedDate = parsedDate.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture);
-
-                //        return Json(formattedDate);
-                //    }
-                //    else
-                //    {
-                //        string errorContent = await response.Content.ReadAsStringAsync();
-                //        throw new HttpRequestException($"Failed to fetch server date and time. Status Code: {response.StatusCode}. Content: {errorContent}");
-                //    }
-                //}
             }
             catch (HttpRequestException ex)
             {

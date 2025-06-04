@@ -347,23 +347,23 @@
 
             var cntId = e.target.id;
             if (cntId == 'ByprodItemCode1') {
-                AltItemNameChange(cntId);
+                AltItemNameChange1(cntId);
             }
             else {
-                AltPartCodeChange(cntId);
+                AltPartCodeChange1(cntId);
             }
         });
 
-        function AltItemNameChange(ID) {
-            SetAltPartCodeItemName(ID);
+        function AltItemNameChange1(ID) {
+            SetAltPartCodeItemName1(ID);
         }
 
-        function AltPartCodeChange(ID) {
-            $.when(SetAltPartCodeItemName(ID)).done(function () {
+        function AltPartCodeChange1(ID) {
+            $.when(SetAltPartCodeItemName1(ID)).done(function () {
             });
         }
 
-        function SetAltPartCodeItemName(ID) {
+        function SetAltPartCodeItemName1(ID) {
             if (!ID) return;
             else {
                 var v = $('#' + ID).select2('val');

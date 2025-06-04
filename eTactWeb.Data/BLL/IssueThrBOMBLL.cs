@@ -41,6 +41,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueThrBOMDAL.FillProjectNo();
         }
+        public async Task<ResponseResult> GetReqByName(string reqno, int yearcode)
+        {
+            return await _IssueThrBOMDAL.GetReqByName( reqno,  yearcode);
+        }
         public async Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
         {
             return await _IssueThrBOMDAL.FillLotandTotalStock(ItemCode, StoreId, TillDate, BatchNo, UniqBatchNo);

@@ -265,7 +265,7 @@
         $('#sendToPDF').click(async function () {
              
             const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
 
             // Get dynamic values
             var reportTypeText = $('#ReportType').find(":selected").text();
@@ -451,18 +451,17 @@
                 break;
                 case 'Short Excess Register':
                     headers = [
-                        "Sr#", "MRN No", "MRN Date", "MRN Type", "Gate No", "Gate Date", "Invoice No", "Invoice Date", "Account Name",
-                        "PO No", "PO Date", "Schedule No", "Part Code", "Item Name", "Bill Quantity", "Received Quantity",
-                        "Short/Excess Quantity", "Unit", "Rate", "Total Amount", "Net Amount", "Currency", "Department Name",
-                        "Alt Quantity", "Alt Unit", "Batch No", "Unique Batch No"
+                        "Sr#", "MRN No", "MRN Date", "InvNo", "Invoice Date", "Account Name",
+                         "Part Code", "Item Name", "Bill Qty", "Rec Qty",
+                        "Sh/ExQty", "Rate", "Total amt"
                     ];
 
                     console.log("Data:", rows);
                     
                     body = rows.map((r, i) => [
-                        i + 1, r.mrnNo, r.mrnDate, r.mrnType, r.gateNo, r.gDate, r.invoiceNo, r.invoiceDate, r.accountName,
-                        r.poNo, r.poDate, r.schNo, r.partCode, r.itemName, r.billQty, r.recQty, r.shortExcessQty, r.unit,
-                        r.rate, r.totalAmt, r.netAmount, r.currency, r.depName, r.altQty, r.altUnit, r.batchNo, r.uniqueBatchNo
+                        i + 1, r.mrnNo, parseDateToFormat(r.mrnDate), r.invoiceNo, r.invoiceDate, r.account_Name,
+                        r.partCode, r.itemName, r.billQty, r.recQty, r.shortExcessQty, 
+                        r.rate, r.totalAmt
                     ]);
                 break;
 
@@ -490,16 +489,19 @@
             }
 
             // Generate table with custom column width handling
+            let finalY = 0;
             doc.autoTable({
                 startY: currentY + 15, // Adjust the starting Y position
                 head: [headers],
                 body: body,
                 styles: { cellWidth: 'wrap' },
                 theme: 'grid',
-                margin: { left: 40, right: 40 },
+                margin: { left: 5, right: 5 },
+                tableWidth: 'wrap',
                 styles: {
-                    fontSize: 5,           
-                    cellPadding: 1,        
+                    fontSize: 9,
+                    textColor: [0, 0, 0],
+                    cellPadding: 2,        
                     overflow: 'linebreak',
                     halign: 'center',
                     valign: 'middle'
@@ -510,7 +512,7 @@
                     fontStyle: 'bold'
                 },
                 tableWidth: 'auto',
-                columnStyles: {
+                /* columnStyles: {
                     0: { cellWidth: 30 },   // Column 1: Sr#
                     1: { cellWidth: 50 },   // Column 2: VendorName
                     2: { cellWidth: 50 },   // Column 3: MRNNo
@@ -534,32 +536,27 @@
                     20: { cellWidth: 40 },  // Column 21: ActualEntryDate
                    
                    
-                },
-                showHead: 'everyPage'
+                }, */
+                showHead: 'everyPage',
+                didDrawPage: function (data) {
+                    finalY = data.cursor.y; // Capture bottom of table
+                }
 
 
             });
-            // Step 2: Footer only on last page, aligned left, center, right
-            const pageCount = doc.internal.getNumberOfPages();
-            doc.setPage(pageCount); // Go to last page
-
+            const footerStartY = finalY + 30;
             const pageWidth = doc.internal.pageSize.getWidth();
-            const footerY = doc.internal.pageSize.getHeight() - 30;
 
             doc.setFontSize(10);
+            doc.text("Issued By: ___________________", 40, footerStartY);
 
-            // Left
-            doc.text("Issued By: ___________________", 40, footerY);
-
-            // Center (centered around middle of page)
             const centerText = "Checked By: ___________________";
             const centerX = pageWidth / 2 - (doc.getTextWidth(centerText) / 2);
-            doc.text(centerText, centerX, footerY);
+            doc.text(centerText, centerX, footerStartY);
 
-            // Right
             const rightText = "Received By: ___________________";
             const rightX = pageWidth - doc.getTextWidth(rightText) - 40;
-            doc.text(rightText, rightX, footerY);
+            doc.text(rightText, rightX, footerStartY);
 
             // Save the PDF
             doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);

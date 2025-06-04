@@ -341,7 +341,7 @@
         function handleReportType() {
             var reportType = $('#ReportType').val();
              
-            if (reportType === "BOMTREE" || reportType === "DirectBOM") {
+            if (  reportType === "DirectBOM") {
                 /* GetBomTreeDetailsData(); // Call details function for BOMTREE and DirectBOM */
                 $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields
                 $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields
@@ -353,7 +353,14 @@
                 if ($('#StoreName').val() === "") { // Assuming an input field for Center Name
                     $.notify("Store Name is required.", "warn");
                 }
-            } else {
+                
+            }
+            else if (reportType === "BOMTREE") {
+                $('#BomStokeStoreName').show(); // Show BOM STOCK fields
+                $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields
+                $('#bomStokeCenter').hide(); // Hide BOM STOCK fields
+            }
+            else {
                 $('#BomStokeStoreName').hide(); // Hide BOM STOCK fields for other report types
                 $('#BomStokeCalculateQty').hide(); // Hide BOM STOCK fields for other report types
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields for other report types

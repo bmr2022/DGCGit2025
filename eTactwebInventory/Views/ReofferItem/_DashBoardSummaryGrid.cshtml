@@ -1,0 +1,170 @@
+﻿@model eTactWeb.DOM.Models.ReOfferItemModel;
+
+<div class="table-responsive" style="max-height:350px;">
+    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+            <tr>
+                <th>Sr#</th>
+                <th style="width:50px !important">Action</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReofferEntryId</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReofferYearcode</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReofferNo</th>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReofferEntrydate</th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QcType</th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MirEntryid</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIRNo</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIRDate</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MIRYearCode</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRNNO</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRNDate</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MrnYearCode</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>MRNJOBWORK</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillNo</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillDate</th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldRejrewStatus</th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccountCode</th>
+                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccountName</th>
+                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>QCStore</th>
+                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CC</th>
+                <th data-columnno="21" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UID</th>
+                <th data-columnno="22" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EnteredByEmpId</th>
+                <th data-columnno="23" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EnteredByEmpName</th>
+                <th data-columnno="24" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEntryDate</th>
+                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ActualEnteredBy</th>
+                <th data-columnno="26" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryByMachineName</th>
+                <th data-columnno="27" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedBy</th>
+                <th data-columnno="28" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedByName</th>
+                <th data-columnno="29" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>UpdatedOn</th>
+            </tr>
+        </thead>
+        <tbody id="gateDashboardtable">
+            @{
+                var Cntr = 0;
+                if (Model.reofferdashboard == null || Model.reofferdashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="6" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.reofferdashboard)
+                    {
+                        Cntr = Cntr + 1;
+                        <tr onclick="selection(this)">
+                            <td>@Cntr</td>
+                            <td style="text-align:center;white-space: nowrap;">
+                                <div id="container">
+                                    <div id="viewCursorDiv-@Cntr">
+                                        <a class="table-link link-success" asp-route-ID="@item.ReofferEntryId" asp-action="ReOfferItem" asp-route-YC="@Model.ReofferYearcode" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="editCursorDiv-@Cntr">
+
+                                        <a class="table-link link-primary" asp-action="ReOfferItem" asp-route-Mode="U" asp-route-ID="@item.ReofferEntryId" asp-route-YC="@item.ReofferYearcode">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+
+                                    <div id="deleteCursorDiv-@Cntr">
+                                        <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.ReofferEntryId" asp-route-YC="@item.ReofferYearcode" asp-route-EntryDate="@item.ReofferEntrydate" asp-route-ActualEntryBy="@item.ActualEnteredBy" asp-route-MachineName="@item.EntryByMachineName">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>@item.ReofferEntryId</td>
+                            <td>@item.ReofferYearcode</td>
+                            <td>@item.ReofferNo</td>
+                            <td>@item.ReofferEntrydate</td>
+                            <td>@item.QcType</td>
+                            <td>@item.MirEntryid</td>
+                            <td>@item.MIRNo</td>
+                            <td>@item.MIRDate</td>
+                            <td>@item.MIRYearCode</td>
+                            <td>@item.MRNNO</td>
+                            <td>@item.MRNDate</td>
+                            <td>@item.MrnYearCode</td>
+                            <td>@item.MRNJOBWORK</td>
+                            <td>@item.BillNo</td>
+                            <td>@item.BillDate</td>
+                            <td>@item.HoldRejrewStatus</td>
+                            <td>@item.AccountCode</td>
+                            <td>@item.AccountName</td>
+                            <td>@item.QCStore</td>
+                            <td>@item.CC</td>
+                            <td>@item.UID</td>
+                            <td>@item.EnteredByEmpId</td>
+                            <td>@item.EnteredByEmpName</td>
+                            <td>@item.ActualEntryDate</td>
+                            <td>@item.ActualEnteredBy</td>
+                            <td>@item.EntryByMachineName</td>
+                            <td>@item.UpdatedBy</td>
+                            <td>@item.UpdatedByName</td>
+                            <td>@item.UpdatedOn</td>
+
+                        </tr>
+                    }
+                }
+            }
+        </tbody>
+    </table>
+</div>
+<center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    table {
+        width: 100%;
+    }
+
+    th, td {
+        white-space: nowrap;
+    }
+</style>
