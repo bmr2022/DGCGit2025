@@ -24,6 +24,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.Runtime.Caching;
 using DocumentFormat.OpenXml.Bibliography;
 using System.Drawing.Printing;
+using ClosedXML.Excel;
 
 
 namespace eTactWeb.Controllers
@@ -968,8 +969,175 @@ namespace eTactWeb.Controllers
             model.PageNumber = pageNumber;
             model.PageSize = pageSize;
 
-            return PartialView("_MRNDashboardGrid", model);
+            if (dashboardType == "Summary")
+            {
+                return PartialView("_MRNDashboardGrid", model);
+            }
+            else
+            {
+
+                return PartialView("_MRNDetailDashboardGrid", model);
+            }
         }
+        public async Task<IActionResult> ExportMaterialReceiptDataToExcel(string ReportType)
+        {
+            //string modelJson = HttpContext.Session.GetString("KeyPOList");
+            //if (!_MemoryCache.TryGetValue("KeyInventoryAgeingList", out List<MRNDashboard> modelList))
+            //{
+            //    return NotFound("No data available to export.");
+            //}
+            string cacheKey = $"KeyMRNList_{ReportType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<MRNDashboard> modelList) )
+            {
+                return NotFound("No data available to export.");
+            }
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("MRN");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<MRNDashboard>>>
+            {
+                { "Summary", EXPORT_MRNSummaryGrid },
+                { "Detail", EXPORT_MRNDetailGrid }
+
+            };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, modelList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "MaterialReceipt.xlsx"
+            );
+        }
+
+        private void EXPORT_MRNSummaryGrid(IXLWorksheet sheet, IList<MRNDashboard> list)
+        {
+            string[] headers = {
+                "#Sr","MRN No", "MRN Date", "Gate No", "Gate Date", "Vendor Name",
+                "InvNo", "InvoiceDate", "DocName", "QC Status", "Total Amt",
+                "Net Amt", "Entry ID", "Year Code", "Entered By", "Updated By"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.MrnNo;
+                sheet.Cell(row, 3).Value = item.MrnDate?.Split(" ")[0];
+                sheet.Cell(row, 4).Value = item.GateNo;
+                sheet.Cell(row, 5).Value = item.GateDate?.Split(" ")[0];
+                sheet.Cell(row, 6).Value = item.VendorName;
+                sheet.Cell(row, 7).Value = item.InvNo;
+                sheet.Cell(row, 8).Value = item.InvDate?.Split(" ")[0];
+                sheet.Cell(row, 9).Value = item.Docname;
+                sheet.Cell(row, 10).Value = item.MRNQCCompleted;
+                sheet.Cell(row, 11).Value = item.TotalAmt;
+                sheet.Cell(row, 12).Value = item.NetAmt;
+                sheet.Cell(row, 13).Value = item.EntryId;
+                sheet.Cell(row, 14).Value = item.YearCode;
+                sheet.Cell(row, 15).Value = item.EntryBy;
+                sheet.Cell(row, 16).Value = item.UpdatedBy;
+
+                row++;
+            }
+        }
+        private void EXPORT_MRNDetailGrid(IXLWorksheet sheet, IList<MRNDashboard> list)
+        {
+            string[] headers = {
+                "#Sr", "MRN No", "MRN Date", "Gate No", "Gate Date", "Item Name",
+    "Part Code", "Vendor Name", "InvNo", "InvoiceDate", "DocName",
+    "QC Status", "Total Amt", "Net Amt", "Entry ID", "Year Code",
+    "Entered By", "Updated By", "Po No", "Po Year", "Sch No",
+    "Sch Year Code", "PO Type.", "PO Date", "Unit", "Qty",
+    "Bill Qty", "Rec Qty", "Alt Qty", "Rate Unit", "Alt Unit",
+    "No of case", "Alt Rec Qty", "ShortExcessQty", "Rate", "RateInOtherCurr",
+    "Amount", "Pend PO QTY", "QCCompleted", "Ret Challan Pend Qty", "BatchWise",
+    "SaleBillNo", "SaleBillYearCode", "AgainstChallanNo", "BatchNo", "Unique Batch No",
+    "SupplierBatchNo", "ShelfLife", "Item Size", "Item Color"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.MrnNo;
+                sheet.Cell(row, 3).Value = item.MrnDate?.Split(" ")[0];
+                sheet.Cell(row, 4).Value = item.GateNo;
+                sheet.Cell(row, 5).Value = item.GateDate?.Split(" ")[0];
+                sheet.Cell(row, 6).Value = item.ItemName;
+                sheet.Cell(row, 7).Value = item.PartCode;
+                sheet.Cell(row, 8).Value = item.VendorName;
+                sheet.Cell(row, 9).Value = item.InvNo;
+                sheet.Cell(row, 10).Value = item.InvDate?.Split(" ")[0];
+                sheet.Cell(row, 11).Value = item.Docname;
+                sheet.Cell(row, 12).Value = item.MRNQCCompleted;
+                sheet.Cell(row, 13).Value = item.TotalAmt;
+                sheet.Cell(row, 14).Value = item.NetAmt;
+                sheet.Cell(row, 15).Value = item.EntryId;
+                sheet.Cell(row, 16).Value = item.YearCode;
+                sheet.Cell(row, 17).Value = item.EntryBy;
+                sheet.Cell(row, 18).Value = item.UpdatedBy;
+                sheet.Cell(row, 19).Value = item.PONO;
+                sheet.Cell(row, 20).Value = item.PoYearCode;
+                sheet.Cell(row, 21).Value = item.SchNo;
+                sheet.Cell(row, 22).Value = item.SchYearCode;
+                sheet.Cell(row, 23).Value = item.PoType;
+                sheet.Cell(row, 24).Value = item.PODate;
+                sheet.Cell(row, 25).Value = item.Unit;
+                sheet.Cell(row, 26).Value = item.Qty;
+                sheet.Cell(row, 27).Value = item.BillQty;
+                sheet.Cell(row, 28).Value = item.RecQty;
+                sheet.Cell(row, 29).Value = item.AltQty;
+                sheet.Cell(row, 30).Value = item.RateUnit;
+                sheet.Cell(row, 31).Value = item.AltUnit;
+                sheet.Cell(row, 32).Value = item.NoOfCase;
+                sheet.Cell(row, 33).Value = item.AltRecQty;
+                sheet.Cell(row, 34).Value = item.ShortExcessQty;
+                sheet.Cell(row, 35).Value = item.Rate;
+                sheet.Cell(row, 36).Value = item.RateinOther;
+                sheet.Cell(row, 37).Value = item.Amount;
+                sheet.Cell(row, 38).Value = item.PendPOQty;
+                sheet.Cell(row, 39).Value = item.QCCompleted;
+                sheet.Cell(row, 40).Value = item.RetChallanPendQty;
+                sheet.Cell(row, 41).Value = item.BatchWise;
+                sheet.Cell(row, 42).Value = item.SaleBillNo;
+                sheet.Cell(row, 43).Value = item.SaleBillYearCode;
+                sheet.Cell(row, 44).Value = item.AgainstChallanNo;
+                sheet.Cell(row, 45).Value = item.BatchNo;
+                sheet.Cell(row, 46).Value = item.UniqueBatchNo;
+                sheet.Cell(row, 47).Value = item.SupplierBatchNo;
+                sheet.Cell(row, 48).Value = item.ShelfLife;
+                sheet.Cell(row, 49).Value = item.ItemSize;
+                sheet.Cell(row, 50).Value = item.ItemColor;
+
+                row++;
+            }
+        }
+
         public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string MrnNo = "", string GateNo = "", string PONo = "", string ItemName = "", string PartCode = "", string Type = "")
         {
             var Result = await _IMaterialReceipt.DeleteByID(ID, YC);

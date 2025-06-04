@@ -164,10 +164,10 @@ else
     }
 
     <center><strong>TOTAL ROWS : <span>@displayedRows</span></strong></center>
-}
-@{
+
+
     int totalPages = (int)Math.Ceiling((double)Model.TotalRecords / Model.PageSize);
-}
+
 @if (Model.TotalRecords > 0)
 {
     <ul class="pagination d-flex align-items-center">
@@ -208,6 +208,7 @@ else
             </li>
         }
     </ul>
+}
 }
 <style>
     #container {
