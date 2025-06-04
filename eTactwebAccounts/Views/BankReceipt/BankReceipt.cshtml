@@ -947,10 +947,10 @@
 		});
 
 		function FillSONO() {
-			;
 
 			var accountcode = $('#AccountCode').val();
 			var VoucherDate = $('#VoucherDate').val();
+			var modeofAdjust  = $('#ModeOfAdjustment').find(":selected").text();
 
 			if (VoucherDate) {
 				var dateParts = VoucherDate.split("/"); // Split by "/"
@@ -1031,7 +1031,7 @@
 			}
 
 			$.ajax({
-				url: '@Url.Action("GetSODetail", "BankReceipt")',
+				url: '@Url.Action("GetSoYearCode", "BankReceipt")',
 				type: 'GET',
 				data: {
 					SONO: SONO,
@@ -1042,37 +1042,19 @@
 				success: function (data) {
 
 
-					// Parse JSON if response is a string
-					if (typeof data === "string") {
-						try {
-							data = JSON.parse(data);
-						} catch (error) {
+					var SOYearDropdown = $('#SOYear');
+					var obj = $.parseJSON(data);
+					SOYearDropdown.empty();
+					SOYearDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, soYear) {
+						SOYearDropdown.append('<option value="' + soYear.SOYearCode + '">' + soYear.SOYearCode + '</option>');
+					});
 
-							return;
-						}
-					}
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-					// Extract the first result from the array
-					if (data && data.Result && data.Result.length > 0) {
-						var SOYear = data.Result[0]; // Extract first object
-						var SoDate = data.Result[0];
-						var CONO = data.Result[0];
-
-
-						$("#SOYear").prop("disabled", false).val(SOYear.SOYearCode).trigger("input");
-						// $("#SoDate").prop("disabled", false).val(SoDate.SODate).trigger("input");
-						if (SoDate.SODate) {
-							var dateObj = new Date(SoDate.SODate);
-							var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
-								("0" + (dateObj.getMonth() + 1)).slice(-2) + "/" +
-								dateObj.getFullYear();
-							$("#SoDate").prop("disabled", false).val(formattedDate).trigger("input");
-						}
-						$("#CustOrderNo").prop("disabled", false).val(CONO.CustOrderNo).trigger("input");
-
-
-					} else {
-
+						var SOYearCode = '@Model.SOYear';
+						$('#SOYear').val(SOYearCode).trigger("change");
+						$('#SOYear').val(SOYearCode);
 					}
 				},
 				error: function (xhr, status, error) {
