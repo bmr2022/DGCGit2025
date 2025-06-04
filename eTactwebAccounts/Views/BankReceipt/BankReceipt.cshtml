@@ -217,7 +217,7 @@
 									<table class="table table-hover table-bordered table-striped">
 										<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
 											<tr>
-												<th>Action</th>
+												<th class="sticky-action">Action</th>
 												<th>Sr NO</th>
 												<th>Ledger Name</th>
 												<th>Balance&nbsp;DR/CR</th>
@@ -1954,8 +1954,8 @@
 		})
 
 		function CheckUnCheckCheck(i) {
-			 
-			 
+
+
 			var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
 			if ($('#CheckUnCheck-' + i).is(':checked') == true) {
 				if (parseFloat($('#AdjustAmt-' + i).val()) == 0) {
@@ -2057,7 +2057,7 @@
 		});
 
 		function PressBack() {
-			 
+
 			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
 			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
 			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
@@ -2101,6 +2101,19 @@
 		position: sticky;
 		top: -2px;
 		z-index: 1;
+	}
+
+		#dashGateThead th.sticky-action {
+			position: sticky;
+			left: 0;
+			z-index: 10;
+		}
+
+	td.sticky-action {
+		position: sticky;
+		left: 0;
+		background: #f8f9fa; /* match your table header bg or use white */
+		z-index: 2;
 	}
 
 	tbody td {
