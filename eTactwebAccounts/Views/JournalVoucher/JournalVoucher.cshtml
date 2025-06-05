@@ -464,7 +464,7 @@
                                     <table class="table table-hover table-bordered table-striped mb-0 BomDetailtable" id="GateDataTable">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                             <tr>
-                                                <th>Action</th>
+                                                <th class="sticky-action">Action</th>
                                                 <th>Add <input id="CheckUnCheckAll" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sr#</th>
                                                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type</th>
@@ -2094,3 +2094,19 @@
     </script>
     <script src="~/Scripts/table2excel.js"></script>
 }
+
+<style>
+    #dashGateThead th.sticky-action {
+        position: sticky;
+        left: 0;
+        z-index: 10;
+    }
+
+    td.sticky-action {
+        position: sticky;
+        left: 0;
+        background: #f8f9fa; /* match your table header bg or use white */
+        z-index: 2;
+    }
+
+</style>

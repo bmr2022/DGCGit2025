@@ -28,7 +28,7 @@ namespace eTactWeb.Services.Interface
         Task<BankReceiptModel> GetViewByID(int ID, int YearCode, string VoucherNo);
         Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode);
         Task<ResponseResult> FillSONO(string accountcode, string VoucherDate);
-        Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate);
+        Task<ResponseResult> GetSoYearCode(int SONO, string accountcode, string VoucherDate);
         Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode);
         Task<ResponseResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType);
         Task<ResponseResult> FillBankInDashboard(string FromDate, string ToDate, string VoucherType);

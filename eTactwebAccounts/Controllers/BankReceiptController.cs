@@ -384,9 +384,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
+        public async Task<JsonResult> GetSoYearCode(int SONO, string accountcode, string VoucherDate)
         {
-            var JSON = await _IBankReceipt.GetSODetail(SONO, accountcode, VoucherDate);
+            var JSON = await _IBankReceipt.GetSoYearCode(SONO, accountcode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

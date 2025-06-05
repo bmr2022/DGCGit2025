@@ -98,9 +98,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.FillSONO(accountcode, VoucherDate);
         }
-        public async Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
+        public async Task<ResponseResult> GetSoYearCode(int SONO, string accountcode, string VoucherDate)
         {
-            return await _BankReceiptDAL.GetSODetail(SONO, accountcode, VoucherDate);
+            return await _BankReceiptDAL.GetSoYearCode(SONO, accountcode, VoucherDate);
         }
         public async Task<ResponseResult> GetSODate(int SONO, string accountcode, string VoucherDate, string SOYearCode)
         {

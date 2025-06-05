@@ -330,7 +330,7 @@
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
                     $.each(obj.Result, function (key, val) {
-                        $('#LedgerName').append('<option value = "' + val.Accountcode + '"> ' + val.LedgerName + ' </option>');
+                        $('#LedgerName').append('<option value = "' + val.LedgerName + '"> ' + val.LedgerName + ' </option>');
                     });
                 },
                 error: function (xhr, status, error) {
@@ -349,7 +349,7 @@
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
                     $.each(obj.Result, function (key, val) {
-                        $('#Bank').append('<option value = "' + val.Accountcode + '"> ' + val.LedgerName + ' </option>');
+                        $('#Bank').append('<option value = "' + val.LedgerName + '"> ' + val.LedgerName + ' </option>');
                     });
                 },
                 error: function (xhr, status, error) {
@@ -422,5 +422,24 @@
     <script src="~/Scripts/table2excel.js"></script>
 }
 
+<style>
+    #GateDataTable th.sticky-action {
+        position: sticky;
+        left: 0;
+        z-index: 10;
+    }
 
+    /* Sticky Action column cells */
+    #GateDataTable td.sticky-action {
+        position: sticky;
+        left: 0;
+        background-color: #fff;
+        z-index: 5;
+    }
+
+    #ui-datepicker-div {
+        z-index: 10 !important;
+    }
+
+</style>
 
