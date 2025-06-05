@@ -819,7 +819,7 @@ public class SaleOrderController : Controller
 
 
 	[Route("{controller}/Index")]
-	public async Task<ActionResult> OrderDetail(string Mode, int ID, int YC)
+	public async Task<ActionResult> OrderDetail(string Mode, int ID, int YC,string fromDateBack = "", string summaryDetail = "", string toDateBack = "",string customerNameBack = "",string customerOrderNoBack="",string branchBack = "",string sonoBack = "",string orderTypeBack = "",string soTypeBack = "",string partCodeBack = "",string itemNameBack = "")
 	{
 		// string ipaddress = IPAddress.IPv6Loopback.ToString();
 		var model = new SaleOrderModel();
@@ -924,7 +924,20 @@ public class SaleOrderController : Controller
 			model.YearCode = YC;
 			model.AmmYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 		}
-		return View(model);
+
+        model.FromDateBack = fromDateBack;
+        model.ToDateBack = toDateBack;
+		model.DashboardTypeBack = summaryDetail;
+        model.CustomerNameBack = customerNameBack;
+        model.CustomerOrderNoBack = customerOrderNoBack;
+        model.BranchBack = branchBack;
+        model.SONOBack = sonoBack;
+        model.OrderTypeBack = orderTypeBack;
+        model.SoTypeBack = soTypeBack;
+        model.PartCodeBack = partCodeBack;
+        model.ItemNameBack = itemNameBack;
+
+        return View(model);
 	}
 
 	[HttpPost]

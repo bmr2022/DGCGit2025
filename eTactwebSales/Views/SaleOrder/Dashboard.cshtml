@@ -182,6 +182,37 @@
                 var dateString = day + "/" + month + "/" + year;
                 return dateString;
             }
+
+            debugger
+            var fromDateBack = sessionStorage.getItem('FromDateBack');
+            var toDateBack = sessionStorage.getItem('ToDateBack');
+            var dashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var customerNameBack = sessionStorage.getItem('CustomerNameBack');
+            var customerOrderNoBack = sessionStorage.getItem('CustomerOrderNoBack');
+            var branchBack = sessionStorage.getItem('BranchBack');
+            var sonoBack = sessionStorage.getItem('SONOBack');
+            var orderTypeBack = sessionStorage.getItem('OrderTypeBack');
+            var soTypeBack = sessionStorage.getItem('SoTypeBack');
+            var partCodeBack = sessionStorage.getItem('PartCodeBack');
+            var itemNameBack = sessionStorage.getItem('ItemNameBack');
+
+            if (fromDateBack != null && fromDateBack != '') {
+
+                $('#FromDate').val(fromDateBack);
+                $('#ToDate').val(toDateBack);
+                $('#SummaryDetail').val(dashboardTypeBack);
+                $('#CustomerName').val(customerNameBack);
+                $('#CustOrderNo').val(customerOrderNoBack);
+                $('#CC').val(branchBack);
+                $('#SONo').val(sonoBack);
+                $('#OrderType').val(orderTypeBack);
+                $('#SOType').val(soTypeBack);
+                $('#PartCode').val(partCodeBack);
+                $('#ItemName').val(itemNameBack);
+            }
+
+            GetSearchData();
+
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", date);
@@ -202,6 +233,20 @@
             AutoComplete('VSALEORDER', 'SONo', 'SONo', null);
             AutoComplete('VSALEORDER', 'CC', 'CC', null);
 
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemNameBack');
+            sessionStorage.removeItem('SaleBillNoBack');
+            sessionStorage.removeItem('CustNameBack');
+            sessionStorage.removeItem('SonoBack');
+            sessionStorage.removeItem('CustOrderNoBack');
+            sessionStorage.removeItem('SchNoBack');
+            sessionStorage.removeItem('PerformaInvNoBack');
+            sessionStorage.removeItem('SaleQuoteNoBack');
+            sessionStorage.removeItem('DomesticExportNEPZBack');
+            sessionStorage.removeItem('SearchBoxBack');
+            sessionStorage.removeItem('summaryDetailBack');
 
             //sortTable(2, false);
 
@@ -320,6 +365,15 @@
                     }
                 }
             }
+        }
+
+        function BackButtonData(event) {
+            debugger
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&fromDateBack=" + $('#FromDate').val() + "&toDateBack=" + $('#ToDate').val() + "&summaryDetail=" + $('#SummaryDetail').val() + "&customerNameBack=" + $('#CustomerName').val() + "&customerOrderNoBack=" + $('#CustOrderNo').val() + "&branchBack=" + $('#CC').val() + "&sonoBack=" + $('#SONo').val() + "&orderTypeBack=" + $('#OrderType').val() + "&soTypeBack=" + $('#SOType').val() + "&partCodeBack=" + $('#PartCode').val() + "&itemNameBack=" + $('#ItemName').val();
+            window.location.href = linkUrl;
         }
 
         function TotalRows() {

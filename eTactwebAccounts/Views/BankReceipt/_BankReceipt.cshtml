@@ -72,8 +72,16 @@
             }
         </select>
     </td>
+    <td>
+        <select class="form-control" asp-for="SOYear" style="width:140px;">
+            <option value="@Model.SOYear">-Select-</option>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <option value="@Model.SOYear">@Model.SOYear</option>
+            }
+        </select>
+    </td>
     <td><input asp-for="SoDate" id="SoDate" class="form-control" readonly /></td>
-    <td><input asp-for="SOYear" class="form-control" /></td>
     <td><input asp-for="AgainstVoucherNo" class="form-control" readonly/></td>
     <td><input asp-for="AgainstVoucheryearCode" class="form-control" readonly/></td>
     <td><input asp-for="AgainstVoucherDate" class="form-control" readonly /></td>

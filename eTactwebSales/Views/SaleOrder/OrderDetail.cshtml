@@ -71,7 +71,71 @@
                         }
 
                     </div>
-                    <partial name="_FormsButton" />
+                    @* <partial name="_FormsButton" /> *@
+
+                    <div class="row justify-content-between g-2">
+                     
+                        <div class="col-auto">
+                            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="CustomerNameBack" type="hidden" value="@Model.CustomerNameBack" />
+                            <input asp-for="CustomerOrderNoBack" type="hidden" value="@Model.CustomerOrderNoBack" />
+                            <input asp-for="BranchBack" type="hidden" value="@Model.BranchBack" />
+                            <input asp-for="SONOBack" type="hidden" value="@Model.SONOBack" />
+                            <input asp-for="OrderTypeBack" type="hidden" value="@Model.OrderTypeBack" />
+                            <input asp-for="SoTypeBack" type="hidden" value="@Model.SoTypeBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                          
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U" || Model.Mode == "SAU" || Model.Mode == "PAU" || Model.Mode == "PSU")
+                            {
+                                @*Model.Mode = "U";*@
+                                <div class="col-auto">
+                                    @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            else if (Model.Mode == "SOA" || Model.Mode == "POA" || Model.Mode == "PSA" || Model.Mode == "SSA")
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton" asp-action="AmendmentList">
+                                        <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        AMEND
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-auto">
+                                    @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
                 </span>
             </h5>
         </div>
@@ -165,7 +229,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOCloseDate" class="form-label"> Close Date</label>
-                                        <input asp-for="SOCloseDate" class="form-control" />
+                                        <input asp-for="SOCloseDate" class="form-control" readonly/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
@@ -1039,35 +1103,61 @@
                                     PARTIAL SAVE
                                 </button>
                             }
+
                         </div>
-                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
-                        {
+                        @* <partial name="_FormsButton" /> *@
+
+                        <div class="row justify-content-between g-2">
+
                             <div class="col-auto">
-                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-                                    REFRESH
+                                <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                    <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                    BACK
                                 </a>
                             </div>
-                            @if (Model.Mode == "U")
+
+                            @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
-                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                        UPDATE
-                                    </button>
+                                    @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                    <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                        REFRESH
+                                    </a>
                                 </div>
+                                @if (Model.Mode == "U" || Model.Mode == "SAU" || Model.Mode == "PAU" || Model.Mode == "PSU")
+                                {
+                                    @*Model.Mode = "U";*@
+                                    <div class="col-auto">
+                                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                            UPDATE
+                                        </button>
+                                    </div>
+                                }
+                                else if (Model.Mode == "SOA" || Model.Mode == "POA" || Model.Mode == "PSA" || Model.Mode == "SSA")
+                                {
+                                    <div class="col-auto">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton">
+                                            <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            AMEND
+                                        </button>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-auto">
+                                        @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
+                                        <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                            <i class="fa-solid fa-chevron-circle-right"></i>
+                                            SUBMIT
+                                        </button>
+                                    </div>
+                                }
                             }
-                            else
-                            {
-                                <div class="col-auto">
-                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTNFooter">
-                                        <i class="fa-solid fa-chevron-circle-right"></i>
-                                        SUBMIT
-                                    </button>
-                                </div>
-                            }
-                        }
-                        @* <partial name="_FormsButton" /> *@
+                        </div>
                     </span>
                 </h5>
 
@@ -3543,6 +3633,22 @@
                     });
                 });
             }
+        }
+
+        function PressBack() {
+            debugger
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('CustomerNameBack', $('#CustomerNameBack').val());
+            sessionStorage.setItem('CustomerOrderNoBack', $('#CustomerOrderNoBack').val());
+            sessionStorage.setItem('SONOBack', $('#SONOBack').val());
+            sessionStorage.setItem('SonoBack', $('#SonoBack').val());
+            sessionStorage.setItem('OrderTypeBack', $('#OrderTypeBack').val());
+            sessionStorage.setItem('SoTypeBack', $('#SoTypeBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            window.history.back();
         }
 
         function new1() {
