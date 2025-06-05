@@ -689,7 +689,7 @@
 
 				// Added recently 21/May/2025
 				$('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
-				$('#WEF,#POCloseDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+				$('#WEF').datepicker("option", "maxDate", parseDateToFormat(finToDate));
 
 				$('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
 				$('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
@@ -701,7 +701,7 @@
 				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
 				$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#WEF').val()));
 				$('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
-				$('#WEF,#POCloseDate').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+				$('#WEF').datepicker("option", "maxDate", parseDateToFormat(finToDate));
 
 				$('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
 				$('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));

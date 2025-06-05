@@ -183,6 +183,7 @@
                 return dateString;
             }
 
+            debugger
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
             var dashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
@@ -209,6 +210,8 @@
                 $('#PartCode').val(partCodeBack);
                 $('#ItemName').val(itemNameBack);
             }
+
+            GetSearchData();
 
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
@@ -362,6 +365,15 @@
                     }
                 }
             }
+        }
+
+        function BackButtonData(event) {
+            debugger
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&fromDateBack=" + $('#FromDate').val() + "&toDateBack=" + $('#ToDate').val() + "&summaryDetail=" + $('#SummaryDetail').val() + "&customerNameBack=" + $('#CustomerName').val() + "&customerOrderNoBack=" + $('#CustOrderNo').val() + "&branchBack=" + $('#CC').val() + "&sonoBack=" + $('#SONo').val() + "&orderTypeBack=" + $('#OrderType').val() + "&soTypeBack=" + $('#SOType').val() + "&partCodeBack=" + $('#PartCode').val() + "&itemNameBack=" + $('#ItemName').val();
+            window.location.href = linkUrl;
         }
 
         function TotalRows() {

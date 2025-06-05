@@ -233,54 +233,60 @@
                                                
                                                 <th>PartCode</th>
                                                 <th>ItemName</th>
+                                                
+                                                
+                                                <th>BillQty</th>
+                                                <th>RecQty</th>
+                                                <th>AltRecQty</th>
+                                                <th>PrevAccQty</th>
+                                                <th>AccQty</th>
+                                                <th>AltAccQty</th>
+                                                <th>OkRecStore &nbsp;<input id="SHA1" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
+                                                            
+                                                                <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige;width:60px">
+                                                                    
+                                                                     Password
+                                                                </button>
+                                                            
+                                                        </th>
+                                                         <th>PrevRejQty</th>
+                                                <th>RejQty</th>
+                                                <th>AltRejQty</th>
+                                                <th>RejRecStore<input id="SHA2" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                <th>PrevHoldQty</th>
+                                                <th>HoldQty </th>
+                                                <th>HoldStore<input id="SHA3" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                              
+                                                <th>PrevReworkqty</th>
+                                                <th>Reworkqty</th>
+                                                <th>RewokStore<input id="SHA4" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                <th>DeviationQty</th>
+                                                <th>ResponsibleEmpForDeviation</th>
+                                                  <th>Process</th>
+                                                <th>BatchNo</th>
+                                                <th>uniqueBatchno</th>
+                                                <th>Rate</th>
+                                                <th>rateinother</th>
+                                                <th>Remarks</th>
+                                                <th>Unit</th>
+                                                <th>AltUnit</th>
+                                                <th>Defaulttype</th>
+                                                <th>ApprovedByEmp<input id="SHA5" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                
+                                                <th>Color</th>
+                                                <th>ItemSize</th>
+                                                <th>ResponsibleFactor</th>
+                                                <th>SupplierBatchno</th>
+                                                <th>shelfLife</th>
+                                               
+                                                <th>AllowDebitNote</th>
+                                                
                                                 <th>PONo</th>
                                                 <th>POYearCode</th>
                                                 <th>PODate</th>
                                                 <th>SchNo</th>
                                                 <th>SchYearCode</th>
                                                 <th>schdate</th>
-                                                <th>Unit</th>
-                                                <th>AltUnit</th>
-                                                <th>BillQty</th>
-                                                <th>RecQty</th>
-                                                <th>AltRecQty</th>
-                                                <th>PrevAcceptedQty</th>
-                                                <th>AcceptedQty</th>
-                                                <th>AltAcceptedQty</th>
-                                                <th>OkRecStore &nbsp;<input id="SHA1" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
-                                                            
-                                                                <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige">
-                                                                    
-                                                                     Password
-                                                                </button>
-                                                            
-                                                        </th>
-                                                <th>DeviationQty</th>
-                                                <th>ResponsibleEmpForDeviation</th>
-                                                <th>PreviousRejectedQty</th>
-                                                <th>RejectedQty</th>
-                                                <th>AltRejectedQty</th>
-                                                <th>RejRecStore<input id="SHA2" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                                <th>Remarks</th>
-                                                <th>Defaulttype</th>
-                                                <th>ApprovedByEmp<input id="SHA5" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                                <th>PreviousHoldQty</th>
-                                                <th>HoldQty </th>
-                                                <th>HoldStoreId<input id="SHA3" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                                <th>ProcessId</th>
-                                                <th>PreviousReworkqty</th>
-                                                <th>Reworkqty</th>
-                                                <th>RewokStoreId<input id="SHA4" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
-                                                <th>Color</th>
-                                                <th>ItemSize</th>
-                                                <th>ResponsibleFactor</th>
-                                                <th>SupplierBatchno</th>
-                                                <th>shelfLife</th>
-                                                <th>BatchNo</th>
-                                                <th>uniqueBatchno</th>
-                                                <th>AllowDebitNote</th>
-                                                <th>Rate</th>
-                                                <th>rateinother</th>
                                                 <th>FilePath</th>
                 
                                             </tr>
@@ -304,7 +310,10 @@
                                     <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
                                 </div>
                                 <div class="col-md-2" id="firstButton">
-                                    <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1" >
+                                    <button type="button" style="display:none" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1" >
+                                        <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+                                    </button>
+                                    <button type="button" class="GridButton1 btn btn-sm btn-outline-danger mt-1 mb-1" >
                                         <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
                                     </button>
                                 </div>
@@ -319,14 +328,8 @@
                                                 <th>SR#</th>
                                                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
-<th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
-<th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POYearCode</th>
-<th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
-<th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNo</th>
-<th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYearCode</th>
-<th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>schdate</th>
-<th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
-<th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltUnit</th>
+
+
 <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillQty</th>
 <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RecQty</th>
 <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltRecQty</th>
@@ -334,32 +337,43 @@
 <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AcceptedQty</th>
 <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltAcceptedQty</th>
 <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OkRecStore</th>
-<th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeviationQty</th>
-<th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ResponsibleEmpForDeviation</th>
 <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousRejectedQty</th>
 <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejectedQty</th>
 <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltRejectedQty</th>
 <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejRecStore</th>
-<th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
-<th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Defaulttype</th>
-<th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedByEmp</th>
 <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousHoldQty</th>
 <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldQty</th>
 <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldStoreId</th>
-<th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProcessId</th>
 <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousReworkqty</th>
 <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Reworkqty</th>
 <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RewokStoreId</th>
+<th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeviationQty</th>
+<th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ResponsibleEmpForDeviation</th>
+<th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProcessId</th>
+<th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
+<th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>uniqueBatchno</th>
+<th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+<th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>rateinother</th>
+<th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+<th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+<th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltUnit</th>
+<th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Defaulttype</th>
+<th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ApprovedByEmp</th>
+
 <th data-columnno="34" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
 <th data-columnno="35" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemSize</th>
 <th data-columnno="36" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ResponsibleFactor</th>
 <th data-columnno="37" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SupplierBatchno</th>
 <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>shelfLife</th>
-<th data-columnno="39" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BatchNo</th>
-<th data-columnno="40" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>uniqueBatchno</th>
+
 <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AllowDebitNote</th>
-<th data-columnno="42" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
-<th data-columnno="43" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>rateinother</th>
+
+<th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
+<th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POYearCode</th>
+<th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PODate</th>
+<th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchNo</th>
+<th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SchYearCode</th>
+<th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>schdate</th>
 <th data-columnno="44" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FilePath</th>
 
                                             </tr>
@@ -847,6 +861,161 @@
                 }
             });
         }
+    function handleInput(input) {
+        const id = input.id;
+    
+        if (id.startsWith("AcceptedQty")) {
+            const index = id.replace("AcceptedQty", "");
+            const accQtyVal = input.value;
+            const altAccQtyInput = document.getElementById("AltAcceptedQty" + index);
+        
+            if (altAccQtyInput) {
+                altAccQtyInput.value = accQtyVal;
+            }
+            if ($('#QcType').val() === 'HOLD') {
+                    const holdInput = document.getElementById("HoldQty" + index);
+                    const prevHoldInput = document.getElementById("PreviousHoldQty" + index);
+
+
+                    if (holdInput && prevHoldInput) {
+                        const prevHoldVal = parseFloat(prevHoldInput.value) || 0;
+
+                        if (isNaN(accQtyVal) || accQtyVal === 0 || accQtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            holdInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(prevHoldVal - accQtyVal, 0);
+                            holdInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
+                }
+                if ($('#QcType').val() === 'REWORK') {
+
+                    const reworkInput = document.getElementById("Reworkqty" + index);
+                    const prevReworkInput = document.getElementById("PrevReworkQty" + index);
+
+
+                    if (reworkInput && prevReworkInput) {
+                        const prevReworkVal = parseFloat(prevReworkInput.value) || 0;
+
+                        if (isNaN(accQtyVal) || accQtyVal === 0 || accQtyVal == '') {
+                            // Reset to original if empty or zero
+                            reworkInput.value = prevReworkVal.toFixed(2);
+
+                        } else {
+                            // Subtract rejected from original rework qty
+                            const newReworkVal = Math.max(prevReworkVal - accQtyVal, 0);
+                            reworkInput.value = newReworkVal.toFixed(2);
+
+                        }
+
+                    }
+
+
+                }
+
+
+
+
+
+
+        }
+
+            if (id.startsWith("RejectedQty")) {
+                const index = id.replace("RejectedQty", "");
+                const rejQtyVal = input.value;
+                const altRejQtyInput = document.getElementById("AltRejectedQty" + index);
+
+                if (altRejQtyInput) {
+                    altRejQtyInput.value = rejQtyVal;
+                }
+                if ($('#QcType').val() === 'Accepted') {
+                    const acceptedInput = document.getElementById("AcceptedQty" + index);
+                    const prevAcceptedInput = document.getElementById("PrevAcceptedQty" + index);
+                    const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+
+
+                    if (acceptedInput && prevAcceptedInput) {
+                        const prevAcceptedVal = parseFloat(prevAcceptedInput.value) || 0;
+
+                        if (isNaN(rejQtyVal) || rejQtyVal == '' || rejQtyVal == 0) {
+                            // RejectedQty is empty → restore original
+                            acceptedInput.value = prevAcceptedVal.toFixed(2);
+                            if (altAcceptedInput) altAcceptedInput.value = prevAcceptedVal.toFixed(2);
+                        } else {
+
+
+                            const AcceptedVal = parseFloat(acceptedInput.value) || 0;
+                            const newAcceptedVal = Math.max(prevAcceptedVal - rejQtyVal, 0); // prevent negative
+                            acceptedInput.value = newAcceptedVal.toFixed(2);
+
+                            // Also sync with AltAcceptedQty
+                            const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+                            if (altAcceptedInput) {
+                                altAcceptedInput.value = newAcceptedVal.toFixed(2);
+                            }
+                        }
+                    }
+
+                }
+
+                if ($('#QcType').val() === 'HOLD') {
+                    const holdInput = document.getElementById("HoldQty" + index);
+                    const prevHoldInput = document.getElementById("PreviousHoldQty" + index);
+
+
+                    if (holdInput && prevHoldInput) {
+                        const prevHoldVal = parseFloat(prevHoldInput.value) || 0;
+
+                        if (isNaN(rejQtyVal) || rejQtyVal === 0 || rejQtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            holdInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(prevHoldVal - rejQtyVal, 0);
+                            holdInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
+                }
+                if ($('#QcType').val() === 'REWORK') {
+
+                    const reworkInput = document.getElementById("Reworkqty" + index);
+                    const prevReworkInput = document.getElementById("PrevReworkQty" + index);
+
+
+                    if (reworkInput && prevReworkInput) {
+                        const prevReworkVal = parseFloat(prevReworkInput.value) || 0;
+
+                        if (isNaN(rejQtyVal) || rejQtyVal === 0 || rejQtyVal == '') {
+                            // Reset to original if empty or zero
+                            reworkInput.value = prevReworkVal.toFixed(2);
+
+                        } else {
+                            // Subtract rejected from original rework qty
+                            const newReworkVal = Math.max(prevReworkVal - rejQtyVal, 0);
+                            reworkInput.value = newReworkVal.toFixed(2);
+
+                        }
+
+                    }
+
+
+                }
+            }
+    }
+
+    
+
+    
+
+   
 
         function GetItemData() {
             var MIRNO=$('#MIRNo').val();
@@ -880,53 +1049,57 @@
 
                                '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly></td>' +
                                 '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly class="textbox"><input type="hidden" id="itemCode' + i + '" value=' + val.itemCode + '></td>' +
+                                
+                                
+                                '<td><input id="BillQty' + i + '" value=' + val.BillQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="AltRecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="PrevAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="AcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+                                '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +  
+                                 '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+                                '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
+                                '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' style="width:60px;" readonly class="textbox number"></td>' +
+                                '<td><input id="HoldQty' + i + '" value=' + val.HoldQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"></td>' +
+                                '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+
+                                '<td><input id="PreviousReworkqty' + i + '" value=' + val.Reworkqty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="Reworkqty' + i + '" value=' + val.Reworkqty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"></td>' +
+                                '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+
+                                '<td><input id="DeviationQty' + i + '" value="" style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="ResponsibleEmpForDeviation' + i + '" value="" class="textbox"></td>' +
+                                                               '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
+
+                                 '<td><input id="BatchNo' + i + '" value=' + val.BatchNo + ' class="textbox"></td>' +
+                                '<td><input id="uniqueBatchno' + i + '" value=' + val.uniqueBatchno + ' class="textbox"></td>' +
+                                 '<td><input id="Rate' + i + '"  value="" style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="rateinother' + i + '"  value="" style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="Remarks' + i + '"  value=""  class="textbox" style="width:120px;"></td>' +
+                                '<td><input id="Unit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="AltUnit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="Defaulttype' + i + '"  value="" class="textbox"></td>' +
+                                '<td><select id="ApprovedByEmp' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="ApprovedByEmpChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+
+                                
+                                '<td><input id="Color' + i + '"  value="" style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="ItemSize' + i + '"  value="" style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="ResponsibleFactor' + i + '"  value="" style="width:60px;" class="textbox"></td>' +
+                                '<td><input id="SupplierBatchno' + i + '"  value="" class="textbox"></td>' +
+                                '<td><input id="shelfLife' + i + '"  value="" style="width:60px;" class="textbox"></td>' +
+                               
+                                '<td><input id="AllowDebitNote' + i + '"  value="" style="width:60px;" class="textbox"></td>' +
+                               
+                               
                                 '<td><input id="PONO' + i + '" value=' + val.PONO + ' readonly class="textbox"></td>' +
                                 '<td><input id="POYearcode' + i + '" value=' + val.POYearcode + ' readonly class="textbox"></td>' +
                                 '<td><input id="PODate' + i + '" value=' + val.PODate + ' readonly class="textbox"></td>' +
                                 '<td><input id="schno' + i + '" value=' + val.schno + ' readonly class="textbox"></td>' +
                                 '<td><input id="schYearCode' + i + '" value=' + val.schYearCode + ' readonly class="textbox"></td>' +
-                                '<td><input id="schdate' + i + '" value=' + val.schdate + ' readonly class="textbox"></td>' +
-                                '<td><input id="Unit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
-                                '<td><input id="AltUnit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
-                                '<td><input id="BillQty' + i + '" value=' + val.BillQty + ' readonly style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="AltRecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="PrevAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="AcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  oninput="handleInput(this)"></td>' +
-                                '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  oninput="handleInput(this)"></td>' +
-                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
-                                '<td><input id="DeviationQty' + i + '" value="" style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="ResponsibleEmpForDeviation' + i + '" value="" class="textbox"></td>' +
-                                '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly class="textbox number"></td>' +
-                                '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty + ' class="textbox number"></td>' +
-                                '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' class="textbox number"></td>' +
-                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
-
-                                
-                                '<td><input id="Remarks' + i + '"  value=""  class="textbox" style="width:120px;"></td>' +
-                                '<td><input id="Defaulttype' + i + '"  value="" class="textbox"></td>' +
-                                '<td><select id="ApprovedByEmp' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="ApprovedByEmpChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
-
-                                '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' readonly class="textbox number"></td>' +
-                                '<td><input id="HoldQty' + i + '" value=' + val.HoldQty + ' class="textbox number"></td>' +
-                                '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
-
-                                '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
-                                '<td><input id="PreviousReworkqty' + i + '" value=' + val.Reworkqty + ' readonly class="textbox number"></td>' +
-                                '<td><input id="Reworkqty' + i + '" value=' + val.Reworkqty + ' class="textbox number"></td>' +
-                                '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
-
-                                '<td><input id="Color' + i + '"  value="" class="textbox"></td>' +
-                                '<td><input id="ItemSize' + i + '"  value=""  class="textbox"></td>' +
-                                '<td><input id="ResponsibleFactor' + i + '"  value="" class="textbox"></td>' +
-                                '<td><input id="SupplierBatchno' + i + '"  value="" class="textbox"></td>' +
-                                '<td><input id="shelfLife' + i + '"  value="" class="textbox"></td>' +
-                                '<td><input id="BatchNo' + i + '" value=' + val.BatchNo + ' class="textbox"></td>' +
-                                '<td><input id="uniqueBatchno' + i + '" value=' + val.uniqueBatchno + ' class="textbox"></td>' +
-                                '<td><input id="AllowDebitNote' + i + '"  value="" class="textbox"></td>' +
-                               
-                                '<td><input id="Rate' + i + '"  value="" class="textbox number"></td>' +
-                                '<td><input id="rateinother' + i + '"  value="" class="textbox number"></td>' +
+                                '<td><input id="schdate' + i + '" value="" readonly class="textbox"></td>' +
                                 '<td>' +
                                     (val.FilePath
                                         ? '<a href="' + val.FilePath + '" target="_blank">View</a>'
@@ -993,7 +1166,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#OkRecStore' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA1').prop("checked") == true) {
                 SameOkRecStore = true;
             } else {
                 SameOkRecStore = false;
@@ -1016,7 +1189,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#RejRecStore' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA2').prop("checked") == true) {
                 SameRejRecStore = true;
             } else {
                 SameRejRecStore = false;
@@ -1039,7 +1212,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#HoldStoreId' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA3').prop("checked") == true) {
                 SameHoldStoreId = true;
             } else {
                 SameHoldStoreId = false;
@@ -1062,7 +1235,7 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#RewokStoreId' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA4').prop("checked") == true) {
                 SameRewokStoreId = true;
             } else {
                 SameRewokStoreId = false;
@@ -1085,13 +1258,13 @@
             for (var i = 1; i <= RowCount; i++) {
                 $('#ApprovedByEmp' + i).val('');
             }
-            if ($('#SHA').prop("checked") == true) {
+            if ($('#SHA5').prop("checked") == true) {
                 SameApprovedByEmp = true;
             } else {
                 SameApprovedByEmp = false;
             }
         });
-        function RewokStoreIdChange(i) {
+        function ApprovedByEmpChange(i) {
 
             var ApprovedByEmp = $('#ApprovedByEmp' + i).val();
             if (SameApprovedByEmp) {
@@ -1384,6 +1557,151 @@
                 }
             });
         }
+
+
+                $('.GridButton1').click(function (e) {
+            e.preventDefault();
+            EditEachItem = false;
+
+            var ItemData = [];
+            var seqnoarray = [];
+            $('#DivDetailGrid tr').each(function (index, element) {
+
+                var currentRow = $(element);
+                var seqnoText = currentRow.find('th').data('seqno') == undefined ? 0 : currentRow.find('th').data('seqno');
+                if (seqnoText != 0) {
+                    seqnoarray.push(parseInt(seqnoText));
+                }
+            });
+
+            var highestValue = 0;
+            if (seqnoarray.length == 0) {
+                highestValue = 0;
+            }
+            else {
+                highestValue = Math.max(...seqnoarray);
+            }
+
+            /* if (!ValidateGrid()) return; */
+            var RowCount = $('#DivDetailGrid tr').length;
+
+            if (RowCount == 0) {
+                $.notify('Please Add Item in Grid', "error");
+                return;
+            }
+            /* if (RowCount > 0) {
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#Deassembleqty' + i).val() == '' || $('#Deassembleqty' + i).val() == '0') {
+                        $.notify('Please Enter Deassemble Qty', "error");
+                        return;
+                    }
+                }
+            }
+            if (RowCount > 0) {
+                for (var i = 1; i <= RowCount; i++) {
+                    if ($('#StoreName' + i).val() == '' || $('#StoreName' + i).val() == null) {
+                        $.notify('Please Select Store', "error");
+                        return;
+                    }
+                }
+            } */
+
+            for (var i = 1; i <= RowCount; i++) {
+                ItemData.push({
+
+
+  PartCode: $('#PartCode' + i).val(),
+  ItemName: $('#ItemName' + i).val(),
+  itemCode: $('#itemCode' + i).val(),
+  PONO: $('#PONO' + i).val(),
+  POYearcode: $('#POYearcode' + i).val(),
+  PODate: $('#PODate' + i).val(),
+  schno: $('#schno' + i).val(),
+  schYearCode: $('#schYearCode' + i).val(),
+  schdate: $('#schdate' + i).val(),
+  RMUnit: $('#Unit' + i).val(),
+  AltUnit: $('#AltUnit' + i).val(),
+  BillQty: $('#BillQty' + i).val(),
+  RecQty: $('#RecQty' + i).val(),
+  AltRecQty: $('#AltRecQty' + i).val(),
+  PrevAcceptedQty: $('#PrevAcceptedQty' + i).val(),
+  AcceptedQty: $('#AcceptedQty' + i).val(),
+  AltAcceptedQty: $('#AltAcceptedQty' + i).val(),
+  OkRecStore: $('#OkRecStore' + i).val(),
+ OkRecStoreName: $('#OkRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#OkRecStore' + i).find(':selected').text(),
+
+  DeviationQty: $('#DeviationQty' + i).val(),
+  ResponsibleEmpForDeviation: $('#ResponsibleEmpForDeviation' + i).val(),
+  PreviousRejectedQty: $('#PreviousRejectedQty' + i).val(),
+  RejectedQty: $('#RejectedQty' + i).val(),
+  AltRejectedQty: $('#AltRejectedQty' + i).val(),
+  RejRecStore: $('#RejRecStore' + i).val(),
+   RejRecStoreName: $('#RejRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#RejRecStore' + i).find(':selected').text(),
+
+  Remarks: $('#Remarks' + i).val(),
+  Defaulttype: $('#Defaulttype' + i).val(),
+  ApprovedByEmp: $('#ApprovedByEmp' + i).val(),
+     ApprovedByEmpName: $('#ApprovedByEmp' + i).find(':selected').text() == "-Select-" ? "" : $('#ApprovedByEmp' + i).find(':selected').text(),
+
+  PreviousHoldQty: $('#PreviousHoldQty' + i).val(),
+  HoldQty: $('#HoldQty' + i).val(),
+  HoldStoreId: $('#HoldStoreId' + i).val(),
+  HoldStoreName: $('#HoldStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#HoldStoreId' + i).find(':selected').text(),
+  ProcessId: $('#ProcessId' + i).val(),
+  PreviousReworkqty: $('#PreviousReworkqty' + i).val(),
+  Reworkqty: $('#Reworkqty' + i).val(),
+  RewokStoreId: $('#RewokStoreId' + i).val(),
+  RewokStoreName: $('#RewokStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#RewokStoreId' + i).find(':selected').text(),
+  Color: $('#Color' + i).val(),
+  ItemSize: $('#ItemSize' + i).val(),
+  ResponsibleFactor: $('#ResponsibleFactor' + i).val(),
+  SupplierBatchno: $('#SupplierBatchno' + i).val(),
+  shelfLife: $('#shelfLife' + i).val(),
+  BatchNo: $('#BatchNo' + i).val(),
+  uniqueBatchno: $('#uniqueBatchno' + i).val(),
+  AllowDebitNote: $('#AllowDebitNote' + i).val(),
+  Rate: $('#Rate' + i).val(),
+  rateinother: $('#rateinother' + i).val(),
+  FilePath:  ''
+                });
+            }
+            console.log(ItemData);
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("AddReOfferDetail1")',
+                data: { "model": ItemData },
+                // statusCode: {
+                //     207: function () {
+                //         $.notify('Duplicate Item...!', "info");
+                //     }
+                // },
+                statusCode: {
+                    207: function (xhr) {
+                        try {
+                            var response = JSON.parse(xhr.responseText);
+                            var msg = `Duplicate Item Found: itemCode ${response.itemCode}, `;
+                            $.notify(msg, "info");
+                        } catch (e) {
+                            $.notify("Duplicate Item...!", "info");
+                        }
+                    }
+                },
+                success: function (result, status, xhr) {
+                    if (xhr.status == 200 && xhr.responseText == result) {
+
+                        $('#divISTGrid').html(result);
+                        $('#DivDetailGrid').empty();
+                        /* TotalNetAmount(); */
+                        //$('#Storeid,#Wcid').prop("disabled", false);
+                    }
+                },
+                error: function (result, status, xhr) {
+                    $.notify('Something Went Wrong, Please Try Again.', "error");
+                }
+            });
+        });
+
+
 
         $('.GridButton').click(function (e) {
 

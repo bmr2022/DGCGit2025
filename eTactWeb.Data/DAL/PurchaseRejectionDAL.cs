@@ -98,13 +98,15 @@ namespace eTactWeb.Data.DAL
             model.Transporter = DS.Tables[0].Rows[0]["Transporter"]?.ToString();
             model.Vehicleno = DS.Tables[0].Rows[0]["Vehicleno"]?.ToString();
             model.Distance = DS.Tables[0].Rows[0]["Distance"]?.ToString();
-            model.BillAmt = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
+            model.BillAmt = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToSingle(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
+            model.NetTotal = DS.Tables[0].Rows[0]["BillAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["BillAmt"]) : 0;
             model.RoundOffAmt = DS.Tables[0].Rows[0]["RoundOffAmt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["RoundOffAmt"]) : 0;
             model.RoundoffType = DS.Tables[0].Rows[0]["RoundoffType"]?.ToString();
             model.Taxableamt = DS.Tables[0].Rows[0]["Taxableamt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["Taxableamt"]) : 0;
             model.ToatlDiscountPercent = DS.Tables[0].Rows[0]["ToatlDiscountPercent"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["ToatlDiscountPercent"]) : 0;
             model.TotalDiscountAmount = DS.Tables[0].Rows[0]["TotalDiscountAmount"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["TotalDiscountAmount"]) : 0;
             model.NetAmt = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
+            model.ItemNetAmount = DS.Tables[0].Rows[0]["InvNetAmt"] != DBNull.Value ? Convert.ToDecimal(DS.Tables[0].Rows[0]["InvNetAmt"]) : 0;
             model.PurchaserejRemark = DS.Tables[0].Rows[0]["PurchaserejRemark"]?.ToString();
             model.Remark = DS.Tables[0].Rows[0]["PurchaserejRemark"]?.ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"]?.ToString();
@@ -470,7 +472,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EntryDate", DateTime.Today));
                 SqlParams.Add(new SqlParameter("@Currency", Currency));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSP_PurchaseBillMainDetail", SqlParams);
             }
             catch (Exception ex)
             {
@@ -591,11 +593,14 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                var upDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
                     SqlParams.Add(new SqlParameter("@flag", "UPDATE"));
+                    //SqlParams.Add(new SqlParameter("@AccEntryId", model.PurchaseRejEntryId));
+                    //SqlParams.Add(new SqlParameter("@AccYearCode", model.PurchaseRejYearCode));
+                    //SqlParams.Add(new SqlParameter("@DocEntryid", model.PurchaseRejEntryId));
                 }
                 else
                 {
@@ -610,9 +615,9 @@ namespace eTactWeb.Data.DAL
 
                 var purchaseRejectionInvoiceDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionInvoiceDate);
                 var purchaseRejectionVoucherDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionVoucherDate);
-                var purchaseRejectionEntryDt = CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate);
-                var actualDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-                
+                var purchaseRejectionEntryDt = CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != "" || CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != null ? CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) : upDt;
+                var actualDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate) != "" || CommonFunc.ParseFormattedDate(model.ActualEntryDate) != null ? CommonFunc.ParseFormattedDate(model.ActualEntryDate) : upDt;
+                var machinename = Environment.UserDomainName;
 
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", model.PurchaseRejEntryId));
                 SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", model.PurchaseRejYearCode));
@@ -635,7 +640,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CurrencyId", model.CurrencyId ?? 0));
                 SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@PaymentTerm", model.PaymentTerm ?? string.Empty));
-                //SqlParams.Add(new SqlParameter("@PaymentTerm", Convert.ToInt32(!string.IsNullOrEmpty(model.PaymentTerm) ? 1 : 0)));
                 SqlParams.Add(new SqlParameter("@PaymentCreditDay", model.PaymentCreditDay));
                 SqlParams.Add(new SqlParameter("@GSTNO", model.GSTNO ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@DomesticExportNEPZ", model.DomesticExportNEPZ ?? string.Empty));
@@ -643,19 +647,19 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Transporter", model.Transporter ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Vehicleno", model.Vehicleno ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Distance", model.Distance ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@BillAmt", model.BillAmt));
+                SqlParams.Add(new SqlParameter("@BillAmt", model.ItemNetAmount));
                 SqlParams.Add(new SqlParameter("@RoundOffAmt", model.RoundOffAmt));
                 //SqlParams.Add(new SqlParameter("@RoundOffAmt", model.TotalRoundOffAmt));
                 SqlParams.Add(new SqlParameter("@RoundoffType", model.RoundoffType ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@Taxableamt", model.Taxableamt));
+                SqlParams.Add(new SqlParameter("@Taxableamt", model.NetTotal));
                 //SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.TotalDiscountPercentage));
                 SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", model.ToatlDiscountPercent));
                 SqlParams.Add(new SqlParameter("@TotalDiscountAmount", model.TotalDiscountAmount));
-                SqlParams.Add(new SqlParameter("@InvNetAmt", model.NetAmt));
-                SqlParams.Add(new SqlParameter("@PurchaserejRemark", model.Remark ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@InvNetAmt", model.NetTotal));
+                SqlParams.Add(new SqlParameter("@PurchaserejRemark", model.PurchaserejRemark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@Uid", model.Uid));
-                SqlParams.Add(new SqlParameter("@MachineName", model.MachineName ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@MachineName", !string.IsNullOrEmpty(model.MachineName.ToString()) ? model.MachineName.ToString() : !string.IsNullOrEmpty(machinename.ToString()) ? machinename.ToString() : string.Empty));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualDt == default ? string.Empty : actualDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));

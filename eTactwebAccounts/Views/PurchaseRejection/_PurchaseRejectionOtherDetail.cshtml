@@ -3,115 +3,55 @@
 <div class="accordion-body">
     <div class="row g-2 gx-3">
         <div class="col-md-2">
-            <label asp-for="BillAmt" class="form-label">Bill Amount</label>
-            <input asp-for="BillAmt" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="RoundOffAmt" class="form-label">Round Off Amount</label>
-            <input asp-for="RoundOffAmt" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="RoundoffType" class="form-label">Round Off Type</label>
-            <input asp-for="RoundoffType" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="Taxableamt" class="form-label">Taxable Amount</label>
-            <input asp-for="Taxableamt" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="ToatlDiscountPercent" class="form-label">Total Discount (%)</label>
-            <input asp-for="ToatlDiscountPercent" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="TotalDiscountAmount" class="form-label">Total Discount Amount</label>
-            <input asp-for="TotalDiscountAmount" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="NetAmt" class="form-label">Net Amount</label>
-            <input asp-for="NetAmt" class="form-control" />
-        </div>
-        @* <div class="col-md-2">
-            <label asp-for="Remark" class="form-label">Remark</label>
-            <input asp-for="Remark" class="form-control" />
-        </div> *@
-        <div class="col-md-2">
             <label asp-for="PurchaserejRemark" class="form-label">Remark</label>
             <input asp-for="PurchaserejRemark" class="form-control" />
         </div>
         <div class="col-md-2">
             <label asp-for="CC" class="form-label">CC</label>
-            <input asp-for="CC" class="form-control" />
+            <input asp-for="CC" class="form-control" disabled="disabled" />
         </div>
         <div class="col-md-2">
             <label asp-for="Uid" class="form-label">UID</label>
-            <input asp-for="Uid" class="form-control" type="number" />
+            <input asp-for="Uid" class="form-control" type="number" disabled="disabled" />
         </div>
-        @* <div class="col-md-2">
-            <label asp-for="ItemService" class="form-label">Item/Service</label>
-            <input asp-for="ItemService" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="INVOICETYPE" class="form-label">Invoice Type</label>
-            <input asp-for="INVOICETYPE" class="form-control" />
-        </div> *@
         <div class="col-md-2">
             <label asp-for="MachineName" class="form-label">Machine Name</label>
-            <input asp-for="MachineName" class="form-control" value="@Environment.MachineName" />
+            <input asp-for="MachineName" class="form-control" value="@Environment.MachineName" disabled="disabled" />
         </div>
         <div class="col-md-2">
             <label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
-            <input asp-for="ActualEntryDate" class="form-control" />
+            <input asp-for="ActualEntryDate" class="form-control"  disabled="disabled" />
         </div>
         <div class="col-md-2">
             <label asp-for="ActualEnteredByName" class="form-label">Actual Entered By Name</label>
             <input asp-for="ActualEnteredBy" class="form-control" type="hidden" />
-            <input asp-for="ActualEnteredByName" class="form-control" />
+            <input asp-for="ActualEnteredByName" class="form-control" disabled="disabled" />
         </div>
         <div class="col-md-2">
             <label asp-for="LastUpdatedByName" class="form-label">Last Updated By Name</label>
             <input asp-for="LastUpdatedBy" class="form-control" type="hidden" />
-            <input asp-for="LastUpdatedByName" class="form-control" />
+            <input asp-for="LastUpdatedByName" class="form-control" disabled="disabled" />
         </div>
         <div class="col-md-2">
             <label asp-for="LastUpdationDate" class="form-label">Last Updation Date</label>
-            <input asp-for="LastUpdationDate" class="form-control" />
+            <input asp-for="LastUpdationDate" class="form-control" disabled="disabled" />
         </div>
         <div class="col-md-2">
             <label asp-for="ExchangeRate" class="form-label">Exchange Rate</label>
-            <input asp-for="ExchangeRate" class="form-control" />
+            @{
+                <input asp-for="ExchangeRate" class="form-control" step="any" type="number" min="0" pattern="^([0-9]{1,6}\.[0-9]{2,})$" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+            }
         </div>
         <div class="col-md-2">
             <label asp-for="Distance" class="form-label">Distance</label>
-            <input asp-for="Distance" class="form-control" />
+            @{
+                <input asp-for="Distance" class="form-control" step="any" type="number" min="0" pattern="^([0-9]{1,6}\.[0-9]{2,})$" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+            }
         </div>
-        @* <div class="col-md-2">
-            <label asp-for="EntryFreezToAccounts" class="form-label">Entry Freeze to Accounts</label>
-            <input asp-for="EntryFreezToAccounts" class="form-control" />
-        </div> *@
         <div class="col-md-2">
             <label asp-for="BalanceSheetClosed" class="form-label">Balance Sheet Closed</label>
             <input asp-for="BalanceSheetClosed" class="form-control" readonly="readonly" />
         </div>
-        @* <div class="col-md-2">
-            <label asp-for="EInvNo" class="form-label">E-Invoice Number</label>
-            <input asp-for="EInvNo" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="EinvGenerated" class="form-label">E-Invoice Generated</label>
-            <input asp-for="EinvGenerated" class="form-control" />
-        </div> *@
-        @* <div class="col-md-2">
-            <label asp-for="AttachmentFilePath1" class="form-label">Attachment File Path 1</label>
-            <input asp-for="AttachmentFilePath1" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="AttachmentFilePath2" class="form-label">Attachment File Path 2</label>
-            <input asp-for="AttachmentFilePath2" class="form-control" />
-        </div>
-        <div class="col-md-2">
-            <label asp-for="AttachmentFilePath3" class="form-label">Attachment File Path 3</label>
-            <input asp-for="AttachmentFilePath3" class="form-control" />
-        </div> *@
         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
             <label asp-for="PathOfFile1" class="form-label">PathOfFile1</label>
             <div class="input-group">
