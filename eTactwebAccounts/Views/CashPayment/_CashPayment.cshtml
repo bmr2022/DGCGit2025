@@ -25,6 +25,19 @@
         </div>
     </td>
     <td>
+        <select class="form-control" asp-for="Intrument" style="width:100px;">
+            <option value="@Model.Intrument">-Select-</option>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <option value="@Model.Intrument" selected>@Model.Intrument</option>
+            }
+        </select>
+    </td>
+    <td><input asp-for="InsNo" class="form-control" /></td>
+    <td>
+        <input asp-for="InsDate" class="form-control" readonly />
+    </td>
+    <td>
         <select class="form-control" asp-for="ModeOfAdjustment" style="width:100px;">
             @if (Model.Mode == "U" || Model.Mode == "V")
             {
@@ -39,7 +52,7 @@
     <td>
         <input type="hidden" asp-for="CostCenterId" />
         <select class="form-control" asp-for="CostCenterName" style="width:140px;">
-                                                                   
+
             @if (Model.Mode == "U" || Model.Mode == "V")
             {
                 <option value="@Model.CostCenterId">@Model.CostCenterName</option>
@@ -47,22 +60,27 @@
         </select>
     </td>
     <td><input asp-for="PartyWiseNaration" class="form-control" /></td>
-    <td><input asp-for="CustOrderNo" class="form-control" /></td>
-    <td><input asp-for="SONo" id="SoNo" class="form-control" /></td>
-    <td><input asp-for="SoDate" id="SoDate" class="form-control" readonly /></td>
-    <td><input asp-for="SOYear" class="form-control" /></td>
     <td>
 
         <select class="form-control" asp-for="PONo" style="width:140px;">
             <option value="@Model.PONo">-Select-</option>
             @if (Model.Mode == "U" || Model.Mode == "V")
             {
-                <option value="@Model.PONo" selected>@Model.PONo</option>
+                <option value="@Model.PONo">@Model.PONo</option>
             }
         </select>
     </td>
-    <td><input asp-for="PoDate" id="PoDate" class="form-control" /></td>
-    <td><input asp-for="POYear" id="POYear" class="form-control" /></td>
+    <td>
+        <select class="form-control" asp-for="POYear" style="width:140px;">
+            <option value="@Model.POYear">-Select-</option>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <option value="@Model.POYear">@Model.POYear</option>
+            }
+        </select>
+    </td>
+    <td><input asp-for="PoDate" id="PoDate" class="form-control" style="width:120px" readonly /></td>
+    <td><input asp-for="CustOrderNo" class="form-control" readonly /></td>
     <td><input asp-for="AgainstVoucherNo" class="form-control" readonly /></td>
     <td><input asp-for="AgainstVoucheryearCode" class="form-control" readonly /></td>
     <td><input asp-for="AgainstVoucherDate" class="form-control" readonly /></td>

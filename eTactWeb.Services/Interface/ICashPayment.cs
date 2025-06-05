@@ -18,8 +18,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate);
         Task<ResponseResult> FillCurrency();
         Task<ResponseResult> FillPONO(string accountcode, string VoucherDate);
-        Task<ResponseResult> GetPODetail(int PONO, string accountcode, string VoucherDate);
-        Task<ResponseResult> GetPODate(int PONO, string accountcode, string VoucherDate, string POYearCode);
+        Task<ResponseResult> GetPOYearCode(string PONO, string accountcode, string VoucherDate);
+        Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate, string POYearCode);
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
         Task<ResponseResult> SaveCashPayment(CashPaymentModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
