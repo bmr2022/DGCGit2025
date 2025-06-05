@@ -50,11 +50,23 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyPurchaseRejectionPopupGrid");
             // var model = await BindModel(MainModel);
 
-            if (model.Mode != "U")
+            if (Mode != "U")
             {
                 model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                 model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                model.ActualEnteredByName = GetEmpByMachineName();
+                model.ActualEntryDate = HttpContext.Session.GetString("ActualEntryDate") ?? ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
+                model.MachineName = GetEmpByMachineName();
+            }
+            else
+            {
+                model.ActualEnteredByName = GetEmpByMachineName();
+                model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.LastUpdatedByName = GetEmpByMachineName();
+                model.LastUpdationDate = HttpContext.Session.GetString("LastUpdatedDate");
+                model.UpdatedOn = ParseSafeDate(HttpContext.Session.GetString("LastUpdatedDate"));
+                model.MachineName = GetEmpByMachineName();
             }
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
@@ -313,7 +325,17 @@ namespace eTactWeb.Controllers
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
-                            var errNum = Result?.Result?.Message.ToString().Split(":")[1];
+                            var errNum = string.Empty;
+                            if (Result != null)
+                            {
+                                if(Result.Result != null)
+                                {
+                                    if (Result.Result.Rows.Count > 0)
+                                    {
+                                        errNum = Result?.Result?.Rows.Message?.ToString().Split(":")[1];
+                                    }
+                                }
+                            }
                             model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
                             if (errNum == " 2627")
                             {
@@ -1058,6 +1080,20 @@ namespace eTactWeb.Controllers
             var JSON = await _purchRej.GetFormRights(userID);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        public string GetEmpByMachineName()
+        {
+            try
+            {
+                string empname = string.Empty;
+                empname = HttpContext.Session.GetString("EmpName").ToString();
+                if (string.IsNullOrEmpty(empname)) { empname = Environment.UserDomainName; }
+                return empname;
+            }
+            catch
+            {
+                return "";
+            }
         }
     }
 }
