@@ -9,7 +9,7 @@
     <h3 class="h3 mb-0 text-white lh-1">Account Master</h3>
     </div>
     </div>*@
-<form asp-action="ControlPlan" asp-controller="ControlPlan" autocomplete="off" class="form-horizontal" asp-antiforgery=false>
+<form asp-action="ControlPlan" enctype="multipart/form-data" asp-controller="ControlPlan" autocomplete="off" class="form-horizontal" asp-antiforgery=false>
     <div class="card rounded shadow-lg">
         <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
             <h4>
@@ -71,13 +71,14 @@
                     <h2 class="accordion-header" id="H_AccountDetail">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
                             <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>ControlPlan</strong>
-                            <small class="p-3"></small>
+                          
                         </button>
                     </h2>
                     <div id="B_AccountDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_AccountDetail">
                         <div class="accordion-body">
                             <input asp-for="EntryByMachine" type="hidden" class="form-control" value="@Environment.MachineName"  />
                             <input asp-for="Mode" type="hidden" class="form-control" value="@Model.Mode"  />
+                            <input type="hidden" asp-for="SeqNo" value="0" />
                             <input asp-for="CntPlanEntryDate" type="hidden" class="form-control" value="@Model.CntPlanEntryDate" />
                             <input asp-for="CntPlanYearCode" type="hidden" class="form-control" value="@Model.CntPlanYearCode" />
                             <input asp-for="CC" type="hidden" class="form-control" value="@Model.CC" />
@@ -98,19 +99,19 @@
                                 </div>
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
-                                    <label asp-for="Control_PlanNo" class="form-label">PlanNo</label>
+                                    <label asp-for="Control_PlanNo" class="form-label">Plan No</label>
                                     <input asp-for="Control_PlanNo" class="form-control"  />
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
-                                    <label asp-for="RevNo" class="form-label">RevNo</label>
+                                    <label asp-for="RevNo" class="form-label">Rev No</label>
                                     <input asp-for="RevNo" class="form-control" />
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
-                                    <label asp-for="EffectiveDate" class="form-label">EffectiveDate</label>
+                                    <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
                                     <input asp-for="EffectiveDate" class="form-control" />
                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <label asp-for="PartCode" class="form-label" style="color:red">Part Code*</label>
                                     <select class="form-control" id="PartCode" asp-for="PartCode">
                                         <option value="@Model.ItemCode">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -123,7 +124,7 @@
                                 
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="ItemName" class="form-label"> Item Name</label>
+                                    <label asp-for="ItemName" class="form-label" style="color:red"> Item Name*</label>
                                     <select class="form-control" id="ItemName" asp-for="ItemName">
                                         <option value="@Model.ItemCode">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
@@ -134,7 +135,12 @@
                                 </div>
 
                                 <input type="hidden" id="ItemCode" name="ItemCode" value="@Model.ItemCode" />
-
+                                <div class="col-auto" style="padding-left:10%;">
+                                    <label class="form-label">Copy This BOM</label>
+                                    <div class="form-check form-switch">
+                                        <input asp-for="CopyControlPlan" class="form-check-input" type="checkbox" role="switch" onchange="CopyControlPlanFunc(this);" />
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -150,20 +156,20 @@
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                              
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="Characteristic" class="form-label">Characteristic</label>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="Characteristic" class="form-label" style="color:red">Characteristic*</label>
                                     <input asp-for="Characteristic" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="EvalutionMeasurmentTechnique" class="form-label">EvalutionMeasTech</label>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="EvalutionMeasurmentTechnique" class="form-label" style="color:red">Evalution MeasurmentTechnique*</label>
                                     <input asp-for="EvalutionMeasurmentTechnique" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="ControlMethod" class="form-label">ControlMethod </label>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="ControlMethod" class="form-label" style="color:red">Control Method*</label>
                                     <input asp-for="ControlMethod" class="form-control" />
                                 </div>
-                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="SpecificationFrom" class="form-label">Specification From</label>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                    <label asp-for="SpecificationFrom" class="form-label" style="color:red">Specification From*</label>
                                     <input asp-for="SpecificationFrom" class="form-control" />
                                 </div>
                                  
@@ -173,19 +179,21 @@
                                     <label asp-for="Operator" class="form-label">Operator</label>
                                     <select class="form-control" id="Operator" asp-for="Operator" style="width:170px;">
                                         <option value="">-Select-</option>
-                                        <option value="s">+</option>
-                                        <option value="m">*</option>
-                                        <option value="d">/</option>
+                                        <option value="+">+</option>
+                                        <option value="*">*</option>
+                                        <option value="/">/</option>
+                                        <option value="-">-</option>
+                                        <option value=",">,</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="SpecificationTo" class="form-label">Specification To</label>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red">
+                                    <label asp-for="SpecificationTo" class="form-label">Specification To*</label>
                                     <input asp-for="SpecificationTo" class="form-control" />
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="FrequencyofTesting" class="form-label">Frequency</label>
-                                    <input asp-for="FrequencyofTesting" class="form-control" />
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red">
+                                    <label asp-for="FrequencyofTesting" class="form-label">Frequency*</label>
+                                    <input asp-for="FrequencyofTesting" class="form-control" value="5"/>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="InspectionBy" class="form-label">InspectionBy</label>
@@ -209,12 +217,10 @@
                                     <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
                                     <input asp-for="DrawingNo" class="form-control" />
                                 </div>
-                                <div class="col-auto" style="padding-left:10%;">
-                                    <label class="form-label">Copy This BOM</label>
-                                    <div class="form-check form-switch">
-                                        <input asp-for="CopyControlPlan" class="form-check-input" type="checkbox" role="switch" onchange="CopyControlPlanFunc(this);" />
-                                    </div>
-                                </div>
+                          
+                                
+                                
+                                
                                 <div class="col mt-3">
                                     <div class="row justify-content-end">
                                         <div class="col-auto">
@@ -237,13 +243,14 @@
                                                     <th>Action</th>
                                                     <th>Seq No</th>
                                                     <th>Characteristic</th>
-                                                    <th>EvMeasurTech</th>
+                                                    <th>Evalution MeasurmentTechnique</th>
+                                                    <th>Control Method</th>
                                                     <th>Specification From</th>
                                                     <th>Operator</th>
                                                     <th>Specification To</th>
                                                     <th>Frequency</th>
                                                     <th>Inpected By</th>
-                                                    <th>Control Method</th>
+                                                 
                                                     <th>Remarks</th>
                                                     <th>Rejection Plan</th>
                                                     <th>Drawing No</th>
@@ -265,7 +272,126 @@
 
                     </div>
                 </div>
-               
+
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+                        <div class="accordion-body">
+                            <div class="row g-2 gx-3" id="_ItemGrid">
+                                @{
+                                    if (!string.IsNullOrEmpty(Model.ImageURL))
+                                    {
+                                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                            <div class="row">
+
+                                                <div class="col-7">
+                                                    <label class="form-label">Upload Drawing File</label>
+                                                    <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                        <i class="fa-solid fa-eye fa-fw fa-lg" style=""></i>
+                                                        View File
+                                                    </button>
+                                                    <div>
+                                                        <span>@Model.ImageURL.Split("/")[3]</span>
+                                                    </div>
+                                                </div>
+                                                <div class="col-5">
+                                                    <div class="form-check form-switch pt-4">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                                                        <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
+                                            <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                            <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                        </div>
+                                    }
+                                    else
+                                    {
+
+                                        <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                            <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                            <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                        </div>
+                                        <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
+                                    }
+                                    if (!string.IsNullOrEmpty(Model.ItemImageURL))
+                                    {
+
+                                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                            <div class="row">
+                                                <div class="col-7">
+                                                    <label class="form-label">Upload Item Image</label>
+                                                    <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                        <i class="fa-solid fa-eye fa-fw fa-lg"></i>
+                                                        View File
+                                                    </button>
+                                                    <div>
+                                                        <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                    </div>
+                                                </div>
+
+                                                <div class="col-5">
+                                                    <div class="form-check form-switch pt-4">
+                                                        <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                                                        <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
+                                            <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                            <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                        </div>
+                                    }
+                                    else
+                                    {
+
+                                        <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                            <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                            <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                        </div>
+                                        <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
+                                    }
+                                }
+                               
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryByName" class="form-label">Actual Entered By</label>
+                                    <input type="hidden" asp-for="ActualEntryBy" class="form-control" readonly />
+                                    <input asp-for="ActualEntryByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
+                                    <input asp-for="ActualEntryDate" class="form-control" value="@Model.ActualEntryDate" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="CC" class="form-label">Branch</label>
+                                    <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="EntryByMachine" class="form-label">Machine Name</label>
+                                    <input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+                                </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdatedByName" class="form-label">Updated By</label>
+                                    <input type="hidden" asp-for="LastUpdatedBy" class="form-control" readonly />
+                                    <input asp-for="LastUpdatedByName" class="form-control" readonly />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="LastUpdationDate" class="form-label">Updated Date</label>
+                                    <input asp-for="LastUpdationDate" class="form-control" readonly />
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
             </div>
         </div>
         <div class="card-footer p-3">
@@ -336,7 +462,12 @@
 @section Scripts {
     <script>
         $('.submitBTN').click(function (e) {
-            e.preventDefault(); 
+            e.preventDefault();
+            var rowCount = $('#divControlPlanGrid tr').length;
+            if (rowCount <= 1) {
+                $.notify("Please add at least one row to the grid before submitting.", "error");
+                return;
+            }
             $('form').submit();
         });
         $(document).ready(function () {
@@ -711,10 +842,16 @@
                 }
             });
         }
-
+        function ViewFile(url) {
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
         $('.GridButton').click(function (e) {
             debugger
             e.preventDefault();
+            var imageUrl = $('#hdnImageURL').val();
+            var itemImageUrl = $('#hdnItemImageURL').val();
             EditEachItem = false;
             function isNullOrEmpty(val) {
                 return val === undefined || val === null || val.trim() === "";
@@ -789,6 +926,11 @@
                 "CntPlanEntryDate": $('#CntPlanEntryDate').val(),
                 "CntPlanYearCode": $('#CntPlanYearCode').val(),
                 "CntPlanEntryId": $('#CntPlanEntryId').val(),
+                "ImageURL": imageUrl,
+                "ItemImageURL": itemImageUrl,
+
+                        "Mode": $('#Mode').val(),
+                "SeqNo": $('#SeqNo').val()
 
             }
             console.log(ItemData);
@@ -808,6 +950,8 @@
                     }
                     else {
                         $('#divControlPlanGrid').html(data);
+                        $('#Mode').val("");  
+                        $('#SeqNo').val("");
                         $.notify('Process Added To Grid', "success");
                         //ClearItem();
                     }
@@ -832,7 +976,13 @@
                 console.log(4);
             });
         });
-
+        function ViewFile(path) {
+            if (path) {
+                window.open(path, '_blank');
+            } else {
+                $.notify("No file available to view", "error");
+            }
+        }
         function EditItemRows(SeqNo) {
             debugger
             var RowCount = $('#divControlPlanGrid tr').length;
@@ -844,7 +994,7 @@
                 $.ajax({
                     url: '/ControlPlan/EditItemRows',
                     type: "POST",
-                    data: { SeqNo: SeqNo },
+                    data: { SeqNo: SeqNo ,Mode:"U"},
                     success: function (data) {
 
                         var obj = $.parseJSON(data);
@@ -861,7 +1011,8 @@
                             $('#Remarks').val(obj[0].Remarks).trigger("change");
                             $('#RejectionPlan').val(obj[0].RejectionPlan).trigger("change");
                             $('#DrawingNo').val(obj[0].DrawingNo).trigger("change");
-
+                            $('#SeqNo').val(obj[0].SeqNo);  
+                            $('#Mode').val('U');
                             //   $('#divRoutingGrid tr#' + SeqNo).remove();
 
                             var rowCount = $('#divControlPlanGrid tr').length;
@@ -887,7 +1038,7 @@
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { "SeqNo": SeqNo, Mode: "U" },
                 success: await function (data, status, xhr) {
                     $('#divControlPlanGrid').html(data);
                     $.notify("Process deleted from Grid", "info");

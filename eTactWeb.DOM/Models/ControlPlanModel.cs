@@ -34,8 +34,10 @@ namespace eTactWeb.DOM.Models
         public int UId { get; set; }
         public string EntryByMachine { get; set; } = "";
         public int ActualEntryBy { get; set; }
+        public string ActualEntryByName { get; set; }
         public string? ActualEntryDate { get; set; }
         public int LastUpdatedBy { get; set; }
+        public string LastUpdatedByName { get; set; }
         public string? LastUpdationDate { get; set; }
         public int SeqNo { get; set; }
         public string Characteristic { get; set; }
@@ -52,12 +54,17 @@ namespace eTactWeb.DOM.Models
         public bool CopyControlPlan { get; set; }
         public string DrawingNo { get; set; }
         public string DrawingNoImagePath { get; set; }
+        public string ImageURL { get; set; }
+        public IFormFile? UploadImage { get; set; }
+        public IFormFile? ItemImage { get; set; }
+        public string? ItemImageURL { get; set; }
         public int CreatedBy { get; set; }
         public IList<ControlPlanDetailModel> DTSSGrid { get; set; }
     }
     public class ControlPlanDetailModel
     {
         public int SeqNo { get; set; }
+        public string Mode { get; set; }
         public int CntPlanEntryId { get; set; }
         public int CntPlanYearCode { get; set; }
         public string Characteristic { get; set; }
@@ -73,6 +80,10 @@ namespace eTactWeb.DOM.Models
         public string ItemimagePath { get; set; }
         public string DrawingNo { get; set; }
         public string DrawingNoImagePath { get; set; }
+        public string ImageURL { get; set; }
+        public IFormFile? UploadImage { get; set; }
+        public IFormFile? ItemImage { get; set; }
+        public string? ItemImageURL { get; set; }
     }
 
 }

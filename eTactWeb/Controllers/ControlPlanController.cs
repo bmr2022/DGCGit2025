@@ -40,8 +40,8 @@ namespace eTactWeb.Controllers
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
-            //MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
-            // MainModel.ActualEntryDate = HttpContext.Session.GetString("EntryDate");
+            MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+            
 
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
@@ -57,33 +57,71 @@ namespace eTactWeb.Controllers
                     Size = 1024
                 };
             }
-
+            if (Mode == "U")
+            {
+                MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                MainModel.LastUpdationDate = DateTime.Now.ToString("dd/mm/yyyy");
+            }
             return View(MainModel);
         }
         [Route("{controller}/Index")]
         [HttpPost]
+
         public async Task<IActionResult> ControlPlan(ControlPlanModel model)
         {
             try
             {
-                var GIGrid = new DataTable();
+               
+                if (model.UploadImage != null && model.UploadImage.Length > 0)
+                {
+                    var fileName = Path.GetFileName(model.UploadImage.FileName);
+                    var uniqueName = Guid.NewGuid().ToString() + "_" + fileName;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads", uniqueName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.UploadImage.CopyToAsync(stream);
+                    }
+
+                    model.ImageURL = "/Uploads/DrawingImage/" + uniqueName; 
+                }
+
+                if (model.ItemImage != null && model.ItemImage.Length > 0)
+                {
+                    var fileName = Path.GetFileName(model.ItemImage.FileName);
+                    var uniqueName = Guid.NewGuid().ToString() + "_" + fileName;
+                    var filePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot/Uploads", uniqueName);
+
+                    using (var stream = new FileStream(filePath, FileMode.Create))
+                    {
+                        await model.ItemImage.CopyToAsync(stream);
+                    }
+
+                    model.ItemImageURL = "/Uploads/ItemImage/" + uniqueName;
+                }
+
+                
                 string modelJson = HttpContext.Session.GetString("KeyControlPlanGrid");
                 List<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(modelJson);
                 }
+                for (int i = 0; i < ControlPlanDetail.Count; i++)
+                {
+                    ControlPlanDetail[i].ImageURL = model.ImageURL;
+                    ControlPlanDetail[i].ItemImageURL = model.ItemImageURL;
+                }
+                HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(ControlPlanDetail));
+
+                var GIGrid = GetDetailTable(ControlPlanDetail);
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                if (model.Mode == "U")
-                {
-                    GIGrid = GetDetailTable(ControlPlanDetail);
-                }
-                else
-                {
-                    GIGrid = GetDetailTable(ControlPlanDetail);
-                }
-                var Result =  await _IControlPlan.SaveControlPlan(model, GIGrid);
+
+     
+                var Result = await _IControlPlan.SaveControlPlan(model, GIGrid);
+
                 if (Result != null)
                 {
                     if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
@@ -107,11 +145,9 @@ namespace eTactWeb.Controllers
                 }
 
                 return RedirectToAction(nameof(ControlPlan));
-
             }
             catch (Exception ex)
             {
-                // Log and return the error
                 LogException<ControlPlanController>.WriteException(_logger, ex);
                 var ResponseResult = new ResponseResult
                 {
@@ -122,6 +158,7 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+
         private static DataTable GetDetailTable(IList<ControlPlanDetailModel> DetailList)
         {
             try
@@ -155,23 +192,6 @@ namespace eTactWeb.Controllers
                     GIGrid.Rows.Add(
                         new object[]
                         {
-                    //Item.CntPlanEntryId,
-                    //Item.CntPlanYearCode,
-                    //Item.SeqNo,
-                    //Item.Characteristic,
-                    // evalTech, 
-                    ////Item.EvalutionMeasurmentTechnique,
-                    //Item.SpecificationFrom,
-                    //Item.Operator,
-                    //Item.SpecificationTo,
-                    //Item.FrequencyofTesting,
-                    //Item.InspectionBy,
-                    //Item.ControlMethod,
-                    //Item.RejectionPlan,
-                    //Item.Remarks,
-                    //Item.ItemimagePath,
-                    //Item.DrawingNo,
-                    //Item.DrawingNoImagePath,
                     Item.CntPlanEntryId,
                     Item.CntPlanYearCode ,
                     Item.SeqNo ,
@@ -185,9 +205,9 @@ namespace eTactWeb.Controllers
                     Item.ControlMethod ,
                     Item.RejectionPlan == null ? "RejectionPlan" : "RejectionPlan",
                     Item.Remarks ,
-                    Item.ItemimagePath == null ? "ItemimagePath" : "ItemimagePath",
+                    Item.ItemImageURL,
                     Item.DrawingNo ,
-                    Item.DrawingNoImagePath == null ? "DrawingNoImagePath" : "DrawingNoImagePath"
+                    Item.ImageURL
 
                         });
                 }
@@ -229,103 +249,202 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        //public IActionResult AddControlPlanDetail(ControlPlanDetailModel model)
+        //{
+        //    try
+        //    {
+        //        string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
+        //        IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
+        //        if (jsonString != null)
+        //        {
+        //            GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
+        //        }
+
+        //        var MainModel = new ControlPlanModel();
+        //        var RoutingDetailGrid = new List<ControlPlanDetailModel>();
+        //        var RoutingGrid = new List<ControlPlanDetailModel>();
+        //        var SSGrid = new List<ControlPlanDetailModel>();
+
+        //        if (model != null)
+        //        {
+        //            if (GridDetail == null)
+        //            {
+        //                //model.SequenceNo = 1;
+        //                RoutingGrid.Add(model);
+        //            }
+        //            else
+        //            {
+        //                if (GridDetail.Any(x =>
+        //                    x.Characteristic == model.Characteristic &&
+        //                    x.EvalutionMeasurmentTechnique == model.EvalutionMeasurmentTechnique &&
+        //                    x.ControlMethod == model.ControlMethod))
+        //                {
+        //                    return StatusCode(207, "Duplicate");
+        //                }
+        //                else
+        //                {
+        //                    model.SeqNo = GridDetail.Count + 1;
+        //                    RoutingGrid = GridDetail.Where(x => x != null).ToList();
+        //                    SSGrid.AddRange(RoutingGrid);
+        //                    RoutingGrid.Add(model);
+        //                }
+        //                //model.SeqNo = GridDetail.Count + 1;
+        //                //RoutingGrid = GridDetail.Where(x => x != null).ToList();
+        //                //SSGrid.AddRange(RoutingGrid);
+        //                //RoutingGrid.Add(model);
+        //            }
+        //            RoutingGrid = RoutingGrid.OrderBy(item => item.SeqNo).ToList();
+        //            MainModel.DTSSGrid = RoutingGrid;
+
+        //            HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
+        //        }
+        //        else
+        //        {
+        //            ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+        //        }
+
+        //        return PartialView("_ControlPlanMainGrid", MainModel);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw ex;
+        //    }
+        //}
         public IActionResult AddControlPlanDetail(ControlPlanDetailModel model)
         {
             try
             {
                 string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
                 IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
-                if (jsonString != null)
+
+                if (!string.IsNullOrEmpty(jsonString))
                 {
                     GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
                 }
 
                 var MainModel = new ControlPlanModel();
-                var RoutingDetailGrid = new List<ControlPlanDetailModel>();
-                var RoutingGrid = new List<ControlPlanDetailModel>();
-                var SSGrid = new List<ControlPlanDetailModel>();
 
                 if (model != null)
                 {
-                    if (GridDetail == null)
+                    // Check for duplicates except for the same SeqNo
+                    bool isDuplicate = GridDetail.Any(x =>
+                        x.SeqNo != model.SeqNo &&
+                        x.Characteristic == model.Characteristic &&
+                        x.EvalutionMeasurmentTechnique == model.EvalutionMeasurmentTechnique &&
+                        x.ControlMethod == model.ControlMethod);
+
+                    if (isDuplicate)
+                        return StatusCode(207, "Duplicate");
+
+                    if (model.Mode == "U")
                     {
-                        //model.SequenceNo = 1;
-                        RoutingGrid.Add(model);
+                       
+                        GridDetail.Add(model);
                     }
                     else
                     {
-                        if (GridDetail.Any(x => x.SeqNo == model.SeqNo))
-                        {
-                            return StatusCode(207, "Duplicate");
-                        }
-                        else
-                        {
-                            model.SeqNo = GridDetail.Count + 1;
-                            RoutingGrid = GridDetail.Where(x => x != null).ToList();
-                            SSGrid.AddRange(RoutingGrid);
-                            RoutingGrid.Add(model);
-                        }
-                        //model.SeqNo = GridDetail.Count + 1;
-                        //RoutingGrid = GridDetail.Where(x => x != null).ToList();
-                        //SSGrid.AddRange(RoutingGrid);
-                        //RoutingGrid.Add(model);
+                      
+                        int nextSeqNo = GridDetail.Count > 0 ? GridDetail.Max(x => x.SeqNo) + 1 : 1;
+                        model.SeqNo = nextSeqNo;
+                        GridDetail.Add(model);
                     }
-                    RoutingGrid = RoutingGrid.OrderBy(item => item.SeqNo).ToList();
-                    MainModel.DTSSGrid = RoutingGrid;
 
+                   
+                    MainModel.DTSSGrid = GridDetail.OrderBy(x => x.SeqNo).ToList();
                     HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
-                }
-                else
-                {
-                    ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
                 }
 
                 return PartialView("_ControlPlanMainGrid", MainModel);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                throw ex;
+                throw;
             }
         }
+
+
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new ControlPlanModel();
             string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
             IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
-            if (jsonString != null)
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
                 GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
             }
-            var SAGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
-            string JsonString = JsonConvert.SerializeObject(SAGrid);
+
+            var result = GridDetail.Where(x => x.SeqNo == SeqNo).ToList();
+            string JsonString = JsonConvert.SerializeObject(result);
             return Json(JsonString);
         }
+
+        //public async Task<JsonResult> EditItemRows(int SeqNo)
+        //{
+        //    var MainModel = new ControlPlanModel();
+        //    string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
+        //    IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
+        //    if (jsonString != null)
+        //    {
+        //        GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
+        //    }
+        //    var SAGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
+        //    string JsonString = JsonConvert.SerializeObject(SAGrid);
+        //    return Json(JsonString);
+        //}
+
         public IActionResult DeleteItemRow(int SeqNo)
         {
             var MainModel = new ControlPlanModel();
             string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
             IList<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
-            if (jsonString != null)
+
+            if (!string.IsNullOrEmpty(jsonString))
             {
                 ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
             }
-            int Indx = Convert.ToInt32(SeqNo) - 1;
 
             if (ControlPlanDetail != null && ControlPlanDetail.Count > 0)
             {
-                ControlPlanDetail.RemoveAt(Convert.ToInt32(Indx));
-                Indx = 0;
+                var itemToRemove = ControlPlanDetail.FirstOrDefault(x => x.SeqNo == SeqNo);
+                if (itemToRemove != null)
+                    ControlPlanDetail.Remove(itemToRemove);
 
-                foreach (var item in ControlPlanDetail)
-                {
-                    Indx++;
-                    // item.SequenceNo = Indx;
-                }
-                MainModel.DTSSGrid = ControlPlanDetail;
-
+                // ✅ Do NOT reassign SeqNo here
+                MainModel.DTSSGrid = ControlPlanDetail.OrderBy(x => x.SeqNo).ToList();
                 HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
             }
+
             return PartialView("_ControlPlanMainGrid", MainModel);
         }
+
+
+        //public IActionResult DeleteItemRow(int SeqNo)
+        //{
+        //    var MainModel = new ControlPlanModel();
+        //    string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
+        //    IList<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
+        //    if (jsonString != null)
+        //    {
+        //        ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
+        //    }
+        //    int Indx = Convert.ToInt32(SeqNo) - 1;
+
+        //    if (ControlPlanDetail != null && ControlPlanDetail.Count > 0)
+        //    {
+        //        ControlPlanDetail.RemoveAt(Convert.ToInt32(Indx));
+        //        Indx = 0;
+
+        //        foreach (var item in ControlPlanDetail)
+        //        {
+        //            Indx++;
+        //            // item.SequenceNo = Indx;
+        //        }
+        //        MainModel.DTSSGrid = ControlPlanDetail;
+
+        //        HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
+        //    }
+        //    return PartialView("_ControlPlanMainGrid", MainModel);
+        //}
     }
 }
