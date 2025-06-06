@@ -4,6 +4,8 @@
     ViewData["Title"] = "Reoffer Item";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+
 <style>
     .disabled-link {
         pointer-events: none; /* Disables clicking */
@@ -241,24 +243,32 @@
                                                 <th>PrevAccQty</th>
                                                 <th>AccQty</th>
                                                 <th>AltAccQty</th>
+                                                <th>PrevOkRecStore</th>
                                                 <th>OkRecStore &nbsp;<input id="SHA1" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
                                                             
-                                                                <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige;width:60px">
+                                                                <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige">
                                                                     
-                                                                     Password
+                                                                    <i class="bi bi-lock"></i>
                                                                 </button>
                                                             
                                                         </th>
                                                          <th>PrevRejQty</th>
                                                 <th>RejQty</th>
                                                 <th>AltRejQty</th>
+                                                <th>PrevRejRecStore</th>
+
                                                 <th>RejRecStore<input id="SHA2" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th>PrevHoldQty</th>
                                                 <th>HoldQty </th>
+                                                <th>PrevHoldStore </th>
+
+                                              
                                                 <th>HoldStore<input id="SHA3" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                               
                                                 <th>PrevReworkqty</th>
                                                 <th>Reworkqty</th>
+                                                <th>AltReworkqty</th>
+                                                <th>PrevRewokStore</th>
                                                 <th>RewokStore<input id="SHA4" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th>DeviationQty</th>
                                                 <th>ResponsibleEmpForDeviation</th>
@@ -868,6 +878,22 @@
             const index = id.replace("AcceptedQty", "");
             const accQtyVal = input.value;
             const altAccQtyInput = document.getElementById("AltAcceptedQty" + index);
+             const RecQtyInput = document.getElementById("RecQty" + index);
+
+              const AcceptedQty = document.getElementById("AcceptedQty" + index);
+                    const HoldQty = document.getElementById("HoldQty" + index);
+                    const RejectedQty = document.getElementById("RejectedQty" + index);
+                    const Reworkqty = document.getElementById("Reworkqty" + index);
+
+                     const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
+                     const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
+                     const HoldQtyVal = parseFloat(HoldQty.value) || 0;
+                     const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
+                     const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+
+                     
+                   
+
         
             if (altAccQtyInput) {
                 altAccQtyInput.value = accQtyVal;
@@ -887,7 +913,7 @@
                         }
                         else {
                             // Subtract rejected from original hold qty
-                            newHoldVal = Math.max(prevHoldVal - accQtyVal, 0);
+                            newHoldVal = Math.max(RecQtyVal - accQtyVal-RejectedQtyval-Reworkqtyval, 0);
                             holdInput.value = newHoldVal.toFixed(2);
 
                         }
@@ -908,8 +934,35 @@
 
                         } else {
                             // Subtract rejected from original rework qty
-                            const newReworkVal = Math.max(prevReworkVal - accQtyVal, 0);
+                            const newReworkVal = Math.max(RecQtyVal - accQtyVal-RejectedQtyval-HoldQtyVal, 0);
                             reworkInput.value = newReworkVal.toFixed(2);
+
+                        }
+
+                    }
+
+
+                }
+                if ($('#QcType').val() === 'Rejected') {
+
+                    const RejectedInput = document.getElementById("RejectedQty" + index);
+                    const prevRejectedInput = document.getElementById("PreviousRejectedQty" + index);
+                    const AltRejecteddInput = document.getElementById("AltRejectedQty" + index);
+
+
+                    if (RejectedInput && prevRejectedInput) {
+                        const prevRejectedVal = parseFloat(prevRejectedInput.value) || 0;
+
+                        if (isNaN(accQtyVal) || accQtyVal === 0 || accQtyVal == '') {
+                            // Reset to original if empty or zero
+                            RejectedInput.value = prevRejectedVal.toFixed(2);
+                            AltRejecteddInput.value = prevRejectedVal.toFixed(2);
+
+                        } else {
+                            // Subtract rejected from original rework qty
+                            const newRejectedVal = Math.max(RecQtyVal - accQtyVal-HoldQtyVal-Reworkqtyval, 0);
+                            RejectedInput.value = newRejectedVal.toFixed(2);
+                            AltRejecteddInput.value = newRejectedVal.toFixed(2);
 
                         }
 
@@ -929,6 +982,20 @@
                 const index = id.replace("RejectedQty", "");
                 const rejQtyVal = input.value;
                 const altRejQtyInput = document.getElementById("AltRejectedQty" + index);
+                 const RecQtyInput = document.getElementById("RecQty" + index);
+                 const PreviousRejectedQtyInpyt = document.getElementById("PreviousRejectedQty" + index);
+
+                  const AcceptedQty = document.getElementById("AcceptedQty" + index);
+                    const HoldQty = document.getElementById("HoldQty" + index);
+                    const RejectedQty = document.getElementById("RejectedQty" + index);
+                    const Reworkqty = document.getElementById("Reworkqty" + index);
+
+                    const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
+                     const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
+                     const HoldQtyVal = parseFloat(HoldQty.value) || 0;
+                     const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
+                     const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+
 
                 if (altRejQtyInput) {
                     altRejQtyInput.value = rejQtyVal;
@@ -938,7 +1005,6 @@
                     const prevAcceptedInput = document.getElementById("PrevAcceptedQty" + index);
                     const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
 
-
                     if (acceptedInput && prevAcceptedInput) {
                         const prevAcceptedVal = parseFloat(prevAcceptedInput.value) || 0;
 
@@ -947,10 +1013,10 @@
                             acceptedInput.value = prevAcceptedVal.toFixed(2);
                             if (altAcceptedInput) altAcceptedInput.value = prevAcceptedVal.toFixed(2);
                         } else {
-
-
+                            
+                           
                             const AcceptedVal = parseFloat(acceptedInput.value) || 0;
-                            const newAcceptedVal = Math.max(prevAcceptedVal - rejQtyVal, 0); // prevent negative
+                            const newAcceptedVal = Math.max(RecQtyVal - rejQtyVal-HoldQtyVal-Reworkqtyval, 0); // prevent negative
                             acceptedInput.value = newAcceptedVal.toFixed(2);
 
                             // Also sync with AltAcceptedQty
@@ -978,7 +1044,7 @@
                         }
                         else {
                             // Subtract rejected from original hold qty
-                            newHoldVal = Math.max(prevHoldVal - rejQtyVal, 0);
+                            newHoldVal = Math.max(RecQtyVal - rejQtyVal-Reworkqtyval-AcceptedQtyVal, 0);
                             holdInput.value = newHoldVal.toFixed(2);
 
                         }
@@ -999,7 +1065,7 @@
 
                         } else {
                             // Subtract rejected from original rework qty
-                            const newReworkVal = Math.max(prevReworkVal - rejQtyVal, 0);
+                            const newReworkVal = Math.max(RecQtyVal - rejQtyVal-AcceptedQtyVal-HoldQtyVal, 0);
                             reworkInput.value = newReworkVal.toFixed(2);
 
                         }
@@ -1008,7 +1074,215 @@
 
 
                 }
+
             }
+
+
+        if (id.startsWith("HoldQty")) {
+            const index = id.replace("HoldQty", "");
+            const holdQtyVal = input.value;
+
+             const RecQtyInput = document.getElementById("RecQty" + index);
+             const AcceptedQty = document.getElementById("AcceptedQty" + index);
+                    const HoldQty = document.getElementById("HoldQty" + index);
+                    const RejectedQty = document.getElementById("RejectedQty" + index);
+                    const Reworkqty = document.getElementById("Reworkqty" + index);
+
+                    const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
+                     const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
+                     const HoldQtyVal = parseFloat(HoldQty.value) || 0;
+                     const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
+                     const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+
+            if ($('#QcType').val() === 'Accepted') {
+                const acceptedInput = document.getElementById("AcceptedQty" + index);
+                const prevAcceptedInput = document.getElementById("PrevAcceptedQty" + index);
+                const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+
+
+                if (acceptedInput && prevAcceptedInput) {
+                    const prevAcceptedVal = parseFloat(prevAcceptedInput.value) || 0;
+
+                    if (isNaN(holdQtyVal) || holdQtyVal == '' || holdQtyVal == 0) {
+                        // RejectedQty is empty → restore original
+                        acceptedInput.value = prevAcceptedVal.toFixed(2);
+                        if (altAcceptedInput) altAcceptedInput.value = prevAcceptedVal.toFixed(2);
+                    } else {
+
+
+                        const AcceptedVal = parseFloat(acceptedInput.value) || 0;
+                        const newAcceptedVal = Math.max(RecQtyVal - holdQtyVal-RejectedQtyval-Reworkqtyval, 0); // prevent negative
+                        acceptedInput.value = newAcceptedVal.toFixed(2);
+
+                        // Also sync with AltAcceptedQty
+                        const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+                        if (altAcceptedInput) {
+                            altAcceptedInput.value = newAcceptedVal.toFixed(2);
+                        }
+                    }
+                }
+
+            }
+
+            if ($('#QcType').val() === 'REWORK') {
+
+                const reworkInput = document.getElementById("Reworkqty" + index);
+                const prevReworkInput = document.getElementById("PrevReworkQty" + index);
+
+
+                if (reworkInput && prevReworkInput) {
+                    const prevReworkVal = parseFloat(prevReworkInput.value) || 0;
+
+                    if (isNaN(holdQtyVal) || holdQtyVal === 0 || holdQtyVal == '') {
+                        // Reset to original if empty or zero
+                        reworkInput.value = prevReworkVal.toFixed(2);
+
+                    } else {
+                        // Subtract rejected from original rework qty
+                        const newReworkVal = Math.max(RecQtyVal - holdQtyVal-RejectedQtyval-AcceptedQtyVal, 0);
+                        reworkInput.value = newReworkVal.toFixed(2);
+
+                    }
+
+                }
+
+
+            }
+            if ($('#QcType').val() === 'Rejected') {
+
+                const RejectedInput = document.getElementById("RejectedQty" + index);
+                const prevRejectedInput = document.getElementById("PreviousRejectedQty" + index);
+                const AltRejecteddInput = document.getElementById("AltRejectedQty" + index);
+
+
+                if (RejectedInput && prevRejectedInput) {
+                    const prevRejectedVal = parseFloat(prevRejectedInput.value) || 0;
+
+                    if (isNaN(holdQtyVal) || holdQtyVal === 0 || holdQtyVal == '') {
+                        // Reset to original if empty or zero
+                        RejectedInput.value = prevRejectedVal.toFixed(2);
+                        AltRejecteddInput.value = prevRejectedVal.toFixed(2);
+
+                    } else {
+                        // Subtract rejected from original rework qty
+                        const newRejectedVal = Math.max(RecQtyVal - holdQtyVal-AcceptedQtyVal-Reworkqtyval, 0);
+                        RejectedInput.value = newRejectedVal.toFixed(2);
+                        AltRejecteddInput.value = newRejectedVal.toFixed(2);
+
+                    }
+
+                }
+
+
+            }
+        }
+
+                if (id.startsWith("Reworkqty")) {
+                    const index = id.replace("Reworkqty", "");
+                    const ReworkqtyVal = input.value;
+
+                     const RecQtyInput = document.getElementById("RecQty" + index);
+             const AcceptedQty = document.getElementById("AcceptedQty" + index);
+                    const HoldQty = document.getElementById("HoldQty" + index);
+                    const RejectedQty = document.getElementById("RejectedQty" + index);
+                    const Reworkqty = document.getElementById("Reworkqty" + index);
+
+                    const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
+                     const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
+                     const HoldQtyVal = parseFloat(HoldQty.value) || 0;
+                     const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
+                     const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+
+                    if ($('#QcType').val() === 'Accepted') {
+                        const acceptedInput = document.getElementById("AcceptedQty" + index);
+                        const prevAcceptedInput = document.getElementById("PrevAcceptedQty" + index);
+                        const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+
+
+                        if (acceptedInput && prevAcceptedInput) {
+                            const prevAcceptedVal = parseFloat(prevAcceptedInput.value) || 0;
+
+                            if (isNaN(ReworkqtyVal) || ReworkqtyVal == '' || ReworkqtyVal == 0) {
+                                // RejectedQty is empty → restore original
+                                acceptedInput.value = prevAcceptedVal.toFixed(2);
+                                if (altAcceptedInput) altAcceptedInput.value = prevAcceptedVal.toFixed(2);
+                            } else {
+
+
+                                const AcceptedVal = parseFloat(acceptedInput.value) || 0;
+                                const newAcceptedVal = Math.max(RecQtyVal - ReworkqtyVal-HoldQtyVal-RejectedQtyval, 0); // prevent negative
+                                acceptedInput.value = newAcceptedVal.toFixed(2);
+
+                                // Also sync with AltAcceptedQty
+                                const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+                                if (altAcceptedInput) {
+                                    altAcceptedInput.value = newAcceptedVal.toFixed(2);
+                                }
+                            }
+                        }
+
+                    }
+                
+              
+               
+                if ($('#QcType').val() === 'Rejected') {
+
+                    const RejectedInput = document.getElementById("RejectedQty" + index);
+                    const prevRejectedInput = document.getElementById("PreviousRejectedQty" + index);
+                    const AltRejecteddInput = document.getElementById("AltRejectedQty" + index);
+
+
+                    if (RejectedInput && prevRejectedInput) {
+                        const prevRejectedVal = parseFloat(prevRejectedInput.value) || 0;
+
+                        if (isNaN(ReworkqtyVal) || ReworkqtyVal === 0 || ReworkqtyVal == '') {
+                            // Reset to original if empty or zero
+                            RejectedInput.value = prevRejectedVal.toFixed(2);
+                            AltRejecteddInput.value = prevRejectedVal.toFixed(2);
+
+                        } else {
+                            // Subtract rejected from original rework qty
+                            const newRejectedVal = Math.max(RecQtyVal - ReworkqtyVal-HoldQtyVal-AcceptedQtyVal, 0);
+                            RejectedInput.value = newRejectedVal.toFixed(2);
+                            AltRejecteddInput.value = newRejectedVal.toFixed(2);
+
+                        }
+
+                    }
+
+
+                }
+                if ($('#QcType').val() === 'HOLD') {
+                    const holdInput = document.getElementById("HoldQty" + index);
+                    const prevHoldInput = document.getElementById("PreviousHoldQty" + index);
+
+
+                    if (holdInput && prevHoldInput) {
+                        const prevHoldVal = parseFloat(prevHoldInput.value) || 0;
+
+                        if (isNaN(ReworkqtyVal) || ReworkqtyVal === 0 || ReworkqtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            holdInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(RecQtyVal - ReworkqtyVal-AcceptedQtyVal-RejectedQtyval, 0);
+                            holdInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
+                }
+
+            }
+
+
+
+
+
+
+
+
     }
 
     
@@ -1043,6 +1317,7 @@
                         var html = '';
                         $('#DivDetailGrid').empty();
                         var i = 1;
+                        var qcType = $('#QcType').val();
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $.each(obj.Result, function (index, val) {
                                 html += '<tr>' +
@@ -1055,24 +1330,72 @@
                                 '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="AltRecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="PrevAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="AcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
-                                '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
-                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +  
-                                 '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+/*                                 '<td><input id="AcceptedQty' + i + '" value=' + val.AcceptedQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+
+ */ 
+                                 '<td><input id="AcceptedQty' + i + '" value=' + val.AcceptedQty + 
+                                        ' style="width:60px;background-color:#99FFFF;" class="textbox number"' +
+                                        (qcType.toLowerCase() === 'accepted' ? ' disabled' : '') +
+                                        ' onfocusout="handleInput(this)"></td>'+
+                                    '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+                                      '<td>' +
+                                     '<select id="PrevOkRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="OkRecStoreChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.OkRecStoreid + '" selected>' + val.OkRecStorename + '</option>' +
+                                          '</select>'
+                                       +
+                                '</td>'+
+                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +      
+                               
+                                '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty +
+                                        ' style="width:60px;background-color:#99FFFF;" class="textbox number"' +
+                                        (qcType.toLowerCase() === 'rejected' ? ' disabled' : '') +
+                                        ' onfocusout="handleInput(this)"></td>' +
                                 '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
+                                 '<td>' +
+                                    '<select id="PrevRejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.Rejstoreid + '" selected>' + val.Rejstorename + '</option>' +
+                                          '</select>'
+                                        +
+                                '</td>'+
                                 '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
+                               
                                 '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' style="width:60px;" readonly class="textbox number"></td>' +
-                                '<td><input id="HoldQty' + i + '" value=' + val.HoldQty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"></td>' +
-                                '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+                                    '<td><input id="HoldQty' + i + '" value=' + val.HoldQty +
+                                            ' style="width:60px;background-color:#99FFFF;" class="textbox number"' +
+                                            (qcType.toLowerCase() === 'hold' ? ' disabled' : '') +
+                                            ' onfocusout="handleInput(this)"></td>' +
+                                            '<td>' +
+                                    '<select id="PrevHoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.HoldStoreId + '" selected>' + val.HoldStorename + '</option>' +
+                                          '</select>'
+                                        +
+                                '</td>'+
+                                 '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
+                                 
                                 '<td><input id="PreviousReworkqty' + i + '" value=' + val.Reworkqty + ' readonly style="width:60px;" class="textbox number"></td>' +
-                                '<td><input id="Reworkqty' + i + '" value=' + val.Reworkqty + ' style="width:60px;background-color:#ffd6dd;" class="textbox number"></td>' +
-                                '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
-
+                                '<td><input id="Reworkqty' + i + '" value=' + val.Reworkqty +
+                                        ' style="width:60px;background-color:#99FFFF;" class="textbox number"' +
+                                        (qcType.toLowerCase() === 'rework' ? ' disabled' : '') +
+                                        ' onfocusout="handleInput(this)"></td>' +
+                                         '<td>' +
+                                     '<select id="PrevRewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.RewokStoreId + '" selected>' + val.RewokStoreName + '</option>' +
+                                          '</select>'
+                                          +
+                                      
+                                '</td>'+
+                                 '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+                                
+                                
                                 '<td><input id="DeviationQty' + i + '" value="" style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="ResponsibleEmpForDeviation' + i + '" value="" class="textbox"></td>' +
-                                                               '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
+                                '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
 
                                  '<td><input id="BatchNo' + i + '" value=' + val.BatchNo + ' class="textbox"></td>' +
                                 '<td><input id="uniqueBatchno' + i + '" value=' + val.uniqueBatchno + ' class="textbox"></td>' +

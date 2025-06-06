@@ -1186,7 +1186,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetItemRate")",
-                data: { ItemCode: $('#ItemCode').val(), TillDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#uniquebatchno').val() },
+                data: { ItemCode: $('#ItemCode').val(), TillDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#uniquebatchno').val(), accountcode: $('#AccountCode').val() },
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {

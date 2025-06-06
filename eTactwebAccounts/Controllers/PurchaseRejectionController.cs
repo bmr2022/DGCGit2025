@@ -178,18 +178,25 @@ namespace eTactWeb.Controllers
                 else
                 {
                     model.CC = HttpContext.Session.GetString("Branch");
-                    //model.ActualEnteredBy   = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                    if (model.Mode == "U")
+                    if (model.Mode != "U")
                     {
-                        model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                        model.Uid = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.ActualEnteredByName = GetEmpByMachineName();
+                        model.ActualEntryDate = HttpContext.Session.GetString("ActualEntryDate") ?? ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
+                        model.MachineName = GetEmpByMachineName();
                         PRGrid = GetDetailTable(PurchaseRejectionDetail, MainModel);
                     }
                     else
                     {
-                        model.ActualEnteredBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                        model.ActualEnteredByName = GetEmpByMachineName();
+                        model.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        model.LastUpdatedByName = GetEmpByMachineName();
+                        model.LastUpdationDate = HttpContext.Session.GetString("LastUpdatedDate");
+                        model.UpdatedOn = ParseSafeDate(HttpContext.Session.GetString("LastUpdatedDate"));
+                        model.MachineName = GetEmpByMachineName();
                         PRGrid = GetDetailTable(PurchaseRejectionDetail, MainModel);
                     }
 

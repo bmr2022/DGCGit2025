@@ -68,7 +68,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo)
+        public async Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo, int accountcode)
         {
             var Result = new ResponseResult();
 
@@ -81,6 +81,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@BatchNo", BatchNo));
                 SqlParams.Add(new SqlParameter("@uniquebatchno", UniqueBatchNo));
+                SqlParams.Add(new SqlParameter("@accountcode", accountcode));
 
                 Result = await _IDataLogic.ExecuteDataTable("GetItemRate", SqlParams);
             }
