@@ -192,9 +192,9 @@ namespace eTactWeb.Controllers
                 return DateTime.Parse(dateString);
             }
         }
-        public async Task<JsonResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo)
+        public async Task<JsonResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo, int accountcode)
         {
-            var JSON = await _IIssueNRGP.GetItemRate(ItemCode, TillDate, YearCode, BatchNo, UniqueBatchNo);
+            var JSON = await _IIssueNRGP.GetItemRate(ItemCode, TillDate, YearCode, BatchNo, UniqueBatchNo, accountcode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

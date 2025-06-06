@@ -17,7 +17,7 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> GetBatchInventory();
         public Task<ResponseResult> GetVendorList();
         public Task<ResponseResult> GetProcessList();
-        public   Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo);
+        public   Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo,int accountcode);
         public Task<ResponseResult> GetStoreList();
         public Task<ResponseResult> GetAllowBackDate();
         public Task<ResponseResult> GetPrevQty(int EntryId, int YearCode, int ItemCode, string uniqueBatchNo);

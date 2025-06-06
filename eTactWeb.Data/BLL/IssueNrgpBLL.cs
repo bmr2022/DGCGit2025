@@ -50,9 +50,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueNRGPDAL.GetProcessList();
         }  
-        public async Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo)
+        public async Task<ResponseResult> GetItemRate(int ItemCode, string TillDate, int YearCode, string BatchNo, string UniqueBatchNo, int accountcode)
         {
-            return await _IssueNRGPDAL.GetItemRate(ItemCode, TillDate, YearCode, BatchNo, UniqueBatchNo);
+            return await _IssueNRGPDAL.GetItemRate(ItemCode, TillDate, YearCode, BatchNo, UniqueBatchNo,  accountcode);
         }  
         public async Task<ResponseResult> GetStoreList()
         {
