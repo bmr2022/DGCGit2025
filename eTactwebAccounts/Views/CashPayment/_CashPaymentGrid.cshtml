@@ -12,26 +12,29 @@ else
     {
         Cntr = Cntr + 1;
         <tr class="small " style="white-space:nowrap">
-            <td style="white-space:nowrap;" class="sticky-action">
-                <a class="table-link link-primary" onclick="EditItemRows(@Cntr);">
+            <td class="sticky-action" style="white-space:nowrap;">
+                <a class="table-link link-primary" onclick="EditItemRows(@item.SrNO);">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                     </span>
                 </a>
-                <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SrNO);">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                     </span>
                 </a>
             </td>
-            <td><input type="hidden" value="@item.SrNO" />@Cntr</td>
+            <td>@item.SrNO</td>
             <td id="GridLedgerName-@Cntr">@item.LedgerName<input type="hidden" id="AccountCode-@Cntr" value="@item.AccountCode" /><input type="hidden" id="BankType-@Cntr" value="@item.BankType" /></td>
             <td>
                 <p class="inline-text" id="BalanceG-@Cntr">@item.Balance</p>
                 <p class="inline-text" id="DrCrG-@Cntr">@item.DRCR</p>
             </td>
+            <td>@item.Intrument</td>
+            <td>@item.InsNo</td>
+            <td>@item.InsDate</td>
             <td id="ModeOfAdjustment-@Cntr">@item.ModeOfAdjustment</td>
             <td style="background-color:lightgoldenrodyellow;color:#2e2828">
                 <p class="inline-text" id="AdjAmtG-@Cntr">@item.AdjustmentAmt</p>
@@ -40,12 +43,10 @@ else
             <td>@item.AdjustmentAmtOthCur</td>
             <td>@item.CostCenterName</td>
             <td>@item.PartyWiseNaration</td>
-            <td>@item.CustOrderNo</td>
-            <td>@item.SoDate</td>
-            <td>@item.SOYear</td>
             <td>@item.PONo</td>
-            <td>@item.PoDate</td>
             <td>@item.POYear</td>
+            <td>@item.PoDate</td>
+            <td>@item.CustOrderNo</td>
             <td id="AgainstVoucherNo-@Cntr">@item.AgainstVoucherNo</td>
             <td id="AgainstVoucheryearCode-@Cntr">@item.AgainstVoucheryearCode</td>
             <td>@item.AgainstVoucherDate</td>

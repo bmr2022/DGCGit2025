@@ -60,10 +60,6 @@
         </select>
     </td>
     <td><input asp-for="PartyWiseNaration" class="form-control" /></td>
-   @*  <td><input asp-for="CustOrderNo" class="form-control" /></td>
-    <td><input asp-for="SONo" id="SoNo" class="form-control" /></td>
-    <td><input asp-for="SoDate" id="SoDate" class="form-control" readonly /></td>
-    <td><input asp-for="SOYear" class="form-control" /></td> *@
     <td>
        
         <select class="form-control" asp-for="PONo" style="width:140px;">
@@ -74,8 +70,17 @@
             }
         </select>
     </td>
+    <td>
+        <select class="form-control" asp-for="POYear" style="width:140px;">
+            <option value="@Model.POYear">-Select-</option>
+            @if (Model.Mode == "U" || Model.Mode == "V")
+            {
+                <option value="@Model.POYear">@Model.POYear</option>
+            }
+        </select>
+    </td>
     <td><input asp-for="PoDate" id="PoDate" class="form-control" style="width:120px" readonly /></td>
-    <td><input asp-for="POYear" id="POYear" class="form-control" style="width:100px" readonly /></td>
+    <td><input asp-for="CustOrderNo" class="form-control" readonly /></td>
     <td><input asp-for="AgainstVoucherNo" class="form-control" readonly /></td>
     <td><input asp-for="AgainstVoucheryearCode" class="form-control" readonly /></td>
     <td><input asp-for="AgainstVoucherDate" class="form-control" readonly /></td>

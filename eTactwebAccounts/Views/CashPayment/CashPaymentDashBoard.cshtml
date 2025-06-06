@@ -364,6 +364,22 @@
             window.location.href = linkUrl;
         }
 
+        $('#FromDate').change(function(){
+            FillLedgerInDashboard();
+            FillBankInDashboard();
+            FillVoucherNoInDashboard();
+            FillAgainstVoucherNoInDashboard();
+            FillAgainstVoucherRefNoInDashboard();
+        });
+
+         $('#ToDate').change(function(){
+            FillLedgerInDashboard();
+            FillBankInDashboard();
+            FillVoucherNoInDashboard();
+            FillAgainstVoucherNoInDashboard();
+            FillAgainstVoucherRefNoInDashboard();
+        });
+
          function FillLedgerInDashboard() {
             $.ajax({
                 type: 'POST',

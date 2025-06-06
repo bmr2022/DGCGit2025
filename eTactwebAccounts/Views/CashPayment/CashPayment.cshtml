@@ -157,18 +157,18 @@
                                                     <th style="color:yellow">Type*</th>
                                                     <th style="color:yellow">Ledger Name*</th>
                                                     <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
+                                                    <th>Intrument</th>
+                                                    <th>Intrument No</th>
+                                                    <th>Intrument Date</th>
                                                     <th style="color:yellow">Mode of Adjustment*</th>
                                                     <th style="color:yellow">Amount*</th>
                                                     <th>Amount (OC)</th>
                                                     <th>Cost Center Name</th>
                                                     <th>Party-Wise Narration</th>
-                                                    <th>Customer Order No</th>
-                                                    <th>Sale Order No</th>
-                                                    <th>Sales Order Date</th>
-                                                    <th>Sales Order Year</th>
                                                     <th>PO NO</th>
-                                                    <th>PO Date</th>
                                                     <th>PO Year</th>
+                                                    <th>PO Date</th>
+                                                    <th>Cust Order No</th>
                                                     <th>Against Voucher No</th>
                                                     <th>Against Voucher Code</th>
                                                     <th>Against Voucher Date</th>
@@ -199,17 +199,18 @@
                                                 <th>Sr NO</th>
                                                 <th>Ledger Name</th>
                                                 <th>Balance&nbsp;DR/CR</th>
+                                                <th title="Instrument">Inst</th>
+                                                <th title="Intrument No">Inst No</th>
+                                                <th title="Intrument Date">Inst Date</th>
                                                 <th title="Mode of Adjustment">Mode of Adj</th>
                                                 <th>Amount&nbsp;Type</th>
                                                 <th>Amount (OC)</th>
                                                 <th>Cost Center</th>
                                                 <th>Party-Wise Narr</th>
-                                                <th title="Customer Order No">Cust Order No</th>
-                                                <th>Sales Order Date</th>
-                                                <th>Sales Order Year</th>
-                                                <th>PO No</th>
+                                                <th>PO NO</th>
+                                                <th>PO Year</th>
                                                 <th>PO Date</th>
-                                                <th>PO Year</th>  
+                                                <th title="Customer Order No">Cust Order No</th>
                                                 <th title="Against Voucher No">Agst Vch No</th>
                                                 <th title="Against Voucher Code">Agst Vch Code</th>
                                                 <th title="Against Voucher Date">Agst Vch Date</th>
@@ -231,7 +232,7 @@
 
                                     <div style="width:170px;">
                                         <label asp-for="Naration" class="form-label">Naration</label>
-                                        <input asp-for="Naration" class="form-control" data-val="false" />
+                                        <input asp-for="Naration" class="form-control" data-val="false" readonly/>
                                     </div>
 
                                     <div style="width:170px;">
@@ -761,10 +762,15 @@
                     FillPONO();
                 }
             }
+
             $("#PONo").on("change", function () {
-                GetPOYear();
-                GetPODate();
-            });
+				GetPOYear();
+			});
+
+			$("#POYear").on("change", function () {
+				GetPODate();
+			});
+
             $("#ModeOfAdjustment").on("change", function () {
                 checkModeOfAdjustment();
             });
@@ -807,6 +813,10 @@
             $('#AdjustmentAmtOthCur').val(0);
             $('#CostCenterName').prop('selectedIndex', 0).trigger("change");
             $('#PartyWiseNaration').val('');
+            $('#PONo').prop('selectedIndex', 0).trigger("change");
+                    $('#POYear').prop('selectedIndex', 0).trigger("change");
+                    $('#PoDate').val('');
+                    $('#CustOrderNo').val('');
         }
 
         function BindModeOfAdjust() {
@@ -1055,7 +1065,7 @@
             }
 
             $.ajax({
-                url: '@Url.Action("GetPODetail", "CashPayment")',
+                url: '@Url.Action("GetPOYearCode", "CashPayment")',
                 type: 'GET',
                 data: {
                     PONO: PONO,
@@ -1065,36 +1075,20 @@
                 },
                 success: function (data) {
 
+                    var POYearDropdown = $('#POYear');
+                                    var obj = $.parseJSON(data);
+                                    POYearDropdown.empty();
+                                    POYearDropdown.append('<option value="">--Select--</option>');
+                                    $.each(obj.Result, function (index, poYear) {
+                                        POYearDropdown.append('<option value="' + poYear.POyearcode + '">' + poYear.POyearcode + '</option>');
+                                    });
 
-                    // Parse JSON if response is a string
-                    if (typeof data === "string") {
-                        try {
-                            data = JSON.parse(data);
-                        } catch (error) {
+                                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-                            return;
-                        }
-                    }
-
-                    // Extract the first result from the array
-                    if (data && data.Result && data.Result.length > 0) {
-                        var POYear = data.Result[0]; // Extract first object
-                        var PoDate = data.Result[0];
-
-
-                        $("#POYear").prop("disabled", false).val(POYear.POyearcode).trigger("input");
-                        // $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
-                        if (PoDate.PODate) {
-                            var dateObj = new Date(PoDate.PODate);
-                            var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
-                                ("0" + (dateObj.getMonth() + 1)).slice(-2) + "/" +
-                                dateObj.getFullYear();
-                            $("#PoDate").prop("disabled", false).val(formattedDate).trigger("input");
-                        }
-
-                    } else {
-
-                    }
+                                        var POYearCode = '@Model.POYear';
+                                        $('#POYear').val(POYearCode).trigger("change");
+                                        $('#POYear').val(POYearCode);
+                                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching employee details:", xhr.responseText || error);
@@ -1136,33 +1130,23 @@
                     PONO: PONO,
                     accountcode: accountcode,
                     VoucherDate: VoucherDate,
-                    POYearCode: POYearCode,
-                    PoDate: PoDate
+                    POYearCode: POYearCode
 
                 },
                 success: function (data) {
 
 
-                    // Parse JSON if response is a string
-                    if (typeof data === "string") {
-                        try {
-                            data = JSON.parse(data);
-                        } catch (error) {
-
-                            return;
-                        }
-                    }
-
-                    // Extract the first result from the array
-                    if (data && data.Result && data.Result.length > 0) {
-                        var PoDate = data.Result[0]; // Extract first object
-
-
-                        $("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
-
-                    } else {
-
-                    }
+                   var obj = $.parseJSON(data);
+                                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                                        var PODate = obj.Result[0].PODate;
+                                        var dateObj = new Date(PODate);
+                                        var day = String(dateObj.getDate()).padStart(2, '0');
+                                        var month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+                                        var year = dateObj.getFullYear();
+                                        var formattedDate = `${day}/${month}/${year}`;
+                                        $('#PoDate').val(formattedDate);
+                                        $('#CustOrderNo').val(obj.Result[0].OrderNo);
+                                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching employee details:", xhr.responseText || error);
@@ -1706,34 +1690,6 @@
             }
 
             if ($('#ModeOfAdjustment').val() == "Advance") {
-                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
-                    AddErrorCls('CustOrderNo');
-                    $.notify("CustOrderNo is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('CustOrderNo');
-                }
-                if ($('#SONo').val() == 0 || $('#SONo').val() == null) {
-                    AddErrorCls('SONo');
-                    $.notify("SONo is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('SONo');
-                }
-                if ($('#SoDate').val() == "" || $('#SoDate').val() == null) {
-                    AddErrorCls('SoDate');
-                    $.notify("SoDate is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('SoDate');
-                }
-                if ($('#SOYear').val() == 0 || $('#SOYear').val() == null) {
-                    AddErrorCls('SOYear');
-                    $.notify("SOYear is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('SOYear');
-                }
                 if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
                     AddErrorCls('PONo');
                     $.notify("PONo is required.", "error");
@@ -1754,6 +1710,13 @@
                     Err = 1;
                 } else {
                     RemoveErrorCls('POYear');
+                }
+                 if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
+                    AddErrorCls('CustOrderNo');
+                    $.notify("CustOrderNo is required.", "error");
+                    Err = 1;
+                } else {
+                    RemoveErrorCls('CustOrderNo');
                 }
             }
 
@@ -1785,6 +1748,9 @@
                 "CustOrderNo": $('#CustOrderNo').val(),
                 "SoDate": $('#SoDate').val(),
                 "SOYear": $('#SOYear').val(),
+                "PONo": $('#PONo').find(":selected").text() == '-Select-' ? '' : $('#PONo').find(":selected").text(),
+                "POYear": $('#POYear').find(":selected").text() == '-Select-' ? '' : $('#POYear').find(":selected").text(),
+                "PODate": $('#PoDate').val(),
                 "DrAmt": $('#DrAmt').val(),
                 "CrAmt": $('#CrAmt').val(),
                 "ActualEntryby": $('#ActualEntryby').val(),

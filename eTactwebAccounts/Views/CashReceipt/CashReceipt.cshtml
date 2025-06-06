@@ -180,10 +180,10 @@
 													<th>Amount (OC)</th>
 													<th>Cost Center Name</th>
 													<th>Party-Wise Narration</th>
-													<th>Customer Order No</th>
 													<th>Sale Order No</th>
-													<th>Sales Order Date</th>
 													<th>Sales Order Year</th>
+													<th>Sales Order Date</th>
+													<th>Customer Order No</th>
 													<th>Against Voucher No</th>
 													<th>Against Voucher Code</th>
 													<th>Against Voucher Date</th>
@@ -219,9 +219,10 @@
 												<th>Amount (OC)</th>
 												<th>Cost Center</th>
 												<th>Party-Wise Narr</th>
-												<th title="Customer Order No">Cust Order No</th>
-												<th>Sales Order Date</th>
+												<th>Sale Order No</th>
 												<th>Sales Order Year</th>
+												<th>Sales Order Date</th>
+												<th title="Customer Order No">Cust Order No</th>
 												<th title="Against Voucher No">Agst Vch No</th>
 												<th title="Against Voucher Code">Agst Vch Code</th>
 												<th title="Against Voucher Date">Agst Vch Date</th>
@@ -242,7 +243,7 @@
 									</div>
 									<div style="width:170px;">
 										<label asp-for="Naration" class="form-label">Naration</label>
-										<input asp-for="Naration" class="form-control" data-val="false" />
+										<input asp-for="Naration" class="form-control" data-val="false" readonly />
 									</div>
 									<div style="width:170px;">
 										<label asp-for="DrAmt" class="form-label">Dr Amt</label>
@@ -752,10 +753,15 @@
 					FillSONO();
 				}
 			}
+
 			$("#SONo").on("change", function () {
-				GetSOYear();
-				GetSODate();
-			});
+						GetSOYear();
+					});
+
+					$("#SOYear").on("change", function () {
+						GetSODate();
+					});
+
 			$("#ModeOfAdjustment").on("change", function () {
 				checkModeOfAdjustment();
 			});
@@ -797,6 +803,10 @@
 			$('#AdjustmentAmtOthCur').val(0);
 			$('#CostCenterName').prop('selectedIndex', 0).trigger("change");
 			$('#PartyWiseNaration').val('');
+			$('#SONo').prop('selectedIndex', 0).trigger("change");
+					$('#SOYear').prop('selectedIndex', 0).trigger("change");
+					$('#SoDate').val('');
+					$('#CustOrderNo').val('');
 		}
 
 		function BindModeOfAdjust() {
@@ -1021,7 +1031,7 @@
 			}
 
 			$.ajax({
-				url: '@Url.Action("GetSODetail", "CashReceipt")',
+				url: '@Url.Action("GetSoYearCode", "CashReceipt")',
 				type: 'GET',
 				data: {
 					SONO: SONO,
@@ -1032,38 +1042,20 @@
 				success: function (data) {
 
 
-					// Parse JSON if response is a string
-					if (typeof data === "string") {
-						try {
-							data = JSON.parse(data);
-						} catch (error) {
+					var SOYearDropdown = $('#SOYear');
+							var obj = $.parseJSON(data);
+							SOYearDropdown.empty();
+							SOYearDropdown.append('<option value="">--Select--</option>');
+							$.each(obj.Result, function (index, soYear) {
+								SOYearDropdown.append('<option value="' + soYear.SOYearCode + '">' + soYear.SOYearCode + '</option>');
+							});
 
-							return;
-						}
-					}
+							if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-					// Extract the first result from the array
-					if (data && data.Result && data.Result.length > 0) {
-						var SOYear = data.Result[0]; // Extract first object
-						var SoDate = data.Result[0];
-						var CONO = data.Result[0];
-
-
-						$("#SOYear").prop("disabled", false).val(SOYear.SOYearCode).trigger("input");
-						// $("#SoDate").prop("disabled", false).val(SoDate.SODate).trigger("input");
-						if (SoDate.SODate) {
-							var dateObj = new Date(SoDate.SODate);
-							var formattedDate = ("0" + dateObj.getDate()).slice(-2) + "/" +
-								("0" + (dateObj.getMonth() + 1)).slice(-2) + "/" +
-								dateObj.getFullYear();
-							$("#SoDate").prop("disabled", false).val(formattedDate).trigger("input");
-						}
-						$("#CustOrderNo").prop("disabled", false).val(CONO.CustOrderNo).trigger("input");
-
-
-					} else {
-
-					}
+								var SOYearCode = '@Model.SOYear';
+								$('#SOYear').val(SOYearCode).trigger("change");
+								$('#SOYear').val(SOYearCode);
+							}
 				},
 				error: function (xhr, status, error) {
 					console.error("Error fetching employee details:", xhr.responseText || error);
@@ -1099,39 +1091,27 @@
 			}
 
 			$.ajax({
-				url: '@Url.Action("GetPODate", "BankPayment")',
+				url: '@Url.Action("GetSODate", "CashReceipt")',
 				type: 'GET',
 				data: {
-					PONO: PONO,
+					SONO: SONO,
 					accountcode: accountcode,
 					VoucherDate: VoucherDate,
-					POYearCode: POYearCode,
-					PoDate: PoDate
+					SOYearCode: SOYearCode
 
 				},
 				success: function (data) {
-
-
-					// Parse JSON if response is a string
-					if (typeof data === "string") {
-						try {
-							data = JSON.parse(data);
-						} catch (error) {
-
-							return;
-						}
-					}
-
-					// Extract the first result from the array
-					if (data && data.Result && data.Result.length > 0) {
-						var PoDate = data.Result[0]; // Extract first object
-
-
-						$("#PoDate").prop("disabled", false).val(PoDate.PODate).trigger("input");
-
-					} else {
-
-					}
+		var obj = $.parseJSON(data);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+										var SoDate = obj.Result[0].SODate;
+										var dateObj = new Date(SoDate);
+										var day = String(dateObj.getDate()).padStart(2, '0');
+										var month = String(dateObj.getMonth() + 1).padStart(2, '0'); // Months are 0-based
+										var year = dateObj.getFullYear();
+										var formattedDate = `${day}/${month}/${year}`;
+										$('#SoDate').val(formattedDate);
+										$('#CustOrderNo').val(obj.Result[0].CustOrderNo);
+									}
 				},
 				error: function (xhr, status, error) {
 					console.error("Error fetching employee details:", xhr.responseText || error);
@@ -1673,14 +1653,6 @@
 			else {
 				RemoveErrorCls('AdjustmentAmt');
 			}
-		   /*  if ($('#Balance').val() == 0) {
-				AddErrorCls('Balance');
-				$.notify("Balance is must be greater than 0.", "error");
-				Err = 1;
-			}
-			else {
-				RemoveErrorCls('Balance');
-			} */
 			if ($('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
 				AddErrorCls('ModeOfAdjustment');
 				$.notify("Cannot add to grid directly.", "error");
@@ -1746,7 +1718,8 @@
 				"SeqNo": $('#SeqNo').val(),
 				"CustOrderNo": $('#CustOrderNo').val(),
 				"SoDate": $('#SoDate').val(),
-				"SOYear": $('#SOYear').val(),
+				"SONo": $('#SONo').find(":selected").text() == '-Select-' ? '' : $('#SONo').find(":selected").text(),
+				"SOYear": $('#SOYear').find(":selected").text() == '-Select-' ? '' : $('#SOYear').find(":selected").text(),
 				"DrAmt": $('#DrAmt').val(),
 				"CrAmt": $('#CrAmt').val(),
 				"ActualEntryby": $('#ActualEntryBy').val(),

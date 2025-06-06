@@ -265,6 +265,7 @@ namespace eTactWeb
             services.TryAddScoped<IControlPlan, ControlPlanBLL>();
             services.TryAddScoped<IAutoGenerateSchedule, AutoGenerateScheduleBLL>();
             services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
+            services.TryAddScoped<IOrderAmendHistory, OrderAmendHistoryBLL>();
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
            

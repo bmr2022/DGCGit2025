@@ -27,14 +27,6 @@
                 <option value="Debit-Note">Debit-Note</option>
             </select>
         </div>
-        @* <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
-        <label asp-for="AgainstSalePurchase" class="form-label" style="color: red;">Ag Sale Purchase</label>
-        <select asp-for="AgainstSalePurchase" class="form-control">
-        <option value="">-Select-</option>
-        <option value="SALE" selected>Sale</option>
-        <option value="PURCHASE">Purchase</option>
-        </select>
-        </div> *@
 
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="SubVoucherName" class="form-label" style="color: red;">Sub Voucher Name</label>
@@ -112,7 +104,9 @@
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PaymentCreditDay" class="form-label">Credit day</label>
-            <input asp-for="PaymentCreditDay" class="form-control" />
+            @{
+                <input asp-for="PaymentCreditDay" class="form-control" step="any" type="number" min="0" pattern="^([0-9]{1,6})" onkeypress="return (event.key == '.' || (event.charCode >= 48 && event.charCode <= 57))" />
+            }
         </div>
         <div class="col-md-1">
             <label asp-for="Vehicleno" class="form-label">Vehicle No</label>

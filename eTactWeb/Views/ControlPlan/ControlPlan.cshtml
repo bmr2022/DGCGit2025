@@ -68,7 +68,7 @@
         <div class="card-body bg-light">
             <div class="accordion shadow-lg" id="accordionAccountMaster">
                 <div class="accordion-item">
-                    <h2 class="accordion-header" id="H_AccountDetail">
+                    <h2 class="accordion-header" id="B_ItemCategoryDetail">
                         <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_AccountDetail" aria-expanded="true" aria-controls="B_AccountDetail">
                             <strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>ControlPlan</strong>
                           
@@ -103,7 +103,7 @@
                                     <input asp-for="Control_PlanNo" class="form-control"  />
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
-                                    <label asp-for="RevNo" class="form-label">Rev No</label>
+                                    <label asp-for="RevNo" class="form-label" style="color:red">Rev No*</label>
                                     <input asp-for="RevNo" class="form-control" />
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
@@ -135,9 +135,9 @@
                                 </div>
 
                                 <input type="hidden" id="ItemCode" name="ItemCode" value="@Model.ItemCode" />
-                                <div class="col-auto" style="padding-left:10%;">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
                                     <label class="form-label">Copy This BOM</label>
-                                    <div class="form-check form-switch">
+                                    <div class="form-check form-switch" style="margin-top:5px;">
                                         <input asp-for="CopyControlPlan" class="form-check-input" type="checkbox" role="switch" onchange="CopyControlPlanFunc(this);" />
                                     </div>
                                 </div>
@@ -207,13 +207,13 @@
                                     <label asp-for="Remarks" class="form-label">Remarks</label>
                                     <input asp-for="Remarks" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px;">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
                                     <label asp-for="RejectionPlan" class="form-label">RejectionPlan</label>
-                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan">
+                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan" style="width:170px;">
                                         <option value="@Model.RejectionPlan">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-left:20px;">
                                     <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
                                     <input asp-for="DrawingNo" class="form-control" />
                                 </div>
@@ -285,78 +285,78 @@
                                 @{
                                     if (!string.IsNullOrEmpty(Model.ImageURL))
                                     {
-                                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
-                                            <div class="row">
+                                                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                    <div class="row">
 
-                                                <div class="col-7">
-                                                    <label class="form-label">Upload Drawing File</label>
-                                                    <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
-                                                        <i class="fa-solid fa-eye fa-fw fa-lg" style=""></i>
-                                                        View File
-                                                    </button>
-                                                    <div>
-                                                        <span>@Model.ImageURL.Split("/")[3]</span>
+                                                        <div class="col-7">
+                                                            <label class="form-label">Upload Drawing File</label>
+                                                            <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                                <i class="fa-solid fa-eye fa-fw fa-lg" style=""></i>
+                                                                View File
+                                                            </button>
+                                                            <div>
+                                                                <span>@Model.ImageURL.Split("/")[3]</span>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-5">
+                                                            <div class="form-check form-switch pt-4">
+                                                                <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                                                                <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                                <div class="col-5">
-                                                    <div class="form-check form-switch pt-4">
-                                                        <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
-                                                        <label class="form-check-label" for="ReUpload">Re-Upload</label>
-                                                    </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
+                                                    <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                    <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
-                                            <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
-                                            <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
-                                        </div>
                                     }
                                     else
                                     {
 
-                                        <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                            <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
-                                            <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
-                                        </div>
-                                        <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
+                                                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                                    <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                                </div>
+                                                <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
                                     }
                                     if (!string.IsNullOrEmpty(Model.ItemImageURL))
                                     {
 
-                                        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
-                                            <div class="row">
-                                                <div class="col-7">
-                                                    <label class="form-label">Upload Item Image</label>
-                                                    <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
-                                                        <i class="fa-solid fa-eye fa-fw fa-lg"></i>
-                                                        View File
-                                                    </button>
-                                                    <div>
-                                                        <span>@Model.ItemImageURL.Split("/")[3]</span>
-                                                    </div>
-                                                </div>
+                                                <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                                    <div class="row">
+                                                        <div class="col-7">
+                                                            <label class="form-label">Upload Item Image</label>
+                                                            <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                                <i class="fa-solid fa-eye fa-fw fa-lg"></i>
+                                                                View File
+                                                            </button>
+                                                            <div>
+                                                                <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                            </div>
+                                                        </div>
 
-                                                <div class="col-5">
-                                                    <div class="form-check form-switch pt-4">
-                                                        <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
-                                                        <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                        <div class="col-5">
+                                                            <div class="form-check form-switch pt-4">
+                                                                <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                                                                <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                            </div>
+                                                        </div>
                                                     </div>
                                                 </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
-                                            <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
-                                            <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
-                                        </div>
+                                                <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
+                                                    <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                    <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                                </div>
                                     }
                                     else
                                     {
 
-                                        <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                            <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
-                                            <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
-                                        </div>
-                                        <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
+                                                <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                                    <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                                    <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                                </div>
+                                                <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
                                     }
                                 }
                                
@@ -462,13 +462,34 @@
 @section Scripts {
     <script>
         $('.submitBTN').click(function (e) {
-            e.preventDefault();
-            var rowCount = $('#divControlPlanGrid tr').length;
-            if (rowCount <= 1) {
+            debugger
+           // e.preventDefault();
+            var rowCount = $('#divControlPlanGrid tbody tr').length;
+            console.log("Rows:", rowCount);
+            if (rowCount === 0) {
                 $.notify("Please add at least one row to the grid before submitting.", "error");
-                return;
+                return false;
             }
+            else {
+
             $('form').submit();
+            }
+        });
+
+        $("button[type='submit']").click(function (e) {
+            e.preventDefault();
+
+            var rowCount = $('#divControlPlanGrid tbody tr').length;
+            console.log("Rows:", rowCount);
+            if (rowCount === 0) {
+                $.notify("Please add at least one row to the grid before submitting.", "error");
+                return false;
+            }
+            else {
+
+                $('form').submit();
+            }
+           
         });
         $(document).ready(function () {
 
@@ -503,6 +524,14 @@
             $('#Remarks').rules("remove", "required");
             $('#RejectionPlan').rules("remove", "required");
             $('#DrawingNo').rules("remove", "required");
+            $('#ActualEntryByName').rules("remove", "required");
+            $('#ActualEntryBy').rules("remove", "required");
+            $('#ActualEntryDate').rules("remove", "required");
+            $('#CC').rules("remove", "required");
+            $('#EntryByMachine').rules("remove", "required");
+            $('#LastUpdatedByName').rules("remove", "required");
+            $('#LastUpdatedBy').rules("remove", "required");
+            $('#LastUpdationDate').rules("remove", "required");
 
         });
 

@@ -1,0 +1,375 @@
+﻿@model eTactWeb.DOM.Models.OrderAmendHistoryModel
+@{
+    ViewData["Title"] = "PO Register";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>Order Amend History</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+                             
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PONO" class="form-label">PONO</label>
+                                    <input asp-for="PONO" class="form-control" />
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VendorName" class="form-label">Vendor Name</label>
+                                    <input asp-for="VendorName" class="form-control" />
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label">PartCode</label>
+                                    <input asp-for="PartCode" class="form-control" />
+                                </div>
+                                
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportMode" class="form-label">Report Type</label>
+                                    <select asp-for="ReportMode" class="form-select" onchange="GetOrderAmendHistoryData()">
+                                        <option disabled value="">-Select-</option>
+                                        
+                                        <option selected value="POSummary">SUMMARY</option>
+                                        <option value="PODetail">DETAIL</option>
+                                        
+                                    </select>
+                                </div>
+                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="HistoryReportMode" class="form-label">History Report Type</label>
+                                    <select asp-for="HistoryReportMode" class="form-select" onchange="GetOrderAmendHistoryData()">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="POAmendmentHistoryReport">Amendment History Report</option>
+                                        <option value="POSCHAMENDMENTHISTORY">PO SCH AMENDMENT HISTORY</option>
+                                        <option value="SOAMENDMENTHISTORY">SO AMENDMENT HISTORY</option>
+                                        <option value="SOSCHAMENDMENTHISTORY">SO SCH AMENDMENT HISTORY</option>
+                                        
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label">Global search</label>
+                                    <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+                                </div>
+                                <div class=" d-flex justify-content-center mt-3" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetOrderAmendHistoryData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="OrderAmendHistory" asp-action="OrderAmendHistory">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Order Amend History Grid</strong>
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divOrderAmendHistoryGrid">
+                                                    <partial name="_OrderAmendHistorySummaryGrid" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                      
+                                           
+                                    </div>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            GetServerDate();
+            $('#ReportMode').select2();
+            $('#HistoryReportMode').select2();
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+           
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            AutoComplete('Item_Master_Type', 'ItemType', 'Type_Item', null);
+            AutoComplete('Account_Head_Master', 'PartyName', 'Account_Name', null);
+            AutoComplete('purchaseScheduleMain', 'SchNo', 'ScheduleNo', null);
+            AutoComplete('VPURCHASEORDER', 'PONO', 'PONo', null);
+            AutoComplete('VItemGroupMaster', 'ItemGroup', 'Group_name', null);
+            AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
+            AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
+            AutoComplete('VPURCHASEORDER', 'OrderType', 'OrderType', null);
+            AutoComplete('VPURCHASEORDER', 'POFor', 'POFor', null);
+            GetOrderAmendHistoryData();
+        });
+
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+     
+        var isGlobalSearch = false;
+        var globalSearchString = "";
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
+            var dashboardType = $('#ReportMode').val();
+            $.ajax({
+                url: "/OrderAmendHistory/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                success: function (data) {
+
+                    $('#divOrderAmendHistoryGrid').empty();
+                    $('#divOrderAmendHistoryGrid').html(data);
+                    $('#totalRows').text($('#divOrderAmendHistoryGrid tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        function loadPage(pageNumber) {
+            debugger
+            var url = '';
+            var ReportType = $('#ReportMode').val();
+
+            var formData = $('#SParam').serializeArray();
+            if (isGlobalSearch) {
+                url = '/OrderAmendHistory/GlobalSearch';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            }
+            else {
+                url = '@Url.Action("GetOrderAmendHistoryData", "OrderAmendHistory")';
+            }
+
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divOrderAmendHistoryGrid').empty();
+                    $('#divOrderAmendHistoryGrid').html(result);
+                    $('#totalRows').text($('#divOrderAmendHistoryGrid tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            
+            $('#totalRows').text($('#divStockRegisterBody tr').length - 1);
+        }
+
+
+            function GetOrderAmendHistoryData() {
+                debugger
+                $.ajax({
+                    type: "POST",
+                    url: "@Url.Action("GetOrderAmendHistoryData")",
+                    async: false,
+                    data: {
+                        FromDate: $('#FromDate').val(),
+                        ToDate: $('#ToDate').val(),
+                        ReportType: $('#ReportMode').val(),
+                        AccountCode: $('#AccountCode').val(),
+                        PartCode: $('#PartCode').val(),
+                        ItemName: $('#ItemName').val(),
+                        POno: $('#PONO').val(),
+                        ItemCode: $('#ItemCode').val(),
+                        HistoryReportMode: $('#HistoryReportMode').val()
+                    },
+                    success: function (result, status, error) {
+                        debugger
+                        $('#divOrderAmendHistoryGrid').empty();
+                        $('#divOrderAmendHistoryGrid').html(result);
+                        $('#totalRows').text($('#divOrderAmendHistoryGrid tr').length - 1);
+                        countAllTotal();
+                    }
+                });
+            }
+
+        
+
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportMode').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/PORegister/ExportPOStockRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    }
+                }
+            });
+        }
+        function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+}

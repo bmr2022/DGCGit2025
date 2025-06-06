@@ -58,11 +58,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankPaymentDAL.FillPONO( accountcode, VoucherDate);
         }
-        public async Task<ResponseResult> GetPODetail(int PONO,string accountcode, string VoucherDate)
+        public async Task<ResponseResult> GetPOYearCode(string PONO,string accountcode, string VoucherDate)
         {
-            return await _BankPaymentDAL.GetPODetail(PONO, accountcode,  VoucherDate);
+            return await _BankPaymentDAL.GetPOYearCode(PONO, accountcode,  VoucherDate);
         }
-        public async Task<ResponseResult> GetPODate(int PONO, string accountcode, string VoucherDate,string POYearCode)
+        public async Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate,string POYearCode)
         {
             return await _BankPaymentDAL.GetPODate(PONO, accountcode, VoucherDate, POYearCode);
         }
