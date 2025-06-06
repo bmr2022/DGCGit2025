@@ -374,8 +374,8 @@ public static class CommonFunc
                 {
                     if (typeProperty.PropertyInfo.Name != "AmmNo" && typeProperty.PropertyInfo.Name != "AmmApproved" && typeProperty.PropertyInfo.Name != "AmmEffDate" && typeProperty.PropertyInfo.Name != "EID"
                     && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode"
-                    && typeProperty.PropertyInfo.Name != "ItemName" && typeProperty.PropertyInfo.Name != "SODashboard" && typeProperty.PropertyInfo.Name != "SONoList"
-                    && typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "BranchList" && typeProperty.PropertyInfo.Name != "SummaryDetail"
+                     && typeProperty.PropertyInfo.Name != "SODashboard" && typeProperty.PropertyInfo.Name != "SONoList"
+                    && typeProperty.PropertyInfo.Name != "BranchList" && typeProperty.PropertyInfo.Name != "SummaryDetail"
                     && typeProperty.PropertyInfo.Name != "ConsigneeAccountName" && typeProperty.PropertyInfo.Name != "SODelivery" && typeProperty.PropertyInfo.Name != "ResposibleSalesPersonID")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
