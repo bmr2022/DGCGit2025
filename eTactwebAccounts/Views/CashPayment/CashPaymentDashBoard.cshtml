@@ -200,17 +200,10 @@
 
         function GetDashBoardSummaryData() {
 
-            //var data = $('#SParam').serialize();
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
             $.ajax({
                 url: '@Url.Action("GetDashBoardSummaryData", "CashPayment")',
                 type: "POST",
-                // data: $('#SParam').serializeArray(),
-                data: {
-                    FromDate: FromDate,
-                    ToDate: ToDate
-                },
+                data: $('#SParam').serializeArray(),
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
@@ -233,17 +226,10 @@
 
         function GetDashBoardDetailData() {
 
-            //var data = $('#SParam').serialize();
-            var FromDate = $('#FromDate').val();
-            var ToDate = $('#ToDate').val();
             $.ajax({
                 url: '@Url.Action("GetDashBoardDetailData", "CashPayment")',
                 type: "POST",
-                // data: $('#SParam').serializeArray(),
-                data: {
-                    FromDate: FromDate,
-                    ToDate: ToDate
-                },
+                data: $('#SParam').serializeArray(),
                 async: false,
                 success: function (data) {
 

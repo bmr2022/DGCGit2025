@@ -385,7 +385,7 @@ namespace eTactWeb.Data.DAL
             var model = new CashPaymentModel();
             try
             {
-                var fromDt = CommonFunc.ParseFormattedDate(ToDate);
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
                 var toDt = CommonFunc.ParseFormattedDate(ToDate);
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {

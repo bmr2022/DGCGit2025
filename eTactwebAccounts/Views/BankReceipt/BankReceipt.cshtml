@@ -49,30 +49,30 @@
 						</div>
 						@if (Model.Mode != "V")
 						{
-									<div class="col-auto">
-										<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-											<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-											REFRESH
-										</a>
-									</div>
+							<div class="col-auto">
+								<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+									<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+									REFRESH
+								</a>
+							</div>
 							@if (Model.Mode == "U")
 							{
 								Model.Mode = "U";
-												<div class="col-auto">
-													<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
-														<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-														UPDATE
-													</button>
-												</div>
+								<div class="col-auto">
+									<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+										<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+										UPDATE
+									</button>
+								</div>
 							}
 							else
 							{
-												<div class="col-auto">
-													<button type="submit" class="btn btn-primary btn-sm submitBTN">
-														<i class="fa-solid fa-chevron-circle-right"></i>
-														SUBMIT
-													</button>
-												</div>
+								<div class="col-auto">
+									<button type="submit" class="btn btn-primary btn-sm submitBTN">
+										<i class="fa-solid fa-chevron-circle-right"></i>
+										SUBMIT
+									</button>
+								</div>
 							}
 						}
 					</div>
@@ -93,6 +93,8 @@
 						<div class="accordion-body">
 							<div class="row g-2 gx-3" id="_ItemGrid">
 								<input type="hidden" value="@Model.Mode" asp-for="Mode" />
+								<input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
+								<input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
 								<input type="hidden" asp-for="SrNO" />
 								<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 									<label asp-for="CC" class="form-label">Branch</label>
@@ -118,7 +120,7 @@
 										<option value="Bank-Receipt">Bank-Receipt</option>
 										@if (Model.Mode == "U" || Model.Mode == "V")
 										{
-													<option value="@Model.SubVoucherName" selected>@Model.SubVoucherName</option>
+											<option value="@Model.SubVoucherName" selected>@Model.SubVoucherName</option>
 										}
 									</select>
 								</div>
@@ -137,7 +139,7 @@
 										<option value="">-Select-</option>
 										@if (Model.Mode == "U" || Model.Mode == "V")
 										{
-													<option value="@Model.Currency" selected>@Model.Currency</option>
+											<option value="@Model.Currency" selected>@Model.Currency</option>
 										}
 									</select>
 								</div>
@@ -253,7 +255,7 @@
 									</div>
 									<div style="width:170px;">
 										<label asp-for="Naration" class="form-label">Naration</label>
-										<input asp-for="Naration" class="form-control" data-val="false" readonly/>
+										<input asp-for="Naration" class="form-control" data-val="false" readonly />
 									</div>
 									<div style="width:170px;">
 										<label asp-for="DrAmt" class="form-label">Dr Amt</label>
@@ -347,33 +349,33 @@
 										</div>
 										@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
 										{
-													<div class="col-auto">
+											<div class="col-auto">
 												@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-														<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
 													@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-															<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-															REFRESH
-														</a>
-													</div>
+													<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+													REFRESH
+												</a>
+											</div>
 											@if (Model.Mode == "U")
 											{
 												@*Model.Mode = "U";*@
-																<div class="col-auto">
+												<div class="col-auto">
 													@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-																	<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
-																		<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-																		UPDATE
-																	</button>
-																</div>
+													<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+														<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+														UPDATE
+													</button>
+												</div>
 											}
 											else
 											{
-																<div class="col-auto">
-																	<button type="submit" class="btn btn-primary btn-sm submitBTN">
-																		<i class="fa-solid fa-chevron-circle-right"></i>
-																		SUBMIT
-																	</button>
-																</div>
+												<div class="col-auto">
+													<button type="submit" class="btn btn-primary btn-sm submitBTN">
+														<i class="fa-solid fa-chevron-circle-right"></i>
+														SUBMIT
+													</button>
+												</div>
 											}
 										}
 									</div>
@@ -489,7 +491,7 @@
 </div>
 
 @section Scripts {
-			<script>
+	<script>
 
 				function Validate_Submit() {
 
@@ -648,6 +650,34 @@
 					$('#PendBillAmt').rules("remove", "required");
 					$('#PRODSTATUSProdUnProdRej').rules("remove", "required");
 					$('#PRODSTATUSProdUnProdRej').rules("remove", "required");
+
+			var finFromDate = $('#FromDate').val();
+		var finToDate = $('#ToDate').val();
+
+		var dateParts1 = finFromDate.split("/");
+		var monthNames = {
+			"Jan": "01",
+			"Feb": "02",
+			"Mar": "03",
+			"Apr": "04",
+			"May": "05",
+			"Jun": "06",
+			"Jul": "07",
+			"Aug": "08",
+			"Sep": "09",
+			"Oct": "10",
+			"Nov": "11",
+			"Dec": "12"
+		};
+
+		var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+		var dateParts2 = finToDate.split("/");
+
+		var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+				$('#EntryDate,#VoucherDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+				$('#EntryDate,#VoucherDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+
 					var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 					var currentDate = new Date();
 
@@ -1106,7 +1136,7 @@
 							SONO: SONO,
 							accountcode: accountcode,
 							VoucherDate: VoucherDate,
-							SOYearCode: SOYearCode	
+							SOYearCode: SOYearCode
 
 						},
 						success: function (data) {
@@ -2057,8 +2087,8 @@
 					});
 				});
 
-			</script>
-			<script src="~/Scripts/table2excel.js"></script>
+	</script>
+	<script src="~/Scripts/table2excel.js"></script>
 }
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 

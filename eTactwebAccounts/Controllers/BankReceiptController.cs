@@ -1,6 +1,7 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using FastReport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -39,7 +40,8 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IBankReceipt.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
@@ -812,7 +814,7 @@ namespace eTactWeb.Controllers
                 return PartialView("_BankReceiptGrid", MainModel);
             }
         }
-        public async Task<IActionResult> BankReceiptDashBoard(string FromDate, string ToDate)
+        public async Task<IActionResult> BankReceiptDashBoard(string FromDate = "", string ToDate = "",string Flag = "True", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             try
             {
@@ -829,8 +831,23 @@ namespace eTactWeb.Controllers
                     {
                         var dt = ds.Tables[0];
                         model.BankReceiptGrid = CommonFunc.DataTableToList<BankReceiptModel>(dt, "BankReceiptDashBoard");
+
+                        if (Flag != "True")
+                        {
+                            model.FromDate1 = FromDate;
+                            model.ToDate1 = ToDate;
+                            model.LedgerName = LedgerName;
+                            model.Bank = Bank;
+                            model.VoucherNo = VoucherNo;
+                            model.AgainstVoucherRefNo = AgainstVoucherRefNo;
+                            model.AgainstVoucherNo = AgainstVoucherNo;
+                            model.Searchbox = Searchbox;
+                            model.DashboardType = DashboardType;
+                            return View(model);
+                        }
                     }
                 }
+                
                 return View(model);
             }
             catch (Exception ex)
@@ -862,7 +879,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyBankReceiptGridPopUpData", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string VoucherType, string FromDate = "", string ToDate = "", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             var Result = await _IBankReceipt.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate, VoucherType);
 
@@ -870,7 +887,6 @@ namespace eTactWeb.Controllers
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
-                //TempData["Message"] = "Data deleted successfully.";
             }
             else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
             {
@@ -883,7 +899,12 @@ namespace eTactWeb.Controllers
                 TempData["500"] = "500";
             }
 
-            return RedirectToAction("BankReceiptDashBoard");
+            DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
+            string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
+            DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
+            string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
+
+            return RedirectToAction("BankReceiptDashBoard", new { FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", LedgerName = LedgerName, Bank = Bank, VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, Searchbox = Searchbox, DashboardType = DashboardType });
 
         }
         public async Task<JsonResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
