@@ -28,6 +28,7 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
 </style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_SODelivery" />
@@ -74,7 +75,7 @@
                     @* <partial name="_FormsButton" /> *@
 
                     <div class="row justify-content-between g-2">
-                     
+
                         <div class="col-auto">
                             <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
                             <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
@@ -87,7 +88,7 @@
                             <input asp-for="SoTypeBack" type="hidden" value="@Model.SoTypeBack" />
                             <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
                             <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
-                          
+
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
                                 BACK
@@ -118,7 +119,7 @@
                             else if (Model.Mode == "SOA" || Model.Mode == "POA" || Model.Mode == "PSA" || Model.Mode == "SSA")
                             {
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton" asp-action="AmendmentList">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton" asp-action="SOAmendmentList" asp-controller="SaleOrder">
                                         <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                         AMEND
                                     </button>
@@ -229,7 +230,7 @@
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOCloseDate" class="form-label" style="color:  red;"> Close Date</label>
-                                        <input asp-for="SOCloseDate" class="form-control" readonly/>
+                                        <input asp-for="SOCloseDate" class="form-control" readonly />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="QuotNo" class="form-label">Quot No</label>
@@ -252,7 +253,7 @@
                                         <input asp-for="AmmNo" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm Date*</label>
+                                        <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm eff Date*</label>
                                         <input asp-for="AmmEffDate" class="form-control" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -525,6 +526,7 @@
                                         <label asp-for="AmendmentReason" class="form-label" style="color:  red;">Amendment Reason</label>
                                         <input asp-for="AmendmentReason" class="form-control" />
                                     </div>
+                                    
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
                                         <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
@@ -882,9 +884,9 @@
                                                         <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
                                                         <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
                                                         <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
-                                                        <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"  style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment No</th>
-                                                        <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"  style="color:  red;" ><i class="fa" aria-hidden="true"></i></span>Amendment Date</th>
-                                                        <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" ><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
+                                                        <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment No</th>
+                                                        <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment Date</th>
+                                                        <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
                                                         <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
                                                         <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rejper</th>
                                                         <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Excessper</th>
@@ -1058,6 +1060,7 @@
                                     <label asp-for="EntryByMachineName" class="form-label">Machine Name</label>
                                     <input asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" readonly />
                                 </div>
+                                
                                 @if (Model.Mode == "SOA" || Model.Mode == "SAU")
                                 {
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -1140,7 +1143,7 @@
                                 else if (Model.Mode == "SOA" || Model.Mode == "POA" || Model.Mode == "PSA" || Model.Mode == "SSA")
                                 {
                                     <div class="col-auto">
-                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton">
+                                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient AmendButton" asp-action="AmendmentList">
                                             <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                             AMEND
                                         </button>
@@ -1223,7 +1226,7 @@
     }
 
     /* .select2-dropdown {
-                z-index: 9999 !important; /* Adjust the value as needed */
+                    z-index: 9999 !important; /* Adjust the value as needed */
     background-color: #e0f2f1 !important;
     }
 
@@ -1723,7 +1726,7 @@
                 $('#PN1').prop("checked", true);
                 $('#PN1').change();
                 debugger
-                
+
                 var consigneeAC = $('#ConsigneeAccountCode').find(':selected').text();
                 if (consigneeAC == "-Select-") {
                     $('#ConsigneeAccountCode').text('');
@@ -3099,7 +3102,7 @@
 
             if (isNaN(parseFloat($('#Rate').val())) || parseFloat($('#Rate').val()) == 0 || parseFloat($('#Rate').val()) < -1) {
                 AddErrorCls('Rate');
-                $.notify('Rate cannot be 0 or less Then 0 ).', "error");
+                $.notify('Rate cannot be 0 or less Then 0 .', "error");
                 return;
             }
             else {
@@ -3136,6 +3139,7 @@
             if ('@Model.Mode' == 'SOA' && @Model.ID > 0) {
                 if (!$('#AmendmentReason').val()) {
                     AddErrorCls('AmendmentReason');
+                    $.notify('Amendment Reason is manadatory..!.', "error");
                     return;
                 }
                 else {
@@ -3229,6 +3233,15 @@
                         ClearItem();
                     }
 
+                    if ($('#Mode').val() == 'SOA') {
+                        var itemRowCount = $('#divSaleItemGrid tr').length;
+                        for (var ir = 1; ir <= itemRowCount; ir++) {
+                            if ($('#gridAmendReason-' + ir).text() != "") {
+                                $('#soItemRow-' + ir).css('background-color', '#e7f1ff');
+                            }
+                        }
+                    }
+
                     $('#TotalRoundOff').prop('selectedIndex', 0);
                     var INA = parseFloat($('#ItemNetAmount').val());
                     var rowCount = $('#divSaleItemGrid tr').length;
@@ -3258,6 +3271,7 @@
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
                     // $('#PartCode').focus();
+
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");

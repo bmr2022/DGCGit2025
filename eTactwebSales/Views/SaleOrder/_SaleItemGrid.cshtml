@@ -11,7 +11,7 @@ else
 {
     foreach (var item in Model.ItemDetailGrid)
     {
-        <tr class="small @item.SeqNo" style="white-space:nowrap">
+        <tr class="small @item.SeqNo" id="soItemRow-@item.SeqNo" style="white-space: nowrap;">
             <td style="white-space:nowrap;">
                 @if (Model.Mode == "V" && Model.ID > 0)
                 {
@@ -64,7 +64,7 @@ else
             <td>@item.Remark</td>
             <td>@item.AmendmentNo</td>
             <td>@item.AmendmentDate</td>
-            <td>@item.AmendmentReason</td>
+            <td id="gridAmendReason-@item.SeqNo">@item.AmendmentReason</td>
             <td>@item.Color</td>
             <td>@item.Rejper</td>
             <td>@item.Excessper</td>
