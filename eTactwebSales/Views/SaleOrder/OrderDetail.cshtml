@@ -228,7 +228,7 @@
                                         <input asp-for="WEF" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="SOCloseDate" class="form-label"> Close Date</label>
+                                        <label asp-for="SOCloseDate" class="form-label" style="color:  red;"> Close Date</label>
                                         <input asp-for="SOCloseDate" class="form-control" readonly/>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -248,11 +248,11 @@
                                         <input asp-for="QDate" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="AmmNo" class="form-label">Amm No</label>
+                                        <label asp-for="AmmNo" class="form-label" style="color:  red;">Amm No*</label>
                                         <input asp-for="AmmNo" class="form-control" readonly disabled />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="AmmEffDate" class="form-label">Amm Date</label>
+                                        <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm Date*</label>
                                         <input asp-for="AmmEffDate" class="form-control" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -522,7 +522,7 @@
                                     </div>
                                     @* <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12"> *@
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                        <label asp-for="AmendmentReason" class="form-label">Amendment Reason</label>
+                                        <label asp-for="AmendmentReason" class="form-label" style="color:  red;">Amendment Reason</label>
                                         <input asp-for="AmendmentReason" class="form-control" />
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
@@ -882,9 +882,9 @@
                                                         <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Tol Limit</th>
                                                         <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Description</th>
                                                         <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remark</th>
-                                                        <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment No</th>
-                                                        <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Date</th>
-                                                        <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
+                                                        <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"  style="color:  red;"><i class="fa" aria-hidden="true"></i></span>Amendment No</th>
+                                                        <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"  style="color:  red;" ><i class="fa" aria-hidden="true"></i></span>Amendment Date</th>
+                                                        <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon" ><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
                                                         <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Color</th>
                                                         <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rejper</th>
                                                         <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Excessper</th>
@@ -3377,7 +3377,7 @@
                 success: function (data, status, xhr) {
 
                     if (data == "Duplicate" && (xhr.statusCode == 207 || xhr.responseText == "Duplicate")) {
-                        $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
+                        $.notify("If Tax Exists, Item Cannot Be Edited...!", "warning");
                     }
                     else {
 
@@ -3459,7 +3459,7 @@
                 data: { "SeqNo": SeqNo },
                 success: function (data, status, xhr) {
                     if (data == "Duplicate" && (xhr.statusCode == 207 || xhr.responseText == "Duplicate")) {
-                        $.notify("If Same Tax Exists, Item Cannot Be Deleted...!", "warning");
+                        $.notify("If Tax Exists, Item Cannot Be Deleted...!", "warning");
                     }
                     else {
                         $('#divSaleItemGrid').html(data);

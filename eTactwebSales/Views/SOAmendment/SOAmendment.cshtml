@@ -55,7 +55,7 @@
                                     <select class="form-select" asp-for="Branch" asp-items="@(new SelectList(Model.BranchList,"Value","Text"))" readonly disabled></select>
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="AccountCode" class="form-label">Party Name</label>
+                                    <label asp-for="AccountCode" class="form-label" style="color:  red;">Party Name</label>
                                     <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                         <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" readonly disabled />Show All
                                     </div>
@@ -64,19 +64,19 @@
                                     </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="CustOrderNo" class="form-label">Cust Order No</label>
+                                    <label asp-for="CustOrderNo" class="form-label" style="color:  red;">Cust Order No</label>
                                     <input asp-for="CustOrderNo" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SONo" class="form-label">SO No</label>
+                                    <label asp-for="SONo" class="form-label" style="color:  red;">SO No</label>
                                     <input asp-for="SONo" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SOFor" class="form-label">SO For</label>
+                                    <label asp-for="SOFor" class="form-label" style="color:  red;">SO For</label>
                                     <select class="form-select" asp-for="SOFor" asp-items="@(new SelectList(Model.SOForList,"Value","Text"))" readonly disabled></select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SOType" class="form-label">SO Type</label>
+                                    <label asp-for="SOType" class="form-label" style="color:  red;">SO Type</label>
                                     <select class="form-select" asp-for="SOType" asp-items="@(new SelectList(Model.SOTypeList,"Value","Text"))" readonly disabled></select>
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -88,19 +88,19 @@
                                     <input asp-for="DeliveryAddress" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="CurrencyID" class="form-label">Currency</label>
+                                    <label asp-for="CurrencyID" class="form-label" style="color:  red;">Currency</label>
                                     <select class="form-select" asp-for="CurrencyID" asp-items="@(new SelectList(Model.CurrencyList,"Value","Text"))" readonly disabled></select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="OrderType" class="form-label">Order Type</label>
+                                    <label asp-for="OrderType" class="form-label" style="color:  red;">Order Type</label>
                                     <select class="form-select" asp-for="OrderType" asp-items="Model.OrderTypeList" readonly disabled></select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="SODate" class="form-label">SO Date</label>
+                                    <label asp-for="SODate" class="form-label" style="color:  red;">SO Date</label>
                                     <input asp-for="SODate" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="WEF" class="form-label">WEF</label>
+                                    <label asp-for="WEF" class="form-label" style="color:  red;">WEF</label>
                                     <input asp-for="WEF" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -124,15 +124,15 @@
                                     <input asp-for="QDate" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AmmNo" class="form-label">Amm No</label>
+                                    <label asp-for="AmmNo" class="form-label" style="color:  red;">Amend No</label>
                                     <input asp-for="AmmNo" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AmmEffDate" class="form-label">Amm Eff Date</label>
+                                    <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amend Eff Date</label>
                                     <input asp-for="AmmEffDate" class="form-control" readonly disabled />
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AmmEffDate" class="form-label">Amendment Date</label>
+                                    <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amend Date</label>
                                     <input asp-for="AmmEffDate" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -255,15 +255,15 @@
                                     <input asp-for="Description" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AmendmentNo" class="form-label">Amend No</label>
+                                    <label asp-for="AmendmentNo" class="form-label" style="color:  red;">Amend No</label>
                                     <input asp-for="AmendmentNo" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="AmendmentDate" class="form-label">Amend Date</label>
+                                    <label asp-for="AmendmentDate" class="form-label" style="color:  red;">Amend Date</label>
                                     <input asp-for="AmendmentDate" class="form-control" />
                                 </div>
                                 <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="AmendmentReason" class="form-label">Amend Reason</label>
+                                    <label asp-for="AmendmentReason" class="form-label" style="color:  red;">Amend Reason</label>
                                     <input asp-for="AmendmentReason" class="form-control" />
                                 </div>
                                 <div class=" col-4 col-auto">
@@ -328,14 +328,14 @@
                                             <tr>
                                                 <th>Action</th>
                                                 <th>Seq No</th>
-                                                <th>Part Code</th>
-                                                <th>Item Name</th>
-                                                <th>HSN No</th>
-                                                <th>Qty</th>
+                                                <th>Part Code*</th>
+                                                <th>Item Name*</th>
+                                                <th>HSN No*</th>
+                                                <th>Qty*</th>
                                                 <th>Unit</th>
                                                 <th>Alt Qty</th>
                                                 <th>Alt Unit</th>
-                                                <th>Rate</th>
+                                                <th>Rate*</th>
                                                 <th>Rate/Unit</th>
                                                 <th>Disc%</th>
                                                 <th>Disc Rs</th>
@@ -343,9 +343,9 @@
                                                 <th>Tol Limit</th>
                                                 <th>Description</th>
                                                 <th>Remark</th>
-                                                <th>Amendment No</th>
-                                                <th>Amendment Date</th>
-                                                <th>Amendment Reason</th>
+                                                <th>Amendment No*</th>
+                                                <th>Amendment Date*</th>
+                                                <th>Amendment Reason*</th>
                                                 <th>Color</th>
                                                 <th>Rejper</th>
                                                 <th>Excessper</th>
