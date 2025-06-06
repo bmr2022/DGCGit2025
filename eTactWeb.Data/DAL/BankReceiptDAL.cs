@@ -728,8 +728,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ModOfAdjutment", "Advance"));
                 SqlParams.Add(new SqlParameter("@accountcode", accountcode));
                 SqlParams.Add(new SqlParameter("@VoucherDate", voucherDt));
-                SqlParams.Add(new SqlParameter("@POYearCode", SOYearCode));
-                SqlParams.Add(new SqlParameter("@PONO", SONO));
+                SqlParams.Add(new SqlParameter("@SOYearCode", SOYearCode));
+                SqlParams.Add(new SqlParameter("@SONO", SONO));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }

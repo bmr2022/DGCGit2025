@@ -388,13 +388,13 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPODetail(int PONO, string accountcode, string VoucherDate)
+        public async Task<JsonResult> GetPOYearCode(string PONO, string accountcode, string VoucherDate)
         {
-            var JSON = await _ICashPayment.GetPODetail(PONO, accountcode, VoucherDate);
+            var JSON = await _ICashPayment.GetPOYearCode(PONO, accountcode, VoucherDate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPODate(int PONO, string accountcode, string VoucherDate, string POYearCode)
+        public async Task<JsonResult> GetPODate(string PONO, string accountcode, string VoucherDate, string POYearCode)
         {
             var JSON = await _ICashPayment.GetPODate(PONO, accountcode, VoucherDate, POYearCode);
             string JsonString = JsonConvert.SerializeObject(JSON);

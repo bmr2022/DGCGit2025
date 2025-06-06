@@ -688,7 +688,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetSODetail(int SONO, string accountcode, string VoucherDate)
+        public async Task<ResponseResult> GetSoYearCode(int SONO, string accountcode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
             var voucherDt = CommonFunc.ParseFormattedDate(VoucherDate);

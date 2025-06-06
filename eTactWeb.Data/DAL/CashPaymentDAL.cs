@@ -194,7 +194,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> GetPODetail(int PONO, string accountcode, string VoucherDate)
+        public async Task<ResponseResult> GetPOYearCode(string PONO, string accountcode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -220,7 +220,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> GetPODate(int PONO, string accountcode, string VoucherDate, string POYearCode)
+        public async Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate, string POYearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
