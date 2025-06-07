@@ -28,6 +28,102 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
+        public async Task<ResponseResult> FillPONO(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+                SqlParams.Add(new SqlParameter("@reportType", ""));
+                SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
+                //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillVendorName(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+                SqlParams.Add(new SqlParameter("@reportType", ""));
+                SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOVendorName"));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
+                //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+         }
+        public async Task<ResponseResult> FillItemName(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+                SqlParams.Add(new SqlParameter("@reportType", ""));
+                SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
+                //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+         }
+        public async Task<ResponseResult> FillPartCode(string FromDate, string ToDate)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
+                SqlParams.Add(new SqlParameter("@reportType", ""));
+                SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
+                SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
+                //SqlParams.Add(new SqlParameter("@StoreId", Storeid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SpReportOrderAmendHistoryOnGrid", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+         }
 
         public async Task<OrderAmendHistoryModel> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO, int ItemCode,string HistoryReportMode)
         {
