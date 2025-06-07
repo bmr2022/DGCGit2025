@@ -91,7 +91,7 @@ namespace eTactWeb.Controllers
             {
                 TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(TaxGridJson);
             }
-            
+
             //string modelAdjJson = HttpContext.Session.GetString("KeyAdjGrid");
             //List<AdjustmentModel> adjModel = new();
             //if (!string.IsNullOrEmpty(modelAdjJson))
@@ -219,7 +219,6 @@ namespace eTactWeb.Controllers
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
 
-                        //return View(model1);
                         return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
                     }
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -647,10 +646,10 @@ namespace eTactWeb.Controllers
             model.SaleBillDataDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             model.PageNumber = pageNumber;
             model.PageSize = pageSize;
-           
 
-                return PartialView("_SBDashboardGrid", model);
-           
+
+            return PartialView("_SBDashboardGrid", model);
+
         }
         public async Task<JsonResult> GetBatchInventory()
         {
@@ -800,7 +799,7 @@ namespace eTactWeb.Controllers
                     MainModel.saleBillDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
 
-                   HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
+                    HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
                     //MainModel = BindItem4Grid(MainModel);
                     MainModel.saleBillDetails = saleBillDetail;
                     MainModel.ItemDetailGrid = saleBillDetail;
@@ -1170,9 +1169,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillSONO(string billDate, string accountCode,string billType)
+        public async Task<JsonResult> FillSONO(string billDate, string accountCode, string billType)
         {
-            var JSON = await _SaleBill.FillSONO(billDate, accountCode,billType);
+            var JSON = await _SaleBill.FillSONO(billDate, accountCode, billType);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
