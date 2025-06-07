@@ -168,7 +168,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
         public async Task<ResponseResult> FillPONO(string accountcode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
@@ -193,7 +192,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
         public async Task<ResponseResult> GetPOYearCode(string PONO, string accountcode, string VoucherDate)
         {
             var _ResponseResult = new ResponseResult();
@@ -218,8 +216,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
-
         public async Task<ResponseResult> GetPODate(string PONO, string accountcode, string VoucherDate, string POYearCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -245,7 +241,6 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
         public async Task<ResponseResult> FillCostCenterName()
         {
             var _ResponseResult = new ResponseResult();
@@ -415,20 +410,29 @@ namespace eTactWeb.Data.DAL
                                              select new CashPaymentModel
                                              {
                                                  LedgerName = dr["LedgerName"] != DBNull.Value ? dr["LedgerName"].ToString() : string.Empty,
-                                                 //AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
+                                                 AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
                                                  VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
                                                  VoucherDate = dr["VchDate"] != DBNull.Value ? dr["VchDate"].ToString() : string.Empty,
                                                  DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
                                                  CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
                                                  VoucherType = dr["VoucherType"] != DBNull.Value ? dr["VoucherType"].ToString() : string.Empty,
-                                                 //ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
+                                                 ModeOfAdjustment = dr["ModeOfAdjustment"] != DBNull.Value ? dr["ModeOfAdjustment"].ToString() : string.Empty,
+                                                 SubVoucherName = dr["SubVoucherName"] != DBNull.Value ? dr["SubVoucherName"].ToString() : string.Empty,
+                                                 AgainstVoucherEntryId = dr["AgainstVoucherEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AgainstVoucherEntryId"]) : 0,
+                                                 AgainstVoucherNo = dr["AgainstVoucherNo"] != DBNull.Value ? dr["AgainstVoucherNo"].ToString() : string.Empty,
+                                                 AgainstVoucherRefNo = dr["againstVoucherRefNo"] != DBNull.Value ? dr["againstVoucherRefNo"].ToString() : string.Empty,
+                                                 AgainstBillno = dr["AgainstBillno"] != DBNull.Value ? dr["AgainstBillno"].ToString() : string.Empty,
+                                                 AgainstVoucherType = dr["AgainstVoucherType"] != DBNull.Value ? dr["AgainstVoucherType"].ToString() : string.Empty,
+                                                 AgainstVoucheryearCode = dr["AgainstVoucheryearcode"] != DBNull.Value ? Convert.ToInt32(dr["AgainstVoucheryearcode"]) : 0,
+                                                 CustOrderNo = dr["CustOrderNo"] != DBNull.Value ? dr["CustOrderNo"].ToString() : string.Empty,
+                                                 PONo = dr["PONo"] != DBNull.Value ? dr["PONo"].ToString() : string.Empty,
+                                                 POYear = dr["POYear"] != DBNull.Value ? Convert.ToInt32(dr["POYear"]) : 0,
+                                                 PoDate = dr["PoDate"] != DBNull.Value ? dr["PoDate"].ToString() : string.Empty,
                                                  ActualEntryBy = dr["ActualEntryByEmp"] != DBNull.Value ? dr["ActualEntryByEmp"].ToString() : string.Empty,
                                                  ActualEntryDate = dr["ActualEntryDate"].ToString(),
                                                  UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
-                                                 //UpdatedBy = dr["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedBy"]) : 0,
                                                  UpdatedByEmp = dr["UpdatedByEmp"] != DBNull.Value ? dr["UpdatedByEmp"].ToString() : string.Empty,
                                                  EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? dr["EntryByMachine"].ToString() : string.Empty,
-                                                 SubVoucherName = dr["SubVoucherName"] != DBNull.Value ? dr["SubVoucherName"].ToString() : string.Empty,
                                                  AccEntryId = dr["AccEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AccEntryId"]) : 0,
                                                  YearCode = dr["AccYearCode"] != DBNull.Value ? Convert.ToInt32(dr["AccYearCode"]) : 0,
                                                  EntryDate = dr["EntryDate"] != DBNull.Value ? dr["EntryDate"].ToString() : string.Empty

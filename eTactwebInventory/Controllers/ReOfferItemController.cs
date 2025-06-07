@@ -662,6 +662,12 @@ namespace eTactwebInventory.Controllers
             }
             return RedirectToAction("ReOfferItemDashBoard", new { Flag = "false", FromDate = FromDate, ToDate = ToDate, SlipNo = SlipNo, PartCode = PartCode, ItemName = ItemName, BatchNo = BatchNo, SummaryDetail = SummaryDetail });
         }
+        public async Task<IActionResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
+        {
+            var JSON = await _IReofferItem.FillLotandTotalStock(ItemCode, StoreId, TillDate, BatchNo, UniqBatchNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
     }
 }

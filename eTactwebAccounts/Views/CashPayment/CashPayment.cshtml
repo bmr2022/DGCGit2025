@@ -74,8 +74,9 @@
                     <div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
-                                @* <input type="hidden" asp-for="MachineName" value="@Environment.MachineName" /> *@
                                 <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
+                                <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
                                 <input type="hidden" asp-for="SrNO" />
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="CC" class="form-label">Branch</label>
@@ -575,7 +576,6 @@
             $('#CostCenterName').select2();
             $('#SubVoucherName').select2();
             $('#Currency').select2();
-
             $('#PONo').select2();
             FillCostCenterName();
             FillSubVoucherName();
@@ -636,31 +636,46 @@
             $('#PONo').rules("remove", "required");
             $('#PoDate').rules("remove", "required");
             $('#POYear').rules("remove", "required");
+
+            var finFromDate = $('#FromDate').val();
+        var finToDate = $('#ToDate').val();
+
+        var dateParts1 = finFromDate.split("/");
+        var monthNames = {
+            "Jan": "01",
+            "Feb": "02",
+            "Mar": "03",
+            "Apr": "04",
+            "May": "05",
+            "Jun": "06",
+            "Jul": "07",
+            "Aug": "08",
+            "Sep": "09",
+            "Oct": "10",
+            "Nov": "11",
+            "Dec": "12"
+        };
+
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
             var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+            $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+
             var currentDate = new Date();
 
-            // Calculate minDate (3 months before today)
-            var minDate = new Date();
-            minDate.setMonth(minDate.getMonth() - 3);
-
-            // Calculate maxDate (3 months after today)
-            var maxDate = new Date();
-            maxDate.setMonth(maxDate.getMonth() + 3);
-
-            // Initialize Datepicker with min & max date
-            $('#InsDate').datepicker({
-                dateFormat: 'dd/mm/yy',
-                minDate: minDate,
-                maxDate: maxDate
-            }).datepicker("setDate", currentDate);
             $('#ActualEntryDate').datepicker({
                 dateFormat: 'dd/mm/yy',
                 minDate: currentDate,
                 maxDate: currentDate
             }).datepicker("setDate", currentDate);
-            var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+           
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 FillEntryID();

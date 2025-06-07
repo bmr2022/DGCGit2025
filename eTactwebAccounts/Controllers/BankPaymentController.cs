@@ -41,6 +41,8 @@ namespace eTactwebAccounts.Controllers
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
 
             if (MainModel.Mode == "U")
             {

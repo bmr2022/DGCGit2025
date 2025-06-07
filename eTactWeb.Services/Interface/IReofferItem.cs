@@ -31,5 +31,6 @@ namespace eTactWeb.Services.Interface
         Task<ReOfferItemModel> GetDashBoardDetailData(string FromDate, string ToDate, string ReportType);
         Task<ResponseResult> GetDashboardData();
         Task<ResponseResult> DeleteByID(int ID, int YC, string EntryDate, int ActualEntryBy, string MachineName);
+        Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo);
     }
 }
