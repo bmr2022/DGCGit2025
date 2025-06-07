@@ -158,9 +158,6 @@
                                                     <th style="color:yellow">Type*</th>
                                                     <th style="color:yellow">Ledger Name*</th>
                                                     <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
-                                                    <th>Intrument</th>
-                                                    <th>Intrument No</th>
-                                                    <th>Intrument Date</th>
                                                     <th style="color:yellow">Mode of Adjustment*</th>
                                                     <th style="color:yellow">Amount*</th>
                                                     <th>Amount (OC)</th>
@@ -200,9 +197,6 @@
                                                 <th>Sr NO</th>
                                                 <th>Ledger Name</th>
                                                 <th>Balance&nbsp;DR/CR</th>
-                                                <th title="Instrument">Inst</th>
-                                                <th title="Intrument No">Inst No</th>
-                                                <th title="Intrument Date">Inst Date</th>
                                                 <th title="Mode of Adjustment">Mode of Adj</th>
                                                 <th>Amount&nbsp;Type</th>
                                                 <th>Amount (OC)</th>
@@ -1484,10 +1478,10 @@
                     var drcr = $(`#PopUpType-${i}`).text().trim();
 
                     if (drcr.toLowerCase() === "dr") {
-                        var DRAmtrow = parseFloat($(`#PopUpDrAmt-${i}`).text().trim());
+                        var DRAmtrow = parseFloat($(`#AdjustAmt-${i}`).val());
                         DRAmt += DRAmtrow;
                     } else if (drcr.toLowerCase() === "cr") {
-                        var CRAmtrow = parseFloat($(`#PopUpCrAmt-${i}`).text().trim());
+                        var CRAmtrow = parseFloat($(`#AdjustAmt-${i}`).val());
                         CRAmt += CRAmtrow;
                     }
                 }
@@ -1578,7 +1572,7 @@
         }
 
         function AdjustButton() {
-
+            debugger
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];
@@ -1603,9 +1597,8 @@
                         "Balance": $('#BalanceAmt-' + i).text(),
                         "DRCR": $('#PopUpType-' + i).text(),
                         "DrAmt": DrAmt,
-                        "CrAmt": CrAmt,
-                        "EntryDate": $('#EntryDate').val(),
-                        "ActualEntryby": $('#ActualEntryBy').val(),
+                        "CrAmt":CrAmt,
+                        "ActualEntryby": parseInt($('#ActualEntryby').val()),
                         "EntryByMachine": $('#EntryByMachine').val(),
                         "AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
                         "AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
@@ -1615,14 +1608,21 @@
                         "VoucherBillAmt": $('#ActualBalance-' + i).text(),
                         "InVoiceNo": $('#PopUpInVoiceNo-' + i).text(),
                         "PendBillAmt": $('#BalanceAmt-' + i).text(),
-                        "Intrument": $('#Intrument').find(":selected").text() == '--Select--' ? '' : $('#Intrument').find(":selected").text(),
-                        "InsNo": $('#InsNo').val(),
-                        "InsDate": $('#InsDate').val(),
+                        "SeqNo": $('#SeqNo').val(),
+                        "CustOrderNo": $('#CustOrderNo').val(),
+                        "SoDate": $('#SoDate').val(),
+                        "SOYear": $('#SOYear').val(),
+                        "PONo": $('#PONo').val(),
+                        "POYear": $('#POYear').val(),
+                        "PODate": $('#PoDate').val(),
                         "CurrencyId": parseInt($('#CurrencyId').val()),
+                        "EntryByMachine": $('#EntryByMachine').val(),
                         "ActualEntryDate": $('#ActualEntryDate').val(),
                         "Mode": $('#Mode').val(),
                         "ModeOfAdjustment": $('#ModeOfAdjustment').find(":selected").text() == '--Select--' ? '' : $('#ModeOfAdjustment').find(":selected").text(),
                         "AdjustmentAmt": $('#AdjustAmt-' + i).val(),
+                        "AdjustmentAmtOthCur": $('#AdjustmentAmtOthCur').val(),
+                        "PartyWiseNaration": $('#PartyWiseNaration').val(),
                         "CostCenterName": $('#CostCenterName').find(":selected").text() == '--Select--' ? '' : $('#CostCenterName').find(":selected").text(),
                         "CostCenterId": $('#CostCenterId').val(),
                     })

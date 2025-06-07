@@ -645,9 +645,13 @@ namespace eTactWeb.Data.DAL
             DS.Tables[0].TableName = "SSMain";
             DS.Tables[1].TableName = "SSDetail";
             int cnt = 1;
+
             model.AccEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["AccEntryId"].ToString());
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccYearCode"].ToString());
-            model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString().Split(" ")[0];
+            if (DateTime.TryParse(DS.Tables[0].Rows[0]["EntryDate"].ToString(), out DateTime EntryDate))
+                model.EntryDate = EntryDate.ToString("dd/MM/yyyy");
+            if (DateTime.TryParse(DS.Tables[0].Rows[0]["VoucherDocdate"].ToString(), out DateTime VoucherDocdate))
+                model.VoucherDate = VoucherDocdate.ToString("dd/MM/yyyy");
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"].ToString();
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"].ToString();
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
@@ -655,13 +659,13 @@ namespace eTactWeb.Data.DAL
             model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
-            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
-            model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? DateTime.Now.ToString("dd/MM/yy") : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
+            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryBy"].ToString();
+            if (DateTime.TryParse(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(), out DateTime actualEntryDate))
+                model.ActualEntryDate = actualEntryDate.ToString("dd/MM/yyyy");
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
             model.DrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["DrAmt"].ToString());
             model.CrAmt = Convert.ToDecimal(DS.Tables[0].Rows[0]["CrAmt"].ToString());
-            model.VoucherAmt = Convert.ToDouble(DS.Tables[0].Rows[0]["CrAmt"].ToString());
             model.BankRECO = DS.Tables[0].Rows[0]["chequeClearDate"].ToString().Split(" ")[0];
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
@@ -678,7 +682,7 @@ namespace eTactWeb.Data.DAL
                 {
                     ItemList.Add(new CashPaymentModel
                     {
-                        SeqNo = Convert.ToInt32(row["seqno"].ToString()),
+                        SrNO = Convert.ToInt32(row["seqno"].ToString()),
                         AccEntryId = Convert.ToInt32(row["AccEntryId"].ToString()),
                         YearCode = Convert.ToInt32(row["AccYearCode"].ToString()),
                         CostCenterId = Convert.ToInt32(row["costcenterid"].ToString()),
@@ -690,14 +694,15 @@ namespace eTactWeb.Data.DAL
                         CurrentValue = Convert.ToDecimal(row["CurrentValue"].ToString()),
                         LedgerName = row["LedgerName"].ToString(),
                         AccountCode = Convert.ToInt32(row["Accountcode"].ToString()),
+                        VoucherType = row["Vouchertype"].ToString(),
+                        VoucherDocNo = row["VoucherDocNo"].ToString(),
+                        EntryByMachine = row["EntryByMachine"].ToString(),
+                        BillVouchNo = row["BillVouchNo"].ToString(),
                         DrAmt = Convert.ToDecimal(row["drAmt"].ToString()),
                         CrAmt = Convert.ToDecimal(row["CrAmt"].ToString()),
                         AdjustmentAmt = Convert.ToDecimal(row["AmountInOtherCurr"].ToString()),
                         AdjustmentAmtOthCur = Convert.ToDouble(row["AmountInOtherCurr"].ToString()),
                         ChequeDate = row["chequeDate"].ToString(),
-                        InsNo = row["instrumentno"].ToString(),
-                        Intrument = row["instrument"].ToString(),
-                        InsDate = DateTime.TryParse(row["instrumentdate"].ToString(), out DateTime insDate) ? insDate.ToString("dd/MM/yyyy") : row["instrumentdate"].ToString(),
                         ModeOfAdjustment = row["ModeOfAdjustment"].ToString(),
                         AgainstVoucherEntryId = Convert.ToInt32(row["AgainstVoucherEntryId"].ToString()),
                         AgainstVoucherRefNo = row["againstVoucherRefNo"].ToString(),
@@ -706,8 +711,11 @@ namespace eTactWeb.Data.DAL
                         AgainstVoucheryearCode = Convert.ToInt32(row["AgainstVoucheryearcode"].ToString()),
                         ChequeClearDate = row["chequeClearDate"].ToString(),
                         ChequePrintAC = row["ChequePrintAC"].ToString(),
+                        InsNo = row["instrumentno"].ToString(),
+                        Intrument = row["instrument"].ToString(),
+                        InsDate = DateTime.TryParse(row["instrumentdate"].ToString(), out DateTime insDate) ? insDate.ToString("dd/MM/yyyy") : row["instrumentdate"].ToString(),
                         PONo = row["PONo"].ToString(),
-                        PoDate = row["PoDate"].ToString(),
+                        PoDate = DateTime.TryParse(row["PoDate"].ToString(), out DateTime poDate) ? poDate.ToString("dd/MM/yyyy") : row["PoDate"].ToString(),
                         POYear = Convert.ToInt32(row["POYear"].ToString()),
                         SONo = Convert.ToInt32(row["SONo"].ToString()),
                         SOYear = Convert.ToInt32(row["SOYear"].ToString()),
@@ -717,11 +725,11 @@ namespace eTactWeb.Data.DAL
                         Description = row["Description"].ToString(),
                         VoucherRemark = row["VoucherRemark"].ToString(),
                         ActualEntryby = Convert.ToInt32(row["ActualEntryBy"].ToString()),
-                        EntryByMachine = row["EntryByMachine"].ToString(),
                         BankType = row["UnderGroup"].ToString(),
                         DRCR = row["CRDDR"].ToString(),
-                        Balance =  Convert.ToDecimal(row["BalanceAmt"].ToString()),
-                        Type = row["DRCRTYPE"].ToString(),
+                        Balance = Convert.ToDecimal(row["BalanceAmt"].ToString()),
+                        Type = row["DRCRTYPE"].ToString()
+
                     });
                 }
                 model.CashPaymentGrid = ItemList;
