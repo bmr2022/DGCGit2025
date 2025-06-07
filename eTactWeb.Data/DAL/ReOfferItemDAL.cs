@@ -397,6 +397,32 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                //DateTime issueDate = DateTime.ParseExact(TillDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+                //DateTime issueDate = DateTime.Today;
+                SqlParams.Add(new SqlParameter("@itemCode", ItemCode));
+                SqlParams.Add(new SqlParameter("@storeid", StoreId));
+                SqlParams.Add(new SqlParameter("@IssueDate", CommonFunc.ParseFormattedDate(TillDate)));
+                SqlParams.Add(new SqlParameter("@uniqbatchno", UniqBatchNo));
+                SqlParams.Add(new SqlParameter("@batchno", BatchNo));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("ItemTotStkAndBatchStock", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> SaveReoffer(ReOfferItemModel model, DataTable ISTGrid)
         {
             var _ResponseResult = new ResponseResult();

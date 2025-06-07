@@ -218,7 +218,7 @@ public class PurchaseOrderController : Controller
         {
             return Json(208, "Duplicate Item");
         }
-        IMemoryCache.Remove("KeyPendingIndentDetail");
+        //IMemoryCache.Remove("KeyPendingIndentDetail");
         mainModel.PendingIndentDetailGrid = model;
         IMemoryCache.Set("KeyPendingIndentDetail", mainModel, DateTimeOffset.Now.AddMinutes(60));
         HttpContext.Session.SetString("KeyPendingIndentDetail", JsonConvert.SerializeObject(mainModel));
@@ -228,9 +228,25 @@ public class PurchaseOrderController : Controller
     {
         bool TF = false;
 
-        IMemoryCache.TryGetValue("KeyTaxGrid", out IList<TaxModel> POTaxGrid);
-        IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+        //IMemoryCache.TryGetValue("KeyTaxGrid", out IList<TaxModel> POTaxGrid);
+        //IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
 
+
+        string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
+        List<TaxModel> POTaxGrid = new List<TaxModel>();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            POTaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson);
+        }
+
+        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+        PurchaseOrderModel MainModel = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+        }
+
+      
         //if (POTaxGrid != null && POTaxGrid.Count > 0)
         //{
         //    return StatusCode(205, "Reset Tax Detail");
