@@ -232,19 +232,19 @@
                                     <table class="table table-hover table-bordered table-striped" id="TableGrid">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="GridLabels">
                                             <tr>
-                                               
+                                               <th>Sr No</th>
+                                               <th>Action</th>
                                                 <th>PartCode</th>
                                                 <th>ItemName</th>
                                                 
-                                                <th>totalstock</th>
-                                                <th>LotStock</th>
+                                                
                                                 <th>BillQty</th>
                                                 <th>RecQty</th>
                                                 <th>AltRecQty</th>
                                                 <th>PrevAccQty</th>
                                                 <th>AccQty</th>
                                                 <th>AltAccQty</th>
-                                                <th>PrevOkRecStore</th>
+                                               
                                                 <th>OkRecStore &nbsp;<input id="SHA1" class="form-check-input me-1 mt-2" type="checkbox" role="switch" />
                                                             
                                                                 <button type="button" class="btn btn-sm  BtnPassword" style="margin-top:10px;background-color:beige">
@@ -256,21 +256,22 @@
                                                          <th>PrevRejQty</th>
                                                 <th>RejQty</th>
                                                 <th>AltRejQty</th>
-                                                <th>PrevRejRecStore</th>
+                                               
 
                                                 <th>RejRecStore<input id="SHA2" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 <th>PrevHoldQty</th>
                                                 <th>HoldQty </th>
-                                                <th>PrevHoldStore </th>
+                                                
 
                                               
                                                 <th>HoldStore<input id="SHA3" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                               
                                                 <th>PrevReworkqty</th>
                                                 <th>Reworkqty</th>
-                                                <th>AltReworkqty</th>
-                                                <th>PrevRewokStore</th>
+                                               
+                                               
                                                 <th>RewokStore<input id="SHA4" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                                <th>PrevDeviationQty</th>
                                                 <th>DeviationQty</th>
                                                 <th>ResponsibleEmpForDeviation</th>
                                                   <th>Process</th>
@@ -291,6 +292,15 @@
                                                 <th>shelfLife</th>
                                                
                                                 <th>AllowDebitNote</th>
+                                                 <th>PrevOkRecStore</th>
+                                                  <th>PrevRejRecStore</th>
+                                                  <th>PrevHoldStore </th>
+                                                   <th>PrevRewokStore</th>
+                                                   
+                                                <th>AccLotStock</th>
+                                                <th>RejLotStock</th>
+                                                <th>HoldLotStock</th>
+                                                <th>ReworkLotStock</th>
                                                 
                                                 <th>PONo</th>
                                                 <th>POYearCode</th>
@@ -354,10 +364,10 @@
 <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejRecStore</th>
 <th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousHoldQty</th>
 <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldQty</th>
-<th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldStoreId</th>
+<th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldStore</th>
 <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousReworkqty</th>
 <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Reworkqty</th>
-<th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RewokStoreId</th>
+<th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RewokStore</th>
 <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeviationQty</th>
 <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ResponsibleEmpForDeviation</th>
 <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProcessId</th>
@@ -378,6 +388,10 @@
 <th data-columnno="38" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>shelfLife</th>
 
 <th data-columnno="41" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AllowDebitNote</th>
+<th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevOkRecStore</th>
+<th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevRejRecStore</th>
+<th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevHoldStore</th>
+<th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevRewokStore</th>
 
 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POYearCode</th>
@@ -885,12 +899,13 @@
                     const HoldQty = document.getElementById("HoldQty" + index);
                     const RejectedQty = document.getElementById("RejectedQty" + index);
                     const Reworkqty = document.getElementById("Reworkqty" + index);
-
+                     const DeviationQty = document.getElementById("DeviationQty" + index);
                      const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
                      const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
                      const HoldQtyVal = parseFloat(HoldQty.value) || 0;
                      const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
                      const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+                      const DeviationVal = parseFloat(DeviationQty.value) || 0;
 
                      
                    
@@ -914,7 +929,7 @@
                         }
                         else {
                             // Subtract rejected from original hold qty
-                            newHoldVal = Math.max(RecQtyVal - accQtyVal-RejectedQtyval-Reworkqtyval, 0);
+                            newHoldVal = Math.max(RecQtyVal - accQtyVal-RejectedQtyval-Reworkqtyval-DeviationVal, 0);
                             holdInput.value = newHoldVal.toFixed(2);
 
                         }
@@ -935,7 +950,7 @@
 
                         } else {
                             // Subtract rejected from original rework qty
-                            const newReworkVal = Math.max(RecQtyVal - accQtyVal-RejectedQtyval-HoldQtyVal, 0);
+                            const newReworkVal = Math.max(RecQtyVal - accQtyVal-RejectedQtyval-HoldQtyVal-DeviationVal, 0);
                             reworkInput.value = newReworkVal.toFixed(2);
 
                         }
@@ -961,13 +976,35 @@
 
                         } else {
                             // Subtract rejected from original rework qty
-                            const newRejectedVal = Math.max(RecQtyVal - accQtyVal-HoldQtyVal-Reworkqtyval, 0);
+                            const newRejectedVal = Math.max(RecQtyVal - accQtyVal-HoldQtyVal-Reworkqtyval-DeviationVal, 0);
                             RejectedInput.value = newRejectedVal.toFixed(2);
                             AltRejecteddInput.value = newRejectedVal.toFixed(2);
 
                         }
 
                     }
+
+                    if ($('#QcType').val() === 'Deviation') {
+                    const DeviationInput = document.getElementById("DeviationQty" + index);
+                    const prevDeviationInput = document.getElementById("PrevDeviationQty" + index);
+
+
+                    if (DeviationInput && prevDeviationInput) {
+                        const prevHoldVal = parseFloat(prevDeviationInput.value) || 0;
+
+                        if (isNaN(accQtyVal) || accQtyVal === 0 || accQtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            DeviationInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(RecQtyVal - accQtyVal-Reworkqtyval-HoldQtyVal-RejectedQtyval, 0);
+                            DeviationInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
+            }
 
 
                 }
@@ -990,12 +1027,14 @@
                     const HoldQty = document.getElementById("HoldQty" + index);
                     const RejectedQty = document.getElementById("RejectedQty" + index);
                     const Reworkqty = document.getElementById("Reworkqty" + index);
+                    const DeviationQty = document.getElementById("DeviationQty" + index);
 
                     const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
                      const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
                      const HoldQtyVal = parseFloat(HoldQty.value) || 0;
                      const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
                      const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+                      const DeviationVal = parseFloat(DeviationQty.value) || 0;
 
 
                 if (altRejQtyInput) {
@@ -1017,7 +1056,7 @@
                             
                            
                             const AcceptedVal = parseFloat(acceptedInput.value) || 0;
-                            const newAcceptedVal = Math.max(RecQtyVal - rejQtyVal-HoldQtyVal-Reworkqtyval, 0); // prevent negative
+                            const newAcceptedVal = Math.max(RecQtyVal - rejQtyVal-HoldQtyVal-Reworkqtyval-DeviationVal, 0); // prevent negative
                             acceptedInput.value = newAcceptedVal.toFixed(2);
 
                             // Also sync with AltAcceptedQty
@@ -1045,7 +1084,7 @@
                         }
                         else {
                             // Subtract rejected from original hold qty
-                            newHoldVal = Math.max(RecQtyVal - rejQtyVal-Reworkqtyval-AcceptedQtyVal, 0);
+                            newHoldVal = Math.max(RecQtyVal - rejQtyVal-Reworkqtyval-AcceptedQtyVal-DeviationVal, 0);
                             holdInput.value = newHoldVal.toFixed(2);
 
                         }
@@ -1066,7 +1105,7 @@
 
                         } else {
                             // Subtract rejected from original rework qty
-                            const newReworkVal = Math.max(RecQtyVal - rejQtyVal-AcceptedQtyVal-HoldQtyVal, 0);
+                            const newReworkVal = Math.max(RecQtyVal - rejQtyVal-AcceptedQtyVal-HoldQtyVal-DeviationVal, 0);
                             reworkInput.value = newReworkVal.toFixed(2);
 
                         }
@@ -1075,6 +1114,27 @@
 
 
                 }
+                if ($('#QcType').val() === 'Deviation') {
+                    const DeviationInput = document.getElementById("DeviationQty" + index);
+                    const prevDeviationInput = document.getElementById("PrevDeviationQty" + index);
+
+
+                    if (DeviationInput && prevDeviationInput) {
+                        const prevHoldVal = parseFloat(prevDeviationInput.value) || 0;
+
+                        if (isNaN(rejQtyVal) || rejQtyVal === 0 || rejQtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            DeviationInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(RecQtyVal - rejQtyVal-AcceptedQtyVal-Reworkqtyval-HoldQtyVal, 0);
+                            DeviationInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
+            }
 
             }
 
@@ -1088,12 +1148,14 @@
                     const HoldQty = document.getElementById("HoldQty" + index);
                     const RejectedQty = document.getElementById("RejectedQty" + index);
                     const Reworkqty = document.getElementById("Reworkqty" + index);
+                     const DeviationQty = document.getElementById("DeviationQty" + index);
 
                     const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
                      const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
                      const HoldQtyVal = parseFloat(HoldQty.value) || 0;
                      const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
                      const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+                      const DeviationVal = parseFloat(DeviationQty.value) || 0;
 
             if ($('#QcType').val() === 'Accepted') {
                 const acceptedInput = document.getElementById("AcceptedQty" + index);
@@ -1112,7 +1174,7 @@
 
 
                         const AcceptedVal = parseFloat(acceptedInput.value) || 0;
-                        const newAcceptedVal = Math.max(RecQtyVal - holdQtyVal-RejectedQtyval-Reworkqtyval, 0); // prevent negative
+                        const newAcceptedVal = Math.max(RecQtyVal - holdQtyVal-RejectedQtyval-Reworkqtyval-DeviationVal, 0); // prevent negative
                         acceptedInput.value = newAcceptedVal.toFixed(2);
 
                         // Also sync with AltAcceptedQty
@@ -1140,7 +1202,7 @@
 
                     } else {
                         // Subtract rejected from original rework qty
-                        const newReworkVal = Math.max(RecQtyVal - holdQtyVal-RejectedQtyval-AcceptedQtyVal, 0);
+                        const newReworkVal = Math.max(RecQtyVal - holdQtyVal-RejectedQtyval-AcceptedQtyVal-DeviationVal, 0);
                         reworkInput.value = newReworkVal.toFixed(2);
 
                     }
@@ -1166,7 +1228,7 @@
 
                     } else {
                         // Subtract rejected from original rework qty
-                        const newRejectedVal = Math.max(RecQtyVal - holdQtyVal-AcceptedQtyVal-Reworkqtyval, 0);
+                        const newRejectedVal = Math.max(RecQtyVal - holdQtyVal-AcceptedQtyVal-Reworkqtyval-DeviationVal, 0);
                         RejectedInput.value = newRejectedVal.toFixed(2);
                         AltRejecteddInput.value = newRejectedVal.toFixed(2);
 
@@ -1175,6 +1237,28 @@
                 }
 
 
+            }
+
+            if ($('#QcType').val() === 'Deviation') {
+                    const DeviationInput = document.getElementById("DeviationQty" + index);
+                    const prevDeviationInput = document.getElementById("PrevDeviationQty" + index);
+
+
+                    if (DeviationInput && prevDeviationInput) {
+                        const prevHoldVal = parseFloat(prevDeviationInput.value) || 0;
+
+                        if (isNaN(holdQtyVal) || holdQtyVal === 0 || holdQtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            DeviationInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(RecQtyVal - holdQtyVal-AcceptedQtyVal-RejectedQtyval-Reworkqtyval, 0);
+                            DeviationInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
             }
         }
 
@@ -1187,12 +1271,14 @@
                     const HoldQty = document.getElementById("HoldQty" + index);
                     const RejectedQty = document.getElementById("RejectedQty" + index);
                     const Reworkqty = document.getElementById("Reworkqty" + index);
+                     const DeviationQty = document.getElementById("DeviationQty" + index);
 
                     const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
                      const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
                      const HoldQtyVal = parseFloat(HoldQty.value) || 0;
                      const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
                      const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+                      const DeviationVal = parseFloat(DeviationQty.value) || 0;
 
                     if ($('#QcType').val() === 'Accepted') {
                         const acceptedInput = document.getElementById("AcceptedQty" + index);
@@ -1211,7 +1297,7 @@
 
 
                                 const AcceptedVal = parseFloat(acceptedInput.value) || 0;
-                                const newAcceptedVal = Math.max(RecQtyVal - ReworkqtyVal-HoldQtyVal-RejectedQtyval, 0); // prevent negative
+                                const newAcceptedVal = Math.max(RecQtyVal - ReworkqtyVal-HoldQtyVal-RejectedQtyval-DeviationVal, 0); // prevent negative
                                 acceptedInput.value = newAcceptedVal.toFixed(2);
 
                                 // Also sync with AltAcceptedQty
@@ -1243,7 +1329,7 @@
 
                         } else {
                             // Subtract rejected from original rework qty
-                            const newRejectedVal = Math.max(RecQtyVal - ReworkqtyVal-HoldQtyVal-AcceptedQtyVal, 0);
+                            const newRejectedVal = Math.max(RecQtyVal - ReworkqtyVal-HoldQtyVal-AcceptedQtyVal-DeviationVal, 0);
                             RejectedInput.value = newRejectedVal.toFixed(2);
                             AltRejecteddInput.value = newRejectedVal.toFixed(2);
 
@@ -1268,14 +1354,168 @@
                         }
                         else {
                             // Subtract rejected from original hold qty
-                            newHoldVal = Math.max(RecQtyVal - ReworkqtyVal-AcceptedQtyVal-RejectedQtyval, 0);
+                            newHoldVal = Math.max(RecQtyVal - ReworkqtyVal-AcceptedQtyVal-RejectedQtyval-DeviationVal, 0);
                             holdInput.value = newHoldVal.toFixed(2);
 
                         }
                     }
                 }
 
+
+                if ($('#QcType').val() === 'Deviation') {
+                    const DeviationInput = document.getElementById("DeviationQty" + index);
+                    const prevDeviationInput = document.getElementById("PrevDeviationQty" + index);
+
+
+                    if (DeviationInput && prevDeviationInput) {
+                        const prevHoldVal = parseFloat(prevDeviationInput.value) || 0;
+
+                        if (isNaN(ReworkqtyVal) || ReworkqtyVal === 0 || ReworkqtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            DeviationInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(RecQtyVal - ReworkqtyVal-AcceptedQtyVal-RejectedQtyval-HoldQtyVal, 0);
+                            DeviationInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
+                }
+
             }
+
+
+                            if (id.startsWith("DeviationQty")) {
+                    const index = id.replace("DeviationQty", "");
+                    const DeviationqtyVal = input.value;
+
+                     const RecQtyInput = document.getElementById("RecQty" + index);
+             const AcceptedQty = document.getElementById("AcceptedQty" + index);
+                    const HoldQty = document.getElementById("HoldQty" + index);
+                    const RejectedQty = document.getElementById("RejectedQty" + index);
+                    const Reworkqty = document.getElementById("Reworkqty" + index);
+                    const DeviationQty = document.getElementById("DeviationQty" + index);
+
+                    const RecQtyVal = parseFloat(RecQtyInput.value) || 0;
+                     const AcceptedQtyVal = parseFloat(AcceptedQty.value) || 0;
+                     const HoldQtyVal = parseFloat(HoldQty.value) || 0;
+                     const RejectedQtyval = parseFloat(RejectedQty.value) || 0;
+                     const Reworkqtyval = parseFloat(Reworkqty.value) || 0;
+                     const DeviationVal = parseFloat(DeviationQty.value) || 0;
+
+                    if ($('#QcType').val() === 'Accepted') {
+                        const acceptedInput = document.getElementById("AcceptedQty" + index);
+                        const prevAcceptedInput = document.getElementById("PrevAcceptedQty" + index);
+                        const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+
+
+                        if (acceptedInput && prevAcceptedInput) {
+                            const prevAcceptedVal = parseFloat(prevAcceptedInput.value) || 0;
+
+                            if (isNaN(DeviationqtyVal) || DeviationqtyVal == '' || DeviationqtyVal == 0) {
+                                // RejectedQty is empty → restore original
+                                acceptedInput.value = prevAcceptedVal.toFixed(2);
+                                if (altAcceptedInput) altAcceptedInput.value = prevAcceptedVal.toFixed(2);
+                            } else {
+
+
+                                const AcceptedVal = parseFloat(acceptedInput.value) || 0;
+                                const newAcceptedVal = Math.max(RecQtyVal - DeviationqtyVal-HoldQtyVal-RejectedQtyval-Reworkqtyval, 0); // prevent negative
+                                acceptedInput.value = newAcceptedVal.toFixed(2);
+
+                                // Also sync with AltAcceptedQty
+                                const altAcceptedInput = document.getElementById("AltAcceptedQty" + index);
+                                if (altAcceptedInput) {
+                                    altAcceptedInput.value = newAcceptedVal.toFixed(2);
+                                }
+                            }
+                        }
+
+                    }
+                
+              
+               
+                if ($('#QcType').val() === 'Rejected') {
+
+                    const RejectedInput = document.getElementById("RejectedQty" + index);
+                    const prevRejectedInput = document.getElementById("PreviousRejectedQty" + index);
+                    const AltRejecteddInput = document.getElementById("AltRejectedQty" + index);
+
+
+                    if (RejectedInput && prevRejectedInput) {
+                        const prevRejectedVal = parseFloat(prevRejectedInput.value) || 0;
+
+                        if (isNaN(DeviationqtyVal) || DeviationqtyVal === 0 || DeviationqtyVal == '') {
+                            // Reset to original if empty or zero
+                            RejectedInput.value = prevRejectedVal.toFixed(2);
+                            AltRejecteddInput.value = prevRejectedVal.toFixed(2);
+
+                        } else {
+                            // Subtract rejected from original rework qty
+                            const newRejectedVal = Math.max(RecQtyVal - DeviationqtyVal-HoldQtyVal-AcceptedQtyVal-Reworkqtyval, 0);
+                            RejectedInput.value = newRejectedVal.toFixed(2);
+                            AltRejecteddInput.value = newRejectedVal.toFixed(2);
+
+                        }
+
+                    }
+
+
+                }
+                if ($('#QcType').val() === 'HOLD') {
+                    const holdInput = document.getElementById("HoldQty" + index);
+                    const prevHoldInput = document.getElementById("PreviousHoldQty" + index);
+
+
+                    if (holdInput && prevHoldInput) {
+                        const prevHoldVal = parseFloat(prevHoldInput.value) || 0;
+
+                        if (isNaN(DeviationqtyVal) || DeviationqtyVal === 0 || DeviationqtyVal == '') {
+                            // If RejectedQty empty or 0, restore original hold qty
+                            holdInput.value = prevHoldVal.toFixed(2);
+
+                        }
+                        else {
+                            // Subtract rejected from original hold qty
+                            newHoldVal = Math.max(RecQtyVal - DeviationqtyVal-AcceptedQtyVal-RejectedQtyval-Reworkqtyval, 0);
+                            holdInput.value = newHoldVal.toFixed(2);
+
+                        }
+                    }
+                }
+
+                if ($('#QcType').val() === 'REWORK') {
+
+                const reworkInput = document.getElementById("Reworkqty" + index);
+                const prevReworkInput = document.getElementById("PrevReworkQty" + index);
+
+
+                if (reworkInput && prevReworkInput) {
+                    const prevReworkVal = parseFloat(prevReworkInput.value) || 0;
+
+                    if (isNaN(DeviationqtyVal) || DeviationqtyVal === 0 || DeviationqtyVal == '') {
+                        // Reset to original if empty or zero
+                        reworkInput.value = prevReworkVal.toFixed(2);
+
+                    } else {
+                        // Subtract rejected from original rework qty
+                        const newReworkVal = Math.max(RecQtyVal - DeviationqtyVal-RejectedQtyval-AcceptedQtyVal-HoldQtyVal, 0);
+                        reworkInput.value = newReworkVal.toFixed(2);
+
+                    }
+
+                }
+
+
+            }
+
+            }
+
+
+
+
 
 
 
@@ -1288,7 +1528,9 @@
 
     
 
-    
+    $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
+    $(this).closest('tr').remove();
+});
 
    
 
@@ -1322,11 +1564,12 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $.each(obj.Result, function (index, val) {
                                 html += '<tr>' +
+                                '<td>'+ i + '</td>' +
+                                 '<td><button type="button" class="btn btn-sm btn-danger deleteRowBtn" title="Delete Row"><i class="fa fa-trash"></i></button></td>'+
+
 
                                '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly></td>' +
                                 '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly class="textbox"><input type="hidden" id="itemCode' + i + '" value=' + val.itemCode + '></td>' +
-                                 '<td><input id="TotalStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
-                                  '<td><input id="LotStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
                                 
                                 '<td><input id="BillQty' + i + '" value=' + val.BillQty + ' readonly style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
@@ -1340,13 +1583,8 @@
                                         (qcType.toLowerCase() === 'accepted' ? ' disabled' : '') +
                                         ' onfocusout="handleInput(this)"></td>'+
                                     '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
-                                      '<td>' +
-                                     '<select id="PrevOkRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="OkRecStoreChange(' + i + ')">' +
-                                              '<option value="">-Select-</option>' +
-                                              '<option value="' + val.OkRecStoreid + '" selected>' + val.OkRecStorename + '</option>' +
-                                          '</select>'
-                                       +
-                                '</td>'+
+                                     
+                               
                                 '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +      
                                
                                 '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
@@ -1355,13 +1593,7 @@
                                         (qcType.toLowerCase() === 'rejected' ? ' disabled' : '') +
                                         ' onfocusout="handleInput(this)"></td>' +
                                 '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
-                                 '<td>' +
-                                    '<select id="PrevRejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')">' +
-                                              '<option value="">-Select-</option>' +
-                                              '<option value="' + val.Rejstoreid + '" selected>' + val.Rejstorename + '</option>' +
-                                          '</select>'
-                                        +
-                                '</td>'+
+                                
                                 '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
                                
                                 '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' style="width:60px;" readonly class="textbox number"></td>' +
@@ -1369,13 +1601,7 @@
                                             ' style="width:60px;background-color:#99FFFF;" class="textbox number"' +
                                             (qcType.toLowerCase() === 'hold' ? ' disabled' : '') +
                                             ' onfocusout="handleInput(this)"></td>' +
-                                            '<td>' +
-                                    '<select id="PrevHoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')">' +
-                                              '<option value="">-Select-</option>' +
-                                              '<option value="' + val.HoldStoreId + '" selected>' + val.HoldStorename + '</option>' +
-                                          '</select>'
-                                        +
-                                '</td>'+
+                                            
                                  '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
                                  
@@ -1384,18 +1610,15 @@
                                         ' style="width:60px;background-color:#99FFFF;" class="textbox number"' +
                                         (qcType.toLowerCase() === 'rework' ? ' disabled' : '') +
                                         ' onfocusout="handleInput(this)"></td>' +
-                                         '<td>' +
-                                     '<select id="PrevRewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')">' +
-                                              '<option value="">-Select-</option>' +
-                                              '<option value="' + val.RewokStoreId + '" selected>' + val.RewokStoreName + '</option>' +
-                                          '</select>'
-                                          +
-                                      
-                                '</td>'+
+                                        
                                  '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
                                 
-                                
-                                '<td><input id="DeviationQty' + i + '" value="" style="width:60px;" class="textbox number"></td>' +
+                                '<td><input id="PrevDeviationQty' + i + '" value=' + val.DeviationQty + ' style="width:60px;" class="textbox number" onfocusout="handleInput(this)"></td>' +
+                                '<td><input id="DeviationQty' + i + '" value=' + val.DeviationQty +
+                                        ' style="width:60px;background-color:#99FFFF;" class="textbox number"' +
+                                        (qcType.toLowerCase() === 'deviation' ? ' disabled' : '') +
+                                        ' onfocusout="handleInput(this)"></td>' +
+
                                 '<td><input id="ResponsibleEmpForDeviation' + i + '" value="" class="textbox"></td>' +
                                 '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
 
@@ -1418,7 +1641,39 @@
                                
                                 '<td><input id="AllowDebitNote' + i + '"  value="" style="width:60px;" class="textbox"></td>' +
                                
-                               
+                                '<td>' +
+                                     '<select id="PrevOkRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="OkRecStoreChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.OkRecStoreid + '" selected>' + val.OkRecStorename + '</option>' +
+                                          '</select>'
+                                       + '</td>'+
+                                        '<td>' +
+                                    '<select id="PrevRejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.Rejstoreid + '" selected>' + val.Rejstorename + '</option>' +
+                                          '</select>'
+                                        +
+                                '</td>'+
+                                '<td>' +
+                                    '<select id="PrevHoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.HoldStoreId + '" selected>' + val.HoldStorename + '</option>' +
+                                          '</select>'
+                                        +
+                                '</td>'+
+                                 '<td>' +
+                                     '<select id="PrevRewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')">' +
+                                              '<option value="">-Select-</option>' +
+                                              '<option value="' + val.RewokStoreId + '" selected>' + val.RewokStoreName + '</option>' +
+                                          '</select>'
+                                          +
+                                      
+                                '</td>'+
+                                  '<td><input id="AccLotStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
+                                  '<td><input id="RejLotStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
+                                  '<td><input id="HoldLotStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
+                                  '<td><input id="ReworkLotStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
+
                                 '<td><input id="PONO' + i + '" value=' + val.PONO + ' readonly class="textbox"></td>' +
                                 '<td><input id="POYearcode' + i + '" value=' + val.POYearcode + ' readonly class="textbox"></td>' +
                                 '<td><input id="PODate' + i + '" value=' + val.PODate + ' readonly class="textbox"></td>' +
@@ -1464,14 +1719,93 @@
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#LotStock' + i).val(obj.Result[0].lotstock);
+                            $('#AccLotStock' + i).val(obj.Result[0].lotstock);
                             $('#TotalStock' + i).val(obj.Result[0].totalstock);
 
                           
                         }
                         else {
-                            $('#LotStock-' + i).val(0);
-                            $('#TotalStock-' + i).val(0);
+                            $('#AccLotStock' + i).val(0);
+                            $('#TotalStock' + i).val(0);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+
+             $.ajax({
+                url: "@Url.Action("FillLotandTotalStock")",
+                type: "POST",
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevRejRecStore' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                async: false,
+                success: function (data) {
+                     
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#RejLotStock' + i).val(obj.Result[0].lotstock);
+                            $('#TotalStock' + i).val(obj.Result[0].totalstock);
+
+                          
+                        }
+                        else {
+                            $('#RejLotStock' + i).val(0);
+                            $('#TotalStock' + i).val(0);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+             $.ajax({
+                url: "@Url.Action("FillLotandTotalStock")",
+                type: "POST",
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevHoldStoreId' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                async: false,
+                success: function (data) {
+                     
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#HoldLotStock' + i).val(obj.Result[0].lotstock);
+                            $('#TotalStock' + i).val(obj.Result[0].totalstock);
+
+                          
+                        }
+                        else {
+                            $('#HoldLotStock' + i).val(0);
+                            $('#TotalStock' + i).val(0);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+             $.ajax({
+                url: "@Url.Action("FillLotandTotalStock")",
+                type: "POST",
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevRewokStoreId' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                async: false,
+                success: function (data) {
+                     
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#ReworkLotStock' + i).val(obj.Result[0].lotstock);
+                            $('#TotalStock' + i).val(obj.Result[0].totalstock);
+
+                          
+                        }
+                        else {
+                            $('#ReworkLotStock' + i).val(0);
+                            $('#TotalStock' + i).val(0);
                         }
                     }
                     console.log("success");
@@ -1481,6 +1815,8 @@
                 }
             });
         }
+               
+
 
         function FillOkRecStore() {
              var itemcode=$('#PartCode').val();
@@ -1987,6 +2323,9 @@
   PrevAcceptedQty: $('#PrevAcceptedQty' + i).val(),
   AcceptedQty: $('#AcceptedQty' + i).val(),
   AltAcceptedQty: $('#AltAcceptedQty' + i).val(),
+  PrevOkRecStore: $('#PrevOkRecStore' + i).val(),
+ PrevOkRecStoreName: $('#PrevOkRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#PrevOkRecStore' + i).find(':selected').text(),
+
   OkRecStore: $('#OkRecStore' + i).val(),
  OkRecStoreName: $('#OkRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#OkRecStore' + i).find(':selected').text(),
 
@@ -1995,6 +2334,9 @@
   PreviousRejectedQty: $('#PreviousRejectedQty' + i).val(),
   RejectedQty: $('#RejectedQty' + i).val(),
   AltRejectedQty: $('#AltRejectedQty' + i).val(),
+  PrevRejRecStore: $('#PrevRejRecStore' + i).val(),
+   PrevRejRecStoreName: $('#PrevRejRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#PrevRejRecStore' + i).find(':selected').text(),
+
   RejRecStore: $('#RejRecStore' + i).val(),
    RejRecStoreName: $('#RejRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#RejRecStore' + i).find(':selected').text(),
 
@@ -2005,11 +2347,16 @@
 
   PreviousHoldQty: $('#PreviousHoldQty' + i).val(),
   HoldQty: $('#HoldQty' + i).val(),
+   PrevHoldStoreId: $('#PrevHoldStoreId' + i).val(),
+  PrevHoldStoreName: $('#PrevHoldStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#PrevHoldStoreId' + i).find(':selected').text(),
   HoldStoreId: $('#HoldStoreId' + i).val(),
   HoldStoreName: $('#HoldStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#HoldStoreId' + i).find(':selected').text(),
   ProcessId: $('#ProcessId' + i).val(),
   PreviousReworkqty: $('#PreviousReworkqty' + i).val(),
   Reworkqty: $('#Reworkqty' + i).val(),
+
+  PrevRewokStoreId: $('#PrevRewokStoreId' + i).val(),
+  PrevRewokStoreName: $('#PrevRewokStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#PrevRewokStoreId' + i).find(':selected').text(),
   RewokStoreId: $('#RewokStoreId' + i).val(),
   RewokStoreName: $('#RewokStoreId' + i).find(':selected').text() == "-Select-" ? "" : $('#RewokStoreId' + i).find(':selected').text(),
   Color: $('#Color' + i).val(),
