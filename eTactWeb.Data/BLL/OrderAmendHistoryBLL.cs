@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
@@ -22,6 +23,22 @@ namespace eTactWeb.Data.BLL
         {
             _DataLogicDAL = iDataLogic;
             _OrderAmendHistoryDAL = new OrderAmendHistoryDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
+        }
+        public async Task<ResponseResult> FillPONO(string FromDate, string ToDate)
+        {
+            return await _OrderAmendHistoryDAL.FillPONO(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> FillVendorName(string FromDate, string ToDate)
+        {
+            return await _OrderAmendHistoryDAL.FillVendorName(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> FillItemName(string FromDate, string ToDate)
+        {
+            return await _OrderAmendHistoryDAL.FillItemName(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> FillPartCode(string FromDate, string ToDate)
+        {
+            return await _OrderAmendHistoryDAL.FillPartCode(FromDate, ToDate);
         }
 
         public async Task<OrderAmendHistoryModel> GetOrderAmendHistoryData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, string PONO, int ItemCode,string HistoryReportMode)
