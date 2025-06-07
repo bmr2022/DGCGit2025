@@ -675,10 +675,13 @@
 
 		var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-				$('#EntryDate,#VoucherDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
-				$('#EntryDate,#VoucherDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
-
-					var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				$('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
+				$('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
+	
 					var currentDate = new Date();
 
 					var minDate = new Date();
@@ -692,16 +695,13 @@
 						minDate: minDate,
 						maxDate: maxDate
 					}).datepicker("setDate", currentDate);
+
 					$('#ActualEntryDate').datepicker({
 						dateFormat: 'dd/mm/yy',
 						minDate: currentDate,
 						maxDate: currentDate
 					}).datepicker("setDate", currentDate);
-					var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-					var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-					var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
-					//$('#BankRECO').datepicker({ dateFormat: 'dd/mm/yy' });
+					
 					var BankRecoDate = $('#BankRECO').val();
 					if (BankRecoDate === "01/01/1900") {
 						$('#BankRECO').val("");

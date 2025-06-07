@@ -38,6 +38,8 @@ namespace eTactwebAccounts.Controllers
             MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {

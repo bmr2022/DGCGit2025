@@ -3,175 +3,209 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+	var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
 
 <div class="table-responsive" style="max-height:350px;">
-    <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
-        <thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
-            <tr>
-                <th>Sr#</th>
-                <th class="sticky-action" style="width:50px !important">Action</th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LedgerName</th>
-                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
-                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vch Date</th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dr Amt</th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cr Amt</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type </th>
-                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mode Of Adjustment</th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryBy</th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Date</th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By Machine</th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sub VoucherName</th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc EntryId</th>
-                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc YearCode</th>
-                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
-            </tr>
-        </thead>
-        <tbody id="gateDashboardtable">
-            @{
-                var Cntr = 0;
-                if (Model.BankPaymentGrid == null || Model.BankPaymentGrid.Count == 0)
-                {
-                    <tr class="text-center"><td colspan="11" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
-                }
-                else
-                {
-                    foreach (var item in Model.BankPaymentGrid)
-                    {
-                        Cntr = Cntr + 1;
-                        <tr onclick="selection(this)">
-                            <td>@Cntr</td>
-                            <td class="sticky-action" style="text-align:center;white-space: nowrap;">
-                                <div id="container">
-                                    <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="BankReceipt" asp-route-Mode="V" onclick="BackButtonData(event);">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-                                    @if (item.YearCode == yearCode)
-                                    {
-                                        <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="BankReceipt" onclick="confirmEdit(event)" asp-controller="BankReceipt" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-ActualEntryBy="@item.ActualEntryby" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-ActualEntryDate="@item.ActualEntryDate">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    }
-                                    else
-                                    {
-                                        <div>
-                                            <a class="table-link link-primary noCursor">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
-                                        <div>
-                                            <a class="table-link link-danger noCursor">
-                                                <span class="fa-stack">
-                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                </span>
-                                            </a>
-                                        </div>
-                                    }
-                                </div>
-                            </td>
-                            <td>@item.LedgerName</td>
-                            <td>@item.VoucherNo</td>
-                            <td>
-                                @(DateTime.TryParse(item.VoucherDate, out var voucherDate) ? voucherDate.ToString("dd/MMM/yyyy") : "-")
-                            </td>
-                            <td>@item.DrAmt</td>
-                            <td>@item.CrAmt</td>
-                            <td>@item.VoucherType</td>
-                            <td>@item.ModeOfAdjustment</td>
-                            <td>@item.ActualEntryBy<input type="hidden" value="@item.ActualEntryby" /></td>
-                            <td>@item.ActualEntryDate</td>
-                            
-                            <td>@item.UpdatedBy</td>
-                            <td>@(item.UpdatedOn?.ToString("dd/MMM/yyyy") ?? "-")</td>
-                            <td>@item.EntryByMachine</td>
-                            <td>@item.SubVoucherName</td>
-                            <td>@item.AccEntryId</td>
-                            <td>@item.YearCode</td>
-                            <td>
-                                @(DateTime.TryParse(item.EntryDate, out var date) ? date.ToString("dd/MMM/yyyy") : "-")
-                            </td>
-                        </tr>
-                    }
-                }
-            }
-        </tbody>
-    </table>
+	<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable" style="width: 100%;">
+		<thead class="bg-gradient card-headerBG text-light" style="position:static;" id="dashGateThead">
+			<tr>
+				<th>Sr#</th>
+				<th style="width:50px !important" class="sticky-action">Action</th>
+				<th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LedgerName</th>
+				<th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher No</th>
+				<th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vch Date</th>
+				<th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Dr Amt</th>
+				<th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cr Amt</th>
+				<th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Voucher Type </th>
+				<th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Mode Of Adjustment</th>
+				<th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sub VoucherName</th>
+				<th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Instrument</th>
+				<th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ins No</th>
+				<th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Ins Date</th>
+				<th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cheque Date</th>
+				<th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cheque ClearDate</th>
+				<th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Agst Voucher EntryId</th>
+				<th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Agst Voucher No</th>
+				<th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Agst Voucher RefNo</th>
+				<th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Agst Billno</th>
+				<th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Agst Voucher Type</th>
+				<th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Agst Voucher Year</th>
+				<th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Order No</th>
+				<th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+				<th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+				<th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
+				<th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry Date</th>
+				<th data-columnno="26" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryBy</th>
+				<th data-columnno="27" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Actual EntryDate</th>
+				<th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Entry By Machine</th>
+				<th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated By</th>
+				<th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Updated Date</th>
+				<th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc EntryId</th>
+				<th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Acc YearCode</th>
+			</tr>
+		</thead>
+		<tbody id="gateDashboardtable">
+			@{
+				var Cntr = 0;
+				if (Model.BankPaymentGrid == null || Model.BankPaymentGrid.Count == 0)
+				{
+					<tr class="text-center"><td colspan="11" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+				}
+				else
+				{
+					foreach (var item in Model.BankPaymentGrid)
+					{
+						Cntr = Cntr + 1;
+						<tr onclick="selection(this)">
+							<td>@Cntr</td>
+							<td style="text-align:center;white-space: nowrap;" class="sticky-action">
+								<div id="container">
+									<div id="viewCursorDiv-@Cntr">
+										<a class="table-link link-success" asp-route-ID="@item.AccEntryId" asp-action="BankReceipt" asp-route-Mode="V" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo" onclick="BackButtonData(event);">
+											<span class="fa-stack">
+												<i class="fa fa-square fa-stack-2x"></i>
+												<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+											</span>
+										</a>
+									</div>
+									@if (item.YearCode == yearCode)
+									{
+										<div id="editCursorDiv-@Cntr">
+											<a class="table-link link-primary" id="editCursor-@Cntr" asp-action="BankReceipt" onclick="confirmEdit(event)" asp-controller="BankReceipt" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										<div id="deleteCursorDiv-@Cntr">
+											<a class="table-link link-danger" id="deleteCursor-@Cntr" onclick="confirmDelete(event)" asp-action="DeleteByID" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-ActualEntryBy="@item.ActualEntryby" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-ActualEntryDate="@item.ActualEntryDate">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+									}
+									else
+									{
+										<div>
+											<a class="table-link link-primary noCursor">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+										<div>
+											<a class="table-link link-danger noCursor">
+												<span class="fa-stack">
+													<i class="fa fa-square fa-stack-2x"></i>
+													<i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+												</span>
+											</a>
+										</div>
+									}
+								</div>
+							</td>
+							<td>@item.LedgerName</td>
+							<td>@item.VoucherNo</td>
+							<td>
+								@(DateTime.TryParse(item.VoucherDate, out var voucherDate) ? voucherDate.ToString("dd/MMM/yyyy") : "-")
+							</td>
+							<td>@item.DrAmt</td>
+							<td>@item.CrAmt</td>
+							<td>@item.VoucherType</td>
+							<td>@item.ModeOfAdjustment</td>
+							<td>@item.SubVoucherName</td>
+							<td>@item.Ins</td>
+							<td>@item.InsNo</td>
+							<td>@item.InsDate</td>
+							<td>
+								@(DateTime.TryParse(item.ChequeDate, out var chequeDate) ? chequeDate.ToString("dd/MMM/yyyy") : "-")
+							</td>
+							<td>
+								@(DateTime.TryParse(item.ChequeClearDate, out var chequeClearDate) ? chequeClearDate.ToString("dd/MMM/yyyy") : "-")
+							</td>
+							<td>@item.AgainstVoucherEntryId</td>
+							<td>@item.AgainstVoucherNo</td>
+							<td>@item.AgainstVoucherRefNo</td>
+							<td>@item.AgainstBillno</td>
+							<td>@item.AgainstVoucherType</td>
+							<td>@item.AgainstVoucheryearCode</td>
+							<td>@item.CustOrderNo</td>
+							<td>@item.PONo</td>
+							<td>@item.POYear</td>
+							<td>
+								@(DateTime.TryParse(item.PoDate, out var poDate) ? poDate.ToString("dd/MMM/yyyy") : "-")
+							</td>
+							<td>
+								@(DateTime.TryParse(item.EntryDate, out var date) ? date.ToString("dd/MMM/yyyy") : "-")
+							</td>
+							<td>@item.ActualEntryBy<input type="hidden" value="@item.ActualEntryby" /></td>
+							<td>@item.ActualEntryDate</td>
+							<td>@item.EntryByMachine</td>
+							<td>@item.UpdatedBy</td>
+							<td>@(item.UpdatedOn?.ToString("dd/MMM/yyyy") ?? "-")</td>
+							<td>@item.AccEntryId</td>
+							<td>@item.YearCode</td>
+						</tr>
+					}
+				}
+			}
+		</tbody>
+	</table>
 </div>
 <center><strong>TOTAL ROWS : <span id="totalRows">@Cntr</span></strong></center>
 
 
 
 <style>
-    #container {
-        display: flex;
-    }
+	#container {
+		display: flex;
+	}
 
-        #container > div {
-            flex: 1;
-            margin-right: 10px;
-        }
+		#container > div {
+			flex: 1;
+			margin-right: 10px;
+		}
 
-    #GateDataTable {
-        width: 100%;
-        border-collapse: collapse;
-    }
+	#GateDataTable {
+		width: 100%;
+		border-collapse: collapse;
+	}
 
-    #dashGateThead th {
-        background-color: #127387;
-        position: sticky;
-        top: -2px;
-        z-index: 1;
-    }
+	#dashGateThead th {
+		background-color: #127387;
+		position: sticky;
+		top: -2px;
+		z-index: 1;
+	}
 
-    .sort-icon {
-        padding: 5px;
-        margin: 5px;
-        vertical-align: top;
-    }
+	.sort-icon {
+		padding: 5px;
+		margin: 5px;
+		vertical-align: top;
+	}
 
-    .ascCol {
-        font-size: 15px;
-        vertical-align: bottom;
-    }
+	.ascCol {
+		font-size: 15px;
+		vertical-align: bottom;
+	}
 
-    .descCol {
-        font-size: 15px;
-        vertical-align: super;
-    }
+	.descCol {
+		font-size: 15px;
+		vertical-align: super;
+	}
 
-    table {
-        width: 100%; /* Ensure table fills the container width */
-    }
+	table {
+		width: 100%; /* Ensure table fills the container width */
+	}
 
-    th, td {
-        white-space: nowrap; /* Prevent content from wrapping */
-    }
-
+	th, td {
+		white-space: nowrap; /* Prevent content from wrapping */
+	}
 </style>
 
 
