@@ -236,7 +236,8 @@
                                                 <th>PartCode</th>
                                                 <th>ItemName</th>
                                                 
-                                                
+                                                <th>totalstock</th>
+                                                <th>LotStock</th>
                                                 <th>BillQty</th>
                                                 <th>RecQty</th>
                                                 <th>AltRecQty</th>
@@ -1324,7 +1325,8 @@
 
                                '<td><input id="PartCode' + i + '" value=' + JSON.stringify(val.PartCode) + ' class="textbox" readonly></td>' +
                                 '<td><input id="ItemName' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly class="textbox"><input type="hidden" id="itemCode' + i + '" value=' + val.itemCode + '></td>' +
-                                
+                                 '<td><input id="TotalStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
+                                  '<td><input id="LotStock' + i + '" value="" readonly style="width:60px;" class="textbox number"></td>' +
                                 
                                 '<td><input id="BillQty' + i + '" value=' + val.BillQty + ' readonly style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="RecQty' + i + '" value=' + val.RecQty + ' readonly style="width:60px;" class="textbox number"></td>' +
@@ -1429,9 +1431,14 @@
                                         : '-') +
                                 '</td>'
                                     '</tr>';
+                                   
                                 i++;
                             });
                             $('#DivDetailGrid').append(html);
+                            var rowCounter = $('#DivDetailGrid tr').length;
+                             for (var i = 1; i <= rowCounter; i++) {
+                        FillLotandTotalStock(i);
+                             }
                             FillOkRecStore();
                             RejSTORE();
                             RewSTORE();
@@ -1441,6 +1448,36 @@
                            
                         }
                     }
+                }
+            });
+        }
+
+        function FillLotandTotalStock(i) {
+             
+            $.ajax({
+                url: "@Url.Action("FillLotandTotalStock")",
+                type: "POST",
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevOkRecStore' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                async: false,
+                success: function (data) {
+                     
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#LotStock' + i).val(obj.Result[0].lotstock);
+                            $('#TotalStock' + i).val(obj.Result[0].totalstock);
+
+                          
+                        }
+                        else {
+                            $('#LotStock-' + i).val(0);
+                            $('#TotalStock-' + i).val(0);
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
                 }
             });
         }

@@ -105,6 +105,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IReOfferItemDAL.DeleteByID(ID, YC, EntryDate, ActualEntryBy, MachineName);
         }
+        public async Task<ResponseResult> FillLotandTotalStock(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
+        {
+            return await _IReOfferItemDAL.FillLotandTotalStock(ItemCode, StoreId, TillDate, BatchNo, UniqBatchNo);
+        }
 
     }
 
