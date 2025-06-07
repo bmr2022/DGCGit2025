@@ -36,13 +36,13 @@
                             <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="SONo" class="form-label">SO No</label>
                                 <select class="form-select" asp-for="SONo" asp-items="@(new SelectList(Model.SONoList,"Value","Text"))">
-                                    <option value=0>-Select-</option>
+                                    <option value=''>-Select-</option>
                                 </select>
                             </div>
                             <div class="col-xxl-1 col-xl-2 col-lg-2 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="OrderType" class="form-label">Order Type</label>
                                 <select class="form-select" asp-for="OrderType">
-                                    <option value=0>-Select-</option>
+                                    <option value=''>-Select-</option>
                                     <option value="Export">Export</option>
                                     <option value="Domestic">Domestic</option>
                                 </select>

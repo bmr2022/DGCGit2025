@@ -798,11 +798,6 @@ public class SaleOrderController : Controller
 		return Json(JsonString);
 	}
 
-
-
-
-
-
 	public async Task<JsonResult> GetAltQty(int ItemCode, float UnitQty, float ALtQty)
 	{
 		var JSON = await _ISaleOrder.GetAltQty(ItemCode, UnitQty, ALtQty);
@@ -1083,9 +1078,16 @@ public class SaleOrderController : Controller
 								ViewBag.isSuccess = true;
 								TempData["200"] = "200";
 							}
-							return RedirectToAction("OrderDetail", new { ID = 0, YC = 0, Mode = "" });
 
-						}
+							if (model.Mode == "SOA") {
+								return RedirectToAction("SOAmendmentList");
+							}
+							else
+							{
+                                return RedirectToAction("OrderDetail", new { ID = 0, YC = 0, Mode = "" });
+                            }
+
+                        }
 						else
 						{
 							dynamic jsonObj = JsonConvert.DeserializeObject(stringResponse);
