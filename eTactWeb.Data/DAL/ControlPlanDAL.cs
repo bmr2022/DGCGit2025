@@ -32,13 +32,6 @@ namespace eTactWeb.Data.DAL
 
                 var SqlParams = new List<dynamic>();
 
-                //var entDt = common.CommonFunc.ParseFormattedDate(model.EntryDate);
-                //var bilDt = common.CommonFunc.ParseFormattedDate(model.BiltyDate);
-                //var invDt = common.CommonFunc.ParseFormattedDate(model.InvoiceDate);
-                //var updDt = common.CommonFunc.ParseFormattedDate(model.UpdatedDate);
-
-                //DateTime Invoicedt = DateTime.ParseExact(model.InvoiceDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-
                 if (model.Mode == "U" || model.Mode == "V")
                 {
 
@@ -48,8 +41,7 @@ namespace eTactWeb.Data.DAL
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
-                    //model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo").ToString();
-                    //model.GateNo = _IDataLogic.GetEntryID("GateMain", Constants.FinincialYear, "GateNo", "Gateyearcode").ToString();
+                   
                 }
 
                 SqlParams.Add(new SqlParameter("@CntPlanEntryId", model.CntPlanEntryId));
@@ -183,6 +175,109 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        internal async Task<ResponseResult> GetDashboardData(ControlPlanModel model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                var Flag = "";
+                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                SqlParams.Add(new SqlParameter("@REportType", model.ReportType));
+                SqlParams.Add(new SqlParameter("@Fromdate", model.FromDate));
+                SqlParams.Add(new SqlParameter("@Todate", model.ToDate));
 
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPQCControlPlanMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ControlPlanModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            DataSet? oDataSet = new DataSet();
+            var model = new ControlPlanModel();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SPQCControlPlanMain", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@REportType", ReportType);
+                    oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
+                    oCmd.Parameters.AddWithValue("@Todate", ToDate);
+
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    if (ReportType == "SUMMARY")
+                    {
+                        model.DTSSGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                        select new ControlPlanDetailModel
+                                                        {
+                                                            CntPlanEntryId = dr["CntPlanEntryId"] != DBNull.Value ? Convert.ToInt32(dr["CntPlanEntryId"]) : 0,
+                                                            CntPlanEntryDate = dr["CntPlanEntryDate"] != DBNull.Value ? Convert.ToString(dr["CntPlanEntryDate"]) : string.Empty,
+                                                            CntPlanYearCode = dr["CntPlanYearCode"] != DBNull.Value ? Convert.ToInt32(dr["CntPlanYearCode"]) : 0,
+                                                            Control_PlanNo = dr["ControlPlanNo"] != DBNull.Value ? Convert.ToString(dr["ControlPlanNo"]) : string.Empty,
+                                                            RevNo = dr["RevNo"] != DBNull.Value ? Convert.ToString(dr["RevNo"]) : string.Empty,
+                                                            ForInOutInprocess = dr["ForInOutInprocess"] != DBNull.Value ? Convert.ToString(dr["ForInOutInprocess"]) : string.Empty,
+                                                            ItemCode = dr["ItemCode"] != DBNull.Value ? Convert.ToInt32(dr["ItemCode"]) : 0,
+                                                            ItemName = dr["Item_Name"] != DBNull.Value ? Convert.ToString(dr["Item_Name"]) : string.Empty,
+                                                            AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
+                                                            // AccountName       = dr["Account_Name"]         != DBNull.Value ? Convert.ToString(dr["Account_Name"])         : string.Empty,
+                                                            EngApprovedBy = dr["EngApprovedBy"] != DBNull.Value ? Convert.ToInt32(dr["EngApprovedBy"]) : 0,
+                                                            ApprovedBy = dr["ApprovedBy"] != DBNull.Value ? Convert.ToInt32(dr["ApprovedBy"]) : 0,
+                                                            Remarks = dr["Remarks"] != DBNull.Value ? Convert.ToString(dr["Remarks"]) : string.Empty,
+                                                            CC = dr["CC"] != DBNull.Value ? Convert.ToString(dr["CC"]) : string.Empty,
+                                                            UId = dr["UId"] != DBNull.Value ? Convert.ToInt32(dr["UId"]) : 0,
+                                                            ActualEntryBy = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
+                                                            ActualEntryByName = dr["ActualEmployee"] != DBNull.Value ? Convert.ToString(dr["ActualEmployee"]) : string.Empty,
+                                                            ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToString(dr["ActualEntryDate"]) : string.Empty,
+                                                            LastUpdatedBy = dr["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["LastUpdatedBy"]) : 0,
+                                                            LastUpdatedByName = dr["UpdatedByEmployee"] != DBNull.Value ? Convert.ToString(dr["UpdatedByEmployee"]) : string.Empty,
+                                                            LastUpdationDate = dr["LastUpdationDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdationDate"]) : string.Empty,
+                                                            EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
+
+                                                        }).ToList();
+                    }
+
+                }
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    if (ReportType == "DETAIL")
+                    {
+                        model.DTSSGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                        select new ControlPlanDetailModel
+                                                        {
+                                                            
+                                                        }).ToList();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
+            return model;
+        }
     }
 }

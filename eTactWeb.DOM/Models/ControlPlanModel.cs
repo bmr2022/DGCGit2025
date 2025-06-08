@@ -59,12 +59,16 @@ namespace eTactWeb.DOM.Models
         public IFormFile? ItemImage { get; set; }
         public string? ItemImageURL { get; set; }
         public int CreatedBy { get; set; }
+        public int seqNo { get; set; }
+        public string ReportType { get; set; }
+        public string Searchbox { get; set; }
         public IList<ControlPlanDetailModel> DTSSGrid { get; set; }
     }
     public class ControlPlanDetailModel
     {
         public int SeqNo { get; set; }
         public string Mode { get; set; }
+        public string? CntPlanEntryDate { get; set; }
         public int CntPlanEntryId { get; set; }
         public int CntPlanYearCode { get; set; }
         public string Characteristic { get; set; }
@@ -81,6 +85,27 @@ namespace eTactWeb.DOM.Models
         public string DrawingNo { get; set; }
         public string DrawingNoImagePath { get; set; }
         public string ImageURL { get; set; }
+        public string Control_PlanNo { get; set; }
+        public string RevNo { get; set; }
+        public string ForInOutInprocess { get; set; }
+        public int ItemCode { get; set; }
+        public string PartCode { get; set; }
+        public string ItemName { get; set; }
+        public int AccountCode { get; set; }
+        public int EngApprovedBy { get; set; }
+        public int ApprovedBy { get; set; }
+        
+
+        public int UId { get; set; }
+        public string EntryByMachine { get; set; } = "";
+        public int ActualEntryBy { get; set; }
+        public string ActualEntryByName { get; set; }
+        public string? ActualEntryDate { get; set; }
+        public int LastUpdatedBy { get; set; }
+        public string LastUpdatedByName { get; set; }
+        public string? LastUpdationDate { get; set; }
+        public string? CC { get; set; }
+       
         public IFormFile? UploadImage { get; set; }
         public IFormFile? ItemImage { get; set; }
         public string? ItemImageURL { get; set; }

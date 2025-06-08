@@ -144,7 +144,7 @@ namespace eTactWeb.Controllers
                     }
                 }
 
-                return RedirectToAction(nameof(ControlPlan));
+                return RedirectToAction(nameof(ControlPlanDashBoard));
             }
             catch (Exception ex)
             {
@@ -249,67 +249,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        //public IActionResult AddControlPlanDetail(ControlPlanDetailModel model)
-        //{
-        //    try
-        //    {
-        //        string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
-        //        IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
-        //        if (jsonString != null)
-        //        {
-        //            GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
-        //        }
-
-        //        var MainModel = new ControlPlanModel();
-        //        var RoutingDetailGrid = new List<ControlPlanDetailModel>();
-        //        var RoutingGrid = new List<ControlPlanDetailModel>();
-        //        var SSGrid = new List<ControlPlanDetailModel>();
-
-        //        if (model != null)
-        //        {
-        //            if (GridDetail == null)
-        //            {
-        //                //model.SequenceNo = 1;
-        //                RoutingGrid.Add(model);
-        //            }
-        //            else
-        //            {
-        //                if (GridDetail.Any(x =>
-        //                    x.Characteristic == model.Characteristic &&
-        //                    x.EvalutionMeasurmentTechnique == model.EvalutionMeasurmentTechnique &&
-        //                    x.ControlMethod == model.ControlMethod))
-        //                {
-        //                    return StatusCode(207, "Duplicate");
-        //                }
-        //                else
-        //                {
-        //                    model.SeqNo = GridDetail.Count + 1;
-        //                    RoutingGrid = GridDetail.Where(x => x != null).ToList();
-        //                    SSGrid.AddRange(RoutingGrid);
-        //                    RoutingGrid.Add(model);
-        //                }
-        //                //model.SeqNo = GridDetail.Count + 1;
-        //                //RoutingGrid = GridDetail.Where(x => x != null).ToList();
-        //                //SSGrid.AddRange(RoutingGrid);
-        //                //RoutingGrid.Add(model);
-        //            }
-        //            RoutingGrid = RoutingGrid.OrderBy(item => item.SeqNo).ToList();
-        //            MainModel.DTSSGrid = RoutingGrid;
-
-        //            HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
-        //        }
-        //        else
-        //        {
-        //            ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
-        //        }
-
-        //        return PartialView("_ControlPlanMainGrid", MainModel);
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        throw ex;
-        //    }
-        //}
+       
         public IActionResult AddControlPlanDetail(ControlPlanDetailModel model)
         {
             try
@@ -379,19 +319,6 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        //public async Task<JsonResult> EditItemRows(int SeqNo)
-        //{
-        //    var MainModel = new ControlPlanModel();
-        //    string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
-        //    IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
-        //    if (jsonString != null)
-        //    {
-        //        GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
-        //    }
-        //    var SAGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
-        //    string JsonString = JsonConvert.SerializeObject(SAGrid);
-        //    return Json(JsonString);
-        //}
 
         public IActionResult DeleteItemRow(int SeqNo)
         {
@@ -410,7 +337,6 @@ namespace eTactWeb.Controllers
                 if (itemToRemove != null)
                     ControlPlanDetail.Remove(itemToRemove);
 
-                // ✅ Do NOT reassign SeqNo here
                 MainModel.DTSSGrid = ControlPlanDetail.OrderBy(x => x.SeqNo).ToList();
                 HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
             }
@@ -418,33 +344,57 @@ namespace eTactWeb.Controllers
             return PartialView("_ControlPlanMainGrid", MainModel);
         }
 
+        public async Task<IActionResult> ControlPlanDashBoard(string ReportType, string FromDate, string ToDate)
+        {
+            var model = new ControlPlanModel();
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            Dictionary<int, string> monthNames = new Dictionary<int, string>
+            {
+                {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            };
 
-        //public IActionResult DeleteItemRow(int SeqNo)
-        //{
-        //    var MainModel = new ControlPlanModel();
-        //    string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
-        //    IList<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
-        //    if (jsonString != null)
-        //    {
-        //        ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
-        //    }
-        //    int Indx = Convert.ToInt32(SeqNo) - 1;
+            model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+            //DateTime now = DateTime.Now;
+            //DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            //model.FromDate = new DateTime(yearCode, now.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+            //model.ToDate = new DateTime(yearCode + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");
+            model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            model.ReportType = "SUMMARY";
+            var Result = await _IControlPlan.GetDashboardData(model);
 
-        //    if (ControlPlanDetail != null && ControlPlanDetail.Count > 0)
-        //    {
-        //        ControlPlanDetail.RemoveAt(Convert.ToInt32(Indx));
-        //        Indx = 0;
+            if (Result.Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null && DS.Tables.Count > 0)
+                {
+                    var dt = DS.Tables[0];
+                    model.DTSSGrid = CommonFunc.DataTableToList<ControlPlanDetailModel>(dt, "ControlPlanDashBoard");
+                }
+                
+            }
 
-        //        foreach (var item in ControlPlanDetail)
-        //        {
-        //            Indx++;
-        //            // item.SequenceNo = Indx;
-        //        }
-        //        MainModel.DTSSGrid = ControlPlanDetail;
+            return View(model);
+        }
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            //model.Mode = "Search";
+            var model = new ControlPlanModel();
+            model = await _IControlPlan.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            if (ReportType == "SUMMARY")
+            {
+                return PartialView("_ControlPlanDashBoardGrid", model);
+            }
+            if (ReportType == "DETAIL")
+            {
+                return PartialView("__ControlPlanDashBoardDetailGrid", model);
+            }
+            return null;
 
-        //        HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
-        //    }
-        //    return PartialView("_ControlPlanMainGrid", MainModel);
-        //}
+        }
     }
 }

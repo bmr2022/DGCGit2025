@@ -16,5 +16,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetEvMeasureTech();
         Task<ResponseResult> GetCharacteristic();
         Task<ResponseResult> SaveControlPlan(ControlPlanModel model, DataTable GIGrid);
+        Task<ResponseResult> GetDashboardData(ControlPlanModel  model);
+        Task<ControlPlanModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
     }
 }

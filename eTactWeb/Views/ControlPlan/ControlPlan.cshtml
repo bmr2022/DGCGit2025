@@ -15,7 +15,7 @@
             <h4>
                 ControlPlan - @Model.Yearcode
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-action="ControlPlanDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                         <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
                         Dashboard
                     </a>
@@ -461,25 +461,25 @@
 
 @section Scripts {
     <script>
-        $('.submitBTN').click(function (e) {
-            debugger
-           // e.preventDefault();
-            var rowCount = $('#divControlPlanGrid tbody tr').length;
-            console.log("Rows:", rowCount);
-            if (rowCount === 0) {
-                $.notify("Please add at least one row to the grid before submitting.", "error");
-                return false;
-            }
-            else {
+        // $('.submitBTN').click(function (e) {
+        //     debugger
+        //    // e.preventDefault();
+        //     var rowCount = $('#divControlPlanGrid tbody tr').length;
+        //     console.log("Rows:", rowCount);
+        //     if (rowCount === 0) {
+        //         $.notify("Please add at least one row to the grid before submitting.", "error");
+        //         return false;
+        //     }
+        //     else {
 
-            $('form').submit();
-            }
-        });
+        //     $('form').submit();
+        //     }
+        // });
 
         $("button[type='submit']").click(function (e) {
             e.preventDefault();
 
-            var rowCount = $('#divControlPlanGrid tbody tr').length;
+            var rowCount = $('#divControlPlanGrid  tr').length;
             console.log("Rows:", rowCount);
             if (rowCount === 0) {
                 $.notify("Please add at least one row to the grid before submitting.", "error");

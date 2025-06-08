@@ -46,6 +46,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _ControlPlanDAL.SaveControlPlan(model, GIGrid);
         }
-
+        public async Task<ResponseResult> GetDashboardData(ControlPlanModel model)
+        {
+            return await _ControlPlanDAL.GetDashboardData(model);
+        }
+        public async Task<ControlPlanModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _ControlPlanDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+        }
     }
 }
