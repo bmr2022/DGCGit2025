@@ -55,6 +55,7 @@ else
             <td><input id="MainGridRate-@Cntr" type="text" style="width:50px;" value="@item.Rate" /></td>
             <td><input id="MainGridRemark-@Cntr" type="text" style="width:100px;" value="@item.Remark" /></td>
             <td><input readonly id="MainGridWorkCenter-@Cntr" style="width:100px;" type="text" value="@item.WorkCenter" /><input id="MainGridWCId-@Cntr" type="hidden" value="@item.WCId" /></td>
+            <td><input readonly id="MainGridWIPStock-@Cntr" style="width:50px;" type="text" value="" /></td>
             @*<td><input readonly id="MainGridAltItemCode-@Cntr" type="text" value="@item.AltItemCode" /></td>*@
             <td><select id="MainGridAltPartCode-@Cntr" onchange="AltPartCodeChange(this.id,@Cntr)"><option value="0" selected disabled>-Select-</option></select></td>
             <td><select id="MainGridAltItemName-@Cntr" onchange="AltItemNameChange(this.id,@Cntr)"><option value="0" selected disabled>-Select-</option></select></td>

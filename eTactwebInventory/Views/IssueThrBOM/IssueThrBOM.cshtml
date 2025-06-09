@@ -281,6 +281,7 @@
                                                 <th>Rate</th>
                                                 <th>Remark</th>
                                                 <th>Work Center</th>
+                                                <th>WIP Stock</th>
                                                 <th>Alt Part Code</th>
                                                 <th>Alt Item Name</th>
                                                 <th>Original Part Code</th>
@@ -820,6 +821,7 @@
                         }
                         for (var i = 1; i <= rowCounter; i++) {
                              FillLotandTotalStock(i);
+                            GETWIPSTOCKBATCHWISE(i);
                             fillProjectNo(i);
                             $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                             $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
@@ -1008,6 +1010,7 @@
 
         function UniqBatchNumberChange(i) {
             FillLotandTotalStock(i);
+            GETWIPSTOCKBATCHWISE(i);
         }
 
         $('#IssueByScanButton').click(function () {
@@ -1178,6 +1181,37 @@
                 }
             });
         }
+
+
+        function GETWIPSTOCKBATCHWISE(i) {
+
+            $.ajax({
+                url: "@Url.Action("GETWIPSTOCKBATCHWISE")",
+                type: "POST",
+                data: { ItemCode: $('#MainGridItemCode-' + i).val(), WCID: $('#MainGridWCId-' + i).val(), LAST_YEAR: '2025', BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).find(":selected").text().trim() },
+                async: false,
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MainGridWIPStock-' + i).val(obj.Result[0].STOCK);
+                            
+                            
+                        }
+                        else {
+                            $('#MainGridWIPStock-' + i).val(0);
+                            
+                        }
+                    }
+                    console.log("success");
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
+
 
         function fillProjectNo(i) {
             $.ajax({
@@ -1451,6 +1485,7 @@
                     }
                     for (var i = 1; i <= rowCounter; i++) {
                         FillLotandTotalStock(i);
+                        GETWIPSTOCKBATCHWISE(i);
                         fillProjectNo(i);
                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
@@ -1531,6 +1566,7 @@
                     for (var i = 1; i <= rowCounter; i++) {
                        
                         FillLotandTotalStock(i);
+                        GETWIPSTOCKBATCHWISE(i);
                         fillProjectNo(i);
                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
