@@ -37,7 +37,7 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                            @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <label asp-for="ReportType" class="form-label">Report Type</label>
                                 <select asp-for="ReportType" class="form-select">
                                     <option disabled value="">-Select-</option>
@@ -47,21 +47,21 @@
 
                                 </select>
 
-                            </div>
+                            </div> *@
 
 
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-                            
-                                <button class="btn btn-sm btn-outline-info" type="button" onclick="GetDetailData();">
+
+                            <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetDetailData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
                                 <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="ControlPlan" asp-action="ControlPlanDashBoard">
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ControlPlan" asp-action="ControlPlanDashBoard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                                 @*<div class="ms-auto d-flex align-items-center">
@@ -102,32 +102,7 @@
             $('#ReportType').select2();
 
             GetDetailData();
-            function applyBackgroundColor() {
-
-                var reportType = $('#ReportType').val();
-
-                $("#DashboardGrid tr").each(function () {
-                    if (reportType == "DETAIL") {
-                        $(this).css("background-color", "#e5ccff");
-                    }
-
-                });
-            }
-
-            $(document).on('click', '#DashboardGrid tr', function () {
-
-                $("#DashboardGrid tr").each(function () {
-                    var reportType = $('#ReportType').val();
-
-                    if (reportType == "DETAIL") {
-                        $(this).css("background-color", "#e5ccff");
-                    }
-
-
-                });
-                $(this).css({ 'background-color': '#00bcd4' });
-            });
-            applyBackgroundColor();
+          
 
 
             var CurrentDate = new Date();
@@ -241,7 +216,7 @@
 
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
-            var reportType = $('#ReportType').val();
+            var reportType = "SUMMARY";
 
             //var data = $('#SParam').serialize();
             $.ajax({
@@ -253,7 +228,7 @@
                 success: function (data) {
 
                     $('#divDashboardGrid').empty().append(data);
-                    var totalRows = $('#divDashboardGrid tr').length;
+                    var totalRows = $('#divDashboardGrid tbody tr').length;
                     $('#totalRows').text(totalRows);
                     // RowCount();
                 },
@@ -264,6 +239,16 @@
                     alert(response.responseText);
                 }
             });
+        }
+
+        function confirmEdit(event) {
+
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val();
+            window.location.href = linkUrl;
+
         }
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
@@ -339,71 +324,7 @@
             window.location.href = linkurl;
         }
 
-        function CheckIssuedTransStock(event, element, urlHref) {
-            event.preventDefault();
-            var itemCode = element.getAttribute('data-itemcode');
-            var yearCode = element.getAttribute('data-yearcode');
-            var entryId = element.getAttribute('data-entryid');
-            var slipDate = element.getAttribute('data-slipdate');
-            var slipNo = element.getAttribute('data-slipno');
-            var toStoreId = element.getAttribute('data-tostoreid');
-            var toWCID = element.getAttribute('data-towcid');
-            var batchNo = element.getAttribute('data-batchno');
-            var uniqueBatchNo = element.getAttribute('data-uniquebatchno');
-            var StoreWC = 0;
-            var Flag = "";
-            if (toStoreId == 0) {
-                StoreWC = Storeid;
-                Flag = "CHECKFORINTERSTORE";
-            } else {
-                StoreWC = toWCID;
-                Flag = "CHECKFORWORKCENTERINTERSTORE";
-            }
-            $.ajax({
-                url: '@Url.Action("CheckIssuedTransStock")',
-                type: "POST",
-                data: {
-                    "ItemCode": itemCode,
-                    "YearCode": yearCode,
-                    "EntryId": entryId,
-                    "TransDate": slipDate,
-                    "TransNo": slipNo,
-                    "Storeid": StoreWC,
-                    "batchno": batchNo,
-                    "Uniquebatchno": uniqueBatchNo,
-                    "Flag": Flag
-                },
-                async: false,
-                success: function (data) {
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            if (obj.Result[0].Status == '') {
-                                var linkurl = urlHref;
-                                linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&BatchNo=" + $('#Batchno').val() + "&SummaryDetail=" + $('#SummaryDetail').val() + "&Searchbox=" + $('#search-box').val();
-                                window.location.href = linkurl;
-                            } else {
-                                var Status = obj.Result[0].Status;
-                                $.notify(Status, "error");
-                                return false;
-                            }
-                        } else {
-                            var linkurl = urlHref;
-                            linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&BatchNo=" + $('#Batchno').val() + "&SummaryDetail=" + $('#SummaryDetail').val() + "&Searchbox=" + $('#search-box').val();
-                            window.location.href = linkurl;
-                        }
-                    }
-
-                },
-                error: function (response) {
-                    alert("Error: " + response.responseText);
-                },
-                failure: function (response) {
-                    alert("Failure: " + response.responseText);
-                }
-            });
-
-        }
+        
         function confirmEdit(event) {
 
             event.preventDefault();

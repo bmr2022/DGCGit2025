@@ -282,7 +282,7 @@
                     <div id="ODGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
-                                @{
+                             @*    @{
                                     if (!string.IsNullOrEmpty(Model.ImageURL))
                                     {
                                                 <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
@@ -358,8 +358,81 @@
                                                 </div>
                                                 <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
                                     }
-                                }
+                                } *@
                                
+
+                                @{
+                                    var showViewButton = Model.Mode == "U";
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ImageURL) && showViewButton)
+                                {
+                                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <label class="form-label">Upload Drawing File</label>
+                                                <button type="button" class='btn btn-sm btn-outline-info mt-3' onclick="ViewFile('@Model.ImageURL')">
+                                                    <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
+                                                </button>
+                                                <div>
+                                                    <span>@Model.ImageURL.Split("/")[3]</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="form-check form-switch pt-4">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="ReUpload">
+                                                    <label class="form-check-label" for="ReUpload">Re-Upload</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadFile">
+                                        <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                        <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="UploadImage" class="form-label">Upload Drawing File</label>
+                                        <input class="form-control form-control-sm" asp-for="UploadImage" type="file" data-val="false">
+                                    </div>
+                                    <input type="hidden" id="hdnImageURL" value="@Model.ImageURL" />
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ItemImageURL) && showViewButton)
+                                {
+                                    <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12 text-center">
+                                        <div class="row">
+                                            <div class="col-7">
+                                                <label class="form-label">Upload Item Image</label>
+                                                <button type="button" class="btn btn-sm btn-outline-info mt-3" onclick="ViewFile('@Model.ItemImageURL')">
+                                                    <i class="fa-solid fa-eye fa-fw fa-lg"></i> View File
+                                                </button>
+                                                <div>
+                                                    <span>@Model.ItemImageURL.Split("/")[3]</span>
+                                                </div>
+                                            </div>
+                                            <div class="col-5">
+                                                <div class="form-check form-switch pt-4">
+                                                    <input class="form-check-input" type="checkbox" role="switch" id="ReUploadItem">
+                                                    <label class="form-check-label" for="ReUploadItem">Re-Upload</label>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xl-4 col-lg-3 col-md-6 col-sm-6 col-xs-12 ReUploadItemFile">
+                                        <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                        <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ItemImage" class="form-label">Upload Item Image</label>
+                                        <input class="form-control form-control-sm" asp-for="ItemImage" type="file" data-val="false">
+                                    </div>
+                                    <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
+                                }
+
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ActualEntryByName" class="form-label">Actual Entered By</label>
                                     <input type="hidden" asp-for="ActualEntryBy" class="form-control" readonly />
@@ -492,7 +565,9 @@
            
         });
         $(document).ready(function () {
-
+            console.log("Model Mode: '@Model.Mode'");
+            console.log("ImageURL: '@Model.ImageURL'");
+            console.log("ItemImageURL: '@Model.ItemImageURL'");
             GetFormRights();
             GetNewEntryId();
             GetPartCode();
@@ -541,7 +616,14 @@
         $('#PartCode').change(function () {
             $('#ItemCode').val($('#PartCode').val());
         });
-
+        if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+            var itemCode = '@Model.ItemCode';
+            $('#PartCode').val(itemCode).trigger("change");
+        }
+        if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+            var itemCode = '@Model.ItemCode';
+            $('#ItemName').val(itemCode).trigger("change");
+        }
         // var IsSDSC = 0;
         // var IsErr = 0;
         // var HideShow = 0;

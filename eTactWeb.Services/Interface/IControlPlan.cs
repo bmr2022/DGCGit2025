@@ -18,5 +18,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveControlPlan(ControlPlanModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashboardData(ControlPlanModel  model);
         Task<ControlPlanModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+        Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId);
+        Task<ControlPlanModel> GetViewByID(int ID, int YC, string FromDate, string TODate);
     }
 }

@@ -210,7 +210,7 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                    oCmd.Parameters.AddWithValue("@REportType", ReportType);
+                    oCmd.Parameters.AddWithValue("@ReportType", "SUMMARY");
                     oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
                     oCmd.Parameters.AddWithValue("@Todate", ToDate);
 
@@ -222,9 +222,7 @@ namespace eTactWeb.Data.DAL
                 }
                 if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                 {
-                    if (ReportType == "SUMMARY")
-                    {
-                        model.DTSSGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                    model.DTSSGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new ControlPlanDetailModel
                                                         {
                                                             CntPlanEntryId = dr["CntPlanEntryId"] != DBNull.Value ? Convert.ToInt32(dr["CntPlanEntryId"]) : 0,
@@ -251,21 +249,10 @@ namespace eTactWeb.Data.DAL
                                                             EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
 
                                                         }).ToList();
-                    }
+                   
 
                 }
-                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                {
-                    if (ReportType == "DETAIL")
-                    {
-                        model.DTSSGrid = (from DataRow dr in oDataSet.Tables[0].Rows
-                                                        select new ControlPlanDetailModel
-                                                        {
-                                                            
-                                                        }).ToList();
-                    }
-
-                }
+                
             }
             catch (Exception ex)
             {
@@ -278,6 +265,132 @@ namespace eTactWeb.Data.DAL
                 oDataSet.Dispose();
             }
             return model;
+        }
+
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var entrydate = CommonFunc.ParseFormattedDate(EntryDate);
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@CntPlanEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@CntPlanYearCode", YearCode));
+                //SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDate));
+                //SqlParams.Add(new SqlParameter("@ActualEntryDate", DateTime.ParseExact(EntryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture).ToString("dd/MMM/yyyy")));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", entrydate));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", EntryByempId));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPQCControlPlanMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ControlPlanModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
+        {
+            var model = new ControlPlanModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@CntPlanEntryId", ID));
+                SqlParams.Add(new SqlParameter("@CntPlanYearCode", YC));
+                //SqlParams.Add(new SqlParameter("@FromDate", FromDate));
+                //SqlParams.Add(new SqlParameter("@ToDate", ToDate));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPQCControlPlanMain", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+        private static ControlPlanModel PrepareView(DataSet DS, ref ControlPlanModel? model)
+        {
+            try
+            {
+                var ItemList = new List<ControlPlanDetailModel>();
+                var DetailList = new List<ControlPlanModel>();
+                DS.Tables[0].TableName = "ControlPlan";
+                DS.Tables[1].TableName = "ControlPlanDetail";
+                int cnt = 0;
+
+                model.CntPlanEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["CntPlanEntryId"].ToString());
+                model.Yearcode = Convert.ToInt32(DS.Tables[0].Rows[0]["CntPlanYearCode"].ToString());
+                model.Control_PlanNo = DS.Tables[0].Rows[0]["ControlPlanNo"].ToString();
+                model.Entry_Date = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
+
+                model.RevNo = DS.Tables[0].Rows[0]["RevNo"].ToString();
+                model.EffectiveDate = DS.Tables[0].Rows[0]["CntPlanEntryDate"].ToString();
+                //model.PartCode = DS.Tables[0].Rows[0]["Item_Name"].ToString();
+                //model.ItemName = DS.Tables[0].Rows[0]["Item_Name"].ToString();
+
+                model.ItemName = DS.Tables[0].Rows[0]["Item_Name"].ToString();
+                model.ItemCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ItemCode"].ToString());
+
+                //model.ImageURL = DS.Tables[0].Rows[0]["DrawingNoImagePath"].ToString();
+                //model.ItemImageURL = DS.Tables[0].Rows[0]["ItemimagePath"].ToString();
+                model.ActualEntryByName = DS.Tables[0].Rows[0]["ActualEmployee"].ToString();
+                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty;
+                model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+                model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
+
+                model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmployee"].ToString();
+                model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["LastUpdationDate"]).ToString("dd/MM/yyyy") : string.Empty;
+                //model.UpdationDate = DS.Tables[0].Rows[0]["UpdationDate"] != DBNull.Value? Convert.ToDateTime(DS.Tables[0].Rows[0]["UpdationDate"]).ToString("dd/MM/yyyy"): string.Empty;
+
+                if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+                {
+                    foreach (DataRow row in DS.Tables[1].Rows)
+                    {
+                        ItemList.Add(new ControlPlanDetailModel
+                        {
+                            CntPlanEntryId = Convert.ToInt32(row["CntPlanEntryId"].ToString()),
+                            CntPlanYearCode = Convert.ToInt32(row["CntPlanYearCode"].ToString()),
+                            SeqNo = Convert.ToInt32(row["SeqNo"].ToString()),
+                            Characteristic = row["Characteristic"].ToString(),
+                            EvalutionMeasurmentTechnique = row["EvalutionMeasurmentTechnique"].ToString(),
+                            SpecificationFrom = row["SpecificationFrom"].ToString(),
+                            Operator = row["Operator"].ToString(),
+                            SpecificationTo = row["SpecificationTo"].ToString(),
+                            FrequencyofTesting = row["FrequencyofTesting"].ToString(),
+                            InspectionBy = row["InspectionBy"].ToString(),
+                            ControlMethod = row["ControlMethod"].ToString(),
+                            RejectionPlan = row["RejectionPlan"].ToString(),
+                            Remarks = row["Remarks"].ToString(),
+                            ItemImageURL = row["ItemimagePath"].ToString(),
+                            DrawingNo = row["DrawingNo"].ToString(),
+                            ImageURL = row["DrawingNoImagePath"].ToString(),
+                         
+
+
+                        });
+                    }
+                    model.DTSSGrid = ItemList;
+                    model.ImageURL = DS.Tables[1].Rows[0]["DrawingNoImagePath"].ToString();
+                    model.ItemImageURL = DS.Tables[1].Rows[0]["ItemimagePath"].ToString();
+                }
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }
