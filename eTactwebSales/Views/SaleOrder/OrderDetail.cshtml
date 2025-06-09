@@ -1725,7 +1725,7 @@
 
                 $('#PN1').prop("checked", true);
                 $('#PN1').change();
-                debugger
+                
 
                 var consigneeAC = $('#ConsigneeAccountCode').find(':selected').text();
                 if (consigneeAC == "-Select-") {
@@ -1812,14 +1812,14 @@
             //$("#AmmDate").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker();
 
             $('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
-            debugger
+            
             $('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
             $('#SODate').val(parseDateToFormat($('#SODate').val().split(' ')[0]));
             //alert($('#WEF').val());
             $('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
             // $('#WEF').val($('#WEF').val().split(' ')[0]);
             //$('#SOCloseDate').val($('#SOCloseDate').val().split(' ')[0]);
-            debugger
+            
             $('#SOConfirmDate').val(parseDateToFormat($('#SOConfirmDate').val().split(' ')[0]));
             $('#SODeliveryDate').val(parseDateToFormat($('#SODeliveryDate').val().split(' ')[0]));
             $('#AmmEffDate,#QDate,#SODate,#SOConfirmDate,#SODeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
@@ -2365,9 +2365,21 @@
 
         $(document).on('click', '.AmendButton', function (e) {
 
+            let matchFound = false;
+
+            $('.soItemRowCls').find('.amendNo').each(function () {
+                if ($(this).text().trim() == $('#AmmNo').val()) {
+                    matchFound = true;
+                    return false;
+                }
+            });
+
             e.preventDefault();
             if (!checkPartCodeMusthaveAtLeastOneTax()) {
                 return false;
+            }
+            else if (!matchFound) {
+                $.notify("You must enter at least one amendment entry.", "error");
             }
             else {
                 $("form").submit();
@@ -2398,9 +2410,6 @@
             } else {
                 $("form").submit();
             }
-
-
-
         });
 
         $(document).on('click', '.UpdateButton', function (e) {
@@ -3232,11 +3241,11 @@
                         $.notify('Item Added To Grid.', "success");
                         ClearItem();
                     }
-
+                    debugger
                     if ($('#Mode').val() == 'SOA') {
                         var itemRowCount = $('#divSaleItemGrid tr').length;
                         for (var ir = 1; ir <= itemRowCount; ir++) {
-                            if ($('#gridAmendReason-' + ir).text() != "") {
+                            if ($('#soItemRow-' + ir).find('.amendNo').text() == $('#AmmNo').val()) {
                                 $('#soItemRow-' + ir).css('background-color', '#e7f1ff');
                             }
                         }
@@ -3650,7 +3659,7 @@
         }
 
         function PressBack() {
-            debugger
+            
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
