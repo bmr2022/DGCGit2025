@@ -3,6 +3,9 @@
 	ViewData["Title"] = "TransactionLedger";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+@{
+	var dynamicTitle = Model.ReportType; 
+}
 <style>
 
 	.select2-container--default .select2-selection--single {
@@ -30,8 +33,6 @@
 		<h5>
 			<strong>Transaction Ledger</strong>
 			<span class="d-flex float-end" style="margin-top:-2px;">
-				@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-
 			</span>
 		</h5>
 	</div>
@@ -44,9 +45,6 @@
 					<div class="card-body">
 						<form id="SParam">
 							<div class="row">
-								@* <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
-                                <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
-
 								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
 									<div class="row">
 										<div class="col">
@@ -61,7 +59,7 @@
 								</div>
 								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:250px;">
 									<label asp-for="ReportType" class="form-label" style="font-weight:bold">Report Type</label>
-									<select class="form-control" asp-for="ReportType">
+									<select class="form-control custom-select2" asp-for="ReportType">
 										<option value="">-Select-</option>
 										<option value="TransactionLedgerSummary" selected>Transaction Ledger Summary</option>
 										<option value="MonthlySummary">Monthly Summary</option>
@@ -160,7 +158,7 @@
 							<div class="accordion-item">
 								<h2 class="accordion-header" id="H_SAGrid">
 									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Transaction Ledger Details Grid</strong>
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i><span id="reportTitle">Transaction Ledger Summary</span> Grid</strong>
 									</button>
 								</h2>
 
@@ -223,15 +221,18 @@
 			 $('#Group_Ledger').select2();
 			 var currentDate = new Date();
 			 var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-
-			 //$('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", firstDayOfMonth); // Pass the Date object directly
-			//$('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", currentDate);
 			 FillLedgerName();
 			 updateGroupLedger();
 			 FillParentLedgerName();
 			 $('#BackButton').hide();
-
+				 var dynamicTitle = "Sales Invoice Ledger"; // Example dynamic value
+				$('#ledgerTitle').text(dynamicTitle);
 		 });
+
+				 $('#ReportType').on('change', function () {
+			var selectedText = $(this).find("option:selected").text();
+			$('#reportTitle').text(selectedText === "-Select-" ? "Report" : selectedText);
+		});
 
 		   function formatDate(date) {
 				  var day = ("0" + date.getDate()).slice(-2);
@@ -384,9 +385,6 @@
 			 var FromDate = $('#FromDate').val();
 			 var ToDate = $('#ToDate').val();
 			 var AccountCode = $('#AccountCode').val();
-			 //var VoucherType = $('#VoucherType').val();
-			 //var CrAmt = $('#CrAmt').val();
-			 //var DrAmt = $('#DrAmt').val();
 			 if (ReportType === "MonthlySummary") {
 				 if($('#LedgerName').val() == '' || $('#LedgerName').val() == 0 || $('#LedgerName').val() == null){
 					 $.notify('Account Code is mandatory to display details data', "error");
@@ -404,9 +402,7 @@
 						 "FromDate": FromDate,
 						 "ToDate": ToDate,
 						 "AccountCode": AccountCode,
-						 "ReportType": ReportType,
-						 //CrAmt: CrAmt,
-						 //DrAmt: DrAmt
+						 "ReportType": ReportType
 					 },
 					 success: function (response) {
 						 $('#divStockMainRegister').html(response);
@@ -471,10 +467,10 @@
 				 });
 
 			 });
-			 //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
 			 countAllTotal();
 			 $('#totalRows').text($('#divStockMainRegister tr').length - 1);
 		 }
+
 		 function GetServerDate() {
 			 $.ajax({
 				 type: "GET",
@@ -676,8 +672,9 @@
 		vertical-align: super;
 	}
 
-	.selected-row {
-		background-color: #D6EAF8 !important;
+	.custom-select2 + .select2-container .select2-selection--single {
+		background-color: #eacd78;
+		font-weight:bold;
 	}
 
 </style>
