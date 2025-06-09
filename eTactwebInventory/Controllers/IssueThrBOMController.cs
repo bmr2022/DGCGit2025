@@ -334,6 +334,13 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+        public async Task<IActionResult> GETWIPSTOCKBATCHWISE(int ItemCode, int WCID, int LAST_YEAR, string BatchNo, string UniqBatchNo)
+        {
+            var JSON = await _IIssueThrBOM.GETWIPSTOCKBATCHWISE(ItemCode, WCID, LAST_YEAR, BatchNo, UniqBatchNo);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         public async Task<JsonResult> CheckStockBeforeSaving(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
         {
             var JSON = await _IIssueThrBOM.CheckStockBeforeSaving(ItemCode, StoreId, TillDate, BatchNo, UniqBatchNo);

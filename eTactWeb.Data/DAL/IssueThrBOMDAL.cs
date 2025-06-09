@@ -168,6 +168,33 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> GETWIPSTOCKBATCHWISE(int ItemCode, int WCID, int LAST_YEAR, string BatchNo, string UniqBatchNo)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                //DateTime issueDate = DateTime.ParseExact(TillDate, "yyyy/MM/dd", CultureInfo.InvariantCulture);
+                //DateTime issueDate = DateTime.Today;
+                SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
+                SqlParams.Add(new SqlParameter("@WCID", WCID));
+                SqlParams.Add(new SqlParameter("@LAST_YEAR", LAST_YEAR));
+                SqlParams.Add(new SqlParameter("@Uniquebatchno", UniqBatchNo));
+                SqlParams.Add(new SqlParameter("@BATCHNO", BatchNo));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("GETWIPSTOCKBATCHWISE", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> CheckStockBeforeSaving(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
         {
             var _ResponseResult = new ResponseResult();
