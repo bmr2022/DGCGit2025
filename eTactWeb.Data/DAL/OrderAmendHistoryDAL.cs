@@ -36,7 +36,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@flag", "POAmendmentHistoryReport"));
                 SqlParams.Add(new SqlParameter("@reportType", ""));
-                SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPOPARTCODE"));
+                SqlParams.Add(new SqlParameter("@Dashboardflag", "FillPONO"));
                 SqlParams.Add(new SqlParameter("@FromDate", FromDate));
                 SqlParams.Add(new SqlParameter("@ToDate", ToDate));
                 //SqlParams.Add(new SqlParameter("@CurrentDate", CurrentDate));
@@ -148,7 +148,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@Accountcode", AccountCode);
                     oCmd.Parameters.AddWithValue("@POno", PONO );
-                    oCmd.Parameters.AddWithValue("@partCode", PartCode);
+                    //oCmd.Parameters.AddWithValue("@partCode", PartCode);
                     oCmd.Parameters.AddWithValue("@ItemCode", ItemCode );
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

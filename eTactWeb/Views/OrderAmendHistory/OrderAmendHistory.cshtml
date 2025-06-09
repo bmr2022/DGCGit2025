@@ -91,6 +91,7 @@
                                 </div>
                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label">Part Code</label>
+                                    <input type="hidden" asp-for="ItemCode" />
                                     <select asp-for="PartCode" class="form-select">
                                         
                                       <option value="@Model.PartCode">-Select-</option>
@@ -100,6 +101,7 @@
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ItemName" class="form-label">Item Name</label>
+                                    <input type="hidden" asp-for="ItemCode" />
                                     <select asp-for="ItemName" class="form-select">
                                       <option value="@Model.ItemName">-Select-</option>
                                     </select>
@@ -114,17 +116,17 @@
                                     <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
                                 </div>
                               
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="margin-top:20px;height:30px;width:100px;" onclick="GetOrderAmendHistoryData();">
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="margin-top:25px;height:30px;width:100px;" onclick="GetOrderAmendHistoryData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
                                 
                                 
-                                    <button class="btn btn-sm btn-outline-success" style="margin-top:20px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <button class="btn btn-sm btn-outline-success" style="margin-top:25px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
                                
                                 
-                                    <a class="btn btn-sm btn-outline-danger" style="margin-top:20px;height:30px;width:100px;margin-left:20px;" asp-controller="OrderAmendHistory" asp-action="OrderAmendHistory">
+                                    <a class="btn btn-sm btn-outline-danger" style="margin-top:25px;height:30px;width:100px;margin-left:20px;" asp-controller="OrderAmendHistory" asp-action="OrderAmendHistory">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
                                 
@@ -203,8 +205,15 @@
             FillPartCode();
         });
         $('#VendorName').on('change', function () {
-            $('#AccountCode').val($(this).val()); // Set hidden input value to selected AccountCode
+            $('#AccountCode').val($(this).val()); 
         });
+        $('#PartCode').on('change', function () {
+            $('#ItemCode').val($(this).val()); 
+        });
+        $('#ItemName').on('change', function () {
+            $('#ItemCode').val($(this).val()); 
+        });
+
         function FillPONO() {
 
             $.ajax({
@@ -225,7 +234,7 @@
                     
                     $.each(obj.Result, function (index, OrderAmend) {
 
-                        PonoDropdown.append('<option value="' + OrderAmend.PONO + '">' + OrderAmend.PONO + '</option>');
+                        PonoDropdown.append('<option value="' + OrderAmend.PONo + '">' + OrderAmend.PONo + '</option>');
                     });
 
                 },
@@ -286,7 +295,7 @@
 
                     $.each(obj.Result, function (index, OrderAmend) {
 
-                        ItemNameDropdown.append('<option value="' + OrderAmend.ItemName + '">' + OrderAmend.ItemName + '</option>');
+                        ItemNameDropdown.append('<option value="' + OrderAmend.itemCode + '">' + OrderAmend.ItemName + '</option>');
                     });
 
                 },
@@ -316,7 +325,7 @@
                     partItemMapping = obj.Result;
                     $.each(obj.Result, function (index, OrderAmend) {
 
-                        PartCodeDropdown.append('<option value="' + OrderAmend.PartCode + '">' + OrderAmend.PartCode + '</option>');
+                        PartCodeDropdown.append('<option value="' + OrderAmend.itemCode + '">' + OrderAmend.PartCode + '</option>');
                     });
 
                 },
@@ -348,7 +357,7 @@
 
 
 
-        /* function SetPartCodeItemName(ID) {
+        function SetPartCodeItemName(ID) {
             if (!ID) return;
             else {
 
@@ -360,9 +369,9 @@
                     $("#PartCode").val(v).trigger("change");
                 }
             }
-        } */
+        }
 
-        function SetPartCodeItemName(ID) {
+       /*  function SetPartCodeItemName(ID) {
             var selectedValue = $('#' + ID).val();
 
             if (!selectedValue) return;
@@ -378,7 +387,7 @@
                     $('#PartCode').val(matchedItem.PartCode).trigger('change');
                 }
             }
-        }
+        } */
 
 
         function selection(CurrentRow) {

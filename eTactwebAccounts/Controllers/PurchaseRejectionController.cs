@@ -74,6 +74,8 @@ namespace eTactWeb.Controllers
                 model = await _purchRej.GetViewByID(ID, YC, Mode);
                 model.Mode = Mode;
                 model.ID = ID;
+                model.DocAccountCode = Convert.ToInt32(model.AccPurchaseRejectionDetails?.FirstOrDefault().DocAccountCode ?? 0);
+                model.DocAccountName = model.AccPurchaseRejectionDetails?.FirstOrDefault().DocAccountName;
             }
 
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
@@ -95,10 +97,15 @@ namespace eTactWeb.Controllers
             string serializedPurchaseRejectionModelGrid = JsonConvert.SerializeObject(model);
             string serializedKeyAdjGrid = JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel);
             string serializedKeyTaxGrid = JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd);
+            string serializedKeyDbCrGrid = JsonConvert.SerializeObject(model.DbCrGrid == null ? new List<DbCrModel>() : model.DbCrGrid);
             HttpContext.Session.SetString("KeyPurchaseRejectionGrid", serializedPurchaseRejectionGrid);
             HttpContext.Session.SetString("PurchaseRejectionModel", serializedPurchaseRejectionModelGrid);
             HttpContext.Session.SetString("KeyAdjGrid", serializedKeyAdjGrid);
             HttpContext.Session.SetString("KeyTaxGrid", serializedKeyTaxGrid);
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
+            {
+                HttpContext.Session.SetString("KeyDrCrGrid", serializedKeyDbCrGrid);
+            }
             return View(model);
         }
 

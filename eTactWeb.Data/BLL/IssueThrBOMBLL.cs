@@ -50,6 +50,11 @@ namespace eTactWeb.Data.BLL
             return await _IssueThrBOMDAL.FillLotandTotalStock(ItemCode, StoreId, TillDate, BatchNo, UniqBatchNo);
         }
 
+        public async Task<ResponseResult> GETWIPSTOCKBATCHWISE(int ItemCode, int WCID, int LAST_YEAR, string BatchNo, string UniqBatchNo)
+        {
+            return await _IssueThrBOMDAL.GETWIPSTOCKBATCHWISE(ItemCode, WCID, LAST_YEAR, BatchNo, UniqBatchNo);
+        }
+
         public async Task<ResponseResult> CheckStockBeforeSaving(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo)
         {
             return await _IssueThrBOMDAL.CheckStockBeforeSaving(ItemCode, StoreId, TillDate, BatchNo, UniqBatchNo);

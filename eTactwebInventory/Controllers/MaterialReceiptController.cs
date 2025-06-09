@@ -393,7 +393,8 @@ namespace eTactWeb.Controllers
             {
                 string materialGrid = HttpContext.Session.GetString("KeyMaterialReceiptGrid");
                 List<MaterialReceiptDetail> MaterialReceiptDetail = new List<MaterialReceiptDetail>();
-                if (string.IsNullOrEmpty(materialGrid))
+                
+                if (!string.IsNullOrEmpty(materialGrid))
                 {
                     MaterialReceiptDetail = JsonConvert.DeserializeObject<List<MaterialReceiptDetail>>(materialGrid);
                 }
@@ -424,10 +425,10 @@ namespace eTactWeb.Controllers
                                 item.SeqNo = MaterialReceiptDetail.Count + 1;
                                 //MaterialGrid = MaterialReceiptDetail.Where(x => x != null).ToList();
                                 SSGrid.AddRange(MaterialGrid);
-                                MaterialGrid.Add(item);
+                                MaterialReceiptDetail.Add(item);
                             }
                         }
-                        MainModel.ItemDetailGrid = MaterialGrid;
+                        MainModel.ItemDetailGrid = MaterialReceiptDetail;
 
                         HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                     }
@@ -607,6 +608,8 @@ namespace eTactWeb.Controllers
                 {
                     HttpContext.Session.Remove("KeyMaterialReceiptGrid");
                 }
+                
+                HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonConvert.SerializeObject(MaterialReceiptGrid));
             }
             return PartialView("_MaterialReceiptGrid", MainModel);
         }
@@ -857,7 +860,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyMaterialReceiptGrid");
             var JSON = await _IMaterialReceipt.GetGateMainData("GATEMAINDATA", "SP_MRN", GateNo, GateYearCode, GateEntryId);
             string JsonString = JsonConvert.SerializeObject(JSON);
-            HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonString);
+            //HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonString);
             return Json(JsonString);
         }
         public async Task<JsonResult> GetGateItemData(string GateNo, string GateYearCode, int GateEntryId)

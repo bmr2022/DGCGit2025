@@ -681,16 +681,16 @@
                 $('#EntryDate').datepicker("setDate", EntryDate);
                 $('#PODate').datepicker("setDate", PODate);
                 /* $('#ScheduleDate').datepicker("setDate", ScheduleDate); */
-                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDate);
+                $('#ScheduleDate').datepicker("setDate", ScheduleDate);
 
 
 
-                var SchEffFromDate = parseDateToFormat($('#SchEffFromDate').val().split(" ")[0]);
-                var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val().split(" ")[0]);
-                var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val().split(" ")[0]);
-                $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffFromDate);
-                $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffTillDate);
-                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate);
+                var SchEffFromDate = ($('#SchEffFromDate').val().split(' ')[0]);
+                var SchEffTillDate = ($('#SchEffTillDate').val().split(' ')[0]);
+                var SchAmendmentDate = ($('#SchAmendmentDate').val().split(' ')[0]);
+                $('#SchEffFromDate').datepicker("setDate", SchEffFromDate);
+                $('#SchEffTillDate').datepicker("setDate", SchEffTillDate);
+                $('#SchAmendmentDate').datepicker("setDate", SchAmendmentDate);
 
 
                /*  $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffFromDate').val()));
@@ -712,7 +712,7 @@
             }
             else {
 
-                var poDate = $('#PODate').val().split(" ")[0];
+               /*  var poDate = $('#PODate').val().split(" ")[0];
                 var poCloseDate = $('#POCloseDate').val().split(" ")[0];
                 var SchAmendmentDate = $('#SchAmendmentDate').val().split(" ")[0];
                 var ScheduleDate = $('#ScheduleDate').val().split(" ")[0];
@@ -723,7 +723,7 @@
                 updateDates(SchAmendmentDate, 'SchAmendmentDate');
                 updateDates(ScheduleDate, 'ScheduleDate');
                 updateDates(SchEffFromDate, 'SchEffFromDate');
-                updateDates(SchEffTillDate, 'SchEffTillDate');
+                updateDates(SchEffTillDate, 'SchEffTillDate'); */
 
                 /*    //setting no backDate rule */
                 $('#ScheduleDate,#SchEffFromDate,#SchAmendmentDate,#EntryDate')
@@ -744,10 +744,15 @@
                 $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
                 $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
 
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
+                var fullDate = $('#EntryDate').val();                 
+                var dateOnly = fullDate.split(' ')[0];                
+                $('#EntryDate').val(dateOnly);
+                $('#EntryDate').datepicker({
+                    dateFormat: 'dd-mm-yy' 
+                });
 
             }
-            FillMRPNo();
+            FillMRPNo()
             $("#MRPNO").on("change", function () {
                 FillMRPDetail();
 

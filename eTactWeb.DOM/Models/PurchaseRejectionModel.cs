@@ -53,15 +53,8 @@ namespace eTactWeb.DOM.Models
         public string? LastUpdationDate { get; set; }
         public string? BalanceSheetClosed { get; set; }
 
-        //uncomment below if needed further
         public string PurchaseRejectionVoucherDate { get; set; }
-        //public string AgainstSalePurchase { get; set; } = string.Empty;
         public int PaymentCreditDay { get; set; }
-        //public string ItemService { get; set; } = string.Empty;
-        //public string INVOICETYPE { get; set; } = string.Empty;
-        //public string? EntryFreezToAccounts { get; set; }
-        //public string? EInvNo { get; set; }
-        //public string? EinvGenerated { get; set; }
         
         //below are newly added
         public string GSTRegistered { get; set; }
@@ -73,9 +66,6 @@ namespace eTactWeb.DOM.Models
         public string fromBillDate { get; set; }
         public string toBillDate { get; set; }
         //below are defaults
-        //public string AttachmentFilePath1 { get; set; } = string.Empty;
-        //public string AttachmentFilePath2 { get; set; } = string.Empty;
-        //public string AttachmentFilePath3 { get; set; } = string.Empty;
         public IFormFile? PathOfFile1 { get; set; }
         public string? PathOfFile1URL { get; set; }
         public IFormFile? PathOfFile2 { get; set; }
@@ -99,6 +89,7 @@ namespace eTactWeb.DOM.Models
         public List<AccPurchaseRejectionDetail> AccPurchaseRejectionDetails { get; set; }
         public List<AccPurchaseRejectionAgainstBillDetail> AccPurchaseRejectionAgainstBillDetails { get; set; }
         public IList<AccPurchaseRejectionDetail>? ItemDetailGrid { get; set; }
+        public IList<DbCrModel>? DbCrGrid { get; set; }
     }
     public class AccPurchaseRejectionDetail : AccPurchaseRejectionAgainstBillDetail
     {

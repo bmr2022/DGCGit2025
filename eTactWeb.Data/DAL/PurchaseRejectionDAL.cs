@@ -316,6 +316,24 @@ namespace eTactWeb.Data.DAL
                 model.AccPurchaseRejectionAgainstBillDetails = purchaseRejectionAgainstBillGrid ?? new List<AccPurchaseRejectionAgainstBillDetail>();
             }
 
+            if (DS.Tables.Count != 0 && DS.Tables[3].Rows.Count > 0)
+            {
+                foreach (DataRow row in DS.Tables[3].Rows)
+                {
+                    DRCRGrid.Add(new DbCrModel
+                    {
+                        AccEntryId = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                        AccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0,
+                        VoucherNo = row["BillVouchNo"]?.ToString(),
+                        AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
+                        AccountName = row["Account_Name"]?.ToString(),
+                        DrAmt = row["DrAmt"] != DBNull.Value ? Convert.ToSingle(row["DrAmt"]) : 0,
+                        CrAmt = row["CrAmt"] != DBNull.Value ? Convert.ToSingle(row["CrAmt"]) : 0
+                    });
+                }
+                model.DbCrGrid = DRCRGrid ?? new List<DbCrModel>();
+            }
+
             return model;
         }
         public async Task<ResponseResult> NewEntryId(int YearCode)
@@ -706,8 +724,8 @@ namespace eTactWeb.Data.DAL
                         CommandType = CommandType.StoredProcedure
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
-                    oCmd.Parameters.AddWithValue("@fromBilldate", firstDayOfMonth);
-                    oCmd.Parameters.AddWithValue("@ToBilldate", now);
+                    oCmd.Parameters.AddWithValue("@fromBilldate", CommonFunc.ParseFormattedDate(firstDayOfMonth.ToString("dd/MM/yyyy")));
+                    oCmd.Parameters.AddWithValue("@ToBilldate", CommonFunc.ParseFormattedDate(now.ToString("dd/MM/yyyy")));
                     //oCmd.Parameters.AddWithValue("@PurchVoucherNo", string.Empty);
                     //oCmd.Parameters.AddWithValue("@InvNo", string.Empty);
                     //oCmd.Parameters.AddWithValue("@partcode", string.Empty);
@@ -790,8 +808,8 @@ namespace eTactWeb.Data.DAL
                 {
                     DateTime now = DateTime.Now;
                     DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-                    string fromDate = CommonFunc.ParseFormattedDate(model.FromDate.ToString());
-                    string toDate = CommonFunc.ParseFormattedDate(model.ToDate.ToString());//DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    string fromDate = CommonFunc.FormatToDDMMYYYY(model.FromDate.ToString());
+                    string toDate = CommonFunc.FormatToDDMMYYYY(model.ToDate.ToString());//DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)
                     SqlCommand oCmd = new SqlCommand("AccSPPurchaseRejectionMainDetail", myConnection)
                     {
                         CommandType = CommandType.StoredProcedure

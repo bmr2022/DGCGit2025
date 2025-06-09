@@ -311,6 +311,7 @@
                                         </thead>
                                         <tbody id="divAddPurchaseRejectionList">
                                             <partial name="_PurchaseRejectionGrid" />
+                                            <input type="hidden" value="@Model.DocAccountCode" id="hdnDocAccountCode" />
                                         </tbody>
                                     </table>
                                     <div class="row g-2 gx-3">
@@ -928,6 +929,9 @@
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#DocAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
                                 });
+                                if($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                    var hdnDocAccountCode= $('#hdnDocAccountCode').val();
+                                }
                             }
                         }
                     }
