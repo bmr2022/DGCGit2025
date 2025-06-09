@@ -60,7 +60,7 @@
 									</div>
 								</div>
 								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:250px;">
-									<label asp-for="ReportType" class="form-label">Report Type</label>
+									<label asp-for="ReportType" class="form-label" style="font-weight:bold">Report Type</label>
 									<select class="form-control" asp-for="ReportType">
 										<option value="">-Select-</option>
 										<option value="TransactionLedgerSummary" selected>Transaction Ledger Summary</option>
@@ -69,7 +69,6 @@
 										<option value="GroupTransactionSummary">Group Transaction Summary</option>
 										<option value="GroupTransactionDetail">Group Transaction Detail</option>
 										<option value="BalanceConfirmation">Balance Confirmation</option>
-
 									</select>
 								</div>
 								<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:100px;">
@@ -242,7 +241,7 @@
 				  return day + "/" + month + "/" + year;
 		   }
 
-		  function GetMonthWiseData(monthly)
+		function GetMonthWiseData(monthly)
 		  {
 			 var Monthly = monthly;
 			 var monthNames = [
@@ -675,6 +674,10 @@
 	.descCol {
 		font-size: 15px;
 		vertical-align: super;
+	}
+
+	.selected-row {
+		background-color: #D6EAF8 !important;
 	}
 
 </style>
