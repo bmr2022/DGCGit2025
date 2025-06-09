@@ -54,5 +54,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _ControlPlanDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
         }
+
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            return await _ControlPlanDAL.DeleteByID(EntryId, YearCode, EntryDate, EntryByempId);
+        }
+        public async Task<ControlPlanModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
+        {
+            return await _ControlPlanDAL.GetViewByID(ID, YC, FromDate, ToDate);
+        }
     }
 }
