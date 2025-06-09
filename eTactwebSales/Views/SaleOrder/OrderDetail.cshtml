@@ -255,6 +255,7 @@
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="AmmEffDate" class="form-label" style="color:  red;">Amm eff Date*</label>
                                         <input asp-for="AmmEffDate" class="form-control" />
+                                        <input type="hidden" value="@Model.AmmEffDate" id="hiddenAmmEffDate">
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="SOConfirmDate" class="form-label">SO Confirm Date</label>
@@ -526,7 +527,7 @@
                                         <label asp-for="AmendmentReason" class="form-label" style="color:  red;">Amendment Reason</label>
                                         <input asp-for="AmendmentReason" class="form-control" />
                                     </div>
-                                    
+
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12 text-center">
                                         <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
                                             <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
@@ -1060,7 +1061,7 @@
                                     <label asp-for="EntryByMachineName" class="form-label">Machine Name</label>
                                     <input asp-for="EntryByMachineName" class="form-control" value="@Environment.MachineName" readonly />
                                 </div>
-                                
+
                                 @if (Model.Mode == "SOA" || Model.Mode == "SAU")
                                 {
                                     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -1226,7 +1227,7 @@
     }
 
     /* .select2-dropdown {
-                    z-index: 9999 !important; /* Adjust the value as needed */
+                        z-index: 9999 !important; /* Adjust the value as needed */
     background-color: #e0f2f1 !important;
     }
 
@@ -1725,7 +1726,7 @@
 
                 $('#PN1').prop("checked", true);
                 $('#PN1').change();
-                
+
 
                 var consigneeAC = $('#ConsigneeAccountCode').find(':selected').text();
                 if (consigneeAC == "-Select-") {
@@ -1810,16 +1811,16 @@
             LockedFincialYear();
 
             //$("#AmmDate").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker();
-
+            debugger
             $('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
-            
+
             $('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
             $('#SODate').val(parseDateToFormat($('#SODate').val().split(' ')[0]));
             //alert($('#WEF').val());
             $('#WEF').val(parseDateToFormat($('#WEF').val().split(' ')[0]));
             // $('#WEF').val($('#WEF').val().split(' ')[0]);
             //$('#SOCloseDate').val($('#SOCloseDate').val().split(' ')[0]);
-            
+
             $('#SOConfirmDate').val(parseDateToFormat($('#SOConfirmDate').val().split(' ')[0]));
             $('#SODeliveryDate').val(parseDateToFormat($('#SODeliveryDate').val().split(' ')[0]));
             $('#AmmEffDate,#QDate,#SODate,#SOConfirmDate,#SODeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' });
@@ -1947,13 +1948,17 @@
                 $('#SOCloseDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
                 $('#SOCloseDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
 
-
             }
 
             calculateTotalAmount();
 
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                 WEFDateChange();
+            }
+            debugger
+            if ($('#Mode').val() == 'SOA' || $('#Mode').val() == 'SOC') {
+                var ammEffDate = $('#hiddenAmmEffDate').val().split(" ")[0];
+                $('#AmmEffDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(ammEffDate));
             }
 
             $('.AF').fadeOut();
@@ -3659,7 +3664,7 @@
         }
 
         function PressBack() {
-            
+
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());

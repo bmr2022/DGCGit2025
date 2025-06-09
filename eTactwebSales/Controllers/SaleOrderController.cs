@@ -275,7 +275,8 @@ public class SaleOrderController : Controller
 
 	public async Task<SaleOrderModel> BindModels(SaleOrderModel model)
 	{
-		if (model == null)
+        var ammEffDate = model?.AmmEffDate;
+        if (model == null)
 		{
 			model = new SaleOrderModel
 			{
@@ -325,7 +326,7 @@ public class SaleOrderController : Controller
 		//model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 		if (model.Mode == "SOA")
 		{
-			model.AmmEffDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+			model.AmmEffDate = ammEffDate;
 		}
 
 		return model;
