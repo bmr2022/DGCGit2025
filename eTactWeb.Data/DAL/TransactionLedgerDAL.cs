@@ -98,7 +98,8 @@ namespace eTactWeb.Data.DAL
                                                             VCHEMark = row["VCHEMARK"] == DBNull.Value ? string.Empty : row["VCHEMark"].ToString(),
                                                             AccountCode = row["ACCOUNTCODE"] == DBNull.Value ? 0 : Convert.ToInt32(row["ACCOUNTCODE"]),
                                                             ReportType = row["REPORTTYPE"] == DBNull.Value ? string.Empty : row["REPORTTYPE"].ToString(),
-                                                            VchNo = row["VCH NO"] == DBNull.Value ? string.Empty : row["VCH NO"].ToString()
+                                                            VchNo = row["VCH NO"] == DBNull.Value ? string.Empty : row["VCH NO"].ToString(),
+                                                            INVNo = row["InvoiceNo"] == DBNull.Value ? string.Empty : row["InvoiceNo"].ToString()
                                                         }).ToList();
                 }
             }
@@ -143,7 +144,6 @@ namespace eTactWeb.Data.DAL
                                                             select new TransactionLedgerModel
                                                             {
                                                                 MOnthFullName = row["MOnthFullName"] == DBNull.Value ? string.Empty : row["MOnthFullName"].ToString(),
-
                                                                 TotalCr = row["TotalCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalCr"]),
                                                                 TotalDr = row["TotalDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalDr"]),
                                                                 ClosingAmt = row["ClosingAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ClosingAmt"]),
