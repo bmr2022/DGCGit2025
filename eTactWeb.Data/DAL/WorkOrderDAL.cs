@@ -32,15 +32,12 @@ namespace eTactWeb.Data
             var _ResponseResult = new ResponseResult();
             try
             {
-                var WODt = ParseDate(WODate);
-                var EffFromDt = ParseDate(EffFrom);
-                var EffTillDt = ParseDate(EffTill);
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@Yearcode", YearCode));
-                SqlParams.Add(new SqlParameter("@WODate", (WODt).ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@EffectiveFrom", (EffFromDt).ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@EffectiveTill", (EffTillDt).ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@WODate", WODate));
+                SqlParams.Add(new SqlParameter("@EffectiveFrom", EffFrom));
+                SqlParams.Add(new SqlParameter("@EffectiveTill", EffTill));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(SPName, SqlParams);
             }
             catch (Exception ex)

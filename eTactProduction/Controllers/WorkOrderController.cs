@@ -432,6 +432,9 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetSaleOrderData(int YearCode, string WODate,string EffFrom,string EffTill)
         {
+            WODate = ParseFormattedDate(WODate);
+            EffFrom = ParseFormattedDate(EffFrom);
+            EffTill = ParseFormattedDate(EffTill);
             var JSON = await _IworkOrder.GetSaleOrderData("DisplaySALEORDERDETAIL", "SP_WorkOrder", YearCode, WODate,EffFrom,EffTill);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);    

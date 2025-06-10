@@ -898,6 +898,7 @@ function renderPage(page) {
                             + '<td class="styled-cell">'
                             + '<input class="styled-input" readonly id="WorkCenter' + (start + i) + '" value=' + item.WorkCenter + ' >'
                             + '<input class="styled-input" readonly id="WCId' + (start + i) + '" value=' + item.WCId + ' >'
+                        + '<input class="styled-input" readonly id="WIPStock' + (start + i) + '" value=' + item.WIPStock + ' >'
                             + '</td>'
                             + '</tr>';
                     }
@@ -1170,6 +1171,7 @@ function renderPage(page) {
                                     <td class="styled-cell">
                                         <input readonly class="styled-input" id="WorkCenter${i}" value="${row.WorkCenter}">
                                         <input readonly class="styled-input" id="WCId${i}" value="${row.WCId}">
+                                        <input readonly class="styled-input" id="WIPStock${i}" value="${row.WIPStock}">
                                     </td>
                                 </tr>`;
                             }
@@ -1339,8 +1341,11 @@ function renderPage(page) {
                                     + '<td class="styled-cell"> <input class="styled-input" readonly id="CostCenterId' + i + '" value=' + obj.Result.Table[i].CostCenterId + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="ItemSize' + i + '" value=' + obj.Result.Table[i].ItemSize + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="ItemColor' + i + '" value=' + obj.Result.Table[i].ItemColor + ' ></td>'
-                                    + '<td class="styled-cell"><input class="styled-input" readonly id="WorkCenter' + i + '" value=' + obj.Result.Table[i].WorkCenter + ' ><input type="hidden" class="styled-input" readonly id="WCId' + i + '" value=' + obj.Result.Table[i].WCId + ' ></td>'
-                                    + '</tr>';
+                                        + '<td class="styled-cell">'
+                                        + '<input class="styled-input" readonly id="WorkCenter' + i + '" value="' + obj.Result.Table[i].WorkCenter + '">'
+                                        + '<input type="hidden" class="styled-input" readonly id="WCId' + i + '" value="' + obj.Result.Table[i].WCId + '">'
+                                        + '<input type="hidden" class="styled-input" readonly id="WIPStock' + i + '" value="' + obj.Result.Table[i].WIPStock + '">'
+                                        + '</td>' + '</tr>';
                             }
                             $('#divPendIssueGrid').append(html1);
                             if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
@@ -1401,6 +1406,7 @@ function renderPage(page) {
                     "Remark": $('#Remark' + i).val(),
                     "WorkCenter": $('#WorkCenter' + i).val(),
                     "WCId": $('#WCId' + i).val(),
+                    "WipStock": $('#WIPStock' + i).val(),
                     "AltItemCode": $('#AltItemCode' + i).val(),
                     "CostCenterId": $('#CostCenterId' + i).val(),
                     "ItemSize": $('#ItemSize' + i).val(),
@@ -1414,6 +1420,7 @@ function renderPage(page) {
                 });
                 //  }
             }
+            console.log('first'+ItemData);
             $.ajax({
                 url: "@Url.Action("AddissueThrBom")",
                 type: "POST",
@@ -1425,6 +1432,7 @@ function renderPage(page) {
                         // $.notify(data, "error");
                     }
                     else {
+                       
 
                         //var url = '@Url.Action("IssueThrBOM", "IssueThrBOM")';
                         //window.location.href = url;
@@ -1558,6 +1566,7 @@ function renderPage(page) {
                         "Remark": $('#Remark' + i).val(),
                         "WorkCenter": $('#WorkCenter').find(':selected').text(),
                         "WCId": $('#WorkCenter').val(),
+                            "WipStock": $('#WIPStock' + i).val(),
                         "AltItemCode": $('#AltItemCode' + i).val(),
                         "CostCenterId": $('#CostCenterId' + i).val(),
                         "ItemSize": $('#ItemSize' + i).val(),
@@ -1570,6 +1579,7 @@ function renderPage(page) {
                         "WoDate": $('#WoDate').val().split("T")[0]
                     });
                 }
+                console.log('second'+ItemData);
                 $.ajax({
                     url: "@Url.Action("AddissueThrBom")",
                     type: "POST",

@@ -5,8 +5,13 @@
 @{
     ViewData["Title"] = "Issue Through BOM";
     string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
+  
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
+
 }
+
+
+    
 <style>
     .color-box {
         width: 10px;
@@ -119,6 +124,8 @@
                                     <input asp-for="Mode" value="@Model.Mode" class="form-control" type="hidden" />
                                     <input asp-for="FromDate" value="@Model.FromDate" class="form-control" type="hidden" />
                                     <input asp-for="ToDate" value="@Model.ToDate" class="form-control" type="hidden" />
+                                    <input type="hidden" id="ShouldPrint" name="ShouldPrint" value="false" />
+
 
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -329,6 +336,7 @@
                                             <th>Rate</th>
                                             <th>Remark</th>
                                             <th>Work Center</th>
+                                            <th>WIP STock</th>
                                             <th>Alt Part Code</th>
                                             <th>Alt Item Name</th>
                                             <th>Cost Center</th>
@@ -460,6 +468,45 @@
     </form>
 </div>
 
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Want Print?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" id="btnPrint">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 @section Scripts
 {
     <script>
@@ -506,11 +553,35 @@
             return true;
         }
 
+        // $('.submitBTN').click(function (e) {
+        //     e.preventDefault();
+        //     if (!Validate_IssueInsert()) return;
+        //     $("form").submit();
+        // });
         $('.submitBTN').click(function (e) {
             e.preventDefault();
             if (!Validate_IssueInsert()) return;
-            $("form").submit();
+            $('#PasswordAllowPopup').modal("show");
         });
+
+        $('#btnPrint').click(function () {
+            $('#ShouldPrint').val('true'); // set flag for printing
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                $('form').submit();
+            }, 300);
+        });
+
+        $('#btnClose').click(function () {
+            $('#ShouldPrint').val('false'); // set flag for no printing
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                $('form').submit();
+            }, 300);
+        });
+
 
         function CheckStockBeforeSaving(i) {
 
@@ -821,7 +892,7 @@
                         }
                         for (var i = 1; i <= rowCounter; i++) {
                              FillLotandTotalStock(i);
-                            GETWIPSTOCKBATCHWISE(i);
+                            
                             fillProjectNo(i);
                             $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                             $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
@@ -1010,7 +1081,7 @@
 
         function UniqBatchNumberChange(i) {
             FillLotandTotalStock(i);
-            GETWIPSTOCKBATCHWISE(i);
+           
         }
 
         $('#IssueByScanButton').click(function () {
@@ -1183,34 +1254,6 @@
         }
 
 
-        function GETWIPSTOCKBATCHWISE(i) {
-
-            $.ajax({
-                url: "@Url.Action("GETWIPSTOCKBATCHWISE")",
-                type: "POST",
-                data: { ItemCode: $('#MainGridItemCode-' + i).val(), WCID: $('#MainGridWCId-' + i).val(), LAST_YEAR: '2025', BatchNo: $('#MainGridBatchNo-' + i).val(), UniqBatchNo: $('#MainGridUniqueBatchNo-' + i).find(":selected").text().trim() },
-                async: false,
-                success: function (data) {
-
-                    if (data != null) {
-                        var obj = $.parseJSON(data);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#MainGridWIPStock-' + i).val(obj.Result[0].STOCK);
-                            
-                            
-                        }
-                        else {
-                            $('#MainGridWIPStock-' + i).val(0);
-                            
-                        }
-                    }
-                    console.log("success");
-                },
-                error: function (errMsg) {
-                    console.log(errMsg);
-                }
-            });
-        }
 
 
         function fillProjectNo(i) {
@@ -1274,7 +1317,8 @@
                     "Rate": $('#MainGridRate-' + i).val(),
                     "Remark": $('#MainGridRemark-' + i).val(),
                     "WorkCenter": $('#MainGridWorkCenter-' + i).val(),
-                    "WCId": $('#MainGridWCId-' + i).val(),
+                    "WCId": $('#MainGridWIPStock-' + i).val(),
+                    "WipStock": $('#MainGridWCId-' + i).val(),
                     "AltItemCode": $('#MainGridAltItemName-' + i).val(),
                     "CostCenterId": $('#MainGridCostCenter-' + i).val(),
                     "ItemSize": $('#MainGridItemSize-' + i).val(),
@@ -1485,7 +1529,7 @@
                     }
                     for (var i = 1; i <= rowCounter; i++) {
                         FillLotandTotalStock(i);
-                        GETWIPSTOCKBATCHWISE(i);
+                       
                         fillProjectNo(i);
                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
@@ -1566,7 +1610,7 @@
                     for (var i = 1; i <= rowCounter; i++) {
                        
                         FillLotandTotalStock(i);
-                        GETWIPSTOCKBATCHWISE(i);
+                        
                         fillProjectNo(i);
                         $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
                         $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
