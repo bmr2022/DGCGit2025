@@ -1171,6 +1171,7 @@ function renderPage(page) {
                                     <td class="styled-cell">
                                         <input readonly class="styled-input" id="WorkCenter${i}" value="${row.WorkCenter}">
                                         <input readonly class="styled-input" id="WCId${i}" value="${row.WCId}">
+                                        <input readonly class="styled-input" id="WIPStock${i}" value="${row.WIPStock}">
                                     </td>
                                 </tr>`;
                             }
@@ -1340,8 +1341,11 @@ function renderPage(page) {
                                     + '<td class="styled-cell"> <input class="styled-input" readonly id="CostCenterId' + i + '" value=' + obj.Result.Table[i].CostCenterId + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="ItemSize' + i + '" value=' + obj.Result.Table[i].ItemSize + ' ></td>'
                                     + '<td class="styled-cell"><input class="styled-input" readonly id="ItemColor' + i + '" value=' + obj.Result.Table[i].ItemColor + ' ></td>'
-                                    + '<td class="styled-cell"><input class="styled-input" readonly id="WorkCenter' + i + '" value=' + obj.Result.Table[i].WorkCenter + ' ><input type="hidden" class="styled-input" readonly id="WCId' + i + '" value=' + obj.Result.Table[i].WCId + ' ></td>'
-                                    + '</tr>';
+                                        + '<td class="styled-cell">'
+                                        + '<input class="styled-input" readonly id="WorkCenter' + i + '" value="' + obj.Result.Table[i].WorkCenter + '">'
+                                        + '<input type="hidden" class="styled-input" readonly id="WCId' + i + '" value="' + obj.Result.Table[i].WCId + '">'
+                                        + '<input type="hidden" class="styled-input" readonly id="WIPStock' + i + '" value="' + obj.Result.Table[i].WIPStock + '">'
+                                        + '</td>' + '</tr>';
                             }
                             $('#divPendIssueGrid').append(html1);
                             if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
@@ -1416,6 +1420,7 @@ function renderPage(page) {
                 });
                 //  }
             }
+            console.log('first'+ItemData);
             $.ajax({
                 url: "@Url.Action("AddissueThrBom")",
                 type: "POST",
@@ -1574,6 +1579,7 @@ function renderPage(page) {
                         "WoDate": $('#WoDate').val().split("T")[0]
                     });
                 }
+                console.log('second'+ItemData);
                 $.ajax({
                     url: "@Url.Action("AddissueThrBom")",
                     type: "POST",
