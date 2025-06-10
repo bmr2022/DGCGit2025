@@ -368,6 +368,7 @@
 <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PreviousReworkqty</th>
 <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Reworkqty</th>
 <th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RewokStore</th>
+<th data-columnno="33" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevDeviationQty</th>
 <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeviationQty</th>
 <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ResponsibleEmpForDeviation</th>
 <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ProcessId</th>
@@ -392,6 +393,10 @@
 <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevRejRecStore</th>
 <th data-columnno="28" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevHoldStore</th>
 <th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PrevRewokStore</th>
+<th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccLotStock</th>
+<th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RejLotStock</th>
+<th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HoldLotStock</th>
+<th data-columnno="32" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReworkLotStock</th>
 
 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PONo</th>
 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POYearCode</th>
@@ -1528,8 +1533,39 @@
 
     
 
-    $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
-    $(this).closest('tr').remove();
+$('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
+    $(this).closest('tr').remove();  // Delete row
+
+    // Re-index all rows
+    $('#DivDetailGrid .data-row').each(function (index) {
+        var rowIndex = index + 1;
+
+        // Update <td> showing row number
+        $(this).find('td:first').text(rowIndex);
+
+        // Loop through all input/select inside this row
+        $(this).find('input, select').each(function () {
+            var oldId = $(this).attr('id');
+            if (oldId) {
+                // Replace digits at the end of the id (e.g., ItemName3 -> ItemName1)
+                var newId = oldId.replace(/\d+$/, rowIndex);
+                $(this).attr('id', newId);
+            }
+
+            // Optional: If your onchange or onfocusout functions have index-based calls
+            var onchange = $(this).attr('onchange');
+            if (onchange) {
+                var updated = onchange.replace(/\d+/, rowIndex);
+                $(this).attr('onchange', updated);
+            }
+
+            var onfocusout = $(this).attr('onfocusout');
+            if (onfocusout) {
+                var updatedFocus = onfocusout.replace(/\d+/, rowIndex);
+                $(this).attr('onfocusout', updatedFocus);
+            }
+        });
+    });
 });
 
    
@@ -1563,7 +1599,7 @@
                         var qcType = $('#QcType').val();
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $.each(obj.Result, function (index, val) {
-                                html += '<tr>' +
+                                html += '<tr class="data-row">' +
                                 '<td>'+ i + '</td>' +
                                  '<td><button type="button" class="btn btn-sm btn-danger deleteRowBtn" title="Delete Row"><i class="fa fa-trash"></i></button></td>'+
 
@@ -1585,7 +1621,7 @@
                                     '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
                                      
                                
-                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +      
+                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +      
                                
                                 '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty +
@@ -1594,7 +1630,7 @@
                                         ' onfocusout="handleInput(this)"></td>' +
                                 '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
                                 
-                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
+                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
                                
                                 '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' style="width:60px;" readonly class="textbox number"></td>' +
                                     '<td><input id="HoldQty' + i + '" value=' + val.HoldQty +
@@ -1602,7 +1638,7 @@
                                             (qcType.toLowerCase() === 'hold' ? ' disabled' : '') +
                                             ' onfocusout="handleInput(this)"></td>' +
                                             
-                                 '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+                                 '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
                                  
                                 '<td><input id="PreviousReworkqty' + i + '" value=' + val.Reworkqty + ' readonly style="width:60px;" class="textbox number"></td>' +
@@ -1611,7 +1647,7 @@
                                         (qcType.toLowerCase() === 'rework' ? ' disabled' : '') +
                                         ' onfocusout="handleInput(this)"></td>' +
                                         
-                                 '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+                                 '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
                                 
                                 '<td><input id="PrevDeviationQty' + i + '" value=' + val.DeviationQty + ' style="width:60px;" class="textbox number" onfocusout="handleInput(this)"></td>' +
                                 '<td><input id="DeviationQty' + i + '" value=' + val.DeviationQty +
@@ -1692,7 +1728,7 @@
                             $('#DivDetailGrid').append(html);
                             var rowCounter = $('#DivDetailGrid tr').length;
                              for (var i = 1; i <= rowCounter; i++) {
-                        FillLotandTotalStock(i);
+                        /* FillLotandTotalStock(i); */
                              }
                             FillOkRecStore();
                             RejSTORE();
@@ -1855,6 +1891,9 @@
                 }
             });
         }
+
+       
+
         var SameOkRecStore = false;
         $('#SHA1').change(function () {
 
@@ -1875,8 +1914,10 @@
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#OkRecStore' + j).val(OkRecStore);
+                    FillLotandTotalStock(j);
                 }
             }
+            
         }
         var SameRejRecStore = false;
          $('#SHA2').change(function () {
@@ -1898,8 +1939,10 @@
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#RejRecStore' + j).val(RejRecStore);
+                    FillLotandTotalStock(j);
                 }
             }
+           
         }
         var SameHoldStoreId = false;
          $('#SHA3').change(function () {
@@ -1921,8 +1964,10 @@
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#HoldStoreId' + j).val(HoldStoreId);
+                    FillLotandTotalStock(j);
                 }
             }
+           
         }
         var SameRewokStoreId = false;
          $('#SHA4').change(function () {
@@ -1944,8 +1989,12 @@
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#RewokStoreId' + j).val(RewokStoreId);
+                    FillLotandTotalStock(j);
                 }
+
             }
+            
+
         }
         var SameApprovedByEmp = false;
          $('#SHA5').change(function () {
@@ -2254,6 +2303,67 @@
             });
         }
 
+         function ValidateGrid() {
+              var RowCount = $('#DivDetailGrid tr').length;
+              if (RowCount == 0) {
+                $.notify('Please Add Item in Grid', "error");
+                return false;
+              }
+              var Err = 0;
+             for (var i = 1; i <= RowCount; i++) {
+                 var partcode = $('#PartCode'+i).val();
+                 if ($('#AcceptedQty' + i).val() > $('#AccLotStock' + i).val()) {
+                     $.notify('AcceptedQty Must Be less Then Lot Stock for PartCode' + partcode, "error");
+                     Err = 1;
+                 }
+                 if ($('#RejectedQty' + i).val() > $('#RejLotStock' + i).val()) {
+                     $.notify('RejectedQty Must Be less Then Lot Stock for PartCode' + partcode, "error");
+                     Err = 1;
+                 }
+                 if ($('#HoldQty' + i).val() > $('#HoldLotStock' + i).val()) {
+                     $.notify('HoldQty Must Be less Then Lot Stock for PartCode' + partcode, "error");
+                     Err = 1;
+                 }
+                 if ($('#Reworkqty' + i).val() > $('#ReworkLotStock' + i).val()) {
+                     $.notify('Reworkqty Must Be less Then Lot Stock for PartCode' + partcode, "error");
+                     Err = 1;
+                 }
+                 if ($('#AcceptedQty' + i).val() > 0) {
+                     if ($('#OkRecStore' + i).val() == '' || $('#OkRecStore' + i).val() == null) {
+                         $.notify('Please Select Ok Rec Store for PartCode ' + partcode, "error");
+                         Err = 1;
+                     }
+
+                 }
+                 if ($('#RejectedQty' + i).val() > 0) {
+                     if ($('#RejRecStore' + i).val() == '' || $('#RejRecStore' + i).val() == null) {
+                         $.notify('Please Select Rej Rec Store for PartCode ' + partcode, "error");
+                         Err = 1;
+                     }
+
+                 }
+                 if ($('#HoldQty' + i).val() > 0) {
+                     if ($('#HoldStoreId' + i).val() == '' || $('#HoldStoreId' + i).val() == null) {
+                         $.notify('Please Select Hold Store for PartCode ' + partcode, "error");
+                         Err = 1;
+                     }
+
+                 }
+                 if ($('#Reworkqty' + i).val() > 0) {
+                     if ($('#RewokStoreId' + i).val() == '' || $('#RewokStoreId' + i).val() == null) {
+                         $.notify('Please Select Rework Store for PartCode ' + partcode, "error");
+                         Err = 1;
+                     }
+
+                 }
+             }
+             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
+            if (Err == 1) return false;
+
+            return true;
+
+         }
+
 
                 $('.GridButton1').click(function (e) {
             e.preventDefault();
@@ -2278,7 +2388,7 @@
                 highestValue = Math.max(...seqnoarray);
             }
 
-            /* if (!ValidateGrid()) return; */
+            if (!ValidateGrid()) return;
             var RowCount = $('#DivDetailGrid tr').length;
 
             if (RowCount == 0) {
@@ -2328,7 +2438,7 @@
 
   OkRecStore: $('#OkRecStore' + i).val(),
  OkRecStoreName: $('#OkRecStore' + i).find(':selected').text() == "-Select-" ? "" : $('#OkRecStore' + i).find(':selected').text(),
-
+ PrevDeviationQty: $('#PrevDeviationQty' + i).val(),
   DeviationQty: $('#DeviationQty' + i).val(),
   ResponsibleEmpForDeviation: $('#ResponsibleEmpForDeviation' + i).val(),
   PreviousRejectedQty: $('#PreviousRejectedQty' + i).val(),
@@ -2368,7 +2478,12 @@
   uniqueBatchno: $('#uniqueBatchno' + i).val(),
   AllowDebitNote: $('#AllowDebitNote' + i).val(),
   Rate: $('#Rate' + i).val(),
-  rateinother: $('#rateinother' + i).val(),
+   rateinother: $('#rateinother' + i).val(),
+  AccLotStock: $('#AccLotStock' + i).val(),
+  RejLotStock: $('#RejLotStock' + i).val(),
+  HoldLotStock: $('#HoldLotStock' + i).val(),
+  ReworkLotStock: $('#ReworkLotStock' + i).val(),
+ 
   FilePath:  ''
                 });
             }

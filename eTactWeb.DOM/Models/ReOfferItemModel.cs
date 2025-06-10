@@ -221,6 +221,12 @@ namespace eTactWeb.DOM.Models
         public string? FilePath { get; set; }
 
         public string? schdate { get; set; }
+
+        public decimal? AccLotStock { get; set; }
+        public decimal? RejLotStock { get; set; }
+        public decimal? HoldLotStock { get; set; }
+        public decimal? ReworkLotStock { get; set; }
+       
     }
 
 }
