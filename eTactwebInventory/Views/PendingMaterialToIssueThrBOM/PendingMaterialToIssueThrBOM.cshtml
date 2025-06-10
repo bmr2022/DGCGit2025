@@ -898,6 +898,7 @@ function renderPage(page) {
                             + '<td class="styled-cell">'
                             + '<input class="styled-input" readonly id="WorkCenter' + (start + i) + '" value=' + item.WorkCenter + ' >'
                             + '<input class="styled-input" readonly id="WCId' + (start + i) + '" value=' + item.WCId + ' >'
+                        + '<input class="styled-input" readonly id="WIPStock' + (start + i) + '" value=' + item.WIPStock + ' >'
                             + '</td>'
                             + '</tr>';
                     }
@@ -1401,6 +1402,7 @@ function renderPage(page) {
                     "Remark": $('#Remark' + i).val(),
                     "WorkCenter": $('#WorkCenter' + i).val(),
                     "WCId": $('#WCId' + i).val(),
+                    "WipStock": $('#WIPStock' + i).val(),
                     "AltItemCode": $('#AltItemCode' + i).val(),
                     "CostCenterId": $('#CostCenterId' + i).val(),
                     "ItemSize": $('#ItemSize' + i).val(),
@@ -1425,6 +1427,7 @@ function renderPage(page) {
                         // $.notify(data, "error");
                     }
                     else {
+                       
 
                         //var url = '@Url.Action("IssueThrBOM", "IssueThrBOM")';
                         //window.location.href = url;
@@ -1558,6 +1561,7 @@ function renderPage(page) {
                         "Remark": $('#Remark' + i).val(),
                         "WorkCenter": $('#WorkCenter').find(':selected').text(),
                         "WCId": $('#WorkCenter').val(),
+                            "WipStock": $('#WIPStock' + i).val(),
                         "AltItemCode": $('#AltItemCode' + i).val(),
                         "CostCenterId": $('#CostCenterId' + i).val(),
                         "ItemSize": $('#ItemSize' + i).val(),
