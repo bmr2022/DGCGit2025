@@ -110,7 +110,7 @@
 									<label asp-for="VoucherNo" class="form-label" style=" color:red;">VoucherNo*</label>
 									<input asp-for="VoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
 								</div>
-								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+								<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:110px;">
 									<label asp-for="VoucherDate" class="form-label" style=" color:red;">Voucher Date*</label>
 									<input asp-for="VoucherDate" class="form-control" readonly />
 								</div>
@@ -638,6 +638,14 @@
 			$('#PoDate').rules("remove", "required");
 			$('#POYear').rules("remove", "required");
 
+		if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+						FillEntryID();
+						var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+				var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+					}
+
 			var finFromDate = $('#FromDate').val();
 		var finToDate = $('#ToDate').val();
 
@@ -662,10 +670,15 @@
 
 		var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
 
-				var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-				var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-				var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-				var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+		$('#EntryDate').on('change', function () {
+			var entryDateVal = $(this).val(); // Get selected EntryDate
+			$('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
+		});
+		$('#VoucherDate').on('change', function () {
+			var voucherDateVal = $(this).val(); // Get selected EntryDate
+			$('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
+		});
+				
 				$('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
 				$('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
 
@@ -689,11 +702,6 @@
 					maxDate: currentDate
 				}).datepicker("setDate", currentDate);
 				
-
-
-			if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-				FillEntryID();
-			}
 			$('#AdjustmentAmt').on('input', function () {
 
 				let adjustmentAmt = $(this).val();
