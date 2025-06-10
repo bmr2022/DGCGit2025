@@ -116,7 +116,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> IssueWithoutBom(IssueWithoutBom model)
+        public async Task<IActionResult> IssueWithoutBom(IssueWithoutBom model, string ShouldPrint)
         {
             try
             {
@@ -152,6 +152,10 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            }
                             HttpContext.Session.Remove("KeyIssWOBomGrid");
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)

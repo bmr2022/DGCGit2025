@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Wordprocessing;
+﻿using DocumentFormat.OpenXml.EMMA;
+using DocumentFormat.OpenXml.Wordprocessing;
 using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
@@ -140,7 +141,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> IssueThrBOM(IssueThrBom model)
+        public async Task<IActionResult> IssueThrBOM(IssueThrBom model, string ShouldPrint)
         {
             try
             {
@@ -184,6 +185,10 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            }
                             HttpContext.Session.Remove("KeyIssThrBomGrid");
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
