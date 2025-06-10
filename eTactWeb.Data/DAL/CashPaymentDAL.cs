@@ -318,7 +318,10 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@voucherNo", model.VoucherNo));
                 if (model.Mode == "U" || model.Mode == "V")
                 {
+                    var updatedDate = CommonFunc.ParseFormattedDate(model.UpdatedOn.ToString());
                     sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    sqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
+                    sqlParams.Add(new SqlParameter("@UpdatedOn", updatedDate));
                 }
                 else
                 {
@@ -335,6 +338,7 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@InstrumentNo", model.InsNo));
                 sqlParams.Add(new SqlParameter("@intrument", model.Intrument));
                 sqlParams.Add(new SqlParameter("@intrumentdate", InsDate));
+                sqlParams.Add(new SqlParameter("@UID", model.UID));
                 sqlParams.Add(new SqlParameter("@cc", model.CC));
                 sqlParams.Add(new SqlParameter("@DTbooktrans", GIGrid));
 
@@ -410,7 +414,7 @@ namespace eTactWeb.Data.DAL
                                              select new CashPaymentModel
                                              {
                                                  LedgerName = dr["LedgerName"] != DBNull.Value ? dr["LedgerName"].ToString() : string.Empty,
-                                                 AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
+                                                 AccountCode = dr["Accountcode"] != DBNull.Value ? Convert.ToInt32(dr["Accountcode"]) : 0,
                                                  VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
                                                  VoucherDate = dr["VchDate"] != DBNull.Value ? dr["VchDate"].ToString() : string.Empty,
                                                  DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
@@ -660,7 +664,7 @@ namespace eTactWeb.Data.DAL
             model.CurrencyId = Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
-            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryBy"].ToString();
+            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
             if (DateTime.TryParse(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString(), out DateTime actualEntryDate))
                 model.ActualEntryDate = actualEntryDate.ToString("dd/MM/yyyy");
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();

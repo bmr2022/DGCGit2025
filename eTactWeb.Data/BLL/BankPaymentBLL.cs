@@ -99,7 +99,6 @@ namespace eTactWeb.Data.BLL
         public async Task<BankPaymentModel> GetViewByID(int ID, int YearCode, string VoucherNo)
         {
             return await _BankPaymentDAL.GetViewByID(ID, YearCode, VoucherNo);
-
         }
         public async Task<ResponseResult> CheckAmountBeforeSave(string VoucherDate, int YearCode, int AgainstVoucherYearCode, int AgainstVoucherEntryId, string AgainstVoucherNo, int AccountCode)
         {

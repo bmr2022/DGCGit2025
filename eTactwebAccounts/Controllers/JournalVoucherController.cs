@@ -37,11 +37,19 @@ namespace eTactwebAccounts.Controllers
             var MainModel = new JournalVoucherModel();
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            MainModel.ActualEntryBy = HttpContext.Session.GetString("UID");
+            MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+
+            if (MainModel.Mode == "U")
+            {
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedOn = DateTime.Now;
+            }
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {

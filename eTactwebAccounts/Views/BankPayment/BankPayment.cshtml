@@ -278,16 +278,14 @@
 							</div>
 							<div class="accordion-body">
 								<div class="row g-2 gx-3" id="_ItemGrid">
-									<div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-										<label asp-for="UID" class="form-label">UID</label>
-										<input asp-for="UID" class="form-control" readonly />
-									</div>
 									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
 										<label asp-for="ActualEntryDate" class="form-label">Actual Entry Date </label>
 										<input asp-for="ActualEntryDate" class="form-control" readonly />
 									</div>
 									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
 										<label asp-for="ActualEntryBy" class="form-label">Actual Entry By </label>
+										<input asp-for="ActualEntryby" class="form-label" type="hidden" />
+										<input asp-for="UID" class="form-label" type="hidden" />
 										<input asp-for="ActualEntryBy" class="form-control" readonly />
 									</div>
 									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -296,7 +294,8 @@
 									</div>
 									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="UpdatedBy" class="form-label">Last Update By</label>
-										<input asp-for="UpdatedBy" class="form-control" readonly />
+										<input asp-for="UpdatedBy" class="form-control" readonly type="hidden" />
+										<input asp-for="UpdatedByEmp" class="form-control" readonly />
 									</div>
 									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="EntryByMachine" class="form-label">MachineName</label>
@@ -1619,6 +1618,7 @@
 						"DrAmt": DrAmt,
 						"CrAmt":CrAmt,
 						"ActualEntryby": parseInt($('#ActualEntryby').val()),
+						"UID": parseInt($('#UID').val()),
 						"EntryByMachine": $('#EntryByMachine').val(),
 						"AgainstVoucherNo": $('#PopUpVoucherNo-' + i).text(),
 						"AgainstVoucheryearCode": $('#PopUpYearCode-' + i).text(),
@@ -1812,7 +1812,8 @@
 				"PODate": $('#PoDate').val(),
 				"DrAmt": $('#DrAmt').val(),
 				"CrAmt": $('#CrAmt').val(),
-				"ActualEntryby": $('#ActualEntryBy').val(),
+												"ActualEntryby": parseInt($('#ActualEntryby').val()),
+								"UID": parseInt($('#UID').val()),
 				"EntryByMachine": $('#EntryByMachine').val(),
 				"CurrencyId": parseInt($('#CurrencyId').val()),
 				"ActualEntryDate": $('#ActualEntryDate').val(),
