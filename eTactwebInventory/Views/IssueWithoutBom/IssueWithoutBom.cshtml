@@ -44,6 +44,8 @@
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="FromStoreBack" type="hidden" value="@Model.FromStoreBack" />
+                            <input type="hidden" id="ShouldPrint" name="ShouldPrint" value="false" />
+
                             @*<input asp-for="BackFlag" type="hidden" value="false"/>*@
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
@@ -439,6 +441,46 @@
     </form>
 </div>
 
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Want Print?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" id="btnPrint">
+                        <i class="fa fa-print"></i> Print
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 @section Scripts
 {
     <script>
@@ -488,9 +530,27 @@
                     $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
                 }
                 else {
-                    $("form").submit();
+                    $('#PasswordAllowPopup').modal("show");
                 }
             }
+        });
+
+        $('#btnPrint').click(function () {
+            $('#ShouldPrint').val('true'); // set flag for printing
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                $('form').submit();
+            }, 300);
+        });
+
+        $('#btnClose').click(function () {
+            $('#ShouldPrint').val('false'); // set flag for no printing
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                $('form').submit();
+            }, 300);
         });
 
         function CheckStockBeforeSaving(i) {

@@ -5,23 +5,11 @@
 @{
     ViewData["Title"] = "Issue Through BOM";
     string yearCode = HttpContextAccessor.HttpContext.Session.GetString("YearCode");
-    var entryId = TempData["EntryId"]?.ToString();
-    var shouldPrint = TempData["ShouldPrint"]?.ToString();
+  
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 
 }
-@if (shouldPrint == "true" && !string.IsNullOrEmpty(entryId) && !string.IsNullOrEmpty(yearCode))
-{
-    <script>
-        window.onload = function () {
-            const url = `/IssueThrBom/PrintReport?EntryId=${'@entryId'}&YearCode=${'@yearCode'}`;
-            window.open(url, '_blank');
-            setTimeout(() => {
-                location.reload(); // optional: refresh for new entry
-            }, 1500);
-        };
-    </script>
-}
+
 
     
 <style>
