@@ -228,6 +228,15 @@ namespace eTactwebInventory.Controllers
             DTSSGrid.Columns.Add("PODate", typeof(string));
             DTSSGrid.Columns.Add("FilePath", typeof(string));               // nvarchar(200)
             DTSSGrid.Columns.Add("schdate", typeof(string));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("PrevDeviationQty", typeof(float));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("PrevOkRecStore", typeof(int));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("PrevRejRecStore", typeof(int));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("PrevHoldStoreId", typeof(int));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("PrevRewokStoreId", typeof(int));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("AccLotStock", typeof(float));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("RejLotStock", typeof(float));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("HoldLotStock", typeof(float));              // nullable? If yes, handle DBNull.Value when adding rows
+            DTSSGrid.Columns.Add("ReworkLotStock", typeof(float));              // nullable? If yes, handle DBNull.Value when adding rows
 
             int seqNo = 1;
             foreach (var Item in DetailList)
@@ -289,7 +298,16 @@ namespace eTactwebInventory.Controllers
             CommonFunc.ParseFormattedDate( Item.PODate ?? ""),
             SafeString(Item.FilePath, 200),
             CommonFunc.ParseFormattedDate( Item.schdate ?? ""),
-                     
+            Item.PrevDeviationQty ?? 0,
+            Item.PrevOkRecStore ?? 0,
+            Item.PrevRejRecStore ?? 0,
+            Item.PrevHoldStoreId ?? 0,
+            Item.PrevRewokStoreId ?? 0,
+            Item.AccLotStock ?? 0,
+            Item.RejLotStock ?? 0,
+            Item.HoldLotStock ?? 0,
+            Item.ReworkLotStock ?? 0,
+
 
 
                         });

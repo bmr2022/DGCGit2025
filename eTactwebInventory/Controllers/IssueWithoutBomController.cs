@@ -582,16 +582,16 @@ namespace eTactWeb.Controllers
                 var model = new IssueWithoutBomDashboard();
                 var Result = await _IIssueWOBOM.GetDashboardData(FromDate, Todate, Flag).ConfigureAwait(true);
 
-                if (Result != null)
-                {
-                    var _List = new List<TextValue>();
-                    DataSet DS = Result.Result;
-                    if (DS != null)
-                    {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "ReqNo", "ReqDate", "IssueSlipNo", "IssueDate", "ActualEnteredBy", "MachineCode" ,"Fromdepartment", "RecDepartment","ReqYearCode", "Item_Name", "PartCode", "EntryId", "YearCode", "WorkCenterDescription");
-                        model.IssueWOBOMDashboard = CommonFunc.DataTableToList<IssueWOBomMainDashboard>(DT, "IssueWODashboard");
-                    }
-                }
+                //if (Result != null)
+                //{
+                //    var _List = new List<TextValue>();
+                //    DataSet DS = Result.Result;
+                //    if (DS != null)
+                //    {
+                //        var DT = DS.Tables[0].DefaultView.ToTable(false, "ReqNo", "ReqDate", "IssueSlipNo", "IssueDate", "ActualEnteredBy", "MachineCode" ,"Fromdepartment", "RecDepartment","ReqYearCode", "Item_Name", "PartCode", "EntryId", "YearCode", "WorkCenterDescription");
+                //        model.IssueWOBOMDashboard = CommonFunc.DataTableToList<IssueWOBomMainDashboard>(DT, "IssueWODashboard");
+                //    }
+                //}
 
                 if (Flag != "True")
                 {
@@ -808,7 +808,7 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["423"] = "423";
-                        return RedirectToAction("Dashboard", new { FromDate = DateTime.Now.AddDays(-(DateTime.Now.Day - 1)), Todate = DateTime.Now, Flag = "True" });
+                        return RedirectToAction("Dashboard", new { FromDate = "", Todate ="", Flag = "True" });
                     }
                 }
             }

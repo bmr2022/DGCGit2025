@@ -1,0 +1,1 @@
+exec [ImpGateAttFrmSQLDB1] 0,0,'19/Dec/2023','In'         

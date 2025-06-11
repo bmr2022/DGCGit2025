@@ -794,12 +794,12 @@ namespace eTactWeb.Controllers
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
             }
-            DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", null);
-            string formattedFromDate = fromDt.ToString("dd/MMM/yyyy 00:00:00");
-            DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", null);
-            string formattedToDate = toDt.ToString("dd/MMM/yyyy 00:00:00");
+            string fromDt =CommonFunc.ParseFormattedDate (FromDate);
+            
+            string toDt = CommonFunc.ParseFormattedDate(ToDate);
+            
 
-            return RedirectToAction("Dashboard", new { FromDate = formattedFromDate, ToDate = formattedToDate, Flag = "False", REQNo = REQNo, FGItemName = FGItemName, FGPartCode = FGPartCode, IssueSlipNo = IssueSlipNo, DashboardType = DashboardType });
+            return RedirectToAction("Dashboard", new { FromDate = "", ToDate = "", Flag = "", REQNo = REQNo, FGItemName = FGItemName, FGPartCode = FGPartCode, IssueSlipNo = IssueSlipNo, DashboardType = DashboardType });
         }
         private static DataTable GetRMDetailTable(IList<IssueThrBomDetail> DetailList)
         {
@@ -946,16 +946,16 @@ namespace eTactWeb.Controllers
                 var model = new IssueThrBomDashboard();
                 var Result = await _IIssueThrBOM.GetDashboardData(FromDate, Todate, DashboardType, IssueSlipNo, ReqNo).ConfigureAwait(true);
 
-                if (Result != null)
-                {
-                    var _List = new List<TextValue>();
-                    DataSet DS = Result.Result;
-                    if (DS != null)
-                    {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "IssueSlipNo", "IssueDate", "ReqNo", "ReqDate", "ReqYearCode", "WONO", "WODate", "EntryId", "YearCode", "jobCardNo", "JobcardDate", "Remark", "ActENterdByEmpName", "ActENterdByEmpCode", "ActualEntryDate", "UpdatedEmpName", "UpdatedByEmpcode", "RecByEmpCode", "IssuedByEmpCode");
-                        model.IssueThrBOMDashboard = CommonFunc.DataTableToList<IssueThrBomMainDashboard>(DT, "IssueThrSUMMDashboard");
-                    }
-                }
+                //if (Result != null)
+                //{
+                //    var _List = new List<TextValue>();
+                //    DataSet DS = Result.Result;
+                //    if (DS != null)
+                //    {
+                //        var DT = DS.Tables[0].DefaultView.ToTable(false, "IssueSlipNo", "IssueDate", "ReqNo", "ReqDate", "ReqYearCode", "WONO", "WODate", "EntryId", "YearCode", "jobCardNo", "JobcardDate", "Remark", "ActENterdByEmpName", "ActENterdByEmpCode", "ActualEntryDate", "UpdatedEmpName", "UpdatedByEmpcode", "RecByEmpCode", "IssuedByEmpCode");
+                //        model.IssueThrBOMDashboard = CommonFunc.DataTableToList<IssueThrBomMainDashboard>(DT, "IssueThrSUMMDashboard");
+                //    }
+                //}
 
                 if (Flag != "True")
                 {

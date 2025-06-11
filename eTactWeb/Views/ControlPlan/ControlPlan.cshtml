@@ -104,7 +104,7 @@
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
                                     <label asp-for="RevNo" class="form-label" style="color:red">Rev No*</label>
-                                    <input asp-for="RevNo" class="form-control" />
+                                    <input asp-for="RevNo" class="form-control" value="1"/>
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
                                     <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
@@ -569,13 +569,17 @@
             console.log("ImageURL: '@Model.ImageURL'");
             console.log("ItemImageURL: '@Model.ItemImageURL'");
             GetFormRights();
-            GetNewEntryId();
+            
             GetPartCode();
             GetItemName();
             GetCharacteristic();
             GetEvMeasureTech();
             GetControlMethod();
             GetRejectionPlan();
+            if ($('#Mode').val() !== "U"){
+                GetNewEntryId();
+            }
+
             $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
             $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
             $('#ItemName').select2();
@@ -617,13 +621,19 @@
             $('#ItemCode').val($('#PartCode').val());
         });
         if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
-            var itemCode = '@Model.ItemCode';
-            $('#PartCode').val(itemCode).trigger("change");
+            // var itemCode = '@Model.ItemCode';
+            // $('#PartCode').val(itemCode).trigger("change");
+
+          
+                $('#ItemCode').val($('#PartCode').val());
+            
         }
         if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
-            var itemCode = '@Model.ItemCode';
-            $('#ItemName').val(itemCode).trigger("change");
+            // var itemCode = '@Model.ItemCode';
+            // $('#ItemName').val(itemCode).trigger("change");
+            $('#ItemCode').val($('#ItemName').val());
         }
+
         // var IsSDSC = 0;
         // var IsErr = 0;
         // var HideShow = 0;
@@ -703,11 +713,10 @@
                         partCodeDropdown.append('<option value="' + controlPlan.Itemcode + '">' + controlPlan.PartCode + '</option>');
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
-                        var PartCode = '@Model.PartCode';
-                        $('#PartCode').val(PartCode).trigger("change");
-                        $('#PartCode').val(PartCode);
+                        var ItemCode = '@Model.ItemCode';
+                        $('#PartCode').val(ItemCode).trigger("change");
                     }
+
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');
@@ -732,10 +741,10 @@
                         itemNameDropdown.append('<option value="' + conrolPlan.Itemcode + '">' + conrolPlan.ItemName + '</option>');
                     });
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
-                        var ItemName = '@Model.ItemName';
-                        $('#ItemName').val(ItemName).trigger("change");
+                        var ItemCode = '@Model.ItemCode';
+                        $('#ItemName').val(ItemCode).trigger("change");
                     }
+
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');

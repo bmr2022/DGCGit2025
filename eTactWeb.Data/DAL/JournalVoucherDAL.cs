@@ -240,7 +240,10 @@ namespace eTactWeb.Data.DAL
                 sqlParams.Add(new SqlParameter("@voucherNo", model.VoucherNo));
                 if (model.Mode == "U" || model.Mode == "V")
                 {
+                    var updatedDate = CommonFunc.ParseFormattedDate(model.UpdatedOn.ToString());
                     sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    sqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedBy));
+                    sqlParams.Add(new SqlParameter("@UpdatedOn", updatedDate));
                 }
                 else
                 {
@@ -327,7 +330,7 @@ namespace eTactWeb.Data.DAL
                                              select new JournalVoucherModel
                                              {
                                                  LedgerName = dr["LedgerName"] != DBNull.Value ? dr["LedgerName"].ToString() : string.Empty,
-                                                 AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
+                                                 AccountCode = dr["Accountcode"] != DBNull.Value ? Convert.ToInt32(dr["Accountcode"]) : 0,
                                                  VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
                                                  VoucherDate = dr["VchDate"] != DBNull.Value ? dr["VchDate"].ToString() : string.Empty,
                                                  DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
@@ -569,7 +572,7 @@ namespace eTactWeb.Data.DAL
             model.CurrencyId =Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());
             model.UID = Convert.ToInt32(DS.Tables[0].Rows[0]["uid"].ToString());
             model.ActualEntryby = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryBy"].ToString());
-            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryBy"].ToString();
+            model.ActualEntryBy = DS.Tables[0].Rows[0]["ActualEntryByEmp"].ToString();
             model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? DateTime.Now.ToString("dd/MM/yy") : DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
             model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();

@@ -19,7 +19,13 @@ using System.Configuration;
 using System.Net;
 using System.Globalization;
 using FastReport.Data;
-
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.BarCodes;
+using eTactWeb.Services;
+using MimeKit;
+using MailKit.Net.Smtp;
+using System.Drawing;
 namespace eTactWeb.Controllers
 {
     public class NRGPController : Controller
@@ -34,8 +40,8 @@ namespace eTactWeb.Controllers
         private IWebHostEnvironment _IWebHostEnvironment { get; }
         private LoggerInfo LoggerInfo { get; }
         private readonly IConfiguration _iconfiguration;
-
-        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
+        private readonly IEmailService _emailService;
+        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IEmailService emailService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -46,6 +52,7 @@ namespace eTactWeb.Controllers
             _EncryptDecrypt = encryptDecrypt;
             LoggerInfo = loggerInfo;
             _iconfiguration = configuration;
+            _emailService = emailService;
         }
 
         [Route("{controller}/Index")]
@@ -176,6 +183,227 @@ namespace eTactWeb.Controllers
             model.DashboardTypeBack = DashboardType;
             return View(model);
         }
+
+        public IActionResult SendReport(string emailTo = "infotech.bmr@gmail.com", int EntryId = 0, int YearCode = 0, string Type = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            webReport = new WebReport();
+            var ReportName = _IIssueNRGP.GetReportName();
+            ViewBag.EntryId = EntryId;
+            ViewBag.YearCode = YearCode;
+
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\IssueChallan.frx"); // default report
+
+            }
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+
+
+            // Now call EmailReport
+            return EmailReport(webReport, emailTo);
+        }
+
+        public IActionResult EmailReport(WebReport webReport, string emailTo)
+        {
+            try
+            {
+                webReport.Report.Prepare(); // Prepare the report before exporting
+                // First export the report to an image
+                using (MemoryStream imageStream = new MemoryStream())
+                {
+                    // Configure image export
+                    var imageExport = new ImageExport()
+                    {
+                        ImageFormat = ImageExportFormat.Png, // Force PNG format
+                        Resolution = 300, // Higher quality
+                        //ExportQuality = 100 // Maximum quality
+                    };
+
+                    // Export the report
+                    webReport.Report.Export(imageExport, imageStream);
+                    imageStream.Position = 0;
+
+                    // Verify the image data
+                    if (imageStream.Length == 0)
+                        throw new Exception("Report export failed - empty image stream");
+
+                    // Convert to PDF with additional validation
+                    byte[] pdfBytes;
+                    try
+                    {
+                        pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        // Try alternative conversion if first attempt fails
+                        pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                    }
+
+                    // Send email
+                    _emailService.SendEmailAsync(
+                        emailTo,
+                        "Your Report",
+                        "Please find attached the requested report.",
+                        pdfBytes,
+                        "Report.pdf").Wait();
+
+                    return Content("Report sent successfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content($"Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}");
+            }
+        }
+
+        //public IActionResult EmailReport(WebReport webReport, string emailTo)
+        //{
+        //    try
+        //    {
+        //        // First export the report to an image
+        //        using (MemoryStream imageStream = new MemoryStream())
+        //        {
+        //            // Export as image (PNG)
+        //            var imageExport = new ImageExport();
+        //            webReport.Report.Export(imageExport, imageStream);
+        //            imageStream.Position = 0;
+
+        //            // Convert the image to PDF using PdfSharp
+        //            byte[] pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+
+        //            // Send email with PDF attachment
+        //            _emailService.SendEmailAsync(
+        //                emailTo,
+        //                "Your Report",
+        //                "Please find attached the requested report.",
+        //                pdfBytes,
+        //                "Report.pdf").Wait();
+
+        //            return Content("Report sent successfully");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return Content($"Error: {ex.Message}");
+        //    }
+        //}
+        //private byte[] ConvertImageToPdf(byte[] imageBytes)
+        //{
+        //    using (MemoryStream pdfStream = new MemoryStream())
+        //    {
+        //        // Create a new PDF document
+        //        PdfDocument document = new PdfDocument();
+        //        PdfPage page = document.AddPage();
+
+        //        // Load the image
+        //        using (MemoryStream imageStream = new MemoryStream(imageBytes))
+        //        using (XImage image = XImage.FromStream(imageStream))
+        //        {
+        //            // Set page size to match image dimensions
+        //            page.Width = image.PointWidth;
+        //            page.Height = image.PointHeight;
+
+        //            // Draw the image on the PDF page
+        //            XGraphics gfx = XGraphics.FromPdfPage(page);
+        //            gfx.DrawImage(image, 0, 0, page.Width, page.Height);
+        //        }
+
+        //        // Save the PDF to memory stream
+        //        document.Save(pdfStream, false);
+        //        return pdfStream.ToArray();
+        //    }
+        //}
+
+        private byte[] ConvertImageToPdf(byte[] imageBytes)
+        {
+            // First ensure the image is in a supported format
+            using (var ms = new MemoryStream(imageBytes))
+            using (var image = Image.FromStream(ms))
+            using (var pdfStream = new MemoryStream())
+            {
+                // Convert to PNG if needed (PdfSharp works best with PNG)
+                if (image.RawFormat.Equals(ImageFormat.Png))
+                {
+                    using (var pngMs = new MemoryStream())
+                    {
+                        image.Save(pngMs, System.Drawing.Imaging.ImageFormat.Png);
+                        imageBytes = pngMs.ToArray();
+                    }
+                }
+
+                // Now create PDF
+                var document = new PdfDocument();
+                var page = document.AddPage();
+                page.Width = XUnit.FromMillimeter(image.Width / image.HorizontalResolution * 25.4);
+                page.Height = XUnit.FromMillimeter(image.Height / image.VerticalResolution * 25.4);
+
+                using (var xImage = XImage.FromStream(new MemoryStream(imageBytes)))
+                {
+                    XGraphics gfx = XGraphics.FromPdfPage(page);
+                    gfx.DrawImage(xImage, 0, 0, page.Width, page.Height);
+                }
+
+                document.Save(pdfStream, false);
+                return pdfStream.ToArray();
+            }
+        }
+        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null)
+        {
+            var emailSettings = _iconfiguration.GetSection("EmailSettings");
+
+            var mimeMessage = new MimeMessage();
+            mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
+            mimeMessage.To.Add(MailboxAddress.Parse(emailTo));
+            mimeMessage.Subject = subject;
+
+            var builder = new BodyBuilder();
+            builder.HtmlBody = message;
+
+            if (attachment != null && !string.IsNullOrEmpty(attachmentName))
+            {
+                builder.Attachments.Add(attachmentName, attachment);
+            }
+
+            mimeMessage.Body = builder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    await client.ConnectAsync(emailSettings["SmtpServer"],
+                        int.Parse(emailSettings["SmtpPort"]),
+                        MailKit.Security.SecureSocketOptions.StartTls);
+
+                    await client.AuthenticateAsync(emailSettings["SmtpUsername"],
+                        emailSettings["SmtpPassword"]);
+
+                    await client.SendAsync(mimeMessage);
+                }
+                catch (Exception ex)
+                {
+                    // Handle exception
+                    throw;
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
+        }
+
         public static DateTime ParseDate(string dateString)
         {
             if (string.IsNullOrEmpty(dateString))
@@ -260,7 +488,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult GetImage(int EntryId = 0, int YearCode = 0)
         {
-            // Creatint the Report object
+           
             using (Report report = new Report())
             {
                 string webRootPath = _IWebHostEnvironment.WebRootPath;

@@ -47,6 +47,7 @@ namespace eTactwebAccounts.Controllers
             if (MainModel.Mode == "U")
             {
                 MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
                 MainModel.UpdatedOn = DateTime.Now;
             }
 
