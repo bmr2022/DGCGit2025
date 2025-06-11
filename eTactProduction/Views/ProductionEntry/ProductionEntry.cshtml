@@ -4678,6 +4678,9 @@
                 if ( TotalStock<0) {
                     Err = 1;
                     $.notify('Total STock Can Not Be less Then 0.', "error");
+                    Err == 1 ? ShowErrorFldwithAddtoGrid('H_SAGrid') : HideErrorFldwithAddtoGrid('H_SAGrid');
+                    if (Err == 1) return false;
+                    return true;
                 }
             }
 
