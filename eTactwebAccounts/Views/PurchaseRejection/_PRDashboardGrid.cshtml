@@ -79,7 +79,7 @@
                     </a>
                     </div>*@
                                     <div id="viewCursorDiv-@srNo">
-                                        <a class="table-link link-success" asp-action="PurchaseRejection" asp-route-Mode="V" asp-route-ID="@item.PurchaseRejEntryId" asp-route-YC="@item.PurchaseRejYearCode">
+                                        <a class="table-link link-success" asp-action="PurchaseRejection" asp-route-Mode="V" asp-route-ID="@item.PurchaseRejEntryId" asp-route-YC="@item.PurchaseRejYearCode" onclick="BackButtonData(event)">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -96,13 +96,22 @@
                                         </a>
                                     </div>
 
-                                    <div id="deleteCursorDiv-@srNo">
+                                    @*<div id="deleteCursorDiv-@srNo">
                                         <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.PurchaseRejEntryId" asp-route-YC="@item.PurchaseRejYearCode" asp-route-accountCode="@item.AccountCode" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                             </span>
                                         </a>
+                                    </div>*@
+                                    <div id="deleteCursorDiv-@srNo"
+                                         class="table-link link-danger"
+                                         style="cursor: pointer;"
+                                         onclick="deleteItem('@item.PurchaseRejEntryId', '@item.PurchaseRejYearCode', '@item.VoucherNo', '@item.CC', '@item.AccountCode','@item.ActualEnteredBy', '@item.InvoiceNo', false, '@srNo')">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
                                     </div>
                                 </div>
                             </td>
