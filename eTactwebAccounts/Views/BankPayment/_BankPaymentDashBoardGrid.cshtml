@@ -106,7 +106,7 @@
                             <td>
                                 @(DateTime.TryParse(item.ActualEntryDate, out var actualEntryDate) ? actualEntryDate.ToString("dd/MMM/yyyy") : "-")
                             </td>
-                            <td>@item.UpdatedBy</td>
+                            <td>@item.UpdatedByEmp</td>
                             <td>@(item.UpdatedOn?.ToString("dd/MMM/yyyy") ?? "-")</td>
                             <td>@item.EntryByMachine</td>
                             <td>@item.CC</td>

@@ -118,6 +118,7 @@
 		<PackageReference Include="FastReport.OpenSource.Export.PdfSimple" Version="2023.2.25" />
 		<PackageReference Include="FastReport.OpenSource.Web" Version="2023.2.25" />
 		<PackageReference Include="Grpc.Core" Version="2.46.6" />
+		<PackageReference Include="MailKit" Version="4.12.1" />
 		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="7.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.0" />
 		<PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.0">
@@ -127,6 +128,7 @@
 		<PackageReference Include="Microsoft.Extensions.Caching.Memory" Version="9.0.2" />
 		<PackageReference Include="Microsoft.Office.Interop.Excel" Version="15.0.4795.1001" />
 		<PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.0" />
+		<PackageReference Include="MimeKit" Version="4.12.0" />
 		<PackageReference Include="Moment.js" Version="2.29.4" />
 		<PackageReference Include="NtpClient" Version="1.0.14" />
 		<PackageReference Include="Serilog.AspNetCore" Version="8.0.3" />

@@ -260,7 +260,7 @@ namespace eTactWeb.Controllers
         }
         public IActionResult GetImage(int EntryId = 0, int YearCode = 0)
         {
-            // Creatint the Report object
+           
             using (Report report = new Report())
             {
                 string webRootPath = _IWebHostEnvironment.WebRootPath;

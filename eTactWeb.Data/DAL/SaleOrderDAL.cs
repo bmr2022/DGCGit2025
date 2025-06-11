@@ -1348,12 +1348,12 @@ namespace eTactWeb.Data.DAL
                         var endDT = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
                         oCmd.CommandType = CommandType.StoredProcedure;
                         oCmd.Parameters.AddWithValue("@Flag", "SOAMMCOMPLETEDSEARCH");
-                        oCmd.Parameters.AddWithValue("@Branch", model.CustomerName);
-                        oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo);
+                        oCmd.Parameters.AddWithValue("@CustomerName", model.CustomerName ?? string.Empty);
+                        oCmd.Parameters.AddWithValue("@CustOrderNo", model.CustOrderNo ?? string.Empty);
                         oCmd.Parameters.AddWithValue("@SONo", model.SONo);
-                        oCmd.Parameters.AddWithValue("@OrderType", model.OrderType);
-                        oCmd.Parameters.AddWithValue("@SOType", model.SOType);
-                        oCmd.Parameters.AddWithValue("@ItemName", model.ItemName);
+                        oCmd.Parameters.AddWithValue("@OrderType", model.OrderType ?? string.Empty);
+                        oCmd.Parameters.AddWithValue("@SOType", model.SOType ?? string.Empty);
+                        oCmd.Parameters.AddWithValue("@ItemName", model.ItemName ?? string.Empty);
                         oCmd.Parameters.AddWithValue("@StartDate", firstDayOfMonthh);
                         oCmd.Parameters.AddWithValue("@EndDate", endDT);
                         await myConnection.OpenAsync();
