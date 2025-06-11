@@ -156,5 +156,7 @@ namespace eTactWeb.DOM.Models
         public decimal PopCrAmt { get; set; }
         public decimal PopAdjustmentAmt { get; set; }
         public string? Bank { get; set; }
+        public string? FromDate1 { get; set; }
+        public string? ToDate1 { get; set; }
     }
 }

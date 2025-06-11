@@ -66,7 +66,7 @@
                                     @if (item.YearCode == yearCode)
                                     {
                                         <div id="editCursorDiv-@Cntr">
-                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="BankReceipt" onclick="confirmEdit(event)" asp-controller="BankReceipt" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
+                                            <a class="table-link link-primary" id="editCursor-@Cntr" asp-action="CashPayment" onclick="confirmEdit(event)" asp-controller="CashPayment" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

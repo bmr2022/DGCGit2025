@@ -720,32 +720,29 @@ namespace eTactwebAccounts.Controllers
         }
         public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
         {
+            List<CashPaymentModel> GridDetail = new List<CashPaymentModel>();
             if (Mode != "U" && Mode != "V")
             {
                 var MainModel = new CashPaymentModel();
                 string modelJson = HttpContext.Session.GetString("KeyCashPaymentGrid");
-                List<CashPaymentModel> GridDetail = new List<CashPaymentModel>();
+                
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     GridDetail = JsonConvert.DeserializeObject<List<CashPaymentModel>>(modelJson);
                 }
-                var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
-                string JsonString = JsonConvert.SerializeObject(SAGrid);
-                return Json(JsonString);
             }
             else
             {
                 var MainModel = new CashPaymentModel();
                 string modelJson = HttpContext.Session.GetString("KeyCashPaymentGridEdit");
-                List<CashPaymentModel> GridDetail = new List<CashPaymentModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     GridDetail = JsonConvert.DeserializeObject<List<CashPaymentModel>>(modelJson);
                 }
-                var SAGrid = GridDetail.Where(x => x.SeqNo == SrNO);
-                string JsonString = JsonConvert.SerializeObject(SAGrid);
-                return Json(JsonString);
             }
+            var SAGrid = GridDetail.Where(x => x.SrNO == SrNO);
+            string JsonString = JsonConvert.SerializeObject(SAGrid);
+            return Json(JsonString);
         }
         public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
         {

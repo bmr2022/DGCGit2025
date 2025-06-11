@@ -832,7 +832,7 @@ namespace eTactwebAccounts.Controllers
                 return PartialView("_BankPaymentGrid", MainModel);
             }
         }
-        public async Task<IActionResult> BankPaymentDashBoard(string FromDate, string ToDate)
+        public async Task<IActionResult> BankPaymentDashBoard(string FromDate = "", string ToDate = "", string Flag = "True", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             try
             {
@@ -849,6 +849,20 @@ namespace eTactwebAccounts.Controllers
                     {
                         var dt = ds.Tables[0];
                         model.BankPaymentGrid = CommonFunc.DataTableToList<BankPaymentModel>(dt, "BankPaymentDashBoard");
+
+                        if (Flag != "True")
+                        {
+                            model.FromDate1 = FromDate;
+                            model.ToDate1 = ToDate;
+                            model.LedgerName = LedgerName;
+                            model.Bank = Bank;
+                            model.VoucherNo = VoucherNo;
+                            model.AgainstVoucherRefNo = AgainstVoucherRefNo;
+                            model.AgainstVoucherNo = AgainstVoucherNo;
+                            model.Searchbox = Searchbox;
+                            model.DashboardType = DashboardType;
+                            return View(model);
+                        }
                     }
                 }
                 return View(model);
@@ -878,7 +892,7 @@ namespace eTactwebAccounts.Controllers
             HttpContext.Session.SetString("KeyBankPaymentGridPopUpData", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate, string FromDate = "", string ToDate = "", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             var Result = await _IBankPayment.DeleteByID(ID, YearCode, ActualEntryBy, EntryByMachine, ActualEntryDate);
 
@@ -899,7 +913,7 @@ namespace eTactwebAccounts.Controllers
                 TempData["500"] = "500";
             }
 
-            return RedirectToAction("BankPaymentDashBoard");
+            return RedirectToAction("BankPaymentDashBoard", new {EntryByMachine = EntryByMachine,ActualEntryDate = ActualEntryDate, Flag = "False", FromDate = FromDate, ToDate = ToDate,LedgerName = LedgerName, Bank=Bank,VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, Searchbox = Searchbox, DashboardType = DashboardType});
 
         }
         public async Task<JsonResult> FillLedgerInDashboard(string FromDate, string ToDate, string VoucherType)
