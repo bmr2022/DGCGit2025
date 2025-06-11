@@ -33,7 +33,7 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> PurchaseRejection(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", , string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "")
+        public async Task<IActionResult> PurchaseRejection(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "")
         {
             AccPurchaseRejectionModel model = new AccPurchaseRejectionModel();
             ViewData["Title"] = "Purchase Rejection Details";
