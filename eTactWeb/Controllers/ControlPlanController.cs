@@ -40,12 +40,13 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
             TempData.Clear();
             var MainModel = new ControlPlanModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.CntPlanEntryDate = HttpContext.Session.GetString("ToDate");
+            MainModel.CntPlanEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
             MainModel.CntPlanYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+            MainModel.ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+            MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
             MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
 
             HttpContext.Session.Remove("KeyControlPlanGrid");
@@ -80,7 +81,7 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
                 {
                     MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
-                    MainModel.LastUpdationDate = DateTime.Now.ToString("dd/mm/yyyy");
+                    MainModel.LastUpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
                 }
             }
             
@@ -93,6 +94,19 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
         {
             try
             {
+            
+                // Get session-stored detail grid
+                string modelJson = HttpContext.Session.GetString("KeyControlPlanGrid");
+                List<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(modelJson);
+                }
+                if (model.Mode == "U" && ControlPlanDetail.Count > 0)
+                {
+                    model.ImageURL ??= ControlPlanDetail[0].ImageURL;
+                    model.ItemImageURL ??= ControlPlanDetail[0].ItemImageURL;
+                }
                 // Handle Drawing Image Upload
                 if (model.UploadImage != null && model.UploadImage.Length > 0)
                 {
@@ -126,15 +140,6 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
 
                     model.ItemImageURL = "/Uploads/ItemImage/" + uniqueName;
                 }
-
-                // Get session-stored detail grid
-                string modelJson = HttpContext.Session.GetString("KeyControlPlanGrid");
-                List<ControlPlanDetailModel> ControlPlanDetail = new List<ControlPlanDetailModel>();
-                if (!string.IsNullOrEmpty(modelJson))
-                {
-                    ControlPlanDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(modelJson);
-                }
-
                 // Update each detail row with new image URLs
                 for (int i = 0; i < ControlPlanDetail.Count; i++)
                 {
@@ -148,6 +153,7 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
                 var GIGrid = GetDetailTable(ControlPlanDetail);
 
                 model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 
                 var Result = await _IControlPlan.SaveControlPlan(model, GIGrid);
 
@@ -222,21 +228,21 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
                         new object[]
                         {
                     Item.CntPlanEntryId,
-                    Item.CntPlanYearCode ,
-                    Item.SeqNo ,
-                    Item.Characteristic,
-                    evalTech ,
-                    Item.SpecificationFrom ,
-                    Item.Operator,
-                    Item.SpecificationTo ,
-                    Item.FrequencyofTesting ,
-                    Item.InspectionBy == null ? "InspectionBy" : "InspectionBy",
-                    Item.ControlMethod ,
-                    Item.RejectionPlan == null ? "RejectionPlan" : "RejectionPlan",
-                    Item.Remarks ,
-                    Item.ItemImageURL,
-                    Item.DrawingNo ,
-                    Item.ImageURL
+Item.CntPlanYearCode,
+Item.SeqNo,
+Item.Characteristic ?? "",
+evalTech ?? "",
+Item.SpecificationFrom ?? "",
+Item.Operator ?? "",
+Item.SpecificationTo ?? "",
+Item.FrequencyofTesting ?? "",
+Item.InspectionBy ?? "",
+Item.ControlMethod ?? "",
+Item.RejectionPlan ?? "",
+Item.Remarks ?? "",
+Item.ItemImageURL ?? "",
+Item.DrawingNo ?? "",
+Item.ImageURL ?? ""
 
                         });
                 }
