@@ -1,0 +1,632 @@
+﻿@model eTactWeb.DOM.Models.SaleOrderAmendHistoryModel
+@{
+    ViewData["Title"] = "Sale Order Amend History";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>
+                Sale Order Amend History
+            </strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <div class="col">
+                                            <label class="form-label">From Date</label>
+                                            <input asp-for="FromDate" class="form-control" />
+                                        </div>
+                                        <div class="col">
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" />
+                                        </div>
+                                    </div>
+                                </div>
+
+                               
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PONo" class="form-label">PONO</label>
+                                    <select asp-for="PONo" class="form-select">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="SOno" class="form-label">SO No</label>
+                                    <select asp-for="SOno" class="form-select">
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="partCode" class="form-label">Part Code</label>
+                                    <select asp-for="partCode" class="form-select">
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemCode" class="form-label">Item Code</label>
+                                    <select asp-for="ItemCode" class="form-select">
+                                    </select>
+                                </div>
+                               
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="Accountcode" class="form-label">Account Code</label>
+                                    <select asp-for="Accountcode" class="form-select">
+                                    </select>
+                                </div>
+                                @*              <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="VendorName" class="form-label">Vendor Name</label>
+                                    <input asp-for="VendorName" class="form-control" />
+                                </div> *@
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">Report Type</label>
+                                    <select asp-for="ReportType" class="form-select">
+                                        <option disabled value="">-Select-</option>
+                                        <option selected value="Sale Order Detail">Sale Order Detail</option>
+                                        <option value="Sale Order Summary">Sale Order Summary</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+                                @*<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                <label asp-for="Type" class="form-label">Type</label>
+                                <select asp-for="Type" class="form-select">
+                                <option value="Summary" selected>Summary</option>
+                                <option value="Detail">Detail</option>
+                                </select>
+                                </div>*@
+                                <div class=" d-flex justify-content-center mt-3" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="SaleOrderAmendHistoryData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="GateEntryRegister" asp-action="GateEntryRegister">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Sale Order Amend History
+
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="row">
+                                                <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                    <partial name="SaleOrderAmendHistorygrid" />
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                       @*  <center>
+                                            <div class="row">
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
+                                                    <label class="form-label">Total Qty</label>
+                                                    <input id="totOpenStock" class="form-control" readonly />
+                                                </div>
+
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
+                                                    <label class="form-label">Total Amount</label>
+                                                    <input id="totAmount" class="form-control" readonly />
+                                                </div>
+                                            </div>
+                                        </center>*@
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $(function () {
+
+            /* GetServerDate(); */
+            $('#B_SAGrid').addClass('show');//open accordion on ready
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            $('#PONo').select2();
+            $('#SOno').select2();
+            $('#partCode').select2();
+            $('#ItemCode').select2();
+            $('#ReportType').select2();
+             FillItemNamePartcode();
+             FillAccountCode();
+             FillPONO();
+             FillSONO();
+             SaleOrderAmendHistoryData();//INITIAL - ON LOAD METHOD
+        });
+              $('#Accountcode').change(function () {
+               FillSONO();
+               FillPONO();
+               FillItemNamePartcode();
+           });
+
+           $('#SOno').change(function () {
+               FillItemNamePartcode();
+               FillAccountCode();
+           });
+            $('#ItemCode, #partCode').change(function () {
+               FillAccountCode(); // Account code depends on ItemCode + partCode
+           });
+          /*   let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+                case 'Sale Order Summary':
+                    headers = [
+                        "Sr#", "Part Code", "Item Name", "Qty", "Unit", "Amount",
+                        "Alt Qty", "Alt Unit"
+                    ];
+                    console.log("SummaryData:", rows);
+                    body = rows.map((r, i) => [
+                        i + 1, r.partCode,  r.itemName,r.qty,r.unit,r.amount,r.altQty,r.altUnit
+                    ]);
+                    break;
+
+                // Add more cases for different report types here if needed
+                default:
+                    $.notify("This report type has no data",'error');
+                    return;
+            }
+
+            // Generate table with bold and colored header
+            doc.autoTable({
+                startY: yPosition, // after headerFields
+                head: [headers],
+                body: body,
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 3,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                columnStyles: getColumnStyles(reportTypeValue),
+                tableWidth: 'auto',
+                showHead: 'everyPage'
+            }); */
+          
+              function getColumnStyles(reportTypeValue) {
+            switch (reportTypeValue) {
+                case 'Sale Order Summary':
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 50 },   // Part Code
+                        2: { cellWidth: 60 },   // Item Name
+                        3: { cellWidth: 30 },   // Qty
+                        4: { cellWidth: 30 },   // Unit
+                        5: { cellWidth: 35 },   // Amount
+                        6: { cellWidth: 30 },   // Alt Qty
+                        7: { cellWidth: 30 }    // Alt Unit
+                    };
+
+               
+               
+                default:
+                    return {
+                        0: { cellWidth: 20 },   // Sr#
+                        1: { cellWidth: 80 },   // Item Name
+                        2: { cellWidth: 30 }    // Total Stock
+                    };
+            }
+        }
+
+       /*  function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate")",
+                async: false,
+                success: function (result, status, error) {
+                    console.log(result);
+                    if (result != null) {
+                       // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                        var firstDayOfMonth = getFirstDayOfMonth(result);
+                        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+
+                        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    }
+                }
+            });
+        } */
+
+        function getFirstDayOfMonth(dateString){
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+        $('#sendToExcel').click(function () {
+            let table = $("#ReportTable");
+            console.log(table);
+            TableToExcel.convert(table[0], {
+                name: `ReportTable.xlsx`,
+                sheet: {
+                    name: 'ReportTable'
+                }
+            });
+        });
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+              function formatDate(input) {
+            var parts = input.split("/");
+            return `${parts[2]}-${parts[1]}-${parts[0]}`;
+        }
+
+        function FillAccountCode() {
+            var FromDate = formatDate($('#FromDate').val());
+            var ToDate = formatDate($('#ToDate').val());
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillAccountCode")",
+                dataType: "JSON",
+                async: false,
+                data: {
+                    FromDate,
+                    ToDate,
+                    partCode: $('#partCode').val(),
+                    ItemCode: $('#ItemCode').val(),
+                    SOno: $('#SOno').val()
+                },
+                success: function (result) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                            $('#Accountcode').empty().append('<option value="0" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                              $('#Accountcode').append(`<option value="${val.Account_Code}">${val.CustName}</option>`);
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillSONO() {
+            var FromDate = formatDate($('#FromDate').val());
+            var ToDate = formatDate($('#ToDate').val());
+            var accountCode = parseInt($('#Accountcode').val());
+
+            if (isNaN(accountCode)) return;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillSONO")",
+                dataType: "JSON",
+                async: false,
+                data: { FromDate, ToDate, AccountCode: accountCode||0 },
+                success: function (result) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                            $('#SOno').empty().append('<option value="" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#SOno').append(`<option value="${val.SONo}">${val.SONo}</option>`);
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillPONO() {
+            var FromDate = formatDate($('#FromDate').val());
+            var ToDate = formatDate($('#ToDate').val());
+            var accountCode = parseInt($('#Accountcode').val());
+
+            if (isNaN(accountCode)) return;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillPONO")",
+                dataType: "JSON",
+                async: false,
+                data: { FromDate, ToDate, AccountCode: accountCode||0 },
+                success: function (result) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                            $('#PONo').empty().append('<option value="" selected>-Select-</option>');
+                            $.each(obj.Result, function (index, val) {
+                                $('#PONo').append(`<option value="${val.PONo}">${val.PONo}</option>`);
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillItemNamePartcode() {
+            var FromDate = formatDate($('#FromDate').val());
+            var ToDate = formatDate($('#ToDate').val());
+            var accountCode = parseInt($('#Accountcode').val());
+
+            if (isNaN(accountCode)) return;
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillItemNamePartcode")",
+                dataType: "JSON",
+                async: false,
+                data: {
+                    FromDate,
+                    ToDate,
+                    AccountCode: accountCode||0,
+                    SOno: $('#SOno').val()
+                },
+                success: function (result) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                            $('#ItemCode').empty().append('<option value="0" selected>-Select-</option>');
+                            $('#partCode').empty().append('<option value="0" selected></option>');
+                            $.each(obj.Result, function (index, val) {
+                                              $('#ItemCode').append(`<option value="${val.itemCode}">${val.ItemName}</option>`);
+                                       $('#partCode').append(`<option value="${val.itemCode}">${val.PartCode}</option>`);
+                            });
+                        }
+                    }
+                }
+            });
+        }
+
+
+         function SaleOrderAmendHistoryData() {
+            $.ajax({
+                type: "POST",
+                       url: "@Url.Action("SaleOrderAmendHistoryData")",
+                data: {
+                    ReportType: $('#ReportType').val(),
+                    flag: '', // set if applicable
+                    dashboardFlag: '',
+                    fromDate: $('#FromDate').val(),
+                    toDate: $('#ToDate').val(),
+                    accountCode: $('#Accountcode').val() || 0,
+                    poNo: $('#PONo').val(),
+                    partCode: $('#partCode option:selected').text().trim(),
+                    itemCode: $('#ItemCode').val() ,
+                    soNo: $('#SOno').val()
+                },
+                success: function (result) {
+                    $('#divStockMainRegister').empty().html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+                   /* // countAllTotal(); */
+                }
+            });
+        }
+
+
+        $(document).on("click", ".sortCol", function () {
+             ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        function DeleteRow(i){
+
+            var indexToRemove = i-1;
+            $('#SAGridRow-'+i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index+1));
+
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index+1));
+                });
+
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index+1));
+                });
+
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            /* countAllTotal(); */
+            $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+        }
+
+        $('#FromDate').change(function (){
+            FillItemNamePartcode();
+            FillAccountCode();
+            FillPONO();
+            FillSONO();
+            SaleOrderAmendHistoryData();
+          
+        })
+        $('#ToDate').change(function () {
+            FillItemNamePartcode();
+            FillAccountCode();
+            FillPONO();
+            FillSONO();
+            SaleOrderAmendHistoryData();
+           
+        })
+
+    </script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+}
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+</style>

@@ -93,5 +93,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.GetFormRights(ID);
         }
+        public async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string VoucherNo, string CC, int AccountCode, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate)
+        {
+            return await _purchRejDAL.DeleteByID(ID, YearCode, Flag, VoucherNo, CC, AccountCode, InvNo, EntryBy, EntryByMachineName, EntryDate);
+        }
     }
 }

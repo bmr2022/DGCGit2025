@@ -201,7 +201,7 @@ namespace eTactWeb
                 options.ReturnUrlParameter = "/Home/Login/";
             });
 
-            services.AddScoped<IEmailService, EmailService>();
+            services.TryAddScoped<IEmailService, EmailService>();
             services.AddScoped<DirectPurchaseBillBLL>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<EncryptDecrypt, EncryptDecrypt>();
@@ -323,6 +323,7 @@ namespace eTactWeb
             services.TryAddTransient<ITransferFromWorkCenter, TransferFromWorkCenterBLL>();
             services.TryAddTransient<ISaleBill, SaleBillBLL>();
             services.TryAddTransient<IGateEntryRegister, GateEntryRegisterBLL>();
+            services.TryAddTransient<ISaleOrderAmendHistory, SaleOrderAmendHistoryBLL>();
             services.TryAddTransient<ISaleBillRegister, SaleBillRegisterBLL>();
             services.TryAddTransient<IPartCodePartyWise, PartCodePartyWiseBLL>();
             services.TryAddScoped<IMemoryCacheService, MemoryCacheService>();
