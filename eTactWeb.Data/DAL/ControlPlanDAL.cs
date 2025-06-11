@@ -45,7 +45,7 @@ namespace eTactWeb.Data.DAL
                 }
 
                 SqlParams.Add(new SqlParameter("@CntPlanEntryId", model.CntPlanEntryId));
-                SqlParams.Add(new SqlParameter("@CntPlanEntryDate", model.CntPlanEntryDate));
+                SqlParams.Add(new SqlParameter("@CntPlanEntryDate", model.Entry_Date));
                 SqlParams.Add(new SqlParameter("@CntPlanYearCode", model.CntPlanYearCode));
                 SqlParams.Add(new SqlParameter("@ControlPlanNo", model.Control_PlanNo ?? ""));
                 SqlParams.Add(new SqlParameter("@RevNo", model.RevNo ?? ""));
