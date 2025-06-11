@@ -874,53 +874,61 @@ namespace eTactWeb.Controllers
                     SlidingExpiration = TimeSpan.FromMinutes(55),
                     Size = 1024,
                 };
-                var seqNo = 0;
-                foreach (var item in model)
+
+                try
                 {
-                    string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
-                    List<WorkOrderDetail> WODetail = new List<WorkOrderDetail>();
-                    if (!string.IsNullOrEmpty(modelJson))
+                    var seqNo = 0;
+                    foreach (var item in model)
                     {
-                        WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
-                    }
-                    if (item != null)
-                    {
-                        item.OrderWEF = item.OrderWEF == "" ? string.Empty : ParseDate(item.OrderWEF);
-                        item.AmendEffDate = item.AmendEffDate == "" ? string.Empty : ParseDate(item.AmendEffDate);
-                        item.BomEffectiveDate = item.BomEffectiveDate == "" ? string.Empty : ParseDate(item.BomEffectiveDate);
-                        item.ApproxStartDate = item.ApproxStartDate == "" ? string.Empty : ParseDate(item.ApproxStartDate);
-                        item.ApproxEndDate = item.ApproxEndDate == "" ? string.Empty : ParseDate(item.ApproxEndDate);
-                        item.WORevDate = item.WORevDate == "" ? string.Empty : ParseDate(item.WORevDate);
-                        item.SODATE = item.SODATE == "" ? string.Empty : ParseDate(item.SODATE);
-                        item.SCHDATE = item.SCHDATE == "" ? string.Empty : ParseDate(item.SCHDATE);
-                        item.SOCloseDate = item.SOCloseDate == "" ? string.Empty : ParseDate(item.SOCloseDate);
-                        item.SchEffTillDate = item.SchEffTillDate == "" ? string.Empty : ParseDate(item.SchEffTillDate);
-                        if (WODetail == null)
+                        string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
+                        List<WorkOrderDetail> WODetail = new List<WorkOrderDetail>();
+                        if (!string.IsNullOrEmpty(modelJson))
                         {
-                            item.SeqNo = seqNo + 1;
-                            WorkOrderDetails.Add(item);
-                            seqNo++;
+                            WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
                         }
-                        else
+                        if (item != null)
                         {
-                            if (WODetail.Where(x => x.AccountName == item.AccountName && x.SONO == item.SONO && x.SchNo == item.SchNo && x.Itemcode == item.Itemcode && x.CustomerOrderNo == item.CustomerOrderNo).Any())
+                            item.OrderWEF = item.OrderWEF == "" ? string.Empty : ParseDate(item.OrderWEF);
+                            item.AmendEffDate = item.AmendEffDate == "" ? string.Empty : ParseDate(item.AmendEffDate);
+                            item.BomEffectiveDate = item.BomEffectiveDate == "" ? string.Empty : ParseDate(item.BomEffectiveDate);
+                            item.ApproxStartDate = item.ApproxStartDate == "" ? string.Empty : ParseDate(item.ApproxStartDate);
+                            item.ApproxEndDate = item.ApproxEndDate == "" ? string.Empty : ParseDate(item.ApproxEndDate);
+                            item.WORevDate = item.WORevDate == "" ? string.Empty : ParseDate(item.WORevDate);
+                            item.SODATE = item.SODATE == "" ? string.Empty : ParseDate(item.SODATE);
+                            item.SCHDATE = item.SCHDATE == "" ? string.Empty : ParseDate(item.SCHDATE);
+                            item.SOCloseDate = item.SOCloseDate == "" ? string.Empty : ParseDate(item.SOCloseDate);
+                            item.SchEffTillDate = item.SchEffTillDate == "" ? string.Empty : ParseDate(item.SchEffTillDate);
+                            if (WODetail == null)
                             {
-                                return StatusCode(207, "Duplicate");
+                                item.SeqNo = seqNo + 1;
+                                WorkOrderDetails.Add(item);
+                                seqNo++;
                             }
                             else
                             {
-                                item.SeqNo = WODetail.Count + 1;
-                                WorkOrderDetails = WODetail.Where(x => x != null).ToList();
-                                SSGrid.AddRange(WorkOrderDetails);
-                                WorkOrderDetails.Add(item);
+                                if (WODetail.Where(x => x.AccountName == item.AccountName && x.SONO == item.SONO && x.SchNo == item.SchNo && x.Itemcode == item.Itemcode && x.CustomerOrderNo == item.CustomerOrderNo).Any())
+                                {
+                                    return StatusCode(207, "Duplicate");
+                                }
+                                else
+                                {
+                                    item.SeqNo = WODetail.Count + 1;
+                                    WorkOrderDetails = WODetail.Where(x => x != null).ToList();
+                                    SSGrid.AddRange(WorkOrderDetails);
+                                    WorkOrderDetails.Add(item);
+                                }
                             }
-                        }
-                        WorkOrderDetails = WorkOrderDetails.Where(x => x != null).ToList();
-                        MainModel.WorkDetailGrid = WorkOrderDetails;
+                            WorkOrderDetails = WorkOrderDetails.Where(x => x != null).ToList();
+                            MainModel.WorkDetailGrid = WorkOrderDetails;
 
-                        string serializedGrid = JsonConvert.SerializeObject(MainModel.WorkDetailGrid);
-                        HttpContext.Session.SetString("KeyWorkOrderGrid", serializedGrid);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.WorkDetailGrid);
+                            HttpContext.Session.SetString("KeyWorkOrderGrid", serializedGrid);
+                        }
                     }
+                }
+                catch (Exception ex)
+                {
+                    throw ex;
                 }
                 return PartialView("_WorkOrderGrid", MainModel);
             }
