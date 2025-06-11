@@ -584,13 +584,13 @@
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#AccountCode').select2();
-            FillItems($('#ItemSA').is(':checked'));
             // FillCustomerName();
             FillCustomerName("N");
             FillSubvoucher();
             FillCurrency();
             GetExchnageRate();
             FillDocument("F");
+            FillItems($('#ItemSA').is(':checked'));
             FillStore();
             FillPopUpGridDetails($('#Mode').val());
             BasicTotal();
@@ -647,7 +647,10 @@
                 onInvoiceChange('PurchaseRejectionInvoiceNo');
                 setInterval(checkNetTotalChange, 500);
             }
-            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); }
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") 
+            { 
+                GetDbCrDetail();
+            }
         });
 
         $('#AdjModeOfAdjstment').change(function () {
@@ -775,8 +778,7 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-
-                            /* ClearDRCRGrid(); */
+                            ClearTax();
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -791,7 +793,7 @@
                             $('#BillQty').val(obj[0].BillQty);
                             $('#BillRate').val(obj[0].BillRate);
                             $('#PRRate').val(obj[0].CRNRate);
-                            $('#CostCenterId').val(obj[0].CostCenterId);
+                            $('#CostCenterId').val(obj[0].CostCenterId).trigger("change");
                             $('#DocAccountCode').val(obj[0].DocAccountCode);
                             $('#HSNNo').val(obj[0].HSNNo);
                             $('#ItemAmount').val(obj[0].ItemAmount);
@@ -885,7 +887,7 @@
                     var rowCount = $('#divAddPurchaseRejectionList tr td').length;
                     ClearPopupItemGrid();
                     BasicTotal();
-                    if (rowCout <= 1) {
+                    if (rowCount <= 1) {
                         $('#DiscountPer').val(0);
                         $('#DiscountPer').prop("readonly", false);
                         $('#DiscountAmt').val(0);
@@ -1253,9 +1255,11 @@
                         if (obj.Result != null) {
                             var j = 1;
                             var checkedRowsCount = $('#divPurchaseRejectionDataGrid tr').length;
-                            popUpItems = [];
-                            for (var i = 1; i <= checkedRowsCount; i++) {
-                                if ($('#chkPurchaseRejection-' + i).is(':checked')) {
+                            /* if(html == null) { */
+                                popUpItems = [];
+                            /* } */
+                            for (var i = 1; i <= checkedRowsCount; i++) {/*  && popUpItems.indexOf($('#itemCode-' + j).val()) == -1 */
+                                if ($('#chkPurchaseRejection-' + i).is(':checked'))   {
                                     popUpItems.push($('#itemCode-' + j).val());
                                     html += '<tr id="PRPopUpDataRow-' + i + '" style="font-size: 12px;">' +
                                         '<td>' + i + '</td>' +
@@ -1576,6 +1580,7 @@
                         // $('#lblItemNetAmount').text(sum.toFixed(2));
 
                         var txSum = 0;
+                        var taxRowCount = $('#divTaxGrid tr').length;
                         if ($('#divTaxGrid tr td').length > 1) {
                             for (var i = 1; i <= taxRowCount; i++) {
                                 txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
@@ -2264,6 +2269,29 @@
             });
 
         }
+        function PressBack() {
+
+            sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            sessionStorage.setItem('MRNTypeBack', $('#MRNTypeBack').val());
+            sessionStorage.setItem('DocumentNameBack', $('#DocumentNameBack').val());
+            sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNoBack').val());
+            sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNoBack').val());
+            sessionStorage.setItem('MRNNoBack', $('#MRNNoBack').val());
+            sessionStorage.setItem('GateNoBack', $('#GateNoBack').val());
+            sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            sessionStorage.setItem('HSNNoBack', $('#HSNNoBack').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+
+        $(document).on('keypress', ':input:not(textarea):not([type=button])', function (e) {
+            if (e.which == 13) e.preventDefault();
+        });
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 }

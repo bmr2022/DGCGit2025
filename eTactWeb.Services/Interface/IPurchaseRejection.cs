@@ -24,5 +24,6 @@ namespace eTactWeb.Services.Interface
         Task<AccPurchaseRejectionDashboard> GetSearchData(AccPurchaseRejectionDashboard model);
         Task<ResponseResult> CheckLockYear(int YearCode);
         Task<ResponseResult> GetFormRights(int uId);
+        Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string PurchVoucherNo, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate);
     }
 }

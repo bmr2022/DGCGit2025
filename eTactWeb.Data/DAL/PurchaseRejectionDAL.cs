@@ -73,9 +73,9 @@ namespace eTactWeb.Data.DAL
             model.PurchaseRejYearCode = DS.Tables[0].Rows[0]["PurchaseRejYearCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejYearCode"]) : 0;
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"]?.ToString();
             model.DebitNotePurchaseRejection = DS.Tables[0].Rows[0]["DebitNotePurchaseRejection"]?.ToString();
-            model.PurchaseRejEntryDate = DS.Tables[0].Rows[0]["PurchaseRejEntryDate"]?.ToString();
+            model.PurchaseRejEntryDate = CommonFunc.ParseFormattedDate(DS.Tables[0].Rows[0]["PurchaseRejEntryDate"]?.ToString());
             model.PurchaseRejectionInvoiceNo = DS.Tables[0].Rows[0]["InvoiceNo"]?.ToString();
-            model.PurchaseRejectionInvoiceDate = DS.Tables[0].Rows[0]["InvoiceDate"]?.ToString();
+            model.PurchaseRejectionInvoiceDate = CommonFunc.ParseFormattedDate(DS.Tables[0].Rows[0]["InvoiceDate"]?.ToString());
             model.PurchaseRejectionVoucherNo = DS.Tables[0].Rows[0]["PurchaserejVoucherNo"]?.ToString();
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"]?.ToString();
             //model.PurchaseRejectionVoucherDate = DS.Tables[0].Rows[0]["PurchaseRejectionVoucherDate"]?.ToString();
@@ -114,12 +114,12 @@ namespace eTactWeb.Data.DAL
             //model.ItemService = DS.Tables[0].Rows[0]["ItemService"]?.ToString();
             //model.INVOICETYPE = DS.Tables[0].Rows[0]["INVOICETYPE"]?.ToString();
             model.MachineName = DS.Tables[0].Rows[0]["MachineName"]?.ToString();
-            model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString();
+            model.ActualEntryDate = CommonFunc.ParseFormattedDate(DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString());
             model.ActualEnteredBy = DS.Tables[0].Rows[0]["ActualEnteredBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]) : 0;
             model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByEmpName"]?.ToString();
             model.LastUpdatedBy = DS.Tables[0].Rows[0]["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"]) : 0;
             model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmpName"]?.ToString();
-            model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationDate"]?.ToString();
+            model.LastUpdationDate = CommonFunc.ParseFormattedDate(DS.Tables[0].Rows[0]["LastUpdationDate"]?.ToString());
             //model.EntryFreezToAccounts = DS.Tables[0].Rows[0]["EntryFreezToAccounts"]?.ToString();
             model.BalanceSheetClosed = DS.Tables[0].Rows[0]["BalanceSheetClosed"]?.ToString();
             //model.EInvNo = DS.Tables[0].Rows[0]["EInvNo"]?.ToString();
@@ -135,7 +135,7 @@ namespace eTactWeb.Data.DAL
                     model.EntryByempId = !string.IsNullOrEmpty(DS.Tables[0].Rows[0]["EntryByempId"].ToString()) ? Convert.ToInt32(DS.Tables[0].Rows[0]["EntryByempId"].ToString()) : 0;
                     model.LastUpdatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"].ToString());
                     model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmpName"].ToString();
-                    model.LastUpdationDate = DS.Tables[0].Rows[0]["LastUpdationDate"].ToString();
+                    model.LastUpdationDate = CommonFunc.ParseFormattedDate(DS.Tables[0].Rows[0]["LastUpdationDate"].ToString());
                 }
             }
             #endregion
@@ -611,7 +611,7 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
-                var upDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString("dd/MM/yyyy"));
+                var upDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
                 var SqlParams = new List<dynamic>();
                 if (model.Mode == "V" || model.Mode == "U")
                 {
@@ -633,8 +633,8 @@ namespace eTactWeb.Data.DAL
 
                 var purchaseRejectionInvoiceDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionInvoiceDate);
                 var purchaseRejectionVoucherDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionVoucherDate);
-                var purchaseRejectionEntryDt = CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != "" || CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != null ? CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) : upDt;
-                var actualDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate) != "" || CommonFunc.ParseFormattedDate(model.ActualEntryDate) != null ? CommonFunc.ParseFormattedDate(model.ActualEntryDate) : upDt;
+                var purchaseRejectionEntryDt = CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != "" || CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != null ? CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) : upDt.ToString();
+                var actualDt = (!string.IsNullOrEmpty(CommonFunc.ParseFormattedDate(model.ActualEntryDate))) ? CommonFunc.ParseFormattedDate(model.ActualEntryDate) : ((!string.IsNullOrEmpty(purchaseRejectionEntryDt)) ? purchaseRejectionEntryDt : upDt.ToString());
                 var machinename = Environment.UserDomainName;
 
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", model.PurchaseRejEntryId));
@@ -686,7 +686,6 @@ namespace eTactWeb.Data.DAL
                 //SqlParams.Add(new SqlParameter("@AttachmentFilePath1", model.AttachmentFilePath1 ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@AttachmentFilePath2", model.AttachmentFilePath2 ?? string.Empty));
                 //SqlParams.Add(new SqlParameter("@AttachmentFilePath3", model.AttachmentFilePath3 ?? string.Empty));
-
                 //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.SaleBillEntryId));
 
                 SqlParams.Add(new SqlParameter("@Dtdeatil", PRGrid));
@@ -808,8 +807,8 @@ namespace eTactWeb.Data.DAL
                 {
                     DateTime now = DateTime.Now;
                     DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
-                    string fromDate = CommonFunc.FormatToDDMMYYYY(model.FromDate.ToString());
-                    string toDate = CommonFunc.FormatToDDMMYYYY(model.ToDate.ToString());//DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)
+                    string fromDate = CommonFunc.ParseFormattedDate(model.FromDate.ToString());
+                    string toDate = CommonFunc.ParseFormattedDate(model.ToDate.ToString());//DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture)
                     SqlCommand oCmd = new SqlCommand("AccSPPurchaseRejectionMainDetail", myConnection)
                     {
                         CommandType = CommandType.StoredProcedure
@@ -929,6 +928,37 @@ namespace eTactWeb.Data.DAL
                 Error.Message = ex.Message;
                 Error.Source = ex.Source;
             }
+            return _ResponseResult;
+        }
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string PurchVoucherNo, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", ID));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@VoucherNo", PurchVoucherNo));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", InvNo));
+                SqlParams.Add(new SqlParameter("@ActualEnteredBy", EntryBy));
+                SqlParams.Add(new SqlParameter("@MachineName", EntryByMachineName));
+                SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", EntryDate));
+
+                SqlParams.Add(new SqlParameter("@cc", PurchVoucherNo));
+                SqlParams.Add(new SqlParameter("@accountcode", PurchVoucherNo));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
             return _ResponseResult;
         }
     }

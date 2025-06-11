@@ -33,7 +33,7 @@ namespace eTactWeb.Controllers
 
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> PurchaseRejection(int ID, string Mode, int YC)
+        public async Task<IActionResult> PurchaseRejection(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", , string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "")
         {
             AccPurchaseRejectionModel model = new AccPurchaseRejectionModel();
             ViewData["Title"] = "Purchase Rejection Details";
@@ -88,18 +88,25 @@ namespace eTactWeb.Controllers
             model.FinToDate = HttpContext.Session.GetString("ToDate");
             model.PurchaseRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.CC = HttpContext.Session.GetString("Branch");
-            //_MemoryCache.Set("KeyPurchaseRejectionGrid", model.AccPurchaseRejectionDetails, cacheEntryOptions);
-            //_MemoryCache.Set("KeyAdjGrid", model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel, DateTimeOffset.Now.AddMinutes(60));
-            //_MemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
-            //_MemoryCache.Set("PurchaseRejectionModel", model, cacheEntryOptions);
+
+            model.FromDateBack = FromDate;
+            model.ToDateBack = ToDate;
+            model.VendorNameBack = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "";
+            model.VoucherNoBack = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "";
+            model.InvoiceNoBack = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "";
+            model.PartCodeBack = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "";
+            model.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
+
             HttpContext.Session.SetString("PurchaseRejection", JsonConvert.SerializeObject(model));
             string serializedPurchaseRejectionGrid = JsonConvert.SerializeObject(model.AccPurchaseRejectionDetails);
             string serializedPurchaseRejectionModelGrid = JsonConvert.SerializeObject(model);
+            string serializedPurchaseRejectionAgainstModelGrid = JsonConvert.SerializeObject(model.AccPurchaseRejectionAgainstBillDetails == null ? new List<AccPurchaseRejectionAgainstBillDetail>() : model.AccPurchaseRejectionAgainstBillDetails);
             string serializedKeyAdjGrid = JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel);
             string serializedKeyTaxGrid = JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd);
             string serializedKeyDbCrGrid = JsonConvert.SerializeObject(model.DbCrGrid == null ? new List<DbCrModel>() : model.DbCrGrid);
             HttpContext.Session.SetString("KeyPurchaseRejectionGrid", serializedPurchaseRejectionGrid);
             HttpContext.Session.SetString("PurchaseRejectionModel", serializedPurchaseRejectionModelGrid);
+            HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", serializedPurchaseRejectionAgainstModelGrid);
             HttpContext.Session.SetString("KeyAdjGrid", serializedKeyAdjGrid);
             HttpContext.Session.SetString("KeyTaxGrid", serializedKeyTaxGrid);
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
@@ -805,6 +812,16 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> FillDetailFromPopupGrid(List<AccPurchaseRejectionAgainstBillDetail> model, int itemCode, int popCt)
         {
+            //List<AccPurchaseRejectionAgainstBillDetail> purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+            //string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
+            //if (!string.IsNullOrEmpty(modelPRJson))
+            //{
+            //    purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
+            //}
+            //if(model != null && purchaseRejectionPopupGrid != null && purchaseRejectionPopupGrid.Any())
+            //{
+            //    model.AddRange(purchaseRejectionPopupGrid.Where(p => !model.Any(m => m.ItemCode == p.ItemCode)).ToList());
+            //}
             var dataGrid = GetDetailFromPopup(model);
             var JSON = await _purchRej.FillDetailFromPopupGrid(dataGrid, itemCode, popCt);
             string JsonString = JsonConvert.SerializeObject(JSON);
@@ -864,7 +881,7 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("BatchNo", typeof(string));
                 table.Columns.Add("UniqueBatchNo", typeof(string));
 
-                foreach (AccPurchaseRejectionAgainstBillDetail Item in List)
+                foreach (AccPurchaseRejectionAgainstBillDetail Item in List?.DistinctBy(a => a.PartCode))
                 {
                     table.Rows.Add(
                         new object[]
@@ -1108,6 +1125,41 @@ namespace eTactWeb.Controllers
             {
                 return "";
             }
+        }
+        public async Task<JsonResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string EnteredBy, string InvNo = "", bool? IsDetail = false)
+        {
+            int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            DateTime EntryDate = DateTime.Today;
+            var Result = await _purchRej.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo, EntryBy, EnteredBy, EntryDate);
+
+            var rslt = string.Empty;
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                rslt = "true";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Locked)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+                rslt = "true";
+            }
+            if ((Result.StatusText == "Deleted Successfully" || Result.StatusText == "deleted Successfully") && (Result.StatusCode == HttpStatusCode.Accepted || Result.StatusCode == HttpStatusCode.OK))
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+                rslt = "true";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+                rslt = "false";
+            }
+
+            return Json(rslt);
+            //return RedirectToAction(nameof(DashBoard));   
         }
     }
 }
