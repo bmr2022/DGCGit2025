@@ -163,6 +163,7 @@ namespace eTactWeb
             services.AddDistributedMemoryCache();
             services.AddMemoryCache();
             services.AddOutputCache();
+           
             FastReport.Utils.RegisteredObjects.AddConnection(typeof(FastReport.Data.MsSqlDataConnection));
 
             services.AddSession(options =>
@@ -200,7 +201,7 @@ namespace eTactWeb
                 options.ReturnUrlParameter = "/Home/Login/";
             });
 
-           
+            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<DirectPurchaseBillBLL>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<EncryptDecrypt, EncryptDecrypt>();

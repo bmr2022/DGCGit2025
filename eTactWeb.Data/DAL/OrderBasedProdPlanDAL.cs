@@ -188,7 +188,27 @@ namespace eTactWeb.Data.DAL
                                                                  Day9 = row["9"] != DBNull.Value ? Convert.ToDecimal(row["9"]) : 0,
                                                                  Day10 = row["10"] != DBNull.Value ? Convert.ToDecimal(row["10"]) : 0,
                                                                  Day11 = row["11"] != DBNull.Value ? Convert.ToDecimal(row["11"]) : 0,
-                                                                 Day18 = row["18"] != DBNull.Value ? Convert.ToDecimal(row["18"]) : 0
+                                                                 Day12 = row["12"] != DBNull.Value ? Convert.ToDecimal(row["12"]) : 0,
+                                                                 Day13 = row["13"] != DBNull.Value ? Convert.ToDecimal(row["13"]) : 0,
+                                                                 Day14 = row["14"] != DBNull.Value ? Convert.ToDecimal(row["14"]) : 0,
+                                                                 Day15 = row["15"] != DBNull.Value ? Convert.ToDecimal(row["15"]) : 0,
+                                                                 Day16 = row["16"] != DBNull.Value ? Convert.ToDecimal(row["16"]) : 0,
+                                                                 Day17 = row["17"] != DBNull.Value ? Convert.ToDecimal(row["17"]) : 0,
+                                                                 Day18 = row["18"] != DBNull.Value ? Convert.ToDecimal(row["18"]) : 0,
+                                                                 Day19 = row["19"] != DBNull.Value ? Convert.ToDecimal(row["19"]) : 0,
+                                                                 Day20 = row["20"] != DBNull.Value ? Convert.ToDecimal(row["20"]) : 0,
+                                                                 Day21 = row["21"] != DBNull.Value ? Convert.ToDecimal(row["21"]) : 0,
+                                                                 Day22 = row["22"] != DBNull.Value ? Convert.ToDecimal(row["22"]) : 0,
+                                                                 Day23 = row["23"] != DBNull.Value ? Convert.ToDecimal(row["23"]) : 0,
+                                                                 Day24 = row["24"] != DBNull.Value ? Convert.ToDecimal(row["24"]) : 0,
+                                                                 Day25 = row["25"] != DBNull.Value ? Convert.ToDecimal(row["25"]) : 0,
+                                                                 Day26 = row["26"] != DBNull.Value ? Convert.ToDecimal(row["26"]) : 0,
+                                                                 Day27 = row["27"] != DBNull.Value ? Convert.ToDecimal(row["27"]) : 0,
+                                                                 Day28 = row["28"] != DBNull.Value ? Convert.ToDecimal(row["28"]) : 0,
+                                                                 Day29 = row["29"] != DBNull.Value ? Convert.ToDecimal(row["29"]) : 0,
+                                                                 Day30 = row["30"] != DBNull.Value ? Convert.ToDecimal(row["30"]) : 0,
+                                                                 Day31 = row["31"] != DBNull.Value ? Convert.ToDecimal(row["31"]) : 0,
+
                                                              }).ToList();
                         }
                         
