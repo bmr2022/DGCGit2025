@@ -4670,6 +4670,17 @@
                 Err = 1;
                 $.notify('Please Click to child part stock button to add to grid.', "error");
             }
+            var row = $('#divProductionEntryGrid tr').length;
+            var i = 1;
+            for (i = 1; i <= row; i++) {
+                var ReqQty = Number(parseFloat($('#ReqQty-' + i).val()).toFixed(6));
+                var TotalStock = Number(parseFloat($('#TotalStock-' + i).val()).toFixed(6));
+                if ( TotalStock<0) {
+                    Err = 1;
+                    $.notify('Total STock Can Not Be less Then 0.', "error");
+                }
+
+
             if ($('#ProdType').val() == 'Production') {
                 var Err = 0;
                 var rowCount = $('#divProductionEntryGrid tr').length;
