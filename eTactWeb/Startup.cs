@@ -322,6 +322,7 @@ namespace eTactWeb
             services.TryAddTransient<ITransferFromWorkCenter, TransferFromWorkCenterBLL>();
             services.TryAddTransient<ISaleBill, SaleBillBLL>();
             services.TryAddTransient<IGateEntryRegister, GateEntryRegisterBLL>();
+            services.TryAddTransient<ISaleOrderAmendHistory, SaleOrderAmendHistoryBLL>();
             services.TryAddTransient<ISaleBillRegister, SaleBillRegisterBLL>();
             services.TryAddTransient<IPartCodePartyWise, PartCodePartyWiseBLL>();
             services.TryAddScoped<IMemoryCacheService, MemoryCacheService>();
