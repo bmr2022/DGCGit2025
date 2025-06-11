@@ -201,7 +201,7 @@ namespace eTactWeb
                 options.ReturnUrlParameter = "/Home/Login/";
             });
 
-            services.AddScoped<IEmailService, EmailService>();
+            services.TryAddScoped<IEmailService, EmailService>();
             services.AddScoped<DirectPurchaseBillBLL>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<EncryptDecrypt, EncryptDecrypt>();
