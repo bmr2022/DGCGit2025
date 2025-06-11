@@ -765,6 +765,7 @@ namespace eTactWeb.Data.DAL
                                                      CC = dr["CC"].ToString(),
                                                      DomesticExportNEPZ = dr["DomesticExportNEPZ"].ToString(),
                                                      PurchaseRejYearCode = !string.IsNullOrEmpty(dr["PurchaseRejYearCode"].ToString()) ? Convert.ToInt32(dr["PurchaseRejYearCode"]) : 0,
+                                                     AccountCode = !string.IsNullOrEmpty(dr["AccountCode"].ToString()) ? Convert.ToInt32(dr["AccountCode"]) : 0,
                                                      StateCode = !string.IsNullOrEmpty(dr["StateCode"].ToString()) ? Convert.ToInt32(dr["StateCode"]) : 0,
                                                      SubVoucherName = !string.IsNullOrEmpty(dr["SubVoucherName"].ToString()) ? dr["SubVoucherName"].ToString() : "",
                                                      ExchangeRate = dr["ExchangeRate"].ToString(),
@@ -856,6 +857,7 @@ namespace eTactWeb.Data.DAL
                                                                     CC = dr["CC"].ToString(),
                                                                     DomesticExportNEPZ = dr["DomesticExportNEPZ"].ToString(),
                                                                     PurchaseRejYearCode = !string.IsNullOrEmpty(dr["PurchaseRejYearCode"].ToString()) ? Convert.ToInt32(dr["PurchaseRejYearCode"]) : 0,
+                                                                    AccountCode = !string.IsNullOrEmpty(dr["AccountCode"].ToString()) ? Convert.ToInt32(dr["AccountCode"]) : 0,
                                                                     StateCode = !string.IsNullOrEmpty(dr["StateCode"].ToString()) ? Convert.ToInt32(dr["StateCode"]) : 0,
                                                                     SubVoucherName = !string.IsNullOrEmpty(dr["SubVoucherName"].ToString()) ? dr["SubVoucherName"].ToString() : "",
                                                                     ExchangeRate = dr["ExchangeRate"].ToString(),
@@ -930,7 +932,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string PurchVoucherNo, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string VoucherNo, string CC, int AccountCode, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -941,14 +943,14 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", ID));
                 SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", YearCode));
-                SqlParams.Add(new SqlParameter("@VoucherNo", PurchVoucherNo));
+                SqlParams.Add(new SqlParameter("@VoucherNo", VoucherNo));
                 SqlParams.Add(new SqlParameter("@InvoiceNo", InvNo));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", EntryBy));
                 SqlParams.Add(new SqlParameter("@MachineName", EntryByMachineName));
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", EntryDate));
 
-                SqlParams.Add(new SqlParameter("@cc", PurchVoucherNo));
-                SqlParams.Add(new SqlParameter("@accountcode", PurchVoucherNo));
+                SqlParams.Add(new SqlParameter("@cc", CC));
+                SqlParams.Add(new SqlParameter("@accountcode", AccountCode));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
             }

@@ -91,10 +91,10 @@ namespace eTactWeb.Controllers
 
             model.FromDateBack = FromDate;
             model.ToDateBack = ToDate;
-            model.VendorNameBack = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "";
-            model.VoucherNoBack = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "";
-            model.InvoiceNoBack = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "";
-            model.PartCodeBack = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "";
+            model.VendorNameBack = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "0";
+            model.VoucherNoBack = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "0";
+            model.InvoiceNoBack = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "0";
+            model.PartCodeBack = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "0";
             model.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
 
             HttpContext.Session.SetString("PurchaseRejection", JsonConvert.SerializeObject(model));
@@ -1126,11 +1126,12 @@ namespace eTactWeb.Controllers
                 return "";
             }
         }
-        public async Task<JsonResult> DeleteByID(int ID, int YC, string PurchVoucherNo, string EnteredBy, string InvNo = "", bool? IsDetail = false)
+        public async Task<JsonResult> DeleteByID(int ID, int YC, string VoucherNo, string CC, int AccountCode, string EnteredBy, string InvNo = "", bool? IsDetail = false)
         {
             int EntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            string cc = string.IsNullOrEmpty(CC) ? HttpContext.Session.GetString("Branch") : CC;
             DateTime EntryDate = DateTime.Today;
-            var Result = await _purchRej.DeleteByID(ID, YC, "DELETE", PurchVoucherNo, InvNo, EntryBy, EnteredBy, EntryDate);
+            var Result = await _purchRej.DeleteByID(ID, YC, "DELETE", VoucherNo, cc, AccountCode, InvNo, EntryBy, EnteredBy, EntryDate);
 
             var rslt = string.Empty;
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
@@ -1145,7 +1146,7 @@ namespace eTactWeb.Controllers
                 TempData["423"] = "423";
                 rslt = "true";
             }
-            if ((Result.StatusText == "Deleted Successfully" || Result.StatusText == "deleted Successfully") && (Result.StatusCode == HttpStatusCode.Accepted || Result.StatusCode == HttpStatusCode.OK))
+            if ((Result.StatusText == "Deleted Successfully" || Result.StatusText == "deleted Successfully" || Result.StatusText == "Success") && (Result.StatusCode == HttpStatusCode.Accepted || Result.StatusCode == HttpStatusCode.OK))
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";

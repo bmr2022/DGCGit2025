@@ -107,7 +107,7 @@
             var InvoiceNoBack = sessionStorage.getItem('InvoiceNoBack');
             var PartCodeBack = sessionStorage.getItem('PartCodeBack');
             var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
-
+            
             if (FromDateBack != null && FromDateBack != '') {
 
                 $('#FromDate').val(FromDateBack).trigger('change');
@@ -120,6 +120,10 @@
             }
             GetSearchData();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
+            $("#search-box").val($('#search-box').val()).trigger('input');
+            setTimeout(function () {
+                $("#search-box").val($("#search-box").val()).trigger("input");
+            }, 500);
 
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
@@ -435,7 +439,7 @@
         //     }
         //}
 
-        function deleteItem(entryID, yearCode, purchVouchNo,EnteredBy, invNo, isDetail, cnt) {
+        function deleteItem(entryID, yearCode, VouchNo, CC, AccountCode, EnteredBy, invNo, isDetail, cnt) {
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
             sessionStorage.setItem('VendorNameBack', $('#VendorName').val());
@@ -450,7 +454,9 @@
                 data: {
                     ID: entryID,
                     YC: yearCode,
-                    PurchVoucherNo: purchVouchNo,
+                    VoucherNo: VouchNo,
+                    CC: CC,
+                    AccountCode: AccountCode,
                     EnteredBy: EnteredBy,
                     InvNo: invNo,
                     IsDetail: isDetail
