@@ -378,11 +378,11 @@ namespace eTactWeb.Controllers
             mimeMessage.To.Add(MailboxAddress.Parse(emailTo));
             mimeMessage.Subject = subject;
             if (!string.IsNullOrWhiteSpace(CC1))
-                mimeMessage.Cc.Add(MailboxAddress.Parse(CC1));
-            if (!string.IsNullOrWhiteSpace(CC2))
-                mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
-            if (!string.IsNullOrWhiteSpace(CC3))
-                mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
+                mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
+            //if (!string.IsNullOrWhiteSpace(CC2))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+            //if (!string.IsNullOrWhiteSpace(CC3))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
 
             var builder = new BodyBuilder();
             builder.HtmlBody = message;
