@@ -196,7 +196,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> ReqWithoutBom(RequisitionWithoutBOMModel model)
+        public async Task<IActionResult> ReqWithoutBom(RequisitionWithoutBOMModel model, string ShouldPrint)
         {
             try
             {
@@ -234,6 +234,10 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            }
                             var MainModel = new RequisitionWithoutBOMModel();
                             MainModel = await BindModel(MainModel);
                             HttpContext.Session.Remove("KeyReqWithoutBOMGrid");
@@ -243,6 +247,10 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            }
                             var MainModel = new RequisitionWithoutBOMModel();
                             MainModel = await BindModel(MainModel);
                             HttpContext.Session.Remove("KeyReqWithoutBOMGrid");

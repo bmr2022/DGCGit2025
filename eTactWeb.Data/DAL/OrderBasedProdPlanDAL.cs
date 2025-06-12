@@ -50,7 +50,7 @@ namespace eTactWeb.Data.DAL
 
         //    return _ResponseResult;
         //}
-        public async Task<OrderBasedProdPlanModel> FillSONO_OrderNO_SchNo(string FromDate, string ToDate)
+        public async Task<OrderBasedProdPlanModel> FillSONO_OrderNO_SchNo(string FromDate, string ToDate,int ForTheMonth)
         {
             var result = new OrderBasedProdPlanModel();
 
@@ -60,11 +60,13 @@ namespace eTactWeb.Data.DAL
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@Flag", "FILLONCONTROL");
+                    cmd.Parameters.AddWithValue("@forthemonth", ForTheMonth);
                    
 
                     myConnection.Open();
                     using (SqlDataReader dr = cmd.ExecuteReader())
                     {
+                      
                         // 1st result: PartCode + ItemCode
                         while (dr.Read())
                         {
@@ -125,6 +127,16 @@ namespace eTactWeb.Data.DAL
                                 Value = dr["ScheduleNo"].ToString()
                             });
                         }
+                        dr.NextResult();
+                        // 6rd result: WorkCenterName + AccountCode
+                        while (dr.Read())
+                        {
+                            result.WorkCenterNames.Add(new SelectListItem
+                            {
+                                Text = dr["WorkCenterDescription"].ToString(),
+                                Value = dr["wcid"].ToString()
+                            });
+                        }
                         
 
                         
@@ -134,7 +146,7 @@ namespace eTactWeb.Data.DAL
 
             return result;
         }
-        public async Task<OrderBasedProdPlanModel> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode)
+        public async Task<OrderBasedProdPlanModel> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode,int ForTheMonth,int WCID)
         {
             DataSet? oDataSet = new DataSet();
             var model = new OrderBasedProdPlanModel();
@@ -158,6 +170,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Partcode", PartCode);
                     oCmd.Parameters.AddWithValue("@itemcode", ItemCode);
                     oCmd.Parameters.AddWithValue("@Accountcode", AccountCode);
+                    oCmd.Parameters.AddWithValue("@WCID", WCID);
+                    oCmd.Parameters.AddWithValue("@ForTheMonth", ForTheMonth);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {

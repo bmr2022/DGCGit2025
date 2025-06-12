@@ -10,7 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IOrderBasedProdPlan
     {
-        Task<OrderBasedProdPlanModel> FillSONO_OrderNO_SchNo(string FromDate, string ToDate);
-        Task<OrderBasedProdPlanModel> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode);
+        Task<OrderBasedProdPlanModel> FillSONO_OrderNO_SchNo(string FromDate, string ToDate, int ForTheMonth);
+        Task<OrderBasedProdPlanModel> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode, int ForTheMonth, int WCID);
     }
 }

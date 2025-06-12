@@ -24,13 +24,13 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _OrderBasedProdPlanDAL = new OrderBasedProdPlanDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
-        public async Task<OrderBasedProdPlanModel> FillSONO_OrderNO_SchNo(string FromDate, string ToDate)
+        public async Task<OrderBasedProdPlanModel> FillSONO_OrderNO_SchNo(string FromDate, string ToDate, int ForTheMonth)
         {
-            return await _OrderBasedProdPlanDAL.FillSONO_OrderNO_SchNo(FromDate, ToDate);
+            return await _OrderBasedProdPlanDAL.FillSONO_OrderNO_SchNo(FromDate, ToDate, ForTheMonth);
         }
-        public async Task<OrderBasedProdPlanModel> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode)
+        public async Task<OrderBasedProdPlanModel> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode, int ForTheMonth, int WCID)
         { 
-            return await _OrderBasedProdPlanDAL.GetOrderBasedProdPlanData(FromDate, ToDate, ReportType, AccountCode, PartCode, ItemName, ItemCode);
+            return await _OrderBasedProdPlanDAL.GetOrderBasedProdPlanData(FromDate, ToDate, ReportType, AccountCode, PartCode, ItemName, ItemCode, ForTheMonth, WCID);
         }
     }
 }

@@ -521,7 +521,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> IssueNRGP(IssueNRGPModel model)
+        public async Task<IActionResult> IssueNRGP(IssueNRGPModel model, string ShouldPrint)
         {
             try
             {
@@ -571,6 +571,10 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            }
                             HttpContext.Session.Remove("KeyIssueNRGPGrid");
                             HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
                             return RedirectToAction("IssueNRGP");
