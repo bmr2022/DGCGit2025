@@ -246,7 +246,7 @@ namespace eTactwebAccounts.Controllers
                 Item.BillInvoiceDate=DateTime.Now.ToString("dd/MMM/yyyy") ,
                 Item.BillYearCode ,
                 Item.VoucherRefNo ?? string.Empty,
-                Item.SeqNo ,
+                Item.SrNO ,
                 Item.AccountCode,
                 Item.BankCashAccountCode ,
                 Item.AccountGroupType ?? string.Empty,
@@ -432,8 +432,8 @@ namespace eTactwebAccounts.Controllers
                     {
                         if (CashPaymentGrid == null)
                         {
-                            model.SeqNo = 1;
-                            OrderGrid.Add(model);
+                            model.SrNO = 1;
+                            OrderGrid.Add(model);   
                         }
                         else
                         {
@@ -445,7 +445,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -460,7 +460,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -475,7 +475,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -490,7 +490,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -528,7 +528,7 @@ namespace eTactwebAccounts.Controllers
                     {
                         if (CashPaymentGrid == null)
                         {
-                            model.SeqNo = 1;
+                            model.SrNO = 1;
                             OrderGrid.Add(model);
                         }
                         else
@@ -541,7 +541,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -556,7 +556,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -571,7 +571,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
@@ -586,7 +586,7 @@ namespace eTactwebAccounts.Controllers
                                 }
                                 else
                                 {
-                                    model.SeqNo = CashPaymentGrid.Count + 1;
+                                    model.SrNO = CashPaymentGrid.Count + 1;
                                     OrderGrid = CashPaymentGrid.Where(x => x != null).ToList();
                                     ssGrid.AddRange(OrderGrid);
                                     OrderGrid.Add(model);
