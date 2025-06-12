@@ -1169,12 +1169,6 @@
             $('#EndDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", date);
         })
 
-
-
-
-
-
-
         function GetSaleOrderData() {
             $.ajax({
                 url: "@Url.Action("GetSaleOrderData")",
@@ -1187,12 +1181,10 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var html = '';
-                           
                             var i = 1;
-                            debugger
                             $.each(obj.Result, function (index, val) {
                                 //html += '<tr><td><input id="Checkbox' + i + '"  type="checkbox"><input type="hidden" value="' + val.AccountCode + '" id="Accountcode' + i + '"/><input type="hidden" value="' + val.itemcode + '" id="Itemcode' + i + '"/></td><td><input id="AcName' + i + '" value=' + JSON.stringify(val.Account_Name) + ' readonly></td><td><input id="PartCode' + i + '" value=' + val.PartCode + ' readonly style="width:90px;"></td><td><input id="ItemName' + i + '" value=' + JSON.stringify(val.ItemName) + ' readonly></td><td><select id="Store' + i + '" onchange = "StoreChange(' + i + ')"></select></td><td><input id="Stock' + i + '" style="width:70px;" readonly></td> <td><input id="WOQty' + i + '" value=' + val.OrderQty + ' style="width:60px;background-color:#ffd6dd"><td><input id="OrderQty' + i + '" value=' + val.OrderQty + ' readonly style="width:60px;"></td><td><input id="OrderType' + i + '" value=' + val.OrderType + ' readonly style="width:90px;"></td><td><input id="wef' + i + '" value=' + val.wef.split("T")[0] + ' readonly style="width:90px;"></td><td><input type="hidden" id="SOType' + i + '" value=' + val.SOType + '><input id="AmmNo' + i + '" value=' + val.AmmNo + ' readonly style="width:40px;"></td><td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;"></td><td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;"></td><td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;"></td><td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " ></td><td><input id="Description' + i + ' " readonly  value=' + val.Description + '></td><td><input id="CustOrderNo' + i + '" value=' + JSON.stringify(val.CustOrderNo) + ' readonly style="width:80px;"></td><td class="SONo' + i + '"><input id="SONo' + i + '" value=' + val.SONo + ' readonly style="width:40px;"></td><td><input id="SODate' + i + '" value=' + val.SODate.split("T")[0] + '  readonly style="width:90px;"></td><td class="SchNo' + i + '" ><input readonly  style="width:60px;" id="SchNO' + i + '" value=' + val.SchNO + ' ></td><td><input id="Schdate' + i + '" value=' + val.Schdate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="FGStoreName' + i + '" value=' + JSON.stringify(val.FGStoreName) + ' readonly style="width:90px;"></td><td><input id="FGStock' + i + '" value=' + val.FGStock + ' readonly style="width:90px;"></td><td><input id="ItemAmendmentNo' + i + '" value=' + val.ItemAmendmentNo + ' readonly style="width:100px;"></td><td><input id="SOCloseDate' + i + '" value=' + val.SOCloseDate.split("T")[0] + ' readonly style="width:90px;"></td><td><input id="SchEffTillDate' + i + '" value=' + val.ScheduleEffectiveTillDate.split("T")[0] + ' readonly style="width:90px;"></td>';
-                              debugger
+                              
                                 html += '<tr id="SaleOrderRow-' + i + '">' +
                                     '<td>' +
                                     '<input id="Checkbox' + i + '" type="checkbox" class="textbox">' +
@@ -1260,7 +1252,7 @@
                                     '</tr>';
                                 i++;
                             });
-                            debugger
+                            
                             $('#divSaleOrderGrid').append(html);
                              fillAllStore();
                             // fillWIPAllStore();

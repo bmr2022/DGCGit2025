@@ -92,7 +92,9 @@ namespace eTactWeb.Controllers
                 List<WorkOrderDetail> WODetailGrid = new List<WorkOrderDetail>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    WODetailGrid = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                    //WODetailGrid = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                    var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(modelJson);
+                    WODetailGrid = woModel.WorkDetailGrid.ToList();  
                 }
                 if (WODetailGrid == null)
                 {
@@ -158,7 +160,9 @@ namespace eTactWeb.Controllers
                     List<WorkOrderDetail> WODetail = new List<WorkOrderDetail>();
                     if (!string.IsNullOrEmpty(woData))
                     {
-                        WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(woData);
+                        //WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(woData);
+                        var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(woData);
+                        WODetail = woModel.WorkDetailGrid.ToList();
                     }
                     model.WorkDetailGrid = WODetail;
                     ModelState.Clear();
@@ -328,16 +332,24 @@ namespace eTactWeb.Controllers
 
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
-            var MainModel = new WorkOrderModel();
-            string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
-            List<WorkOrderDetail> GridDetail = new List<WorkOrderDetail>();
-            if (!string.IsNullOrEmpty(modelJson))
+            try
             {
-                GridDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                var MainModel = new WorkOrderModel();
+                string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
+                List<WorkOrderDetail> GridDetail = new List<WorkOrderDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    //GridDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                    var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(modelJson);
+                    GridDetail = woModel.WorkDetailGrid.ToList();
+                }
+                var WOGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
+                string JsonString = JsonConvert.SerializeObject(WOGrid);
+                return Json(JsonString);
+            }catch (Exception ex)
+            {
+                throw;
             }
-            var WOGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
-            string JsonString = JsonConvert.SerializeObject(WOGrid);
-            return Json(JsonString);
         }
         public async Task<JsonResult> GetServerDate()
         {
@@ -884,7 +896,9 @@ namespace eTactWeb.Controllers
                         List<WorkOrderDetail> WODetail = new List<WorkOrderDetail>();
                         if (!string.IsNullOrEmpty(modelJson))
                         {
-                            WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                            var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(modelJson);
+                            //WODetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                            WODetail = woModel.WorkDetailGrid?.ToList();
                         }
                         if (item != null)
                         {
@@ -921,7 +935,7 @@ namespace eTactWeb.Controllers
                             WorkOrderDetails = WorkOrderDetails.Where(x => x != null).ToList();
                             MainModel.WorkDetailGrid = WorkOrderDetails;
 
-                            string serializedGrid = JsonConvert.SerializeObject(MainModel.WorkDetailGrid);
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel);
                             HttpContext.Session.SetString("KeyWorkOrderGrid", serializedGrid);
                         }
                     }
