@@ -230,25 +230,25 @@
                                                     </span>StoreName
                                                 </th>
                                                 <th data-columnno="18" data-sortorder="asc" class="sortCol">
-                                                        <span style="padding:5px;margin:5px" class="sort-icon">
-                                                            <i class="fa" aria-hidden="true"></i>
-                                                         </span>Batch No
-                                                 </th>
+                                                    <span style="padding:5px;margin:5px" class="sort-icon">
+                                                        <i class="fa" aria-hidden="true"></i>
+                                                    </span>Batch No
+                                                </th>
                                                 <th data-columnno="19" data-sortorder="asc" class="sortCol">
-                                                          <span style="padding:5px;margin:5px" class="sort-icon">
-                                                            <i class="fa" aria-hidden="true"></i>
-                                                          </span>Unique BatchNo
-                                                 </th>
+                                                    <span style="padding:5px;margin:5px" class="sort-icon">
+                                                        <i class="fa" aria-hidden="true"></i>
+                                                    </span>Unique BatchNo
+                                                </th>
                                                 <th data-columnno="20" data-sortorder="asc" class="sortCol">
-                                                            <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                <i class="fa" aria-hidden="true"></i>
-                                                            </span>Lot Stock
-                                                  </th>
+                                                    <span style="padding:5px;margin:5px" class="sort-icon">
+                                                        <i class="fa" aria-hidden="true"></i>
+                                                    </span>Lot Stock
+                                                </th>
                                                 <th data-columnno="21" data-sortorder="asc" class="sortCol">
-                                                              <span style="padding:5px;margin:5px" class="sort-icon">
-                                                                    <i class="fa" aria-hidden="true"></i>
-                                                               </span>Total Stock
-                                                 </th>
+                                                    <span style="padding:5px;margin:5px" class="sort-icon">
+                                                        <i class="fa" aria-hidden="true"></i>
+                                                    </span>Total Stock
+                                                </th>
                                                 <th data-columnno="22" data-sortorder="asc" class="sortCol">
                                                     <span style="padding:5px;margin:5px" class="sort-icon">
                                                         <i class="fa" aria-hidden="true"></i>
@@ -381,16 +381,16 @@
                     </div>
                 </div>
                 <div class="accordion-item">
-                <h2 class="accordion-header" id="H_TaxDetail">
-                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
-                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
-                    </button>
-                </h2>
-                <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TaxDetail">
-                    <div class="accordion-body">
-                        <partial name="_TaxDetail" />
-                        <div class="row g-2 gx-3 justify-content-around">
-                            @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                    <h2 class="accordion-header" id="H_TaxDetail">
+                        <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_TaxDetail" aria-expanded="true" aria-controls="B_TaxDetail">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Tax Detail</strong>
+                        </button>
+                    </h2>
+                    <div id="B_TaxDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_TaxDetail">
+                        <div class="accordion-body">
+                            <partial name="_TaxDetail" />
+                            <div class="row g-2 gx-3 justify-content-around">
+                                @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
                                     <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList" onchange="onNetTotalChange()">
                                     <option value="">-Select-</option>
@@ -404,15 +404,15 @@
                                 <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                 <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
                             </div>*@
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                <label asp-for="NetTotal" class="form-label">Net Total</label>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="NetTotal" class="form-label">Net Total</label>
                                     <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
+                                </div>
                             </div>
-                        </div>
-                        <div class="progress my-3" style="height: 4px;">
-                            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                        @*    <div class="row g-2 gx-3 justify-content-around">
+                            <div class="progress my-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            @*    <div class="row g-2 gx-3 justify-content-around">
                         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
                         <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
@@ -432,28 +432,28 @@
                         <input asp-for="NetTotal" class="form-control" readonly />
                         </div>
                         </div> *@
+                        </div>
                     </div>
                 </div>
-            </div>
                 <div class="accordion-item">
-                @* <partial name="_DrCrTable" /> *@
-                @await Html.PartialAsync("_DrCrTable", Model)
-            </div>
-                <div class="accordion-item">
-                @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel == null ? new AdjustmentModel() : Model.adjustmentModel)
-            </div>
-                <div class="accordion-item">
-                <h2 class="accordion-header" id="HPanel4">
-                    <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
-                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
-                        <small class="p-3"></small>
-                    </button>
-                </h2>
-                <div id="BPanel4" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel4">
-                    <partial name="_PurchaseRejectionOtherDetail" />
+                    @* <partial name="_DrCrTable" /> *@
+                    @await Html.PartialAsync("_DrCrTable", Model)
                 </div>
+                <div class="accordion-item">
+                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel == null ? new AdjustmentModel() : Model.adjustmentModel)
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel4">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel4" aria-expanded="true" aria-controls="BPanel4">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="BPanel4" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel4">
+                        <partial name="_PurchaseRejectionOtherDetail" />
+                    </div>
 
-            </div>
+                </div>
             </div>
         </div>
 
@@ -654,8 +654,8 @@
                 onInvoiceChange('PurchaseRejectionInvoiceNo');
                 setInterval(checkNetTotalChange, 500);
             }
-            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") 
-            { 
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U")
+            {
                 GetDbCrDetail();
             }
         });
@@ -1121,7 +1121,7 @@
                                 '</tr>';
                         }
                         $('#divPurchaseRejectionDataGrid').append(html);
-                         
+
                         if (EditEachItem) {
                             var popUpGrid = purchaseRejectionPopupGrid.length;
                             for (var j = 0; j < popUpGrid; j++) {
@@ -1443,7 +1443,7 @@
             }
 
             if ($('#BillQty').val() != null && $('#RejectedQty').val() != null && $('#LotStock').val() != null && $('#TotalStock').val() != null && (parseFloat($('#BillQty').val()) < parseFloat($('#RejectedQty').val()))
-            || (parseFloat($('#LotStock').val()) < parseFloat($('#RejectedQty').val())) 
+            || (parseFloat($('#LotStock').val()) < parseFloat($('#RejectedQty').val()))
             || (parseFloat($('#TotalStock').val()) < parseFloat($('#RejectedQty').val()))) {
                 AddErrorCls('RejectedQty');
                 $.notify('Rej Qty can not greter then billQty or LotStock or TotalStock...!', "error");
@@ -1562,7 +1562,7 @@
                         $('#Unit,#AltUnit').val("");
                         $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount').val(0);
                         BasicItemGridTotal();
-                        
+
                         //$('#Storeid,#Wcid').prop("disabled", false);
 
                         if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '' && $('#DiscountPer').val() != undefined) {
@@ -1580,7 +1580,7 @@
                         for (var i = 1; i <= rowCount; i++) {
 
                             sum += parseFloat($('#gridAmount-' + i).text() == '.00' ? 0 : $('#gridAmount-' + i).text());
-                        }   
+                        }
 
                         $('#ItemNetAmount').val(sum);
 
@@ -1698,7 +1698,7 @@
 
             $('#lblItemNetAmount').text(sum.toFixed(2));
         }
-        
+
         function onDiscountChange(){
               const DP = $('#DiscountPer') === "0" || $('#DiscountPer').val() === "" ? 0 : parseFloat($('#DiscountPer').val());
               var PRRate = $('#PRRate').val() === "0" || $('#PRRate').val() === "" ? 0 : parseFloat($('#PRRate').val());
@@ -1788,11 +1788,11 @@
             FillCustomerName();
             FillSubvoucher();
         });
-        
+
         $('#DiscountAmt' ).change(function () {
             onDiscountChange();
         });
-        
+
         $('#DiscountPer' ).change(function () {
             onDiscountChange();
         });
@@ -2088,7 +2088,7 @@
             });
         }
          $('#RejectedQty').change(function () {
-            CalculateAmount();  
+            CalculateAmount();
             FillAltQty();
         });
 
@@ -2242,36 +2242,77 @@
                     // $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    ;
+
                     $('#fromBillDate').datepicker("option", "minDate", formattedYear);
                     $('#toBillDate').datepicker("option", "minDate", parseDateToFormat($('#fromBillDate').val()));
+                    $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
 
                     $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
                     $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", result);
 
-                    var invoiceDate = parseDateToFormat($('#PurchaseRejectionInvoiceDate').val());
-                    $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", invoiceDate);
-                    $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
-                    
-                    $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#PurchaseRejEntryDate').datepicker("option", "minDate", invoiceDate);
-                    $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
+                    if($('#Mode').val() == "U" || $('#Mode').val() == "V"){
+                            var vouchDate = $('#PurchaseRejectionVoucherDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionVoucherDate').val()) : result;
+                            $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate);
+                            $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
 
-                    $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
+                            var entryDate = $('#PurchaseRejEntryDate').val() != "" ? parseDateToFormat($('#PurchaseRejEntryDate').val()) : result;
+                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate);
+                            $('#PurchaseRejEntryDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
 
-                    $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#MIRDate').datepicker("option", "minDate", invoiceDate);
-                    $('#MIRDate').datepicker("option", "maxDate", finToDate);
+                            var mirDate = $('#MIRDate').val() != "" ? parseDateToFormat($('#MIRDate').val()) : result;
+                            $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", mirDate).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", mirDate);
+                            $('#MIRDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#MIRDate').datepicker("option", "maxDate", finToDate);
 
-                    $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#InprocessDate').datepicker("option", "minDate", invoiceDate);
-                    $('#InprocessDate').datepicker("option", "maxDate", finToDate);
+                            var ActualEntryDate = $('#ActualEntryDate').val() != "" ? parseDateToFormat($('#ActualEntryDate').val()) : result;
+                            $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate);
+                            $('#ActualEntryDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#ActualEntryDate').datepicker("option", "maxDate", finToDate);
+
+                            var LastUpdationDate = $('#LastUpdationDate').val() != "" ? parseDateToFormat($('#LastUpdationDate').val()) : result;
+                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", LastUpdationDate).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", LastUpdationDate);
+                            $('#LastUpdationDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#LastUpdationDate').datepicker("option", "maxDate", finToDate);
+                    }
+                    else {
+                           $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                           $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                           $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
+                           $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
+
+                           $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                           $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                           $('#PurchaseRejEntryDate').datepicker("option", "minDate", formattedPastDate);
+                           $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
+
+                           $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                           $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                           $('#MIRDate').datepicker("option", "minDate", formattedPastDate);
+                           $('#MIRDate').datepicker("option", "maxDate", finToDate);
+
+                           $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                           $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                           $('#InprocessDate').datepicker("option", "minDate", formattedPastDate);
+                           $('#InprocessDate').datepicker("option", "maxDate", finToDate);
+
+                           $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",result);
+                            $('#ActualEntryDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#ActualEntryDate').datepicker("option", "maxDate", finToDate);
+
+                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                            $('#LastUpdationDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#LastUpdationDate').datepicker("option", "maxDate", finToDate);
+                    }
                 }
             });
 

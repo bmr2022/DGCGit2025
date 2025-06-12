@@ -8,16 +8,16 @@
             <input type="hidden" asp-for="FinFromDate" />
             <input type="hidden" asp-for="FinToDate" />
             <label asp-for="PurchaseRejEntryId" class="form-label">Entry Id</label>
-            <input asp-for="PurchaseRejEntryId" class="form-control" readonly />
+            <input asp-for="PurchaseRejEntryId" class="form-control" readonly disabled  />
         </div>
         <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PurchaseRejYearCode" class="form-label">Year Code</label>
-            <input asp-for="PurchaseRejYearCode" class="form-control" readonly />
+            <input asp-for="PurchaseRejYearCode" class="form-control" readonly disabled />
         </div>
 
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PurchaseRejEntryDate" class="form-label" style="color: red;">Entry Date*</label>
-            <input asp-for="PurchaseRejEntryDate" class="form-control" readonly />
+            <input asp-for="PurchaseRejEntryDate" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="DebitNotePurchaseRejection" class="form-label" style="color: red;">Type</label>
@@ -51,52 +51,52 @@
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PurchaseRejectionInvoiceDate" class="form-label" style="color: red;">Date*</label>
-            <input asp-for="PurchaseRejectionInvoiceDate" class="form-control" readonly />
+            <input asp-for="PurchaseRejectionInvoiceDate" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="VoucherNo" class="form-label" style="color: red;">Voucher No*</label>
-            <input asp-for="VoucherNo" class="form-control" />
+            <input asp-for="VoucherNo" value="@Model.VoucherNo" class="form-control" />
         </div>
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PurchaseRejectionVoucherNo" class="form-label" style="color: red;">Rejection Voucher No*</label>
-            <input asp-for="PurchaseRejectionVoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
+            <input asp-for="PurchaseRejectionVoucherNo" class="form-control" readonly disabled style="background-color: lightblue !important;" />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PurchaseRejectionVoucherDate" class="form-label" style="color: red;">Date*</label>
-            <input asp-for="PurchaseRejectionVoucherDate" class="form-control" readonly />
+            <input asp-for="PurchaseRejectionVoucherDate" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="GSTNO" class="form-label" style="color: red;">GST No</label>
-            <input asp-for="GSTNO" class="form-control" readonly />
+            <input asp-for="GSTNO" class="form-control" readonly disabled />
         </div>
 
         <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="GSTType" class="form-label">GST TYPE</label>
-            <input asp-for="GSTType" class="form-control" value="@Model.GSTType" readonly />
+            <input asp-for="GSTType" class="form-control" value="@Model.GSTType" readonly disabled />
         </div>
         <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="GSTRegistered" class="form-label" style="color: red;">GST *</label>
-            <input asp-for="GSTRegistered" class="form-control" value="@Model.GSTRegistered" readonly />
+            <input asp-for="GSTRegistered" class="form-control" value="@Model.GSTRegistered" readonly disabled />
         </div>
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="CustVendAddress" class="form-label">Vendor Address</label>
-            <input asp-for="CustVendAddress" class="form-control" readonly />
+            <input asp-for="CustVendAddress" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="StateNameofSupply" class="form-label" style="color: red;">State*</label>
-            <input asp-for="StateNameofSupply" class="form-control" readonly />
+            <input asp-for="StateNameofSupply" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="StateCode" class="form-label" style="color: red;">State Code*</label>
-            <input asp-for="StateCode" class="form-control" readonly />
+            <input asp-for="StateCode" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="CityofSupply" class="form-label">City </label>
-            <input asp-for="CityofSupply" class="form-control" readonly />
+            <input asp-for="CityofSupply" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="CountryOfSupply" class="form-label">Country</label>
-            <input asp-for="CountryOfSupply" class="form-control" readonly />
+            <input asp-for="CountryOfSupply" class="form-control" readonly disabled />
         </div>
         <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PaymentTerm" class="form-label">Pay Term</label>
@@ -119,11 +119,11 @@
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <input asp-for="CurrencyId" type="hidden" class="form-control" />
             <label asp-for="Currency" class="form-label" style="color: red;">Currency*</label>
-            <input asp-for="Currency" class="form-control" value="@Model.Currency?.ToString()" readonly />
+            <input asp-for="Currency" class="form-control" value="@Model.Currency?.ToString()" readonly disabled />
         </div>
         <div class="col-md-2">
             <label asp-for="DomesticExportNEPZ" class="form-label">Domestic Export NEPZ</label>
-            <input asp-for="DomesticExportNEPZ" class="form-control" readonly />
+            <input asp-for="DomesticExportNEPZ" class="form-control" readonly disabled />
         </div>
         <div class="col-md-2">
             <label asp-for="fromBillDate" class="form-label">form Bill Date</label>
