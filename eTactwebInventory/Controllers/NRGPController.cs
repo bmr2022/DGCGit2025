@@ -26,6 +26,7 @@ using eTactWeb.Services;
 using MimeKit;
 using MailKit.Net.Smtp;
 using System.Drawing;
+using System.Security.Cryptography;
 namespace eTactWeb.Controllers
 {
     public class NRGPController : Controller
@@ -184,7 +185,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public IActionResult SendReport(string emailTo = "infotech.bmr@gmail.com", int EntryId = 0, int YearCode = 0, string Type = "")
+        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="",string CC2="",string CC3="",string Challanno="")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -213,10 +214,10 @@ namespace eTactWeb.Controllers
 
 
             // Now call EmailReport
-            return EmailReport(webReport, emailTo);
+            return EmailReport(webReport, emailTo,Challanno,CC1,CC2,CC3);
         }
 
-        public IActionResult EmailReport(WebReport webReport, string emailTo)
+        public IActionResult EmailReport(WebReport webReport, string emailTo,string Challanno,string CC1,string CC2,string CC3)
         {
             try
             {
@@ -255,7 +256,10 @@ namespace eTactWeb.Controllers
                     // Send email
                     _emailService.SendEmailAsync(
                         emailTo,
-                        "Your Report",
+                        "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+                        CC1,
+                        CC2,
+                        CC3,
                         "Please find attached the requested report.",
                         pdfBytes,
                         "Report.pdf").Wait();
@@ -360,7 +364,7 @@ namespace eTactWeb.Controllers
                 return pdfStream.ToArray();
             }
         }
-        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null)
+        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null,string CC1="",string CC2="",string CC3="",string Challanno="" )
         {
             var emailSettings = _iconfiguration.GetSection("EmailSettings");
 
@@ -368,6 +372,9 @@ namespace eTactWeb.Controllers
             mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
             mimeMessage.To.Add(MailboxAddress.Parse(emailTo));
             mimeMessage.Subject = subject;
+            mimeMessage.Cc.Add(MailboxAddress.Parse(CC1));
+            mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+            mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
 
             var builder = new BodyBuilder();
             builder.HtmlBody = message;
@@ -998,7 +1005,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1042,7 +1049,7 @@ namespace eTactWeb.Controllers
                    "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                 "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
             }
 

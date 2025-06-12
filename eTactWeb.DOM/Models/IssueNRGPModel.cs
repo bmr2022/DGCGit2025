@@ -149,6 +149,10 @@ namespace eTactWeb.DOM.Models
         public float PendQty { get; set; }
         public float PendAltQty { get; set; }
         public int ActualEnteredEMpBy { get; set; }
+        public string SalesPersonEmailId { get; set; }
+        public string eMailFromCC1 { get; set; }
+        public string eMailFromCC2 { get; set; }
+        public string eMailFromCC3 { get; set; }
         public List<IssueNRGPDashboard>? INNDashboard { get; set; }
     }
 

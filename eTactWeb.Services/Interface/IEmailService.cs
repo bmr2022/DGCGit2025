@@ -11,8 +11,12 @@ namespace eTactWeb.Services.Interface
         Task SendEmailAsync(
             string emailTo,
             string subject,
-            string message,
+            string CC1,
+            string CC2,
+            string CC3,
+        string message,
             byte[] attachment = null,
             string attachmentName = "Report.pdf");
+        
     }
 }
