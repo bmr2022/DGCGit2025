@@ -798,7 +798,6 @@ namespace eTactWeb.Controllers
         {
             HttpContext.Session.Remove("KeyBankReceiptGridPopUpData");
             var model = await _IBankReceipt.PopUpForPendingVouchers(DataTable);
-            model.VoucherDate = ParseFormattedDate(DataTable.VoucherDate);
             string serializedGrid = JsonConvert.SerializeObject(model.BankReceiptGrid);
             HttpContext.Session.SetString("KeyBankReceiptGridPopUpData", serializedGrid);
             return PartialView("_DisplayPopupForPendingVouchers", model);
