@@ -543,6 +543,15 @@ namespace eTactwebInventory.Controllers
             }
         }
 
+        public async Task<JsonResult> ClearGridAjax()
+        {
+            HttpContext.Session.Remove("KeyReOfferItemGrid");
+
+            var JSON = await _IReofferItem.FILLQCTYPE();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         public async Task<JsonResult> EditItemRows(int SeqNo)
         {
             var MainModel = new DeassembleItemModel();

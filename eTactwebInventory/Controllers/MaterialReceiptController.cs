@@ -187,7 +187,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         // [Route("{controller}/Index")]
-        public async Task<IActionResult> MaterialReceipt(MaterialReceiptModel model)
+        public async Task<IActionResult> MaterialReceipt(MaterialReceiptModel model, string ShouldPrint)
         {
             var fromDt = model.FromDate;
             var toDt = model.ToDate;
@@ -253,6 +253,10 @@ namespace eTactWeb.Controllers
                             MainModel.DateIntact = "Y";
                             MainModel.FromDate = fromDt;
                             MainModel.ToDate = toDt;
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryID, YearCode = model.YearCode, MrnNo = model.MRNNo });
+                            }
                             return View(MainModel);
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -275,6 +279,10 @@ namespace eTactWeb.Controllers
                             MainModel.Mode = "I";
                             MainModel.FromDate = fromDt;
                             MainModel.ToDate = toDt;
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryID, YearCode = model.YearCode, MrnNo = model.MRNNo });
+                            }
                             return View(MainModel);
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)

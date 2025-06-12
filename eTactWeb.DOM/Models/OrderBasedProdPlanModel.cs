@@ -9,6 +9,7 @@ namespace eTactWeb.DOM.Models
     public class OrderBasedProdPlanModel
     {
         public int SaleSchEntryID { get; set; }
+        public int ForTheMonth { get; set; }
         public int SaleSchYearCode { get; set; }
         public int SOEntryID { get; set; }
         public string SONO { get; set; }
@@ -39,6 +40,7 @@ namespace eTactWeb.DOM.Models
         public decimal PlanQty { get; set; }
         public int WCID { get; set; }
         public string ItemName { get; set; }
+        public string WorkCenterName { get; set; }
         public string PartCode { get; set; }
         public string WCName { get; set; }
         public string MainSubBOm { get; set; }
@@ -88,6 +90,7 @@ namespace eTactWeb.DOM.Models
         public List<SelectListItem> PartCodes { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> ItemNames { get; set; } = new List<SelectListItem>();
         public List<SelectListItem> AccountNames { get; set; } = new List<SelectListItem>();
+        public List<SelectListItem> WorkCenterNames { get; set; } = new List<SelectListItem>();
           public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }

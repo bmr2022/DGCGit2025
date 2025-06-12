@@ -26,6 +26,7 @@ using eTactWeb.Services;
 using MimeKit;
 using MailKit.Net.Smtp;
 using System.Drawing;
+using System.Security.Cryptography;
 namespace eTactWeb.Controllers
 {
     public class NRGPController : Controller
@@ -184,7 +185,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public IActionResult SendReport(string emailTo = "infotech.bmr@gmail.com", int EntryId = 0, int YearCode = 0, string Type = "")
+        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="",string CC2="",string CC3="",string Challanno="")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -193,8 +194,8 @@ namespace eTactWeb.Controllers
             var ReportName = _IIssueNRGP.GetReportName();
             ViewBag.EntryId = EntryId;
             ViewBag.YearCode = YearCode;
-
-            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            if (ReportName.Result.Result.Rows[0].ItemArray[0] is string s && s != "")
+            //if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
                 webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
             }
@@ -213,10 +214,10 @@ namespace eTactWeb.Controllers
 
 
             // Now call EmailReport
-            return EmailReport(webReport, emailTo);
+            return EmailReport(webReport, emailTo,Challanno,CC1,CC2,CC3);
         }
 
-        public IActionResult EmailReport(WebReport webReport, string emailTo)
+        public IActionResult EmailReport(WebReport webReport, string emailTo,string Challanno,string CC1,string CC2,string CC3)
         {
             try
             {
@@ -251,12 +252,20 @@ namespace eTactWeb.Controllers
                         // Try alternative conversion if first attempt fails
                         pdfBytes = ConvertImageToPdf(imageStream.ToArray());
                     }
-
+                    string body = $@"
+                        Dear Sir,<br/>
+                        Please find the attachment for the Challan No: <strong>{Challanno}</strong> from AutoComponent.<br/><br/>
+                        Regards,<br/>
+                        AutoComponent Team
+                        ";
                     // Send email
                     _emailService.SendEmailAsync(
                         emailTo,
-                        "Your Report",
-                        "Please find attached the requested report.",
+                        "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+                        CC1,
+                        CC2,
+                        CC3,
+                        body,
                         pdfBytes,
                         "Report.pdf").Wait();
 
@@ -360,7 +369,7 @@ namespace eTactWeb.Controllers
                 return pdfStream.ToArray();
             }
         }
-        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null)
+        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null,string CC1="",string CC2="",string CC3="",string Challanno="" )
         {
             var emailSettings = _iconfiguration.GetSection("EmailSettings");
 
@@ -368,6 +377,12 @@ namespace eTactWeb.Controllers
             mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
             mimeMessage.To.Add(MailboxAddress.Parse(emailTo));
             mimeMessage.Subject = subject;
+            if (!string.IsNullOrWhiteSpace(CC1))
+                mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
+            //if (!string.IsNullOrWhiteSpace(CC2))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+            //if (!string.IsNullOrWhiteSpace(CC3))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
 
             var builder = new BodyBuilder();
             builder.HtmlBody = message;
@@ -521,7 +536,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> IssueNRGP(IssueNRGPModel model)
+        public async Task<IActionResult> IssueNRGP(IssueNRGPModel model, string ShouldPrint)
         {
             try
             {
@@ -571,6 +586,10 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            if (ShouldPrint == "true")
+                            {
+                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            }
                             HttpContext.Session.Remove("KeyIssueNRGPGrid");
                             HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
                             return RedirectToAction("IssueNRGP");
@@ -994,7 +1013,7 @@ namespace eTactWeb.Controllers
                     "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                 "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                  "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName", "SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
 
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
                 model.FromDate1 = FromDate;
@@ -1038,7 +1057,7 @@ namespace eTactWeb.Controllers
                    "ChallanDate", "EntryDate", "DeliveryAddress", "VendorStateCode",
                                "Remarks", "Closed", "EntryId", "YearCode", "RGPNRGP",
                                 "ChallanType", "ActualEnteredEmp", "ActualEntryDate",
-                               "UpdatedByEmpName", "UpdatedDate", "MachinName");
+                               "UpdatedByEmpName", "UpdatedDate", "MachinName","SalesPersonEmailId", "eMailFromCC1", "eMailFromCC2", "eMailFromCC3");
                 model.INNDashboard = CommonFunc.DataTableToList<IssueNRGPDashboard>(DT, "IssueNRGPDetail");
             }
 
