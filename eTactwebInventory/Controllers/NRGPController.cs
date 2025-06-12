@@ -252,7 +252,12 @@ namespace eTactWeb.Controllers
                         // Try alternative conversion if first attempt fails
                         pdfBytes = ConvertImageToPdf(imageStream.ToArray());
                     }
-
+                    string body = $@"
+                        Dear Sir,<br/>
+                        Please find the attachment for the Challan No: <strong>{Challanno}</strong> from AutoComponent.<br/><br/>
+                        Regards,<br/>
+                        AutoComponent Team
+                        ";
                     // Send email
                     _emailService.SendEmailAsync(
                         emailTo,
@@ -260,7 +265,7 @@ namespace eTactWeb.Controllers
                         CC1,
                         CC2,
                         CC3,
-                        "Please find attached the requested report.",
+                        body,
                         pdfBytes,
                         "Report.pdf").Wait();
 
@@ -372,9 +377,12 @@ namespace eTactWeb.Controllers
             mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
             mimeMessage.To.Add(MailboxAddress.Parse(emailTo));
             mimeMessage.Subject = subject;
-            mimeMessage.Cc.Add(MailboxAddress.Parse(CC1));
-            mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
-            mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
+            if (!string.IsNullOrWhiteSpace(CC1))
+                mimeMessage.Cc.Add(MailboxAddress.Parse(CC1));
+            if (!string.IsNullOrWhiteSpace(CC2))
+                mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+            if (!string.IsNullOrWhiteSpace(CC3))
+                mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
 
             var builder = new BodyBuilder();
             builder.HtmlBody = message;
