@@ -193,8 +193,8 @@ namespace eTactWeb.Controllers
             var ReportName = _IIssueNRGP.GetReportName();
             ViewBag.EntryId = EntryId;
             ViewBag.YearCode = YearCode;
-
-            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            if (ReportName.Result.Result.Rows[0].ItemArray[0] is string s && s != "")
+            //if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
             {
                 webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
             }

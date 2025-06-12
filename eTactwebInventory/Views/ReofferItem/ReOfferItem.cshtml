@@ -565,13 +565,16 @@
 
         });
         $('#QcType').change(function () { 
+            ClearGridAjax();
             FILLMIRNO();
         });
         $('#MIRNo').change(function () { 
+            ClearGridAjax();
             FILLMIRYearCode();
             FILLMIRData();
         });
         $('#MIRYearCode').change(function () { 
+            ClearGridAjax();
             FILLMIRData();
             GetItemName();
             GetPartCode();
@@ -2302,6 +2305,23 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                 }
             });
         }
+         function ClearGridAjax() {
+     
+     $.ajax({
+         type: "POST",
+         url: "@Url.Action("ClearGridAjax")",
+         
+         dataType: "json",
+         async: false,
+         success: function (data, status, error) {
+             console.log("Grid cleared");
+             $('#divISTGrid').empty();
+         },
+         error: function (req, status, error) {
+             alert(error);
+         }
+     });
+ }
 
          function ValidateGrid() {
               var RowCount = $('#DivDetailGrid tr').length;
@@ -2312,19 +2332,28 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
               var Err = 0;
              for (var i = 1; i <= RowCount; i++) {
                  var partcode = $('#PartCode'+i).val();
-                 if ($('#AcceptedQty' + i).val() > $('#AccLotStock' + i).val()) {
+                 var AcceptedQty = parseFloat($('#AcceptedQty' + i).val()) || 0;
+                 var AccLotStock = parseFloat($('#AccLotStock' + i).val()) || 0;
+                 var RejectedQty = parseFloat($('#RejectedQty' + i).val()) || 0;
+                 var RejLotStock = parseFloat($('#RejLotStock' + i).val()) || 0;
+                 var HoldQty = parseFloat($('#HoldQty' + i).val()) || 0;
+                 var HoldLotStock = parseFloat($('#HoldLotStock' + i).val()) || 0;
+                 var Reworkqty = parseFloat($('#Reworkqty' + i).val()) || 0;
+                 var ReworkLotStock = parseFloat($('#ReworkLotStock' + i).val()) || 0;
+
+                 if (AcceptedQty > AccLotStock) {
                      $.notify('AcceptedQty Must Be less Then Lot Stock for PartCode' + partcode, "error");
                      Err = 1;
                  }
-                 if ($('#RejectedQty' + i).val() > $('#RejLotStock' + i).val()) {
+                 if (RejectedQty > RejLotStock) {
                      $.notify('RejectedQty Must Be less Then Lot Stock for PartCode' + partcode, "error");
                      Err = 1;
                  }
-                 if ($('#HoldQty' + i).val() > $('#HoldLotStock' + i).val()) {
+                 if (HoldQty > HoldLotStock) {
                      $.notify('HoldQty Must Be less Then Lot Stock for PartCode' + partcode, "error");
                      Err = 1;
                  }
-                 if ($('#Reworkqty' + i).val() > $('#ReworkLotStock' + i).val()) {
+                 if (Reworkqty > ReworkLotStock) {
                      $.notify('Reworkqty Must Be less Then Lot Stock for PartCode' + partcode, "error");
                      Err = 1;
                  }
