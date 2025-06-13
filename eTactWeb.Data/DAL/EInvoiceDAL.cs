@@ -1,0 +1,510 @@
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
+using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Http.Internal;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Configuration;
+using System.Globalization;
+using System.Reflection;
+using static eTactWeb.DOM.Models.Common;
+using Common = eTactWeb.Data.Common;
+
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System.Collections.Generic;
+//using System.Data;
+using System.Data.SqlClient;
+using System.Net.Http;
+using System.Text;
+using System.Threading.Tasks;
+using System.Diagnostics;
+using System.Collections.Generic; // For Dictionary
+using System.Net.Http; // For HttpClient
+using System.Threading.Tasks;
+//using SqlCommand = Microsoft.Data.SqlClient.SqlCommand;
+//using SqlConnection = Microsoft.Data.SqlClient.SqlConnection;
+using System.Data;
+using System.Security.Cryptography.X509Certificates; // For async/await
+
+
+using System.Net.Http;
+using Microsoft.Extensions.Logging;
+
+
+namespace eTactWeb.Data.DAL
+{
+
+    public class EInvoiceDAL
+    {
+        private readonly IConfiguration _configuration;
+
+        private readonly IDataLogic _IDataLogic;
+        private readonly string DBConnectionString;
+        private readonly ConnectionStringService _connectionStringService;
+        private readonly IHttpClientFactory _httpClientFactory;
+
+        public string barcodeVal;
+        public string irnNo;
+        public string invoicenumber;
+        public int yearcodenumber;
+        public string token;
+        public string connectionString = string.Empty;
+       
+        public EInvoiceDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        {
+            //configuration = config;
+            //DBConnectionString = configuration.GetConnectionString("eTactDB");
+            _connectionStringService = connectionStringService;
+            DBConnectionString = _connectionStringService.GetConnectionString();
+            _IDataLogic = iDataLogic;
+        }
+        public async Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@EntryId", entryId));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("chkForDuplicateIRNNO", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        private async Task<ResponseResult> GetInvoicePrefix(int yearCode, int entryId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@EntryId", entryId));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM Sale_Bill_Main WHERE year_code = @YearCode AND entry_id = @EntryId", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+           
+        }
+        
+        private async Task<ResponseResult> GetInvoiceData(string invoiceNo, int yearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+
+
+        }
+        public async Task<ResponseResult> BuildInvoiceDetails(DataTable dataTable, string invoice, string saleBillType, string customerPartCode, string token)
+        {
+            var _ResponseResult = new ResponseResult();
+
+            try
+            {
+                var invoiceDetails = new Dictionary<string, object>
+        {
+            { "access_token", token },
+            { "user_gstin", GetSellerGstin(dataTable) },
+            { "data_source", "erp" },
+            { "transaction_details", GetTransactionDetails(customerPartCode) },
+            { "document_details", GetDocumentDetails(invoice, dataTable) },
+            { "seller_details", GetSellerDetails(dataTable) },
+            { "buyer_details", GetBuyerDetails(customerPartCode, dataTable) },
+            { "ship_details", GetShippingDetails(customerPartCode, dataTable) },
+            { "value_details", GetValueDetails(dataTable) },
+            { "item_list", GetItemList(dataTable, saleBillType) }
+        };
+
+                _ResponseResult.Result = invoiceDetails;
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        private string GetSellerGstin(DataTable dataTable)
+        {
+            return dataTable.Rows[0]["sellergstin"].ToString();
+        }
+
+        private Dictionary<string, object> GetTransactionDetails(string customerPartCode)
+        {
+            var supplyType = customerPartCode.ToUpper() switch
+            {
+                "EXPORT WITH PAYMENT" => "EXPWP",
+                "WITH SEZ PAYMENT" => "SEZWP",
+                "SEZ WITHOUT PAYMENT" => "SEZWOP",
+                "EXPORT WITHOUT PAYMENT" => "EXPWOP",
+                "DEEMED EXPORT" => "DEXP",
+                "BUSINESS TO BUSINESS" => "B2B",
+                _ => "B2B"
+            };
+
+            return new Dictionary<string, object>
+    {
+        { "supply_type", supplyType },
+        { "charge_type", "N" },
+        { "igst_on_intra", "N" },
+        { "ecommerce_gstin", "" }
+    };
+        }
+
+        private Dictionary<string, object> GetDocumentDetails(string invoice, DataTable dataTable)
+        {
+            return new Dictionary<string, object>
+    {
+        { "document_type", "INV" },
+        { "document_number", invoice },
+        { "document_date", dataTable.Rows[0]["invoice_date"].ToString() }
+    };
+        }
+
+        private Dictionary<string, object> GetSellerDetails(DataTable dataTable)
+        {
+            var row = dataTable.Rows[0];
+            return new Dictionary<string, object>
+    {
+        { "gstin", row["sellergstin"].ToString() },
+        { "legal_name", row["sellername"].ToString() },
+        { "address1", row["selleraddress"].ToString() },
+        { "location", row["sellerlocation"].ToString() },
+        { "pincode", row["sellerpincode"].ToString() },
+        { "state_code", row["sellerstate"].ToString() }
+    };
+        }
+
+        private Dictionary<string, object> GetBuyerDetails(string customerPartCode, DataTable dataTable)
+        {
+            var row = dataTable.Rows[0];
+            var gstin = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "URP" : row["buyergstin"].ToString();
+            var stateCode = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "96" : row["buyerstate"].ToString();
+
+            return new Dictionary<string, object>
+    {
+        { "gstin", gstin },
+        { "legal_name", row["buyername"].ToString() },
+        { "address1", row["buyeraddress"].ToString() },
+        { "location", row["buyerlocation"].ToString() },
+        { "pincode", row["buyerpincode"].ToString() },
+        { "place_of_supply", row["buyerstatecode"].ToString() },
+        { "state_code", stateCode }
+    };
+        }
+
+        private Dictionary<string, object> GetShippingDetails(string customerPartCode, DataTable dataTable)
+        {
+            // You can customize this similarly to GetBuyerDetails
+            return new Dictionary<string, object>();
+        }
+
+        private Dictionary<string, object> GetValueDetails(DataTable dataTable)
+        {
+            var row = dataTable.Rows[0];
+            return new Dictionary<string, object>
+    {
+        { "total_assessable_value", row["TOTALASSVAL"].ToString() },
+        { "total_cgst_value", row["TOTALCGST"].ToString() },
+        { "total_sgst_value", row["TOTALSGST"].ToString() },
+        { "total_igst_value", row["TOTALIGST"].ToString() },
+        { "total_invoice_value", row["TOATLINVVAL"].ToString() }
+    };
+        }
+
+        private List<Dictionary<string, object>> GetItemList(DataTable dataTable, string saleBillType)
+        {
+            var itemList = new List<Dictionary<string, object>>();
+            int ni = 1;
+
+            foreach (DataRow row in dataTable.Rows)
+            {
+                var item = new Dictionary<string, object>
+        {
+            { "total_item_value", row["TOTALITEMVAL"].ToString() },
+            { "igst_amount", row["IGSTAMT"].ToString() },
+            { "gst_rate", row["GSTRATE"].ToString() },
+            { "assessable_value", row["TOTALASSVAL"].ToString() },
+            { "total_amount", row["TOATLINVVAL"].ToString() },
+            { "unit_price", row["unitprice"].ToString() },
+            { "unit", row["unitofitem"].ToString() },
+            { "quantity", row["qtyofitem"].ToString() },
+            { "hsn_code", row["hsnno"].ToString() },
+            { "is_service", "N" },
+            { "product_description", row["proddesc"].ToString() },
+            { "item_serial_number", ni }
+        };
+                ni++;
+                itemList.Add(item);
+            }
+
+            return itemList;
+        }
+
+
+        public async Task<ResponseResult> GetInvoiceDataAsync(string invoiceNo, int yearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetInvoiceDataAsync(int yearCode, int entryId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@EntryId", entryId));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM Sale_Bill_Main WHERE year_code = @YearCode AND entry_id = @EntryId", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+          
+        }
+
+        public async Task<ResponseResult> UpdateQRCodeImageAsync(string invoiceNo, int yearCode, byte[] image)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
+                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@img", image));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<bool> PostDataAsync(Dictionary<string, object> dictData)
+        {
+            try
+            {
+                using var client = _httpClientFactory.CreateClient();
+
+                string urlToPost1 = "https://pro.mastersindia.co/generateEinvoice";
+                var requestContent = new StringContent(JsonConvert.SerializeObject(dictData), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(urlToPost1, requestContent);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return false;
+                }
+
+                var responseString = await response.Content.ReadAsStringAsync();
+                var json = JObject.Parse(responseString);
+                irnNo = json.SelectToken("results.message.Irn")?.ToString();
+                barcodeVal = json.SelectToken("results.message.SignedQRCode")?.ToString();
+                var ackNo = json.SelectToken("results.message.AckNo")?.ToString();
+                var ackDate = json.SelectToken("results.message.AckDt")?.ToString();
+
+                string pincodeFrom = "122052"; // Replace with DB logic
+                string pincodeTo = "122001";   // Replace with DB logic
+
+                var distanceResponse = await client.GetStringAsync($"http://pro.mastersindia.co/distance?access_token={token}&fromPincode={pincodeFrom}&toPincode={pincodeTo}");
+                var distanceJson = JObject.Parse(distanceResponse);
+                var distanceValue = distanceJson.SelectToken("results.distance")?.ToString();
+
+                ResponseResult response1 = await GetInvoiceData(invoicenumber, yearcodenumber);
+                DataTable dataTable = response1.Result as DataTable;
+                if (dataTable.Rows.Count == 0)
+                {
+                    return false;
+                }
+
+                var row = dataTable.Rows[0];
+
+                var dictData19 = new Dictionary<string, object>
+                {
+                    { "access_token", token },
+                    { "user_gstin", row["sellergstin"].ToString() },
+                    { "irn", irnNo },
+                    { "vehicle_number", "HR55AT2920" },
+                    { "transportation_mode", "1" },
+                    { "vehicle_type", "R" },
+                    { "transporter_name", "" },
+                    { "data_source", "ERP" },
+                    { "distance", distanceValue ?? "0" },
+                    {
+                        "dispatch_details", new Dictionary<string, object>
+                        {
+                            { "company_name", row["sellername"].ToString() },
+                            { "address1", row["selleraddress"].ToString() },
+                            { "address2", "" },
+                            { "location", row["sellerlocation"].ToString() },
+                            { "pincode", row["sellerpincode"].ToString() },
+                            { "state_code", row["sellerstate"].ToString() }
+                        }
+                    }
+                };
+
+                var ewayStatus = await PostData2(dictData19);
+                if (string.IsNullOrEmpty(ewayStatus)) // Fix: Check if the string is null or empty instead of using '!'.
+                {
+                    return false;
+                }
+
+                var qrResult = await GenerateQRCode(barcodeVal);
+                if (qrResult != "QR code generated and saved to database successfully.") // Fix: Compare the string result directly.
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                return false;
+            }
+        }
+        public async Task<string> GenerateQRCode(string barcodeValue)
+        {
+            try
+            {
+                string tempDir = Path.GetTempPath();
+                string filePath = Path.Combine(tempDir, "barcode_input.txt");
+                string outputFilePath = Path.Combine(tempDir, "output.png");
+
+                await System.IO.File.WriteAllTextAsync(filePath, barcodeValue);
+
+                string zintPath = @"C:\Program Files (x86)\Zint\zint.exe";
+                if (!System.IO.File.Exists(zintPath))
+                    return "Zint executable not found.";
+
+                using (var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = zintPath,
+                        Arguments = $"-b 58 -o \"{outputFilePath}\" -i \"{filePath}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        CreateNoWindow = true,
+                        UseShellExecute = false
+                    }
+                })
+                {
+                    process.Start();
+                    await process.WaitForExitAsync();
+
+                    if (!System.IO.File.Exists(outputFilePath))
+                        return "QR code image not generated.";
+                }
+
+                byte[] img = await System.IO.File.ReadAllBytesAsync(outputFilePath);
+
+                using (var connection = new SqlConnection(connectionString))
+                using (var cmd = new SqlCommand("UpdateImgToBarcode", connection))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.Add(new SqlParameter("@INVNO", SqlDbType.BigInt) { Value = invoicenumber });
+                    cmd.Parameters.Add(new SqlParameter("@year_code", SqlDbType.BigInt) { Value = yearcodenumber });
+                    cmd.Parameters.Add(new SqlParameter("@img", SqlDbType.Image) { Value = img });
+
+                    await connection.OpenAsync();
+                    await cmd.ExecuteNonQueryAsync();
+                }
+
+                return "QR code generated and saved to database successfully.";
+            }
+            catch (Exception ex)
+            {
+                return "Failed to generate QR code.";
+            }
+        }
+
+        public async Task<string> PostData2(Dictionary<string, object> dictData)
+        {
+            try
+            {
+                string urlToPost2 = "https://pro.mastersindia.co/generateEwaybillByIrn";
+
+                using var client = _httpClientFactory.CreateClient();
+                var jsonContent = JsonConvert.SerializeObject(dictData, Formatting.Indented);
+                var requestContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(urlToPost2, requestContent);
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = JObject.Parse(responseString);
+                    string ewbNo = json.SelectToken("results.message.EwbNo")?.ToString();
+                    string ewbDt = json.SelectToken("results.message.EwbDt")?.ToString();
+                    string ewbUrl = json.SelectToken("results.message.EwaybillPdf")?.ToString();
+
+                    return $"Ewaybill No: {ewbNo}, Date: {ewbDt}, PDF: {ewbUrl}";
+                }
+                else
+                {
+                    return $"Error: HTTP {response.StatusCode} - {responseString}";
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Exception: {ex.Message}";
+            }
+        }
+
+    }
+
+}
+

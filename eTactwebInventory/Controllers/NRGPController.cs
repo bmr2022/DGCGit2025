@@ -185,7 +185,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="",string CC2="",string CC3="",string Challanno="")
+        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="bmr.client2021@gmail.com",string CC2="",string CC3="",string Challanno="")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -252,6 +252,7 @@ namespace eTactWeb.Controllers
                         // Try alternative conversion if first attempt fails
                         pdfBytes = ConvertImageToPdf(imageStream.ToArray());
                     }
+                     emailTo = "infotech.bmr@gmail.com";
                     string body = $@"
                         Dear Sir,<br/>
                         Please find the attachment for the Challan No: <strong>{Challanno}</strong> from AutoComponent.<br/><br/>
@@ -278,64 +279,7 @@ namespace eTactWeb.Controllers
             }
         }
 
-        //public IActionResult EmailReport(WebReport webReport, string emailTo)
-        //{
-        //    try
-        //    {
-        //        // First export the report to an image
-        //        using (MemoryStream imageStream = new MemoryStream())
-        //        {
-        //            // Export as image (PNG)
-        //            var imageExport = new ImageExport();
-        //            webReport.Report.Export(imageExport, imageStream);
-        //            imageStream.Position = 0;
-
-        //            // Convert the image to PDF using PdfSharp
-        //            byte[] pdfBytes = ConvertImageToPdf(imageStream.ToArray());
-
-        //            // Send email with PDF attachment
-        //            _emailService.SendEmailAsync(
-        //                emailTo,
-        //                "Your Report",
-        //                "Please find attached the requested report.",
-        //                pdfBytes,
-        //                "Report.pdf").Wait();
-
-        //            return Content("Report sent successfully");
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        return Content($"Error: {ex.Message}");
-        //    }
-        //}
-        //private byte[] ConvertImageToPdf(byte[] imageBytes)
-        //{
-        //    using (MemoryStream pdfStream = new MemoryStream())
-        //    {
-        //        // Create a new PDF document
-        //        PdfDocument document = new PdfDocument();
-        //        PdfPage page = document.AddPage();
-
-        //        // Load the image
-        //        using (MemoryStream imageStream = new MemoryStream(imageBytes))
-        //        using (XImage image = XImage.FromStream(imageStream))
-        //        {
-        //            // Set page size to match image dimensions
-        //            page.Width = image.PointWidth;
-        //            page.Height = image.PointHeight;
-
-        //            // Draw the image on the PDF page
-        //            XGraphics gfx = XGraphics.FromPdfPage(page);
-        //            gfx.DrawImage(image, 0, 0, page.Width, page.Height);
-        //        }
-
-        //        // Save the PDF to memory stream
-        //        document.Save(pdfStream, false);
-        //        return pdfStream.ToArray();
-        //    }
-        //}
-
+        
         private byte[] ConvertImageToPdf(byte[] imageBytes)
         {
             // First ensure the image is in a supported format
@@ -369,20 +313,47 @@ namespace eTactWeb.Controllers
                 return pdfStream.ToArray();
             }
         }
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch { return false; }
+        }
         public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null,string CC1="",string CC2="",string CC3="",string Challanno="" )
         {
             var emailSettings = _iconfiguration.GetSection("EmailSettings");
-
+            emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com,bmrmobileapp2023@gmail.com";
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
-            mimeMessage.To.Add(MailboxAddress.Parse(emailTo));
+            //mimeMessage.To.Add(MailboxAddress.Parse("infotech.bmr@gmail.com"));
+            //mimeMessage.To.Add(MailboxAddress.Parse(CC1));
+            //mimeMessage.To.Add(MailboxAddress.Parse(CC2));
+            var toEmails = emailTo.Split(',')
+                              .Where(x => !string.IsNullOrWhiteSpace(x))
+                              .Select(x => x.Trim());
+
+            foreach (var email in toEmails)
+            {
+                if (IsValidEmail(email))
+                    mimeMessage.To.Add(MailboxAddress.Parse(email));
+            }
             mimeMessage.Subject = subject;
-            if (!string.IsNullOrWhiteSpace(CC1))
-                mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
+            //if (!string.IsNullOrWhiteSpace(CC1))
+            //    mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
             //if (!string.IsNullOrWhiteSpace(CC2))
             //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
             //if (!string.IsNullOrWhiteSpace(CC3))
             //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
+
+           // if (!string.IsNullOrWhiteSpace(CC1))
+              //  mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+            //if (!string.IsNullOrWhiteSpace(CC2))
+             //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+          //  if (!string.IsNullOrWhiteSpace(CC3))
+             //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
 
             var builder = new BodyBuilder();
             builder.HtmlBody = message;
