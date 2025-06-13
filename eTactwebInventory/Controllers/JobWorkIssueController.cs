@@ -217,16 +217,32 @@ namespace eTactWeb.Controllers
                         TempData["200"] = "200";
                         if (ShouldPrint == "true")
                         {
-                            return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            return Json(new
+                            {
+                                status = "Success",
+                                entryId = model.EntryId,
+                                yearCode = model.YearCode
+                            });
                         }
-                        return RedirectToAction(nameof(JobworkDashboard));
+                        //return RedirectToAction(nameof(JobworkDashboard));
+                        return Json(new { status = "Success" });
 
                     }
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
-                        return RedirectToAction(nameof(JobworkDashboard));
+                        if (ShouldPrint == "true")
+                        {
+                            return Json(new
+                            {
+                                status = "Success",
+                                entryId = model.EntryId,
+                                yearCode = model.YearCode
+                            });
+                        }
+                        //return RedirectToAction(nameof(JobworkDashboard));
+                        return Json(new { status = "Success" });
 
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -270,10 +286,12 @@ namespace eTactWeb.Controllers
                         string serializedTaxGrid = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
                         HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
 
-                        return View(MainModel);
+                        //return View(MainModel);
+                        return Json(new { status = "Success" });
                     }
                 }
-                return View(model);
+                //return View(model);
+                return Json(new { status = "Success" });
 
             }
             catch (Exception ex)

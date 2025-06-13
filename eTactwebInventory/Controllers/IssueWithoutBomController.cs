@@ -154,7 +154,12 @@ namespace eTactWeb.Controllers
                             TempData["200"] = "200";
                             if (ShouldPrint == "true")
                             {
-                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    yearCode = model.YearCode
+                                });
                             }
                             HttpContext.Session.Remove("KeyIssWOBomGrid");
                         }
@@ -172,7 +177,8 @@ namespace eTactWeb.Controllers
                             return View("Error", Result);
                         }
                     }
-                    return RedirectToAction("PendingRequisitionToIssue", "PendingRequisitionToIssue");
+                    //return RedirectToAction("PendingRequisitionToIssue", "PendingRequisitionToIssue");
+                    return Json(new { status = "Success" });
                 }
             }
             catch (Exception ex)
