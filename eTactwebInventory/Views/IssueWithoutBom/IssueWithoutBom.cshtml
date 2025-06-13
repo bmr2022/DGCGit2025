@@ -44,7 +44,7 @@
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="FromStoreBack" type="hidden" value="@Model.FromStoreBack" />
-                            <input type="hidden" id="ShouldPrint" name="ShouldPrint" value="false" />
+                            <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
 
                             @*<input asp-for="BackFlag" type="hidden" value="false"/>*@
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
@@ -535,24 +535,54 @@
             }
         });
 
-        $('#btnPrint').click(function () {
-            $('#ShouldPrint').val('true'); // set flag for printing
-            $('#PasswordAllowPopup').modal("hide");
+        // When user clicks "Print"
+$('#btnPrint').click(function () {
+    const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+    $('#PasswordAllowPopup').modal("hide");
 
-            setTimeout(() => {
-                $('form').submit();
-            }, 300);
-        });
+    setTimeout(() => {
+        submitForm(true, printWindow); // Send true and window object
+    }, 300);
+});
 
-        $('#btnClose').click(function () {
-            $('#ShouldPrint').val('false'); // set flag for no printing
-            $('#PasswordAllowPopup').modal("hide");
+// When user clicks "Close" or no print
+$('#btnClose').click(function () {
+    $('#PasswordAllowPopup').modal("hide");
 
-            setTimeout(() => {
-                $('form').submit();
-            }, 300);
-        });
+    setTimeout(() => {
+        submitForm(false, null); // no print
+    }, 300);
+});
 
+function submitForm(shouldPrint, printWindow) {
+    $('#ShouldPrint').val(shouldPrint); // Set hidden input
+    const formData = $('form').serialize(); // Properly serialize full form
+
+    $.ajax({
+        type: "POST",
+        url: $('form').attr('action'),
+        data: formData,
+        dataType: 'json', // Expect JSON response
+        success: function (res) {
+            console.log("Server response:", res);
+
+            if (res && res.status === "Success") {
+                if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                    const printUrl = '/IssueWithoutBom/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                    printWindow.location.href = printUrl;
+                }
+
+                window.location.href = '/PendingRequisitionToIssue/PendingRequisitionToIssue';
+            } else {
+                alert(res.message || "Something went wrong.");
+            }
+        },
+        error: function (xhr) {
+            console.error("Error occurred:", xhr.responseText);
+            alert("Save failed.");
+        }
+    });
+}
         function CheckStockBeforeSaving(i) {
 
             ICName = [];

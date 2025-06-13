@@ -1760,7 +1760,7 @@
             }
             if ($('#AdjustmentAmt').val() == 0) {
                 AddErrorCls('AdjustmentAmt');
-                $.notify("AdjustmentAmt is must be greater than 0.", "error");
+                $.notify("Amount must be greater than 0 in case of against ref", "error");
                 Err = 1;
             }
             else {
