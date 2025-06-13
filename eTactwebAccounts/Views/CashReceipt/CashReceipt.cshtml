@@ -679,11 +679,12 @@
 			$('#PRODSTATUSProdUnProdRej').rules("remove", "required");
 
 			if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-				FillEntryID();
+				
 				var date = $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 			var VoucherDate = $('#VoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 			var AgainstVoucherDate = $('#AgainstVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 			var soDate = $('#SoDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+			FillEntryID();
 			}
 
 						var finFromDate = $('#FromDate').val();
@@ -713,10 +714,14 @@
 			 $('#EntryDate').on('change', function () {
 			var entryDateVal = $(this).val(); // Get selected EntryDate
 			$('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
+			FillEntryID();
+			$('#divBankReceiptDetail').empty()
 		});
 		$('#VoucherDate').on('change', function () {
 			var voucherDateVal = $(this).val(); // Get selected EntryDate
 			$('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
+			FillEntryID();
+			$('#divBankReceiptDetail').empty()
 		});
 			$('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
 			$('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
