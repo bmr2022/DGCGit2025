@@ -430,7 +430,8 @@ namespace eTactWeb.Controllers
             ViewBag.EntryId = EntryId;
             ViewBag.YearCode = YearCode;
 
-            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            //if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            if (ReportName.Result.Result.Rows[0].ItemArray[0] is string s && s != "")
             {
                 webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
             }
@@ -559,19 +560,33 @@ namespace eTactWeb.Controllers
                             TempData["200"] = "200";
                             if (ShouldPrint == "true")
                             {
-                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    yearCode = model.YearCode
+                                });
                             }
                             HttpContext.Session.Remove("KeyIssueNRGPGrid");
                             HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
-                            return RedirectToAction("IssueNRGP");
+                            return Json(new { status = "Success" });
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
+                            if (ShouldPrint == "true")
+                            {
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    yearCode = model.YearCode
+                                });
+                            }
                             HttpContext.Session.Remove("KeyIssueNRGPGrid");
                             HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
-                            return RedirectToAction("IssueNRGP");
+                            return Json(new { status = "Success" });
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -621,7 +636,7 @@ namespace eTactWeb.Controllers
                     model.ChallanType = model.ChallanType;
                     model = await BindModel(model);
                     ModelState.Clear();
-                    return View(model);
+                    return Json(new { status = "Success" });
                 }
             }
             catch (Exception ex)

@@ -119,7 +119,7 @@
                         <div class="accordion-body">
                             <div class="row g-2 gx-3">
                                 <div class="col-xl-1 col-lg-1 col-md-1 col-sm-6 col-xs-12">
-                                    <input type="hidden" id="ShouldPrint" name="ShouldPrint" value="false" />
+                                    <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
                                     @* <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">*@
                                     <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
                                     <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
@@ -722,23 +722,54 @@
         });
 
         
-        $('#btnPrint').click(function () {
-            $('#ShouldPrint').val('true');
-            $('#PasswordAllowPopup').modal("hide");
+        // When user clicks "Print"
+$('#btnPrint').click(function () {
+    const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+    $('#PasswordAllowPopup').modal("hide");
 
-            setTimeout(() => {
-                $('form').submit();
-            }, 300);
-        });
+    setTimeout(() => {
+        submitForm(true, printWindow); // Send true and window object
+    }, 300);
+});
 
-        $('#btnClose').click(function () {
-            $('#ShouldPrint').val('false'); // set flag for no printing
-            $('#PasswordAllowPopup').modal("hide");
+// When user clicks "Close" or no print
+$('#btnClose').click(function () {
+    $('#PasswordAllowPopup').modal("hide");
 
-            setTimeout(() => {
-                $('form').submit();
-            }, 300);
-        });
+    setTimeout(() => {
+        submitForm(false, null); // no print
+    }, 300);
+});
+
+function submitForm(shouldPrint, printWindow) {
+    $('#ShouldPrint').val(shouldPrint); // Set hidden input
+    const formData = $('form').serialize(); // Properly serialize full form
+
+    $.ajax({
+        type: "POST",
+        url: $('form').attr('action'),
+        data: formData,
+        dataType: 'json', // Expect JSON response
+        success: function (res) {
+            console.log("Server response:", res);
+
+            if (res && res.status === "Success") {
+                if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                    const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                    printWindow.location.href = printUrl;
+                }
+
+                window.location.href = '/NRGP/Index';
+            } else {
+                alert(res.message || "Something went wrong.");
+            }
+        },
+        error: function (xhr) {
+            console.error("Error occurred:", xhr.responseText);
+            alert("Save failed.");
+        }
+    });
+}
         $('#UpdateButton').click(function (e) {
             e.preventDefault();
             if (!ValidateSubmit()) return;
