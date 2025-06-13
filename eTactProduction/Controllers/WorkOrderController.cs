@@ -22,6 +22,7 @@ using System.Runtime.Caching;
 using DocumentFormat.OpenXml.Bibliography;
 using System.Drawing.Printing;
 using ClosedXML.Excel;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace eTactWeb.Controllers
 {
@@ -192,6 +193,7 @@ namespace eTactWeb.Controllers
             JWGrid.Columns.Add("YearCode", typeof(int));
             JWGrid.Columns.Add("Entrydate", typeof(string));
             JWGrid.Columns.Add("Accountcode", typeof(int));
+            JWGrid.Columns.Add("ItemSeqNo", typeof(int));
             JWGrid.Columns.Add("SONO", typeof(string));
             JWGrid.Columns.Add("CustomerOrderNo", typeof(string));
             JWGrid.Columns.Add("SOYearCode", typeof(int));
@@ -261,6 +263,7 @@ namespace eTactWeb.Controllers
                     {1,2023,
                        ParseDate(Item.SODATE),
                     Item.Accountcode,
+                    Item.SeqNo,
                     Item.SONO,
                     Item.CustomerOrderNo,
                     Item.SOYearCode,
@@ -330,20 +333,29 @@ namespace eTactWeb.Controllers
             return PartialView("_WorkOrderGrid", MainModel);
         }
 
-        public async Task<JsonResult> EditItemRows(int SeqNo)
+        public async Task<JsonResult> EditItemRows(int seqNo,string mode)
         {
             try
             {
                 var MainModel = new WorkOrderModel();
                 string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
                 List<WorkOrderDetail> GridDetail = new List<WorkOrderDetail>();
+
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    //GridDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
-                    var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(modelJson);
-                    GridDetail = woModel.WorkDetailGrid.ToList();
+                    if (mode == "U")
+                    {
+                        GridDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                    }
+                    else
+                    {
+                        var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(modelJson);
+                        GridDetail = woModel.WorkDetailGrid.ToList();   
+                    }
                 }
-                var WOGrid = GridDetail.Where(x => x.SeqNo == SeqNo);
+
+                //var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(modelJson);
+                var WOGrid = GridDetail.Where(x => x.SeqNo == seqNo);
                 string JsonString = JsonConvert.SerializeObject(WOGrid);
                 return Json(JsonString);
             }catch (Exception ex)
@@ -951,14 +963,22 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public IActionResult DeleteItemRow(int SeqNo)
+        public IActionResult DeleteItemRow(int SeqNo,string mode)
         {
             var MainModel = new WorkOrderModel();
             string modelJson = HttpContext.Session.GetString("KeyWorkOrderGrid");
             List<WorkOrderDetail> WorkOrderDetail = new List<WorkOrderDetail>();
             if (!string.IsNullOrEmpty(modelJson))
             {
-                WorkOrderDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                if (mode == "U")
+                {
+                    WorkOrderDetail = JsonConvert.DeserializeObject<List<WorkOrderDetail>>(modelJson);
+                }
+                else
+                {
+                    var woModel = JsonConvert.DeserializeObject<WorkOrderModel>(modelJson);
+                    WorkOrderDetail = woModel.WorkDetailGrid.ToList();
+                }
             }
             
             int Indx = Convert.ToInt32(SeqNo) - 1;
