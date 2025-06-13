@@ -576,7 +576,7 @@ namespace eTactWeb.Data.DAL
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString().Split(" ")[0];
             model.SubVoucherName = DS.Tables[0].Rows[0]["SubVoucherName"].ToString();
             model.VoucherNo = DS.Tables[0].Rows[0]["VoucherNo"].ToString();
-            model.VoucherDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
+            model.VoucherDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString().Split(" ")[0];
             model.VoucherDocDate = DS.Tables[0].Rows[0]["VoucherDocdate"].ToString();
             model.Currency = DS.Tables[0].Rows[0]["Currency"].ToString();
             model.CurrencyId =Convert.ToInt32(DS.Tables[0].Rows[0]["CurrencyId"].ToString());

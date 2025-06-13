@@ -426,87 +426,48 @@ namespace eTactWeb.Controllers
                     }
 
                     var MainModel = new BankReceiptModel();
-                    var WorkOrderPGrid = new List<BankReceiptModel>();
-                    var OrderGrid = new List<BankReceiptModel>();
-                    var ssGrid = new List<BankReceiptModel>();
+                    var OrderGrid = BankReceiptGrid?.Where(x => x != null).ToList() ?? new List<BankReceiptModel>();
 
-                    var count = 0;
                     if (model != null)
                     {
-                        if (BankReceiptGrid == null)
+                        bool isDuplicate = false;
+
+                        if (model.BankType?.ToLower() == "bank")
                         {
-                            model.SrNO = 1;
-                            OrderGrid.Add(model);
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName || x.BankType == "Bank");
+                            if (isDuplicate) return StatusCode(210, "Duplicate");
                         }
-                        else
+                        else if (model.ModeOfAdjustment?.ToLower() == "new ref")
                         {
-                            if (model.BankType.ToLower() == "bank")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
-                                {
-                                    return StatusCode(210, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
-                            else if (model.ModeOfAdjustment.ToLower() == "new ref")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-                                {
-                                    return StatusCode(207, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
-                            else if (model.ModeOfAdjustment.ToLower() == "advance")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-                                {
-                                    return StatusCode(208, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
-                            else if (model.ModeOfAdjustment.ToLower() == "against ref")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
-                                {
-                                    return StatusCode(209, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
-
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment == model.ModeOfAdjustment);
+                            if (isDuplicate) return StatusCode(207, "Duplicate");
+                        }
+                        else if (model.ModeOfAdjustment?.ToLower() == "advance")
+                        {
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment == model.ModeOfAdjustment);
+                            if (isDuplicate) return StatusCode(208, "Duplicate");
+                        }
+                        else if (model.ModeOfAdjustment?.ToLower() == "against ref")
+                        {
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName && x.AgainstVoucherNo == model.AgainstVoucherNo);
+                            if (isDuplicate) return StatusCode(209, "Duplicate");
                         }
 
+                        // Assign the smallest missing SrNO
+                        var usedSrNOs = OrderGrid.Select(x => x.SrNO).OrderBy(x => x).ToList();
+                        int nextSrNo = 1;
+                        foreach (var num in usedSrNOs)
+                        {
+                            if (num == nextSrNo)
+                                nextSrNo++;
+                            else
+                                break;
+                        }
+                        model.SrNO = nextSrNo;
+
+                        OrderGrid.Add(model);
                         MainModel.BankReceiptGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
-
-                        string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReceiptGrid);
-                        HttpContext.Session.SetString("KeyBankReceiptGridEdit", serializedGrid);
+                        HttpContext.Session.SetString("KeyBankReceiptGridEdit", JsonConvert.SerializeObject(MainModel.BankReceiptGrid));
                     }
                     else
                     {
@@ -524,85 +485,48 @@ namespace eTactWeb.Controllers
                     }
 
                     var MainModel = new BankReceiptModel();
-                    var WorkOrderPGrid = new List<BankReceiptModel>();
-                    var OrderGrid = new List<BankReceiptModel>();
-                    var ssGrid = new List<BankReceiptModel>();
+                    var OrderGrid = BankReceiptGrid?.Where(x => x != null).ToList() ?? new List<BankReceiptModel>();
 
                     if (model != null)
                     {
-                        if (BankReceiptGrid == null)
+                        bool isDuplicate = false;
+
+                        if (model.BankType?.ToLower() == "bank")
                         {
-                            model.SrNO = 1;
-                            OrderGrid.Add(model);
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName || x.BankType == "Bank");
+                            if (isDuplicate) return StatusCode(210, "Duplicate");
                         }
-                        else
+                        else if (model.ModeOfAdjustment?.ToLower() == "new ref")
                         {
-                            if (model.BankType.ToLower() == "bank")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) || x.BankType == "Bank"))
-                                {
-                                    return StatusCode(210, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
-                            else if (model.ModeOfAdjustment.ToLower() == "new ref")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-                                {
-                                    return StatusCode(207, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
-                            else if (model.ModeOfAdjustment.ToLower() == "advance")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && (x.ModeOfAdjustment == model.ModeOfAdjustment)))
-                                {
-                                    return StatusCode(208, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
-                            else if (model.ModeOfAdjustment.ToLower() == "against ref")
-                            {
-                                if (BankReceiptGrid.Any(x => (x.LedgerName == model.LedgerName) && x.AgainstVoucherNo == model.AgainstVoucherNo))
-                                {
-                                    return StatusCode(209, "Duplicate");
-                                }
-                                else
-                                {
-                                    model.SrNO = BankReceiptGrid.Count + 1;
-                                    OrderGrid = BankReceiptGrid.Where(x => x != null).ToList();
-                                    ssGrid.AddRange(OrderGrid);
-                                    OrderGrid.Add(model);
-
-                                }
-                            }
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment == model.ModeOfAdjustment);
+                            if (isDuplicate) return StatusCode(207, "Duplicate");
+                        }
+                        else if (model.ModeOfAdjustment?.ToLower() == "advance")
+                        {
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName && x.ModeOfAdjustment == model.ModeOfAdjustment);
+                            if (isDuplicate) return StatusCode(208, "Duplicate");
+                        }
+                        else if (model.ModeOfAdjustment?.ToLower() == "against ref")
+                        {
+                            isDuplicate = OrderGrid.Any(x => x.LedgerName == model.LedgerName && x.AgainstVoucherNo == model.AgainstVoucherNo);
+                            if (isDuplicate) return StatusCode(209, "Duplicate");
                         }
 
+                        // Assign the smallest missing SrNO
+                        var usedSrNOs = OrderGrid.Select(x => x.SrNO).OrderBy(x => x).ToList();
+                        int nextSrNo = 1;
+                        foreach (var num in usedSrNOs)
+                        {
+                            if (num == nextSrNo)
+                                nextSrNo++;
+                            else
+                                break;
+                        }
+                        model.SrNO = nextSrNo;
+
+                        OrderGrid.Add(model);
                         MainModel.BankReceiptGrid = OrderGrid.OrderBy(x => x.SrNO).ToList();
-
-                        string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReceiptGrid);
-                        HttpContext.Session.SetString("KeyBankReceiptGrid", serializedGrid);
+                        HttpContext.Session.SetString("KeyBankReceiptGrid", JsonConvert.SerializeObject(MainModel.BankReceiptGrid));
                     }
                     else
                     {
@@ -734,11 +658,13 @@ namespace eTactWeb.Controllers
         }
         public IActionResult DeleteItemRow(int SeqNo, string Mode, string PopUpData)
         {
+            var MainModel = new BankReceiptModel();
+
             if (PopUpData == "PopUpData")
             {
-                var MainModel = new BankReceiptModel();
                 string modelJson = HttpContext.Session.GetString("KeyBankReceiptGridPopUpData");
                 List<BankReceiptModel> BankReceiptGrid = new List<BankReceiptModel>();
+
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     BankReceiptGrid = JsonConvert.DeserializeObject<List<BankReceiptModel>>(modelJson);
@@ -746,29 +672,26 @@ namespace eTactWeb.Controllers
 
                 int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
+                if (BankReceiptGrid != null && BankReceiptGrid.Count > 0 && Indx >= 0 && Indx < BankReceiptGrid.Count)
                 {
-                    BankReceiptGrid.RemoveAt(Convert.ToInt32(Indx));
-                    Indx = 0;
+                    BankReceiptGrid.RemoveAt(Indx);
 
-                    foreach (var item in BankReceiptGrid)
-                    {
-                        Indx++;
-                    }
+                    // Don't update SrNO — keep as is
                     MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
 
                     string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReceiptGrid);
                     HttpContext.Session.SetString("KeyBankReceiptGridPopUpData", serializedGrid);
                 }
+
                 return PartialView("_DisplayPopupForPendingVouchers", MainModel);
             }
             else
             {
-                var MainModel = new BankReceiptModel();
                 if (Mode != "U" && Mode != "V")
                 {
                     string modelJson = HttpContext.Session.GetString("KeyBankReceiptGrid");
                     List<BankReceiptModel> BankReceiptGrid = new List<BankReceiptModel>();
+
                     if (!string.IsNullOrEmpty(modelJson))
                     {
                         BankReceiptGrid = JsonConvert.DeserializeObject<List<BankReceiptModel>>(modelJson);
@@ -776,16 +699,11 @@ namespace eTactWeb.Controllers
 
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                    if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
+                    if (BankReceiptGrid != null && BankReceiptGrid.Count > 0 && Indx >= 0 && Indx < BankReceiptGrid.Count)
                     {
-                        BankReceiptGrid.RemoveAt(Convert.ToInt32(Indx));
-                        Indx = 0;
+                        BankReceiptGrid.RemoveAt(Indx);
 
-                        foreach (var item in BankReceiptGrid)
-                        {
-                            Indx++;
-                            item.SrNO = Indx;
-                        }
+                        // Don't update SrNO — keep as is
                         MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReceiptGrid);
@@ -796,6 +714,7 @@ namespace eTactWeb.Controllers
                 {
                     string modelJson = HttpContext.Session.GetString("KeyBankReceiptGridEdit");
                     List<BankReceiptModel> BankReceiptGrid = new List<BankReceiptModel>();
+
                     if (!string.IsNullOrEmpty(modelJson))
                     {
                         BankReceiptGrid = JsonConvert.DeserializeObject<List<BankReceiptModel>>(modelJson);
@@ -803,22 +722,18 @@ namespace eTactWeb.Controllers
 
                     int Indx = Convert.ToInt32(SeqNo) - 1;
 
-                    if (BankReceiptGrid != null && BankReceiptGrid.Count > 0)
+                    if (BankReceiptGrid != null && BankReceiptGrid.Count > 0 && Indx >= 0 && Indx < BankReceiptGrid.Count)
                     {
-                        BankReceiptGrid.RemoveAt(Convert.ToInt32(Indx));
-                        Indx = 0;
+                        BankReceiptGrid.RemoveAt(Indx);
 
-                        foreach (var item in BankReceiptGrid)
-                        {
-                            Indx++;
-                            item.SrNO = Indx;
-                        }
+                        // Don't update SrNO — keep as is
                         MainModel.BankReceiptGrid = BankReceiptGrid.OrderBy(x => x.SrNO).ToList();
 
                         string serializedGrid = JsonConvert.SerializeObject(MainModel.BankReceiptGrid);
                         HttpContext.Session.SetString("KeyBankReceiptGridEdit", serializedGrid);
                     }
                 }
+
                 return PartialView("_BankReceiptGrid", MainModel);
             }
         }

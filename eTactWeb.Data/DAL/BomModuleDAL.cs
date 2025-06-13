@@ -197,7 +197,9 @@ namespace eTactWeb.Data.DAL
                             model.CreatedByName = oDataTable.Rows[0]["CreatedByName"].ToString();
                             model.UID = oDataTable.Rows[0]["CreatedByName"].ToString();
                             model.CreatedBy = Convert.ToInt32(oDataTable.Rows[0]["CreatedBy"]);
-                            model.CreatedOn = Convert.ToDateTime(oDataTable.Rows[0]["CreatedOn"]);
+                            model.CreatedOn = oDataTable.Rows[0]["CreatedOn"] != DBNull.Value
+    ? Convert.ToDateTime(oDataTable.Rows[0]["CreatedOn"])
+    : (DateTime?)null;
                             model.CC = oDataTable.Rows[0]["CC"]?.ToString();
                             model.UID = oDataTable.Rows[0]["UID"].ToString();
                             if (!string.IsNullOrEmpty(oDataTable.Rows[0]["UpdatedByName"].ToString()))

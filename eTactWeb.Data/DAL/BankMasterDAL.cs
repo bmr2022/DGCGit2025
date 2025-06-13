@@ -163,9 +163,9 @@ namespace eTactWeb.Data.DAL
                         _BankMasterModel.BankAddress = dr["BankAddress"].ToString();
                         _BankMasterModel.BankIFSCCode = dr["BankIFSCCode"].ToString();
                         _BankMasterModel.BankSwiftCode = dr["BankSwiftCode"].ToString();
-                        _BankMasterModel.salesperson_name = dr["salesperson_name"].ToString();
-                        _BankMasterModel.salesemailid = dr["salesemailid"].ToString();
-                        _BankMasterModel.salesmobileno = dr["salesmobileno"].ToString();
+                        _BankMasterModel.salesperson_name = dr["SalesPersonName"].ToString();
+                        _BankMasterModel.salesemailid = dr["SalesPersonEmailId"].ToString();
+                        _BankMasterModel.salesmobileno = dr["SalesPersonMobile"].ToString();
                         _BankMasterModel.Approved_By = dr["Approved_By"].ToString();
                         _BankMasterModel.Approved = dr["Approved"].ToString();
                         _BankMasterModel.ApprovalDate = dr["ApprovalDate"].ToString();
@@ -174,7 +174,9 @@ namespace eTactWeb.Data.DAL
                         _BankMasterModel.CC = dr["CC"].ToString();
                         _BankMasterModel.CreatedBy = Convert.ToInt32(dr["CreatedBy"]);
                         _BankMasterModel.CreatedOn = Convert.ToDateTime(dr["CreatedOn"]);
-                        _BankMasterModel.CreatedByName = dr["UserName"].ToString();
+                        _BankMasterModel.CreatedByName = dr["CreatedByName"].ToString();
+                        _BankMasterModel.UpdatedBy = dr["UpdatedBy"] == DBNull.Value ? 0 : Convert.ToInt32(dr["UpdatedBy"]);
+                        _BankMasterModel.UpdatedByName = dr["UpdatedByName"].ToString();
                     }
                 }
             }

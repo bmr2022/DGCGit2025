@@ -32,17 +32,17 @@ namespace eTactWeb.Controllers
             model.OrderBasedProdPlanList = new List<OrderBasedProdPlanModel>();
             return View(model);
         }
-        public async Task<JsonResult> FillSONO_OrderNO_SchNo(string FromDate, string ToDate)
+        public async Task<JsonResult> FillSONO_OrderNO_SchNo(string FromDate, string ToDate, int ForTheMonth)
         {
-            var result = await _IOrderBasedProdPlan.FillSONO_OrderNO_SchNo(FromDate, ToDate);
+            var result = await _IOrderBasedProdPlan.FillSONO_OrderNO_SchNo(FromDate, ToDate,  ForTheMonth);
             //return Json(new { StatusCode = 200, StatusText = "Success", Result = result }); 
             return Json(result);
         }
-        public async Task<IActionResult> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode, int pageNumber = 1, int pageSize = 20, string SearchBox = "")
+        public async Task<IActionResult> GetOrderBasedProdPlanData(string FromDate, string ToDate, string ReportType, int AccountCode, string PartCode, string ItemName, int ItemCode, int ForTheMonth, int WCID, int pageNumber = 1, int pageSize = 20, string SearchBox = "")
         {
             var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var model = new OrderBasedProdPlanModel();
-            model = await _IOrderBasedProdPlan.GetOrderBasedProdPlanData(FromDate, ToDate, ReportType, AccountCode, PartCode, ItemName, ItemCode);
+            model = await _IOrderBasedProdPlan.GetOrderBasedProdPlanData(FromDate, ToDate, ReportType, AccountCode, PartCode, ItemName, ItemCode,  ForTheMonth,  WCID);
             model.ReportMode = ReportType;
             var modelList = model?.OrderBasedProdPlanList ?? new List<OrderBasedProdPlanModel>();
 
@@ -209,7 +209,9 @@ namespace eTactWeb.Controllers
             string[] headers = {
                 "Sr#", "PartCode", "ItemName", "WCName", "1", "2", "3",
                 "4", "5", "6", "7", "8", "9",
-                "10", "11", "18"
+                "10", "11", "12", "13", "14", "15", "16", "17", "18", "19", "20",
+    "21", "22", "23", "24", "25", "26", "27", "28", "29",
+    "30", "31"
             };
 
 
@@ -234,8 +236,28 @@ namespace eTactWeb.Controllers
                 sheet.Cell(row, 13).Value = item.Day9;
                 sheet.Cell(row, 14).Value = item.Day10;
                 sheet.Cell(row, 15).Value = item.Day11;
-                sheet.Cell(row, 16).Value = item.Day18;
-               
+                sheet.Cell(row, 16).Value = item.Day12;
+                sheet.Cell(row, 17).Value = item.Day13;
+                sheet.Cell(row, 18).Value = item.Day14;
+                sheet.Cell(row, 19).Value = item.Day15;
+                sheet.Cell(row, 20).Value = item.Day16;
+                sheet.Cell(row, 21).Value = item.Day17;
+                sheet.Cell(row, 22).Value = item.Day18;
+                sheet.Cell(row, 23).Value = item.Day19;
+                sheet.Cell(row, 24).Value = item.Day20;
+                sheet.Cell(row, 25).Value = item.Day21;
+                sheet.Cell(row, 26).Value = item.Day22;
+                sheet.Cell(row, 27).Value = item.Day23;
+                sheet.Cell(row, 28).Value = item.Day24;
+                sheet.Cell(row, 29).Value = item.Day25;
+                sheet.Cell(row, 30).Value = item.Day26;
+                sheet.Cell(row, 31).Value = item.Day27;
+                sheet.Cell(row, 32).Value = item.Day28;
+                sheet.Cell(row, 33).Value = item.Day29;
+                sheet.Cell(row, 34).Value = item.Day30;
+                sheet.Cell(row, 35).Value = item.Day31;
+
+
 
                 row++;
             }

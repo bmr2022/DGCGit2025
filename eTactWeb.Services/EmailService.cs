@@ -14,7 +14,7 @@ namespace eTactWeb.Services
             _configuration = configuration;
         }
 
-        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null)
+        public async Task SendEmailAsync(string emailTo, string subject, string CC1, string CC2, string CC3, string message, byte[] attachment = null, string attachmentName = null)
         {
             var emailSettings = _configuration.GetSection("EmailSettings");
 
