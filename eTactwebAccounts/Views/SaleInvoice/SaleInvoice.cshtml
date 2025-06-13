@@ -4,6 +4,12 @@
     ViewData["Title"] = "SaleInvoice";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+@{
+    var saleBillModelJson = TempData["SaleBillModelJson"] as string;
+    var saleBillModel = !string.IsNullOrEmpty(saleBillModelJson)
+        ? Newtonsoft.Json.JsonConvert.DeserializeObject<SaleBillModel>(saleBillModelJson)
+        : new SaleBillModel();
+}
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_saleBillDisplaySODetail" />
     <partial name="_SaleBillTaxPassword" />
@@ -392,6 +398,43 @@
         </div>
     </form>
 </div>
+<div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do you want to generate E-Invoice now?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
+                       yes
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnClose">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 @* <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -418,7 +461,39 @@
     <script>
 
         $(document).ready(function () {
+             var showEinvoicePopup = '@TempData["EinvoicePopup"]';
 
+            if (showEinvoicePopup === 'true') {
+                $('#EinvoicePopup').modal('show');
+            }
+
+            $('#btnClose').click(function () {
+                $('#EinvoicePopup').modal('hide');
+            });
+             $('#btngenrateEinvoice').click(function (e) {
+                e.preventDefault();
+                 const model = {
+                saleBillEntryId: '@saleBillModel.SaleBillEntryId',
+                invoiceNo: '@saleBillModel.SaleBillNo',
+                yearCode: '@saleBillModel.SaleBillYearCode',
+                saleBillType: '',
+                customerPartCode: '@saleBillModel.PartCode'
+            };
+                $.ajax({
+                    url: "@Url.Action("GenerateInvoice")",
+                    method: 'POST',
+                    contentType: 'application/json',
+                    data: JSON.stringify(model),
+                    success: function (res) {
+                        alert('E-Invoice Generated Successfully');
+                        $('#EinvoicePopup').modal('hide');
+                    },
+                    error: function () {
+                        alert('Failed to generate E-Invoice.');
+                    }
+                });
+            });
+        });
             GetServerDate();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
