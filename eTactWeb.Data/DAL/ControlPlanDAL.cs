@@ -392,5 +392,37 @@ namespace eTactWeb.Data.DAL
                 throw;
             }
         }
+        public async Task<ControlPlanModel> GetByItemOrPartCode(int ItemCode)
+        {
+            var model = new ControlPlanModel();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@flag", "VIEWBYDASHBOARD")
+        };
+
+                if (ItemCode > 0)
+                    SqlParams.Add(new SqlParameter("@ItemCode", ItemCode));
+
+               
+
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPQCControlPlanMain", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
     }
 }

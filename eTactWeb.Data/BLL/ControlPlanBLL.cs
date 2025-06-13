@@ -62,6 +62,11 @@ namespace eTactWeb.Data.BLL
         public async Task<ControlPlanModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
         {
             return await _ControlPlanDAL.GetViewByID(ID, YC, FromDate, ToDate);
+        } 
+        public async Task<ControlPlanModel> GetByItemOrPartCode(int ItemCode)
+        {
+            return await _ControlPlanDAL.GetByItemOrPartCode( ItemCode);
         }
+
     }
 }
