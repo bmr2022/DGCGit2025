@@ -31,11 +31,11 @@ namespace eTactWeb.Controllers
         public async Task<ActionResult> ControlPlan(int ID, string Mode, int YC,string FromDate,string ToDate, string EntryDate, string ItemName, string PartCode,
             int SeqNo, string Characteristic, string EvalutionMeasurmentTechnique, string SpecificationFrom, string Operator,
 string SpecificationTo, string FrequencyofTesting, string InspectionBy, string ControlMethod, string RejectionPlan,
-string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePath
+string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePath,int ItemCode
 )
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-
+            bool IsFromItemCode = false;
             // Clear TempData and set session variables
             TempData.Clear();
             var MainModel = new ControlPlanModel();
@@ -51,7 +51,25 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
 
             HttpContext.Session.Remove("KeyControlPlanGrid");
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (string.IsNullOrEmpty(Mode) && ID == 0 && ItemCode > 0)
+            {
+                MainModel = await _IControlPlan.GetByItemOrPartCode(ItemCode);
+
+                if (MainModel != null && MainModel.CntPlanEntryId > 0)
+                {
+                    return RedirectToAction("ControlPlan", new
+                    {
+                        ID = MainModel.CntPlanEntryId,
+                        YC = MainModel.Yearcode,
+                        Mode = "U",
+                        EntryDate = MainModel.CntPlanEntryDate,
+                        ItemCode = ItemCode
+                    });
+                }
+            }
+
+
+            if (!IsFromItemCode && !string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
                 
                 
