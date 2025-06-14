@@ -1670,7 +1670,7 @@ namespace eTactWeb.Controllers
             try
             {
                 var response = await _IProductionEntry.FillProductDetail(FGItemCode, FgProdQty, BomNo);
-                model.ScrapDetailGrid = response.ScrapDetailGrid;
+                model.ProductDetailGrid = response.ProductDetailGrid;
             }
             catch (Exception ex)
             {

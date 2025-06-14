@@ -1857,6 +1857,49 @@ function submitForm(shouldPrint, printWindow) {
                     }
                 });
             }
+            function GetGateMainData() {
+            var dataParams = {
+                "GateNo": $('#GateNo').val(),
+                "GateYearCode": $('#GateYearCode').val(),
+                "GateEntryId": parseInt($('#GateEntry').val())
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateMainData")",
+                data: dataParams,
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#GateDate').val(val.GDate);
+                                $('#AccountCode').val(val.account_name);
+                                $('#Address').val(val.address);
+                                $('#DocType').val(val.DocName);
+                                $('#InvoiceNo').val(val.Invoiceno);
+                                $('#InvoiceDate').val(val.InvoiceDate);
+                                $('#DOCID').val(val.docTypeId);
+                                $('#AccountID').val(val.AccountCode);
+                                $('#CheckQC').val(val.checkQC);
+                                $('#RecInStore').val(val.RecInStore);
+                                $('#RecStoreId').val(val.StoreId);
+                                $('#CurrencyID').val(val.CurrencyId);
+                                $('#CurrencyName').val(val.CurrencyName);
+                                $('#TotalAmt').val(val.TotalAmt);
+                                $('#NetAmt').val(val.NetAmt);
+                                $('#NetWeight').val(val.NetWeight);
+                                $('#TareWeight').val(val.TareWeight);
+                                $('#Remark').val(val.Remark);
+                                $('#GrossWeight').val(val.GrossWeight);
+                                $('#ModeOfTransport').val(val.ModeOftransport);
+                            });
+                        }
+                    }
+                }
+            });
+            }
 
             $('#GateYearCode').change(function () {
                 ClearGridAjax();
@@ -1869,47 +1912,7 @@ function submitForm(shouldPrint, printWindow) {
                 return; // Prevent unnecessary/failing AJAX call
             }
                 $('#CC').val($(this).find(":selected").data('branch'));
-                var dataParams = {
-                    "GateNo": $('#GateNo').val(),
-                    "GateYearCode": $('#GateYearCode').val(),
-                    "GateEntryId": parseInt($('#GateEntry').val())
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("GetGateMainData")",
-                    data: dataParams,
-                    async: false,
-                    success: function (result, status, error) {
-                        if (result != null) {
-
-                            var obj = $.parseJSON(result);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $.each(obj.Result, function (index, val) {
-                                    $('#GateDate').val(val.GDate);
-                                    $('#AccountCode').val(val.account_name);
-                                    $('#Address').val(val.address);
-                                    $('#DocType').val(val.DocName);
-                                    $('#InvoiceNo').val(val.Invoiceno);
-                                    $('#InvoiceDate').val(val.InvoiceDate);
-                                    $('#DOCID').val(val.docTypeId);
-                                    $('#AccountID').val(val.AccountCode);
-                                    $('#CheckQC').val(val.checkQC);
-                                    $('#RecInStore').val(val.RecInStore);
-                                    $('#RecStoreId').val(val.StoreId);
-                                    $('#CurrencyID').val(val.CurrencyId);
-                                    $('#CurrencyName').val(val.CurrencyName);
-                                    $('#TotalAmt').val(val.TotalAmt);
-                                    $('#NetAmt').val(val.NetAmt);
-                                    $('#NetWeight').val(val.NetWeight);
-                                    $('#TareWeight').val(val.TareWeight);
-                                    $('#Remark').val(val.Remark);
-                                    $('#GrossWeight').val(val.GrossWeight);
-                                    $('#ModeOfTransport').val(val.ModeOftransport);
-                                });
-                            }
-                        }
-                    }
-                });
+                GetGateMainData();
                 GetgateItemdata();
 
             });

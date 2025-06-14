@@ -861,7 +861,7 @@
                                                     <th>Product Type</th>
                                                     <th>Product Qty</th>
                                                     <th>Product Unit</th>
-                                                    <th>Store/WC</th>
+                                                    
                                                     <th>Transfer to WC or Store</th>
                                                 </tr>
                                             </thead>
@@ -2332,15 +2332,15 @@
         }
 
         function FillProductDetail() {
-
+            $('#divProductDetailGrid').empty();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FillProductDetail")",
                 data: { "FGItemCode": parseInt($('#FGItemCode').val()), "FgProdQty": parseFloat($('#ProdQty').val()), "BomNo": $('#BOMNo').val() },
                 async: false,
                 success: function (data) {
-
-                    $('#divProductDetailGrid').empty().append(data);
+                    console.log("Product Data" + data);
+                    $('#divProductDetailGrid').append(data);
                 }
             });
         }

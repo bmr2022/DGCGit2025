@@ -844,14 +844,14 @@ public class ProductionEntryDAL
             }
             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
             {
-                model.ScrapDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                model.ProductDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                          select new ProductionEntryItemDetail
                                          {
                                              ProductItemCode = string.IsNullOrEmpty(dr["ProdItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ProdItemCode"].ToString()),
                                              ProductPartCode = dr["ProdPartCode"].ToString() ?? "",
                                              ProductItemName = dr["ProdItemName"].ToString() ?? "",
                                              ProductQty = string.IsNullOrEmpty(dr["Prodwt"].ToString()) ? 0 : Convert.ToDecimal(dr["Prodwt"].ToString()),
-                                             ProdType = dr["ProdType"].ToString() ?? "",
+                                             ProductType = dr["ProdType"].ToString() ?? "",
                                              Productunit = dr["Produnit"].ToString() ?? "",
                                              ProductStore = dr["StoreName"].ToString() ?? "",
                                             
