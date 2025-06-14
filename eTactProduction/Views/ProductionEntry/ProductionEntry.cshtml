@@ -382,6 +382,9 @@
                                     </button>
                                     <button class="btn btn-sm btn-outline-warning bg-gradient" id="displaylistbutton" onclick="DisplayBomDetail(event)" style="margin-left:0px;margin-top:10px;"><i class="fa fa-list-alt fafw fa-lg"></i> Bom</button>
                                     <button class="btn btn-sm btn-outline-success bg-gradient" id="displayroutingdata" onclick="DisplayRoutingData(event)" style="margin-left:0px;margin-top:10px;"><i class="fa fa-list-alt fafw fa-lg"></i> Routing</button>
+                                    <span id="productDetailAlert" style="display:none; color:white; background-color:red; padding:2px 6px; font-size:12px; border-radius:4px;">Product detail</span>
+                                    <span id="scrapDetailAlert" style="display:none; color:white; background-color:green; padding:2px 6px; font-size:12px; border-radius:4px;">Product detail</span>
+
                                 </div>
                             </div>
                         </div>
@@ -1797,6 +1800,24 @@
             document.getElementById('ProdQty').value = value;
             FillScrapData();
             FillProductDetail();
+
+            const grid = document.getElementById('divProductDetailGrid');
+            const alertBox = document.getElementById('productDetailAlert');
+
+            if (grid && grid.innerHTML.trim() !== "") {
+                alertBox.style.display = "inline-block";
+            } else {
+                alertBox.style.display = "none";
+            }
+
+            const Scrapgrid = document.getElementById('divScrapDetailGrid');
+            const ScrapalertBox = document.getElementById('scrapDetailAlert');
+
+            if (Scrapgrid && Scrapgrid.innerHTML.trim() !== "") {
+                ScrapalertBox.style.display = "inline-block";
+            } else {
+                ScrapalertBox.style.display = "none";
+            }
         });
 
         $('#ProdAgainstPlanManual').select2();
