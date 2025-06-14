@@ -43,9 +43,11 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
                    
                 }
-
+                var entDate = CommonFunc.ParseFormattedDate(model.Entry_Date);
+                var ActentDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var upDate = CommonFunc.ParseFormattedDate(model.LastUpdationDate);
                 SqlParams.Add(new SqlParameter("@CntPlanEntryId", model.CntPlanEntryId));
-                SqlParams.Add(new SqlParameter("@CntPlanEntryDate", model.Entry_Date));
+                SqlParams.Add(new SqlParameter("@CntPlanEntryDate", entDate));
                 SqlParams.Add(new SqlParameter("@CntPlanYearCode", model.CntPlanYearCode));
                 SqlParams.Add(new SqlParameter("@ControlPlanNo", model.Control_PlanNo ?? ""));
                 SqlParams.Add(new SqlParameter("@RevNo", model.RevNo ?? ""));
@@ -58,9 +60,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CC", model.CC ?? ""));
                 SqlParams.Add(new SqlParameter("@UId", model.UId));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActentDate));
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", model.LastUpdationDate));
+                SqlParams.Add(new SqlParameter("@LastUpdationDate", upDate));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? ""));
 
                 SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));

@@ -745,10 +745,15 @@
                 $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
 
                 var fullDate = $('#EntryDate').val();                 
-                var dateOnly = fullDate.split(' ')[0];                
-                $('#EntryDate').val(dateOnly);
-                $('#EntryDate').datepicker({
-                    dateFormat: 'dd-mm-yy' 
+                /* var dateOnly = fullDate.split(' ')[0]; */
+                $('#EntryDate').val(fullDate);
+                $('#EntryDate ,#PODate,#ScheduleDate,#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate').on('focus mouseenter', function () {
+                    $(this).datepicker({
+                        dateFormat: 'dd/mm/yy',
+                        changeMonth: true,
+                        changeYear: true
+                        
+                    }).datepicker('show');
                 });
 
             }

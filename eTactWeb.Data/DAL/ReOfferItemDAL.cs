@@ -618,5 +618,155 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+
+        internal async Task<ReOfferItemModel> GetViewByID(int ID, string Mode, int YC)
+        {
+            var model = new ReOfferItemModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@ReofferEntryId", ID));
+                SqlParams.Add(new SqlParameter("@ReofferYearcode", YC));
+
+                var ResponseResult = await _IDataLogic.ExecuteDataSet("SPReofferMIRMainDetail", SqlParams);
+
+                if (ResponseResult.Result != null && ResponseResult.StatusCode == HttpStatusCode.OK && ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(ResponseResult.Result, ref model, Mode);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        private static ReOfferItemModel PrepareView(DataSet DS, ref ReOfferItemModel? model, string Mode)
+        {
+            var ItemList = new List<ReofferItemDetail>();
+
+            DS.Tables[0].TableName = "ReofferMIRMain";
+            DS.Tables[1].TableName = "ReofferMIRDetail";
+
+            var mainRow = DS.Tables[0].Rows[0];
+
+            model.ReofferEntryId = Convert.ToInt32(mainRow["ReofferEntryId"]);
+            model.ReofferYearcode = Convert.ToInt32(mainRow["ReofferYearcode"]);
+            model.ReofferNo = mainRow["ReofferNo"].ToString();
+            model.ReofferEntrydate = mainRow["ReofferEntrydate"].ToString();
+            model.QcType = mainRow["QcType"].ToString();
+            model.MirEntryid = Convert.ToInt32(mainRow["MirEntryid"]);
+            model.MIRNo = mainRow["MIRNo"].ToString();
+            model.MIRDate = mainRow["MIRDate"].ToString();
+            model.MIRYearCode = Convert.ToInt32(mainRow["MIRYearCode"]);
+            model.MRNNO = mainRow["MRNNO"].ToString();
+            model.MRNDate = mainRow["MRNDate"].ToString();
+            model.MrnYearCode = Convert.ToInt32(mainRow["MrnYearCode"]);
+            model.MRNJOBWORK = mainRow["MRNJOBWORK"].ToString();
+            model.BillNo = mainRow["BillNo"].ToString();
+            model.BillDate = mainRow["BillDate"].ToString();
+            model.HoldRejrewStatus = mainRow["HoldRejrewStatus"].ToString();
+            model.AccountName = mainRow["Account_Name"].ToString();
+            model.AccountCode = Convert.ToInt32(mainRow["AccountCode"]);
+            model.QCStore = Convert.ToInt32(mainRow["QCStore"]);
+            model.CC = mainRow["CC"].ToString();
+            model.EnteredByEmpId = Convert.ToInt32(mainRow["EnteredByEmpId"]);
+            model.EnteredByEmpName = mainRow["ActualEnteredByName"].ToString();
+            model.ActualEntryDate = mainRow["ActualEntryDate"].ToString();
+            model.ActualEnteredBy = Convert.ToInt32(mainRow["ActualEnteredBy"]);
+            model.EntryByMachineName = mainRow["EntryByMachineName"].ToString();
+            model.UpdatedBy = mainRow["UpdatedBy"] != DBNull.Value ? Convert.ToInt32(mainRow["UpdatedBy"]) : (int?)null;
+            model.UpdatedByName = mainRow["UpdatedByName"].ToString();
+            model.UpdatedOn = mainRow["UpdatedOn"].ToString();
+
+            foreach (DataRow row in DS.Tables[1].Rows)
+            {
+                var detail = new ReofferItemDetail
+                {
+                    SeqNo = Convert.ToInt32(row["SeqNo"]),
+                    PONo = row["PONo"].ToString(),
+                    POYearCode = Convert.ToInt32(row["POYearCode"]),
+                    SchNo = row["SchNo"].ToString(),
+                    SchYearCode = Convert.ToInt32(row["SchYearCode"]),
+                    MRNno = row["MRNno"].ToString(),
+                    mrnYearCode = Convert.ToInt32(row["mrnYearCode"]),
+                    MRNJWCUSTJW = row["MRNJWCUSTJW"].ToString(),
+                    Itemcode = Convert.ToInt32(row["Itemcode"]),
+                    ItemName = row["ItemName"].ToString(),
+                    PartCode = row["PartCode"].ToString(),
+                    Unit = row["Unit"].ToString(),
+                    AltUnit = row["AltUnit"].ToString(),
+                    BillQty = Convert.ToDecimal(row["BillQty"]),
+                    RecQty = Convert.ToDecimal(row["RecQty"]),
+                    AltRecQty = Convert.ToDecimal(row["AltRecQty"]),
+                    PrevAcceptedQty = Convert.ToDecimal(row["PrevAcceptedQty"]),
+                    AcceptedQty = Convert.ToDecimal(row["AcceptedQty"]),
+                    AltAcceptedQty = Convert.ToDecimal(row["AltAcceptedQty"]),
+                    PrevOkRecStore = Convert.ToInt32(row["PrevOkRecStore"]),
+                    PrevOkRecStoreName = row["PrevOkRecStoreName"].ToString(),
+                    OkRecStore = Convert.ToInt32(row["OkRecStore"]),
+                    OkRecStoreName = row["OkRecStoreName"].ToString(),
+                    PrevDeviationQty = Convert.ToDecimal(row["PrevDeviationQty"]),
+                    DeviationQty = Convert.ToDecimal(row["DeviationQty"]),
+                    ResponsibleEmpForDeviation = Convert.ToInt32(row["ResponsibleEmpForDeviation"]),
+                    PreviousRejectedQty = Convert.ToDecimal(row["PreviousRejectedQty"]),
+                    RejectedQty = Convert.ToDecimal(row["RejectedQty"]),
+                    AltRejectedQty = Convert.ToDecimal(row["AltRejectedQty"]),
+                    PrevRejRecStore = Convert.ToInt32(row["PrevRejRecStore"]),
+                    PrevRejRecStoreName = row["PrevRejRecStoreName"].ToString(),
+                    RejRecStore = Convert.ToInt32(row["RejRecStore"]),
+                    RejRecStoreName = row["RejRecStoreName"].ToString(),
+                    Remarks = row["Remarks"].ToString(),
+                    Defaulttype = row["Defaulttype"].ToString(),
+                    ApprovedByEmp = Convert.ToInt32(row["ApprovedByEmp"]),
+                    ApprovedByEmpName = row["ApprovedByEmpName"].ToString(),
+                    PreviousHoldQty = Convert.ToDecimal(row["PreviousHoldQty"]),
+                    HoldQty = Convert.ToDecimal(row["HoldQty"]),
+                    PrevHoldStoreId = Convert.ToInt32(row["PrevHoldStoreId"]),
+                    PrevHoldStoreName = row["PrevHoldStoreName"].ToString(),
+                    HoldStoreId = Convert.ToInt32(row["HoldStoreId"]),
+                    HoldStoreName = row["HoldStoreName"].ToString(),
+                    ProcessId = Convert.ToInt32(row["ProcessId"]),
+                    PreviousReworkqty = Convert.ToDecimal(row["PreviousReworkqty"]),
+                    Reworkqty = Convert.ToDecimal(row["Reworkqty"]),
+                    PrevRewokStoreId = Convert.ToInt32(row["PrevRewokStoreId"]),
+                    PrevRewokStoreName = row["PrevRewokStoreName"].ToString(),
+                    RewokStoreId = Convert.ToInt32(row["RewokStoreId"]),
+                    RewokStoreName = row["RewokStoreName"].ToString(),
+                    Color = row["Color"].ToString(),
+                    ItemSize = row["ItemSize"].ToString(),
+                    ResponsibleFactor = row["ResponsibleFactor"].ToString(),
+                    SupplierBatchno = row["SupplierBatchno"].ToString(),
+                    shelfLife = Convert.ToDecimal(row["shelfLife"]),
+                    BatchNo = row["BatchNo"].ToString(),
+                    uniqueBatchno = row["uniqueBatchno"].ToString(),
+                    AllowDebitNote = row["AllowDebitNote"].ToString(),
+                    Rate = Convert.ToDecimal(row["Rate"]),
+                    rateinother = Convert.ToDecimal(row["rateinother"]),
+                    PODate = row["PODate"].ToString(),
+                    FilePath = row["FilePath"].ToString(),
+                    schdate = row["schdate"].ToString(),
+                    AccLotStock = Convert.ToDecimal(row["AccLotStock"]),
+                    RejLotStock = Convert.ToDecimal(row["RejLotStock"]),
+                    HoldLotStock = Convert.ToDecimal(row["HoldLotStock"]),
+                    ReworkLotStock = Convert.ToDecimal(row["ReworkLotStock"])
+                };
+
+                ItemList.Add(detail);
+            }
+
+            model.ReofferItemDetail = ItemList;
+
+            return model;
+        }
+
+
+
     }
 }
