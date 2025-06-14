@@ -18,7 +18,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GenerateQRCodeAsync(string barcodeValue, int invoiceNo, int yearCode);
         Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string customerPartCode, string saleBillType);
 
-
+        Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode);
     }
 
 }

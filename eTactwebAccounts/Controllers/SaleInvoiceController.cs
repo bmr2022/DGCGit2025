@@ -35,16 +35,18 @@ namespace eTactWeb.Controllers
     {
         private readonly IDataLogic _IDataLogic;
         public ISaleBill _SaleBill { get; }
+        public readonly IEinvoiceService _IEinvoiceService;
         private readonly IConfiguration _iconfiguration;
         private readonly ILogger<SaleBillController> _logger;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly IMemoryCache _MemoryCache;
-        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache)
+        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _SaleBill = iSaleBill;
+            _IEinvoiceService = IEinvoiceService;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = configuration;
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
@@ -59,7 +61,7 @@ namespace eTactWeb.Controllers
             DataTable DrCrDetailDT = null;
             DataTable AdjChallanDetailDT = null;
             string SaleBillModel = HttpContext.Session.GetString("SaleBillModel");
-            SaleBillModel MainModel = new SaleBillModel();
+             SaleBillModel MainModel = new SaleBillModel();
             if (!string.IsNullOrEmpty(SaleBillModel))
             {
                 MainModel = JsonConvert.DeserializeObject<SaleBillModel>(SaleBillModel);
@@ -205,6 +207,8 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
                         var model1 = new SaleBillModel();
+                        TempData["ShowEinvoicePopup"] = "true";
+                        TempData["SaleBillModelJson"] = JsonConvert.SerializeObject(model1);
                         model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
 
                         model1.FinFromDate = HttpContext.Session.GetString("FromDate");
@@ -225,7 +229,9 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+
                         var model1 = new SaleBillModel();
+                      
                         model1.adjustmentModel = new AdjustmentModel();
                         model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
                         model1.FinFromDate = HttpContext.Session.GetString("FromDate");
@@ -1376,5 +1382,53 @@ namespace eTactWeb.Controllers
             }
             return RedirectToAction("SBDashboard", new { Flag = "False", ItemName = itemName, PartCode = partCode, saleBillno = saleBillno, customerName = customerName, sono = sono, custOrderNo = custOrderNo, schNo = schNo, performaInvNo = performaInvNo, saleQuoteNo = saleQuoteNo, domensticExportNEPZ = domensticExportNEPZ, fromdate = fromdate, todate = toDate, searchBox = Searchbox });
         }
+
+        public async Task<IActionResult> GenerateInvoice([FromBody] EInvoiceItemModel input)
+        {
+            try
+            {
+                if (input == null)
+                    return BadRequest("Invalid input");
+
+                // Fix: Replace 'IRN' with the correct property or method from 'ResponseResult'
+                var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
+                       input.EntryId,
+                       input.InvoiceNo,
+                       input.YearCode
+                   );
+
+                //if (duplicateIRNResult?.Result is DataTable dt && dt.Rows.Count > 0)
+                //{
+                //    return BadRequest("IRN already exists. Cannot regenerate.");
+                //}
+
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+
+                var result = await _IEinvoiceService.CreateIRNAsync(
+                    token,
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode,
+                    input.saleBillType,
+                    input.customerPartCode
+                );
+
+                // Fix: Replace 'IRN' with the correct property or method from 'ResponseResult'
+                if (result.StatusText == "Success" && result.Result != null)
+                {
+                    var irn = result.Result.IRN; // Ensure 'IRN' exists in the 'Result' object
+                    return Ok(new { message = "Invoice generated successfully", irn });
+                }
+                else
+                {
+                    return BadRequest("Invoice generation failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server Error: {ex.Message}");
+            }
+        }
+
     }
 }
