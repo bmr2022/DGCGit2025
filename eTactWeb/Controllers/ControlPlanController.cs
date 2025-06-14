@@ -30,8 +30,8 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public async Task<ActionResult> ControlPlan(int ID, string Mode, int YC,string FromDate,string ToDate, string EntryDate, string ItemName, string PartCode,
             int SeqNo, string Characteristic, string EvalutionMeasurmentTechnique, string SpecificationFrom, string Operator,
-string SpecificationTo, string FrequencyofTesting, string InspectionBy, string ControlMethod, string RejectionPlan,
-string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePath,int ItemCode
+            string SpecificationTo, string FrequencyofTesting, string InspectionBy, string ControlMethod, string RejectionPlan,
+            string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePath,int ItemCode,string RevNo, bool isFromPartCode = false
 )
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
@@ -51,7 +51,7 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
 
             HttpContext.Session.Remove("KeyControlPlanGrid");
 
-            if (string.IsNullOrEmpty(Mode) && ID == 0 && ItemCode > 0)
+            if (isFromPartCode && ItemCode > 0)
             {
                 MainModel = await _IControlPlan.GetByItemOrPartCode(ItemCode);
 
@@ -63,13 +63,33 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
                         YC = MainModel.Yearcode,
                         Mode = "U",
                         EntryDate = MainModel.CntPlanEntryDate,
-                        ItemCode = ItemCode
+                        ItemCode = ItemCode,
+                        ItemName = ItemName,
+                        PartCode = PartCode,
+                        RevNo = MainModel.RevNo,
+                        isFromPartCode = false
                     });
+                }
+                else
+                {
+                    MainModel.ItemCode = ItemCode;
+                    MainModel.PartCode = PartCode;
+                    MainModel.ItemName = ItemName;
+                    MainModel.Yearcode = YC;
+                    MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+                    MainModel.CntPlanEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+                    MainModel.CntPlanYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                    //MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                    MainModel.CC = HttpContext.Session.GetString("Branch");
+                    MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                    MainModel.ActualEntryDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+                    MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+                    MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+                   
                 }
             }
 
-
-            if (!IsFromItemCode && !string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
                 
                 
@@ -81,6 +101,7 @@ string Remarks, string ItemimagePath, string DrawingNo, string DrawingNoImagePat
                 MainModel.CntPlanEntryDate = EntryDate;
                 MainModel.PartCode = PartCode;
                 MainModel.ItemName = ItemName;
+                MainModel.RevNo = RevNo;
 
 
 
