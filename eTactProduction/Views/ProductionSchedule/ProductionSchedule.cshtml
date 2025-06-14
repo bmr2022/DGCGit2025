@@ -813,12 +813,13 @@
             $('#EffectiveFrom').rules('remove', 'required');
             $('#EffectiveTo').rules('remove', 'required');
             $('#PlanForNoOFDays').rules('remove', 'required');
-                    $('#WONo').rules('remove', 'required');
-                    $('#PartCode').rules('remove', 'required');
-                    $('#ItemName').rules('remove', 'required');
-                    $('#AccountName').rules('remove', 'required');
+             $('#WONo').rules('remove', 'required');
+             $('#PartCode').rules('remove', 'required');
+             $('#ItemName').rules('remove', 'required');
+             $('#AccountName').rules('remove', 'required');
             $('#CustOrderNo').rules('remove', 'required');
-                              $('#SONo').rules('remove', 'required');
+             $('#SONo').rules('remove', 'required');
+            $('#LastUpdatedByName').rules('remove', 'required');
 
             //$('.divManualEntry').show();
             //$('.divDaywise').hide();
@@ -2892,9 +2893,9 @@
            // alert('displayFlag' + displayFlag);
             if (displayFlag == "OnlyProdPlan")
             {
+                debugger
                 for (var i = 0; i <= rowCount; i++) 
                 {
-
                     if ($('#Checkbox' + i).prop("checked")) 
                     {
                         ProdPlan.push({
@@ -2973,7 +2974,9 @@
                     }
                 }
             }
-            if (rowCount == (checkedCount + 1)) 
+
+            debugger
+            if (rowCount == checkedCount) 
             {
                 $.notify('please checked any item from PendingProdGrid.', "error");
             }
