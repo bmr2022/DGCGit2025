@@ -59,9 +59,10 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+                var entryDate = ParseFormattedDate(DateTime.Now.ToString());    
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
-                SqlParams.Add(new SqlParameter("@EntryDate", DateTime.Now));
+                SqlParams.Add(new SqlParameter("@EntryDate", entryDate));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionSchedule", SqlParams);
             }
@@ -570,8 +571,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ForTheMonth", model.ForTheMonth));
                 SqlParams.Add(new SqlParameter("@Remarks", model.Remark ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ShowWOWithOrWOItem", model.ShowWOWithOrWOItem ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@FromSchDate", model.Remark ?? string.Empty));
-                SqlParams.Add(new SqlParameter("@ToSchDate", model.Remark ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@FromSchDate", EffFromDt == default ? string.Empty : EffFromDt));
+                SqlParams.Add(new SqlParameter("@ToSchDate", EffTillDt == default ? string.Empty : EffTillDt));
                 SqlParams.Add(new SqlParameter("@ForNoofDays", model.PlanForNoOFDays));
                 if (model.Mode != "U")
                 {
