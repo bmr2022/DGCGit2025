@@ -46,9 +46,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _TranferFromWorkCenterDAL.FillStoreName();
         }
-        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, DataTable TransferGrid)
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid)
         {
-            return await _TranferFromWorkCenterDAL.ChkWIPStockBeforeSaving(WcId,TransferMatEntryDate,TransferMatYearCode,TransferGrid);
+            return await _TranferFromWorkCenterDAL.ChkWIPStockBeforeSaving(WcId,TransferMatEntryDate,TransferMatYearCode, TransferMatEntryId,TransferGrid);
         }
         public async Task<ResponseResult> FillProcessName()
         {
