@@ -17,6 +17,15 @@
             <h5>
                 <strong>@ViewData["Title"] - @Model.SaleBillYearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
+                      @if (Model.Mode == "V")
+                      {
+                       <a type="button" class="btn btn-sm btn-outline-light bg-gradient" id="btnGenerateEinvoiceview"
+                           asp-route-EntryId="@Model.SaleBillEntryId" asp-route-InvoiceNo="@Model.SaleBillNo" asp-route-YearCode="@Model.SaleBillYearCode">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        GENARATE EINVOICE
+                       </a>
+                            }
+
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
                        asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
@@ -393,38 +402,18 @@
         </div>
     </form>
 </div>
-<div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+<div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="EinvoicePopupLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header border-0">
+                <h5 class="modal-title w-100" id="EinvoicePopupLabel">E-Invoice Confirmation</h5>
             </div>
             <div class="modal-body">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row g-2 gx-3">
-                            <div class="card">
-                                <div class="card-body overflow-auto pb-0">
-                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                                        <div class="d-flex align-items-center">
-                                            <h6 class="mb-0 me-2">Do you want to generate E-Invoice now?</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="progress my-2" style="height: 4px;">
-                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
-                       yes
-                    </a>
-                    <button type="button" class="btn btn-danger" id="btnClose">No</button>
-                </div>
+                <p>Do you want to generate E-Invoice now?</p>
+            </div>
+            <div class="modal-footer justify-content-center border-0">
+                <a href="#" class="btn btn-success" id="btngenrateEinvoice">Yes</a>
+                <button type="button" class="btn btn-secondary" id="btnClose">No</button>
             </div>
         </div>
     </div>
@@ -464,38 +453,43 @@
           $('#btnClose').click(function () {
                                 $('#btngenrateEinvoice').val('false'); // set flag for no printing
                                 $('#EinvoicePopup').modal("hide");
-
                                 setTimeout(() => {
                                     $('form').submit();
                                 }, 300);
                             });
-                           
-             $('#btngenrateEinvoice').click(function (e) {
-                  $("form").submit();
-                e.preventDefault();
-                 const model = {
+
+          $('#btngenrateEinvoice, #btnGenerateEinvoiceview').click(function (e) {
+            e.preventDefault();
+            const model = {
                 EntryId: '@Model.SaleBillEntryId',
                 InvoiceNo: '@Model.SaleBillNo',
                 YearCode: '@Model.SaleBillYearCode',
-                saleBillType: 'SaleBill',
-                customerPartCode: '@Model.PartCode'
+                saleBillType: '',
+                customerPartCode: ''
             };
-                $.ajax({
-                    url: "@Url.Action("GenerateInvoice")",
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(model),
-                    success: function (res) {
-                        alert('E-Invoice Generated Successfully');
-                        $('#EinvoicePopup').modal('hide');
-                    },
-                    error: function () {
+            $.ajax({
+                url: '@Url.Action("GenerateInvoice")',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model),
+                success: function (res) {
+                    if (res.redirectUrl) {
+                        window.location.href = res.redirectUrl;
+                    } else {
                         alert('Failed to generate E-Invoice.');
                     }
-                });
+
+                    $('#EinvoicePopup').modal('hide');
+                },
+                error: function () {
+                    alert('Error generating E-Invoice.');
+                }
             });
         });
+
+          
             GetServerDate();
+            });
               // Run the function for all specified fields
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
@@ -2410,14 +2404,8 @@
                     $.notify('AdjGrid should not have CR value...!', "error");
                 } else {
                     if (confirm("are you sure you want to save this entry?")) {
-                         $('#EinvoicePopup').modal('show');
+                        $('#EinvoicePopup').modal('show');
                         $("form").submit();
-                         
-
-                           
-
-                            
-
                     }
                 }
             }
@@ -2461,7 +2449,8 @@
             else {
                 // $('#exampleModal').modal('show');
                 if (confirm("are you sure you want to save this entry?")) {
-                    $("form").submit();
+                     $('#EinvoicePopup').modal('show');
+                     $("form").submit();
                 }
             }
         });

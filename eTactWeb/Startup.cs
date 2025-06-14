@@ -163,7 +163,9 @@ namespace eTactWeb
             services.AddDistributedMemoryCache();
             services.AddMemoryCache();
             services.AddOutputCache();
-           
+            services.AddHttpClient();
+
+
             FastReport.Utils.RegisteredObjects.AddConnection(typeof(FastReport.Data.MsSqlDataConnection));
 
             services.AddSession(options =>

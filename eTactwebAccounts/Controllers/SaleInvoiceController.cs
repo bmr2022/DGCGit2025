@@ -222,7 +222,7 @@ namespace eTactWeb.Controllers
                         model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
-
+                        TempData["ShowEinvoicePopup"] = "true";
                         return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
                     }
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -242,7 +242,10 @@ namespace eTactWeb.Controllers
                         model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
+                        TempData["ShowEinvoicePopup"] = "true";
+
                         return View(model1);
+
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -1390,17 +1393,17 @@ namespace eTactWeb.Controllers
                 if (input == null)
                     return BadRequest("Invalid input");
 
-                // Fix: Replace 'IRN' with the correct property or method from 'ResponseResult'
                 var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
-                       input.EntryId,
-                       input.InvoiceNo,
-                       input.YearCode
-                   );
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode
+                );
 
-                //if (duplicateIRNResult?.Result is DataTable dt && dt.Rows.Count > 0)
-                //{
-                //    return BadRequest("IRN already exists. Cannot regenerate.");
-                //}
+                // Uncomment this if you want to block duplicates
+                // if (duplicateIRNResult?.Result is DataTable dt && dt.Rows.Count > 0)
+                // {
+                //     return BadRequest("IRN already exists. Cannot regenerate.");
+                // }
 
                 var token = await _IEinvoiceService.GetAccessTokenAsync();
 
@@ -1413,11 +1416,10 @@ namespace eTactWeb.Controllers
                     input.customerPartCode
                 );
 
-                // Fix: Replace 'IRN' with the correct property or method from 'ResponseResult'
-                if (result.StatusText == "Success" && result.Result != null)
+                string ewbUrl = result.Result as string;
+                if (!string.IsNullOrWhiteSpace(ewbUrl))
                 {
-                    var irn = result.Result.IRN; // Ensure 'IRN' exists in the 'Result' object
-                    return Ok(new { message = "Invoice generated successfully", irn });
+                    return Ok(new { redirectUrl = ewbUrl });
                 }
                 else
                 {
