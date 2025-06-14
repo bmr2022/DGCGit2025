@@ -202,6 +202,7 @@ namespace eTactWeb
             });
 
             services.TryAddScoped<IEmailService, EmailService>();
+            services.TryAddScoped<IEinvoiceService, EInvoiceBLL>();
             services.AddScoped<DirectPurchaseBillBLL>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<EncryptDecrypt, EncryptDecrypt>();

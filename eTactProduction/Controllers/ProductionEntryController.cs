@@ -1663,6 +1663,24 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyProductionEntryScrapdetail", serializedGrid);
             return PartialView("_ProductionEntryScrapDetail", model);
         }
+
+        public async Task<IActionResult> FillProductDetail(int FGItemCode, decimal FgProdQty, string BomNo)
+        {
+            var model = new ProductionEntryModel();
+            try
+            {
+                var response = await _IProductionEntry.FillProductDetail(FGItemCode, FgProdQty, BomNo);
+                model.ProductDetailGrid = response.ProductDetailGrid;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            string serializedGrid = JsonConvert.SerializeObject(model.ProductDetailGrid);
+            HttpContext.Session.SetString("KeyProductionEntryProductdetail", serializedGrid);
+            return PartialView("_ProductionEntryProductDetail", model);
+        }
+
         public async Task<JsonResult> FillShiftTime(int ShiftId)
         {
             var JSON = await _IProductionEntry.FillShiftTime(ShiftId);

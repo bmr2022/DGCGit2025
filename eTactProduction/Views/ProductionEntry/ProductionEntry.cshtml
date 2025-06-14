@@ -861,7 +861,7 @@
                                                     <th>Product Type</th>
                                                     <th>Product Qty</th>
                                                     <th>Product Unit</th>
-                                                    <th>Store/WC</th>
+                                                    
                                                     <th>Transfer to WC or Store</th>
                                                 </tr>
                                             </thead>
@@ -1795,6 +1795,8 @@
         document.getElementById('unTarget').addEventListener('focusout', function () {
             const value = this.value;
             document.getElementById('ProdQty').value = value;
+            FillScrapData();
+            FillProductDetail();
         });
 
         $('#ProdAgainstPlanManual').select2();
@@ -2112,6 +2114,7 @@
 
         $('#BOMNo').change(function () {
             FillScrapData();
+            FillProductDetail();
             FillProductPartCode();
             FillProductItems();
         })
@@ -2328,6 +2331,20 @@
             });
         }
 
+        function FillProductDetail() {
+            $('#divProductDetailGrid').empty();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProductDetail")",
+                data: { "FGItemCode": parseInt($('#FGItemCode').val()), "FgProdQty": parseFloat($('#ProdQty').val()), "BomNo": $('#BOMNo').val() },
+                async: false,
+                success: function (data) {
+                    console.log("Product Data" + data);
+                    $('#divProductDetailGrid').append(data);
+                }
+            });
+        }
+
         function FillSuperwiser() {
 
             $.ajax({
@@ -2457,6 +2474,7 @@
             $('#divProductionEntryGrid').empty();
             $('#divAddProductionEntryGrid').empty();
             FillScrapData();
+            FillProductDetail();
         });
         $('#WorkCenter').change(function () {
             $('#divProductionEntryGrid').empty();
@@ -4109,6 +4127,7 @@
             $('#ProdPlanYear').val(0);
             $('#ProdPlanDate').val(0);
             FillScrapData();
+            FillProductDetail();
             FillProductPartCode();
             FillProductItems();
         });

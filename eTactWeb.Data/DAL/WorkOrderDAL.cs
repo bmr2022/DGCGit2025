@@ -486,6 +486,7 @@ namespace eTactWeb.Data
                       //  SeqNo = Convert.ToInt32(row["SeqNo"]),
                         Accountcode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
                         AccountName = row["Account_Name"] != DBNull.Value ? row["Account_Name"].ToString() : string.Empty,
+                        SeqNo = row["ItemSeqNo"] != DBNull.Value ? Convert.ToInt32(row["ItemSeqNo"]) : 0,
                         SONO = row["SONO"] != DBNull.Value ? row["SONO"].ToString() : string.Empty,
                         CustomerOrderNo = row["CustomerOrderNo"] != DBNull.Value ? row["CustomerOrderNo"].ToString() : string.Empty,
                         SOYearCode = row["SOYearCode"] != DBNull.Value ? Convert.ToInt32(row["SOYearCode"]) : 0,
