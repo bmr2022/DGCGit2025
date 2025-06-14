@@ -197,6 +197,10 @@
                 FetchItem($('#FG1')[0]);
                 FetchItem($('#FG2')[0]);
                 FetchItem($('#FG3')[0]);
+                GetByProdPartCode();
+                GetByProdItemName();
+                GetByProdPartCode2();
+                GetByProdItemName2();
                  
                
                 //$('#FinishItemCode').val(FGItemcode).trigger('change');
@@ -271,9 +275,9 @@
             $('#Mode').rules("remove", "required");
             //$('#element').keyup(myFunction).keypress(myFunction).blur(myFunction).change(myFunction)
         });
-        debugger
+       
         $('#Byprodpartcode1').change(function () {
-            debugger
+            
             $('#ByprodItemCode1').val($('#Byprodpartcode1').val());  
         });
         $('#ByprodItemName1').change(function () {

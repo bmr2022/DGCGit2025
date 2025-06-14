@@ -1861,6 +1861,13 @@ function submitForm(shouldPrint, printWindow) {
             $('#GateYearCode').change(function () {
                 ClearGridAjax();
                 $('#divMRNGrid').empty();
+            var gateNo = $('#GateNo').val();
+            var gateEntryId = parseInt($('#GateEntry').val()) || 0;
+
+            if (!gateNo || gateEntryId === 0) {
+                alert("GateNo or GateEntryId not set yet. Skipping data fetch.");
+                return; // Prevent unnecessary/failing AJAX call
+            }
                 $('#CC').val($(this).find(":selected").data('branch'));
                 var dataParams = {
                     "GateNo": $('#GateNo').val(),

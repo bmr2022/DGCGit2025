@@ -819,6 +819,58 @@ public class ProductionEntryDAL
 
         return model;
     }
+
+    public async Task<ProductionEntryModel> FillProductDetail(int FGItemCode, decimal FgProdQty, string BomNo)
+    {
+        DataSet? oDataSet = new DataSet();
+        var model = new ProductionEntryModel();
+        try
+        {
+            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+            {
+                SqlCommand oCmd = new SqlCommand("SP_ProductionEntry", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                oCmd.Parameters.AddWithValue("@Flag", "FillProductDetail");
+                oCmd.Parameters.AddWithValue("@FGItemCode", FGItemCode);
+                oCmd.Parameters.AddWithValue("@FGProdQty", FgProdQty);
+                oCmd.Parameters.AddWithValue("@Bomno", BomNo);
+                await myConnection.OpenAsync();
+                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                {
+                    oDataAdapter.Fill(oDataSet);
+                }
+            }
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                model.ScrapDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                         select new ProductionEntryItemDetail
+                                         {
+                                             ProductItemCode = string.IsNullOrEmpty(dr["ProdItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ProdItemCode"].ToString()),
+                                             ProductPartCode = dr["ProdPartCode"].ToString() ?? "",
+                                             ProductItemName = dr["ProdItemName"].ToString() ?? "",
+                                             ProductQty = string.IsNullOrEmpty(dr["Prodwt"].ToString()) ? 0 : Convert.ToDecimal(dr["Prodwt"].ToString()),
+                                             ProdType = dr["ProdType"].ToString() ?? "",
+                                             Productunit = dr["Produnit"].ToString() ?? "",
+                                             ProductStore = dr["StoreName"].ToString() ?? "",
+                                            
+                                             ProductStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
+                                         }).OrderBy(x => x.SeqNo).ToList();
+            }
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return model;
+    }
+
+
+
     public async Task<ResponseResult> GetLastProddate(int YearCode)
     {
         var _ResponseResult = new ResponseResult();
