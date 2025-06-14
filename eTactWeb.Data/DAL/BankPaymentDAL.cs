@@ -67,7 +67,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillLedgerName(string VoucherType, string Type)
+        public async Task<ResponseResult> FillLedgerName(string VoucherType, string ShowLedger)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -75,7 +75,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Payment"));
-                SqlParams.Add(new SqlParameter("@type", Type));
+                SqlParams.Add(new SqlParameter("@ShowAllLedger", ShowLedger));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
