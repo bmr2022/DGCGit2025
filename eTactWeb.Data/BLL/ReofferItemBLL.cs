@@ -110,6 +110,11 @@ namespace eTactWeb.Data.BLL
             return await _IReOfferItemDAL.FillLotandTotalStock(ItemCode, StoreId, TillDate, BatchNo, UniqBatchNo);
         }
 
+        public async Task<ReOfferItemModel> GetViewByID(int ID, string Mode, int YC)
+        {
+            return await _IReOfferItemDAL.GetViewByID(ID, Mode, YC);
+        }
+
     }
 
 }
