@@ -1399,11 +1399,7 @@ namespace eTactWeb.Controllers
                     input.YearCode
                 );
 
-                // Uncomment this if you want to block duplicates
-                // if (duplicateIRNResult?.Result is DataTable dt && dt.Rows.Count > 0)
-                // {
-                //     return BadRequest("IRN already exists. Cannot regenerate.");
-                // }
+              
 
                 var token = await _IEinvoiceService.GetAccessTokenAsync();
 
