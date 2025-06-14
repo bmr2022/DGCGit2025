@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 //using System.Data;
 using System.Data.SqlClient;
-using System.Net.Http;
+
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
@@ -29,7 +29,7 @@ using System.Data;
 using System.Security.Cryptography.X509Certificates; // For async/await
 
 
-using System.Net.Http;
+
 using Microsoft.Extensions.Logging;
 
 
@@ -52,12 +52,11 @@ namespace eTactWeb.Data.DAL
         public string token;
         public string connectionString = string.Empty;
        
-        public EInvoiceDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public EInvoiceDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpClientFactory httpClientFactory, ConnectionStringService connectionStringService)
         {
-            //configuration = config;
-            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
+            _httpClientFactory = httpClientFactory; // Fix: Assign the IHttpClientFactory instance passed in the constructor to the field.  
             _IDataLogic = iDataLogic;
         }
         public async Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode)
@@ -66,9 +65,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@EntryId", entryId));
-                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
-                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@ENtryID", entryId));
+                SqlParams.Add(new SqlParameter("@INVNO", invoiceNo));
+                SqlParams.Add(new SqlParameter("@yearCode", yearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("chkForDuplicateIRNNO", SqlParams);
             }
             catch (Exception ex)
@@ -88,7 +87,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@YearCode", yearCode));
                 SqlParams.Add(new SqlParameter("@EntryId", entryId));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM Sale_Bill_Main WHERE year_code = @YearCode AND entry_id = @EntryId", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM SaleBillMain WHERE SaleBillYearCode = @YearCode AND entry_id = @EntryId", SqlParams);
             }
             catch (Exception ex)
             {
@@ -279,8 +278,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
-                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@SaleBillNo1", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleBillNo2", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleSaleBillYearCode", yearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
             }
             catch (Exception ex)
@@ -338,7 +338,7 @@ namespace eTactWeb.Data.DAL
         {
             try
             {
-                using var client = _httpClientFactory.CreateClient();
+                var client = _httpClientFactory.CreateClient();
 
                 string urlToPost1 = "https://pro.mastersindia.co/generateEinvoice";
                 var requestContent = new StringContent(JsonConvert.SerializeObject(dictData), Encoding.UTF8, "application/json");
