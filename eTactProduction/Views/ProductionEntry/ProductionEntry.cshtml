@@ -4948,6 +4948,14 @@
             } else {
                 RemoveErrorCls('WorkCenter');
             }
+
+            if ($('#Stock').val() == 0) {
+                Err = 1;
+                $.notify('Not Have Stock.', "error");
+            } else {
+                RemoveErrorCls('Stock');
+            }
+
             if ($('#PartCode').val() == '-Select-') {
                 Err = 1;
                 $.notify('Please select PartCode first.', "error");
