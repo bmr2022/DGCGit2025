@@ -91,7 +91,9 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="Entry_Date" class="form-label">Entry Date</label>
-                                    <input asp-for="Entry_Date" class="form-control" readonly/>
+                                    <input type="text" id="Entry_Date" name="Entry_Date" class="form-control"
+                                           value="@(Model.Entry_Date != null ? Convert.ToDateTime(Model.Entry_Date).ToString("dd/MM/yyyy") : "")" />
+
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
                                     <label asp-for="Yearcode" class="form-label">Yearcode</label>
@@ -108,11 +110,12 @@
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
                                     <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
-                                    <input asp-for="EffectiveDate" class="form-control" />
+                                    <input type="text" id="EffectiveDate" name="EffectiveDate" class="form-control"
+                                           value="@(Model.EffectiveDate != null ? Convert.ToDateTime(Model.EffectiveDate).ToString("dd/MM/yyyy") : "")" />
                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label" style="color:red">Part Code*</label>
-                                    <select class="form-control" id="PartCode" asp-for="PartCode">
+                                    <select class="form-control" id="PartCode" asp-for="PartCode" onchange="checkItemOrPart()">
                                         <option value="@Model.ItemCode">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -125,7 +128,7 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="ItemName" class="form-label" style="color:red"> Item Name*</label>
-                                    <select class="form-control" id="ItemName" asp-for="ItemName">
+                                    <select class="form-control" id="ItemName" asp-for="ItemName" onchange="checkItemOrPart()">
                                         <option value="@Model.ItemCode">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
@@ -576,12 +579,18 @@
             GetEvMeasureTech();
             GetControlMethod();
             GetRejectionPlan();
-            if ($('#Mode').val() !== "U"){
+            if ($('#Mode').val() !== "U") {
                 GetNewEntryId();
+                $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+                $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+            } else {
+                // Just initialize the datepicker without overriding the existing value
+                $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' });
+                $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' });
             }
 
-            $('#Entry_Date').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
-            $('#EffectiveDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", new Date());
+
+           
             $('#ItemName').select2();
             $('#PartCode').select2();
             //$('#Characteristic').select2();
@@ -664,7 +673,30 @@
         //     //$('#FG1').removeProp('disabled');
         //     $("form :input").prop("disabled", false);
         // });
+        function checkItemOrPart() {
+            const itemCode = $('#PartCode').val();
 
+            // Prevent redirect if already same ItemCode in URL
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('ItemCode') == itemCode) return;
+
+            if (itemCode) {
+                const id = '@Model.CntPlanEntryId' || 0;
+                const yc = '@Model.CntPlanYearCode' || 0;
+                const mode = '@Model.Mode' || '';
+                const entryDate = '@Model.CntPlanEntryDate';
+
+                const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${entryDate}`;
+                window.location.href = url;
+            }
+        }
+
+        // function checkItemOrPart() {
+        //     var itemCode = $('#PartCode').val();
+        //     if (itemCode) {
+        //         window.location.href = '@Url.Action("ControlPlan", "ControlPlan")?ItemCode=' + itemCode;
+        //     }
+        // }
         $(function () {
             $('#FrequencyofTesting').on('input', function () {
                 let value = $(this).val();

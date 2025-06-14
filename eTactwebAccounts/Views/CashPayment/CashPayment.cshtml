@@ -369,7 +369,7 @@
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD;" placeholder="Search...">
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <label asp-for="AdjustAmount" class="form-label me-2">Total Adjst Amt</label>
-                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" />
+                        <input asp-for="AdjustAmount" class="form-control" onchange="ChangeAdjustAmount()" type="number" min="0" />
                     </div>
                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                         <label asp-for="PopUpBalance" class="form-label me-2">Total Pending Amount to Adjust</label>
@@ -511,11 +511,43 @@
             $('form').submit();
         });
 
-        function ChangeAdjustAmount() {
-             ;
+                function ChangeAdjustAmount() {
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            var AdjustQty = parseFloat($('#AdjustAmount').val());
-            if (isNaN(AdjustQty) || AdjustQty <= 0) {
+            var AdjustQtyStr = $('#AdjustAmount').val();
+
+            // Check if value contains negative sign
+            if (AdjustQtyStr.includes('-')) {
+                alert('Negative amounts are not allowed.');
+                return;
+            }
+
+            var AdjustQty = parseFloat(AdjustQtyStr);
+
+            if (isNaN(AdjustQty)) {
+                alert('Please enter a valid Adjust Amount.');
+                return;
+            }
+
+            // If AdjustQty is 0, uncheck all and reset adjustment
+            if (AdjustQty === 0) {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#CheckUnCheck-' + i).prop('checked', false);
+                    $('#AdjustAmt-' + i).val('0.00');
+
+                    // Restore original balance if stored
+                    let $balanceElement = $('#BalanceAmt-' + i);
+                    let originalBalance = $balanceElement.data('original');
+                    if (originalBalance !== undefined) {
+                        $balanceElement.text(parseFloat(originalBalance).toFixed(2));
+                    }
+
+                    CheckUnCheckCheck(i);
+                }
+                alert('All adjustments cleared.');
+                return;
+            }
+
+            if (AdjustQty <= 0) {
                 alert('Please enter a valid Adjust Amount.');
                 return;
             }
@@ -539,15 +571,21 @@
                 for (let i = 1; i <= rowCount; i++) {
                     if (RemainingQty <= 0) break;
 
-                    var BalanceAmt = parseFloat($('#BalanceAmt-' + i).text());
+                    var $balanceElement = $('#BalanceAmt-' + i);
+                    var BalanceAmt = parseFloat($balanceElement.text());
                     if (isNaN(BalanceAmt) || BalanceAmt <= 0) continue;
 
-                    var AdjustInThisRow = Math.min(RemainingQty, BalanceAmt);
+                    // Store original balance if not already stored
+                    if ($balanceElement.data('original') === undefined) {
+                        $balanceElement.data('original', BalanceAmt);
+                    }
 
-                    // ✅ Manually set adjustment values before calling CheckUnCheckCheck
+                    var originalBalance = $balanceElement.data('original');
+                    var AdjustInThisRow = Math.min(RemainingQty, originalBalance);
+
                     $('#CheckUnCheck-' + i).prop('checked', true);
                     $('#AdjustAmt-' + i).val(AdjustInThisRow.toFixed(2));
-                    $('#BalanceAmt-' + i).text((BalanceAmt - AdjustInThisRow).toFixed(2));
+                    $balanceElement.text((originalBalance - AdjustInThisRow).toFixed(2));
 
                     CheckUnCheckCheck(i);
 
@@ -661,10 +699,14 @@
             $('#EntryDate').on('change', function () {
             var entryDateVal = $(this).val(); // Get selected EntryDate
             $('#VoucherDate').datepicker("setDate", entryDateVal); // Set same date in VoucherDate
+             FillEntryID();
+             $('#divCashPaymentDetail').empty()
         });
         $('#VoucherDate').on('change', function () {
             var voucherDateVal = $(this).val(); // Get selected EntryDate
             $('#EntryDate').datepicker("setDate", voucherDateVal); // Set same date in VoucherDate
+             FillEntryID();
+             $('#divCashPaymentDetail').empty()
         });
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
             $('#EntryDate,#VoucherDate,#AgainstVoucherDate,#SoDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));

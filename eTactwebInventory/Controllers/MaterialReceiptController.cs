@@ -255,9 +255,14 @@ namespace eTactWeb.Controllers
                             MainModel.ToDate = toDt;
                             if (ShouldPrint == "true")
                             {
-                                return RedirectToAction("PrintReport", new { EntryId = model.EntryID, YearCode = model.YearCode, MrnNo = model.MRNNo });
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryID,
+                                    yearCode = model.YearCode
+                                });
                             }
-                            return View(MainModel);
+                            return Json(new { status = "Success" });
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -281,9 +286,14 @@ namespace eTactWeb.Controllers
                             MainModel.ToDate = toDt;
                             if (ShouldPrint == "true")
                             {
-                                return RedirectToAction("PrintReport", new { EntryId = model.EntryID, YearCode = model.YearCode, MrnNo = model.MRNNo });
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryID,
+                                    yearCode = model.YearCode
+                                });
                             }
-                            return View(MainModel);
+                            return Json(new { status = "Success" });
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -320,7 +330,8 @@ namespace eTactWeb.Controllers
 
                     model.FromDate = fromDt;
                     model.ToDate = toDt;
-                    return View(model);
+                   
+                    return Json(new { status = "Success" });
                 }
             }
             catch (Exception ex)

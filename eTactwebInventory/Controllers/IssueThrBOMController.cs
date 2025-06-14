@@ -185,10 +185,20 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
+                            //if (ShouldPrint == "true")
+                            //{
+                            //    return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                            //}
                             if (ShouldPrint == "true")
                             {
-                                return RedirectToAction("PrintReport", new { EntryId = model.EntryId, YearCode = model.YearCode });
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    yearCode = model.YearCode
+                                });
                             }
+
                             HttpContext.Session.Remove("KeyIssThrBomGrid");
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
@@ -205,7 +215,8 @@ namespace eTactWeb.Controllers
                             return View("Error", Result);
                         }
                     }
-                    return RedirectToAction("PendingMaterialToIssueThrBOM", "PendingMaterialToIssueThrBOM");
+                    //return RedirectToAction("PendingMaterialToIssueThrBOM", "PendingMaterialToIssueThrBOM");
+                    return Json(new { status = "Success" });
                 }
             }
             catch (Exception ex)
