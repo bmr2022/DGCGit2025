@@ -104,9 +104,9 @@
                                     <label asp-for="Control_PlanNo" class="form-label">Plan No</label>
                                     <input asp-for="Control_PlanNo" class="form-control"  />
                                 </div>
-                               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:70px;">
+                               <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
                                     <label asp-for="RevNo" class="form-label" style="color:red">Rev No*</label>
-                                    <input asp-for="RevNo" class="form-control" value="1"/>
+                                    <input asp-for="RevNo" class="form-control" value="@(Model.Mode == "U" ? Model.RevNo : "1")" />
                                 </div>
                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
                                     <label asp-for="EffectiveDate" class="form-label">Effective Date</label>
@@ -620,7 +620,14 @@
             $('#LastUpdatedByName').rules("remove", "required");
             $('#LastUpdatedBy').rules("remove", "required");
             $('#LastUpdationDate').rules("remove", "required");
-
+            $('#ItemCode').val($('#ItemName').val());
+            //$('#ItemCode').val($('#PartCode').val());
+            debugger
+            const itemCode = '@Model.ItemCode';
+            if (itemCode && parseInt(itemCode) > 0) {
+                $('#PartCode').val(itemCode).trigger("change");
+                $('#ItemName').val(itemCode).trigger("change");
+            }
         });
 
         $('#ItemName').change(function () {
@@ -674,9 +681,10 @@
         //     $("form :input").prop("disabled", false);
         // });
         function checkItemOrPart() {
-            const itemCode = $('#PartCode').val();
+            const itemCode = $('#PartCode').val();         // Assuming this is PartCode actually
+            const partCode = $('#PartCode').val();         // In case you want to pass it explicitly
+            const itemName = $('#ItemName').val();         // Get ItemName from input field
 
-            // Prevent redirect if already same ItemCode in URL
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('ItemCode') == itemCode) return;
 
@@ -685,11 +693,18 @@
                 const yc = '@Model.CntPlanYearCode' || 0;
                 const mode = '@Model.Mode' || '';
                 const entryDate = '@Model.CntPlanEntryDate';
+                const revNo = '@Model.RevNo';
 
-                const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${entryDate}`;
+                // Encode URI components to safely pass values
+                const encodedPartCode = encodeURIComponent(partCode);
+                const encodedItemName = encodeURIComponent(itemName);
+
+                const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${entryDate}&RevNo=${revNo}&PartCode=${encodedPartCode}&ItemName=${encodedItemName}&isFromPartCode=true`;
+
                 window.location.href = url;
             }
         }
+
 
         // function checkItemOrPart() {
         //     var itemCode = $('#PartCode').val();
@@ -999,6 +1014,7 @@
                 window.open(url, '_blank');
             }
         }
+        var EditEachItem = false;
         $('.GridButton').click(function (e) {
             debugger
             e.preventDefault();

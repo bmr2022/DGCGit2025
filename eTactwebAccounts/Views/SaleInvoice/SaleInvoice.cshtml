@@ -4,16 +4,11 @@
     ViewData["Title"] = "SaleInvoice";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-@{
-    var saleBillModelJson = TempData["SaleBillModelJson"] as string;
-    var saleBillModel = !string.IsNullOrEmpty(saleBillModelJson)
-        ? Newtonsoft.Json.JsonConvert.DeserializeObject<SaleBillModel>(saleBillModelJson)
-        : new SaleBillModel();
-}
+
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_saleBillDisplaySODetail" />
     <partial name="_SaleBillTaxPassword" />
-    <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" enctype="multipart/form-data">
+    <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" id="saleInvoiceForm" enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <input type="hidden" asp-for="EInvNo" />
@@ -22,6 +17,15 @@
             <h5>
                 <strong>@ViewData["Title"] - @Model.SaleBillYearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
+                      @if (Model.Mode == "V")
+                      {
+                       <a type="button" class="btn btn-sm btn-outline-light bg-gradient" id="btnGenerateEinvoiceview"
+                           asp-route-EntryId="@Model.SaleBillEntryId" asp-route-InvoiceNo="@Model.SaleBillNo" asp-route-YearCode="@Model.SaleBillYearCode">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        GENARATE EINVOICE
+                       </a>
+                            }
+
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
                        asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.SaleBillEntryId" asp-route-YearCode="@Model.SaleBillYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
@@ -398,38 +402,18 @@
         </div>
     </form>
 </div>
-<div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-     aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+<div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="EinvoicePopupLabel" aria-hidden="true">
+    <div class="modal-dialog modal-sm modal-dialog-centered">
+        <div class="modal-content text-center">
+            <div class="modal-header border-0">
+                <h5 class="modal-title w-100" id="EinvoicePopupLabel">E-Invoice Confirmation</h5>
             </div>
             <div class="modal-body">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="row g-2 gx-3">
-                            <div class="card">
-                                <div class="card-body overflow-auto pb-0">
-                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
-                                        <div class="d-flex align-items-center">
-                                            <h6 class="mb-0 me-2">Do you want to generate E-Invoice now?</h6>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="progress my-2" style="height: 4px;">
-                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                    </div>
-                </div>
-                <div class="modal-footer">
-                    <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
-                       yes
-                    </a>
-                    <button type="button" class="btn btn-danger" id="btnClose">No</button>
-                </div>
+                <p>Do you want to generate E-Invoice now?</p>
+            </div>
+            <div class="modal-footer justify-content-center border-0">
+                <a href="#" class="btn btn-success" id="btngenrateEinvoice">Yes</a>
+                <button type="button" class="btn btn-secondary" id="btnClose">No</button>
             </div>
         </div>
     </div>
@@ -461,40 +445,53 @@
     <script>
 
         $(document).ready(function () {
-             var showEinvoicePopup = '@TempData["EinvoicePopup"]';
+                     var $form = $("#saleInvoiceForm");
 
-            if (showEinvoicePopup === 'true') {
-                $('#EinvoicePopup').modal('show');
-            }
+              // Initialize validator only once
+         $form.validate();
+        fieldIds.forEach(removeRequiredRule);
+          $('#btnClose').click(function () {
+                                $('#btngenrateEinvoice').val('false'); // set flag for no printing
+                                $('#EinvoicePopup').modal("hide");
+                                setTimeout(() => {
+                                    $('form').submit();
+                                }, 300);
+                            });
 
-            $('#btnClose').click(function () {
-                $('#EinvoicePopup').modal('hide');
-            });
-             $('#btngenrateEinvoice').click(function (e) {
-                e.preventDefault();
-                 const model = {
-                saleBillEntryId: '@saleBillModel.SaleBillEntryId',
-                invoiceNo: '@saleBillModel.SaleBillNo',
-                yearCode: '@saleBillModel.SaleBillYearCode',
+          $('#btngenrateEinvoice, #btnGenerateEinvoiceview').click(function (e) {
+            e.preventDefault();
+            const model = {
+                EntryId: '@Model.SaleBillEntryId',
+                InvoiceNo: '@Model.SaleBillNo',
+                YearCode: '@Model.SaleBillYearCode',
                 saleBillType: '',
-                customerPartCode: '@saleBillModel.PartCode'
+                customerPartCode: ''
             };
-                $.ajax({
-                    url: "@Url.Action("GenerateInvoice")",
-                    method: 'POST',
-                    contentType: 'application/json',
-                    data: JSON.stringify(model),
-                    success: function (res) {
-                        alert('E-Invoice Generated Successfully');
-                        $('#EinvoicePopup').modal('hide');
-                    },
-                    error: function () {
+            $.ajax({
+                url: '@Url.Action("GenerateInvoice")',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model),
+                success: function (res) {
+                    if (res.redirectUrl) {
+                        window.location.href = res.redirectUrl;
+                    } else {
                         alert('Failed to generate E-Invoice.');
                     }
-                });
+
+                    $('#EinvoicePopup').modal('hide');
+                },
+                error: function () {
+                    alert('Error generating E-Invoice.');
+                }
             });
         });
+
+          
             GetServerDate();
+            });
+              // Run the function for all specified fields
+
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
@@ -586,147 +583,83 @@
             // $('#NetTotal').val(txAmt);
             // $('#AdjPendAmt').val($('#NetTotal').val());
 
-            $('#ProducedUnprod').rules("remove", "required");
-            $('#BOMInd').rules("remove", "required");
-            $('#BomNo').rules("remove", "required");
-            $('#SaleBillJobwork').rules("remove", "required");
-            $('#SONO').rules("remove", "required");
-            $('#SOYearCode').rules("remove", "required");
-            $('#CustOrderNo').rules("remove", "required");
-            $('#Qty').rules("remove", "required");
-            $('#AltQty').rules("remove", "required");
-            $('#RateInOtherCurr').rules("remove", "required");
-            $('#NoofPcs').rules("remove", "required");
-            $('#Amount').rules("remove", "required");
-            $('#DiscountAmt').rules("remove", "required");
-            $('#DiscountPer').rules("remove", "required");
-            $('#Batchno').rules("remove", "required");
-            $('#SOPendQty').rules("remove", "required");
-            $('#AltUnit').rules("remove", "required");
-            $('#SaleBillEntryId').rules("remove", "required");
-            $('#SaleBillYearCode').rules("remove", "required");
-            $('#SaleBillNo').rules("remove", "required");
-            $('#SaleBillDate').rules("remove", "required");
-            $('#InvoiceTime').rules("remove", "required");
-            $('#RemovalDate').rules("remove", "required");
-            $('#RemovalTime').rules("remove", "required");
-            $('#AccountCode').rules("remove", "required");
-            $('#PN1').rules("remove", "required");
-            $('#GSTNO').rules("remove", "required");
-            $('#StateNameofSupply').rules("remove", "required");
-            $('#CustAddress').rules("remove", "required");
-            $('#StateCode').rules("remove", "required");
-            $('#CityofSupply').rules("remove", "required");
-            $('#CountryOfSupply').rules("remove", "required");
-            $('#vehicleNo').rules("remove", "required");
-            $('#TransporterName').rules("remove", "required");
-            $('#TransportModeBYRoadAIR').rules("remove", "required");
-            $('#DispatchTo').rules("remove", "required");
-            $('#DispatchThrough').rules("remove", "required");
-            $('#DomesticExportNEPZ').rules("remove", "required");
-            $('#DocTypeAccountCode').rules("remove", "required");
-            $('#PaymentTerm').rules("remove", "required");
-            $('#currencyId').rules("remove", "required");
-            $('#ExchangeRate').rules("remove", "required");
-            $('#TypeItemServAssets').rules("remove", "required");
-            $('#ConsigneeAccountcode').rules("remove", "required");
-            $('#ConsigneeAddress').rules("remove", "required");
-            $('#SONO').rules("remove", "required");
-            $('#Unit').rules("remove", "required");
-            $('#PacketsDetail').rules("remove", "required");
-            $('#OtherDetail').rules("remove", "required");
-            $('#ItemRemark').rules("remove", "required");
-            $('#SupplyType').rules("remove", "required");
-            $('#TypeJob').rules("remove", "required");
-            $('#dispatchLocation').rules("remove", "required");
-            $('#ConsigneeAddress').rules("remove", "required");
-            $('#BILLAgainstWarrenty').rules("remove", "required");
-            $('#PerformaInvNo').rules("remove", "required");
-            $('#TaxbaleAmtInWord').rules("remove", "required");
-            $('#RoundTypea').rules("remove", "required");
-            $('#TaxbaleAmtInWord').rules("remove", "required");
-            $('#PermitNo').rules("remove", "required");
-            $('#NetAmtInWords').rules("remove", "required");
-            $('#ExportInvoiceNo').rules("remove", "required");
-            $('#CancelBill').rules("remove", "required");
-            $('#Cancelreason').rules("remove", "required");
-            $('#BankName').rules("remove", "required");
-            $('#Ewaybillno').rules("remove", "required");
-            $('#FreightPaid').rules("remove", "required");
-            $('#TransporterdocNo').rules("remove", "required");
-            $('#DispatchDelayReason').rules("remove", "required");
-            $('#DiscountAmt').rules("remove", "required");
-            $('#AttachmentFilePath1').rules("remove", "required");
-            $('#AttachmentFilePath2').rules("remove", "required");
-            $('#AttachmentFilePath3').rules("remove", "required");
-            $('#DocketNo').rules("remove", "required");
-            $('#DispatchDelayreson').rules("remove", "required");
-            $('#Commodity').rules("remove", "required");
-            $('#EInvNo').rules("remove", "required");
-            $('#Remark').rules("remove", "required");
-            $('#EinvGenerated').rules("remove", "required");
-            $('#SaleQuotNo').rules("remove", "required");
-            $('#SaleQuotDate').rules("remove", "required");
-            $('#EntryFreezToAccounts').rules("remove", "required");
-            $('#ChallanNo').rules("remove", "required");
-            $('#BalanceSheetClosed').rules("remove", "required");
-            $('#Schdate').rules("remove", "required");
-            $('#HSNNo').rules("remove", "required");
-            $('#Batchno').rules("remove", "required");
-            $('#Uniquebatchno').rules("remove", "required");
-            $('#AgstInvNo').rules("remove", "required");
-            $('#PerformaInvYearCode').rules("remove", "required");
-            $('#AgstInvDate').rules("remove", "required");
-            $('#CostCenterId').rules("remove", "required");
-            $('#ActualEnteredByName').rules("remove", "required");
-            $('#AdjModeOfAdjstment').rules("remove", "required");
-            $('#AdjDescription').rules("remove", "required");
-            $('#AdjDueDate').rules("remove", "required");
-            $('#AdjNewRefNo').rules("remove", "required");
-            $('#AdjPendAmt').rules("remove", "required");
-            $('#dbCrsearch-box').rules("remove", "required");
-            $('#SOYearCode').rules("remove", "required");
-            $('#StoreId').rules("remove", "required");
-            $('#Qty').rules("remove", "required");
-            $('#ItemSize').rules("remove", "required");
-            $('#Itemcolor').rules("remove", "required");
-            $('#ProcessId').rules("remove", "required");
-            $('#GSTPer').rules("remove", "required");
-            $('#GSTType').rules("remove", "required");
-            $('#UnitOfRate').rules("remove", "required");
-            $('#OriginalMRP').rules("remove", "required");
-            $('#MRP').rules("remove", "required");
-            $('#AltSOPendQty').rules("remove", "required");
-            $('#AdviceNo').rules("remove", "required");
-            $('#AdviseEntryId').rules("remove", "required");
-            $('#AdviceYearCode').rules("remove", "required");
-            $('#AdviseDate').rules("remove", "required");
-            $('#ProdSchno').rules("remove", "required");
-            $('#AgainstProdPlanNo').rules("remove", "required");
-            $('#AgainstProdPlanYearCode').rules("remove", "required");
-            $('#AgaisntProdPlanDate').rules("remove", "required");
-            $('#SOAmendNo').rules("remove", "required");
-            $('#SOAmendDate').rules("remove", "required");
-            $('#ProdSchYearcode').rules("remove", "required");
-            $('#ProdSchEntryId').rules("remove", "required");
-            $('#ProdSchDate').rules("remove", "required");
-            $('#SchdeliveryDate').rules("remove", "required");
-            $('#CustOrderNo').rules("remove", "required");
-            $('#DistanceKM ').rules("remove", "required");
+           function removeRequiredRule(id) {
+            var $el = $('#' + id.trim());
+            var validator = $el.closest("form").data("validator");
 
-            var rowCount = $('#divSaleBillList tr').length;
-            for (var i = 1; i <= rowCount; i++) {
-                var itemCodee = parseInt($('#GridIC-' + i).val());
-                var batchNoo = $('#GridBatchNo-' + i).text();
-                var uniquebatchnoo = $('#GridUniqueBatchNo-' + i).text();
-                var Seqno = $('#SeqNo-' + i).val();
-                itemBatchArray.push({
-                    "SeqNo": parseInt(Seqno),
-                    "itemcode": itemCodee,
-                    "batchno": batchNoo,
-                    "uniquebatchno": uniquebatchnoo
-                });
+            if ($el.length && validator && validator.settings && $el.rules) {
+                try {
+                    $el.rules("remove", "required");
+                } catch (e) {
+                    console.warn(`Could not remove rule for #${id}:`, e.message);
+                }
             }
+        }
+
+        // All input field IDs where the "required" rule should be removed
+        var fieldIds = [
+            'ProducedUnprod', 'BOMInd', 'BomNo', 'SaleBillJobwork', 'SONO',
+            'SOYearCode', 'CustOrderNo', 'Qty', 'AltQty', 'RateInOtherCurr',
+            'NoofPcs', 'Amount', 'DiscountAmt', 'DiscountPer', 'Batchno',
+            'SOPendQty', 'AltUnit', 'SaleBillEntryId', 'SaleBillYearCode',
+            'SaleBillNo', 'SaleBillDate', 'InvoiceTime', 'RemovalDate',
+            'RemovalTime', 'AccountCode', 'PN1', 'GSTNO', 'StateNameofSupply',
+            'CustAddress', 'StateCode', 'CityofSupply', 'CountryOfSupply',
+            'vehicleNo', 'TransporterName', 'TransportModeBYRoadAIR',
+            'DispatchTo', 'DispatchThrough', 'DomesticExportNEPZ',
+            'DocTypeAccountCode', 'PaymentTerm', 'currencyId', 'ExchangeRate',
+            'TypeItemServAssets', 'ConsigneeAccountcode', 'ConsigneeAddress',
+            'Unit', 'PacketsDetail', 'OtherDetail', 'ItemRemark', 'SupplyType',
+            'TypeJob', 'dispatchLocation', 'BILLAgainstWarrenty',
+            'PerformaInvNo', 'TaxbaleAmtInWord', 'RoundTypea', 'PermitNo',
+            'NetAmtInWords', 'ExportInvoiceNo', 'CancelBill', 'Cancelreason',
+            'BankName', 'Ewaybillno', 'FreightPaid', 'TransporterdocNo',
+            'DispatchDelayReason', 'AttachmentFilePath1', 'AttachmentFilePath2',
+            'AttachmentFilePath3', 'DocketNo', 'DispatchDelayreson', 'Commodity',
+            'EInvNo', 'Remark', 'EinvGenerated', 'SaleQuotNo', 'SaleQuotDate',
+            'EntryFreezToAccounts', 'ChallanNo', 'BalanceSheetClosed', 'Schdate',
+            'HSNNo', 'Uniquebatchno', 'AgstInvNo', 'PerformaInvYearCode',
+            'AgstInvDate', 'CostCenterId', 'ActualEnteredByName',
+            'AdjModeOfAdjstment', 'AdjDescription', 'AdjDueDate', 'AdjNewRefNo',
+            'AdjPendAmt', 'dbCrsearch-box', 'StoreId', 'ItemSize', 'Itemcolor',
+            'ProcessId', 'GSTPer', 'GSTType', 'UnitOfRate', 'OriginalMRP', 'MRP',
+            'AltSOPendQty', 'AdviceNo', 'AdviseEntryId', 'AdviceYearCode',
+            'AdviseDate', 'ProdSchno', 'AgainstProdPlanNo',
+            'AgainstProdPlanYearCode', 'AgaisntProdPlanDate', 'SOAmendNo',
+            'SOAmendDate', 'ProdSchYearcode', 'ProdSchEntryId', 'ProdSchDate',
+            'SchdeliveryDate', 'DistanceKM'
+        ];
+
+      
+        var itemBatchArray = []; // ✅ Initialize the array before pushing
+         var rowCount = $('#divSaleBillList tr').length;
+        for (var i = 1; i <= rowCount; i++) {
+            var itemCodee = parseInt($('#GridIC-' + i).val());
+            var batchNoo = $('#GridBatchNo-' + i).text();
+            var uniquebatchnoo = $('#GridUniqueBatchNo-' + i).text();
+            var Seqno = $('#SeqNo-' + i).val();
+
+            itemBatchArray.push({
+                "SeqNo": parseInt(Seqno),
+                "itemcode": itemCodee,
+                "batchno": batchNoo,
+                "uniquebatchno": uniquebatchnoo
+            });
+        }
+
+           
+            // for (var i = 1; i <= rowCount; i++) {
+            //     var itemCodee = parseInt($('#GridIC-' + i).val());
+            //     var batchNoo = $('#GridBatchNo-' + i).text();
+            //     var uniquebatchnoo = $('#GridUniqueBatchNo-' + i).text();
+            //     var Seqno = $('#SeqNo-' + i).val();
+            //     itemBatchArray.push({
+            //         "SeqNo": parseInt(Seqno),
+            //         "itemcode": itemCodee,
+            //         "batchno": batchNoo,
+            //         "uniquebatchno": uniquebatchnoo
+            //     });
+            // }
             
             if ($('#Mode').val() == "U") {
                 if ($('#EInvNo').val() == "Y" || $('#EinvGenerated').val() == "Y") {
@@ -2471,6 +2404,7 @@
                     $.notify('AdjGrid should not have CR value...!', "error");
                 } else {
                     if (confirm("are you sure you want to save this entry?")) {
+                        $('#EinvoicePopup').modal('show');
                         $("form").submit();
                     }
                 }
@@ -2515,7 +2449,8 @@
             else {
                 // $('#exampleModal').modal('show');
                 if (confirm("are you sure you want to save this entry?")) {
-                    $("form").submit();
+                     $('#EinvoicePopup').modal('show');
+                     $("form").submit();
                 }
             }
         });

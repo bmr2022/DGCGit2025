@@ -16,7 +16,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 //using System.Data;
 using System.Data.SqlClient;
-using System.Net.Http;
+
 using System.Text;
 using System.Threading.Tasks;
 using System.Diagnostics;
@@ -29,7 +29,7 @@ using System.Data;
 using System.Security.Cryptography.X509Certificates; // For async/await
 
 
-using System.Net.Http;
+
 using Microsoft.Extensions.Logging;
 
 
@@ -52,12 +52,11 @@ namespace eTactWeb.Data.DAL
         public string token;
         public string connectionString = string.Empty;
        
-        public EInvoiceDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public EInvoiceDAL(IConfiguration configuration, IDataLogic iDataLogic, IHttpClientFactory httpClientFactory, ConnectionStringService connectionStringService)
         {
-            //configuration = config;
-            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
+            _httpClientFactory = httpClientFactory; // Fix: Assign the IHttpClientFactory instance passed in the constructor to the field.  
             _IDataLogic = iDataLogic;
         }
         public async Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode)
@@ -66,9 +65,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@EntryId", entryId));
-                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
-                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@ENtryID", entryId));
+                SqlParams.Add(new SqlParameter("@INVNO", invoiceNo));
+                SqlParams.Add(new SqlParameter("@yearCode", yearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("chkForDuplicateIRNNO", SqlParams);
             }
             catch (Exception ex)
@@ -88,7 +87,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@YearCode", yearCode));
                 SqlParams.Add(new SqlParameter("@EntryId", entryId));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM Sale_Bill_Main WHERE year_code = @YearCode AND entry_id = @EntryId", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM SaleBillMain WHERE SaleBillYearCode = @YearCode AND entry_id = @EntryId", SqlParams);
             }
             catch (Exception ex)
             {
@@ -102,27 +101,28 @@ namespace eTactWeb.Data.DAL
            
         }
         
-        private async Task<ResponseResult> GetInvoiceData(string invoiceNo, int yearCode)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
-                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+        //private async Task<ResponseResult> GetInvoiceData(string invoiceNo, int yearCode)
+        //{
+        //    var _ResponseResult = new ResponseResult();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("@SaleBillNo1", invoiceNo));
+        //        SqlParams.Add(new SqlParameter("@SaleBillNo2", invoiceNo));
+        //        SqlParams.Add(new SqlParameter("@SaleSaleBillYearCode", yearCode));
+        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
 
-            return _ResponseResult;
+        //    return _ResponseResult;
 
 
-        }
+        //}
         public async Task<ResponseResult> BuildInvoiceDetails(DataTable dataTable, string invoice, string saleBillType, string customerPartCode, string token)
         {
             var _ResponseResult = new ResponseResult();
@@ -279,8 +279,9 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@InvoiceNo", invoiceNo));
-                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@SaleBillNo1", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleBillNo2", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleSaleBillYearCode", yearCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
             }
             catch (Exception ex)
@@ -334,21 +335,22 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<bool> PostDataAsync(Dictionary<string, object> dictData)
+        public async Task<string> PostDataAsync(Dictionary<string, object> dictData, string invoicenumber, int yearcodenumber)
         {
             try
             {
-                using var client = _httpClientFactory.CreateClient();
+                var client = _httpClientFactory.CreateClient();
 
                 string urlToPost1 = "https://pro.mastersindia.co/generateEinvoice";
                 var requestContent = new StringContent(JsonConvert.SerializeObject(dictData), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync(urlToPost1, requestContent);
+                 token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return false;
+                    return null;
                 }
-
+                
                 var responseString = await response.Content.ReadAsStringAsync();
                 var json = JObject.Parse(responseString);
                 irnNo = json.SelectToken("results.message.Irn")?.ToString();
@@ -363,11 +365,11 @@ namespace eTactWeb.Data.DAL
                 var distanceJson = JObject.Parse(distanceResponse);
                 var distanceValue = distanceJson.SelectToken("results.distance")?.ToString();
 
-                ResponseResult response1 = await GetInvoiceData(invoicenumber, yearcodenumber);
+                ResponseResult response1 = await GetInvoiceDataAsync(invoicenumber, yearcodenumber);
                 DataTable dataTable = response1.Result as DataTable;
                 if (dataTable.Rows.Count == 0)
                 {
-                    return false;
+                    return null;
                 }
 
                 var row = dataTable.Rows[0];
@@ -397,25 +399,31 @@ namespace eTactWeb.Data.DAL
                 };
 
                 var ewayStatus = await PostData2(dictData19);
-                if (string.IsNullOrEmpty(ewayStatus)) // Fix: Check if the string is null or empty instead of using '!'.
+
+                if (string.IsNullOrEmpty(ewayStatus))
                 {
-                    return false;
+                    return null;
+                }
+                var ewbUrl = ewayStatus.Split(',')
+                         .FirstOrDefault(x => x.Contains("PDF:"))
+                         ?.Split("PDF:").Last()
+                         ?.Trim();
+                var qrResult = await GenerateQRCode(barcodeVal, invoicenumber, yearcodenumber);
+                if (qrResult != "QR code generated and saved to database successfully.")
+                {
+                    return null;
                 }
 
-                var qrResult = await GenerateQRCode(barcodeVal);
-                if (qrResult != "QR code generated and saved to database successfully.") // Fix: Compare the string result directly.
-                {
-                    return false;
-                }
+                // return true;
+                return ewbUrl;
 
-                return true;
             }
             catch (Exception ex)
             {
-                return false;
+                return " url not found";
             }
         }
-        public async Task<string> GenerateQRCode(string barcodeValue)
+        public async Task<string> GenerateQRCode(string barcodeValue,string invoicenumber,int yearcodenumber)
         {
             try
             {
@@ -450,18 +458,34 @@ namespace eTactWeb.Data.DAL
                 }
 
                 byte[] img = await System.IO.File.ReadAllBytesAsync(outputFilePath);
-
-                using (var connection = new SqlConnection(connectionString))
-                using (var cmd = new SqlCommand("UpdateImgToBarcode", connection))
+                var _ResponseResult = new ResponseResult();
+                try
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.Add(new SqlParameter("@INVNO", SqlDbType.BigInt) { Value = invoicenumber });
-                    cmd.Parameters.Add(new SqlParameter("@year_code", SqlDbType.BigInt) { Value = yearcodenumber });
-                    cmd.Parameters.Add(new SqlParameter("@img", SqlDbType.Image) { Value = img });
-
-                    await connection.OpenAsync();
-                    await cmd.ExecuteNonQueryAsync();
+                    var SqlParams = new List<dynamic>();
+                    SqlParams.Add(new SqlParameter("@INVNO", invoicenumber));
+                    SqlParams.Add(new SqlParameter("@year_code", yearcodenumber));
+                    SqlParams.Add(new SqlParameter("@img", img));
+                    _ResponseResult = await _IDataLogic.ExecuteDataTable("UpdateImgToBarcode", SqlParams);
                 }
+                catch (Exception ex)
+                {
+                    dynamic Error = new ExpandoObject();
+                    Error.Message = ex.Message;
+                    Error.Source = ex.Source;
+                }
+
+             
+                //using (var connection = new SqlConnection(connectionString))
+                //using (var cmd = new SqlCommand("UpdateImgToBarcode", connection))
+                //{
+                //    cmd.CommandType = CommandType.StoredProcedure;
+                //    cmd.Parameters.Add(new SqlParameter("@INVNO", SqlDbType.BigInt) { Value = invoicenumber });
+                //    cmd.Parameters.Add(new SqlParameter("@year_code", SqlDbType.BigInt) { Value = yearcodenumber });
+                //    cmd.Parameters.Add(new SqlParameter("@img", SqlDbType.Image) { Value = img });
+
+                //    await connection.OpenAsync();
+                //    await cmd.ExecuteNonQueryAsync();
+                //}
 
                 return "QR code generated and saved to database successfully.";
             }
@@ -502,6 +526,13 @@ namespace eTactWeb.Data.DAL
             {
                 return $"Exception: {ex.Message}";
             }
+        }
+        // Add this method to EInvoiceDAL
+        private void SetAccessToken()
+        {
+            // Example: Read from configuration (appsettings.json)
+            token = _configuration["EInvoice:AccessToken"];
+            // Or fetch from a secure source/service as needed
         }
 
     }

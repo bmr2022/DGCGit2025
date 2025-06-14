@@ -189,7 +189,7 @@
             $("#EntryDate").datepicker({ minDate: 0 });
             $("#EffectiveDate").datepicker({ minDate: 0 });
             if($('#Mode').val() == "U"){
-                 
+                 $("#optionalParameterSection").slideDown();
                 FGItemcode = $('#hiddenFGItemCode').val();
                 Itemcode = $('#hiddenItemCode').val();
                 //AltItemCode1 = $('#hiddenAltItemCode1').val();
@@ -197,6 +197,10 @@
                 FetchItem($('#FG1')[0]);
                 FetchItem($('#FG2')[0]);
                 FetchItem($('#FG3')[0]);
+                GetByProdPartCode();
+                GetByProdItemName();
+                GetByProdPartCode2();
+                GetByProdItemName2();
                  
                
                 //$('#FinishItemCode').val(FGItemcode).trigger('change');
@@ -271,9 +275,9 @@
             $('#Mode').rules("remove", "required");
             //$('#element').keyup(myFunction).keypress(myFunction).blur(myFunction).change(myFunction)
         });
-        debugger
+       
         $('#Byprodpartcode1').change(function () {
-            debugger
+            
             $('#ByprodItemCode1').val($('#Byprodpartcode1').val());  
         });
         $('#ByprodItemName1').change(function () {
@@ -566,12 +570,13 @@
 
         });
         function toggleSection() {
-             
+            
             if ($("#hideUnhideToggle").is(":checked")) {
                 $("#optionalParameterSection").slideDown();
             } else {
                 $("#optionalParameterSection").slideUp();
             }
+             
         }
         function FGCodeChange(ID) {
             // $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') }).done(function () { GetGridData(ID) });
@@ -1191,6 +1196,7 @@
               
             var BomNo = $('#BomNo').val();
             var ItemCode = $('#FinishItemCode').val();
+             $("#optionalParameterSection").slideDown();
 
             $.ajax({
                 url: '@Url.Action("EditBomSeq","Bom")',
@@ -1203,9 +1209,10 @@
                         //$('#FinishItemCode').val(obj[0].FinishItemCode);
                         //$('#FinishItemName').val(obj[0].FinishItemCode);
                         //$('#BomQty').val(obj[0].BomQty);
+
                         $('#ItemCode').val(obj[0].ItemCode).change();
-                        $('#ByprodItemCode1').val(obj[0].ByprodItemcode1).change();
-                        $('#ByprodItemCode2').val(obj[0].ByprodItemcode2).change();
+                        $('#ByprodItemCode1').val(obj[0].ByprodItemCode1).change();
+                        $('#ByprodItemCode2').val(obj[0].ByprodItemCode2).change();
                         
                         if (obj[0].AltItemCode1 != 0) {
                             $('#AltItemCode1').val(obj[0].AltItemCode1).trigger('change');
@@ -1217,11 +1224,15 @@
                         }
 
                         $('#ItemName').val(obj[0].ItemCode).trigger('change');
-                        $('#ByprodItemName1').val(obj[0].ByprodItemcode1).trigger('change');
-                        $('#ByprodItemName2').val(obj[0].ByprodItemcode2).trigger('change');
+                        // $('#ByprodItemName1').val(obj[0].ByprodItemCode1).trigger('change');
+                        // $('#ByprodItemName2').val(obj[0].ByprodItemCode2).trigger('change');
+                        $('#Byprodpartcode1').val(obj[0].ByprodItemCode1).trigger('change');
+                        $('#Byprodpartcode2').val(obj[0].ByprodItemCode2).trigger('change');
 
-                        $('#ByProdQty1').val(obj[0].ByprodItemcQty1);
-                        $('#ByProdQty2').val(obj[0].ByprodItemcQty2);
+
+
+                        $('#ByProdQty1').val(obj[0].ByProdQty1);
+                        $('#ByProdQty2').val(obj[0].ByProdQty2);
                         
                         $('#AltQty1').val(obj[0].AltQty1);
                         $('#AltQty2').val(obj[0].AltQty2);

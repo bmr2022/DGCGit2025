@@ -1996,7 +1996,7 @@
             $.ajax({
                 url: '/WorkOrder/EditItemRows',
                 type: "POST",
-                data: { SeqNo: SeqNo },
+                data: { seqNo: SeqNo,mode : $('#Mode').val() },
                 success: function (data) {
                     var obj = $.parseJSON(data);
                     if (obj != null) {

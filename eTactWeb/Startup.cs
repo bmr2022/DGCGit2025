@@ -163,7 +163,9 @@ namespace eTactWeb
             services.AddDistributedMemoryCache();
             services.AddMemoryCache();
             services.AddOutputCache();
-           
+            services.AddHttpClient();
+
+
             FastReport.Utils.RegisteredObjects.AddConnection(typeof(FastReport.Data.MsSqlDataConnection));
 
             services.AddSession(options =>
@@ -202,6 +204,7 @@ namespace eTactWeb
             });
 
             services.TryAddScoped<IEmailService, EmailService>();
+            services.TryAddScoped<IEinvoiceService, EInvoiceBLL>();
             services.AddScoped<DirectPurchaseBillBLL>();
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.TryAddSingleton<EncryptDecrypt, EncryptDecrypt>();

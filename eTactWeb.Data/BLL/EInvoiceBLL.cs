@@ -14,6 +14,8 @@ using System.Reflection;
 using System.Text;
 using static eTactWeb.DOM.Models.Common;
 using Common = eTactWeb.Data.Common;
+using System.Net.Http;
+using Microsoft.VisualBasic;
 
 namespace eTactWeb.Data.BLL
 {
@@ -21,10 +23,12 @@ namespace eTactWeb.Data.BLL
     {
         private readonly IDataLogic _DataLogicDAL;
         private readonly EInvoiceDAL _EInvoiceDAL;
+        private readonly IHttpClientFactory _httpClientFactory;
 
-        public EInvoiceBLL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public EInvoiceBLL(IConfiguration configuration, IDataLogic iDataLogic, IHttpClientFactory httpClientFactory, ConnectionStringService connectionStringService)
         {
-            _EInvoiceDAL = new EInvoiceDAL(configuration, iDataLogic, connectionStringService);
+            _httpClientFactory = httpClientFactory;
+            _EInvoiceDAL = new EInvoiceDAL(configuration, iDataLogic, _httpClientFactory, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
 
@@ -51,21 +55,15 @@ namespace eTactWeb.Data.BLL
         {
             return await _EInvoiceDAL.CheckDuplicateIRN(entryId, invoiceNo, yearCode);
         }
-
-
+       
         public async Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string customerPartCode, string saleBillType)
         {
             var result = new ResponseResult();
 
             try
             {
-                var prefixResult = await _EInvoiceDAL.GetInvoiceDataAsync(manYearCode, manEntryId);
-                if (prefixResult?.Result == null || prefixResult.Result.Rows.Count == 0)
-                {
-                    return result;
-                }
-                var invoicePrefix = prefixResult.Result.Rows[0]["Excise_Amt_Word"].ToString();
-                var invoice = invoicePrefix + manInvoiceNo;
+                var invoice = manInvoiceNo;
+
                 var dataResult = await _EInvoiceDAL.GetInvoiceDataAsync(manInvoiceNo, manYearCode);
                 if (dataResult?.Result == null || dataResult.Result.Rows.Count == 0)
                 {
@@ -80,11 +78,18 @@ namespace eTactWeb.Data.BLL
                 }
 
                 var invoiceDetails = buildResult.Result;
-                bool postSuccess = await _EInvoiceDAL.PostDataAsync(invoiceDetails);
+
+                string ewbUrl = await _EInvoiceDAL.PostDataAsync(invoiceDetails, invoice, manYearCode);
+                if (!string.IsNullOrEmpty(ewbUrl))
+                {
+                    result.Result = ewbUrl;
+                }
+
+               
             }
             catch (Exception ex)
             {
-                // Handle exception
+               
             }
 
             return result;
@@ -155,5 +160,7 @@ namespace eTactWeb.Data.BLL
                 StatusText = "QR code generated successfully"
             };
         }
+
+      
     }
 }

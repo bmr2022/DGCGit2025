@@ -382,6 +382,9 @@
                                     </button>
                                     <button class="btn btn-sm btn-outline-warning bg-gradient" id="displaylistbutton" onclick="DisplayBomDetail(event)" style="margin-left:0px;margin-top:10px;"><i class="fa fa-list-alt fafw fa-lg"></i> Bom</button>
                                     <button class="btn btn-sm btn-outline-success bg-gradient" id="displayroutingdata" onclick="DisplayRoutingData(event)" style="margin-left:0px;margin-top:10px;"><i class="fa fa-list-alt fafw fa-lg"></i> Routing</button>
+                                    <span id="productDetailAlert" style="display:none; color:white; background-color:red; padding:2px 6px; font-size:12px; border-radius:4px;">Product detail</span>
+                                    <span id="scrapDetailAlert" style="display:none; color:white; background-color:green; padding:2px 6px; font-size:12px; border-radius:4px;">Product detail</span>
+
                                 </div>
                             </div>
                         </div>
@@ -861,7 +864,7 @@
                                                     <th>Product Type</th>
                                                     <th>Product Qty</th>
                                                     <th>Product Unit</th>
-                                                    <th>Store/WC</th>
+                                                    
                                                     <th>Transfer to WC or Store</th>
                                                 </tr>
                                             </thead>
@@ -1795,6 +1798,26 @@
         document.getElementById('unTarget').addEventListener('focusout', function () {
             const value = this.value;
             document.getElementById('ProdQty').value = value;
+            FillScrapData();
+            FillProductDetail();
+
+            const grid = document.getElementById('divProductDetailGrid');
+            const alertBox = document.getElementById('productDetailAlert');
+
+            if (grid && grid.innerHTML.trim() !== "") {
+                alertBox.style.display = "inline-block";
+            } else {
+                alertBox.style.display = "none";
+            }
+
+            const Scrapgrid = document.getElementById('divScrapDetailGrid');
+            const ScrapalertBox = document.getElementById('scrapDetailAlert');
+
+            if (Scrapgrid && Scrapgrid.innerHTML.trim() !== "") {
+                ScrapalertBox.style.display = "inline-block";
+            } else {
+                ScrapalertBox.style.display = "none";
+            }
         });
 
         $('#ProdAgainstPlanManual').select2();
@@ -2112,6 +2135,7 @@
 
         $('#BOMNo').change(function () {
             FillScrapData();
+            FillProductDetail();
             FillProductPartCode();
             FillProductItems();
         })
@@ -2328,6 +2352,20 @@
             });
         }
 
+        function FillProductDetail() {
+            $('#divProductDetailGrid').empty();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillProductDetail")",
+                data: { "FGItemCode": parseInt($('#FGItemCode').val()), "FgProdQty": parseFloat($('#ProdQty').val()), "BomNo": $('#BOMNo').val() },
+                async: false,
+                success: function (data) {
+                    console.log("Product Data" + data);
+                    $('#divProductDetailGrid').append(data);
+                }
+            });
+        }
+
         function FillSuperwiser() {
 
             $.ajax({
@@ -2457,6 +2495,7 @@
             $('#divProductionEntryGrid').empty();
             $('#divAddProductionEntryGrid').empty();
             FillScrapData();
+            FillProductDetail();
         });
         $('#WorkCenter').change(function () {
             $('#divProductionEntryGrid').empty();
@@ -4109,6 +4148,7 @@
             $('#ProdPlanYear').val(0);
             $('#ProdPlanDate').val(0);
             FillScrapData();
+            FillProductDetail();
             FillProductPartCode();
             FillProductItems();
         });
@@ -4908,6 +4948,14 @@
             } else {
                 RemoveErrorCls('WorkCenter');
             }
+
+            if ($('#Stock').val() == 0) {
+                Err = 1;
+                $.notify('Not Have Stock.', "error");
+            } else {
+                RemoveErrorCls('Stock');
+            }
+
             if ($('#PartCode').val() == '-Select-') {
                 Err = 1;
                 $.notify('Please select PartCode first.', "error");

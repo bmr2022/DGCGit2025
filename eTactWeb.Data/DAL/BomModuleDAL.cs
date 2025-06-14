@@ -247,7 +247,16 @@ namespace eTactWeb.Data.DAL
                                                  Location = dr["Location"].ToString(),
                                                  MPNNo = dr["MPNNo"].ToString(),
                                                  CustJWmandatory = dr["CustJWmandatory"].ToString(),
-                                                 
+                                                 ByprodItemCode1 = dr["ByprodItemCode1"] != DBNull.Value ? Convert.ToInt32(dr["ByprodItemCode1"]) : 0,
+                                                 ByProdQty1 = dr["ByprodItemcQty1"] != DBNull.Value ? Convert.ToDecimal(dr["ByprodItemcQty1"]) : 0,
+                                                 ByprodItemCode2 = dr["ByprodItemcode2"] != DBNull.Value ? Convert.ToInt32(dr["ByprodItemcode2"]) : 0,
+                                                 ByProdQty2 = dr["ByprodItemcQty2"] != DBNull.Value ? Convert.ToDecimal(dr["ByprodItemcQty2"]) : 0,
+                                                 ByprodItemName1 = dr["ByProdItem1"] != DBNull.Value ? dr["ByProdItem1"].ToString() : string.Empty,
+                                                 ByprodItemName2 = dr["ByProdItem2"] != DBNull.Value ? dr["ByProdItem2"].ToString() : string.Empty,
+                                                 Byprodpartcode1 = dr["ByprodPartCode1"] != DBNull.Value ? dr["ByprodPartCode1"].ToString() : string.Empty,
+                                                 Byprodpartcode2 = dr["ByprodPartCode2"] != DBNull.Value ? dr["ByprodPartCode2"].ToString() : string.Empty,
+
+
                                              }).ToList();
                         }
                     }

@@ -669,7 +669,7 @@
                     if ($('#VendorBatchMand-' + (i + 1)).val() == "Y") {
                         PartCodeArray[i] = $('#PartCode-' + (i + 1)).text();
                     }
-                    billQtyArray[i] = parseInt($('#BillQty-' + (i + 1)).text());
+                billQtyArray[i] = parseFloat($('#BillQty-' + (i + 1)).text());
                     ItemCodeArray[i] = parseInt($('#ItemCode-' + (i + 1)).val());
                 }
 
@@ -815,7 +815,7 @@ function submitForm(shouldPrint, printWindow) {
                     if ($('#VendorBatchMand-' + (i + 1)).val() == "Y") {
                         PartCodeArray[i] = $('#PartCode-' + (i + 1)).text();
                     }
-                    billQtyArray[i] = parseInt($('#BillQty-' + (i + 1)).text());
+                billQtyArray[i] = parseFloat($('#BillQty-' + (i + 1)).text());
                     ItemCodeArray[i] = parseInt($('#ItemCode-' + (i + 1)).val());
                 }
                 for (var i = 0; i < batchRowCount; i++) {
@@ -1857,52 +1857,62 @@ function submitForm(shouldPrint, printWindow) {
                     }
                 });
             }
+            function GetGateMainData() {
+            var dataParams = {
+                "GateNo": $('#GateNo').val(),
+                "GateYearCode": $('#GateYearCode').val(),
+                "GateEntryId": parseInt($('#GateEntry').val())
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetGateMainData")",
+                data: dataParams,
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#GateDate').val(val.GDate);
+                                $('#AccountCode').val(val.account_name);
+                                $('#Address').val(val.address);
+                                $('#DocType').val(val.DocName);
+                                $('#InvoiceNo').val(val.Invoiceno);
+                                $('#InvoiceDate').val(val.InvoiceDate);
+                                $('#DOCID').val(val.docTypeId);
+                                $('#AccountID').val(val.AccountCode);
+                                $('#CheckQC').val(val.checkQC);
+                                $('#RecInStore').val(val.RecInStore);
+                                $('#RecStoreId').val(val.StoreId);
+                                $('#CurrencyID').val(val.CurrencyId);
+                                $('#CurrencyName').val(val.CurrencyName);
+                                $('#TotalAmt').val(val.TotalAmt);
+                                $('#NetAmt').val(val.NetAmt);
+                                $('#NetWeight').val(val.NetWeight);
+                                $('#TareWeight').val(val.TareWeight);
+                                $('#Remark').val(val.Remark);
+                                $('#GrossWeight').val(val.GrossWeight);
+                                $('#ModeOfTransport').val(val.ModeOftransport);
+                            });
+                        }
+                    }
+                }
+            });
+            }
 
             $('#GateYearCode').change(function () {
                 ClearGridAjax();
                 $('#divMRNGrid').empty();
-                $('#CC').val($(this).find(":selected").data('branch'));
-                var dataParams = {
-                    "GateNo": $('#GateNo').val(),
-                    "GateYearCode": $('#GateYearCode').val(),
-                    "GateEntryId": parseInt($('#GateEntry').val())
-                }
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("GetGateMainData")",
-                    data: dataParams,
-                    async: false,
-                    success: function (result, status, error) {
-                        if (result != null) {
+            var gateNo = $('#GateNo').val();
+            var gateEntryId = parseInt($('#GateEntry').val()) || 0;
 
-                            var obj = $.parseJSON(result);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $.each(obj.Result, function (index, val) {
-                                    $('#GateDate').val(val.GDate);
-                                    $('#AccountCode').val(val.account_name);
-                                    $('#Address').val(val.address);
-                                    $('#DocType').val(val.DocName);
-                                    $('#InvoiceNo').val(val.Invoiceno);
-                                    $('#InvoiceDate').val(val.InvoiceDate);
-                                    $('#DOCID').val(val.docTypeId);
-                                    $('#AccountID').val(val.AccountCode);
-                                    $('#CheckQC').val(val.checkQC);
-                                    $('#RecInStore').val(val.RecInStore);
-                                    $('#RecStoreId').val(val.StoreId);
-                                    $('#CurrencyID').val(val.CurrencyId);
-                                    $('#CurrencyName').val(val.CurrencyName);
-                                    $('#TotalAmt').val(val.TotalAmt);
-                                    $('#NetAmt').val(val.NetAmt);
-                                    $('#NetWeight').val(val.NetWeight);
-                                    $('#TareWeight').val(val.TareWeight);
-                                    $('#Remark').val(val.Remark);
-                                    $('#GrossWeight').val(val.GrossWeight);
-                                    $('#ModeOfTransport').val(val.ModeOftransport);
-                                });
-                            }
-                        }
-                    }
-                });
+            if (!gateNo || gateEntryId === 0) {
+                alert("GateNo or GateEntryId not set yet. Skipping data fetch.");
+                return; // Prevent unnecessary/failing AJAX call
+            }
+                $('#CC').val($(this).find(":selected").data('branch'));
+                GetGateMainData();
                 GetgateItemdata();
 
             });
