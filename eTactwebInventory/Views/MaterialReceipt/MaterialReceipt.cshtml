@@ -669,7 +669,7 @@
                     if ($('#VendorBatchMand-' + (i + 1)).val() == "Y") {
                         PartCodeArray[i] = $('#PartCode-' + (i + 1)).text();
                     }
-                    billQtyArray[i] = parseInt($('#BillQty-' + (i + 1)).text());
+                billQtyArray[i] = parseFloat($('#BillQty-' + (i + 1)).text());
                     ItemCodeArray[i] = parseInt($('#ItemCode-' + (i + 1)).val());
                 }
 
