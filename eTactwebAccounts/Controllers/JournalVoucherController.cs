@@ -342,9 +342,9 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillLedgerName(string VoucherType, string Type)
+        public async Task<JsonResult> FillLedgerName(string VoucherType, string ShowAll)
         {
-            var JSON = await _IJournalVoucher.FillLedgerName(VoucherType, Type);
+            var JSON = await _IJournalVoucher.FillLedgerName(VoucherType, ShowAll);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

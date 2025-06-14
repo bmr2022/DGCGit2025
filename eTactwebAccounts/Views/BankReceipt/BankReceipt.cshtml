@@ -179,7 +179,16 @@
 											<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
 												<tr>
 													<th style="color:yellow">Type*</th>
-													<th style="color:yellow">Ledger Name*</th>
+													<th style="color: yellow; vertical-align: middle;">
+														<div style="display: flex; align-items: center; gap: 5px;">
+															Ledger Name*
+															<label class="tiny-switch">
+																<input type="checkbox" id="ShowAll" onchange="FillLedgerName()">
+																<span class="tiny-slider"></span>
+															</label>
+															<span style="font-size: 12px; color: white;">Show All</span>
+														</div>
+													</th>
 													<th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
 													<th>Intrument</th>
 													<th>Intrument No</th>
@@ -1244,12 +1253,12 @@
 
 				function FillLedgerName() {
 
-					var Type = $('#Type').val();
+					var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
 					$.ajax({
 						url: '@Url.Action("FillLedgerName", "BankReceipt")',
 						type: 'POST',
 						data: {
-							Type: Type
+							ShowAll: ShowAll
 						},
 						async: false,
 						success: function (response, status, error) {
@@ -2176,6 +2185,52 @@
 		font-size: 15px;
 		vertical-align: super;
 	}
+
+	.tiny-switch {
+		position: relative;
+		display: inline-block;
+		width: 28px;
+		height: 14px;
+	}
+
+		.tiny-switch input {
+			opacity: 0;
+			width: 0;
+			height: 0;
+		}
+
+	.tiny-slider {
+		position: absolute;
+		cursor: pointer;
+		top: 0;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		background-color: #ccc;
+		transition: .4s;
+		border-radius: 14px;
+	}
+
+		.tiny-slider:before {
+			position: absolute;
+			content: "";
+			height: 10px;
+			width: 10px;
+			left: 2px;
+			bottom: 2px;
+			background-color: white;
+			transition: .4s;
+			border-radius: 50%;
+		}
+
+	input:checked + .tiny-slider {
+		background-color: #0dcaf0;
+	}
+
+		input:checked + .tiny-slider:before {
+			transform: translateX(14px);
+		}
+
 </style>
 
 
