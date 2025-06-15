@@ -57,18 +57,21 @@ namespace eTactWeb.Controllers
 
                 if (MainModel != null && MainModel.CntPlanEntryId > 0)
                 {
-                    return RedirectToAction("ControlPlan", new
+                    if (ID != MainModel.CntPlanEntryId || (Mode == "U" || Mode == "V"))
                     {
-                        ID = MainModel.CntPlanEntryId,
-                        YC = MainModel.Yearcode,
-                        Mode = "U",
-                        EntryDate = MainModel.CntPlanEntryDate,
-                        ItemCode = ItemCode,
-                        ItemName = ItemName,
-                        PartCode = PartCode,
-                        RevNo = MainModel.RevNo,
-                        isFromPartCode = false
-                    });
+                        return RedirectToAction("ControlPlan", new
+                        {
+                            ID = MainModel.CntPlanEntryId,
+                            YC = MainModel.Yearcode,
+                            Mode = "U",
+                            EntryDate = MainModel.CntPlanEntryDate,
+                            ItemCode = ItemCode,
+                            ItemName = ItemName,
+                            PartCode = PartCode,
+                            RevNo = MainModel.RevNo,
+                            isFromPartCode = false
+                        });
+                    }
                 }
                 else
                 {
@@ -89,7 +92,7 @@ namespace eTactWeb.Controllers
                 }
             }
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 
                 
@@ -101,7 +104,7 @@ namespace eTactWeb.Controllers
                 MainModel.CntPlanEntryDate = EntryDate;
                 MainModel.PartCode = PartCode;
                 MainModel.ItemName = ItemName;
-                MainModel.RevNo = RevNo;
+                 RevNo=MainModel.RevNo;
 
 
 

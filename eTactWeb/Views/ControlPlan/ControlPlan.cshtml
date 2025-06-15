@@ -43,7 +43,8 @@
                                 @*Model.Mode = "U";*@
                                 <div class="col-auto">
                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                    <input type="hidden" id="Mode" name="Mode" asp-for="Mode" value="U" />
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="updateBtnHeader">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -116,7 +117,7 @@
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label" style="color:red">Part Code*</label>
                                     <select class="form-control" id="PartCode" asp-for="PartCode" onchange="checkItemOrPart()">
-                                        <option value="@Model.ItemCode">-Select-</option>
+                                        <option value="">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
 
@@ -128,8 +129,8 @@
 
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="ItemName" class="form-label" style="color:red"> Item Name*</label>
-                                    <select class="form-control" id="ItemName" asp-for="ItemName" onchange="checkItemOrPart()">
-                                        <option value="@Model.ItemCode">-Select-</option>
+                                    <select class="form-control"  id="ItemName" asp-for="ItemName" onchange="checkItemOrPart()">
+                                        <option value="">-Select-</option>
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
                                             <option value="@Model.ItemCode" selected>@Model.ItemName</option>
@@ -139,7 +140,7 @@
 
                                 <input type="hidden" id="ItemCode" name="ItemCode" value="@Model.ItemCode" />
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
-                                    <label class="form-label">Copy This BOM</label>
+                                    <label class="form-label">Copy This Plan</label>
                                     <div class="form-check form-switch" style="margin-top:5px;">
                                         <input asp-for="CopyControlPlan" class="form-check-input" type="checkbox" role="switch" onchange="CopyControlPlanFunc(this);" />
                                     </div>
@@ -506,7 +507,7 @@
                                             @*Model.Mode = "U";*@
                                             <div class="col-auto">
                                                 @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="updateBtnFooter">
                                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                                     UPDATE
                                                 </button>
@@ -593,6 +594,8 @@
            
             $('#ItemName').select2();
             $('#PartCode').select2();
+
+         
             //$('#Characteristic').select2();
             $('#Operator').select2();
            // $('#SpecificationTo').select2();
@@ -650,29 +653,115 @@
             $('#ItemCode').val($('#ItemName').val());
         }
 
-        // var IsSDSC = 0;
-        // var IsErr = 0;
-        // var HideShow = 0;
-        // function CopyControlPlanFunc(ID) {
-        //     if (ID.checked == true) {
-        //         $('#PartCode').removeAttr('disabled');
-        //         $('#ItemName').removeAttr('disabled');
-        //        // $('#FG1').removeAttr('disabled');
-        //         $('#Mode').val('');
-        //         var pp = '<button type="submit" class="btn btn-sm btn-outline-primary"><i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT </button>';
-        //         $('.col-auto')[4].innerHTML = pp;
-        //         $.datepicker.formatDate('dd/mm/yy', new Date());
+        var IsSDSC = 0;
+        var IsErr = 0;
+        var HideShow = 0;
+        function CopyControlPlanFunc(checkbox) {
+            if (checkbox.checked) {
+                // Save old values
+                const oldPartCode = $('#PartCode').val();
+                const oldPartText = $('#PartCode option:selected').text();
 
-        //         $("#EntryDate").datepicker({ dateFormat: "dd/mm/yy" }).datepicker("setDate", new Date());
-        //         //$('#EntryDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
-        //         $('#EffectiveDate').val($.datepicker.formatDate('mm/dd/yy', new Date()));
-        //     }
-        //     else {
-        //         $('#PartCode').prop('disabled', true);
-        //         $('ItemName').prop('disabled', true);
-        //        // $('#FG1').prop('disabled', true);
-        //     }
-        // }
+                const oldItemCode = $('#ItemName').val();
+                const oldItemText = $('#ItemName option:selected').text();
+
+                const oldEntryDate = $('#EntryDate').val();
+                const oldEffectiveDate = $('#EffectiveDate').val();
+
+                // Save old data in data attributes
+                $('#PartCode').data('original', oldPartCode);
+                $('#PartCode').data('text', oldPartText);
+
+                $('#ItemName').data('original', oldItemCode);
+                $('#ItemName').data('text', oldItemText);
+
+                $('#EntryDate').data('original', oldEntryDate);
+                $('#EffectiveDate').data('original', oldEffectiveDate);
+
+                // Enable inputs
+                $('#PartCode').removeAttr('disabled');
+                $('#ItemName').removeAttr('disabled');
+                $('#Mode').val('');
+
+                // Set new dates (you can use your preferred format function here)
+                $('#EntryDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
+                $('#EffectiveDate').val($.datepicker.formatDate('dd/mm/yy', new Date()));
+
+                GetNewEntryId();
+                GetPartCode();
+                GetItemName();
+
+                // Replace buttons
+                $('#updateBtnHeader').replaceWith(`
+                    <button type="submit" class="btn btn-sm btn-primary" id="updateBtnHeader">
+                        <i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT
+                    </button>
+                `);
+
+                $('#updateBtnFooter').replaceWith(`
+                    <button type="submit" class="btn btn-sm btn-primary" id="updateBtnFooter">
+                        <i class="fa-solid fa-floppy-disk fa-fw fa-lg"></i> SUBMIT
+                    </button>
+                `);
+
+            } else {
+                // Disable inputs (if you want to)
+                // $('#PartCode').prop('disabled', true);
+                // $('#ItemName').prop('disabled', true);
+
+                // Restore old values
+                const oldPartCode = $('#PartCode').data('original');
+                const oldPartText = $('#PartCode').data('text');
+                const oldItemCode = $('#ItemName').data('original');
+                const oldItemText = $('#ItemName').data('text');
+
+                const oldEntryDate = $('#EntryDate').data('original');
+                const oldEffectiveDate = $('#EffectiveDate').data('original');
+
+                // Reset selects
+                $('#PartCode').val(null).trigger('change');
+                $('#ItemName').val(null).trigger('change');
+
+                if (oldPartCode && oldPartText) {
+                    if (!$('#PartCode option[value="' + oldPartCode + '"]').length) {
+                        $('#PartCode').append(new Option(oldPartText, oldPartCode, true, true)).trigger('change');
+                    } else {
+                        $('#PartCode').val(oldPartCode).trigger('change');
+                    }
+                }
+
+                if (oldItemCode && oldItemText) {
+                    if (!$('#ItemName option[value="' + oldItemCode + '"]').length) {
+                        $('#ItemName').append(new Option(oldItemText, oldItemCode, true, true)).trigger('change');
+                    } else {
+                        $('#ItemName').val(oldItemCode).trigger('change');
+                    }
+                }
+
+                // Restore dates
+                if (oldEntryDate) $('#EntryDate').val(oldEntryDate);
+                if (oldEffectiveDate) $('#EffectiveDate').val(oldEffectiveDate);
+
+                // Replace buttons
+                $('#updateBtnHeader').replaceWith(`
+                            <button type="submit" class="btn btn-sm  btn-primary bg-gradient" id="updateBtnHeader">
+                        <i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE
+                    </button>
+                `);
+
+                $('#updateBtnFooter').replaceWith(`
+                            <button type="submit" class="btn btn-sm  btn-primary bg-gradient" id="updateBtnFooter">
+                        <i class="fa fa-pencil-square fa-fw fa-lg"></i> UPDATE
+                    </button>
+                `);
+            }
+        }
+
+
+
+
+
+
 
         // $("button[type='submit']").click(function () {
         //     $('#PartCode').removeProp('disabled');
@@ -680,13 +769,21 @@
         //     //$('#FG1').removeProp('disabled');
         //     $("form :input").prop("disabled", false);
         // });
+        let isNavigated = false;
+
         function checkItemOrPart() {
-            const itemCode = $('#PartCode').val();         // Assuming this is PartCode actually
-            const partCode = $('#PartCode').val();         // In case you want to pass it explicitly
-            const itemName = $('#ItemName').val();         // Get ItemName from input field
+            if (isNavigated) return; // prevent re-trigger
+            isNavigated = true;
+
+            const itemCode = $('#ItemCode').val();
+            const partCode = $('#PartCode').val();
+            const itemName = $('#ItemName').val();
 
             const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('ItemCode') == itemCode) return;
+            if (urlParams.get('ItemCode') == itemCode) {
+                isNavigated = false;
+                return;
+            }
 
             if (itemCode) {
                 const id = '@Model.CntPlanEntryId' || 0;
@@ -695,12 +792,14 @@
                 const entryDate = '@Model.CntPlanEntryDate';
                 const revNo = '@Model.RevNo';
 
-                // Encode URI components to safely pass values
                 const encodedPartCode = encodeURIComponent(partCode);
                 const encodedItemName = encodeURIComponent(itemName);
 
-                const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${entryDate}&RevNo=${revNo}&PartCode=${encodedPartCode}&ItemName=${encodedItemName}&isFromPartCode=true`;
+                const encodedRevNo = encodeURIComponent(revNo);
+                const encodedEntryDate = encodeURIComponent(entryDate);
 
+                const url = `@Url.Action("ControlPlan", "ControlPlan")?ItemCode=${itemCode}&ID=${id}&YC=${yc}&Mode=${mode}&EntryDate=${encodedEntryDate}&RevNo=${encodedRevNo}&PartCode=${encodedPartCode}&ItemName=${encodedItemName}&isFromPartCode=true`;
+                console.log('Navigating to:', url);
                 window.location.href = url;
             }
         }
@@ -762,6 +861,7 @@
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var ItemCode = '@Model.ItemCode';
                         $('#PartCode').val(ItemCode).trigger("change");
+                       
                     }
 
                 },
@@ -790,6 +890,7 @@
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var ItemCode = '@Model.ItemCode';
                         $('#ItemName').val(ItemCode).trigger("change");
+                       
                     }
 
                 },
@@ -1015,12 +1116,14 @@
             }
         }
         var EditEachItem = false;
+
         $('.GridButton').click(function (e) {
             debugger
             e.preventDefault();
             var imageUrl = $('#hdnImageURL').val();
             var itemImageUrl = $('#hdnItemImageURL').val();
             EditEachItem = false;
+
             function isNullOrEmpty(val) {
                 return val === undefined || val === null || val.trim() === "";
             }
@@ -1046,62 +1149,60 @@
                 $('#SpecificationFrom').focus();
                 return false;
             }
-            var seqnoarray = [];
-            var rowsCounting = parseInt($('#divControlPlanGrid tr').length);
-            $('#divControlPlanGrid tr').each(function (index, element) {
 
+            // Calculate highest SeqNo in grid
+            var seqnoarray = [];
+            $('#divControlPlanGrid tr').each(function (index, element) {
                 var currentRow = $(element);
                 var seqnoText = currentRow.find('td[id^=SeqNo]').text();
-
-                seqnoarray.push(parseInt(seqnoText));
-
+                if (!isNullOrEmpty(seqnoText) && !isNaN(parseInt(seqnoText))) {
+                    seqnoarray.push(parseInt(seqnoText));
+                }
             });
-            var highestValue = 0;
-            if (seqnoarray.length == 0) {
-                highestValue = 0;
-            }
-            else {
 
+            var highestValue = 0;
+            if (seqnoarray.length > 0) {
                 highestValue = Math.max(...seqnoarray);
             }
-           
+            var seqNo = $('#SeqNo').val();
+            var mode = $('#Mode').val();
+
+            if (!seqNo || seqNo === "0" || seqNo === "") {
+                mode = ""; // reset mode to insert for new entry
+                $('#Mode').val(""); // also reset hidden input to keep UI consistent
+            }
+            // Determine SeqNo to use
+            // If mode is 'U' (update), keep current SeqNo; else assign new SeqNo = highest + 1
+            var finalSeqNo = ($('#Mode').val() === "U") ? $('#SeqNo').val() : (highestValue + 1);
+            $('#SeqNo').val(finalSeqNo); // update hidden field or input if needed
+
             var ItemData = {
                 "Characteristic": $('#Characteristic').val(),
-                
                 "EvalutionMeasurmentTechnique": $('#EvalutionMeasurmentTechnique').val(),
-                
                 "SpecificationFrom": $('#SpecificationFrom').val(),
-                
                 "SpecificationTo": $('#SpecificationTo').val(),
-                
                 "Operator": $('#Operator').val(),
                 "OperatorText": $('#Operator').find(':selected').text() == "-Select-" ? "" : $('#Operator').find(':selected').text(),
-
-                "FrequencyofTesting": $('#FrequencyofTesting').val(), // input field, no need for .find()
-
+                "FrequencyofTesting": $('#FrequencyofTesting').val(),
                 "InspectionBy": $('#InspectionBy').val(),
                 "InspectionByText": $('#InspectionBy').find(':selected').text() == "-Select-" ? "" : $('#InspectionBy').find(':selected').text(),
-
                 "ControlMethod": $('#ControlMethod').val(),
                 "ControlMethodText": $('#ControlMethod').find(':selected').text() == "-Select-" ? "" : $('#ControlMethod').find(':selected').text(),
-
                 "Remarks": $('#Remarks').val(),
-
                 "RejectionPlan": $('#RejectionPlan').val(),
                 "RejectionPlanText": $('#RejectionPlan').find(':selected').text() == "-Select-" ? "" : $('#RejectionPlan').find(':selected').text(),
-
                 "DrawingNo": $('#DrawingNo').val(),
                 "CntPlanEntryDate": $('#CntPlanEntryDate').val(),
                 "CntPlanYearCode": $('#CntPlanYearCode').val(),
                 "CntPlanEntryId": $('#CntPlanEntryId').val(),
                 "ImageURL": imageUrl,
                 "ItemImageURL": itemImageUrl,
+                "Mode": mode,
+                "SeqNo": finalSeqNo
+            };
 
-                        "Mode": $('#Mode').val(),
-                "SeqNo": $('#SeqNo').val()
-
-            }
             console.log(ItemData);
+
             $.ajax({
                 url: "@Url.Action("AddControlPlanDetail")",
                 type: "POST",
@@ -1118,10 +1219,14 @@
                     }
                     else {
                         $('#divControlPlanGrid').html(data);
-                        $('#Mode').val("");  
+
+                        // If it's a new add (CntPlanEntryId is 0 or empty), clear mode; else keep mode
+                        if ($('#CntPlanEntryId').val() === "0" || $('#CntPlanEntryId').val() === "") {
+                            $('#Mode').val("");
+                        }
+
                         $('#SeqNo').val("");
                         $.notify('Process Added To Grid', "success");
-                        //ClearItem();
                     }
                     ClearItems();
                 },
@@ -1129,21 +1234,20 @@
                     $.notify(result.responseText, "error");
                 },
                 failure: function (result, status, xhr) {
-                    alert(response.responseText);
+                    alert(result.responseText);
                 },
                 complete: function () {
                     console.log(5);
-
                 }
             }).done(function () {
                 console.log(3);
-
             }).fail(function () {
                 alert("error");
             }).always(function () {
                 console.log(4);
             });
         });
+
         function ViewFile(path) {
             if (path) {
                 window.open(path, '_blank');
