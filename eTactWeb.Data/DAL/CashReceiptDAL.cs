@@ -513,7 +513,8 @@ namespace eTactWeb.Data.DAL
                                                  NewrefNo = dr["NewrefNo"].ToString() ?? "",
                                                  ModeOfAdjustment = dr["ModOfAdjust"].ToString() ?? "",
                                                  AccEntryId = string.IsNullOrEmpty(dr["AccEntryid"].ToString()) ? 0 : Convert.ToInt32(dr["AccEntryid"].ToString()),
-                                                 ActualDrCr = dr["ActualDRCRType"].ToString() ?? ""
+                                                 ActualDrCr = dr["ActualDRCRType"].ToString() ?? "",
+                                                 DocEntryId = string.IsNullOrEmpty(dr["DocEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["DocEntryId"].ToString())
                                              }).ToList();
                 }
             }
