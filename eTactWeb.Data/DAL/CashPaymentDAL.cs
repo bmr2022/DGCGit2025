@@ -80,7 +80,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
-                SqlParams.Add(new SqlParameter("@type", Type));
+                SqlParams.Add(new SqlParameter("@ShowAllLedger", Type));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
