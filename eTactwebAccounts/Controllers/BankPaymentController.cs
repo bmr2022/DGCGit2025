@@ -700,7 +700,7 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
+        public JsonResult EditItemRows(int SrNO, string Mode)
         {
             if (Mode != "U" && Mode != "V")
             {

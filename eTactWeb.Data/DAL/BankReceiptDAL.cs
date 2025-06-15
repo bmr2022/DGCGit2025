@@ -227,10 +227,6 @@ namespace eTactWeb.Data.DAL
 
             try
             {
-                //DateTime entryDate = new DateTime();
-                //DateTime actualEntryDate = new DateTime();  
-                //DateTime voucherDate = new DateTime();
-                //DateTime InsDate = new DateTime();
 
                 var entryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
                 var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);

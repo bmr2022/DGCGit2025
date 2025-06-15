@@ -90,9 +90,6 @@ namespace eTactWeb.Controllers
                 {
                     BankReceiptGridEdit = JsonConvert.DeserializeObject<List<BankReceiptModel>>(modelEditJson);
                 }
-
-                model.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                model.ActualEntryBy = HttpContext.Session.GetString("UID");
                 if (model.Mode == "U")
                 {
                     GIGrid = GetDetailTable(BankReceiptGridEdit);
