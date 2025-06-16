@@ -631,14 +631,14 @@ namespace eTactWeb.Data.DAL
                 //DateTime lastUpdationDt = new DateTime();
                 //DateTime actualDt = new DateTime();
 
-                var purchaseRejectionInvoiceDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionInvoiceDate);
-                var purchaseRejectionVoucherDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionVoucherDate);
-                var purchaseRejectionEntryDt = CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != "" || CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != null ? CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) : upDt.ToString();
+                var purchaseRejectionInvoiceDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionInvoiceDate) != "" && CommonFunc.ParseFormattedDate(model.PurchaseRejectionInvoiceDate) != null ? CommonFunc.ParseFormattedDate(model.PurchaseRejectionInvoiceDate) : upDt.ToString();
+                var purchaseRejectionVoucherDt = CommonFunc.ParseFormattedDate(model.PurchaseRejectionVoucherDate) != "" && CommonFunc.ParseFormattedDate(model.PurchaseRejectionVoucherDate) != null ? CommonFunc.ParseFormattedDate(model.PurchaseRejectionVoucherDate) : upDt.ToString();
+                var purchaseRejectionEntryDt = CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != "" && CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) != null ? CommonFunc.ParseFormattedDate(model.PurchaseRejEntryDate) : upDt.ToString();
                 var actualDt = (!string.IsNullOrEmpty(CommonFunc.ParseFormattedDate(model.ActualEntryDate))) ? CommonFunc.ParseFormattedDate(model.ActualEntryDate) : ((!string.IsNullOrEmpty(purchaseRejectionEntryDt)) ? purchaseRejectionEntryDt : upDt.ToString());
                 var machinename = Environment.UserDomainName;
 
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryId", model.PurchaseRejEntryId));
-                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", model.PurchaseRejYearCode));
+                SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", model.PurchaseRejYearCode > 0 ? model.PurchaseRejYearCode : DateTime.Now.Year.ToString()));
                 SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", purchaseRejectionEntryDt == default ? string.Empty : purchaseRejectionEntryDt));
                 SqlParams.Add(new SqlParameter("@DebitNotePurchaseRejection", model.DebitNotePurchaseRejection));
                 SqlParams.Add(new SqlParameter("@PurchaseRejInvoiceNo", model.PurchaseRejectionInvoiceNo ?? string.Empty));
