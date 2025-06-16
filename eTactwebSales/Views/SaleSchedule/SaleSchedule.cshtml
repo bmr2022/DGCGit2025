@@ -961,7 +961,7 @@
             $('#EnterByMachineName').val($('#machineName').text());
 
             FillCustomer();
-
+            
             //today = today.toLocaleString().substr(0, 10);
             //$("#EntryDate").val(today);
 
@@ -989,6 +989,7 @@
             //$('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
 
             $('.BtnExcel').fadeOut();
+            
             $('#SchAmendmentDate').datepicker("option", "minDate", $('#ScheduleDate').val());
 
             // $('#SchEffFromDate').datepicker("option", "minDate", $('#SODate').val());
@@ -1024,7 +1025,7 @@
                     $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat(SoDate));
                     $('#SchEffFromDate,#SchEffTillDate').datepicker("option", "maxDate", parseDateToFormat(SOCloseDate));
                 }
-
+                
                 var SOCloseDate = "@Model.SOCloseDate";
                 var SoDate = "@Model.SODate";
                 // sch Eff from date 1102
@@ -1039,7 +1040,7 @@
                 //$('#SchEffTillDate').datepicker("option", "maxDate", new Date(SoCloseDate));
 
             } else {
-
+                
                 $("#SchEffFromDate").datepicker("setDate", parseDateToFormat($('#SchEffFromDate').val()));
                 $("#SchEffTillDate").datepicker("setDate", parseDateToFormat($('#SchEffTillDate').val()));
                 $('#ScheduleDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
@@ -1299,6 +1300,7 @@
                     else if (result == "Partcode not available") {
                         $.notify("Imported Partcode is not available, Please check!!!", "error");
                     } else {
+                        
                         $('#divSaleScheduleGrid').empty();
                         $('#divSaleScheduleGrid').html(result);
                     }
@@ -1648,14 +1650,17 @@
                 $('#SchEffTillDate').datepicker("option", "minDate", parseDateToFormat($('#SchEffFromDate').val()));
             }
             FillCustomer();
-            ClearGrid();
+            debugger
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                ClearGrid();
+            }
         });
 
 
         $('#SchEffTillDate').on("change", function () {
             $('#DeliveryDate').datepicker("option", { "maxDate": $(this).val() });
             $('#ScheduleDate').datepicker("option", "maxDate", $(this).val());
-            if ($('#Mode').val() != 'SSA') {
+            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
                 ClearGrid();
             }
         });
@@ -2552,7 +2557,10 @@
                                 $('#SONO').val($('#hiddenSONO').val());
                                 $('#CustomerOrderNo').val('@Model.CustomerOrderNo').trigger("change");
                             }
-                            ClearGrid();
+                            debugger
+                            if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                                ClearGrid();
+                            }
                         }
                     }
                     else {
@@ -2594,7 +2602,10 @@
                             //  $('#SOYearCode').change();
                         }
                     }
-                    ClearGrid();
+                    debugger
+                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                        ClearGrid();
+                    }
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
@@ -2626,7 +2637,10 @@
                             //  $('#SOYearCode').change();
                         }
                     }
-                    ClearGrid();
+                    debugger
+                    if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                        ClearGrid();
+                    }
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
@@ -2644,7 +2658,10 @@
                 success: function (result, status, xhr) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        ClearGrid();
+                        debugger
+                        if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") {
+                            ClearGrid();
+                        }
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var date = new Date(obj.Result[0].SODate);
                             var formattedDate = ('0' + date.getDate()).slice(-2) + '/' + ('0' + (date.getMonth() + 1)).slice(-2) + '/' + date.getFullYear();
@@ -3261,6 +3278,7 @@
         }
 
         function ClearGrid() {
+            debugger
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearGrid")",
@@ -3293,7 +3311,7 @@
         }
 
         function AddDone(e) {
-
+            
             e.preventDefault();
             var rowCount = $('#MonthlyEntryData tr').length;
             var countDate = $('#CountDate').val();
@@ -3390,6 +3408,7 @@
             var countDate = parseInt($('#CountEditDate').val());
             $('#ManualMonthSplit').val("Month");
             var arrMonthlyData = [];
+            debugger
             ClearGrid();
             //var j = this.id.split('-')[1];
             var rowCount = $('#MonthlyEntryData tr').length;
@@ -3564,12 +3583,12 @@
                         //     AddedItemCodes = $('#ItemCode-' + i).val();
                         //}
                         ItemGridRemoveVal();
-                        $('.PartCode').val(0);
-                        $('.ItemCode').val(0);
-                        $('.Unit').val('');
-                        $('.Rate').val(0);
-                        $('.SchQty').val(0);
-                        $('.AltSchQty').val(0);
+                        /* $('.PartCode').val(0); */
+                        /* $('.ItemCode').val(0); */
+                        /* $('.Unit').val(''); */
+                        /* $('.Rate').val(0); */
+/*                         $('.SchQty').val(0);
+                        $('.AltSchQty').val(0);  */
 
                         TotalSchQty();
                         RowCount();
@@ -3674,7 +3693,7 @@
 
         var deletedItemcodes = [];
         function DeleteItemRow(SeqNo) {
-
+            
             var itemCode = $('#ItemCode-' + SeqNo).val();
             var partcode = $('#ItemCode-' + SeqNo).data('partcode');
             var itemName = $('#ItemCode-' + SeqNo).data('itemname');
@@ -3838,7 +3857,7 @@
         });
 
         function ExportSaleSchFormate() {
-            ;
+            
             $('#divSaleScheduleGrid').empty();
             var wb = XLSX.utils.book_new();
 
