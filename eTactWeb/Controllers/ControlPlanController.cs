@@ -235,7 +235,7 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
-
+        
         private static DataTable GetDetailTable(IList<ControlPlanDetailModel> DetailList)
         {
             try
@@ -326,7 +326,51 @@ Item.ImageURL ?? ""
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-       
+        [HttpPost]
+        public IActionResult ImportControlPlanDetails([FromBody] List<ControlPlanDetailModel> model)
+        {
+            try
+            {
+                string jsonString = HttpContext.Session.GetString("KeyControlPlanGrid");
+                IList<ControlPlanDetailModel> GridDetail = new List<ControlPlanDetailModel>();
+
+                if (!string.IsNullOrEmpty(jsonString))
+                {
+                    GridDetail = JsonConvert.DeserializeObject<List<ControlPlanDetailModel>>(jsonString);
+                }
+
+                int currentMaxSeq = GridDetail.Count > 0 ? GridDetail.Max(x => x.SeqNo) : 0;
+
+                foreach (var list in model)
+                {
+                    // Skip duplicates
+                    bool isDuplicate = GridDetail.Any(x =>
+                        x.Characteristic == list.Characteristic &&
+                        x.EvalutionMeasurmentTechnique == list.EvalutionMeasurmentTechnique &&
+                        x.ControlMethod == list.ControlMethod);
+
+                    if (isDuplicate)
+                        continue;
+
+                    currentMaxSeq++;
+                    list.SeqNo = currentMaxSeq;
+                    GridDetail.Add(list);
+                }
+
+                var MainModel = new ControlPlanModel
+                {
+                    DTSSGrid = GridDetail.OrderBy(x => x.SeqNo).ToList()
+                };
+
+                HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.DTSSGrid));
+                return PartialView("_ControlPlanMainGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Error importing data: " + ex.Message);
+            }
+        }
+
         public IActionResult AddControlPlanDetail(ControlPlanDetailModel model)
         {
             try
@@ -363,6 +407,11 @@ Item.ImageURL ?? ""
                       
                         int nextSeqNo = GridDetail.Count > 0 ? GridDetail.Max(x => x.SeqNo) + 1 : 1;
                         model.SeqNo = nextSeqNo;
+                        if (model.SeqNo <= 0)
+                        {
+                            int nextSeqNo1 = GridDetail.Count > 0 ? GridDetail.Max(x => x.SeqNo) + 1 : 1;
+                            model.SeqNo = nextSeqNo1;
+                        }
                         GridDetail.Add(model);
                     }
 
