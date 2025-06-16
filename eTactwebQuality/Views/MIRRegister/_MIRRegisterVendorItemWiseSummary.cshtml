@@ -22,6 +22,31 @@
                         <i class="fa" aria-hidden="true"></i>
                     </span>Part Code
                 </th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>MRNNO
+                </th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>MRNDate
+                </th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>GateNo
+                </th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>GateDate
+                </th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Rate
+                </th>
                  <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
@@ -91,11 +116,16 @@
                             <td style="background-color: #e09ef0;">@item.VendorName</td>
                                                 <td>@item.ItemName</td>
                                                 <td>@item.PartCode</td>
+                                                <td>@item.MRNNo</td>
+                                                <td>@item.MRNDate</td>
+                                                <td>@item.GateNo</td>
+                                                <td>@item.GateDate</td>
+                                                <td>@item.Rate</td>
 
                                                 <td id="Qty-@Cntr">@item.BillQty</td>
                                                 <td id="RecQty-@Cntr">@item.RecQty</td>
                                                 <td id="Qty-@Cntr">@item.AcceptedQty</td>
-                            <td id="Amount-@Cntr">@item.RejectedQty</td>
+                                                <td id="Amount-@Cntr">@item.RejectedQty</td>
                                                 <td id="Amount-@Cntr">@item.Reworkqty</td>
                                                 <td id="Amount-@Cntr">@item.HoldQty</td>
                                                 <td >@item.DeviationQty</td>

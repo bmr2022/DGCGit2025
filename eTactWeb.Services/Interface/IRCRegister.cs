@@ -9,6 +9,6 @@ namespace eTactWeb.Services.Interface
 {
     public interface IRCRegister
     {
-        Task<RCRegisterModel> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType, string RGPNRGP, string ReportMode);
+        Task<RCRegisterModel> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType, string RGPNRGP, string ReportMode,int ProcessId);
     }
 }

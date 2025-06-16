@@ -227,10 +227,6 @@ namespace eTactWeb.Data.DAL
 
             try
             {
-                //DateTime entryDate = new DateTime();
-                //DateTime actualEntryDate = new DateTime();  
-                //DateTime voucherDate = new DateTime();
-                //DateTime InsDate = new DateTime();
 
                 var entryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
                 var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
@@ -521,7 +517,9 @@ namespace eTactWeb.Data.DAL
                                             NewrefNo = dr["NewrefNo"].ToString() ?? "",
                                             ModeOfAdjustment = dr["ModOfAdjust"].ToString() ?? "",
                                             AccEntryId = string.IsNullOrEmpty(dr["AccEntryid"].ToString()) ? 0 : Convert.ToInt32(dr["AccEntryid"].ToString()),
-                                            ActualDrCr = dr["ActualDRCRType"].ToString() ?? ""
+                                            ActualDrCr = dr["ActualDRCRType"].ToString() ?? "",
+                                            DocEntryId = string.IsNullOrEmpty(dr["DocEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["DocEntryId"].ToString())
+
                                         }).ToList();
                 }
             }

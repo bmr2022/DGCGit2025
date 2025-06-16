@@ -33,6 +33,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _MaterialReceiptDAL.GetGateMainData(Flag, SPName,GateNo,GateYearCode,GateEntryId);
         }
+
+        public async Task<ResponseResult> GetGateItemData(string Flag, string SPName, string GateNo, string GateYearCode, int GateEntryId)
+        {
+            return await _MaterialReceiptDAL.GetGateItemData(Flag, SPName, GateNo, GateYearCode, GateEntryId);
+        }
         public async Task<ResponseResult> GetDeptAndEmp(string Flag, string SPName, int DeptId, int resEmp)
         {
             return await _MaterialReceiptDAL.GetDeptAndEmp(Flag, SPName,DeptId,resEmp);

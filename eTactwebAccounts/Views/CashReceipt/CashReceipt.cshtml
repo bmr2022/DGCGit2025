@@ -761,7 +761,7 @@
 				}
 				// Show/Hide Against Fields
 				else if (modeOfAdjustment === "Against Ref") {
-					if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+					if ($('#BankType').val() == "Assets" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
 						$('#DisplayRoutingDetailModal').modal('hide');
 					}
 					$("#againstFieldsVoucherNo").show();
@@ -1388,7 +1388,7 @@
 						var obj = $.parseJSON(data);
 						if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 							$('#BankType').val(obj.Result[0].UnderGroup);
-							if (obj.Result[0].UnderGroup == "Bank") {
+							if (obj.Result[0].UnderGroup == "Assets") {
 								$('#Type option').filter(function () {
 									return $(this).val() === "DR";
 								}).prop('selected', true);
@@ -1439,7 +1439,7 @@
 		function PopUpForPendingVouchers(Action, SrNO) {
 
 			$('#CheckUnCheckAll').prop('checked', false);
-			if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
+			if ($('#BankType').val() == "Assets" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
 				$('#DisplayRoutingDetailModal').modal('hide');
 			}
 			else {
@@ -1832,7 +1832,7 @@
 			var CrAmt = parseFloat($('#CrAmt').val()) || 0;
 			var difference = Math.abs(DrAmt - CrAmt);
 			for (let i = 1; i <= RowCount; i++) {
-				if ($('#BankType').val() == "Bank") {
+				if ($('#BankType').val() == "Assets") {
 					if (DrAmt < CrAmt) {
 						$('#AdjustmentAmt').val(difference)
 					}

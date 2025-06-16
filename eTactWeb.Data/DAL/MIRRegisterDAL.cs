@@ -183,6 +183,11 @@ namespace eTactWeb.Data.DAL
                                                            BillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
                                                            RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
                                                            Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
+                                                           MRNNo = string.IsNullOrEmpty(dr["MRNno"].ToString()) ? "" : dr["MRNno"].ToString(),
+                                                           MRNDate = string.IsNullOrEmpty(dr["MRNDate"].ToString()) ? "" : dr["MRNDate"].ToString(),
+                                                           GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
+                                                           GateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? "" : dr["GateDate"].ToString(),
+                                                           Rate = Convert.ToDecimal(dr["Rate"].ToString()),
                                                        }).ToList();
                         }
                     }

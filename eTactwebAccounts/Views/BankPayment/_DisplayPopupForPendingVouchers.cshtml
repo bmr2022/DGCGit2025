@@ -127,7 +127,7 @@
 				<td id="ActualBalance-@Cntr">@item.PendBillAmt</td>
 				<td>@item.NewrefNo</td>
 				<td>@item.ModeOfAdjustment</td>
-				<td id="PopUpAccEntryId-@Cntr">@item.AccEntryId</td>
+				<td id="PopUpAccEntryId-@Cntr"><input type="hidden" value="@item.DocEntryId"/>@item.AccEntryId</td>
 				<td>@item.ActualDrCr</td>
 			</tr>
 		}

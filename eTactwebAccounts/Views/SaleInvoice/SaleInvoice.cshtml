@@ -2039,8 +2039,7 @@
 
         function NewEntryId() {
 
-            //var YearCode = $('#SaleBillYearCode').val();
-            var YearCode = @Model.SaleBillYearCode;
+            var YearCode = parseInt($('#SaleBillYearCode').val());
             $.ajax({
                 type: "POST",
                 data: { "YearCode": YearCode },
@@ -2051,9 +2050,9 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                            $('#SaleBillEntryId').val("");
+                            $('#SaleBillEntryId').val(0);
                             $('#SaleBillEntryId').val(obj.Result.Table[0].EntryId);
-                            $('#SaleBillNo').val("");
+                            $('#SaleBillNo').val(0);
                             $('#SaleBillNo').val(obj.Result.Table[0].SaleBillNo);
 
                             $('#AdjDescription').val($('#SaleBillNo').val());

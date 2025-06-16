@@ -122,6 +122,28 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> GetGateItemData(string Flag, string SPName, string GateNo, string GateYearCode, int GateEntryId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@GateNo", GateNo));
+                SqlParams.Add(new SqlParameter("@GateYearCode", GateYearCode));
+                SqlParams.Add(new SqlParameter("@GateEntryId", GateEntryId));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable(SPName, SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetDeptAndEmp(string Flag, string SPName, int deptid, int ResEmp)
         {
             var _ResponseResult = new ResponseResult();
