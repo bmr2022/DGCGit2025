@@ -969,7 +969,7 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        if (purchaseRejectionGrid.Any(x => x.ItemCode == model.ItemCode && x.StoreId == model.StoreId))
+                        if (purchaseRejectionGrid.Any(x => x.ItemCode == model.ItemCode && x.StoreId == model.StoreId && x.Batchno == model.Batchno))
                         {
                             return StatusCode(207, "Duplicate");
                         }
