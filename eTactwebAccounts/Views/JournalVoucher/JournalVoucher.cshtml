@@ -2026,44 +2026,44 @@
             }
         }
 
-        $('#CheckUnCheckAll').click(function () {
-            var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            if ($('#CheckUnCheckAll').is(':checked') == true) {
-                for (let i = 1; i <= rowCount; i++) {
-                    $('#CheckUnCheck-' + i).prop('checked', true)
-                    CheckUnCheckCheck(i);
-                }
-            }
-            else {
-                for (let i = 1; i <= rowCount; i++) {
-                    $('#CheckUnCheck-' + i).prop('checked', false)
-                }
-            }
-        })
+                $('#CheckUnCheckAll').click(function () {
+                    var isChecked = $(this).is(':checked');
 
-        function CheckUnCheckCheck(i) {
+                    $('input[id^="CheckUnCheck-"]').each(function () {
+                        $(this).prop('checked', isChecked);
 
-            var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            if ($('#CheckUnCheck-' + i).is(':checked') == true) {
-                if (parseFloat($('#AdjustAmt-' + i).val()) == 0) {
-                    $('#AdjustAmt-' + i).val(($('#BalanceAmt-' + i).text()));
-                    $('#BalanceAmt-' + i).text(0);
+                        var index = $(this).attr('id').split('-')[1];
+                        CheckUnCheckCheck(index);
+                    });
+                });
+
+                function CheckUnCheckCheck(i) {
+                    var RowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+                    var isChecked = $('#CheckUnCheck-' + i).is(':checked');
+
+                    if (isChecked) {
+                        if (parseFloat($('#AdjustAmt-' + i).val()) == 0) {
+                            $('#AdjustAmt-' + i).val($('#BalanceAmt-' + i).text());
+                            $('#BalanceAmt-' + i).text(0);
+                        }
+                        $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+                    } else {
+                        var adjustedValue = $('#AdjustAmt-' + i).val();
+                        if (adjustedValue && adjustedValue !== "0") {
+                            $('#BalanceAmt-' + i).text(adjustedValue);
+                            $('#AdjustAmt-' + i).val(0);
+                        }
+                        $('#AdjustData-' + i).css("background-color", "");
+                    }
+
+                    var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
+
+                    $('#CheckUnCheckAll').prop('checked', selectedRows === RowCount);
+
+                    $('#lblcheckitem').text(selectedRows);
+
+                    AdjustAmount();
                 }
-                var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
-                $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
-            }
-            else {
-                $('#AdjustData-' + i).css("background-color", "");
-            }
-            if (selectedRows === RowCount) {
-                $('#CheckUnCheckAll').prop('checked', true);
-            }
-            else {
-                $('#CheckUnCheckAll').prop('checked', false);
-            }
-            AdjustAmount();
-            $('#lblcheckitem').text(selectedRows)
-        }
 
                 function CheckUnCheckEdit() {
 
