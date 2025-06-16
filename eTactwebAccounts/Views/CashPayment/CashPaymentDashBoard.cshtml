@@ -375,6 +375,8 @@
                 dataType: "json",
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
+                    $('#LedgerName').empty();
+                    $('#LedgerName').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {
                         $('#LedgerName').append('<option value = "' + val.LedgerName + '"> ' + val.LedgerName + ' </option>');
                     });
@@ -393,7 +395,9 @@
                 async: false,
                 dataType: "json",
                 success: function (response, status, error) {
-                    var obj = $.parseJSON(response);
+                    var obj = $.parseJSON(response);\
+                    $('#Bank').empty();
+                    $('#Bank').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {
                         $('#Bank').append('<option value = "' + val.LedgerName + '"> ' + val.LedgerName + ' </option>');
                     });
@@ -413,6 +417,8 @@
                 dataType: "json",
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
+                     $('#VoucherNo').empty();
+                    $('#VoucherNo').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {
                         $('#VoucherNo').append('<option value = "' + val.VoucherNo + '"> ' + val.VoucherNo + ' </option>');
                     });
@@ -432,6 +438,8 @@
                 dataType: "json",
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
+                    $('#AgainstVoucherRefNo').empty();
+                    $('#AgainstVoucherRefNo').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {
                         $('#AgainstVoucherRefNo').append('<option value = "' + val.againstVoucherRefNo + '"> ' + val.againstVoucherRefNo + ' </option>');
                     });
@@ -451,6 +459,8 @@
                 dataType: "json",
                 success: function (response, status, error) {
                     var obj = $.parseJSON(response);
+                    $('#AgainstVoucherNo').empty();
+                    $('#AgainstVoucherNo').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {
                         $('#AgainstVoucherNo').append('<option value = "' + val.AgainstVoucherNo + '"> ' + val.AgainstVoucherNo + ' </option>');
                     });

@@ -41,16 +41,10 @@ namespace eTactwebAccounts.Controllers
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryby = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.ActualEntryBy = HttpContext.Session.GetString("EmpName");
+            MainModel.ActualEntryDate = DateTime.Now.ToString("dd/MM/yy");
             MainModel.UID = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-
-            if (MainModel.Mode == "U")
-            {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
-                MainModel.UpdatedOn = DateTime.Now;
-            }
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
@@ -62,6 +56,14 @@ namespace eTactwebAccounts.Controllers
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.BankPaymentGrid);
                 HttpContext.Session.SetString("KeyBankPaymentGridEdit", serializedGrid);
             }
+
+            if (Mode == "U" && MainModel.UpdatedBy == 0)
+            {
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedOn = DateTime.Now;
+            }
+
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.VoucherNoBack = VoucherNo;
