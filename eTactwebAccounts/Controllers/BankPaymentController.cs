@@ -338,9 +338,9 @@ namespace eTactwebAccounts.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillLedgerName(string VoucherType, string Type)
+        public async Task<JsonResult> FillLedgerName(string VoucherType, string ShowAll)
         {
-            var JSON = await _IBankPayment.FillLedgerName(VoucherType, Type);
+            var JSON = await _IBankPayment.FillLedgerName(VoucherType, ShowAll);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -700,7 +700,7 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<JsonResult> EditItemRows(int SrNO, string Mode)
+        public JsonResult EditItemRows(int SrNO, string Mode)
         {
             if (Mode != "U" && Mode != "V")
             {
@@ -839,8 +839,6 @@ namespace eTactwebAccounts.Controllers
                 HttpContext.Session.Remove("KeyBankPaymentGrid");
                 HttpContext.Session.Remove("KeyBankPaymentGridEdit");
                 var model = new BankPaymentModel();
-                FromDate = HttpContext.Session.GetString("FromDate");
-                ToDate = HttpContext.Session.GetString("ToDate");
                 var Result = await _IBankPayment.GetDashBoardData(FromDate, ToDate).ConfigureAwait(true);
                 if (Result != null)
                 {

@@ -59,6 +59,52 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+        .tiny-switch
+
+    {
+        position: relative;
+        display: inline-block;
+        width: 28px;
+        height: 14px;
+    }
+
+    .tiny-switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .tiny-slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 14px;
+    }
+
+        .tiny-slider:before {
+            position: absolute;
+            content: "";
+            height: 10px;
+            width: 10px;
+            left: 2px;
+            bottom: 2px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+    input:checked + .tiny-slider {
+        background-color: #0dcaf0;
+    }
+
+        input:checked + .tiny-slider:before {
+            transform: translateX(14px);
+        }
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
@@ -214,7 +260,16 @@
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="dashGateThead">
                                                 <tr>
                                                     <th style="color:yellow">Type*</th>
-                                                    <th style="color:yellow">Ledger Name*</th>
+                                                    <th style="color: yellow; vertical-align: middle;">
+                                                        <div style="display: flex; align-items: center; gap: 5px;">
+                                                            Ledger Name*
+                                                            <label class="tiny-switch">
+                                                                <input type="checkbox" id="ShowAll" onchange="FillLedgerName()">
+                                                                <span class="tiny-slider"></span>
+                                                            </label>
+                                                            <span style="font-size: 12px; color: white;">Show All</span>
+                                                        </div>
+                                                    </th>
                                                     <th style="color:yellow">Balance* &nbsp;&nbsp; DR/CR*</th>
                                                     <th style="color:yellow">Mode of Adjustment*</th>
                                                     <th style="color:yellow">Amount*</th>
@@ -517,8 +572,8 @@
 @section Scripts {
     <script>
 
-        function Validate_Submit() {
-
+                       function Validate_Submit() {
+                           debugger
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -527,20 +582,37 @@
                 $.notify("DrAmt and CrAmt must be equal to proceed.", "error");
                 Err = 1;
             }
+
             var Row = $('#divBankReceiptDetail tr').length;
             if ($('#divBankReceiptDetail tr').text().trim() == "NO DATA ADDED") {
                 $.notify("Grid should have at least one item.", "error");
                 Err = 1;
             }
+
+            // Collect unique ledger (party) names
+            let partySet = new Set();
+            $("[id^='GridLedgerName-']").each(function () {
+                var partyName = $(this).text().trim();
+                if (partyName) {
+                    partySet.add(partyName);
+                }
+            });
+
+            if (partySet.size === 1) {
+                $.notify("Same party Dr & Cr with same amount is not feasible add at least one more ledger", "error");
+                Err = 1;
+            }
+
+            // Existing validation for ModeOfAdjustment
             for (let i = 1; i <= Row; i++) {
                 var ModeOfAdjust = $('#ModeOfAdjustment-' + i).text();
                 if (ModeOfAdjust == "Against Ref") {
                     CheckAmountBeforeSave(i);
                 }
             }
+
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
-            if (Err == 1) return false;
-            return true;
+            return Err === 0;
         }
 
         $('.submitBTN').click(function (e) {
@@ -550,11 +622,11 @@
             $('form').submit();
         });
 
-                function ChangeAdjustAmount() {
+                        function ChangeAdjustAmount() {
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var AdjustQtyStr = $('#AdjustAmount').val();
 
-            // Check if value contains negative sign
+            // Check for negative sign
             if (AdjustQtyStr.includes('-')) {
                 alert('Negative amounts are not allowed.');
                 return;
@@ -562,31 +634,7 @@
 
             var AdjustQty = parseFloat(AdjustQtyStr);
 
-            if (isNaN(AdjustQty)) {
-                alert('Please enter a valid Adjust Amount.');
-                return;
-            }
-
-            // If AdjustQty is 0, uncheck all and reset adjustment
-            if (AdjustQty === 0) {
-                for (let i = 1; i <= rowCount; i++) {
-                    $('#CheckUnCheck-' + i).prop('checked', false);
-                    $('#AdjustAmt-' + i).val('0.00');
-
-                    // Restore original balance if stored
-                    let $balanceElement = $('#BalanceAmt-' + i);
-                    let originalBalance = $balanceElement.data('original');
-                    if (originalBalance !== undefined) {
-                        $balanceElement.text(parseFloat(originalBalance).toFixed(2));
-                    }
-
-                    CheckUnCheckCheck(i);
-                }
-                alert('All adjustments cleared.');
-                return;
-            }
-
-            if (AdjustQty <= 0) {
+            if (isNaN(AdjustQty) || AdjustQty <= 0) {
                 alert('Please enter a valid Adjust Amount.');
                 return;
             }
@@ -594,45 +642,46 @@
             // Calculate total available BalanceAmt
             var TotalAvailable = 0;
             for (let i = 1; i <= rowCount; i++) {
-                var balanceText = $('#BalanceAmt-' + i).text();
-                var balanceValue = parseFloat(balanceText);
-                if (!isNaN(balanceValue)) {
-                    TotalAvailable += balanceValue;
+                let balanceText = $('#BalanceAmt-' + i).data('original');
+                if (balanceText === undefined) {
+                    balanceText = $('#BalanceAmt-' + i).text();
+                    $('#BalanceAmt-' + i).data('original', parseFloat(balanceText));
+                }
+                let balanceVal = parseFloat($('#BalanceAmt-' + i).data('original'));
+                if (!isNaN(balanceVal)) {
+                    TotalAvailable += balanceVal;
                 }
             }
 
-            // Check if AdjustQty exceeds available balance
             if (AdjustQty > TotalAvailable) {
                 alert('Only ' + TotalAvailable.toFixed(2) + ' is available to adjust. Please enter a lesser amount.');
                 return;
-            } else {
-                var RemainingQty = AdjustQty;
-                for (let i = 1; i <= rowCount; i++) {
-                    if (RemainingQty <= 0) break;
+            }
 
-                    var $balanceElement = $('#BalanceAmt-' + i);
-                    var BalanceAmt = parseFloat($balanceElement.text());
-                    if (isNaN(BalanceAmt) || BalanceAmt <= 0) continue;
+            // Reset and distribute from the beginning
+            let RemainingQty = AdjustQty;
+            for (let i = 1; i <= rowCount; i++) {
+                let $balanceElement = $('#BalanceAmt-' + i);
+                let originalBalance = parseFloat($balanceElement.data('original') || 0);
 
-                    // Store original balance if not already stored
-                    if ($balanceElement.data('original') === undefined) {
-                        $balanceElement.data('original', BalanceAmt);
-                    }
-
-                    var originalBalance = $balanceElement.data('original');
-                    var AdjustInThisRow = Math.min(RemainingQty, originalBalance);
+                let AdjustInThisRow = 0;
+                if (RemainingQty > 0 && originalBalance > 0) {
+                    AdjustInThisRow = Math.min(RemainingQty, originalBalance);
+                    RemainingQty -= AdjustInThisRow;
 
                     $('#CheckUnCheck-' + i).prop('checked', true);
                     $('#AdjustAmt-' + i).val(AdjustInThisRow.toFixed(2));
                     $balanceElement.text((originalBalance - AdjustInThisRow).toFixed(2));
-
-                    CheckUnCheckCheck(i);
-
-                    RemainingQty -= AdjustInThisRow;
+                } else {
+                    $('#CheckUnCheck-' + i).prop('checked', false);
+                    $('#AdjustAmt-' + i).val('0.00');
+                    $balanceElement.text(originalBalance.toFixed(2));
                 }
+
+                CheckUnCheckCheck(i);
             }
 
-            alert('Adjusted total of ' + AdjustQty + ' across rows.');
+            alert('Adjusted total of ' + AdjustQty.toFixed(2) + ' across rows.');
         }
 
         $(document).ready(function () {
@@ -1297,12 +1346,12 @@
 
         function FillLedgerName() {
 
-            var Type = $('#Type').val();
+                    var ShowAll = $('#ShowAll').is(':checked') ? 'Y' : 'N';
             $.ajax({
                 url: '@Url.Action("FillLedgerName", "JournalVoucher")',
                 type: 'POST',
                 data: {
-                    Type: Type
+                            ShowAll: ShowAll
                 },
                 async: false,
                 success: function (response, status, error) {
@@ -1788,37 +1837,6 @@
                 RemoveErrorCls('ModeOfAdjustment');
             }
 
-            if ($('#ModeOfAdjustment').val() == "Advance") {
-                if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
-                    AddErrorCls('CustOrderNo');
-                    $.notify("CustOrderNo is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('CustOrderNo');
-                }
-                if ($('#SONo').val() == 0 || $('#SONo').val() == null) {
-                    AddErrorCls('SONo');
-                    $.notify("SONo is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('SONo');
-                }
-                if ($('#SoDate').val() == "" || $('#SoDate').val() == null) {
-                    AddErrorCls('SoDate');
-                    $.notify("SoDate is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('SoDate');
-                }
-                if ($('#SOYear').val() == 0 || $('#SOYear').val() == null) {
-                    AddErrorCls('SOYear');
-                    $.notify("SOYear is required.", "error");
-                    Err = 1;
-                } else {
-                    RemoveErrorCls('SOYear');
-                }
-            }
-
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;
             return true;
@@ -2047,45 +2065,48 @@
             $('#lblcheckitem').text(selectedRows)
         }
 
-        function CheckUnCheckEdit() {
+                function CheckUnCheckEdit() {
 
-            var RowCount = $('#divBankReceiptDetail tr').length;
-            var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
-            var selectedRows = 0;
+                            var RowCount = $('#divBankReceiptDetail tr').length;
+                            var PopUpRow = $('#divDisplayPopupForPendingVouchersDetail tr').length;
+                            var selectedRows = 0;
 
-            var existingVoucherIds = new Map();
+                            var existingVoucherIds = new Map();
 
-            for (let i = 1; i <= RowCount; i++) {
-                let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
-                let amount = parseFloat($('#AdjAmtG-' + i).text());
-                let balance = parseFloat($('#BalanceG-' + i).text());
-                existingVoucherIds.set(voucherId, { amount, balance });
-            }
+                            for (let i = 1; i <= RowCount; i++) {
+                                let voucherId = $('#AgainstVoucherEntryId-' + i).text().trim();
+                                let amount = parseFloat($('#AdjAmtG-' + i).text());
+                                let balance = parseFloat($('#BalanceG-' + i).text());
+                                let accountCode = $('#LedgerName').val();
 
-            var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
+                                let key = voucherId + '_' + accountCode;
+                                existingVoucherIds.set(voucherId, { amount, balance });
+                            }
 
-            if (selectedRows === RowCount) {
-                $('#CheckUnCheckAll').prop('checked', true);
-            }
-            else {
-                $('#CheckUnCheckAll').prop('checked', false);
-            }
+                            var selectedRows = $('#divDisplayPopupForPendingVouchersDetail tr').has('input[type="checkbox"]:checked').length;
 
-            for (let i = 1; i <= PopUpRow; i++) {
-                let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
+                            if (selectedRows === RowCount) {
+                                $('#CheckUnCheckAll').prop('checked', true);
+                            }
+                            else {
+                                $('#CheckUnCheckAll').prop('checked', false);
+                            }
 
-                if (existingVoucherIds.has(popupVoucherId)) {
-                    selectedRows++;
-                    $('#CheckUnCheck-' + i).prop('checked', true);
-                    let { amount, balance } = existingVoucherIds.get(popupVoucherId);
-                    $('#AdjustAmt-' + i).val(amount);
-                    $('#BalanceAmt-' + i).text(balance);
-                    $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
-                }
-            }
-            AdjustAmount();
-            $('#lblcheckitem').text(selectedRows);
-        }
+                            for (let i = 1; i <= PopUpRow; i++) {
+                                let popupVoucherId = $('#PopUpAccEntryId-' + i).text().trim();
+
+                                if (existingVoucherIds.has(popupVoucherId)) {
+                                    selectedRows++;
+                                    $('#CheckUnCheck-' + i).prop('checked', true);
+                                    let { amount, balance } = existingVoucherIds.get(popupVoucherId);
+                                    $('#AdjustAmt-' + i).val(amount);
+                                    $('#BalanceAmt-' + i).text(balance);
+                                    $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+                                }
+                            }
+                            AdjustAmount();
+                            $('#lblcheckitem').text(selectedRows);
+                        }
 
         var currentSearchColumn = null;
 

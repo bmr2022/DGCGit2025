@@ -67,7 +67,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillLedgerName(string VoucherType, string Type)
+        public async Task<ResponseResult> FillLedgerName(string VoucherType, string ShowLedger)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -75,7 +75,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Payment"));
-                SqlParams.Add(new SqlParameter("@type", Type));
+                SqlParams.Add(new SqlParameter("@ShowAllLedger", ShowLedger));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -299,10 +299,6 @@ namespace eTactWeb.Data.DAL
 
             try
             {
-                //DateTime entryDate = new DateTime();
-                //DateTime actualEntryDate = new DateTime();
-                //DateTime voucherDate = new DateTime();
-                //DateTime InsDate = new DateTime();
 
                 var entryDate = CommonFunc.ParseFormattedDate(model.EntryDate);
                 var actualEntryDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
@@ -593,7 +589,8 @@ namespace eTactWeb.Data.DAL
                                                  NewrefNo = dr["NewrefNo"].ToString() ?? "",
                                                  ModeOfAdjustment = dr["ModOfAdjust"].ToString() ?? "",
                                                  AccEntryId = string.IsNullOrEmpty(dr["AccEntryid"].ToString()) ? 0 : Convert.ToInt32(dr["AccEntryid"].ToString()),
-                                                 ActualDrCr = dr["ActualDRCRType"].ToString() ?? ""
+                                                 ActualDrCr = dr["ActualDRCRType"].ToString() ?? "",
+                                                 DocEntryId = string.IsNullOrEmpty(dr["DocEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["DocEntryId"].ToString())
                                              }).ToList();
                 }
             }

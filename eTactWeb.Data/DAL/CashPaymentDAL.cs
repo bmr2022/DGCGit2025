@@ -80,7 +80,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillLedger"));
                 SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
-                SqlParams.Add(new SqlParameter("@type", Type));
+                SqlParams.Add(new SqlParameter("@ShowAllLedger", Type));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }
             catch (Exception ex)
@@ -599,7 +599,8 @@ namespace eTactWeb.Data.DAL
                                                  NewrefNo = dr["NewrefNo"].ToString() ?? "",
                                                  ModeOfAdjustment = dr["ModOfAdjust"].ToString() ?? "",
                                                  AccEntryId = string.IsNullOrEmpty(dr["AccEntryid"].ToString()) ? 0 : Convert.ToInt32(dr["AccEntryid"].ToString()),
-                                                 ActualDrCr = dr["ActualDRCRType"].ToString() ?? ""
+                                                 ActualDrCr = dr["ActualDRCRType"].ToString() ?? "",
+                                                 DocEntryId = string.IsNullOrEmpty(dr["DocEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["DocEntryId"].ToString())
                                              }).ToList();
                 }
             }

@@ -320,9 +320,9 @@
 
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
-            var linkurl = urlHref;
-            linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&BatchNo=" + $('#Batchno').val() + "&SummaryDetail=" + $('#SummaryDetail').val() + "&Searchbox=" + $('#search-box').val();
-            window.location.href = linkurl;
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val();
+            window.location.href = linkUrl;
         }
 
         
