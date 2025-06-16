@@ -44,13 +44,6 @@ namespace eTactwebAccounts.Controllers
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
 
-            if (MainModel.Mode == "U")
-            {
-                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
-                MainModel.UpdatedOn = DateTime.Now;
-            }
-
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
                 MainModel = await _ICashPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
@@ -60,6 +53,14 @@ namespace eTactwebAccounts.Controllers
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.CashPaymentGrid);
                 HttpContext.Session.SetString("KeyCashPaymentGridEdit", serializedGrid);
             }
+
+            if (Mode == "U" && MainModel.UpdatedBy == 0)
+            {
+                MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                MainModel.UpdatedByEmp = HttpContext.Session.GetString("EmpName");
+                MainModel.UpdatedOn = DateTime.Now;
+            }
+
             MainModel.FromDateBack = FromDate;
             MainModel.ToDateBack = ToDate;
             MainModel.VoucherNoBack = VoucherNo;
