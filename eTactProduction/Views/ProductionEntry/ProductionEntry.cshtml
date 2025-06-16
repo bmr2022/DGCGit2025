@@ -4,6 +4,8 @@
     ViewData["Title"] = "Production Entry";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css">
+
 <style>
 
     #GateMainTable thead th {
@@ -376,14 +378,18 @@
                                     <input asp-for="UniqueBatchNo" class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-xs-9">
-                                    <button class="btn btn-sm btn-outline-primary bg-gradient" onclick="GetChildData(event)" style="margin-left:10px;margin-top:10px;">
+                                    <button class="btn btn-sm btn-outline-primary bg-gradient" id="childData" onclick="GetChildData(event)" style="margin-left:10px;margin-top:10px;">
                                         <i class="fa fa-plus-circle fafw fa-lg"></i>
                                         Child Part Stock
                                     </button>
                                     <button class="btn btn-sm btn-outline-warning bg-gradient" id="displaylistbutton" onclick="DisplayBomDetail(event)" style="margin-left:0px;margin-top:10px;"><i class="fa fa-list-alt fafw fa-lg"></i> Bom</button>
                                     <button class="btn btn-sm btn-outline-success bg-gradient" id="displayroutingdata" onclick="DisplayRoutingData(event)" style="margin-left:0px;margin-top:10px;"><i class="fa fa-list-alt fafw fa-lg"></i> Routing</button>
-                                    <span id="productDetailAlert" style="display:none; color:white; background-color:red; padding:2px 6px; font-size:12px; border-radius:4px;">Product detail</span>
-                                    <span id="scrapDetailAlert" style="display:none; color:white; background-color:green; padding:2px 6px; font-size:12px; border-radius:4px;">Product detail</span>
+                                    <span id="productDetailAlert" style="display:none; color:white; background-color:red; padding:2px 6px; font-size:12px; border-radius:4px;">
+                                        <i class="bi bi-exclamation-octagon-fill"></i>
+                                    </span>
+                                    <span id="scrapDetailAlert" style="display:none; color:white; background-color:green; padding:2px 6px; font-size:12px; border-radius:4px;">
+                                        <i class="bi bi-receipt-cutoff">
+                                    </span>
 
                                 </div>
                             </div>
@@ -829,14 +835,7 @@
                                     <label asp-for="Productunit" class="form-label">Product Unit</label>
                                     <input asp-for="Productunit" class="form-control" readonly />
                                 </div>
-                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="ProductStore" class="form-label" style="color:red">Store/Wc*</label>
-                                    <select class="form-select" asp-for="StoreTransferProduct">
-                                        <option>-Select-</option>
-                                        <option value="S">Store</option>
-                                        <option value="W">WorkCenter</option>
-                                    </select>
-                                </div>
+                                
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="ProductTransferToWCStore" class="form-label" style="color:red">Transfer To Wc or Store*</label>
                                     <input asp-for="ProductStoreId" class="form-control" type="hidden" />
@@ -1795,12 +1794,10 @@
 
         })
 
-        document.getElementById('unTarget').addEventListener('focusout', function () {
-            const value = this.value;
-            document.getElementById('ProdQty').value = value;
+        $('#childData').click(function () {
+
             FillScrapData();
             FillProductDetail();
-
             const grid = document.getElementById('divProductDetailGrid');
             const alertBox = document.getElementById('productDetailAlert');
 
@@ -1810,6 +1807,8 @@
                 alertBox.style.display = "none";
             }
 
+
+            
             const Scrapgrid = document.getElementById('divScrapDetailGrid');
             const ScrapalertBox = document.getElementById('scrapDetailAlert');
 
@@ -1818,6 +1817,15 @@
             } else {
                 ScrapalertBox.style.display = "none";
             }
+        });
+
+        document.getElementById('unTarget').addEventListener('focusout', function () {
+            const value = this.value;
+            document.getElementById('ProdQty').value = value;
+            /* FillScrapData();
+            FillProductDetail(); */
+
+            
         });
 
         $('#ProdAgainstPlanManual').select2();
@@ -4151,6 +4159,7 @@
             FillProductDetail();
             FillProductPartCode();
             FillProductItems();
+            FillProductStoreforScrap();
         });
 
         function GetItemNameForPendingProduction() {
@@ -5715,12 +5724,9 @@
             var ProductTransferToStoreId = 0;
             var ProductTransferToWCId = 0;
             var ProductTransferToWCStore = $('#StoreTransferProduct').val();
-            if (ProductTransferToWCStore == "S") {
+            
                 ProductTransferToStoreId = $('#ProductStoreId').val();
-            }
-            else {
-                ProductTransferToWCId = $('#ProductToWC').val();
-            }
+           
             var ProductData = {
                 "ProductItemName": $('#ProductItemName').find(':selected').text(),
                 "ProductPartCode": $('#ProductPartCode').find(':selected').text(),
@@ -5729,7 +5735,7 @@
                 "ProductQty": $('#ProductQty').val(),
                 "Productunit": $('#Productunit').val(),
                 "StoreTransferProduct": $('#StoreTransferProduct').val(),
-                "ProductTransferToWCStore": $('#ProductTransferToWCStore').find(':selected').text(),
+                "ProductStore": $('#ProductTransferToWCStore').find(':selected').text(),
                 "ProductStoreId": ProductTransferToStoreId,
                 "ProductToWCId": ProductTransferToWCId
             }
@@ -5796,7 +5802,7 @@
                                     $('#Productunit').val(obj[0].Productunit);
                                     $('#StoreTransferProduct').change();
                                     $('#StoreTransferProduct').val(obj[0].StoreTransferProduct).trigger('change');
-                                    $('#ProductTransferToWCStore').val(obj[0].ProductTransferToWCStore).trigger('change');
+                                    $('#ProductTransferToWCStore').val(obj[0].ProductStoreId).trigger('change');
                                 })
                                 .catch((error) => {
                                     reject(error);

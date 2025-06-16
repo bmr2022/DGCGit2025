@@ -30,7 +30,7 @@ namespace eTactWeb.Data.DAL
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
-        public async Task<RCRegisterModel> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType,string RGPNRGP, string ReportMode)
+        public async Task<RCRegisterModel> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType,string RGPNRGP, string ReportMode,int ProcessId)
         {
             DataSet? oDataSet = new DataSet();
             var model = new RCRegisterModel();
@@ -57,6 +57,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Itemname", ItemName == null ? "" : ItemName);
                     oCmd.Parameters.AddWithValue("@IssueChallanTYpe", IssueChallanType == null ? "" : IssueChallanType);
                     oCmd.Parameters.AddWithValue("@RGPNRGP", RGPNRGP == null ? "" : RGPNRGP);
+                    oCmd.Parameters.AddWithValue("@ProcessId", ProcessId == null ? 0 : ProcessId);
                    
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

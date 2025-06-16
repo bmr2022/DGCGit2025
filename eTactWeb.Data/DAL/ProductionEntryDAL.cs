@@ -847,6 +847,7 @@ public class ProductionEntryDAL
                 model.ProductDetailGrid = (from DataRow dr in oDataSet.Tables[0].Rows
                                          select new ProductionEntryItemDetail
                                          {
+                                             SeqNo= string.IsNullOrEmpty(dr["RowNum"].ToString()) ? 0 : Convert.ToInt32(dr["RowNum"].ToString()),
                                              ProductItemCode = string.IsNullOrEmpty(dr["ProdItemCode"].ToString()) ? 0 : Convert.ToInt32(dr["ProdItemCode"].ToString()),
                                              ProductPartCode = dr["ProdPartCode"].ToString() ?? "",
                                              ProductItemName = dr["ProdItemName"].ToString() ?? "",

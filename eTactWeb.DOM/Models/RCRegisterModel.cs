@@ -18,6 +18,7 @@ namespace eTactWeb.DOM.Models
         public string? IssueChallanType { get; set; }
         public string? RGPNRGP { get; set; }
         public string? ReportMode { get; set; }
+        public int ProcessId { get; set; }
         public IList<RCRegisterDetail>? RCRegisterDetails { get; set; }
     }
 

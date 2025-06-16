@@ -88,6 +88,13 @@
                                 </div>
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ProcessId" class="form-label">Process</label>
+                                    <select class="form-select" asp-for="ProcessId">
+                                        <option value="">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportMode" class="form-label">Report Type</label>
                                     <select asp-for="ReportMode" class="form-select" onchange="GetRCRegisterData()">
                                         <option disabled value="">-Select-</option>
@@ -209,6 +216,7 @@
     <script>
         $(document).ready(function () {
             GetServerDate();
+            FillProcess();
             $('#ReportMode').select2();
             AutoComplete('Account_Head_Master', 'PartyName', 'Account_Name', null);
             AutoComplete('VIssueNRGPMainDetail', 'IssueChallanNo', 'ChallanNo', null);
@@ -379,6 +387,28 @@
             });
         }
 
+
+        function FillProcess() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetProcessList", "NRGP")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#ProcessId').empty();
+                        $('#ProcessId').append('<option value="0">-Select-</option>');
+                        $.each(obj.Result, function (key, val) {
+                            $('#ProcessId').append('<option value="' + val.EntryID + '">' + val.StageDescription + '</option>');
+                        });
+                    }
+                }
+            });
+        }
+
+       
+
         function FillColorAccordingPendQty() {
             var Rowcount = $('#divStockRegisterBody tr').length;
             for (i = 1; i <= Rowcount; i++) {
@@ -402,7 +432,7 @@
                 type: "POST",
                 url: "@Url.Action("GetRCRegisterData")",
                 async: false,
-                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), Partyname: $('#PartyName').val(), IssueChallanNo: $('#IssueChallanNo').val(), RecChallanNo: $('#recChallanno').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), IssueChallanType: $('#IssueChallanType').val(), RGPNRGP: $('#RGPNRGP').val(), ReportMode: $('#ReportMode').val() },
+                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), Partyname: $('#PartyName').val(), IssueChallanNo: $('#IssueChallanNo').val(), RecChallanNo: $('#recChallanno').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), IssueChallanType: $('#IssueChallanType').val(), RGPNRGP: $('#RGPNRGP').val(), ReportMode: $('#ReportMode').val(), ProcessId: $('#ProcessId').val() },
                 success: function (result, status, error) {
                      
                     $('#divRCRegister').empty();
