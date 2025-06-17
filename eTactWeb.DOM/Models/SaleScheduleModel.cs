@@ -190,6 +190,14 @@ public class SaleSubScheduleModel : SaleScheduleGrid
     public int UID { get; set; }
     public string UserName { get; set; }
     public int YearCode { get; set; }
+    public string FromDateBack { get; set; }
+    public string ToDateBack { get; set; }
+    public string DashboardTypeBack { get; set; }
+    public string CustomerNameBack { get; set; }
+    public string CustomerOrderNoBack { get; set; }
+    public string SonoBack { get; set; }
+    public string PartCodeBack { get; set; }
+    public string ItemNameBack { get; set; }
 }
 
 [Serializable]
@@ -199,6 +207,7 @@ public class SSDashboard : SaleScheduleDashboard
     public string? FromDate { get; set; }
     public string? ItemName { get; set; }
     public string? PartCode { get; set; }
+    public string? SummaryDetail { get; set; }
     public IList<TextValue>? SONOList { get; set; }
     public string? ToDate { get; set; }
 }

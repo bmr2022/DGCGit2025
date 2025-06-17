@@ -139,7 +139,27 @@
             $("#FromDate").on('keydown', function (e) { e.preventDefault(); return false; });
             $("#ToDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
             $("#ToDate").on('keydown', function (e) { e.preventDefault(); return false; });
+            debugger
+            var fromDateBack = sessionStorage.getItem('FromDateBack');
+            var toDateBack = sessionStorage.getItem('ToDateBack');
+            var dashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+            var customerNameBack = sessionStorage.getItem('CustomerNameBack');
+            var customerOrderNoBack = sessionStorage.getItem('CustomerOrderNoBack');
+            var sonoBack = sessionStorage.getItem('SONOBack');
+            var partCodeBack = sessionStorage.getItem('PartCodeBack');
+            var itemNameBack = sessionStorage.getItem('ItemNameBack');
 
+            if (fromDateBack != null && fromDateBack != '') {
+                $('#FromDate').val(fromDateBack);
+                $('#ToDate').val(toDateBack);
+                $('#SummaryDetail').val(dashboardTypeBack);
+                $('#CustomerName').val(customerNameBack);
+                $('#CustOrderNo').val(customerOrderNoBack);
+                $('#PartCode').val(partCodeBack);
+                $('#ItemName').val(itemNameBack);
+            }
+
+            GetSearchData();
             AutoComplete('VSALESCHEDULE', 'CustomerName', 'CustomerName', null);
             AutoComplete('VSALESCHEDULE', 'CustOrderNo', 'CustomerOrderNo', null);
             AutoComplete('VSALESCHEDULE', 'ItemName', 'ItemName', null);
@@ -152,6 +172,15 @@
             sortTable(1, false);
             // var columnNo = $('.SSGrid th').data('columnno');
         });
+
+        function BackButtonData(event) {
+            debugger
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&fromDateBack=" + $('#FromDate').val() + "&toDateBack=" + $('#ToDate').val() + "&dashboardTypeBack=" + $('#SummaryDetail').val() + "&customerNameBack=" + $('#CustomerName').val() + "&customerOrderNoBack=" + $('#CustOrderNo').val() +"&partCodeBack=" + $('#PartCode').val() + "&itemNameBack=" + $('#ItemName').val();
+            window.location.href = linkUrl;
+        }
 
         function GetSearchData() {
             var data = $('#SParam').serialize();
