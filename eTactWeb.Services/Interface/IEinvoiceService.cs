@@ -16,7 +16,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GenerateInvoiceAsync(EInvoiceItemModel input);
         Task<ResponseResult> GenerateEwayBillAsync(string token, string irnNo, int invoiceNo, int yearCode);
         Task<ResponseResult> GenerateQRCodeAsync(string barcodeValue, int invoiceNo, int yearCode);
-        Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string customerPartCode, string saleBillType);
+        Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode);
 
         Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode);
     }

@@ -56,7 +56,7 @@ namespace eTactWeb.Data.BLL
             return await _EInvoiceDAL.CheckDuplicateIRN(entryId, invoiceNo, yearCode);
         }
        
-        public async Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string customerPartCode, string saleBillType)
+        public async Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode)
         {
             var result = new ResponseResult();
 
