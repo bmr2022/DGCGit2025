@@ -270,6 +270,7 @@ namespace eTactWeb
             services.TryAddScoped<IAutoGenerateSchedule, AutoGenerateScheduleBLL>();
             services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
             services.TryAddScoped<IOrderAmendHistory, OrderAmendHistoryBLL>();
+            services.TryAddScoped<ISaleOrderRegister, SaleOrderRegisterBLL>();
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
             services.TryAddTransient<IOrderBasedProdPlan, OrderBasedProdPlanBLL>();
