@@ -28,6 +28,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillSOWiseItems(string invoiceDate, string sono, int soYearCode, int accountCode, string schNo, int schYearCode, string sbJobWork);
         Task<ResponseResult> JWItemList(string typeItemServAssets, string showAll,string bomInd, string schNo, int schYearCode);
         Task<ResponseResult> FillStore();
+        Task<ResponseResult> FillTransporter();
         Task<ResponseResult> AllowTaxPassword();
         Task<ResponseResult> GetReportData(int EntryId, int YearCode, string Type, string InvoiceNo, int AccountCode);
         Task<ResponseResult> FillSOPendQty(int saleBillEntryId, string saleBillNo, int saleBillYearCode,string sono, int soYearcode, string custOrderNo, int itemCode, int accountCode, string schNo, int schYearCode);
