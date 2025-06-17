@@ -134,11 +134,11 @@ namespace eTactWeb.Data.DAL
             { "access_token", token },
             { "user_gstin", GetSellerGstin(dataTable) },
             { "data_source", "erp" },
-            { "transaction_details", GetTransactionDetails(customerPartCode) },
+            { "transaction_details", GetTransactionDetails(saleBillType) },
             { "document_details", GetDocumentDetails(invoice, dataTable) },
             { "seller_details", GetSellerDetails(dataTable) },
-            { "buyer_details", GetBuyerDetails(customerPartCode, dataTable) },
-            { "ship_details", GetShippingDetails(customerPartCode, dataTable) },
+            { "buyer_details", GetBuyerDetails(saleBillType, dataTable) },
+            { "ship_details", GetShippingDetails(saleBillType, dataTable) },
             { "value_details", GetValueDetails(dataTable) },
             { "item_list", GetItemList(dataTable, saleBillType) }
         };
@@ -160,9 +160,9 @@ namespace eTactWeb.Data.DAL
             return dataTable.Rows[0]["sellergstin"].ToString();
         }
 
-        private Dictionary<string, object> GetTransactionDetails(string customerPartCode)
+        private Dictionary<string, object> GetTransactionDetails(string SaleBillType)
         {
-            var supplyType = customerPartCode.ToUpper() switch
+            var supplyType = SaleBillType.ToUpper() switch
             {
                 "EXPORT WITH PAYMENT" => "EXPWP",
                 "WITH SEZ PAYMENT" => "SEZWP",
@@ -173,13 +173,29 @@ namespace eTactWeb.Data.DAL
                 _ => "B2B"
             };
 
-            return new Dictionary<string, object>
+    //        return new Dictionary<string, object>
+    //{
+    //    { "supply_type", supplyType },
+    //    { "charge_type", "N" },
+    //    { "igst_on_intra", "N" },
+    //    { "ecommerce_gstin", "" }
+    //};
+
+            var details = new Dictionary<string, object>
     {
         { "supply_type", supplyType },
         { "charge_type", "N" },
-        { "igst_on_intra", "N" },
-        { "ecommerce_gstin", "" }
+        { "igst_on_intra", "N" }
     };
+
+            // Include ecommerce_gstin only for domestic transactions like B2B
+            bool isDomestic = supplyType == "B2B" || supplyType == "DEXP";
+            if (isDomestic)
+            {
+                details.Add("ecommerce_gstin", "");
+            }
+
+            return details;
         }
 
         private Dictionary<string, object> GetDocumentDetails(string invoice, DataTable dataTable)
@@ -206,23 +222,59 @@ namespace eTactWeb.Data.DAL
     };
         }
 
-        private Dictionary<string, object> GetBuyerDetails(string customerPartCode, DataTable dataTable)
+        //    private Dictionary<string, object> GetBuyerDetails(string customerPartCode, DataTable dataTable)
+        //    {
+        //        var row = dataTable.Rows[0];
+        //        var gstin = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "URP" : row["buyergstin"].ToString();
+        //        var stateCode = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "96" : row["buyerstate"].ToString();
+
+        //        return new Dictionary<string, object>
+        //{
+        //    { "gstin", gstin },
+        //    { "legal_name", row["buyername"].ToString() },
+        //    { "address1", row["buyeraddress"].ToString() },
+        //    { "location", row["buyerlocation"].ToString() },
+        //    { "pincode", row["buyerpincode"].ToString() },
+        //    { "place_of_supply", row["buyerstatecode"].ToString() },
+        //    { "state_code", stateCode }
+        //};
+        //}
+        private Dictionary<string, object> GetBuyerDetails(string saleBillType, DataTable dataTable)
         {
             var row = dataTable.Rows[0];
-            var gstin = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "URP" : row["buyergstin"].ToString();
-            var stateCode = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "96" : row["buyerstate"].ToString();
+            var upperType = saleBillType.ToUpper();
 
-            return new Dictionary<string, object>
+            var isExport = upperType.Contains("EXPORT") || upperType.Contains("SEZ") || upperType.Contains("DEEMED");
+            var buyerDetails = new Dictionary<string, object>
     {
-        { "gstin", gstin },
         { "legal_name", row["buyername"].ToString() },
-        { "address1", row["buyeraddress"].ToString() },
+        { "address1", string.IsNullOrWhiteSpace(row["buyeraddress"].ToString()) ? "NA" : row["buyeraddress"].ToString() },
         { "location", row["buyerlocation"].ToString() },
         { "pincode", row["buyerpincode"].ToString() },
         { "place_of_supply", row["buyerstatecode"].ToString() },
-        { "state_code", stateCode }
+        { "state_code", row["buyerstate"].ToString() }
     };
+
+            if (isExport)
+            {
+                buyerDetails.Add("gstin", "URP");
+            }
+            else
+            {
+                var gstin = row["buyergstin"].ToString();
+                if (!string.IsNullOrWhiteSpace(gstin))
+                {
+                    buyerDetails.Add("gstin", gstin);
+                }
+                else
+                {
+                    throw new Exception("GSTIN is required for domestic transactions.");
+                }
+            }
+
+            return buyerDetails;
         }
+
 
         private Dictionary<string, object> GetShippingDetails(string customerPartCode, DataTable dataTable)
         {

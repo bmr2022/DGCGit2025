@@ -53,7 +53,7 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
         }
         [HttpPost]
-        public async Task<IActionResult> SaleInvoice(SaleBillModel model)
+        public async Task<IActionResult> SaleInvoice(SaleBillModel model, string ShouldPrint)
         {
             var SBGrid = new DataTable();
             DataTable TaxDetailDT = null;
@@ -242,9 +242,21 @@ namespace eTactWeb.Controllers
                         model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
-                        TempData["ShowEinvoicePopup"] = "true";
+                        ViewBag.ShowEinvoicePrompt = true;
+                        //if (ShouldPrint == "true")
+                        //{
+                        //    return Json(new
+                        //    {
+                        //        status = "Success", // ✅ Add this!
+                        //        EntryId = model1.SaleBillEntryId,
+                        //        YearCode = model1.SaleBillYearCode,
+                        //        InvoiceNo = model1.SaleBillNo,
+                        //        saleBillType = model1.SupplyType,
+                        //        customerPartCode = "" // optional
+                        //    });
+                        //}
 
-                        return View(model1);
+                           return View(model1);
 
                     }
                     if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
@@ -268,6 +280,7 @@ namespace eTactWeb.Controllers
                     }
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
+            //    return Json(new { status = "Success" });
                 return View();
             }
         }
