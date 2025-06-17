@@ -1246,6 +1246,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillTransporter()
+        {
+            var JSON = await _SaleBill.FillTransporter();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillSOItemRate(string sono, int soYearCode, int accountCode, string custOrderNo, int itemCode)
         {
             var JSON = await _SaleBill.FillSOItemRate(sono, soYearCode, accountCode, custOrderNo, itemCode);
@@ -1439,6 +1445,25 @@ namespace eTactWeb.Controllers
             {
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
+        }
+        public ResponseResult isDuplicate(string ColVal, string ColName)
+        {
+            var Result = _IDataLogic.isDuplicate(ColVal, ColName, "SaleBillMain");
+            return Result;
+        }
+   
+        [HttpPost]
+        public JsonResult AutoComplete(string ColumnName, string prefix)
+        {
+            var iList = _IDataLogic.AutoComplete("SaleBillMain", ColumnName, "", "", 0, 0);
+            var Result = (from item in iList
+                          where item.Text.Contains(prefix)
+                          select new
+                          {
+                              item.Text
+                          }).Distinct().ToList();
+
+            return Json(Result);
         }
 
     }
