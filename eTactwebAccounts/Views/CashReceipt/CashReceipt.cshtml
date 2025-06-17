@@ -1723,35 +1723,37 @@
 			}
 
 			if ($('#ModeOfAdjustment').val() == "Advance") {
-				if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
-					AddErrorCls('CustOrderNo');
-					$.notify("CustOrderNo is required.", "error");
-					Err = 1;
-				} else {
-					RemoveErrorCls('CustOrderNo');
-				}
-				if ($('#SONo').val() == 0 || $('#SONo').val() == null) {
-					AddErrorCls('SONo');
-					$.notify("SONo is required.", "error");
-					Err = 1;
-				} else {
-					RemoveErrorCls('SONo');
-				}
-				if ($('#SoDate').val() == "" || $('#SoDate').val() == null) {
-					AddErrorCls('SoDate');
-					$.notify("SoDate is required.", "error");
-					Err = 1;
-				} else {
-					RemoveErrorCls('SoDate');
-				}
-				if ($('#SOYear').val() == 0 || $('#SOYear').val() == null) {
-					AddErrorCls('SOYear');
-					$.notify("SOYear is required.", "error");
-					Err = 1;
-				} else {
-					RemoveErrorCls('SOYear');
-				}
-			}
+						if($('#BankType').val() == "Creditors"){
+							if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
+							AddErrorCls('CustOrderNo');
+							$.notify("CustOrderNo is required.", "error");
+							Err = 1;
+						} else {
+							RemoveErrorCls('CustOrderNo');
+						}
+						if ($('#SONo').val() == 0 || $('#SONo').val() == null) {
+							AddErrorCls('SONo');
+							$.notify("SONo is required.", "error");
+							Err = 1;
+						} else {
+							RemoveErrorCls('SONo');
+						}
+						if ($('#SoDate').val() == "" || $('#SoDate').val() == null) {
+							AddErrorCls('SoDate');
+							$.notify("SoDate is required.", "error");
+							Err = 1;
+						} else {
+							RemoveErrorCls('SoDate');
+						}
+						if ($('#SOYear').val() == 0 || $('#SOYear').val() == null) {
+							AddErrorCls('SOYear');
+							$.notify("SOYear is required.", "error");
+							Err = 1;
+						} else {
+							RemoveErrorCls('SOYear');
+						}
+						}
+					}
 
 			Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
 			if (Err == 1) return false;

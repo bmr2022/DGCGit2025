@@ -1772,7 +1772,8 @@
 					}
 
 					if ($('#ModeOfAdjustment').val() == "Advance") {
-						if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
+						if($('#BankType').val() == "Creditors"){
+							if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
 							AddErrorCls('CustOrderNo');
 							$.notify("CustOrderNo is required.", "error");
 							Err = 1;
@@ -1799,6 +1800,7 @@
 							Err = 1;
 						} else {
 							RemoveErrorCls('SOYear');
+						}
 						}
 					}
 
