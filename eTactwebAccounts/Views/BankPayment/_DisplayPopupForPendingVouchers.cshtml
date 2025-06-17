@@ -76,14 +76,6 @@
 									</span>
 								</a>
 							</div>
-							<div id="editCursorDiv-@Cntr">
-								<a class="table-link link-primary" id="editCursor-@Cntr" asp-action="@ActionName" asp-controller="@ControllerName" asp-route-Mode="U" asp-route-ID="@item.DocEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
-									<span class="fa-stack">
-										<i class="fa fa-square fa-stack-2x"></i>
-										<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-									</span>
-								</a>
-							</div>
 							<div id="deleteCursorDiv-@Cntr">
 								<a class="table-link link-danger" onclick='DeleteItemRow(@Cntr,"PopUpData")'>
 									<span class="fa-stack">
@@ -98,7 +90,6 @@
 				<td><input type="checkbox" id="CheckUnCheck-@Cntr" onchange="CheckUnCheckCheck(@Cntr)" /></td>
 				<td>@Cntr</td>
 				<td id="PopUpVoucherType-@Cntr">@item.VoucherType</td>
-				<td id="PopUpYearCode-@Cntr">@item.YearCode</td>
 				<td id="PopUpVoucherNo-@Cntr">@item.VoucherNo</td>
 				<td id="PopUpInVoiceNo-@Cntr">@item.InVoiceNo</td>
 				@if (item.VoucherDate != null)
@@ -124,6 +115,7 @@
 				<td>@item.Adjusted</td>
 				<td id="PopUpDrAmt-@Cntr">@item.DrAmt</td>
 				<td id="PopUpCrAmt-@Cntr">@item.CrAmt</td>
+				<td id="PopUpYearCode-@Cntr">@item.YearCode</td>
 				<td id="ActualBalance-@Cntr">@item.PendBillAmt</td>
 				<td>@item.NewrefNo</td>
 				<td>@item.ModeOfAdjustment</td>

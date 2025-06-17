@@ -100,6 +100,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillStore()
         {
             return await _SaleBillDAL.FillStore();
+        }
+        public async Task<ResponseResult> FillTransporter()
+        {
+            return await _SaleBillDAL.FillTransporter();
         }  
         public async Task<ResponseResult> DisplaySODetail(string accountName, string itemName, string partCode, string sono, int soYearCode, string custOrderNo, string schNo, int schYearCode)
         {

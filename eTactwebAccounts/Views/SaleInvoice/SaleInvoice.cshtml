@@ -663,7 +663,57 @@
                    $supplyType.append($('<option>', { value: "", text: "-- Select --" }));
                }
            }
+                     $(function () {
+                            $("#vehicleNo").autocomplete({
+                        source: function (request, response) {
 
+                            $.ajax({
+                                        url: '@Url.Action("AutoComplete", "SaleInvoice")',
+                                type: "POST",
+                                        data: { "ColumnName": "vehicleNo", "prefix": request.term },
+                                success: function (data) {
+                                    response($.map(data,
+                                        function (key, value) {
+                                            return key.text;
+                                        }));
+                                },
+                                error: function (response) {
+                                    alert(response.responseText);
+                                },
+                                failure: function (response) {
+                                    alert(response.responseText);
+                                }
+                            });
+                        },
+                        select: function (e, i) {
+                                    $("#vehicleNo").val(i.item.value);
+                        },
+                        change: function (e, i) {
+
+                            //$("#vehicleNo").val($("#vehicleNo").val());
+                        },
+                        minLength: 1
+                    });
+                });
+
+                    async function CheckDuplicate(n, v) {
+                    $.ajax({
+                                 url: "@Url.Action("isDuplicate", "SaleInvoice")",
+                        type: "POST",
+                        data: { "Colval": $('#' + v).val(), "ColName": n },
+                        success: await function (data) {
+                            if (data.result !== "0" && data.statusText === "Error") {
+                                var message = 'Duplicate Entry : ' + $('#' + v).val() + ' Found For Column : ' + n;
+                                $('#' + v).val('');
+                                $.notify(message, { position: "top center", className: "error" });
+                            }
+                        },
+                        error: function (errMsg) {
+                            $.notify(errMsg, { position: "top center", className: "error" });
+                        }
+                    });
+                }
+                     
  if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
@@ -720,18 +770,16 @@
             FillDocument(dtValue);
             FillStore();
             FillDistance();
-
+            FillTransporter();
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#AccountCode').select2();
             $('#DocTypeAccountCode').select2();
-
+                            $('#TransporterName').select2();
             $('.AF').fadeOut();
             AutoComplete("DistanceKM", "DistanceKM");
+           //  AutoComplete('VIssueAgainstPlanSchMainDetailItem', 'vehicleNo', 'vehicleNo', null);
             AutoComplete("vehicleNo", "vehicleNo");
-            AutoComplete("TransporterName", "TransporterName");
-
-
             var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
             // var parts = InvDate.split('/');
@@ -2288,6 +2336,31 @@
                 }
             });
         }
+                        function FillTransporter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillTransporter")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TransporterName').empty();
+                        $('#TransporterName').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#TransporterName').append(
+                                    '<option value="' + val.TransporterName + '">' + val.TransporterName + '</option>'
+                                );
+                            });
+                        }
+                    }
+
+                    // if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                    //     $('#TransporterName').val($('#hiddenTransporterName').val()).trigger("change");
+                    // }
+                }
+            });
+        }
 
         $('#Qty').change(function () {
             CalculateAmount();
@@ -2382,7 +2455,7 @@
                 GetDbCrDetail();
             }
         });
-
+         
         function FillCustomerAddress() {
 
             $.ajax({
@@ -3134,7 +3207,7 @@
                 }
             });
         }
-
+                   
         function FillSOItemRate() {
 
             var sono = $("#SONO").val() == '0' ? '' : $("#SONO").val();
