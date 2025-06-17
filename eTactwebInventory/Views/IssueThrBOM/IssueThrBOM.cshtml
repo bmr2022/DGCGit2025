@@ -587,26 +587,47 @@
     e.preventDefault();
     if (!Validate_IssueInsert()) return;
 
-    $('#PasswordAllowPopup').modal("show");
+            ChkStockBeforeSaving(function (isValid) {
+                if (isValid) {
+                    $('#PasswordAllowPopup').modal("show");
+                }
+            });
+
+    
 });
 
 // When user clicks "Print"
 $('#btnPrint').click(function () {
-    const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
-    $('#PasswordAllowPopup').modal("hide");
 
-    setTimeout(() => {
-        submitForm(true, printWindow); // Send true and window object
-    }, 300);
+            ChkStockBeforeSaving(function (isValid) {
+                if (isValid) {
+                    const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+                    $('#PasswordAllowPopup').modal("hide");
+
+                    setTimeout(() => {
+                        submitForm(true, printWindow); // Send true and window object
+                    }, 300);
+                }
+            });
+
+
+    
 });
 
 // When user clicks "Close" or no print
 $('#btnClose').click(function () {
-    $('#PasswordAllowPopup').modal("hide");
 
-    setTimeout(() => {
-        submitForm(false, null); // no print
-    }, 300);
+            ChkStockBeforeSaving(function (isValid) {
+                if (isValid) {
+                    $('#PasswordAllowPopup').modal("hide");
+
+                    setTimeout(() => {
+                        submitForm(false, null); // no print
+                    }, 300);
+                }
+            });
+
+    
 });
 
 function submitForm(shouldPrint, printWindow) {
@@ -1475,6 +1496,47 @@ function submitForm(shouldPrint, printWindow) {
                 }
             });
         }
+
+
+        function ChkStockBeforeSaving(callback) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ChkStockBeforeSaving")",
+                dataType: "json",
+                data: {
+                    // "WcId": parseInt($('#IssueFromWc').val()),
+                    "ReqNo": $('#ReqNo').val(),
+                    "EntryId": $('#EntryId').val(),
+
+                    "ReqYearCode": parseInt($('#ReqyearCode').val()),
+                    "YearCode": parseInt($('#YearCode').val()),
+
+                },
+                success: function (response) {
+                    if (response.success === false) {
+                        response.errors.forEach(function (err) {
+                            $.notify(err, {
+                                className: 'error',
+                                globalPosition: 'top right'
+                            });
+                        });
+                        callback(false); // indicate failure
+                    } else {
+                        callback(true); // indicate success
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $.notify("Error checking stock: " + error, {
+                        className: 'error',
+                        globalPosition: 'top right'
+                    });
+                    callback(false); // prevent submission on error
+                }
+            });
+        }
+
+
+
 
         function validateInsert(i) {
             var Err = 0;

@@ -58,6 +58,8 @@
                             <input asp-for="DomesticExportNEPZBack" type="hidden" value="@Model.DomesticExportNEPZBack" />
                             <input asp-for="SearchBoxBack" type="hidden" value="@Model.SearchBoxBack" />
                             <input asp-for="SummaryDetailBack" type="hidden" value="@Model.SummaryDetailBack" />
+                            <input type="hidden" id="ShouldPrint" name="ShouldPrint" />
+
                             @if (Model.Mode == "U" || Model.Mode == "V")
                             {
                                 <input type="hidden" value="@Model.SaleBillNo" id="hiddenSaleBillNo" />
@@ -443,12 +445,42 @@
 @section Scripts
 {
     <script>
-
+                  var exportSupplyTypes = [
+                      "EXPORT WITH PAYMENT",
+                      "WITH SEZ PAYMENT",
+                      "SEZ WITHOUT PAYMENT",
+                      "EXPORT WITHOUT PAYMENT",
+                      "DEEMED EXPORT",
+                      "BUSINESS TO BUSINESS"
+                  ];
         $(document).ready(function () {
-                     var $form = $("#saleInvoiceForm");
+                    const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
+            
+           const domesticExport = $('#DomesticExportNEPZ').val();
+           const $supplyType = $('#SupplyType');
 
+           // Only for Update/View mode
+           if (mode === "U" || mode === "V") {
+               if (domesticExport === "EXPORT") {
+                   $supplyType.empty();
+                   $supplyType.append($('<option>', { value: "", text: "-- Select --" }));
+
+                   $.each(exportSupplyTypes, function (i, text) {
+                       $supplyType.append($('<option>', {
+                           value: text,
+                           text: text
+                       }));
+                   });
+               }
+
+               // Set selected SupplyType from Razor model
+               const supplyTypeFromModel = "@Model.SupplyType";
+               $supplyType.val(supplyTypeFromModel);
+           }
+      
+      
               // Initialize validator only once
-         $form.validate();
+      //   $form.validate();
         fieldIds.forEach(removeRequiredRule);
           $('#btnClose').click(function () {
                                 $('#btngenrateEinvoice').val('false'); // set flag for no printing
@@ -457,14 +489,38 @@
                                     $('form').submit();
                                 }, 300);
                             });
+        //   $('.submitBTN').click(function (e) {
+        //     e.preventDefault();
+        //     if (!Validate_IssueInsert()) return;
 
-          $('#btngenrateEinvoice, #btnGenerateEinvoiceview').click(function (e) {
+        //     $('#EinvoicePopup').modal("show");
+        // });
+
+        // When user clicks "Print"
+                        $('#btngenrateEinvoice').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+                    $('#EinvoicePopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, printWindow); // Send true and window object
+            }, 300);
+        });
+
+        // When user clicks "Close" or no print
+        $('#btnClose').click(function () {
+                    $('#EinvoicePopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(false, null); // no print
+            }, 300);
+        });
+          $(' #btnGenerateEinvoiceview').click(function (e) {
             e.preventDefault();
             const model = {
                 EntryId: '@Model.SaleBillEntryId',
                 InvoiceNo: '@Model.SaleBillNo',
                 YearCode: '@Model.SaleBillYearCode',
-                saleBillType: '',
+                saleBillType: '@Model.SupplyType',
                 customerPartCode: ''
             };
             $.ajax({
@@ -487,12 +543,178 @@
             });
         });
 
-          
-            GetServerDate();
-            });
-              // Run the function for all specified fields
+           var showEinvoicePrompt = '@(ViewBag.ShowEinvoicePrompt?.ToString().ToLower())';
 
-            if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+
+     
+            if (showEinvoicePrompt === "true") {
+                if (confirm("Do you want to generate E-Invoice?")) {
+                    // Open popup tab before fetch to avoid blocker
+                    const newTab = window.open("", "_blank");
+
+                    const invoiceInput = {
+                EntryId: '@Model.SaleBillEntryId',
+                InvoiceNo: '@Model.SaleBillNo',
+                YearCode: '@Model.SaleBillYearCode',
+                saleBillType: '@Model.SupplyType',
+                customerPartCode: ''
+            }
+
+                            fetch('/SaleInvoice/GenerateInvoice', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(invoiceInput)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.redirectUrl) {
+                            newTab.location = data.redirectUrl;
+                        } else {
+                            newTab.document.write("E-invoice generation failed.");
+                        }
+                    })
+                    .catch(err => {
+                        newTab.document.write("Error occurred.");
+                        console.error(err);
+                    });
+                }
+            }
+            GetServerDate();
+           });
+                   $('#DomesticExportNEPZ').change(function () {
+               updateSupplyTypeOptions();
+           });
+        //        function submitForm(shouldPrint, printWindow) {
+        //    // $('#ShouldPrint').val(shouldPrint);
+        //     const formData = $('form').serialize();
+
+        //     $.ajax({
+        //         url: $('form').attr('action'),
+        //         data: formData,
+        //         dataType: 'json',
+        //         success: function (res) {
+        //             console.log("Server response:", res);
+
+        //                       if (res && res.status === "Success") {
+        //                 if (shouldPrint && res.EntryId && res.YearCode && printWindow) {
+        //                     const payload = {
+        //                         entryId: res.EntryId,
+        //                         invoiceNo: res.InvoiceNo,
+        //                         yearCode: res.YearCode,
+        //                         saleBillType: res.saleBillType,
+        //                         customerPartCode: res.customerPartCode || ''
+        //                     };
+
+        //                          fetch('@Url.Action("GenerateInvoice")', {
+        //     method: 'POST',
+        //     headers: {
+        //         'Content-Type': 'application/json'
+        //     },
+        //     body: JSON.stringify(payload)
+        // })
+
+        //                     .then(response => {
+        //                         if (!response.ok) throw new Error("Failed to generate invoice");
+        //                         return response.json();
+        //                     })
+        //                     .then(data => {
+        //                         if (data.redirectUrl) {
+        //                             printWindow.location.href = data.redirectUrl;
+        //                         } else {
+        //                             alert("Invoice generated but no URL returned.");
+        //                         }
+        //                     })
+        //                     .catch(error => {
+        //                         console.error("Invoice error:", error);
+        //                         alert("Failed to generate invoice.");
+        //                     });
+        //                 }
+
+        //                 window.location.href = res.redirectUrl || '/SaleInvoice/SaleInvoice';
+        //             } else {
+        //                 alert(res.message || "Something went wrong.");
+        //             }
+        //         },
+        //         error: function (xhr) {
+        //             console.error("Error occurred:", xhr.responseText);
+        //             alert("Save failed.");
+        //         }
+        //     });
+        // }
+
+
+                          function updateSupplyTypeOptions() {
+                                     const $supplyType = $('#SupplyType');
+               const selectedValue = $('#DomesticExportNEPZ').val();
+               $supplyType.empty();
+
+               if (selectedValue === "EXPORT") {
+                   $supplyType.append($('<option>', { value: "", text: "-- Select --" }));
+
+                   $.each(exportSupplyTypes, function (i, text) {
+                       $supplyType.append($('<option>', {
+                           value: text,
+                           text: text
+                       }));
+                   });
+               } else {
+                   $supplyType.append($('<option>', { value: "", text: "-- Select --" }));
+               }
+           }
+                     $(function () {
+                            $("#vehicleNo").autocomplete({
+                        source: function (request, response) {
+
+                            $.ajax({
+                                        url: '@Url.Action("AutoComplete", "SaleInvoice")',
+                                type: "POST",
+                                        data: { "ColumnName": "vehicleNo", "prefix": request.term },
+                                success: function (data) {
+                                    response($.map(data,
+                                        function (key, value) {
+                                            return key.text;
+                                        }));
+                                },
+                                error: function (response) {
+                                    alert(response.responseText);
+                                },
+                                failure: function (response) {
+                                    alert(response.responseText);
+                                }
+                            });
+                        },
+                        select: function (e, i) {
+                                    $("#vehicleNo").val(i.item.value);
+                        },
+                        change: function (e, i) {
+
+                            //$("#vehicleNo").val($("#vehicleNo").val());
+                        },
+                        minLength: 1
+                    });
+                });
+
+                    async function CheckDuplicate(n, v) {
+                    $.ajax({
+                                 url: "@Url.Action("isDuplicate", "SaleInvoice")",
+                        type: "POST",
+                        data: { "Colval": $('#' + v).val(), "ColName": n },
+                        success: await function (data) {
+                            if (data.result !== "0" && data.statusText === "Error") {
+                                var message = 'Duplicate Entry : ' + $('#' + v).val() + ' Found For Column : ' + n;
+                                $('#' + v).val('');
+                                $.notify(message, { position: "top center", className: "error" });
+                            }
+                        },
+                        error: function (errMsg) {
+                            $.notify(errMsg, { position: "top center", className: "error" });
+                        }
+                    });
+                }
+                     
+ if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
                 btnClearTax();
                 FillItems($('#TypeItemServAssets').val());
@@ -548,18 +770,16 @@
             FillDocument(dtValue);
             FillStore();
             FillDistance();
-
+            FillTransporter();
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#AccountCode').select2();
             $('#DocTypeAccountCode').select2();
-
+                            $('#TransporterName').select2();
             $('.AF').fadeOut();
             AutoComplete("DistanceKM", "DistanceKM");
+           //  AutoComplete('VIssueAgainstPlanSchMainDetailItem', 'vehicleNo', 'vehicleNo', null);
             AutoComplete("vehicleNo", "vehicleNo");
-            AutoComplete("TransporterName", "TransporterName");
-
-
             var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
             // var parts = InvDate.split('/');
@@ -2116,6 +2336,31 @@
                 }
             });
         }
+                        function FillTransporter() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillTransporter")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TransporterName').empty();
+                        $('#TransporterName').append('<option value="0">-Select-</option>');
+                        if (obj.StatusCode != 500) {
+                            $.each(obj.Result, function (index, val) {
+                                $('#TransporterName').append(
+                                    '<option value="' + val.TransporterName + '">' + val.TransporterName + '</option>'
+                                );
+                            });
+                        }
+                    }
+
+                    // if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                    //     $('#TransporterName').val($('#hiddenTransporterName').val()).trigger("change");
+                    // }
+                }
+            });
+        }
 
         $('#Qty').change(function () {
             CalculateAmount();
@@ -2210,7 +2455,7 @@
                 GetDbCrDetail();
             }
         });
-
+         
         function FillCustomerAddress() {
 
             $.ajax({
@@ -2404,7 +2649,7 @@
                 } else {
                     if (confirm("are you sure you want to save this entry?")) {
                         $('#EinvoicePopup').modal('show');
-                        $("form").submit();
+                      //  $("form").submit();
                     }
                 }
             }
@@ -2449,7 +2694,7 @@
                 // $('#exampleModal').modal('show');
                 if (confirm("are you sure you want to save this entry?")) {
                      $('#EinvoicePopup').modal('show');
-                     $("form").submit();
+               //      $("form").submit();
                 }
             }
         });
@@ -2930,7 +3175,7 @@
 
                             $('#currencyId').trigger("change");
 
-                            $('#DomesticExportNEPZ').val(obj.Result.Table[0].DomExport);
+                         //   $('#DomesticExportNEPZ').val(obj.Result.Table[0].DomExport);
                         }
                     }
                 }
@@ -2962,7 +3207,7 @@
                 }
             });
         }
-
+                   
         function FillSOItemRate() {
 
             var sono = $("#SONO").val() == '0' ? '' : $("#SONO").val();
@@ -3544,8 +3789,14 @@
                         $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
                         $('#SaleBillDate').prop("disabled", false);
                     } else {
-                        $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
-                        $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
+                        let d = $('#SaleBillEntryDate').val().split(" ")[0].split("-");
+$('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })
+    .datepicker("setDate", parseDateToFormat(`${d[1]}-${d[0]}-${d[2]}`));
+                 //       $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
+                       // $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
+                                  let hiddenDate = $('#hiddenSaleBillDate').val().split(" ")[0].split("-");
+            $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                .datepicker("setDate", `${hiddenDate[0]}/${hiddenDate[1]}/${hiddenDate[2]}`);
 
                         var currentYear = getFinancialYear();
                         if ($('#SaleBillYearCode').val() == currentYear) {

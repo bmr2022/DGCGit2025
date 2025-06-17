@@ -134,11 +134,11 @@ namespace eTactWeb.Data.DAL
             { "access_token", token },
             { "user_gstin", GetSellerGstin(dataTable) },
             { "data_source", "erp" },
-            { "transaction_details", GetTransactionDetails(customerPartCode) },
+            { "transaction_details", GetTransactionDetails(saleBillType) },
             { "document_details", GetDocumentDetails(invoice, dataTable) },
             { "seller_details", GetSellerDetails(dataTable) },
-            { "buyer_details", GetBuyerDetails(customerPartCode, dataTable) },
-            { "ship_details", GetShippingDetails(customerPartCode, dataTable) },
+            { "buyer_details", GetBuyerDetails(saleBillType, dataTable) },
+            { "ship_details", GetShippingDetails(saleBillType, dataTable) },
             { "value_details", GetValueDetails(dataTable) },
             { "item_list", GetItemList(dataTable, saleBillType) }
         };
@@ -160,9 +160,9 @@ namespace eTactWeb.Data.DAL
             return dataTable.Rows[0]["sellergstin"].ToString();
         }
 
-        private Dictionary<string, object> GetTransactionDetails(string customerPartCode)
+        private Dictionary<string, object> GetTransactionDetails(string SaleBillType)
         {
-            var supplyType = customerPartCode.ToUpper() switch
+            var supplyType = SaleBillType.ToUpper() switch
             {
                 "EXPORT WITH PAYMENT" => "EXPWP",
                 "WITH SEZ PAYMENT" => "SEZWP",
@@ -173,13 +173,29 @@ namespace eTactWeb.Data.DAL
                 _ => "B2B"
             };
 
-            return new Dictionary<string, object>
+    //        return new Dictionary<string, object>
+    //{
+    //    { "supply_type", supplyType },
+    //    { "charge_type", "N" },
+    //    { "igst_on_intra", "N" },
+    //    { "ecommerce_gstin", "" }
+    //};
+
+            var details = new Dictionary<string, object>
     {
         { "supply_type", supplyType },
         { "charge_type", "N" },
-        { "igst_on_intra", "N" },
-        { "ecommerce_gstin", "" }
+        { "igst_on_intra", "N" }
     };
+
+            // Include ecommerce_gstin only for domestic transactions like B2B
+            bool isDomestic = supplyType == "B2B" || supplyType == "DEXP";
+            if (isDomestic)
+            {
+                details.Add("ecommerce_gstin", "");
+            }
+
+            return details;
         }
 
         private Dictionary<string, object> GetDocumentDetails(string invoice, DataTable dataTable)
@@ -206,23 +222,59 @@ namespace eTactWeb.Data.DAL
     };
         }
 
-        private Dictionary<string, object> GetBuyerDetails(string customerPartCode, DataTable dataTable)
+        //    private Dictionary<string, object> GetBuyerDetails(string customerPartCode, DataTable dataTable)
+        //    {
+        //        var row = dataTable.Rows[0];
+        //        var gstin = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "URP" : row["buyergstin"].ToString();
+        //        var stateCode = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "96" : row["buyerstate"].ToString();
+
+        //        return new Dictionary<string, object>
+        //{
+        //    { "gstin", gstin },
+        //    { "legal_name", row["buyername"].ToString() },
+        //    { "address1", row["buyeraddress"].ToString() },
+        //    { "location", row["buyerlocation"].ToString() },
+        //    { "pincode", row["buyerpincode"].ToString() },
+        //    { "place_of_supply", row["buyerstatecode"].ToString() },
+        //    { "state_code", stateCode }
+        //};
+        //}
+        private Dictionary<string, object> GetBuyerDetails(string saleBillType, DataTable dataTable)
         {
             var row = dataTable.Rows[0];
-            var gstin = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "URP" : row["buyergstin"].ToString();
-            var stateCode = customerPartCode.ToUpper() == "EXPORT WITH PAYMENT" ? "96" : row["buyerstate"].ToString();
+            var upperType = saleBillType.ToUpper();
 
-            return new Dictionary<string, object>
+            var isExport = upperType.Contains("EXPORT") || upperType.Contains("SEZ") || upperType.Contains("DEEMED");
+            var buyerDetails = new Dictionary<string, object>
     {
-        { "gstin", gstin },
         { "legal_name", row["buyername"].ToString() },
-        { "address1", row["buyeraddress"].ToString() },
+        { "address1", string.IsNullOrWhiteSpace(row["buyeraddress"].ToString()) ? "NA" : row["buyeraddress"].ToString() },
         { "location", row["buyerlocation"].ToString() },
         { "pincode", row["buyerpincode"].ToString() },
         { "place_of_supply", row["buyerstatecode"].ToString() },
-        { "state_code", stateCode }
+        { "state_code", row["buyerstate"].ToString() }
     };
+
+            if (isExport)
+            {
+                buyerDetails.Add("gstin", "URP");
+            }
+            else
+            {
+                var gstin = row["buyergstin"].ToString();
+                if (!string.IsNullOrWhiteSpace(gstin))
+                {
+                    buyerDetails.Add("gstin", gstin);
+                }
+                else
+                {
+                    throw new Exception("GSTIN is required for domestic transactions.");
+                }
+            }
+
+            return buyerDetails;
         }
+
 
         private Dictionary<string, object> GetShippingDetails(string customerPartCode, DataTable dataTable)
         {
@@ -261,7 +313,9 @@ namespace eTactWeb.Data.DAL
             { "unit", row["unitofitem"].ToString() },
             { "quantity", row["qtyofitem"].ToString() },
             { "hsn_code", row["hsnno"].ToString() },
-            { "is_service", "N" },
+            {
+                "is_service", row["IsService"].ToString().ToUpper() == "J" ? "Y" : "N"
+            },
             { "product_description", row["proddesc"].ToString() },
             { "item_serial_number", ni }
         };
@@ -344,13 +398,13 @@ namespace eTactWeb.Data.DAL
                 string urlToPost1 = "https://pro.mastersindia.co/generateEinvoice";
                 var requestContent = new StringContent(JsonConvert.SerializeObject(dictData), Encoding.UTF8, "application/json");
                 var response = await client.PostAsync(urlToPost1, requestContent);
-                 token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
+                token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
 
                 if (!response.IsSuccessStatusCode)
                 {
                     return null;
                 }
-                
+
                 var responseString = await response.Content.ReadAsStringAsync();
                 var json = JObject.Parse(responseString);
                 irnNo = json.SelectToken("results.message.Irn")?.ToString();
@@ -358,8 +412,11 @@ namespace eTactWeb.Data.DAL
                 var ackNo = json.SelectToken("results.message.AckNo")?.ToString();
                 var ackDate = json.SelectToken("results.message.AckDt")?.ToString();
 
-                string pincodeFrom = "122052"; // Replace with DB logic
-                string pincodeTo = "122001";   // Replace with DB logic
+                var sellerDetails = dictData.ContainsKey("seller_details") ? dictData["seller_details"] as Dictionary<string, object> : null;
+                var buyerDetails = dictData.ContainsKey("buyer_details") ? dictData["buyer_details"] as Dictionary<string, object> : null;
+
+                string pincodeFrom = sellerDetails != null && sellerDetails.ContainsKey("pincode") ? sellerDetails["pincode"].ToString() : "";
+                string pincodeTo = buyerDetails != null && buyerDetails.ContainsKey("pincode") ? buyerDetails["pincode"].ToString() : "";
 
                 var distanceResponse = await client.GetStringAsync($"http://pro.mastersindia.co/distance?access_token={token}&fromPincode={pincodeFrom}&toPincode={pincodeTo}");
                 var distanceJson = JObject.Parse(distanceResponse);
@@ -375,52 +432,77 @@ namespace eTactWeb.Data.DAL
                 var row = dataTable.Rows[0];
 
                 var dictData19 = new Dictionary<string, object>
-                {
-                    { "access_token", token },
-                    { "user_gstin", row["sellergstin"].ToString() },
-                    { "irn", irnNo },
-                    { "vehicle_number", "HR55AT2920" },
-                    { "transportation_mode", "1" },
-                    { "vehicle_type", "R" },
-                    { "transporter_name", "" },
-                    { "data_source", "ERP" },
-                    { "distance", distanceValue ?? "0" },
-                    {
-                        "dispatch_details", new Dictionary<string, object>
-                        {
-                            { "company_name", row["sellername"].ToString() },
-                            { "address1", row["selleraddress"].ToString() },
-                            { "address2", "" },
-                            { "location", row["sellerlocation"].ToString() },
-                            { "pincode", row["sellerpincode"].ToString() },
-                            { "state_code", row["sellerstate"].ToString() }
-                        }
-                    }
-                };
+               {
+                   { "access_token", token },
+                   { "user_gstin", row["sellergstin"].ToString() },
+                   { "irn", irnNo },
+                   { "vehicle_number", "HR55AT2920" },
+                   { "transportation_mode", "1" },
+                   { "vehicle_type", "R" },
+                   { "transporter_name", "" },
+                   { "data_source", "ERP" },
+                   { "distance", distanceValue ?? "0" },
+                   {
+                       "dispatch_details", new Dictionary<string, object>
+                       {
+                           { "company_name", row["sellername"].ToString() },
+                           { "address1", row["selleraddress"].ToString() },
+                           { "address2", "" },
+                           { "location", row["sellerlocation"].ToString() },
+                           { "pincode", row["sellerpincode"].ToString() },
+                           { "state_code", row["sellerstate"].ToString() }
+                       }
+                   }
+               };
 
                 var ewayStatus = await PostData2(dictData19);
-
                 if (string.IsNullOrEmpty(ewayStatus))
                 {
                     return null;
                 }
+               
+                var EwbNo= ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Ewaybill No:"))   ?.Split("Ewaybill No:").Last()?.Trim();
+                var EwbDate = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Date:"))?.Split("Date:").Last()?.Trim();
+                var EwbValidTill = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("EwbValidTill:"))?.Split("EwbValidTill:").Last()?.Trim();
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@imagebarcode", barcodeVal));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", invoicenumber));
+                SqlParams.Add(new SqlParameter("@entryid", row["entry_id"]));
+                SqlParams.Add(new SqlParameter("@accountcode", row["account_code"]));
+                SqlParams.Add(new SqlParameter("@yearcode", yearcodenumber));
+                SqlParams.Add(new SqlParameter("@IRnno", irnNo));
+                SqlParams.Add(new SqlParameter("@ackno", ackNo));
+                SqlParams.Add(new SqlParameter("@ackdate", ackDate));
+                SqlParams.Add(new SqlParameter("@Tokenno", token));
+               SqlParams.Add(new SqlParameter("@INVType", "B"));
+                SqlParams.Add(new SqlParameter("@EwbNo", EwbNo));
+                SqlParams.Add(new SqlParameter("@EwbDt", EwbDate));
+                SqlParams.Add(new SqlParameter("@EwbValidTill", EwbValidTill));
+                //await _IDataLogic.ExecuteDataTable(" INSERT INTO IRNdetail   (imagebarcode, InvoiceNo, entryid, accountcode, yearcode, IRnno, ackno, ackdate, Tokenno, INVType, EwbNo, EwbDt,EwbValidTill)
+                //    VALUES 
+                //    (@imagebarcode, @InvoiceNo, @entryid, @accountcode, @yearcode, @IRnno, @ackno, @ackdate, @TokenNo, @INVType, @EwbNo, @EwbDt,@EwbValidTill)", SqlParams);
+
+
+
+                // With this corrected code:
+                await _IDataLogic.ExecuteDataTable("InsertIRNdetail",SqlParams);
+              
                 var ewbUrl = ewayStatus.Split(',')
-                         .FirstOrDefault(x => x.Contains("PDF:"))
-                         ?.Split("PDF:").Last()
-                         ?.Trim();
+                        .FirstOrDefault(x => x.Contains("PDF:"))
+                        ?.Split("PDF:").Last()
+                        ?.Trim();
                 var qrResult = await GenerateQRCode(barcodeVal, invoicenumber, yearcodenumber);
                 if (qrResult != "QR code generated and saved to database successfully.")
                 {
                     return null;
                 }
 
-                // return true;
                 return ewbUrl;
 
             }
             catch (Exception ex)
             {
-                return " url not found";
+                return "url not found";
             }
         }
         public async Task<string> GenerateQRCode(string barcodeValue,string invoicenumber,int yearcodenumber)
@@ -514,8 +596,9 @@ namespace eTactWeb.Data.DAL
                     string ewbNo = json.SelectToken("results.message.EwbNo")?.ToString();
                     string ewbDt = json.SelectToken("results.message.EwbDt")?.ToString();
                     string ewbUrl = json.SelectToken("results.message.EwaybillPdf")?.ToString();
-
-                    return $"Ewaybill No: {ewbNo}, Date: {ewbDt}, PDF: {ewbUrl}";
+                    string EwbValidTill = json.SelectToken("results.message.EwbValidTill")?.ToString();
+                    string Alert = json.SelectToken("results.message.Alert")?.ToString();
+                    return $"Ewaybill No: {ewbNo}, Date: {ewbDt}, PDF: {ewbUrl},EwbValidTill:{EwbValidTill},Alert:{Alert}";
                 }
                 else
                 {
@@ -528,13 +611,7 @@ namespace eTactWeb.Data.DAL
             }
         }
         // Add this method to EInvoiceDAL
-        private void SetAccessToken()
-        {
-            // Example: Read from configuration (appsettings.json)
-            token = _configuration["EInvoice:AccessToken"];
-            // Or fetch from a secure source/service as needed
-        }
-
+       
     }
 
 }

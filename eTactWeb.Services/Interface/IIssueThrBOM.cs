@@ -40,5 +40,9 @@ namespace eTactWeb.Services.Interface
         Task<IssueThrBomMainDashboard> RMDetailData(string FromDate, string Todate, string WCName,string PartCode,string ItemName, string Flag = "", string DashboardType = "RMDETAIL", string IssueSlipNo = "", string ReqNo = "", string GlobalSearch = "", string FGPartCode = "", string FGItemName = "");
         Task<IssueThrBomMainDashboard> SummaryData(string FromDate, string Todate, string Flag = "", string DashboardType = "SUMM", string IssueSlipNo = "", string ReqNo = "");
 
+        Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId,int YearCode, DataTable DTItemGrid);
+
+
+
     }
 }
