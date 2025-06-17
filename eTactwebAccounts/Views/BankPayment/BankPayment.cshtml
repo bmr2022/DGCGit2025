@@ -1589,23 +1589,25 @@
 				}
 
 				function ChangeAdjustAmt(i) {
+					debugger
+					if ($('#AdjustAmt-' + i).val() > parseFloat($('#BalanceAmt-' + i).text())) {
+						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
+						$('#AdjustAmt-' + i).val(0);
+						$.notify('Adjustment amount cannot be greater than Actual Balance.', "error");
+					}
 
 					if ($('#AdjustAmt-' + i).val() > 0) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
+						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
 						$('#BalanceAmt-' + i).text(Math.round(parseFloat($('#BalanceAmt-' + i).text()) * 100) / 100);
 						$('#CheckUnCheck-' + i).prop('checked', true);
 						$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
 					}
 					if ($('#AdjustAmt-' + i).val() == 0) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()));
+						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
 						$('#CheckUnCheck-' + i).prop('checked', false);
 						$('#AdjustData-' + i).css("background-color", "");
 					}
-					if ($('#AdjustAmt-' + i).val() > parseFloat($('#ActualBalance-' + i).text())) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#ActualBalance-' + i).text()));
-						$('#AdjustAmt-' + i).val(0);
-						$.notify('Adjustment amount cannot be greater than Actual Balance.', "error");
-					}
+					
 					AdjustAmount();
 					CheckUnCheckCheck(i);
 				}
