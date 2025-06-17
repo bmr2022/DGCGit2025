@@ -435,7 +435,9 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber).Any())
+                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber
+                            && x.PONO == item.PONO
+                 && x.SchNo == item.SchNo).Any())
                             {
                                 return StatusCode(207, "Duplicate");
                             }
