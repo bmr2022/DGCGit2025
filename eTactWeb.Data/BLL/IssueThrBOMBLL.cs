@@ -133,5 +133,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueThrBOMDAL.SummaryData(FromDate, Todate, Flag, DashboardType, IssueSlipNo, ReqNo);
         }
+
+        public async Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid)
+        {
+            return await _IssueThrBOMDAL.ChkStockBeforeSaving( ReqNo,  ReqYearCode,  EntryId,  YearCode,  DTItemGrid);
+        }
     }
 }

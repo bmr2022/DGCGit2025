@@ -1132,5 +1132,30 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode, DataTable DTItemGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ChkBeforeINSERT"));
+                SqlParams.Add(new SqlParameter("@ReqNo", ReqNo));
+                SqlParams.Add(new SqlParameter("@EntryId", (EntryId)));
+                SqlParams.Add(new SqlParameter("@ReqYearCode", ReqYearCode));
+                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+               
+                SqlParams.Add(new SqlParameter("@DTItemGrid", DTItemGrid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueWithBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
     }
 }

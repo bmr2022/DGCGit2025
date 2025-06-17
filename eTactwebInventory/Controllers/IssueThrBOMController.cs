@@ -1219,6 +1219,51 @@ namespace eTactWeb.Controllers
                 return Json(new { error = "An unexpected error occurred: " + ex.Message });
             }
         }
+
+        public async Task<JsonResult> ChkStockBeforeSaving(string ReqNo, int ReqYearCode, int EntryId, int YearCode)
+        {
+            var DTItemGrid = new DataTable();
+            string modelJson = HttpContext.Session.GetString("KeyIssThrBomGrid");
+            List<IssueThrBomDetail> IssueGrid = new List<IssueThrBomDetail>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
+            }
+            //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+            DTItemGrid = GetRMDetailTable(IssueGrid);
+            var ChechedData = await _IIssueThrBOM.ChkStockBeforeSaving( ReqNo,  ReqYearCode,  EntryId,  YearCode,  DTItemGrid);
+            if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
+            {
+                DataTable dt = ChechedData.Result;
+
+                List<string> errorMessages = new List<string>();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    string itemName = row["Item_Name"].ToString();
+                    string PartCode = row["PartCode"].ToString();
+                    //decimal availableQty = Convert.ToDecimal(row["CalWIPStock"]);
+
+                    string error = $"{itemName} + {PartCode} already inserted";
+                    errorMessages.Add(error);
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    errors = errorMessages
+                });
+            }
+            return Json(new
+            {
+                success = true,
+                message = "No errors found."
+            });
+        }
+
+
+
+
         //public async Task<JsonResult> GetServerDate()
         //{
         //    try
