@@ -28,11 +28,11 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType, string RGPNRGP, string ReportMode)
+        public async Task<IActionResult> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType, string RGPNRGP, string ReportMode,int ProcessId)
         {
             var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var model = new RCRegisterModel();
-            model = await _IRCRegister.GetRCRegisterData(FromDate, ToDate, Partyname,IssueChallanNo,RecChallanNo, PartCode, ItemName, IssueChallanType, RGPNRGP, ReportMode);
+            model = await _IRCRegister.GetRCRegisterData(FromDate, ToDate, Partyname,IssueChallanNo,RecChallanNo, PartCode, ItemName, IssueChallanType, RGPNRGP, ReportMode, ProcessId);
             model.ReportMode = ReportMode;
             return PartialView("_RCRegisterGrid", model);
         }

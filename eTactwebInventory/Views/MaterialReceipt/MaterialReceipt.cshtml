@@ -1821,20 +1821,20 @@ function submitForm(shouldPrint, printWindow) {
                     "FromDate": $('#FromDate').val(),
                     "ToDate": $('#ToDate').val()
                 }
-                $.ajax({
-                    type: "POST",
-                    url: "@Url.Action("ClearGridAjax")",
-                    data: dataParams,
-                    dataType: "json",
-                    success: function (data, status, error) {
-                        console.log("Grid cleared");
-                        $('#divMRNGridAdd').empty();
-                        $('#divMRNGrid').empty();
-                    },
-                    error: function (req, status, error) {
-                        alert(error);
-                    }
-                });
+                // $.ajax({
+                //     type: "POST",
+                //     url: "@Url.Action("ClearGridAjax")",
+                //     data: dataParams,
+                //     dataType: "json",
+                //     success: function (data, status, error) {
+                //         console.log("Grid cleared");
+                //         $('#divMRNGridAdd').empty();
+                //         $('#divMRNGrid').empty();
+                //     },
+                //     error: function (req, status, error) {
+                //         alert(error);
+                //     }
+                // });
             });
 
             function ClearGridAjax() {
@@ -1902,7 +1902,7 @@ function submitForm(shouldPrint, printWindow) {
             }
 
             $('#GateYearCode').change(function () {
-                ClearGridAjax();
+                 ClearGridAjax();
                 $('#divMRNGrid').empty();
             var gateNo = $('#GateNo').val();
             var gateEntryId = parseInt($('#GateEntry').val()) || 0;
@@ -1912,8 +1912,9 @@ function submitForm(shouldPrint, printWindow) {
                 return; // Prevent unnecessary/failing AJAX call
             }
                 $('#CC').val($(this).find(":selected").data('branch'));
+            GetgateItemdata();
                 GetGateMainData();
-                GetgateItemdata();
+               
 
             });
 

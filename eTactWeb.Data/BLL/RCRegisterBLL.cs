@@ -23,9 +23,9 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _RCRegisterDAL = new RCRegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
-        public async Task<RCRegisterModel> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType, string RGPNRGP, string ReportMode)
+        public async Task<RCRegisterModel> GetRCRegisterData(string FromDate, string ToDate, string Partyname, string IssueChallanNo, string RecChallanNo, string PartCode, string ItemName, string IssueChallanType, string RGPNRGP, string ReportMode,int ProcessId)
         {
-            return await _RCRegisterDAL.GetRCRegisterData(FromDate, ToDate, Partyname, IssueChallanNo,RecChallanNo,PartCode, ItemName, IssueChallanType, RGPNRGP, ReportMode);
+            return await _RCRegisterDAL.GetRCRegisterData(FromDate, ToDate, Partyname, IssueChallanNo,RecChallanNo,PartCode, ItemName, IssueChallanType, RGPNRGP, ReportMode, ProcessId);
         }
     }
 }

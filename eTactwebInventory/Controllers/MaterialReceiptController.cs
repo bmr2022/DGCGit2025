@@ -435,7 +435,9 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber).Any())
+                            if (MaterialReceiptDetail.Where(x => x.ItemNumber == item.ItemNumber
+                            && x.PONO == item.PONO
+                 && x.SchNo == item.SchNo).Any())
                             {
                                 return StatusCode(207, "Duplicate");
                             }
@@ -876,7 +878,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetGateMainData(string GateNo, string GateYearCode, int GateEntryId)
         {
-            HttpContext.Session.Remove("KeyMaterialReceiptGrid");
+            
             var JSON = await _IMaterialReceipt.GetGateMainData("GATEMAINDATA", "SP_MRN", GateNo, GateYearCode, GateEntryId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             //HttpContext.Session.SetString("KeyMaterialReceiptGrid", JsonString);
@@ -884,7 +886,8 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> GetGateItemData(string GateNo, string GateYearCode, int GateEntryId)
         {
-            var JSON = await _IMaterialReceipt.GetGateMainData("GATEMAINITEM", "SP_MRN", GateNo, GateYearCode, GateEntryId);
+            //HttpContext.Session.Remove("KeyMaterialReceiptGrid");
+            var JSON = await _IMaterialReceipt.GetGateItemData("GATEMAINITEM", "SP_MRN", GateNo, GateYearCode, GateEntryId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

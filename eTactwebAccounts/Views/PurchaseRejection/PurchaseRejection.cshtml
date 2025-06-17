@@ -739,7 +739,8 @@
                             $('#PurchaseRejEntryId').val(obj.Result.Table[0].EntryId);
                             $('#PurchaseRejectionVoucherNo').val("");
                             $('#PurchaseRejectionVoucherNo').val(obj.Result.Table[0].creditNoteNo);
-
+                            $('#VoucherNo').val("");
+                            $('#VoucherNo').val(obj.Result.Table[0].creditNoteNo);
                             $('#AdjDescription').val($('#PurchaseRejectionInvoiceNo').val());
                             $('#AdjNewRefNo').val($('#PurchaseRejectionInvoiceNo').val());
                         }
@@ -1253,10 +1254,10 @@
                         var obj = $.parseJSON(result);
                         var rowCount = $('#divAddPurchaseRejectionList tr').length;
                         for (var i = 1; i <= rowCount; i++) {
-                            $('#discAmt-' + i).text(obj.Result[i - 1].DiscountAmt == null ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
-                            $('#billQty-' + i).text((obj.Result[i - 1].BillQty) == null ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
-                            $('#discPer-' + i).text((obj.Result[i - 1].DiscountPer) == null ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
-                            $('#billRate-' + i).text((obj.Result[i - 1].BillRate) == null ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
+                            $('#discAmt-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
+                            $('#billQty-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
+                            $('#discPer-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
+                            $('#billRate-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
                         }
 
                         if (obj.Result != null) {
@@ -1977,7 +1978,7 @@
                                 }
                             });
 
-                            GetBatchInventory();
+                            //GetBatchInventory();
 
                             var selectListLength = $('#Batchno option').length - 1;
                            //var itemArrayLength = itemBatchArray.length;
@@ -2244,8 +2245,9 @@
                     $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
 
                     $('#fromBillDate').datepicker("option", "minDate", formattedYear);
-                    $('#toBillDate').datepicker("option", "minDate", parseDateToFormat($('#fromBillDate').val()));
+                    $('#toBillDate').datepicker("option", "minDate", formattedYear);
                     $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
+                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);
 
                     $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);

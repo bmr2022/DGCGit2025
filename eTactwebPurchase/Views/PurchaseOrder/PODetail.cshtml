@@ -698,13 +698,26 @@
 			else if ($('#Mode').val() == "POA") {
 				$('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-				$('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
-				$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#WEF').val()));
+				// $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
+				// $('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#WEF').val()));
 				$('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
 				$('#WEF').datepicker("option", "maxDate", parseDateToFormat(finToDate));
 
 				$('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
 				$('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
+
+
+
+				$('#POCloseDate ,#WEF,#PODate,#EntryDate').on('focus mouseenter', function () {
+					$(this).datepicker({
+						dateFormat: 'dd/mm/yy',
+						changeMonth: true,
+						changeYear: true
+
+					}).datepicker('show');
+				});
+
+
 
 			}
 			else if ($('#Mode').val() != "POA") {
