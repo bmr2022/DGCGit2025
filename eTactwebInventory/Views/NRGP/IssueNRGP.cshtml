@@ -2781,7 +2781,7 @@ function submitForm(shouldPrint, printWindow) {
                 //    RemoveErrorCls('Qty');
                 //}
 
-                if (parseInt($('#Qty').val()) == 0 || $('#Qty').val() == '' || parseFloat($('#Qty').val()) > MinQtyVal) {
+                if (parseFloat($('#Qty').val()) == 0 || $('#Qty').val() == '' || parseFloat($('#Qty').val()) > MinQtyVal) {
                     AddErrorCls('Qty');
                     Err = 1;
                     if (LowestStock == "LotStock") {
@@ -2796,13 +2796,14 @@ function submitForm(shouldPrint, printWindow) {
 
             }
 
-            //if (parseInt($('#Rate').val()) == 0 || $('#Rate').val() == '') {
-            //    AddErrorCls('Rate');
-            //    Err = 1;
-            //}
-            //else {
-            //    RemoveErrorCls('Rate');
-            //}
+            if (parseFloat($('#Rate').val()) == 0 || $('#Rate').val() == '') {
+                AddErrorCls('Rate');
+                $.notify("Rate Can Not 0", "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('Rate');
+            }
 
             if ($('#RGPNRGP').val() == '') {
                 AddErrorCls('RGPNRGP');

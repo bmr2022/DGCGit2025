@@ -1624,7 +1624,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                                     '<td><input id="AltAcceptedQty' + i + '" value=' + val.AcceptedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
                                      
                                
-                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +      
+                                '<td><select id="OkRecStore' + i + '" style="background-color:#ffd6dd;width:170px" class="textbox" onchange="OkRecStoreChange(' + i + ');FillAccLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +      
                                
                                 '<td><input id="PreviousRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;" class="textbox number"></td>' +
                                 '<td><input id="RejectedQty' + i + '" value=' + val.RejectedQty +
@@ -1633,7 +1633,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                                         ' onfocusout="handleInput(this)"></td>' +
                                 '<td><input id="AltRejectedQty' + i + '" value=' + val.RejectedQty + ' readonly style="width:60px;background-color:#ffd6dd;" class="textbox number"  onfocusout="handleInput(this)"></td>' +
                                 
-                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
+                                '<td><select id="RejRecStore' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RejRecStoreChange(' + i + ');FillRejLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +    
                                
                                 '<td><input id="PreviousHoldQty' + i + '" value=' + val.HoldQty + ' style="width:60px;" readonly class="textbox number"></td>' +
                                     '<td><input id="HoldQty' + i + '" value=' + val.HoldQty +
@@ -1641,7 +1641,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                                             (qcType.toLowerCase() === 'hold' ? ' disabled' : '') +
                                             ' onfocusout="handleInput(this)"></td>' +
                                             
-                                 '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+                                 '<td><select id="HoldStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="HoldStoreIdChange(' + i + ');FillHoldLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
                                  
                                 '<td><input id="PreviousReworkqty' + i + '" value=' + val.Reworkqty + ' readonly style="width:60px;" class="textbox number"></td>' +
@@ -1650,7 +1650,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                                         (qcType.toLowerCase() === 'rework' ? ' disabled' : '') +
                                         ' onfocusout="handleInput(this)"></td>' +
                                         
-                                 '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ');FillLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+                                 '<td><select id="RewokStoreId' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="RewokStoreIdChange(' + i + ');FillReworkLotandTotalStock(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
                                 
                                 '<td><input id="PrevDeviationQty' + i + '" value=' + val.DeviationQty + ' style="width:60px;" class="textbox number" onfocusout="handleInput(this)"></td>' +
                                 '<td><input id="DeviationQty' + i + '" value=' + val.DeviationQty +
@@ -1746,22 +1746,22 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
             });
         }
 
-        function FillLotandTotalStock(i) {
-             
+        function FillAccLotandTotalStock(i) {
+
             $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevOkRecStore' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#OkRecStore' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
                 async: false,
                 success: function (data) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#AccLotStock' + i).val(obj.Result[0].lotstock);
                             $('#TotalStock' + i).val(obj.Result[0].totalstock);
 
-                          
+
                         }
                         else {
                             $('#AccLotStock' + i).val(0);
@@ -1774,21 +1774,24 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                     console.log(errMsg);
                 }
             });
+        }
 
-             $.ajax({
+        function FillRejLotandTotalStock(i) {
+
+            $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevRejRecStore' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#RejRecStore' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
                 async: false,
                 success: function (data) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#RejLotStock' + i).val(obj.Result[0].lotstock);
                             $('#TotalStock' + i).val(obj.Result[0].totalstock);
 
-                          
+
                         }
                         else {
                             $('#RejLotStock' + i).val(0);
@@ -1801,20 +1804,22 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                     console.log(errMsg);
                 }
             });
-             $.ajax({
+        }
+        function FillHoldLotandTotalStock(i) {
+            $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevHoldStoreId' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#HoldStoreId' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
                 async: false,
                 success: function (data) {
-                     
+
                     if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#HoldLotStock' + i).val(obj.Result[0].lotstock);
                             $('#TotalStock' + i).val(obj.Result[0].totalstock);
 
-                          
+
                         }
                         else {
                             $('#HoldLotStock' + i).val(0);
@@ -1827,10 +1832,12 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                     console.log(errMsg);
                 }
             });
+        }
+         function FillReworkLotandTotalStock(i) {
              $.ajax({
                 url: "@Url.Action("FillLotandTotalStock")",
                 type: "POST",
-                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#PrevRewokStoreId' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
+                data: { ItemCode: $('#itemCode' + i).val(), StoreId: $('#RewokStoreId' + i).val(), TillDate: $('#ReofferEntrydate').val(), BatchNo: $('#BatchNo' + i).val(), UniqBatchNo: $('#uniqueBatchno' + i).val() },
                 async: false,
                 success: function (data) {
                      
@@ -1917,7 +1924,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#OkRecStore' + j).val(OkRecStore);
-                    FillLotandTotalStock(j);
+                    FillAccLotandTotalStock(j);
                 }
             }
             
@@ -1942,7 +1949,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#RejRecStore' + j).val(RejRecStore);
-                    FillLotandTotalStock(j);
+                    FillRejLotandTotalStock(j);
                 }
             }
            
@@ -1967,7 +1974,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#HoldStoreId' + j).val(HoldStoreId);
-                    FillLotandTotalStock(j);
+                    FillHoldLotandTotalStock(j);
                 }
             }
            
@@ -1992,7 +1999,7 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                 var RowCount = $('#DivDetailGrid tr').length;
                 for (var j = 1; j <= RowCount; j++) {
                     $('#RewokStoreId' + j).val(RewokStoreId);
-                    FillLotandTotalStock(j);
+                    FillReworkLotandTotalStock(j);
                 }
 
             }
