@@ -1782,8 +1782,8 @@
 					}
 
 					if ($('#ModeOfAdjustment').val() == "Advance") {
-
-						if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
+						if($('#BankType').val() == "Creditors"){
+							if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
 							AddErrorCls('PONo');
 							$.notify("PONo is required.", "error");
 							Err = 1;
@@ -1804,7 +1804,9 @@
 						} else {
 							RemoveErrorCls('POYear');
 						}
+						}
 					}
+
 
 					Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
 					if (Err == 1) return false;
