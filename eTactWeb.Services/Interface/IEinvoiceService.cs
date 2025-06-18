@@ -11,14 +11,15 @@ namespace eTactWeb.Services.Interface
 {
     public interface IEinvoiceService
     {
-       
         Task<string> GetAccessTokenAsync();
         Task<ResponseResult> GenerateInvoiceAsync(EInvoiceItemModel input);
         Task<ResponseResult> GenerateEwayBillAsync(string token, string irnNo, int invoiceNo, int yearCode);
         Task<ResponseResult> GenerateQRCodeAsync(string barcodeValue, int invoiceNo, int yearCode);
-        Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode);
+        Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode, string transporterName, string vehicleNo, string distanceKM, int EntrybyId, string MachineName, string fromname, string generateEway);
 
         Task<ResponseResult> CheckDuplicateIRN(int entryId, string invoiceNo, int yearCode);
+
+        // Removed duplicate CreateIRNAsync method to resolve CS0111 error
     }
 
 }

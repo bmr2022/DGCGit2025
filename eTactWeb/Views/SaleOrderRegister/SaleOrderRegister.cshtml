@@ -61,14 +61,14 @@
                                     <label asp-for="ReportType" class="form-label">Report Type</label>
                                     <select asp-for="ReportType" class="form-select">
                                         <option disabled value="">-Select-</option>
-                                        <option value="Sale Order Summary" >Sale Order Summary</option>
+                                        <option value="Sale Order Summary" selected>Sale Order Summary</option>
                                         <option value="Sale Order Detail">Sale Order Detail</option>
-                                        <option value="Schedule Summary" selected>Schedule Summary</option>
+                                        <option value="Schedule Summary" >Schedule Summary</option>
                                         <option value="Schedule Summary Detail">Schedule Summary Detail</option>
                                         <option value="Monthly Order+Schedule Summary">Monthly Order+Schedule Summary</option>
                                         <option value="Day Wise Order+Schedule (Item Wise)">Day Wise Order+Schedule (Item Wise)</option>
-                                        <option value="Monthly Order+Schedule+Pending Summary">Monthly Order+Schedule+Pending Summary</option>
                                         <option value="Day Wise Order+Schedule (Item + Customer Wise)">Day Wise Order+Schedule (Item + Customer Wise)</option>
+                                        <option value="Monthly Order+Schedule+Pending Summary">Monthly Order+Schedule+Pending Summary</option>
 
                                     </select>
 
@@ -160,10 +160,8 @@
                                     <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
-                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
-                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
-                                    </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="InventoryAgingReport" asp-action="InventoryAgingReport">
+                                    
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="SaleOrderRegister" asp-action="SaleOrderRegister">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
                                 </div>
@@ -586,11 +584,11 @@
             var searchString = $(this).val().trim();
             globalSearchString = searchString;
             isGlobalSearch = searchString !== "";
-            var dashboardType = $('#ReportMode').val();
+            var ReportType = $('#ReportType').val();
             $.ajax({
-                url: "/InventoryAgingReport/GlobalSearch?searchString=" + searchString,
+                url: "/SaleOrderRegister/GlobalSearch?searchString=" + searchString,
                 type: "GET",
-                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                data: { searchString: searchString, ReportType: ReportType, pageNumber: 1 },
                 success: function (data) {
 
                     $('#divSaleOrderRegister').empty();
@@ -609,12 +607,13 @@
             var ReportType = $('#ReportType').val();
             var formData = $('#SParam').serializeArray();
             if (isGlobalSearch) {
-                url = '/InventoryAgingReport/GlobalSearch';
+                url = '/SaleOrderRegister/GlobalSearch';
                 formData.push({ name: 'searchString', value: globalSearchString });
                 formData.push({ name: 'pageNumber', value: pageNumber });
+                formData.push({ name: 'ReportType', value: ReportType });
             }
             else {
-                url = '@Url.Action("GetInventoryAgingReportDetailsData", "InventoryAgingReport")';
+                url = '@Url.Action("GetSaleOrderDetailsData", "SaleOrderRegister")';
             }
 
             formData.push({ name: 'pageNumber', value: pageNumber });
@@ -671,177 +670,10 @@
 
         $('#sendToExcel').click(function () {
             var reportType = $('#ReportType').val(); // assuming there's a dropdown or input with id="ReportType"
-            window.location.href = '/InventoryAgingReport/ExportInventoryAgeingToExcel?ReportType=' + encodeURIComponent(reportType);
+            window.location.href = '/SaleOrderRegister/ExportSaleOrderRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
         });
 
-        $('#sendToPDF').click(async function () {
-
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
-
-            var fromDate = $('#FromDate').val();
-
-            var reportTypeText = $('#ReportType option:selected').text();
-            var reportTypeValue = $('#ReportType').val();
-
-            var rmPartCodeText = $('#RMPartCode option:selected').text();
-            var rmPartCodeValue = $('#RMPartCode').val();
-
-            var rmItemNameText = $('#RMItemName option:selected').text();
-            var rmItemNameValue = $('#RMItemName').val();
-
-            var storeNameText = $('#StoreName option:selected').text();
-            var storeNameValue = $('#StoreName').val();
-
-            var fodurationText = $('#Foduration option:selected').text();
-            var fodurationValue = $('#Foduration').val();
-
-
-
-            // Report Title
-            doc.setFontSize(16).text(reportTypeText, 40, 40);
-
-            // Date Range
-            doc.setFontSize(10).text(`For the duration From: ${fromDate}`, 40, 58);
-
-            let currentY = 75;
-            const headerFields = [
-
-            ];
-
-            // Filter out any fields with empty values
-            const filled = headerFields.filter(field => field.value);
-
-            // If there is at least one non-empty value, print the header
-            if (filled.length > 0) {
-                filled.forEach(field => {
-                    doc.setFontSize(10)
-                        .text(`${field.label}: ${field.value}`, 40, currentY);
-                    currentY += 15;
-                });
-            }
-
-            // Fetch data
-            /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
-            va r rows = await resp.json();*/
-
-            var resp = await fetch('/InventoryAgingReport/GetInventoryAgingReportForPDF');
-
-            if (!resp.ok) {
-                console.error("Fetch failed with status:", resp.status);
-                const errorText = await resp.text(); // Log full error
-                console.error("Error body:", errorText);
-                return; // Exit early
-            }
-
-            var rows = await resp.json();
-
-
-            // Declare headers and body
-            let headers = [];
-            let body = [];
-
-            // Handle report type logic
-            switch (reportTypeValue) {
-                case 'AginingDataSummary':/*done*/
-                    headers = [
-                        "#Sr", "Store Name", "Part Code", "Item Name", "Unit", "Total Stock", "Rate", "Total Amount",
-                        "0–30", "31–60", "61–90", ">=91", "Type Item", "Group Name"
-                    ];
-
-                    console.log("Data:", rows);
-                    body = rows.map((item, i) => [
-                        i + 1, item.storeName, item.partCode, item.itemName, item.unit, item.totalStock, item.rate, item.totalAmt,
-                        item.aging_0_30, item.aging_31_60, item.aging_61_90, item.aging_91, item.type_Item, item.group_Name
-
-                    ]);
-
-                    columnStyles = {
-                        0: { cellWidth: 20 },
-                        1: { cellWidth: 60 },
-                        2: { cellWidth: 60 },
-                        3: { cellWidth: 60 },
-                        4: { cellWidth: 30 },
-                        5: { cellWidth: 40 },
-                        6: { cellWidth: 40 },
-                        7: { cellWidth: 50 },
-                        8: { cellWidth: 30 },
-                        9: { cellWidth: 30 },
-                        10: { cellWidth: 30 },
-                        11: { cellWidth: 30 },
-                        12: { cellWidth: 50 },
-                        13: { cellWidth: 50 },
-                    };
-                    break;
-                case 'AginingDataBatchWise':
-                    headers = [
-                        "#Sr", "Store Name", "Part Code", "Item Name", "Unit", "Total Stock", "Rate", "Total Amount",
-                        "0-30", "31-60", "61-90", "≥91", "Batch No", "Unique Batch No", "Type Item", "Group Name"
-                    ];
-
-                    console.log("Data:", rows);
-                    body = rows.map((item, i) => [
-                        i + 1, item.storeName, item.partCode, item.itemName, item.unit, item.totalStock, item.rate, item.totalAmt,
-                        item.aging_0_30, item.aging_31_60, item.aging_61_90, item.aging_91, item.batchNo, item.uniqueBatchNo, item.type_Item, item.group_Name
-
-
-                    ]);
-
-                    columnStyles = {
-                        0: { cellWidth: 20 },
-                        1: { cellWidth: 50 },
-                        2: { cellWidth: 50 },
-                        3: { cellWidth: 90 },
-                        4: { cellWidth: 30 },
-                        5: { cellWidth: 40 },
-                        6: { cellWidth: 40 },
-                        7: { cellWidth: 50 },
-                        8: { cellWidth: 30 },
-                        9: { cellWidth: 30 },
-                        10: { cellWidth: 30 },
-                        11: { cellWidth: 30 },
-                        12: { cellWidth: 50 },
-                        13: { cellWidth: 90 },
-                        14: { cellWidth: 50 },
-                        15: { cellWidth: 30 },
-                    };
-                    break;
-
-                default:
-                    $.notify(reportTypeValue + " report has no data to display!", "error");
-                    return;
-            }
-
-            // Generate table with custom column width handling
-            doc.autoTable({
-                startY: currentY + 15,
-                head: [headers],
-                body: body,
-                styles: { cellWidth: 'wrap' },
-                theme: 'grid',
-                margin: { left: 40, right: 40 },
-                styles: {
-                    fontSize: 7,
-                    cellPadding: 1,
-                    overflow: 'linebreak',
-                    halign: 'center',
-                    valign: 'middle'
-                },
-                headStyles: {
-                    fillColor: [41, 128, 185],
-                    textColor: 255,
-                    fontStyle: 'bold'
-                },
-                tableWidth: 'auto',
-                columnStyles: columnStyles,
-                showHead: 'everyPage'
-            });
-
-            // Save the PDF
-            doc.save(`PO_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
-
-        });
-
+     
         // $('#sendToExcel').click(function () {
         //     let table = $("#ReportTable");
         //     console.log(table);

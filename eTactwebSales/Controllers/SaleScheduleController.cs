@@ -453,7 +453,8 @@ public class SaleScheduleController : Controller
 
     // GET: SaleScheduleController/SaleScheduleForm
     [Route("{controller}/Index")]
-    public async Task<ActionResult> SaleSchedule(int ID, string Mode, int YC)
+    public async Task<ActionResult> SaleSchedule(int ID, string Mode, int YC,string fromDateBack , string toDateBack = "",string dashboardTypeBack = "", string customerNameBack = "", string customerOrderNoBack = "",string sonoBack = ""
+                    , string partCodeBack = "", string itemNameBack = "")
     {
         Logger.LogInformation("\n \n ********** Page Sale Schedule ********** \n \n " + IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
         TempData.Clear();
@@ -495,6 +496,16 @@ public class SaleScheduleController : Controller
         {
             MainModel = await BindModel(MainModel);
         }
+
+        MainModel.FromDateBack = fromDateBack;
+        MainModel.ToDateBack = toDateBack;
+        MainModel.DashboardTypeBack = dashboardTypeBack;
+        MainModel.CustomerNameBack = customerNameBack;
+        MainModel.CustomerOrderNoBack = customerOrderNoBack;
+        MainModel.SonoBack = sonoBack;
+        MainModel.PartCodeBack = partCodeBack;
+        MainModel.ItemNameBack = itemNameBack;
+
         return View(MainModel);
     }
 

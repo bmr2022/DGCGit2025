@@ -25,6 +25,7 @@ using FastReport;
 using System.Configuration;
 using Microsoft.AspNetCore.Http;
 using System.Drawing.Printing;
+using Org.BouncyCastle.Asn1.Ocsp;
 
 
 namespace eTactWeb.Controllers
@@ -39,6 +40,7 @@ namespace eTactWeb.Controllers
         private readonly IConfiguration _iconfiguration;
         private readonly ILogger<SaleBillController> _logger;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
+
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly IMemoryCache _MemoryCache;
         public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache)
@@ -53,7 +55,7 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
         }
         [HttpPost]
-        public async Task<IActionResult> SaleInvoice(SaleBillModel model, string ShouldPrint)
+        public async Task<IActionResult> SaleInvoice(SaleBillModel model, string ShouldEinvoice)
         {
             var SBGrid = new DataTable();
             DataTable TaxDetailDT = null;
@@ -220,10 +222,29 @@ namespace eTactWeb.Controllers
                         model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
                         //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                       
+                        TempData["ShowEinvoicePopup"] = "true";
+                        if (ShouldEinvoice == "true")
+                        {
+                            return Json(new
+                            {
+                                status = "Success",
+                                EntryId = model.SaleBillEntryId,
+                                InvoiceNo = model.SaleBillNo,
+                                YearCode = model.SaleBillYearCode,
+                                saleBillType = model.SupplyType,
+                                customerPartCode = model.PartCode,
+                                transporterName = model.TransporterName,
+                                vehicleNo = model.vehicleNo,
+                                distanceKM = model.DistanceKM,
+                                EntrybyId = model.EntryByempId,
+                                MachineName = model.MachineName
+                             
+                            });
+                        }
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
-                        TempData["ShowEinvoicePopup"] = "true";
-                        return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
+                        //return RedirectToAction(nameof(SaleInvoice), new { Id = 0, Mode = "", YC = 0 });
                     }
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
@@ -231,7 +252,7 @@ namespace eTactWeb.Controllers
                         TempData["202"] = "202";
 
                         var model1 = new SaleBillModel();
-                      
+
                         model1.adjustmentModel = new AdjustmentModel();
                         model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
                         model1.FinFromDate = HttpContext.Session.GetString("FromDate");
@@ -240,8 +261,7 @@ namespace eTactWeb.Controllers
                         model1.CC = HttpContext.Session.GetString("Branch");
                         //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                        HttpContext.Session.Remove("KeySaleBillGrid");
-                        HttpContext.Session.Remove("SaleBillModel");
+
                         ViewBag.ShowEinvoicePrompt = true;
                         //if (ShouldPrint == "true")
                         //{
@@ -256,10 +276,30 @@ namespace eTactWeb.Controllers
                         //    });
                         //}
 
-                           return View(model1);
+                        //  return View(model1);
+                        if (ShouldEinvoice == "true")
+                        {
+                            return Json(new
+                            {
+                                status = "Success",
+                                EntryId = model.SaleBillEntryId,
+                                InvoiceNo = model.SaleBillNo,
+                                YearCode = model.SaleBillYearCode,
+                                saleBillType = model.SupplyType,
+                                customerPartCode = model.PartCode,
+                                transporterName = model.TransporterName,
+                                vehicleNo = model.vehicleNo,
+                                distanceKM = model.DistanceKM,
+                                EntrybyId = model.EntryByempId,
+                                MachineName = model.MachineName
 
+                            });
+
+                        }
+                        HttpContext.Session.Remove("KeySaleBillGrid");
+                        HttpContext.Session.Remove("SaleBillModel");
                     }
-                    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         var errNum = Result.Result.Message.ToString().Split(":")[1];
                         model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
@@ -280,11 +320,11 @@ namespace eTactWeb.Controllers
                     }
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
-            //    return Json(new { status = "Success" });
-                return View();
+               return Json(new { status = "Success" });
+               // return View();
             }
         }
-
+       
         public static DataTable GetAdjustChallanDetailTable(List<CustomerInputJobWorkIssueAdjustDetail> model)
         {
             DataTable Table = new();
@@ -1404,6 +1444,44 @@ namespace eTactWeb.Controllers
             }
             return RedirectToAction("SBDashboard", new { Flag = "False", ItemName = itemName, PartCode = partCode, saleBillno = saleBillno, customerName = customerName, sono = sono, custOrderNo = custOrderNo, schNo = schNo, performaInvNo = performaInvNo, saleQuoteNo = saleQuoteNo, domensticExportNEPZ = domensticExportNEPZ, fromdate = fromdate, todate = toDate, searchBox = Searchbox });
         }
+        private async Task<string> GenerateQRCodeImage(string qrText, string filePath)
+        {
+            try
+            {
+                // Example using Zint barcode generator
+                string tempInputPath = Path.GetTempFileName();
+                await System.IO.File.WriteAllTextAsync(tempInputPath, qrText);
+
+                string zintPath = @"C:\Program Files (x86)\Zint\zint.exe";
+                if (!System.IO.File.Exists(zintPath))
+                    return "Zint not found";
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = zintPath,
+                        Arguments = $"-b 58 -o \"{filePath}\" -i \"{tempInputPath}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                await process.WaitForExitAsync();
+
+                if (!System.IO.File.Exists(filePath))
+                    return "Failed";
+
+                return "Success";
+            }
+            catch
+            {
+                return "Error";
+            }
+        }
 
         public async Task<IActionResult> GenerateInvoice([FromBody] EInvoiceItemModel input)
         {
@@ -1417,9 +1495,6 @@ namespace eTactWeb.Controllers
                     input.InvoiceNo,
                     input.YearCode
                 );
-
-              
-
                 var token = await _IEinvoiceService.GetAccessTokenAsync();
 
                 var result = await _IEinvoiceService.CreateIRNAsync(
@@ -1428,13 +1503,36 @@ namespace eTactWeb.Controllers
                     input.InvoiceNo,
                     input.YearCode,
                     input.saleBillType,
-                    input.customerPartCode
+                    input.customerPartCode,
+                    input.transporterName,
+                    input.vehicleNo,
+                    input.distanceKM,
+                    input.EntrybyId,
+                    input.MachineName,
+                    "Sale Bill",
+                    input.generateEway
                 );
 
                 string ewbUrl = result.Result as string;
                 if (!string.IsNullOrWhiteSpace(ewbUrl))
                 {
-                    return Ok(new { redirectUrl = ewbUrl });
+                    if (input.generateEway != "true")
+                    {
+                        string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
+                        if (!Directory.Exists(uploadsFolder))
+                            Directory.CreateDirectory(uploadsFolder);
+
+                        string fileName = $"{Guid.NewGuid()}.png";
+                        string outputPath = Path.Combine(uploadsFolder, fileName);
+
+                        var qrResult = await GenerateQRCodeImage(ewbUrl, outputPath);
+                        if (qrResult != "Success")
+                            return BadRequest("QR generation failed");
+
+                        string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
+                        return Ok(new { redirectUrl = publicUrl });
+                    }
+                    return Ok(new { redirectUrl = ewbUrl }); ;
                 }
                 else
                 {
@@ -1467,4 +1565,6 @@ namespace eTactWeb.Controllers
         }
 
     }
+
+   
 }

@@ -1,4 +1,7 @@
-﻿using eTactWeb.Data.Common;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Drawing.Charts;
+using DocumentFormat.OpenXml.Office2016.Drawing.ChartDrawing;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -68,69 +71,320 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        //public async Task<IActionResult> GetSaleOrderDetailsData(string OrderSchedule, string ReportType, string PartCode, string ItemName, string Sono, string CustOrderNo, string CustomerName, string SalesPersonName, string SchNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        //{
+        //    var model = new SaleOrderRegisterModel();
+        //    model = await _ISaleOrderRegister.GetSaleOrderDetailsData( OrderSchedule,  ReportType,  PartCode,  ItemName,  Sono,  CustOrderNo,  CustomerName,  SalesPersonName,  SchNo,  FromDate,  ToDate);
+
+        //    var modelList = model?.saleOrderRegisterGrid ?? new List<SaleOrderRegisterModel>();
+
+
+        //    if (string.IsNullOrWhiteSpace(SearchBox))
+        //    {
+        //        model.TotalRecords = modelList.Count();
+        //        model.PageNumber = pageNumber;
+        //        model.PageSize = pageSize;
+        //        model.saleOrderRegisterGrid = modelList
+        //        .Skip((pageNumber - 1) * pageSize)
+        //           .Take(pageSize)
+        //           .ToList();
+        //    }
+        //    else
+        //    {
+        //        List<SaleOrderRegisterModel> filteredResults;
+        //        if (string.IsNullOrWhiteSpace(SearchBox))
+        //        {
+        //            filteredResults = modelList.ToList();
+        //        }
+        //        else
+        //        {
+        //            filteredResults = modelList
+        //                .Where(i => i.GetType().GetProperties()
+        //                    .Where(p => p.PropertyType == typeof(string))
+        //                    .Select(p => p.GetValue(i)?.ToString())
+        //                    .Any(value => !string.IsNullOrEmpty(value) &&
+        //                                  value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+        //                .ToList();
+
+
+        //            if (filteredResults.Count == 0)
+        //            {
+        //                filteredResults = modelList.ToList();
+        //            }
+        //        }
+
+        //        model.TotalRecords = filteredResults.Count;
+        //        model.saleOrderRegisterGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+        //        model.PageNumber = pageNumber;
+        //        model.PageSize = pageSize;
+        //    }
+        //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+        //    {
+        //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+        //        SlidingExpiration = TimeSpan.FromMinutes(55),
+        //        Size = 1024,
+        //    };
+
+        //    _MemoryCache.Set("KeySaleOrderList", modelList, cacheEntryOptions);
+
+        //    //string serializedGrid = JsonConvert.SerializeObject(modelList);
+        //    if (ReportType == "Sale Order Summary")
+        //    {
+        //        return PartialView("_SaleOrderSummary", model);
+        //    }
+        //    if (ReportType == "Sale Order Detail")
+        //    {
+        //        return PartialView("_SaleOrderDetail", model);
+        //    }
+        //    if (ReportType == "Schedule Summary")
+        //    {
+        //        return PartialView("_SaleOrderScheduleSummaryRegisterGrid", model);
+        //    }
+        //    if (ReportType == "Schedule Summary Detail")
+        //    {
+        //        return PartialView("_SaleOrderScheduleDetailRegisterGrid", model);
+        //    }
+        //    if (ReportType == "Monthly Order+Schedule Summary")
+        //    {
+        //        return PartialView("_SaleOrderMonthlyOrder+ScheduleSummary", model);
+        //    }
+        //    if (ReportType == "Day Wise Order+Schedule (Item Wise)")
+        //    {
+        //        return PartialView("_SaleOrderDayWiseOrder+Schedule(Item Wise)", model);
+        //    }
+        //    if (ReportType == "Monthly Order+Schedule+Pending Summary")
+        //    {
+        //        return PartialView("_SaleOrderMonthlyOrder+Schedule+PendingSummary", model);
+        //    }
+        //    if (ReportType == "Day Wise Order+Schedule (Item + Customer Wise)")
+        //    {
+        //        return PartialView("_SaleOrderDayWiseOrder+Schedule(Item + Customer Wise)", model);
+        //    }
+
+        //    return null;
+        //}
         public async Task<IActionResult> GetSaleOrderDetailsData(string OrderSchedule, string ReportType, string PartCode, string ItemName, string Sono, string CustOrderNo, string CustomerName, string SalesPersonName, string SchNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
-            var model = new SaleOrderRegisterModel();
-            model = await _ISaleOrderRegister.GetSaleOrderDetailsData( OrderSchedule,  ReportType,  PartCode,  ItemName,  Sono,  CustOrderNo,  CustomerName,  SalesPersonName,  SchNo,  FromDate,  ToDate);
+          
+            string cacheKey = $"KeySaleOrderList_{ReportType}";
 
-            var modelList = model?.saleOrderRegisterGrid ?? new List<SaleOrderRegisterModel>();
+            List<SaleOrderRegisterModel> modelList;
 
-
-            if (string.IsNullOrWhiteSpace(SearchBox))
+            if (!_MemoryCache.TryGetValue(cacheKey, out modelList))
             {
-                model.TotalRecords = modelList.Count();
-                model.PageNumber = pageNumber;
-                model.PageSize = pageSize;
-                model.saleOrderRegisterGrid = modelList
-                .Skip((pageNumber - 1) * pageSize)
-                   .Take(pageSize)
-                   .ToList();
+                var model = await _ISaleOrderRegister.GetSaleOrderDetailsData(OrderSchedule, ReportType, PartCode, ItemName, Sono, CustOrderNo, CustomerName, SalesPersonName, SchNo, FromDate, ToDate);
+                modelList = (List<SaleOrderRegisterModel>?)(model?.saleOrderRegisterGrid ?? new List<SaleOrderRegisterModel>());
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024
+                };
+
+                _MemoryCache.Set(cacheKey, modelList, cacheEntryOptions);
+            }
+
+            var modelResult = new SaleOrderRegisterModel();
+
+            List<SaleOrderRegisterModel> filteredResults = string.IsNullOrWhiteSpace(SearchBox)
+                ? modelList
+                : modelList.Where(i => i.GetType().GetProperties()
+                    .Where(p => p.PropertyType == typeof(string))
+                    .Select(p => p.GetValue(i)?.ToString())
+                    .Any(value => !string.IsNullOrEmpty(value) && value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+            modelResult.TotalRecords = filteredResults.Count;
+            modelResult.PageNumber = pageNumber;
+            modelResult.PageSize = pageSize;
+            modelResult.saleOrderRegisterGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+
+            return ReportType switch
+            {
+                "Sale Order Summary" => PartialView("_SaleOrderSummary", modelResult),
+                "Sale Order Detail" => PartialView("_SaleOrderDetail", modelResult),
+                "Schedule Summary" => PartialView("_SaleOrderScheduleSummaryRegisterGrid", modelResult),
+                "Schedule Summary Detail" => PartialView("_SaleOrderScheduleDetailRegisterGrid", modelResult),
+                "Monthly Order+Schedule Summary" => PartialView("_SaleOrderMonthlyOrder+ScheduleSummary", modelResult),
+                "Day Wise Order+Schedule (Item Wise)" => PartialView("_SaleOrderDayWiseOrder+Schedule(Item Wise)", modelResult),
+                "Monthly Order+Schedule+Pending Summary" => PartialView("_SaleOrderMonthlyOrder+Schedule+PendingSummary", modelResult),
+                "Day Wise Order+Schedule (Item + Customer Wise)" => PartialView("_SaleOrderDayWiseOrder+Schedule(Item + Customer Wise)", modelResult),
+                _ => null
+            };
+        }
+
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string ReportType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            SaleOrderRegisterModel model = new SaleOrderRegisterModel();
+            model.ReportType = ReportType;
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_SaleOrderSummary", new List<SaleOrderRegisterModel>());
+            }
+            string cacheKey = $"KeySaleOrderList_{ReportType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out IList<SaleOrderRegisterModel> SaleOrderRegister) || SaleOrderRegister == null)
+            {
+                return PartialView("_SaleOrderSummary", new List<SaleOrderRegisterModel>());
+            }
+
+            List<SaleOrderRegisterModel> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = SaleOrderRegister.ToList();
             }
             else
             {
-                List<SaleOrderRegisterModel> filteredResults;
-                if (string.IsNullOrWhiteSpace(SearchBox))
+                filteredResults = SaleOrderRegister
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
                 {
-                    filteredResults = modelList.ToList();
+                    filteredResults = SaleOrderRegister.ToList();
                 }
-                else
-                {
-                    filteredResults = modelList
-                        .Where(i => i.GetType().GetProperties()
-                            .Where(p => p.PropertyType == typeof(string))
-                            .Select(p => p.GetValue(i)?.ToString())
-                            .Any(value => !string.IsNullOrEmpty(value) &&
-                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
-                        .ToList();
-
-
-                    if (filteredResults.Count == 0)
-                    {
-                        filteredResults = modelList.ToList();
-                    }
-                }
-
-                model.TotalRecords = filteredResults.Count;
-                model.saleOrderRegisterGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
-                model.PageNumber = pageNumber;
-                model.PageSize = pageSize;
             }
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+
+            model.TotalRecords = filteredResults.Count;
+            model.saleOrderRegisterGrid = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            if (model.ReportType == "Sale Order Summary")
             {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-
-            _MemoryCache.Set("KeySaleOrderList", modelList, cacheEntryOptions);
-
-            //string serializedGrid = JsonConvert.SerializeObject(modelList);
-            if (ReportType == "Schedule Summary")
+                return PartialView("_SaleOrderSummary", model);
+            }
+            if (model.ReportType == "Sale Order Detail")
+            {
+                return PartialView("_SaleOrderDetail", model);
+            }
+            if (model.ReportType == "Schedule Summary")
             {
                 return PartialView("_SaleOrderScheduleSummaryRegisterGrid", model);
             }
-            
+            if (model.ReportType == "Schedule Summary Detail")
+            {
+                return PartialView("_SaleOrderScheduleDetailRegisterGrid", model);
+            }
+            if (model.ReportType == "Monthly Order+Schedule Summary")
+            {
+                return PartialView("_SaleOrderMonthlyOrder+ScheduleSummary", model);
+            }
+            if (model.ReportType == "Day Wise Order+Schedule (Item Wise)")
+            {
+                return PartialView("_SaleOrderDayWiseOrder+Schedule(Item Wise)", model);
+            }
+            if (model.ReportType == "Monthly Order+Schedule+Pending Summary")
+            {
+                return PartialView("_SaleOrderMonthlyOrder+Schedule+PendingSummary", model);
+            }
+            if (model.ReportType == "Day Wise Order+Schedule (Item + Customer Wise)")
+            {
+                return PartialView("_SaleOrderDayWiseOrder+Schedule(Item + Customer Wise)", model);
+            }
             return null;
+        }
+
+        public async Task<IActionResult> ExportSaleOrderRegisterToExcel(string ReportType)
+        {
+            string cacheKey = $"KeySaleOrderList_{ReportType}";
+            if (!_MemoryCache.TryGetValue(cacheKey, out List<SaleOrderRegisterModel> modelList))
+            {
+                return NotFound("No data available to export.");
+            }
+
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("Sale Order Register");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<SaleOrderRegisterModel>>>
+            {
+                { "Sale Order Summary", EXPORT_SaleOrderSummary },
+                //{ "Sale Order Detail", EXPORT_SaleOrderDetail }
+
+            };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, modelList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "SaleOrderRegister.xlsx"
+            );
+        }
+        private void EXPORT_SaleOrderSummary(IXLWorksheet sheet, IList<SaleOrderRegisterModel> list)
+        {
+            string[] headers = {
+                "#Sr", "Customer Name", "SO No", "Customer Order No", "SO Date", "Order Type", "SO Type", "SO For", "WEF", "SO Close Date", "SO Amm. No", "SO Amm. Eff. Date",
+    "Delivery Address", "Consignee Name", "Consignee Address", "Order Amount", "Order Net Amount", "SO Confirm Date", "SO Complete", "Approved", "Approved Date", "Approved By",
+    "Sales Person Name", "Sales Email ID", "Sales Mobile No", "Freight Paid By", "Insurance Applicable", "Mode of Transport", "Remark", "Deactivation Date", "Deactivated By", "Entry Machine Name", "Customer Location", "SO Entry ID", "SO Year Code"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.CustomerName;
+                sheet.Cell(row, 3).Value = item.SONo;
+                sheet.Cell(row, 4).Value = item.CustOrderNo;
+                sheet.Cell(row, 5).Value = string.IsNullOrEmpty(item.SODate) ? "" : item.SODate.Split(" ")[0];
+                sheet.Cell(row, 6).Value = item.OrderType;
+                sheet.Cell(row, 7).Value = item.SOType;
+                sheet.Cell(row, 8).Value = item.SOFor;
+                sheet.Cell(row, 9).Value = string.IsNullOrEmpty(item.WEF) ? "" : item.WEF.Split(" ")[0];
+                sheet.Cell(row, 10).Value = string.IsNullOrEmpty(item.SOCloseDate) ? "" : item.SOCloseDate.Split(" ")[0];
+                sheet.Cell(row, 11).Value = item.SOAmmNo;
+                sheet.Cell(row, 12).Value = string.IsNullOrEmpty(item.SOAmmEffDate) ? "" : item.SOAmmEffDate.Split(" ")[0];
+                sheet.Cell(row, 13).Value = item.DeliveryAddress;
+                sheet.Cell(row, 14).Value = item.ConsigneeName;
+                sheet.Cell(row, 15).Value = item.ConsigneeAddress;
+                sheet.Cell(row, 16).Value = item.OrderAmt;
+                sheet.Cell(row, 17).Value = item.OrderNetAmt;
+                sheet.Cell(row, 18).Value = string.IsNullOrEmpty(item.SOConfirmDate) ? "" : item.SOConfirmDate.Split(" ")[0];
+                sheet.Cell(row, 19).Value = item.SoComplete;
+                sheet.Cell(row, 20).Value = item.Approved;
+                sheet.Cell(row, 21).Value = string.IsNullOrEmpty(item.ApprovedDate) ? "" : item.ApprovedDate.Split(" ")[0];
+                sheet.Cell(row, 22).Value = item.ApprovedByEmp;
+                sheet.Cell(row, 23).Value = item.SalesPersonName;
+                sheet.Cell(row, 24).Value = item.SalesEmailId;
+                sheet.Cell(row, 25).Value = item.SalesMobileNo;
+                sheet.Cell(row, 26).Value = item.FreightPaidBy;
+                sheet.Cell(row, 27).Value = item.InsuApplicable;
+                sheet.Cell(row, 28).Value = item.ModeTransport;
+                sheet.Cell(row, 29).Value = item.Remark;
+                sheet.Cell(row, 30).Value = string.IsNullOrEmpty(item.DeActiveDate) ? "" : item.DeActiveDate.Split(" ")[0];
+                sheet.Cell(row, 31).Value = item.DeActiveByEmp;
+                sheet.Cell(row, 32).Value = item.EntryByMachineName;
+                sheet.Cell(row, 33).Value = item.CustomerLocation;
+                sheet.Cell(row, 34).Value = item.SOEntryID;
+                sheet.Cell(row, 35).Value = item.SOYearCode;
+
+                row++;
+            }
         }
     }
 }

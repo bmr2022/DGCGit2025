@@ -29,16 +29,17 @@ else
             <td>@item.ProductItemName</td>
             <td>@item.ProductPartCode</td>
             <td>@item.ProductType</td>
-            <td>@item.ProductQty.ToString("0.00")</td>
+            <td>@item.ProductQty</td>
             <td>@item.Productunit</td>
-            @* <td>@item.StoreTransferProduct</td> *@
-            
+            <td>@item.StoreTransferProduct</td>
+            @if (item.StoreTransferProduct == "S")
+            {
                 <td>@item.ProductStore<input type="hidden" value="@item.ProductStoreId"/></td>
-            @* }
+            }
             @if (item.StoreTransferProduct == "W")
             {
                 <td>@item.ProductWorkCenter<input type="hidden" value="@item.ProductToWCId" /></td>
-            } *@
+            }
         </tr>
     }
 }

@@ -31,6 +31,12 @@ using System.Security.Cryptography.X509Certificates; // For async/await
 
 
 using Microsoft.Extensions.Logging;
+using Microsoft.VisualBasic;
+using System.IO;
+using System.Security.Cryptography.Xml;
+using System.Text.Json.Nodes;
+using System;
+using System.Reflection.PortableExecutable;
 
 
 namespace eTactWeb.Data.DAL
@@ -244,16 +250,18 @@ namespace eTactWeb.Data.DAL
             var row = dataTable.Rows[0];
             var upperType = saleBillType.ToUpper();
 
-            var isExport = upperType.Contains("EXPORT") || upperType.Contains("SEZ") || upperType.Contains("DEEMED");
+            // Fix: Correctly define the isExport variable and ensure proper syntax
+            var isExport = "EXPORT WITH PAYMENT".Equals(upperType) || "EXPORT WITHOUT PAYMENT".Equals(upperType);
+
             var buyerDetails = new Dictionary<string, object>
-    {
-        { "legal_name", row["buyername"].ToString() },
-        { "address1", string.IsNullOrWhiteSpace(row["buyeraddress"].ToString()) ? "NA" : row["buyeraddress"].ToString() },
-        { "location", row["buyerlocation"].ToString() },
-        { "pincode", row["buyerpincode"].ToString() },
-        { "place_of_supply", row["buyerstatecode"].ToString() },
-        { "state_code", row["buyerstate"].ToString() }
-    };
+            {
+                { "legal_name", row["buyername"].ToString() },
+                { "address1", string.IsNullOrWhiteSpace(row["buyeraddress"].ToString()) ? "NA" : row["buyeraddress"].ToString() },
+                { "location", row["buyerlocation"].ToString() },
+                { "pincode", row["buyerpincode"].ToString() },
+                { "place_of_supply", row["buyerstatecode"].ToString() },
+                { "state_code", row["buyerstate"].ToString() }
+            };
 
             if (isExport)
             {
@@ -389,7 +397,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<string> PostDataAsync(Dictionary<string, object> dictData, string invoicenumber, int yearcodenumber)
+        public async Task<string> PostDataAsync(Dictionary<string, object> dictData, string invoicenumber, int yearcodenumber, string transporterName, string vehicleNo, string distanceKM,int EntrybyId,string MachineName,string fromname,string generateEway)
         {
             try
             {
@@ -430,64 +438,70 @@ namespace eTactWeb.Data.DAL
                 }
 
                 var row = dataTable.Rows[0];
+                int entryid = row.Table.Columns.Contains("entry_id") && row["entry_id"] != DBNull.Value? Convert.ToInt32(row["entry_id"]): 0;
+                int accountCode = row.Table.Columns.Contains("account_code") && row["account_code"] != DBNull.Value  ? Convert.ToInt32(row["account_code"]): 0;
+
+                var AccountCode = row["account_code"];
+                string transporterGst = await GetTransporterGSTAsync(transporterName);
 
                 var dictData19 = new Dictionary<string, object>
-               {
-                   { "access_token", token },
-                   { "user_gstin", row["sellergstin"].ToString() },
-                   { "irn", irnNo },
-                   { "vehicle_number", "HR55AT2920" },
-                   { "transportation_mode", "1" },
-                   { "vehicle_type", "R" },
-                   { "transporter_name", "" },
-                   { "data_source", "ERP" },
-                   { "distance", distanceValue ?? "0" },
-                   {
-                       "dispatch_details", new Dictionary<string, object>
-                       {
-                           { "company_name", row["sellername"].ToString() },
-                           { "address1", row["selleraddress"].ToString() },
-                           { "address2", "" },
-                           { "location", row["sellerlocation"].ToString() },
-                           { "pincode", row["sellerpincode"].ToString() },
-                           { "state_code", row["sellerstate"].ToString() }
-                       }
-                   }
-               };
+                    {
+                        { "access_token", token },
+                        { "user_gstin", row["sellergstin"].ToString() },
+                        { "irn", irnNo },
+                        { "data_source", "ERP" },
+                        {
+                            "dispatch_details", new Dictionary<string, object>
+                            {
+                                { "company_name", row["sellername"].ToString() },
+                                { "address1", row["selleraddress"].ToString() },
+                                { "address2", "" },
+                                { "location", row["sellerlocation"].ToString() },
+                                { "pincode", row["sellerpincode"].ToString() },
+                                { "state_code", row["sellerstate"].ToString() }
+                            }
+                        }
+                    };
 
-                var ewayStatus = await PostData2(dictData19);
-                if (string.IsNullOrEmpty(ewayStatus))
+                if (!string.IsNullOrEmpty(transporterGst) && !string.IsNullOrEmpty(vehicleNo))
                 {
-                    return null;
+                    dictData19.Add("transporter_id", transporterGst);
+                    dictData19.Add("vehicle_number", vehicleNo);
+                    dictData19.Add("transportation_mode", "1");
+                    dictData19.Add("vehicle_type", "R");
+                    dictData19.Add("transporter_name", transporterName);
+                    dictData19.Add("distance", !string.IsNullOrEmpty(distanceKM) ? distanceKM : (distanceValue ?? "0"));
                 }
-               
-                var EwbNo= ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Ewaybill No:"))   ?.Split("Ewaybill No:").Last()?.Trim();
-                var EwbDate = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Date:"))?.Split("Date:").Last()?.Trim();
-                var EwbValidTill = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("EwbValidTill:"))?.Split("EwbValidTill:").Last()?.Trim();
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@imagebarcode", barcodeVal));
-                SqlParams.Add(new SqlParameter("@InvoiceNo", invoicenumber));
-                SqlParams.Add(new SqlParameter("@entryid", row["entry_id"]));
-                SqlParams.Add(new SqlParameter("@accountcode", row["account_code"]));
-                SqlParams.Add(new SqlParameter("@yearcode", yearcodenumber));
-                SqlParams.Add(new SqlParameter("@IRnno", irnNo));
-                SqlParams.Add(new SqlParameter("@ackno", ackNo));
-                SqlParams.Add(new SqlParameter("@ackdate", ackDate));
-                SqlParams.Add(new SqlParameter("@Tokenno", token));
-               SqlParams.Add(new SqlParameter("@INVType", "B"));
-                SqlParams.Add(new SqlParameter("@EwbNo", EwbNo));
-                SqlParams.Add(new SqlParameter("@EwbDt", EwbDate));
-                SqlParams.Add(new SqlParameter("@EwbValidTill", EwbValidTill));
-                //await _IDataLogic.ExecuteDataTable(" INSERT INTO IRNdetail   (imagebarcode, InvoiceNo, entryid, accountcode, yearcode, IRnno, ackno, ackdate, Tokenno, INVType, EwbNo, EwbDt,EwbValidTill)
-                //    VALUES 
-                //    (@imagebarcode, @InvoiceNo, @entryid, @accountcode, @yearcode, @IRnno, @ackno, @ackdate, @TokenNo, @INVType, @EwbNo, @EwbDt,@EwbValidTill)", SqlParams);
+                else if (!string.IsNullOrEmpty(transporterGst) && string.IsNullOrEmpty(vehicleNo))
+                {
+                    dictData19.Add("transporter_id", transporterGst);
+                }
+                else if (string.IsNullOrEmpty(transporterGst) && !string.IsNullOrEmpty(vehicleNo))
+                {
+                    dictData19.Add("vehicle_number", vehicleNo);
+                    dictData19.Add("transportation_mode", "1");
+                    dictData19.Add("vehicle_type", "R");
+                    dictData19.Add("transporter_name", transporterName);
+                    dictData19.Add("distance", !string.IsNullOrEmpty(distanceKM) ? distanceKM : "0");
+                }
+                string EwbNo = "", EwbDate = "", ewbUrl = "", EwbValidTill = "", ewayStatus="";
 
+                if (generateEway == "true")
+                {
+                     ewayStatus = await PostData2(dictData19);
+                    if (string.IsNullOrEmpty(ewayStatus)) return null;
 
+                     EwbNo = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Ewaybill No:"))?.Split("Ewaybill No:").Last()?.Trim();
+                    EwbDate = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Date:"))?.Split("Date:").Last()?.Trim();
+                    EwbValidTill = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("EwbValidTill:"))?.Split("EwbValidTill:").Last()?.Trim();
+                }
 
-                // With this corrected code:
-                await _IDataLogic.ExecuteDataTable("InsertIRNdetail",SqlParams);
-              
-                var ewbUrl = ewayStatus.Split(',')
+                
+                await InsertIRNDetailAsync(
+                    barcodeVal, invoicenumber,entryid,accountCode, yearcodenumber,
+                    irnNo, ackNo, ackDate, token, EwbNo, EwbDate, EwbValidTill, fromname, EntrybyId, MachineName);
+
+                 ewbUrl = ewayStatus.Split(',')
                         .FirstOrDefault(x => x.Contains("PDF:"))
                         ?.Split("PDF:").Last()
                         ?.Trim();
@@ -496,15 +510,22 @@ namespace eTactWeb.Data.DAL
                 {
                     return null;
                 }
-
-                return ewbUrl;
-
+                if (generateEway == "true")
+                {
+                    return ewbUrl;
+                }
+                else
+                {
+                    return barcodeVal;
+                }
+                    
             }
             catch (Exception ex)
             {
                 return "url not found";
             }
         }
+    
         public async Task<string> GenerateQRCode(string barcodeValue,string invoicenumber,int yearcodenumber)
         {
             try
@@ -540,6 +561,9 @@ namespace eTactWeb.Data.DAL
                 }
 
                 byte[] img = await System.IO.File.ReadAllBytesAsync(outputFilePath);
+
+
+              
                 var _ResponseResult = new ResponseResult();
                 try
                 {
@@ -609,6 +633,68 @@ namespace eTactWeb.Data.DAL
             {
                 return $"Exception: {ex.Message}";
             }
+        }
+
+        public async Task<string> GetTransporterGSTAsync(string transporterName)
+        {
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@transportername", transporterName));
+                var responseResult = await _IDataLogic.ExecuteDataTable("SELECT TransporterGSTNO FROM TransporterMaster WHERE transportername = @transportername", SqlParams);
+
+                var dataTable = responseResult.Result as DataTable;
+                if (dataTable != null && dataTable.Rows.Count > 0)
+                {
+                    return dataTable.Rows[0]["TransporterGSTNO"].ToString();
+                }
+                else
+                {
+                    return null;
+                }
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+        }
+        private async Task InsertIRNDetailAsync(
+           string barcodeVal,
+           string invoicenumber,
+           int entryId,
+           int accountCode,
+           int yearcodenumber,
+           string irnNo,
+           string ackNo,
+           string ackDate,
+           string token,
+           string EwbNo,
+           string EwbDate,
+           string EwbValidTill,
+           string fromname,
+           int EntrybyId,
+           string MachineName)
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@imagebarcode", barcodeVal));
+            SqlParams.Add(new SqlParameter("@InvoiceNo", invoicenumber));
+            SqlParams.Add(new SqlParameter("@entryid", entryId)); // Ensure entryId is of type int
+            SqlParams.Add(new SqlParameter("@accountcode", accountCode)); // Ensure accountCode is of type int
+            SqlParams.Add(new SqlParameter("@yearcode", yearcodenumber));
+            SqlParams.Add(new SqlParameter("@IRnno", irnNo));
+            SqlParams.Add(new SqlParameter("@ackno", ackNo));
+            SqlParams.Add(new SqlParameter("@ackdate", ackDate));
+            SqlParams.Add(new SqlParameter("@Tokenno", token));
+            SqlParams.Add(new SqlParameter("@INVType", "B"));
+            SqlParams.Add(new SqlParameter("@EwbNo", EwbNo));
+            SqlParams.Add(new SqlParameter("@EwbDt", EwbDate));
+            SqlParams.Add(new SqlParameter("@EwbValidTill", EwbValidTill));
+            SqlParams.Add(new SqlParameter("@fromname", fromname));
+            SqlParams.Add(new SqlParameter("@EntrybyId", EntrybyId));
+            SqlParams.Add(new SqlParameter("@MachineName", MachineName));
+
+            await _IDataLogic.ExecuteDataTable("InsertIRNdetail", SqlParams);
         }
         // Add this method to EInvoiceDAL
        

@@ -854,9 +854,11 @@ public class ProductionEntryDAL
                                              ProductQty = string.IsNullOrEmpty(dr["Prodwt"].ToString()) ? 0 : Convert.ToDecimal(dr["Prodwt"].ToString()),
                                              ProductType = dr["ProdType"].ToString() ?? "",
                                              Productunit = dr["Produnit"].ToString() ?? "",
-                                             ProductStore = dr["StoreName"].ToString() ?? "",
-                                            
+                                             StoreTransferProduct = dr["WCStore"].ToString() ?? "",
+                                             ProductStore = dr["StoreName"].ToString() ?? "",                            
                                              ProductStoreId = string.IsNullOrEmpty(dr["Storeid"].ToString()) ? 0 : Convert.ToInt32(dr["Storeid"].ToString()),
+                                             ProductWorkCenter = dr["WCName"].ToString() ?? "",
+                                             ProductToWCId = string.IsNullOrEmpty(dr["WCId"].ToString()) ? 0 : Convert.ToInt32(dr["WCId"].ToString()),
                                          }).OrderBy(x => x.SeqNo).ToList();
             }
         }
