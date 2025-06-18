@@ -835,7 +835,15 @@
                                     <label asp-for="Productunit" class="form-label">Product Unit</label>
                                     <input asp-for="Productunit" class="form-control" readonly />
                                 </div>
-                                
+
+                                <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="StoreTransferProduct" class="form-label" style="color:red">Store/Wc*</label>
+                                    <select class="form-select" asp-for="StoreTransferProduct">
+                                        <option>-Select-</option>
+                                        <option value="S">Store</option>
+                                        <option value="W">WorkCenter</option>
+                                    </select>
+                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="ProductTransferToWCStore" class="form-label" style="color:red">Transfer To Wc or Store*</label>
                                     <input asp-for="ProductStoreId" class="form-control" type="hidden" />
@@ -863,7 +871,7 @@
                                                     <th>Product Type</th>
                                                     <th>Product Qty</th>
                                                     <th>Product Unit</th>
-                                                    
+                                                    <th>WC/Store</th>
                                                     <th>Transfer to WC or Store</th>
                                                 </tr>
                                             </thead>
@@ -5724,8 +5732,16 @@
             var ProductTransferToStoreId = 0;
             var ProductTransferToWCId = 0;
             var ProductTransferToWCStore = $('#StoreTransferProduct').val();
+            if(ProductTransferToWCStore='S')
+            {
             
                 ProductTransferToStoreId = $('#ProductStoreId').val();
+            }
+            else
+            {
+                ProductTransferToWCId = $('#ProductToWC').val();
+
+            }
            
             var ProductData = {
                 "ProductItemName": $('#ProductItemName').find(':selected').text(),
@@ -5736,6 +5752,7 @@
                 "Productunit": $('#Productunit').val(),
                 "StoreTransferProduct": $('#StoreTransferProduct').val(),
                 "ProductStore": $('#ProductTransferToWCStore').find(':selected').text(),
+                "ProductWorkCenter": $('#ProductTransferToWCStore').find(':selected').text(),
                 "ProductStoreId": ProductTransferToStoreId,
                 "ProductToWCId": ProductTransferToWCId
             }
@@ -5797,6 +5814,7 @@
                                     0
                                     $('#ProductPartCode').val(obj[0].ProductItemCode).trigger('change');
                                     $('#ProductItemName').val(obj[0].ProductItemCode).trigger('change');
+                                    $('#ProductItemCode').val(obj[0].ProductItemCode);
                                     $('#ProductType').val(obj[0].ProductType).trigger('change');
                                     $('#ProductQty').val(obj[0].ProductQty);
                                     $('#Productunit').val(obj[0].Productunit);
