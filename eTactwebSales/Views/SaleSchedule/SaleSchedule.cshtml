@@ -3556,9 +3556,8 @@
         });
 
         $('.addItemBtn').click(function (e) {
-
             e.preventDefault();
-
+            debugger
             if (!ValidateSSGrid()) return;
             var SchData = {
                 "ItemCode": parseInt($('#ItemCode').val()),
@@ -3918,7 +3917,6 @@
         });
 
         function BackButtonData() {
-            debugger
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());

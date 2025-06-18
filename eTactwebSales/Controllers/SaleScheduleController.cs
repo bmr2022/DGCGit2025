@@ -581,7 +581,6 @@ public class SaleScheduleController : Controller
             "SchCompleted", "SchClosed", "SchAmendNo", "CreatedBy", "CreatedOn", "ApprovedBy", "ModeOFTransport", "TentetiveConfirm",
             "OrderPriority", "CC", "UpdatedByName", "UpdatedOn", "EntryByMachineName");
 
-
             model.SSDashboard = CommonFunc.DataTableToList<SaleScheduleDashboard>(DT, "SaleSchedule");
 
             foreach (var row in DS.Tables[0].AsEnumerable())
