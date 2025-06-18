@@ -252,23 +252,41 @@ namespace eTactWeb.Controllers
                         // Try alternative conversion if first attempt fails
                         pdfBytes = ConvertImageToPdf(imageStream.ToArray());
                     }
-                     emailTo = "infotech.bmr@gmail.com";
+                    //emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com";
+                    emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                         .Where(x => !string.IsNullOrWhiteSpace(x))
+                         .Select(x => x.Trim()));
                     string body = $@"
                         Dear Sir,<br/>
                         Please find the attachment for the Challan No: <strong>{Challanno}</strong> from AutoComponent.<br/><br/>
                         Regards,<br/>
                         AutoComponent Team
                         ";
+                    var emailToList = emailTo.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                   .Select(e => e.Trim())
+                                   .ToList();
                     // Send email
-                    _emailService.SendEmailAsync(
-                        emailTo,
-                        "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
-                        CC1,
-                        CC2,
-                        CC3,
-                        body,
-                        pdfBytes,
-                        "Report.pdf").Wait();
+                    //_emailService.SendEmailAsync(
+                    //    emailTo,
+                    //    "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+                    //    CC1,
+                    //    CC2,
+                    //    CC3,
+                    //    body,
+                    //    pdfBytes,
+                    //    "Report.pdf").Wait();
+                    foreach (var recipient in emailToList)
+                    {
+                        _emailService.SendEmailAsync(
+                            recipient,
+                            "Soft Copy Of Challan No: " + Challanno + " From AutoComponent",
+                            CC1,
+                            CC2,
+                            CC3,
+                            body,
+                            pdfBytes,
+                            "Report.pdf").Wait();
+                    }
 
                     return Content("Report sent successfully");
                 }
@@ -325,7 +343,9 @@ namespace eTactWeb.Controllers
         public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null,string CC1="",string CC2="",string CC3="",string Challanno="" )
         {
             var emailSettings = _iconfiguration.GetSection("EmailSettings");
-            emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com,bmrmobileapp2023@gmail.com";
+            emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                          .Where(x => !string.IsNullOrWhiteSpace(x))
+                          .Select(x => x.Trim()));
             var mimeMessage = new MimeMessage();
             mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
             //mimeMessage.To.Add(MailboxAddress.Parse("infotech.bmr@gmail.com"));
