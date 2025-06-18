@@ -252,23 +252,38 @@ namespace eTactWeb.Controllers
                         // Try alternative conversion if first attempt fails
                         pdfBytes = ConvertImageToPdf(imageStream.ToArray());
                     }
-                     emailTo = "infotech.bmr@gmail.com";
+                     emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com";
                     string body = $@"
                         Dear Sir,<br/>
                         Please find the attachment for the Challan No: <strong>{Challanno}</strong> from AutoComponent.<br/><br/>
                         Regards,<br/>
                         AutoComponent Team
                         ";
+                    var emailToList = emailTo.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                   .Select(e => e.Trim())
+                                   .ToList();
                     // Send email
-                    _emailService.SendEmailAsync(
-                        emailTo,
-                        "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
-                        CC1,
-                        CC2,
-                        CC3,
-                        body,
-                        pdfBytes,
-                        "Report.pdf").Wait();
+                    //_emailService.SendEmailAsync(
+                    //    emailTo,
+                    //    "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+                    //    CC1,
+                    //    CC2,
+                    //    CC3,
+                    //    body,
+                    //    pdfBytes,
+                    //    "Report.pdf").Wait();
+                    foreach (var recipient in emailToList)
+                    {
+                        _emailService.SendEmailAsync(
+                            recipient,
+                            "Soft Copy Of Challan No: " + Challanno + " From AutoComponent",
+                            CC1,
+                            CC2,
+                            CC3,
+                            body,
+                            pdfBytes,
+                            "Report.pdf").Wait();
+                    }
 
                     return Content("Report sent successfully");
                 }
