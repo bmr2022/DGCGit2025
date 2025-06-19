@@ -399,6 +399,7 @@
 	<div class="modal-dialog modal-xl">
 		<div class="modal-content" style="width:1280px;">
 			<div class="modal-header">
+				
 				<h5 class="modal-title" id="staticBackdropLabel">Pending Vouchers</h5>
 				<div class="d-flex align-items-center gap-3" style="margin-left:70px">
 					<button type="button" class="btn btn-sm btn-primary" onclick="AdjustButton()">Adjust</button>
@@ -1581,29 +1582,38 @@
 					});
 				}
 
-				function ChangeAdjustAmt(i) {
-					debugger
-					if ($('#AdjustAmt-' + i).val() > parseFloat($('#BalanceAmt-' + i).text())) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
-						$('#AdjustAmt-' + i).val(0);
-						$.notify('Adjustment amount cannot be greater than Actual Balance.', "error");
-					}
+						function ChangeAdjustAmt(i) {
+			debugger;
 
-					if ($('#AdjustAmt-' + i).val() > 0) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
-						$('#BalanceAmt-' + i).text(Math.round(parseFloat($('#BalanceAmt-' + i).text()) * 100) / 100);
-						$('#CheckUnCheck-' + i).prop('checked', true);
-						$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
-					}
-					if ($('#AdjustAmt-' + i).val() == 0) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
-						$('#CheckUnCheck-' + i).prop('checked', false);
-						$('#AdjustData-' + i).css("background-color", "");
-					}
+			let adjustAmtInput = $('#AdjustAmt-' + i);
+			let balanceAmtLabel = $('#BalanceAmt-' + i);
+			let adjustAmt = parseFloat(adjustAmtInput.val()) || 0;
+			let balanceAmt = parseFloat(balanceAmtLabel.text()) || 0;
+			let errorSpan = $('#AdjustAmtError-' + i);
 
-					AdjustAmount();
-					CheckUnCheckCheck(i);
-				}
+			if (adjustAmt > balanceAmt) {
+				balanceAmtLabel.text(balanceAmt.toFixed(2));
+				adjustAmtInput.val(0);
+				errorSpan.text('Adjustment amount cannot be greater than Actual Balance.').show();
+				return; // Stop further processing
+			} else {
+				errorSpan.hide(); // Clear any previous error
+			}
+
+			if (adjustAmt > 0) {
+				let newBalance = balanceAmt - adjustAmt;
+				balanceAmtLabel.text((Math.round(newBalance * 100) / 100).toFixed(2));
+				$('#CheckUnCheck-' + i).prop('checked', true);
+				$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+			} else {
+				balanceAmtLabel.text(balanceAmt.toFixed(2));
+				$('#CheckUnCheck-' + i).prop('checked', false);
+				$('#AdjustData-' + i).css("background-color", "");
+			}
+
+			AdjustAmount();
+			CheckUnCheckCheck(i);
+		}
 
 				function Validate_AdjustButton() {
 

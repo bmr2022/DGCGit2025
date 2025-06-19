@@ -25,28 +25,24 @@
 		<Compile Remove="Logs\**" />
 		<Compile Remove="Views\BOMStock\**" />
 		<Compile Remove="Views\Master\**" />
-		<Compile Remove="Views\NewFolder1\**" />
 		<Compile Remove="Views\User\**" />
 		<Compile Remove="wwwroot\NewFolder\**" />
 		<Compile Remove="wwwroot\UploadedImages\**" />
 		<Content Remove="Logs\**" />
 		<Content Remove="Views\BOMStock\**" />
 		<Content Remove="Views\Master\**" />
-		<Content Remove="Views\NewFolder1\**" />
 		<Content Remove="Views\User\**" />
 		<Content Remove="wwwroot\NewFolder\**" />
 		<Content Remove="wwwroot\UploadedImages\**" />
 		<EmbeddedResource Remove="Logs\**" />
 		<EmbeddedResource Remove="Views\BOMStock\**" />
 		<EmbeddedResource Remove="Views\Master\**" />
-		<EmbeddedResource Remove="Views\NewFolder1\**" />
 		<EmbeddedResource Remove="Views\User\**" />
 		<EmbeddedResource Remove="wwwroot\NewFolder\**" />
 		<EmbeddedResource Remove="wwwroot\UploadedImages\**" />
 		<None Remove="Logs\**" />
 		<None Remove="Views\BOMStock\**" />
 		<None Remove="Views\Master\**" />
-		<None Remove="Views\NewFolder1\**" />
 		<None Remove="Views\User\**" />
 		<None Remove="wwwroot\NewFolder\**" />
 		<None Remove="wwwroot\UploadedImages\**" />
@@ -138,6 +134,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<Folder Include="Views\NewFolder\" />
 		<Folder Include="wwwroot\Assets\" />
 		<Folder Include="wwwroot\Uploads\DirectPurchaseBill\" />
 		<Folder Include="wwwroot\Uploads\ItemImage\" />
