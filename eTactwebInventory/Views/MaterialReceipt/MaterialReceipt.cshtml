@@ -745,7 +745,7 @@ function submitForm(shouldPrint, printWindow) {
 
             if (res && res.status === "Success") {
                 if (shouldPrint && res.entryId && res.yearCode && printWindow) {
-                    const printUrl = '/MaterialReceipt/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            const printUrl = '/MaterialReceipt/MRNTag?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&MrnNo=' + res.mrnno;
                     printWindow.location.href = printUrl;
                 }
 

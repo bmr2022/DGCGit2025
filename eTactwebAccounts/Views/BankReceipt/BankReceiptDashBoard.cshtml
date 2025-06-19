@@ -69,6 +69,18 @@
                                 </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="SONo" class="form-label">SO No</label>
+                                <select class="form-select" asp-for="SONo">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                                <label asp-for="AgainstBillno" class="form-label">Against Bill No</label>
+                                <select class="form-select" asp-for="AgainstBillno">
+                                    <option value="">-Select-</option>
+                                </select>
+                            </div>
+                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
                                 <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
                                     <option value="" disabled>-Select-</option>
@@ -150,11 +162,15 @@
             $('#VoucherNo').select2();
             $('#AgainstVoucherRefNo').select2();
             $('#AgainstVoucherNo').select2();
+            $('#SONo').select2();
+            $('#AgainstBillno').select2();
             FillLedgerInDashboard();
             FillBankInDashboard();
             FillVoucherNoInDashboard();
             FillAgainstVoucherNoInDashboard();
             FillAgainstVoucherRefNoInDashboard();
+            FillAgainstBillNoInDashboard();
+            FillSoNoInDashboard();
             GetSearchData();
 
             sessionStorage.removeItem('FromDateBack');
@@ -330,6 +346,8 @@
             FillVoucherNoInDashboard();
             FillAgainstVoucherNoInDashboard();
             FillAgainstVoucherRefNoInDashboard();
+            FillAgainstBillNoInDashboard();
+            FillSoNoInDashboard();
         });
 
          $('#ToDate').change(function(){
@@ -338,6 +356,8 @@
             FillVoucherNoInDashboard();
             FillAgainstVoucherNoInDashboard();
             FillAgainstVoucherRefNoInDashboard();
+            FillAgainstBillNoInDashboard();
+            FillSoNoInDashboard();
         });
 
         function FillLedgerInDashboard() {
@@ -437,6 +457,48 @@
                     $('#AgainstVoucherNo').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {
                         $('#AgainstVoucherNo').append('<option value = "' + val.AgainstVoucherNo + '"> ' + val.AgainstVoucherNo + ' </option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillSoNoInDashboard() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillSoNoInDashboard", "BankReceipt")',
+                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                async: false,
+                dataType: "json",
+                success: function (response, status, error) {
+                    var obj = $.parseJSON(response);
+                    $('#SONo').empty();
+                    $('#SONo').append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (key, val) {
+                        $('#SONo').append('<option value = "' + val.SONo + '"> ' + val.SONo + ' </option>');
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+         function FillAgainstBillNoInDashboard() {
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("FillAgainstBillNoInDashboard", "BankReceipt")',
+                data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
+                async: false,
+                dataType: "json",
+                success: function (response, status, error) {
+                    var obj = $.parseJSON(response);
+                    $('#AgainstBillno').empty();
+                    $('#AgainstBillno').append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (key, val) {
+                        $('#AgainstBillno').append('<option value = "' + val.AgainstBillno + '"> ' + val.AgainstBillno + ' </option>');
                     });
                 },
                 error: function (xhr, status, error) {

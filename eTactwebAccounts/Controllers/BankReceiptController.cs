@@ -857,5 +857,17 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillAgainstBillNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var JSON = await _IBankReceipt.FillAgainstBillNoInDashboard(FromDate, ToDate, VoucherType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillSoNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var JSON = await _IBankReceipt.FillSoNoInDashboard(FromDate, ToDate, VoucherType);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

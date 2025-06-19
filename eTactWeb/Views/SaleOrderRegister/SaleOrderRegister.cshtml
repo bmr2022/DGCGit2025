@@ -222,6 +222,7 @@
             $('#SONo').select2();
             $('#CustOrderNo').select2();
             $('#SchNo').select2();
+            $('#ReportType').select2();
          
             $('#Order_Schedule').select2();
 
@@ -234,45 +235,26 @@
             FillSchNo();
             FillCustomerName();
             FillSalesPerson();
-           
-
-            // function applyBackgroundColor() {
-
-            //     var reportType = $('#ReportType').val();
-
-            //     $("#divStockRegisterBody tr").each(function () {
-            //         if (reportType == "AginingDataBatchWise") {
-            //             $(this).css("background-color", "#e5ccff");
-            //         }
-            //         // else if (reportType == "BatchWise Stock+WIP Valuation") {
-            //         //     $(this).css("background-color", "#fff0b3");
-            //         // }
-
-            //         else {
-            //             $(this).css("background-color", "antiquewhite");
-            //         }
-            //     });
-            // }
-
-
-            // $(document).on('click', '#divStockRegisterBody tr', function () {
-
-            //     $("#divStockRegisterBody tr").each(function () {
-            //         var reportType = $('#ReportType').val();
-
-            //         if (reportType == "AginingDataBatchWise") {
-            //             $(this).css("background-color", "#e5ccff");
-            //         }
-            //         // else if (reportType == "BatchWise Stock+WIP Valuation") {
-            //         //     $(this).css("background-color", "#fff0b3"); // Light Yellow
-            //         // }
-
-            //     });
-            //     $(this).css({ 'background-color': '#00bcd4' });
-            // });
-            // applyBackgroundColor();
+            setOrderSchedule();
         });
+        function setOrderSchedule() {
+            var reportType = $('#ReportType').val();
+            var targetValue = "";
 
+            if (reportType === 'Sale Order Summary' || reportType === 'Sale Order Detail') {
+                targetValue = 'SHOW SALE ORDER DATA';
+            } else if (reportType === 'Schedule Summary' || reportType === 'Schedule Summary Detail') {
+                targetValue = 'SHOW SCH DATA';
+            } else {
+                targetValue = 'SHOW SALE ORDER DATA';
+            }
+
+            // Set the value and trigger change to reflect in UI
+            $('#Order_Schedule').val(targetValue).change();
+        }
+        $('#ReportType').change(function () {
+            setOrderSchedule();
+        });
         $('#FromDate,#ToDate').change(function () {
             FillPartCode();
             FillItemName();

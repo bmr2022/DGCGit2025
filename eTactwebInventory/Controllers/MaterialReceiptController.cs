@@ -259,7 +259,8 @@ namespace eTactWeb.Controllers
                                 {
                                     status = "Success",
                                     entryId = model.EntryID,
-                                    yearCode = model.YearCode
+                                    yearCode = model.YearCode,
+                                    mrnno = model.MRNNo
                                 });
                             }
                             return Json(new { status = "Success" });
@@ -290,7 +291,8 @@ namespace eTactWeb.Controllers
                                 {
                                     status = "Success",
                                     entryId = model.EntryID,
-                                    yearCode = model.YearCode
+                                    yearCode = model.YearCode,
+                                    mrnno = model.MRNNo
                                 });
                             }
                             return Json(new { status = "Success" });
