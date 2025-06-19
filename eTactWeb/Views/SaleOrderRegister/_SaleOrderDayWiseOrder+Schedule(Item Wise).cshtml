@@ -137,37 +137,40 @@
                                         <th>@srNo</th>
                                          <td>@item.ItemName</td>
                                         <td>@item.PartCode</td>
-                                        <td>@item.Day1</td>
-                                        <td>@item.Day2</td>
-                                        <td>@item.Day3</td>
-                                        <td>@item.Day4</td>
-                                        <td>@item.Day5</td>
-                                        <td>@item.Day6</td>
-                                        <td>@item.Day7</td>
-                                        <td>@item.Day8</td>
-                                        <td>@item.Day9</td>
-                                        <td>@item.Day10</td>
-                                        <td>@item.Day11</td>
-                                        <td>@item.Day12</td>
-                                        <td>@item.Day13</td>
-                                        <td>@item.Day14</td>
-                                        <td>@item.Day15</td>
-                                        <td>@item.Day16</td>
-                                        <td>@item.Day17</td>
-                                        <td>@item.Day18</td>
-                                        <td>@item.Day19</td>
-                                        <td>@item.Day20</td>
-                                        <td>@item.Day21</td>
-                                        <td>@item.Day22</td>
-                                        <td>@item.Day23</td>
-                                        <td>@item.Day24</td>
-                                        <td>@item.Day25</td>
-                                        <td>@item.Day26</td>
-                                        <td>@item.Day27</td>
-                                        <td>@item.Day28</td>
-                                        <td>@item.Day29</td>
-                                        <td>@item.Day30</td>
-                                        <td>@item.Day31</td>
+                                                    <td style="background-color: @(item.Day1 == null ? "" : Convert.ToDecimal(item.Day1) == 0 ? "#ddccff" : "#f9f9f9")">@item.Day1</td>
+                        <td style="background-color: @(item.Day2 == null ? "" : Convert.ToDecimal(item.Day2) == 0 ? "#ddccff" : "#f1f1f1")">@item.Day2</td>
+                        <td style="background-color: @(item.Day3 == null ? "" : Convert.ToDecimal(item.Day3) == 0 ? "#ddccff" : "#e9f7ef")">@item.Day3</td>
+                        <td style="background-color: @(item.Day4 == null ? "" : Convert.ToDecimal(item.Day4) == 0 ? "#ddccff" : "#fef9e7")">@item.Day4</td>
+                        <td style="background-color: @(item.Day5 == null ? "" : Convert.ToDecimal(item.Day5) == 0 ? "#ddccff" : "#e8f8f5")">@item.Day5</td>
+                        <td style="background-color: @(item.Day6 == null ? "" : Convert.ToDecimal(item.Day6) == 0 ? "#ddccff" : "#fbeee6")">@item.Day6</td>
+                        <td style="background-color: @(item.Day7 == null ? "" : Convert.ToDecimal(item.Day7) == 0 ? "#ddccff" : "#f5eef8")">@item.Day7</td>
+                        <td style="background-color: @(item.Day8 == null ? "" : Convert.ToDecimal(item.Day8) == 0 ? "#ddccff" : "#fff9c4")">@item.Day8</td>
+                        <td style="background-color: @(item.Day9 == null ? "" : Convert.ToDecimal(item.Day9) == 0 ? "#ddccff" : "#e0f7fa")">@item.Day9</td>
+                        <td style="background-color: @(item.Day10 == null ? "" : Convert.ToDecimal(item.Day10) == 0 ? "#ddccff" : "#f3e5f5")">@item.Day10</td>
+                        <td style="background-color: @(item.Day11 == null ? "" : Convert.ToDecimal(item.Day11) == 0 ? "#ddccff" : "#e8f5e9")">@item.Day11</td>
+                                    <td style="background-color: @(item.Day12 == null ? "" : Convert.ToDecimal(item.Day12) == 0 ? "#ddccff" : "#fff3e0")">@item.Day12</td>
+                        <td style="background-color: @(item.Day13 == null ? "" : Convert.ToDecimal(item.Day13) == 0 ? "#ddccff" : "#fff3e0")">@item.Day13</td>
+                        <td style="background-color: @(item.Day14 == null ? "" : Convert.ToDecimal(item.Day14) == 0 ? "#ddccff" : "#fff3e0")">@item.Day14</td>
+                        <td style="background-color: @(item.Day15 == null ? "" : Convert.ToDecimal(item.Day15) == 0 ? "#ddccff" : "#fff3e0")">@item.Day15</td>
+                        <td style="background-color: @(item.Day16 == null ? "" : Convert.ToDecimal(item.Day16) == 0 ? "#ddccff" : "#fff3e0")">@item.Day16</td>
+                        <td style="background-color: @(item.Day17 == null ? "" : Convert.ToDecimal(item.Day17) == 0 ? "#ddccff" : "#fff3e0")">@item.Day17</td>
+
+                        <td style="background-color: @(item.Day18 == null ? "" : Convert.ToDecimal(item.Day18) == 0 ? "#ddccff" : "#fff3e0")">@item.Day18</td>
+
+            <td style="background-color: @(item.Day19 == null ? "" : Convert.ToDecimal(item.Day19) == 0 ? "#ddccff" : "#fff3e0")">@item.Day19</td>
+            <td style="background-color: @(item.Day20 == null ? "" : Convert.ToDecimal(item.Day20) == 0 ? "#ddccff" : "#fff3e0")">@item.Day20</td>
+            <td style="background-color: @(item.Day21 == null ? "" : Convert.ToDecimal(item.Day21) == 0 ? "#ddccff" : "#fff3e0")">@item.Day21</td>
+            <td style="background-color: @(item.Day22 == null ? "" : Convert.ToDecimal(item.Day22) == 0 ? "#ddccff" : "#fff3e0")">@item.Day22</td>
+            <td style="background-color: @(item.Day23 == null ? "" : Convert.ToDecimal(item.Day23) == 0 ? "#ddccff" : "#fff3e0")">@item.Day23</td>
+            <td style="background-color: @(item.Day24 == null ? "" : Convert.ToDecimal(item.Day24) == 0 ? "#ddccff" : "#fff3e0")">@item.Day24</td>
+            <td style="background-color: @(item.Day25 == null ? "" : Convert.ToDecimal(item.Day25) == 0 ? "#ddccff" : "#fff3e0")">@item.Day25</td>
+            <td style="background-color: @(item.Day26 == null ? "" : Convert.ToDecimal(item.Day26) == 0 ? "#ddccff" : "#fff3e0")">@item.Day26</td>
+            <td style="background-color: @(item.Day27 == null ? "" : Convert.ToDecimal(item.Day27) == 0 ? "#ddccff" : "#fff3e0")">@item.Day27</td>
+            <td style="background-color: @(item.Day28 == null ? "" : Convert.ToDecimal(item.Day28) == 0 ? "#ddccff" : "#fff3e0")">@item.Day28</td>
+            <td style="background-color: @(item.Day29 == null ? "" : Convert.ToDecimal(item.Day29) == 0 ? "#ddccff" : "#fff3e0")">@item.Day29</td>
+            <td style="background-color: @(item.Day30 == null ? "" : Convert.ToDecimal(item.Day30) == 0 ? "#ddccff" : "#fff3e0")">@item.Day30</td>
+            <td style="background-color: @(item.Day31 == null ? "" : Convert.ToDecimal(item.Day31) == 0 ? "#ddccff" : "#fff3e0")">@item.Day31</td>
+
 
                                     </tr>
 
@@ -238,7 +241,9 @@
         </ul>
 }
 <style>
-
+     #divStockRegisterBody {
+        background-color:  #ddccff;
+    }
     .sort-icon {
         padding: 5px;
         margin: 5px;
