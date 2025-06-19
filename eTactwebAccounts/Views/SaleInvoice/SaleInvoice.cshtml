@@ -617,69 +617,72 @@
                                     }, 300);
                             }
                 });
-               function submitForm(ShouldEinvoice, printWindow) {
-                   $('#ShouldEinvoice').val(ShouldEinvoice);
-                    const formData = $('form').serialize();
-                    $.ajax({
-                      type: "POST",
-                        url: $('form').attr('action'),
-                        data: formData,
-                        dataType: 'json', // Expect JSON response
-                        success: function (res) {
+                     function submitForm(ShouldEinvoice, printWindow) {
+            $('#ShouldEinvoice').val(ShouldEinvoice);
 
-                             if (res && res.status === "Success") {
-                                if (ShouldEinvoice && res.entryId && res.yearCode) {
-                                    const payload = {
-                                        EntryId: res.entryId,
-                                        InvoiceNo: res.invoiceNo,
-                                        YearCode: res.yearCode,
-                                        saleBillType: res.saleBillType,
-                                        customerPartCode: res.customerPartCode,
-                                        transporterName: res.transporterName,
-                                        vehicleNo: res.vehicleNo,
-                                        distanceKM:res.distanceKM.toString(),
-                                        EntrybyId: res.entrybyId,
-                                        MachineName: res.machineName,
-                                        generateEway: generateEway ? "true" : "false"
-                                    };
+            const formData = $('form').serialize();
 
-                                                 fetch('@Url.Action("GenerateInvoice", "SaleInvoice")', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(payload)
-                })
+            $.ajax({
+                type: "POST",
+                url: $('form').attr('action'),
+                data: formData,
+                dataType: 'json', // Expect JSON response
+                success: function (res) {
+                    if (res && res.status === "Success") {
+                        if (ShouldEinvoice && res.entryId && res.yearCode) {
+                            const payload = {
+                                EntryId: res.entryId,
+                                InvoiceNo: res.invoiceNo,
+                                YearCode: res.yearCode,
+                                saleBillType: res.saleBillType,
+                                customerPartCode: res.customerPartCode,
+                                transporterName: res.transporterName,
+                                vehicleNo: res.vehicleNo,
+                                distanceKM: res.distanceKM.toString(),
+                                EntrybyId: res.entrybyId,
+                                MachineName: res.machineName,
+                                generateEway: generateEway ? "true" : "false"
+                            };
 
-                                    .then(response => {
-                                        if (!response.ok) throw new Error("Failed to generate invoice");
-                                        return response.json();
-                                    })
-                                    .then(data => {
-                                        if (data.redirectUrl) {
-                                            printWindow.location.href = data.redirectUrl;
-                                        } else {
-                                            alert("Invoice generated but no URL returned.");
-                                        }
-                                    })
-                                    .catch(error => {
-                                        console.log(JSON.stringify(payload));
-                                        console.error("Invoice error:", error);
-                                        alert("Failed to generate invoice.");
-                                    });
+                            fetch('@Url.Action("GenerateInvoice", "SaleInvoice")', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(payload)
+                            })
+                            .then(response => {
+                                if (!response.ok) throw new Error("Failed to generate invoice");
+                                return response.json();
+                            })
+                            .then(data => {
+                                if (data.redirectUrl) {
+                                        $('#PasswordAllowPopup').modal("hide");
+                                    window.location.href = data.redirectUrl;
+                                   
+                                } else {
+                                   $.notify(data.redirectUrl, "error");
                                 }
+                            }) // <-- this closing parenthesis was missing
+                            .catch(error => {
+                                console.log(JSON.stringify(payload));
+                                console.error("Invoice error:", error);
+                                alert("Failed to generate invoice.");
+                            });
 
-                                window.location.href = '/SaleInvoice/SaleInvoice';
-                            } else {
-                                alert(res.message || "Something went wrong.");
-                            }
-                        },
-                        error: function (xhr) {
-                            console.error("Error occurred:", xhr.responseText);
-                            alert("Save failed.");
+                        } else {
+                            window.location.href = '/SaleInvoice/SaleInvoice';
                         }
-                    });
+                    } else {
+                        alert(res.message || "Something went wrong.");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error occurred:", xhr.responseText);
+                    alert("Save failed.");
                 }
+            });
+        }
 
                 function sendInvoiceRequest() {
 
@@ -761,7 +764,7 @@
                            $('#DomesticExportNEPZ').change(function () {
                        updateSupplyTypeOptions();
                    });
-              
+
 
                                   function updateSupplyTypeOptions() {
                                              const $supplyType = $('#SupplyType');
