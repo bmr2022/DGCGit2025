@@ -26,13 +26,13 @@ else
                 }
                 else
                 {
-                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@item.ItemCode);">
+                    <a class="table-link link-primary" style="border:none;" id="editItemGrid-@Cntr" onclick="EditItemRows(@item.ItemCode, @item.SeqNo);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                         </span>
                     </a>
-                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.ItemCode);">
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.ItemCode, @item.SeqNo);">
                         <span class="fa-stack">
                             <i class="fa fa-square fa-stack-2x"></i>
                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
