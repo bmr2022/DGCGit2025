@@ -35,6 +35,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType);
         Task<ResponseResult> FillAgainstVoucherRefNoInDashboard(string FromDate, string ToDate, string VoucherType);
         Task<ResponseResult> FillAgainstVoucherNoInDashboard(string FromDate, string ToDate, string VoucherType);
-
+        Task<ResponseResult> FillAgainstBillNoInDashboard(string FromDate, string ToDate, string VoucherType);
+        Task<ResponseResult> FillSoNoInDashboard(string FromDate, string ToDate, string VoucherType);
     }
 }
