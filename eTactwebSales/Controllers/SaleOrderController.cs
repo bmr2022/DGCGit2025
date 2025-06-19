@@ -1649,8 +1649,8 @@ public class SaleOrderController : Controller
 					}
 					if (isRowEmpty) continue;
 
-					var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
-					var validateUnit = (worksheet.Cells[row, 2].Value ?? string.Empty).ToString().Trim();
+					var partCode = (worksheet.Cells[row, 2].Value ?? string.Empty).ToString().Trim();
+					var validateUnit = (worksheet.Cells[row, 7].Value ?? string.Empty).ToString().Trim();
 
 					// **Validate Unit**
                     if (validateUnit.Length > 3)
@@ -1744,8 +1744,8 @@ public class SaleOrderController : Controller
 						Rate = rate,
 						OtherRateCurr =rate,
 						StoreName = worksheet.Cells[row, 17].Value?.ToString() ?? "",
-						StockQty = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
-						UnitRate = worksheet.Cells[row, 12].Value?.ToString() ?? "",
+						StockQty = decimal.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
+						UnitRate = worksheet.Cells[row, 10].Value?.ToString() ?? "",
 						DiscPer = decimal.TryParse(worksheet.Cells[row, 13].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
 						DiscRs = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
 						Amount = amount, // Auto-calculated value
@@ -1762,10 +1762,10 @@ public class SaleOrderController : Controller
 						Excessper = int.TryParse(worksheet.Cells[row, 24].Value?.ToString(), out int tempExcessper) ? tempExcessper : 0,
 						ProjQty1 = decimal.TryParse(worksheet.Cells[row, 25].Value?.ToString(), out decimal tempProjQty1) ? tempProjQty1 : 0,
 						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
-                        CustomerSaleOrder = worksheet.Cells[row, 8].Value?.ToString() ?? "",
-                        CustomerLocation = worksheet.Cells[row, 9].Value?.ToString() ?? "",
-                        ItemModel = worksheet.Cells[row, 10].Value?.ToString() ?? "",
-                        CustItemCategory = worksheet.Cells[row, 11].Value?.ToString() ?? "",
+                        CustomerSaleOrder = worksheet.Cells[row, 27].Value?.ToString() ?? "",
+                        CustomerLocation = worksheet.Cells[row, 28].Value?.ToString() ?? "",
+                        ItemModel = worksheet.Cells[row, 29].Value?.ToString() ?? "",
+                        CustItemCategory = worksheet.Cells[row, 30].Value?.ToString() ?? "",
                     });
 				}
 
