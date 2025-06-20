@@ -863,7 +863,7 @@
                                 <div class="card">
                                     <div class="card-body overflow-auto pb-0">
                                         <div class="table-responsive" style="max-height:150px;">
-                                            <table class="table table-hover table-bordered table-striped" id="ItemTable">
+                                            <table class="table table-hover table-bordered table-striped" id="ItemTable SaleOrderTbl">
                                                 <thead class="bg-gradient card-headerBG text-light small" id="ItemThead" style="white-space:nowrap">
                                                     <tr>
                                                         <th>Action</th>
@@ -1315,17 +1315,32 @@
                 }
             });
         });
+        // function ExportSaleOrderFormate() {
+
+        //     $('#divSaleItemGrid').empty();
+        //     var wb = XLSX.utils.book_new();
+
+        //     var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Rate", "Qty", "Ori. MRP", "PO No.", "Date", "Sale Order No", "Cust Location", "Item Model", "Cust Item Category"] });
+
+        //     //ws['!ref'] = 'A1:I1';
+
+        //     XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
+        //     XLSX.writeFile(wb, "ImportSaleOrderFormat.xlsx");
+        // }
+
+
         function ExportSaleOrderFormate() {
-
-            $('#divSaleItemGrid').empty();
             var wb = XLSX.utils.book_new();
+            var headers = [];
 
-            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Rate", "Qty", "Ori. MRP", "PO No.", "Date", "Sale Order No", "Cust Location", "Item Model", "Cust Item Category"] });
+            $('#ItemThead th').slice(1).each(function () {
+                headers.push($(this).text().trim());
+            });
 
-            //ws['!ref'] = 'A1:I1';
+            var ws = XLSX.utils.json_to_sheet([], { header: headers });
 
             XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
-
             XLSX.writeFile(wb, "ImportSaleOrderFormat.xlsx");
         }
 
@@ -1811,7 +1826,7 @@
             LockedFincialYear();
 
             //$("#AmmDate").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker(), $("#").datepicker();
-            debugger
+            
             $('#AmmEffDate').val($('#AmmEffDate').val().split(' ')[0]);
 
             $('#QDate').val(parseDateToFormat($('#QDate').val().split(' ')[0]));
@@ -1955,7 +1970,7 @@
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                 WEFDateChange();
             }
-            debugger
+            
             if ($('#Mode').val() == 'SOA' || $('#Mode').val() == 'SOC') {
                 var ammEffDate = $('#hiddenAmmEffDate').val().split(" ")[0];
                 $('#AmmEffDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(ammEffDate));
@@ -3246,7 +3261,7 @@
                         $.notify('Item Added To Grid.', "success");
                         ClearItem();
                     }
-                    debugger
+                    
                     if ($('#Mode').val() == 'SOA') {
                         var itemRowCount = $('#divSaleItemGrid tr').length;
                         for (var ir = 1; ir <= itemRowCount; ir++) {

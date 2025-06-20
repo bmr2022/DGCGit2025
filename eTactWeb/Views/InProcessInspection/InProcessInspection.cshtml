@@ -1,0 +1,1603 @@
+﻿@model eTactWeb.DOM.Models.InProcessInspectionModel;
+@{
+	ViewData["Title"] = "In Process Inspection";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+	.disabled-link {
+		pointer-events: none; /* Disables clicking */
+		color: gray; /* Makes it look disabled */
+		text-decoration: none; /* Removes underline */
+		cursor: not-allowed; /* Changes cursor */
+	}
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+	<form asp-action="InProcessInspection" asp-controller="InProcessInspection" method="post" autocomplete="on" class="form-horizontal">
+		<div class="card-header card-headerBG text-light bg-gradient">
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h5>
+					<strong>InProcess Inspection</strong>
+					<span class="d-flex float-end" style="margin-top:-2px;">
+						<a asp-controller="InProcessInspection" asp-action="InProcessInspectionDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+							Dashboard
+						</a>
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+							@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+							{
+								<div class="col-auto">
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+										REFRESH
+									</a>
+								</div>
+								@if (Model.Mode == "U")
+								{
+									Model.Mode = "U";
+									<div class="col-auto">
+										<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+											UPDATE
+										</button>
+									</div>
+								}
+
+								else
+								{
+									<div class="col-auto">
+										<button type="submit" class="btn btn-primary btn-sm submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											SUBMIT
+										</button>
+									</div>
+								}
+							}
+						</div>
+					</span>
+				</h5>
+			</div>
+			<div class="card-body bg-light">
+				<div class="accordion shadow-lg" id="accordionItemCategory">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_ItemCategoryDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Material Conversion</strong>
+								<small class="p-3"></small>
+							</button>
+						</h2>
+						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+							<div class="accordion-body">
+								<div class="row g-2">
+									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
+									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EntryId" class="form-label">Entry Id</label>
+										<input asp-for="EntryId" class="form-control" readonly />
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="YearCode" class="form-label">YearCode</label>
+										<input asp-for="YearCode" class="form-control" readonly />
+									</div>
+								
+								</div>
+
+
+							</div>
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="OtherGrid">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+									</button>
+								</h2>
+								<div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+									<div class="accordion-body">
+
+										<div class="row g-2 gx-3" id="_ItemGrid">
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="UId" class="form-label">UID</label>
+												<input asp-for="UId" class="form-control" readonly />
+											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ApprovedBy" class="form-label">ApprovedBy</label>
+												<input type="hidden" asp-for="ApprovedBy" />
+												<input asp-for="ApprovedByEmpName" class="form-control" readonly />
+											</div>
+
+
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="CC" class="form-label">CC</label>
+												<input asp-for="CC " class="form-control" value="@Model.CC readonly />
+											</div>
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ActualEntryBy" class="form-label">ActualEntryByEmpid</label>
+												<input asp-for="ActualEntryByName " class="form-control" readonly />
+											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
+												<input asp-for="ActualEntryDate " class="form-control" readonly />
+											</div>
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="LastUpdatedBy" class="form-label">Updated By</label>
+												<input asp-for="LastUpdatedByName" class="form-control" readonly />
+											</div>
+
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="LastUpdationDate" class="form-label">UpdationDate</label>
+												<input asp-for="LastUpdationDate" class="form-control" readonly />
+											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="EntryByMachine" class="form-label">Machine Name</label>
+												<input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+											</div>
+
+										</div>
+									</div>
+
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+
+
+				<div class="card-footer p-3">
+					<div class="row justify-content-between g-2">
+						<div class="card-header card-headerBG text-light bg-gradient">
+							<h5>
+								<strong>InProcess Inspection</strong>
+								<span class="d-flex float-end" style="margin-top:-2px;">
+
+									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+									<a asp-controller="MaterialConversion" asp-action="MaterialConversionDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+										<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+										Dashboard
+									</a>
+									<div class="row justify-content-between g-2">
+										<div class="col-auto">
+
+											<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+												<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+												BACK
+											</a>
+										</div>
+										@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+										{
+											<div class="col-auto">
+												@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+													@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+													<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+													REFRESH
+												</a>
+											</div>
+											@if (Model.Mode == "U")
+											{
+												@*Model.Mode = "U";*@
+												<div class="col-auto">
+													@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+													<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+														<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+														UPDATE
+													</button>
+												</div>
+											}
+											else
+											{
+												<div class="col-auto">
+													<button type="submit" class="btn btn-primary btn-sm submitBTN">
+														<i class="fa-solid fa-chevron-circle-right"></i>
+														SUBMIT
+													</button>
+												</div>
+											}
+										}
+									</div>
+								</span>
+							</h5>
+						</div>
+					</div>
+				</div>
+			</div>
+	</form>
+</div>
+
+
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			GetFormRights();
+			if ($('#Mode').val() !== "U") {
+
+				FillEntryID();
+				TotalNoOfRows();
+				FillSlipNo();
+			}
+
+
+
+			$('#BatchNo').css('background-color', 'rgb(248 255 178)');
+			//$('#BillNo').removeClass('Valid');
+			$('#SlipDate').rules("remove", "required");
+			$('#Uid').rules("remove", "required");
+			$('#UpdationDate').rules("remove", "required");
+			$('#UpdatedByEmpId').rules("remove", "required");
+
+			$('#OriginalItemCode').rules("remove", "required");
+			$('#OriginalPartCode').rules("remove", "required");
+			$('#OriginalItemName').rules("remove", "required");
+			$('#StoreId').rules("remove", "required");
+			$('#StoreName').rules("remove", "required");
+			$('#WcId').rules("remove", "required");
+			$('#WorkCenterName').rules("remove", "required");
+			$('#BatchNo').rules("remove", "required");
+			$('#UniqueBatchNo').rules("remove", "required");
+			$('#BatchStock').rules("remove", "required");
+			$('#TotalStock').rules("remove", "required");
+			$('#OriginalQty').rules("remove", "required");
+			$('#Unit').rules("remove", "required");
+			$('#AltStock').rules("remove", "required");
+			$('#AltPartCode').rules("remove", "required");
+			$('#AltItemCode').rules("remove", "required");
+			$('#AltItemName').rules("remove", "required");
+			$('#AltStoreId').rules("remove", "required");
+			$('#AltStoreName').rules("remove", "required");
+			$('#AltWCID').rules("remove", "required");
+			$('#AltWorkCenterName').rules("remove", "required");
+			$('#AltOriginalQty').rules("remove", "required");
+			$('#AltUnit').rules("remove", "required");
+			$('#PlanNo').rules("remove", "required");
+			$('#PlanYearCode').rules("remove", "required");
+			$('#PlanDate').rules("remove", "required");
+			$('#ProdSchNo').rules("remove", "required");
+			$('#ProdSchYearCode').rules("remove", "required");
+			$('#ProdSchDatetime').rules("remove", "required");
+			$('#OrigItemRate').rules("remove", "required");
+			$('#Remark').rules("remove", "required");
+
+
+			$('#WONO').select2();
+			$('#WOYear').select2();
+			$('#RsNo').select2();
+			$('#RsYear').select2();
+			$('#ParentRsNo').select2();
+			$('#OriginalPartCode').select2();
+			$('#OriginalItemName').select2();
+			$('#FromStore').select2();
+			$('#AltPartCode').select2();
+			$('#AltItemName').select2();
+			$('#ToStore').select2();
+			$('#StoreName').select2();
+			$('#WorkCenterName').select2();
+			$('#IssueToStoreWC').select2();
+			$('#AltStoreName').select2();
+			$('#AltWorkCenterName').select2();
+
+			$('#totalRows').text($('#divStockGrid tr').length);
+
+			//FillSlipNo();
+			FillBranch();
+			FillStoreName();
+			FillWorkCenterName();
+			GetOriginalPartCode();
+			GetOriginalItemName();
+			AltFillStoreName();
+			FillAltWorkCenterName();
+
+			GetUnitAltUnit($('#OriginalItemCode').val());
+
+			// if ($("#Mode").val() !== "U") {
+			//     FillLedgerName();
+			// }
+
+
+			setFormattedDate();
+			$('#GridButton').click(function (e) {
+				setFormattedDate();
+			});
+			// var today = new Date();
+			// var day = ('0' + today.getDate()).slice(-2);
+			// var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			// var month = monthNames[today.getMonth()];
+			// var year = today.getFullYear();
+
+			// var formattedDate = day + '/' + month + '/' + year;
+
+			// $('#ProdSchDatetime').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+			// $('#PlanDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+			// $('#ActualEntryDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+			// $('#SlipDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+			// if ($('#Mode').val() == "U") {
+
+			//     var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+			//     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+
+			//     $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
+			// }
+
+			var previousValue = $("#LedgerName").val(); // Store initial value
+
+			$("#OriginalQty, #AltOriginalQty, #AltStock").on("input", function () {
+				let value = $(this).val();
+
+
+				if (!/^\d*$/.test(value)) {
+					$(this).val(value.replace(/[^0-9]/g, ""));
+					$.notify("Only numbers (0-9) are allowed!", "error");
+				}
+
+
+				if (value.startsWith("-")) {
+					$(this).val("");
+					$.notify("Negative values are not allowed!", "error");
+				}
+			});
+			$('input[name="OriginalQty"]').on('input', function () {
+				var originalQty = $(this).val();
+				$('input[name="AltOriginalQty"]').val(originalQty);
+			});
+
+			$('.submitBTN').click(function (e) {
+
+				console.log("SubmitButton Click");
+				e.preventDefault();
+				//$(this).off('click');
+				$('form').submit();
+			});
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillCurrentWIPBatchINStore();
+			}
+			else {
+				FillStockBatchNo();
+			}
+			FillTotalStock();
+			FillAltStock();
+			GetUnitAltUnit($('#OriginalItemCode').val());
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillCurrentWIPUniqueBatchINStore();
+			}
+			else {
+				FillStockUniqueBatchNo();
+			}
+
+			FillLotStock();
+			FillLotStockWC();
+			if ($('#IssueToStoreWC').val() == 'S') {
+				FillStoreName();
+				$('#WorkCenterName').val('');
+				$('#WorkCenterName').prop("disabled", true);
+				$('#AltWorkCenterName').val('');
+				$('#AltWorkCenterName').prop("disabled", true);
+
+				$('#StoreName').prop("disabled", false);
+				$('#AltStoreName').prop("disabled", false);
+			} else {
+				FillWorkCenterName();
+				$('#StoreName').val('');
+				$('#StoreName').prop("disabled", true);
+				$('#AltStoreName').val('');
+				$('#AltStoreName').prop("disabled", true);
+
+				$('#WorkCenterName').prop("disabled", false);
+				$('#AltWorkCenterName').prop("disabled", false);
+			}
+		});
+		function setFormattedDate() {
+			var today = new Date();
+			var day = ('0' + today.getDate()).slice(-2);
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames[today.getMonth()];
+			var year = today.getFullYear();
+
+			var formattedDate = day + '/' + month + '/' + year;
+
+			$('#ProdSchDatetime, #PlanDate, #ActualEntryDate, #SlipDate,#UpdationDate')
+				.datepicker({ dateFormat: 'dd/M/yy' })
+				.val(formattedDate);
+		}
+
+		$('#IssueToStoreWC').change(function () {
+			$('#BatchNo').val('');
+			$('#UniqueBatchNo').val('');
+			$('#RecStoreStock').val(0);
+			if ($('#IssueToStoreWC').val() == 'S') {
+				FillStoreName();
+				$('#WorkCenterName').val('');
+				$('#WorkCenterName').prop("disabled", true);
+				$('#AltWorkCenterName').val('');
+				$('#AltWorkCenterName').prop("disabled", true);
+
+				$('#StoreName').prop("disabled", false);
+				$('#AltStoreName').prop("disabled", false);
+			} else {
+				FillWorkCenterName();
+				$('#StoreName').val('');
+				$('#StoreName').prop("disabled", true);
+				$('#AltStoreName').val('');
+				$('#AltStoreName').prop("disabled", true);
+
+				$('#WorkCenterName').prop("disabled", false);
+				$('#AltWorkCenterName').prop("disabled", false);
+			}
+		});
+		$('#OriginalItemName').change(function () {
+
+
+			$('#OriginalItemCode').val($('#OriginalItemName').val());
+			FillTotalStock();
+			FillAltStock();
+			GetUnitAltUnit($('#OriginalItemCode').val());
+
+			setFormattedDate();
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillCurrentWIPBatchINStore();
+			}
+			else {
+				FillStockBatchNo();
+			}
+
+
+
+			// $('#OriginalItemCode').val($('#OriginalItemName').val());
+		});
+		$('#OriginalPartCode').change(function () {
+
+			$('#OriginalItemCode').val($('#OriginalPartCode').val());
+			FillTotalStock();
+			FillAltStock();
+			GetUnitAltUnit($('#OriginalItemCode').val());
+
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillCurrentWIPBatchINStore();
+			}
+			else {
+				FillStockBatchNo();
+			}
+			//$('#OriginalItemCode').val($('#OriginalPartCode').val());
+		});
+
+		$('#AltItemName').change(function () {
+
+			$('#AltItemCode').val($('#AltItemName').val());
+		});
+		$('#AltPartCode').change(function () {
+
+			$('#AltItemCode').val($('#AltPartCode').val());
+		});
+
+		$('#StoreName').change(function () {
+			$('#StoreId').val($('#StoreName').val());
+			FillTotalStock();
+			FillAltStock();
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillCurrentWIPBatchINStore();
+			}
+			else {
+				FillStockBatchNo();
+			}
+
+		});
+
+		// $('#WorkCenterName').change(function () {
+		//
+		//     $('#WcId').val($('#WrokCenterName').val());
+		//     FillCurrentWIPBatchINStore();
+
+		//  });
+		$('#WorkCenterName').change(function () {
+			;
+			$('#WcId').val($(this).val());
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillCurrentWIPBatchINStore();
+			}
+			else {
+				FillStockBatchNo();
+			}
+
+		});
+		$('#AltWorkCenterName').change(function () {
+			;
+			$('#AltWCID').val($(this).val());
+		});
+
+
+		$('#AltStoreName').change(function () {
+			$('#AltStoreId').val($('#AltStoreName').val());
+		});
+
+		$('#BatchNo').change(function () {
+
+
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillLotStockWC();
+				FillCurrentWIPUniqueBatchINStore();
+			}
+			else {
+				FillStockUniqueBatchNo();
+				FillLotStock();
+			}
+		});
+		$('#UniqueBatchNo').change(function () {
+			if ($('#IssueToStoreWC').val() == 'W') {
+				FillLotStockWC();
+			}
+			else {
+
+				FillLotStock();
+			}
+
+		});
+
+		function GetFormRights() {
+			$.ajax({
+				url: "@Url.Action("GetFormRights")",
+				type: "POST",
+				success: function (data) {
+					if (data != null) {
+						var obj = $.parseJSON(data);
+						if (obj.Result.Table.length == 0) {
+							$(".submitBTN").prop("disabled", true);
+							$('.card-footer .submitBTN').prop("disabled", true);
+							$(".DashBoard")
+								.addClass("disabled-link")
+								.on("click", function (e) {
+									e.preventDefault(); // Prevents clicking the link
+								});
+						}
+						else {
+							// console.log(obj);
+							var optAll = obj.Result.Table[0].OptAll;
+							var optSave = obj.Result.Table[0].OptSave;
+							var optUpdate = obj.Result.Table[0].OptUpdate;
+							var optDelete = obj.Result.Table[0].OptDelete;
+							var optView = obj.Result.Table[0].OptView;
+							if (!optAll) {
+								if (!optSave) {
+									$("#submitBTN").prop("disabled", true);
+									$('.card-footer #submitBTN').prop("disabled", true);
+								}
+								if (!(optUpdate || optDelete || optView)) {
+									$(".DashBoard")
+										.addClass("disabled-link")
+										.on("click", function (e) {
+											e.preventDefault(); // Prevents clicking the link
+										});
+								}
+							}
+						}
+					}
+				},
+				error: function (errMsg) {
+					$.notify(errMsg, { position: "top center", className: "error" });
+				}
+			});
+		}
+
+
+		function GetOriginalPartCode() {
+			$.ajax({
+				url: '@Url.Action("GetOriginalPartCode", "MaterialConversion")', // Action that returns FillGroup data
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+
+					var OrgPartCodeDropdown = $('#OriginalPartCode');
+					var obj = $.parseJSON(response);
+					OrgPartCodeDropdown.empty();
+					OrgPartCodeDropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, PartCode) {
+
+						OrgPartCodeDropdown.append('<option value="' + PartCode.itemcode + '">' + PartCode.PartCode + '</option>');
+					});
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var OriginalPartCode = '';
+
+						$('#OriginalPartCode').val(OriginalPartCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+
+
+		}
+
+		function GetOriginalItemName() {
+			$.ajax({
+				url: '@Url.Action("GetOriginalItemName", "MaterialConversion")', // Action that returns FillGroup data
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+
+					var OrgItemNameDropdown = $('#OriginalItemName');
+					var obj = $.parseJSON(response);
+					OrgItemNameDropdown.empty();
+					OrgItemNameDropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, ItemName) {
+						OrgItemNameDropdown.append('<option value="' + ItemName.itemcode + '">' + ItemName.ItemName + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var OriginalItemName = '';
+						$('#OriginalItemName').val(OriginalItemName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+
+		$(document).on('select2:select', '#OriginalItemName,#OriginalPartCode', function (e) {
+
+			var cntId = e.target.id;
+			if (cntId == 'OriginalItemName') {
+				ItemNameChange(cntId);
+			}
+			else {
+				PartCodeChange(cntId);
+			}
+		});
+
+		function ItemNameChange(ID) {
+			SetPartCodeItemName(ID);
+		}
+
+		function PartCodeChange(ID) {
+
+			$.when(SetPartCodeItemName(ID)).done(function () {
+			});
+		}
+
+		function SetPartCodeItemName(ID) {
+			if (!ID) return;
+			else {
+
+				var v = $('#' + ID).select2('val');
+				if (ID == "OriginalPartCode") {
+					$("#OriginalItemName").val(v).trigger("change");
+				}
+
+				if (ID == "OriginalItemName") {
+					$("#OriginalPartCode").val(v).trigger("change");
+				}
+			}
+		}
+
+
+
+		$('#OriginalQty').on('input', function () {
+			var originalQty = parseFloat($(this).val()) || 0;
+			var batchStock = parseFloat($('#BatchStock').val()) || 0;
+			var totalStock = parseFloat($('#TotalStock').val()) || 0;
+
+
+
+			if (originalQty > batchStock || originalQty > totalStock) {
+				$.notify("Original Quantity cannot be greater than Batch Stock or Total Stock!", "error");
+				$(this).val('');
+			}
+		});
+
+		function GetAltPartCode() {
+
+			var MainItemcode = $('#OriginalPartCode').val();
+
+			$.ajax({
+				url: '@Url.Action("GetAltPartCode", "MaterialConversion")',
+				type: 'GET',
+				data: { MainItemcode: MainItemcode },
+				success: function (response) {
+
+					var ledgerDropdown = $('#AltPartCode');
+					var obj = $.parseJSON(response);
+					ledgerDropdown.empty();
+					ledgerDropdown.append('<option value="">--Select--</option>');
+
+					$.each(obj.Result, function (index, item) {
+						ledgerDropdown.append('<option value="' + item.itemcode + '">' + item.PartCode + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var GroupCode = '';
+
+						$('#AltPartCode').val(GroupCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load alternate part codes.');
+				}
+			});
+		}
+		$(document).on('select2:select', '#AltItemName,#AltPartCode', function (e) {
+
+			var cntId = e.target.id;
+			if (cntId == 'AltItemName') {
+				AltItemNameChange(cntId);
+			}
+			else {
+				AltPartCodeChange(cntId);
+			}
+		});
+
+		function AltItemNameChange(ID) {
+			SetAltPartCodeItemName(ID);
+		}
+
+		function AltPartCodeChange(ID) {
+			$.when(SetAltPartCodeItemName(ID)).done(function () {
+			});
+		}
+
+		function SetAltPartCodeItemName(ID) {
+			if (!ID) return;
+			else {
+				var v = $('#' + ID).select2('val');
+				if (ID == "AltPartCode") {
+					$("#AltItemName").val(v).trigger("change");
+				}
+
+				if (ID == "AltItemName") {
+					$("#AltPartCode").val(v).trigger("change");
+				}
+			}
+		}
+
+		function GetAltItemName() {
+			var MainItemcode = $('#OriginalPartCode').val();
+
+			$.ajax({
+				url: '@Url.Action("GetAltItemName", "MaterialConversion")',
+				type: 'GET',
+				data: { MainItemcode: MainItemcode },
+				success: function (response) {
+					var ledgerDropdown = $('#AltItemName');
+					var obj = $.parseJSON(response);
+					ledgerDropdown.empty();
+					ledgerDropdown.append('<option value="">--Select--</option>');
+
+					$.each(obj.Result, function (index, item) {
+						ledgerDropdown.append('<option value="' + item.itemcode + '">' + item.ItemName + '</option>');
+					});
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var GroupCode = '';
+						$('#AltItemName').val(GroupCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load alternate item names.');
+				}
+			});
+		}
+		$('#OriginalPartCode').change(function () {
+
+			GetAltPartCode();
+			GetAltItemName();
+
+
+		});
+		function FillEntryID() {
+
+			var YearCode = $('#OpeningYearCode').val();
+			$.ajax({
+				url: '@Url.Action("FillEntryID", "MaterialConversion")',
+				type: 'POST',
+				data: {
+					YearCode: YearCode
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#EntryId').val(obj.Result[0].EntryId || 0);
+						$('#SlipNo').val(obj.Result[0].EntryId || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load Entry Id.');
+				}
+			});
+		}
+		function FillSlipNo() {
+
+			var YearCode = $('#OpeningYearCode').val();
+			$.ajax({
+				url: '@Url.Action("FillEntryID", "MaterialConversion")',
+				type: 'POST',
+				data: {
+					YearCode: YearCode
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#SlipNo').val(obj.Result[0].MatConvSlipNo || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load Slip NO.');
+				}
+			});
+		}
+		function FillBranch() {
+
+			$.ajax({
+				url: '@Url.Action("FillBranch", "MaterialConversion")',
+				type: 'POST',
+
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#CC').val(obj.Result[0].Com_Name || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load Slip NO.');
+				}
+			});
+		}
+
+		function FillStoreName() {
+			$.ajax({
+				url: '@Url.Action("FillStoreName", "MaterialConversion")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var StoreNameDropdown = $('#StoreName');
+					var obj = $.parseJSON(response);
+					StoreNameDropdown.empty();
+					StoreNameDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, Store) {
+						StoreNameDropdown.append('<option value="' + Store.EntryID + '">' + Store.store_name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var StoreName = ""
+						$('#StoreName').val(StoreName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load StoreName .');
+				}
+			});
+		}
+		function AltFillStoreName() {
+			$.ajax({
+				url: '@Url.Action("FillStoreName", "MaterialConversion")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var AltStoreNameDropdown = $('#AltStoreName');
+					var obj = $.parseJSON(response);
+					AltStoreNameDropdown.empty();
+					AltStoreNameDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, Store) {
+						AltStoreNameDropdown.append('<option value="' + Store.EntryID + '">' + Store.store_name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var StoreName = ""
+						$('#AltStoreName').val(StoreName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load StoreName .');
+				}
+			});
+		}
+
+		function FillWorkCenterName() {
+			$.ajax({
+				url: '@Url.Action("FillWorkCenterName", "MaterialConversion")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var WorkCenterNameDropdown = $('#WorkCenterName');
+					var obj = $.parseJSON(response);
+					WorkCenterNameDropdown.empty();
+					WorkCenterNameDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, WorkCenter) {
+						WorkCenterNameDropdown.append('<option value="' + WorkCenter.EntryID + '">' + WorkCenter.WorkCenterDescription + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var WorkCenterName = ""
+						$('#WorkCenterName').val(WorkCenterName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load WorkCenterName .');
+				}
+			});
+		}
+		function FillAltWorkCenterName() {
+			$.ajax({
+				url: '@Url.Action("FillWorkCenterName", "MaterialConversion")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var AltWorkCenterNameDropdown = $('#AltWorkCenterName');
+					var obj = $.parseJSON(response);
+					AltWorkCenterNameDropdown.empty();
+					AltWorkCenterNameDropdown.append('<option value="">--Select--</option>');
+					$.each(obj.Result, function (index, WorkCenter) {
+						AltWorkCenterNameDropdown.append('<option value="' + WorkCenter.EntryID + '">' + WorkCenter.WorkCenterDescription + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+						var WorkCenterName = ""
+						$('#WorkCenterName').val(WorkCenterName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load WorkCenterName .');
+				}
+			});
+		}
+		var UniqueBatchNo = [];
+		// function FillStockBatchNo() {
+
+		//     var ItemCode = $('#OriginalItemCode').val();
+		//     var YearCode = $('#OpeningYearCode').val();
+		//     var StoreName = $('#StoreName').find(':selected').text();
+		//     var batchno = "";
+		//     $.ajax({
+		//         type: "POST",
+		//         url: "@Url.Action("FillStockBatchNo")",
+		//         async: false,
+		//         data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+		//         success: function (result, status, error) {
+
+		//             if (result != null) {
+		//                 var obj = $.parseJSON(result);
+		//                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+		//                     UniqueBatchNo = [];
+		//                     $('#BatchNo').empty();
+		//                     $('#BatchNo').append('<option value="" selected>-Select-</option>');
+		//                     $('#UniqueBatchNo').empty();
+		//                     $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+		//                     $.each(obj.Result, function (index, val) {
+		//                         $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+		//                     });
+
+		//                     var itemArrayLength = itemBatchArray.length;
+		//                     if (itemArrayLength > 0) {
+		//                         var itemsWithCode16 = itemBatchArray.filter(function (item) {
+		//                             return item.itemcode === parseInt(ItemCode);
+		//                         });
+		//                         var selectList = $('#BatchNo');
+		//                         var SelectUBList = $('#UniqueBatchNo');
+		//                         selectList.find('option').each(function () {
+		//                             var optionValue = $(this).val();
+
+		//                             var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+		//                                 return item.batchno === optionValue;
+		//                             });
+
+		//                             if (existsInItemsWithCode16) {
+		//                                 $(this).remove();
+		//                             }
+		//                         });
+
+		//                         SelectUBList.find('option').each(function () {
+
+		//                             var optionValue = $(this).val();
+
+		//                             var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+		//                                 return item.uniquebatchno === optionValue;
+		//                             });
+
+		//                             if (existsInItemsWithCode16) {
+		//                                 $(this).remove();
+		//                             }
+		//                         });
+		//                     }
+
+
+
+		//                 } else {
+		//                     $('#BatchNo').empty();
+		//                     $('#BatchNo').append('<option value="" selected>-Select-</option>');
+		//                     $('#UniqueBatchNo').empty();
+		//                     $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+		//                 }
+		//             }
+		//         }
+		//     });
+		// }
+
+		function FillStockBatchNo() {
+
+			var ItemCode = $('#OriginalItemCode').val();
+			var YearCode = $('#OpeningYearCode').val();
+			var StoreName = $('#StoreName').find(':selected').text();
+			var WorkCenterName = $('#WorkCenterName').find(':selected').text();
+			var batchno = "";
+
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("FillStockBatchNo")",
+				async: false,
+				data: { "ItemCode": ItemCode, "StoreName": StoreName, "WorkCenterName": WorkCenterName, "YearCode": YearCode, "batchno": batchno },
+				success: function (result, status, error) {
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#BatchNo').empty();
+							$('#BatchNo').append('<option value="" selected>-Select-</option>');
+
+							// Append batch numbers
+							$.each(obj.Result, function (index, val) {
+								if (index === 0) {
+									// First value is selectable
+									$('#BatchNo').append('<option value="' + val.batchno + '" >' + val.batchno + '</option>');
+								} else {
+									// Other values are disabled (not selectable)
+									$('#BatchNo').append('<option value="' + val.batchno + '" disabled>' + val.batchno + '</option>');
+								}
+							});
+
+						} else {
+							$('#BatchNo').empty();
+							$('#BatchNo').append('<option value="" selected>-Select-</option>');
+						}
+					}
+				}
+			});
+		}
+
+
+		function FillStockUniqueBatchNo() {
+
+			var ItemCode = $('#OriginalItemName').val();
+			var YearCode = $('#OpeningYearCode').val();
+			var StoreName = $('#StoreName').find(':selected').text();
+			//var ItemName = $('#ItemName').find(':selected').text();
+			var batchno = $('#BatchNo').val();
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("FillStockBatchNo")",
+				async: false,
+				data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+
+							$('#UniqueBatchNo').empty();
+							$('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+							$.each(obj.Result, function (index, val) {
+								$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
+							});
+							//    GetBatchInventory();
+
+						} else {
+							$('#UniqueBatchNo').empty();
+							$('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+						}
+					}
+				}
+			});
+		}
+
+		function FillCurrentWIPBatchINStore() {
+			var ItemCode = $('#OriginalItemName').val();
+			var YearCode = $('#OpeningYearCode').val();
+			var Wcid = $('#WcId').val();
+			//$('#WcId').val();
+			var batchno = "";
+			var TransDate = $('#SlipDate').val();
+			if ($('#BatchNo').prop('selectedIndex') != 0) {
+				batchno = $('#BatchNo').val();
+			}
+			$.ajax({
+				type: "GET",
+				data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+				url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
+				dataType: "json",
+				success: function (result, status, error) {
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#BatchNo').empty();
+							$('#BatchNo').append('<option value="" disabled selected>-Select-</option>');
+							//$('#UniqueBatchNo').empty();
+							//$('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+							$.each(obj.Result, function (index, val) {
+								$('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+								//$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
+							});
+							GetBatchInventory();
+						} else {
+							$('#BatchNo').empty();
+							$('#BatchNo').append('<option value="" disabled selected>-Select-</option>');
+						}
+
+					}
+				}
+			});
+		}
+
+		function FillCurrentWIPUniqueBatchINStore() {
+			var ItemCode = $('#OriginalItemName').val();
+			var YearCode = $('#OpeningYearCode').val();
+			var Wcid = $('#WcId').val();
+			//$('#WcId').val();
+			var batchno = "";
+			var TransDate = $('#SlipDate').val();
+			if ($('#BatchNo').prop('selectedIndex') != 0) {
+				batchno = $('#BatchNo').val();
+			}
+			$.ajax({
+				type: "GET",
+				data: { "ItemCode": ItemCode, "YearCode": YearCode, "WCid": Wcid, "TransDate": TransDate, "BatchNo": batchno },
+				url: "@Url.Action("FillCurrentBatchINWIP", "StockAdjustment")",
+				dataType: "json",
+				async: false,
+				success: function (result, status, error) {
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#UniqueBatchNo').empty();
+							$('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+
+							$.each(obj.Result, function (index, val) {
+								//  $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+								$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '" selected>' + val.UniqueBatchNo + '</option>');
+							});
+							GetBatchInventory();
+						} else {
+							$('#UniqueBatchNo').empty();
+							$('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
+						}
+
+					}
+				}
+			});
+		}
+
+		function FillTotalStock() {
+
+			var ItemCode = $('#OriginalItemName').val();
+			var Storeid = $('#StoreId').val();
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("FillTotalStock", "StockAdjustment")",
+				async: false,
+				data: { "ItemCode": ItemCode, "Storeid": Storeid },
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#TotalStock').val(0);
+							$('#TotalStock').val(obj.Result[0].STOCK);
+						}
+						//  ChangeAltQty();
+					}
+				}
+			});
+		}
+		function FillAltStock() {
+
+			var ItemCode = $('#OriginalItemName').val();
+			var Storeid = $('#StoreId').val();
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("FillTotalStock", "StockAdjustment")",
+				async: false,
+				data: { "ItemCode": ItemCode, "Storeid": Storeid },
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#AltStock').val(0);
+							$('#AltStock').val(obj.Result[0].STOCK);
+						}
+						//  ChangeAltQty();
+					}
+				}
+			});
+		}
+
+		var BatchStock = 0;
+		function FillLotStock() {
+
+			var ItemCode = $('#OriginalItemName').val();
+			var Storeid = $('#StoreId').val();
+			var UniqueBatchNo = $('#UniqueBatchNo').val();
+			var BatchNo = $('#BatchNo').val();
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("FillLotStock", "StockAdjustment")",
+				data: { "ItemCode": ItemCode, "Storeid": Storeid, "UniqueBatchNo": UniqueBatchNo, "BatchNo": BatchNo },
+				async: false,
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#BatchStock').val("");
+							$('#BatchStock').val(obj.Result[0].STOCK);
+
+
+							BatchStock = obj.Result[0].STOCK;
+						}
+					}
+				}
+			});
+		}
+		// function FillLotStockWC() {
+
+		//     var ItemCode = $('#OriginalItemName').val();
+		//     var Storeid = $('#WcId').val();
+		//     var UniqueBatchNo = $('#UniqueBatchNo').val();
+		//     var BatchNo = $('#BatchNo').val();
+		//     $.ajax({
+		//         type: "POST",
+		//         url: "@Url.Action("FillLotStock", "StockAdjustment")",
+		//         data: { "ItemCode": ItemCode, "Storeid": Storeid, "UniqueBatchNo": UniqueBatchNo, "BatchNo": BatchNo },
+		//         async: false,
+		//         success: function (result, status, error) {
+
+		//             if (result != null) {
+		//                 var obj = $.parseJSON(result);
+		//                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+		//                     $('#BatchStock').val("");
+		//                     $('#BatchStock').val(obj.Result[0].STOCK);
+		//                     BatchStock = obj.Result[0].STOCK;
+		//                 }
+		//             }
+		//         }
+		//     });
+		// }
+		function FillLotStockWC() {
+
+			var ItemCode = parseInt($('#OriginalItemName').val());
+			var WCID = parseInt($('#WcId').val());
+			$.ajax({
+				type: "POST",
+				data: { "ItemCode": ItemCode, "WCID": WCID },
+				url: "@Url.Action("GETWIPotalSTOCK", "StockAdjustment")",
+				dataType: "json",
+				success: function (result, status, error) {
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						$('#BatchStock').val("");
+						$('#BatchStock').val(obj.Result[0].STOCK);
+						$('#TotalStock').val("");
+						$('#TotalStock').val(obj.Result[0].STOCK);
+					}
+				}
+			});
+		}
+		function GetUnitAltUnit(ItemCode) {
+
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetUnitAltUnit")",
+				async: false,
+				data: { "ItemCode": ItemCode },
+				success: function (result, status, error) {
+
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+							$('#Unit').val("");
+							$('#Unit').val(obj.Result[0].unit);
+							$('#AltUnit').val("");
+							$('#AltUnit').val(obj.Result[0].AlternateUnit);
+						}
+					}
+				}
+			});
+		}
+		function ClearItems() {
+
+			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,   #Remark').val('');
+			$('#OriginalPartCode,#AltStoreName,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
+
+			$('#BatchStock, #TotalStock, #AltStock, #OrigItemRate, #OriginalItemCode, #OriginalQty, #AltOriginalQty,#AltStoreName,#AltWorkCenterName').val(0);
+
+
+			// $('select').prop('selectedIndex', 0);
+		}
+
+
+		$('#GridButton').click(function (e) {
+			e.preventDefault();
+
+			var missingFields = [];
+
+			var issueToStoreWC = $('#IssueToStoreWC').val();
+			var originalPartCode = $('#OriginalPartCode').val();
+			var originalItemName = $('#OriginalItemName').val();
+			var originalItemCode = $('#OriginalItemCode').val();
+			var altItemName = $('#AltItemName').val();
+			var altPartCode = $('#AltPartCode').val();
+			var AltItemCode = $('#AltItemCode').val();
+			var StoreName = $('#StoreName').val();
+			var AltStoreName = $('#AltStoreName').val();
+			//var altUnit = $('#AltUnit').val().trim();
+			var unit = $('#Unit').val();
+			var originalQty = $('#OriginalQty').val();
+
+			if (!originalPartCode) missingFields.push("Original Part Code");
+			if (!originalItemName) missingFields.push("Original Item Name");
+			if (!originalItemCode) missingFields.push("Original Item Code");
+			if (!altItemName) missingFields.push("Alt Item Name");
+			if (!altPartCode) missingFields.push("Alt Part Code");
+			if (!AltItemCode) missingFields.push("Alt Item Code");
+			//if (!altUnit) missingFields.push("Alt Unit");
+			if (!unit) missingFields.push("Unit");
+			if (!originalQty) missingFields.push("Original Quantity");
+			//if (!StoreName) missingFields.push("StoreName");
+			//if (!AltStoreName) missingFields.push("AltStoreName");
+
+			if (!issueToStoreWC) {
+				$.notify("Please select Store/WC before adding to the grid!", "error");
+				return;
+			}
+			// if (!originalPartCode || !originalItemName || !originalItemCode ||
+			//     !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
+			//     $.notify("All fields are required to add data to the grid!", "error");
+			//     return;
+			// }
+			if (missingFields.length > 0) {
+				var message = "The following fields are required:\n" + missingFields.join(", ");
+				$.notify(message, "error");
+				return;
+			}
+			var SchData = {
+				OriginalPartCode: $('#OriginalPartCode').val(),
+				OriginalItemName: $('#OriginalItemName').val(),
+				OriginalItemCode: $('#OriginalItemCode').val(),
+				StoreName: $('#StoreName').val() || '',
+				StoreId: $('#StoreId').val(),
+				WorkCenterName: $('#WorkCenterName').val() || '',
+				WcId: $('#WcId').val(),
+				Unit: $('#Unit').val(),
+				OriginalQty: $('#OriginalQty').val(),
+				AltItemName: $('#AltItemName').val(),
+				AltPartCode: $('#AltPartCode').val(),
+				AltItemCode: $('#AltItemCode').val(),
+				AltUnit: $('#AltUnit').val(),
+				AltOriginalQty: $('#AltOriginalQty').val(),
+				OriginalStoreId: $('#OriginalStoreId').val(),
+
+				AltStoreId: $('#AltStoreId').val(),
+				AltStoreName: $('#AltStoreName').val(),
+				// OrginalWCID: $('#OrginalWCID').val(),
+				AltWCID: $('#AltWCID').val(),
+				AltWorkCenterName: $('#AltWorkCenterName').val(),
+				BatchNo: $('#BatchNo').val(),
+				UniqueBatchNo: $('#UniqueBatchNo').val(),
+				BatchStock: $('#BatchStock').val(),
+				TotalStock: $('#TotalStock').val(),
+				AltStock: $('#AltStock').val(),
+				PlanNo: $('#PlanNo').val(),
+				PlanYearCode: $('#PlanYearCode').val(),
+				PlanDate: $('#PlanDate').val(),
+				ProdSchNo: $('#ProdSchNo').val(),
+				ProdSchYearCode: $('#ProdSchYearCode').val(),
+				ProdSchDatetime: $('#ProdSchDatetime').val(),
+				OrigItemRate: $('#OrigItemRate').val(),
+				Remark: $('#Remark').val(),
+				OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
+				OriginalItemName: $('#OriginalItemName').find(":selected").text(),
+				AltItemName: $('#AltItemName').find(":selected").text(),
+				AltPartCode: $('#AltPartCode').find(":selected").text(),
+				WorkCenterName: $('#WorkCenterName').find(":selected").text(),
+				StoreName: $('#StoreName').find(":selected").text(),
+				AltStoreName: $('#AltStoreName').find(":selected").text(),
+				AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
+				//OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
+			};
+			console.log(SchData);
+			$.ajax({
+				type: "POST",
+				url: '@Url.Action("AddToGridData", "MaterialConversion")',
+				data: { model: SchData },
+				success: function (result, status, xhr) {
+					if (xhr.status == 200 && xhr.responseText == result) {
+
+						$('#divStockGrid').html(result);
+						TotalNoOfRows();
+						ClearItems();
+					} else if (xhr.status == 207) {
+						$.notify('Duplicate Item...!', "info");
+					}
+				},
+				error: function () {
+					$.notify('Something Went Wrong, Please Try Again.', "error");
+				}
+			});
+		});
+
+
+		function TotalNoOfRows() {
+			var Row = $('#divStockGrid tr').length;
+			var tdCount = $('#divStockGrid tr td').length;
+			$('#lblItemCount').text(tdCount >= 1 ? Row : 0);
+		}
+		function ClearGrid() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("ClearGrid")",
+				success: function (result, status, error) {
+					$('#divStockGrid').empty();
+					var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+					$('#divStockGrid').html(NoData);
+					// BasicTotal();
+				},
+				error: function (req, status, error) {
+					alert(error);
+				}
+			});
+		}
+		function CheckBeforeUpdate() {
+			$.ajax({
+				url: '@Url.Action("CheckBeforeUpdate")',
+				type: "POST",
+				data: { Type: $('#Entry_id').val() },
+				success: function (data) {
+					var obj = $.parseJSON(data);
+					if (obj.Result?.Table[0]?.Column1 > 0) {
+						$.notify("You cannot update this Category as Item with this category already exists", "error");
+					} else {
+						$('form').submit();
+					}
+				},
+				error: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+		var EditEachItem = false;
+
+		function EditItemRow(SrNO) {
+
+			if (EditEachItem) {
+				$.notify('Cannot edit item while another item is being added to the grid!', "error");
+				return;
+			}
+
+			$.ajax({
+				url: '@Url.Action("EditItemRow")',
+				type: "POST",
+				data: { SrNO: SrNO, Mode: "U" },
+				success: function (data) {
+
+					var obj = $.parseJSON(data);
+					if (obj != null) {
+
+						EditEachItem = true;
+
+						$('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
+						$('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
+						$('#OriginalItemCode').val(obj[0].OriginalItemCode);
+						$('#Unit').val(obj[0].Unit);
+						$('#OriginalQty').val(obj[0].OriginalQty);
+						$('#AltItemName').val(obj[0].AltItemCode).trigger("change");
+						$('#AltPartCode').val(obj[0].AltItemCode).trigger("change");
+						$('#AltItemCode').val(obj[0].AltItemCode);
+						$('#AltUnit').val(obj[0].AltUnit);
+						$('#AltOriginalQty').val(obj[0].AltOriginalQty);
+						$('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
+						$('#StoreName').val(obj[0].StoreId).trigger("change");
+						$('#AltStoreName').val(obj[0].AltStoreId).trigger("change");
+						$('#WorkCenterName').val(obj[0].WcId).trigger("change");
+						$('#AltWorkCenterName').val(obj[0].AltWCID).trigger("change");
+						$('#BatchNo').val(obj[0].BatchNo).trigger("change");
+						$('#UniqueBatchNo').val(obj[0].UniqueBatchNo).trigger("change");
+						$('#BatchStock').val(obj[0].BatchStock).trigger("change");
+						$('#TotalStock').val(obj[0].TotalStock).trigger("change");
+						$('#AltStock').val(obj[0].AltStock).trigger("change");
+						$('#PlanNo').val(obj[0].PlanNo).trigger("change");
+						$('#PlanYearCode').val(obj[0].PlanYearCode).trigger("change");
+						$('#PlanDate').val(obj[0].PlanDate).trigger("change");
+						$('#ProdSchNo').val(obj[0].ProdSchNo).trigger("change");
+						$('#ProdSchYearCode').val(obj[0].ProdSchYearCode).trigger("change");
+						$('#ProdSchDatetime').val(obj[0].ProdSchDatetime).trigger("change");
+						$('#OrigItemRate').val(obj[0].OrigItemRate).trigger("change");
+						$('#Remark').val(obj[0].Remark).trigger("change");
+
+						// var newSrNo = obj[0].SrNO;
+						// if (currentSrNo !== newSrNo) {
+						//     $('#SrNO').val(newSrNo).trigger("change");
+						// }
+						var rowCount = $('#divStockGrid tr').length;
+						for (var i = 1; i <= rowCount + 1; i++) {
+							$('#editItemGrid-' + i).css("pointer-events", "none");
+							$('#editItemGrid-' + i).css("cursor", "not-allowed");
+						}
+
+						DeleteItemRow(SrNO);
+					}
+				},
+				error: function (response) {
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
+		function DeleteItemRow(SrNO) {
+
+			$.ajax({
+				url: '@Url.Action("DeleteItemRow")',
+				type: "POST",
+				data: { SrNO: SrNO, Mode: "U" },
+				success: function (data, status, xhr) {
+					$('#divStockGrid').html(data);
+					$.notify("Process deleted from Grid", "info");
+					EditEachItem = false;
+
+				},
+				error: function (response, status, xhr) {
+
+					$.notify("Cannot delete item that exists in Other Grid!!!", "error");
+				},
+				failure: function (response, status, xhr) {
+					alert(response.responseText);
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
+
+
+		function PressBack() {
+			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+			sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+			sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
+			sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+			sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+			window.history.back();
+		}
+	</script>
+}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+
+

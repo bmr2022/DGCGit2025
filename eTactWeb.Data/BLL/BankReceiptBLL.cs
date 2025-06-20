@@ -126,5 +126,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.FillAgainstVoucherNoInDashboard(FromDate, ToDate, VoucherType);
         }
+        public async Task<ResponseResult> FillAgainstBillNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _BankReceiptDAL.FillAgainstBillNoInDashboard(FromDate, ToDate, VoucherType);
+        }
+        public async Task<ResponseResult> FillSoNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            return await _BankReceiptDAL.FillSoNoInDashboard(FromDate, ToDate, VoucherType);
+        }
     }
 }

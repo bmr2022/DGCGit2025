@@ -19,7 +19,7 @@
                 <span class="dropdown-toggle text-light"></span>
                 @*<a href="#" class="nav-link NavText dropdown-toggle" style="text-transform: uppercase" data-bs-toggle="dropdown">
                 <i class="fa-solid fa-circle-user fa-fw fa-lg"></i><span class="d-none d-lg-inline">&nbsp;&nbsp;LOGIN&nbsp;</span>
-                </a>*@
+                </a>*@f
             </button>
             <div class="collapse navbar-collapse" id="main_nav">
                 <ul class="navbar-nav">
@@ -87,6 +87,18 @@
                                             <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>PO Cancel Form
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Cancel PO" />
+
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="#">Cancel SaleBill &raquo; </a>
+                                <ul class="submenu dropdown-menu">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="CancelSaleBill" asp-controller="CancelSaleBill" asp-route-ID="0" id="CancelSaleBill">
+                                            <i class="fa fa-fw fa-table fa-lg" aria-hidden="true"></i>Cancel Sale Bill
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="CancelSaleBill" />
 
                                     </li>
                                 </ul>
@@ -879,7 +891,6 @@
                         @*    <ul class="submenu dropdown-menu"> *@
                         <ul class="submenu dropdown-menu" data-bs-popper="static">
                             <li>
-                                @*//2 Primary Account group *@
                                 <a class="dropdown-item" id="Account Master" href="#" style="background:#FFF8DC ; color :#000000">Control plan &raquo;</a>
                                 <ul class="submenu dropdown-menu dropdown-menu-end">
                                     <li>
@@ -891,6 +902,25 @@
                                     </li>
                                     <li>
                                         <a class="dropdown-item PrimaryAccountGroupMaster" asp-action="ControlPlanDashBoard" asp-controller="ControlPlan">
+                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="PrimaryAccountGroupMaster" />
+
+                                    </li>
+                                </ul>
+                            </li> 
+                           <li>
+                                <a class="dropdown-item" id="Account Master" href="#" style="background:#FFF8DC ; color :#000000">Control plan &raquo;</a>
+                                <ul class="submenu dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="ControlPlan" asp-route-ID="0" asp-controller="InProcessInspection" id="InProcessInspection">
+                                            <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> In Process Inspection
+                                        </a>
+
+
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item" asp-action="InProcessInspectionDashBoard" asp-controller="InProcessInspection">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="PrimaryAccountGroupMaster" />
@@ -2074,7 +2104,7 @@
                                 </li>
                             </ul>
                         </li>
-
+                      
                         <li><hr class="dropdown-divider"></li>
 
 

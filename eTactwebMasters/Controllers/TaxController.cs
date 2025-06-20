@@ -532,6 +532,21 @@ public class TaxController : Controller
                     purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
                 }
                 ItemDetailGrid = purchaseRejectionDetail;
+                var _ItemGrid = new List<AccPurchaseRejectionDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new AccPurchaseRejectionDetail
+                 {
+                     Amount = group.Sum(item => item.Amount),
+                     ItemCode = group.Key,
+                     PartCode = group.First().PartCode,
+                 })
+                 .ToList();
+
+                ItemDetailGrid = _ItemGrid;
             }
             else if (TxModel.TxPageName == "SaleRejection")
             {
@@ -1405,7 +1420,7 @@ public class TaxController : Controller
                 {
                     foreach (var item in ListOfItems)
                     {
-                        if (SN != "CreditNote" || SN != "PurchaseRejection")
+                        if (SN != "CreditNote")
                         {
                             //Basic Total Amount
                             BasicTotal = BasicTotal + (item.Amount == null ? 0 : item.Amount);

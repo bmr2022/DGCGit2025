@@ -865,5 +865,47 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillAgainstBillNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillAgainstBillNoInDashboard"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillSoNoInDashboard(string FromDate, string ToDate, string VoucherType)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillSoNoInDashboard"));
+                SqlParams.Add(new SqlParameter("@fromdate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@todate", ParseFormattedDate(ToDate)));
+                SqlParams.Add(new SqlParameter("@VoucherType", "Bank-Receipt"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }

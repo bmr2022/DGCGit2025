@@ -271,6 +271,7 @@ namespace eTactWeb
             services.TryAddScoped<IMaterialConversion, MaterialConversionBLL>();
             services.TryAddScoped<IOrderAmendHistory, OrderAmendHistoryBLL>();
             services.TryAddScoped<ISaleOrderRegister, SaleOrderRegisterBLL>();
+            services.TryAddScoped<IInProcessInspection, InProcessInspectionBLL>();
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
             services.TryAddTransient<IOrderBasedProdPlan, OrderBasedProdPlanBLL>();
@@ -293,6 +294,7 @@ namespace eTactWeb
             services.TryAddTransient<IWorkOrder,WorkOrderBLL>();
             services.TryAddTransient<IPOApproval,POApprovalBLL>();
             services.TryAddTransient<IPOCancel, POCancelBLL>();
+            services.TryAddTransient<ICancelSaleBill, CancelSaleBillBLL>();
             services.TryAddTransient<ISOApproval,SOApprovalBLL>();
             services.TryAddTransient<ISOCancel, SOCancelBLL>();
             services.TryAddTransient<IPSApproval,PSApprovalBLL>();
