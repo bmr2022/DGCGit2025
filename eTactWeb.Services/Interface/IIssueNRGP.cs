@@ -22,6 +22,8 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> GetAllowBackDate();
         public Task<ResponseResult> GetPrevQty(int EntryId, int YearCode, int ItemCode, string uniqueBatchNo);
         public Task<ResponseResult> GetAddressDetails(int AccountCode);
+
+        public Task<ResponseResult> GetEmails(int AccountCode);
         public Task<ResponseResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string FinStartDate, string StoreName, string batchno);
         public Task<ResponseResult> GetBatchNumber(string SPName, int StoreId, string StoreName, string FinStartDate, int ItemCode, string TransDate, int YearCode, string BatchNo);
         public Task<ResponseResult> GetStoreTotalStock(string Flag, int ItemCode, int StoreId, string TillDate);

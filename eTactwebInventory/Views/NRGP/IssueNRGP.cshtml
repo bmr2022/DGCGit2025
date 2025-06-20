@@ -61,6 +61,11 @@
                             <input asp-for="ChallanNoBack" type="hidden" value="@Model.ChallanNoBack" />
                             <input asp-for="ChallanTypeBack" type="hidden" value="@Model.ChallanTypeBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input type="hidden" id="Email"/>
+                            <input type="hidden" id="CC1"/>
+                            <input type="hidden" id="CC2"/>
+                            <input type="hidden" id="CC3"/>
+                            
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -667,6 +672,9 @@
                     <a href="#" class="btn btn-primary" id="btnPrint">
                         <i class="fa fa-print"></i> Print
                     </a>
+                    <a href="#" class="btn btn-primary" id="btnPrintEmail">
+                        <i class="fa fa-print"></i> Print&Email
+                    </a>
                     <button type="button" class="btn btn-danger" id="btnClose">Close</button>
                 </div>
             </div>
@@ -725,25 +733,43 @@
         // When user clicks "Print"
 $('#btnPrint').click(function () {
     const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+       
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(true, printWindow); // Send true and window object
+        submitForm(true,false, printWindow,null); // Send true and window object
     }, 300);
 });
+
+        $('#btnPrintEmail').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+           
+
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true,true, printWindow, sendWindow); // Send true and window object
+            }, 300);
+        });
 
 // When user clicks "Close" or no print
 $('#btnClose').click(function () {
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(false, null); // no print
+        submitForm(false,false, null,null); // no print
     }, 300);
 });
 
-function submitForm(shouldPrint, printWindow) {
+function submitForm(shouldPrint,shouldSend, printWindow,sendWindow) {
     $('#ShouldPrint').val(shouldPrint); // Set hidden input
     const formData = $('form').serialize(); // Properly serialize full form
+    var Email = $('#Email').val();
+    var CC1 = $('#CC1').val();
+    var CC2 = $('#CC2').val();
+    var CC3 = $('#CC3').val();
+            var ChallanNo = $('#ChallanNo').val();
 
     $.ajax({
         type: "POST",
@@ -754,10 +780,20 @@ function submitForm(shouldPrint, printWindow) {
             console.log("Server response:", res);
 
             if (res && res.status === "Success") {
-                if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                        if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
                     const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                     printWindow.location.href = printUrl;
                 }
+                else if(shouldPrint && shouldSend )
+                {
+                    const printUrl = '/NRGP/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            const sendUrl = '/NRGP/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + ChallanNo;
+                    printWindow.location.href = printUrl;
+                            /* sendWindow.location.href = sendUrl; */
+                            $.get(sendUrl);
+
+                }
+                
 
                 window.location.href = '/NRGP/Index';
             } else {
@@ -2287,6 +2323,7 @@ function submitForm(shouldPrint, printWindow) {
                         type: "POST",
                         url: "@Url.Action("GetAddressDetails")",
                         data: dataParams,
+                        async: false,
                         dataType: "json",
                         success: function (result, status, error) {
                             if (result != null) {
@@ -2296,6 +2333,30 @@ function submitForm(shouldPrint, printWindow) {
                                         $('#DeliveryAddress').val(val.Address);
                                         $('#VendorStateCode').val(val.statecode);
                                         $('#GSTType').val(val.GSTPartyTypes);
+                                    });
+                                }
+                            }
+                        },
+                        error: function (req, status, error) {
+                            alert(error);
+                        }
+                    });
+
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetEmails")",
+                        data: dataParams,
+                        dataType: "json",
+                        async: false,
+                        success: function (result, status, error) {
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $.each(obj.Result, function (index, val) {
+                                        $('#Email').val(val.EmailId);
+                                        $('#CC1').val(val.CC1);
+                                        $('#CC2').val(val.CC2);
+                                        $('#CC3').val(val.CC3);
                                     });
                                 }
                             }

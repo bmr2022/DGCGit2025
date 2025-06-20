@@ -255,9 +255,9 @@ namespace eTactWeb.Controllers
                 GIGrid.Columns.Add("ControlMethod", typeof(string));
                 GIGrid.Columns.Add("RejectionPlan", typeof(string));
                 GIGrid.Columns.Add("Remarks", typeof(string));
-                GIGrid.Columns.Add("ItemimagePath", typeof(string));
-                GIGrid.Columns.Add("DrawingNo", typeof(string));
-                GIGrid.Columns.Add("DrawingNoImagePath", typeof(string));
+                //GIGrid.Columns.Add("ItemimagePath", typeof(string));
+                //GIGrid.Columns.Add("DrawingNo", typeof(string));
+                //GIGrid.Columns.Add("DrawingNoImagePath", typeof(string));
 
                 foreach (var Item in DetailList)
                 {
@@ -281,10 +281,10 @@ Item.FrequencyofTesting ?? "",
 Item.InspectionBy ?? "",
 Item.ControlMethod ?? "",
 Item.RejectionPlan ?? "",
-Item.Remarks ?? "",
-Item.ItemImageURL ?? "",
-Item.DrawingNo ?? "",
-Item.ImageURL ?? ""
+Item.Remarks ?? ""
+//Item.ItemImageURL ?? "",
+//Item.DrawingNo ?? "",
+//Item.ImageURL ?? ""
 
                         });
                 }
