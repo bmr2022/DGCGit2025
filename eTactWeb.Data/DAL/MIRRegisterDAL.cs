@@ -188,6 +188,7 @@ namespace eTactWeb.Data.DAL
                                                            GateNo = string.IsNullOrEmpty(dr["GateNo"].ToString()) ? "" : dr["GateNo"].ToString(),
                                                            GateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? "" : dr["GateDate"].ToString(),
                                                            Rate = Convert.ToDecimal(dr["Rate"].ToString()),
+                                                           Amount = Convert.ToDecimal(dr["Amount"].ToString()),
                                                        }).ToList();
                         }
                     }
