@@ -26,6 +26,8 @@ namespace eTactWeb.DOM.Models
         public int ItemCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
+        public string PartName { get; set; }
+        
         public int AccountCode { get; set; }
         public int EngApprovedBy { get; set; }
         public int ApprovedBy { get; set; }
@@ -63,7 +65,20 @@ namespace eTactWeb.DOM.Models
         public int seqNo { get; set; }
         public string ReportType { get; set; }
         public string Searchbox { get; set; }
-        public IList<InProcessInspectionDetailModel> DTSSGrid { get; set; }
+
+		public string PartNo { get; set; }
+		public string InspectionType { get; set; }
+		public string CustomerName { get; set; }
+		public string ProjectNo { get; set; }
+		public string Color { get; set; }
+		public string Material { get; set; }
+		public string NoOfCavity { get; set; }
+		public string MachineNo { get; set; }
+		public string LotNo { get; set; }
+		public string Shift { get; set; }
+		public string Time { get; set; }
+		public string Date { get; set; }
+		public IList<InProcessInspectionDetailModel> DTSSGrid { get; set; }
     }
     public class InProcessInspectionDetailModel
     {

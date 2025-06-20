@@ -29,9 +29,10 @@ namespace eTactWeb.Controllers
             MainModel.DTSSGrid = new List<InProcessInspectionDetailModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-            //MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+			MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+			//MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-            return View(MainModel); // Pass the model with old data to the view
+			return View(MainModel); // Pass the model with old data to the view
         }
     }
 }
