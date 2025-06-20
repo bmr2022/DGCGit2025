@@ -88,7 +88,120 @@
 										<label asp-for="YearCode" class="form-label">YearCode</label>
 										<input asp-for="YearCode" class="form-control" readonly />
 									</div>
-								
+
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="InspectionType" class="form-label" style="color:red"> Inspection Type*</label>
+										<select class="form-control"  asp-for="InspectionType">
+											<option value="">-Select-</option>
+											<option value="Incoming">Incoming</option>
+											<option value="InProcess">InProcess</option>
+											<option value="OutGoing">OutGoing</option>
+											
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="PartNo" class="form-label" style="color:red"> Part No*</label>
+										<select class="form-control" id="PartNo" asp-for="PartNo">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.ItemCode" selected>@Model.PartNo</option>
+											}
+										</select>
+									</div>
+
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="PartName" class="form-label" style="color:red"> Part Name*</label>
+										<select class="form-control" id="PartName" asp-for="PartName">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.ItemCode" selected>@Model.PartName</option>
+											}
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="CustomerName" class="form-label" > Customer Name</label>
+										<select class="form-control" asp-for="CustomerName">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.CustomerName" selected>@Model.CustomerName</option>
+											}
+										</select>
+									</div>
+									
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="ProjectNo" class="form-label">Project</label>
+										<input asp-for="ProjectNo" class="form-control"  />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Color" class="form-label"> Color</label>
+										<select class="form-control" asp-for="Color">
+											<option value="">-Select-</option>
+											<option value="Red">Red</option>
+											<option value="Blue">Blue</option>
+											<option value="Green">Green</option>
+											<option value="Yellow">Yellow</option>
+											<option value="Black">Black</option>
+											<option value="White">White</option>
+											<option value="Pink">Pink</option>
+											<option value="Orange">Orange</option>
+											<option value="Purple">Purple</option>
+											<option value="Grey">Grey</option>
+											<option value="Brown">Brown</option>
+											<option value="Maroon">Maroon</option>
+											
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Material" class="form-label"> Material</label>
+										<select class="form-control" asp-for="Material">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.Material" selected>@Model.Material</option>
+											}
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="NoOfCavity" class="form-label">No Of Cavity</label>
+										<input asp-for="NoOfCavity" class="form-control"  />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="MachineNo" class="form-label"> Machine No</label>
+										<select class="form-control" asp-for="MachineNo">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.MachineNo" selected>@Model.MachineNo</option>
+											}
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="LotNo" class="form-label">Lot No</label>
+										<input asp-for="LotNo" class="form-control"  />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="Shift" class="form-label"> Shift</label>
+										<select class="form-control" asp-for="Shift">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.Shift" selected>@Model.Shift</option>
+											}
+										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label class="form-label">Time</label>
+										<input asp-for=Time id="Time" name="Time" type="time" class="form-control" value="@DateTime.Now.ToString("HH:mm")" />
+									</div>
+
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="Date" class="form-label">Date</label>
+										<input asp-for="Date" class="form-control" />
+									</div>
+
 								</div>
 
 
@@ -219,6 +332,7 @@
 
 @section Scripts {
 	<script>
+		
 		$(document).ready(function () {
 			GetFormRights();
 			if ($('#Mode').val() !== "U") {
@@ -227,8 +341,11 @@
 				TotalNoOfRows();
 				FillSlipNo();
 			}
-
-
+			const now = new Date();
+			const hours = now.getHours().toString().padStart(2, '0');
+			const minutes = now.getMinutes().toString().padStart(2, '0');
+			document.getElementById("Time").value = `${hours}:${minutes}`;
+			
 
 			$('#BatchNo').css('background-color', 'rgb(248 255 178)');
 			//$('#BillNo').removeClass('Valid');
@@ -270,23 +387,15 @@
 			$('#Remark').rules("remove", "required");
 
 
-			$('#WONO').select2();
-			$('#WOYear').select2();
-			$('#RsNo').select2();
-			$('#RsYear').select2();
-			$('#ParentRsNo').select2();
-			$('#OriginalPartCode').select2();
-			$('#OriginalItemName').select2();
-			$('#FromStore').select2();
-			$('#AltPartCode').select2();
-			$('#AltItemName').select2();
-			$('#ToStore').select2();
-			$('#StoreName').select2();
-			$('#WorkCenterName').select2();
-			$('#IssueToStoreWC').select2();
-			$('#AltStoreName').select2();
-			$('#AltWorkCenterName').select2();
-
+			$('#InspectionType').select2();
+			$('#PartNo').select2();
+			$('#PartName').select2();
+			$('#CustomerName').select2();
+			$('#Color').select2();
+			$('#Material').select2();
+			$('#MachineNo').select2();
+			$('#Shift').select2();
+			
 			$('#totalRows').text($('#divStockGrid tr').length);
 
 			//FillSlipNo();
@@ -315,12 +424,12 @@
 			// var month = monthNames[today.getMonth()];
 			// var year = today.getFullYear();
 
-			// var formattedDate = day + '/' + month + '/' + year;
+			
 
 			// $('#ProdSchDatetime').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
 			// $('#PlanDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
 			// $('#ActualEntryDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
-			// $('#SlipDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
+			
 			// if ($('#Mode').val() == "U") {
 
 			//     var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
@@ -405,7 +514,7 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#ProdSchDatetime, #PlanDate, #ActualEntryDate, #SlipDate,#UpdationDate')
+			$('#Date,#ActualEntryDate,#UpdationDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
 		}
