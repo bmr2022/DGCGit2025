@@ -2,6 +2,7 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace eTactWeb.Controllers
 {
@@ -34,5 +35,37 @@ namespace eTactWeb.Controllers
 
 			return View(MainModel); // Pass the model with old data to the view
         }
-    }
+
+		public async Task<JsonResult> FillPartCode(string InspectionType)
+		{
+			var JSON = await _IInProcessInspection.FillPartCode(InspectionType);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+        public async Task<JsonResult> FillItemName()
+		{
+			var JSON = await _IInProcessInspection.FillItemName();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+        public async Task<JsonResult> FillCustomer()
+		{
+			var JSON = await _IInProcessInspection.FillCustomer();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+        public async Task<JsonResult> FillColor(string PartNo)
+		{
+			var JSON = await _IInProcessInspection.FillColor(PartNo);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+         public async Task<JsonResult> FillMachineName()
+		{
+			var JSON = await _IInProcessInspection.FillMachineName();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+
+	}
 }

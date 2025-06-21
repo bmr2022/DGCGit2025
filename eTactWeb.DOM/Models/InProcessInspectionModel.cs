@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
@@ -78,9 +79,17 @@ namespace eTactWeb.DOM.Models
 		public string Shift { get; set; }
 		public string Time { get; set; }
 		public string Date { get; set; }
+		public string RevDate { get; set; }
+		public bool BegingOfProduction { get; set; }
+		public bool AfterMouldCorrection { get; set; }
+		//public IList<string>? BegingOfProduction { get; set; }
+		//public IList<BegingOfProductionDetail>? BegingOfProductionDetailList { get; set; }
+		//public IList<TextValue>? BegingOfProductionList { get; set; }
+
 		public IList<InProcessInspectionDetailModel> DTSSGrid { get; set; }
     }
-    public class InProcessInspectionDetailModel
+	
+	public class InProcessInspectionDetailModel
     {
         public int SeqNo { get; set; }
         public string Mode { get; set; }
