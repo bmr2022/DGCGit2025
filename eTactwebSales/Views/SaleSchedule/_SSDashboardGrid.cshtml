@@ -55,6 +55,7 @@
                             Cntr = Cntr + 1;
                             <input type="hidden" asp-for="SchApproved" id="hiddenSSApproved-@Cntr" value="@item.SchApproved" />
                             <input type="hidden" asp-for="SchAmendApprove" id="hiddenSSAmendApproved-@Cntr" value="@item.SchAmendApprove" />
+                            <input type="hidden" value="@item.EntryID" id="gridSchEntryId-@Cntr"/>
                             <tr id="SSGridRow-@Cntr">
                                 <th>@Cntr</th>
                                 <td style="text-align:center;white-space: nowrap;">
@@ -200,6 +201,7 @@
                             Cntr = Cntr + 1;
                             <input type="hidden" asp-for="SchApproved" id="hiddenSSApproved-@Cntr" value="@item.SchApproved" />
                             <input type="hidden" asp-for="SchAmendApprove" id="hiddenSSAmendApproved-@Cntr" value="@item.SchAmendApprove" />
+                            <input type="hidden" value="@item.EntryID" id="gridSchEntryId-@Cntr" />
                             <tr id="SSGridRow-@Cntr">
                                 <th>@Cntr</th>
                                 <td style="text-align:center;white-space: nowrap;">

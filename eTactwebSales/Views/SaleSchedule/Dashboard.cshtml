@@ -288,13 +288,14 @@
             var rowSSGrid = $('#divSSGrid tr').length;
             debugger
             for (var i = 1; i <= rowSSGrid; i++) {
+                var entryId = $('#gridSchEntryId-' + i).val();
                 var Approved = $('#hiddenSSApproved-' + i).val();
                 var AmendApproved = $('#hiddenSSAmendApproved-' + i).val();
 
-                if (Approved == "Y") {
+                if (Approved == "Y" && AmendApproved == "N") {
                     $('#SSGridRow-' + i).css("color", "green");
                 } else {
-                    if (AmendApproved == "Y") {
+                    if (AmendApproved == "Y" && AmendApproved == "Y") {
                         $('#SSGridRow-' + i).css("color", "blue");
                     } else {
                         $('#SSGridRow-' + i).css("color", "#FF0000");
