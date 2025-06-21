@@ -156,7 +156,8 @@ public class BatchDetailModel
     public string? UniqueBatchNO { get; set; }
     public string? ManufactureDate {get; set; }
     public string? ExpiryDate { get; set; }
-    public string CC { get; set; }
+    public string? CC { get; set; }
+   
 
 }
 public class MaterialReceiptModel : MaterialReceiptDetail
@@ -269,5 +270,9 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public string PoNoBack { get; set; }
     public string GlobalSearchBack { get; set; }
     public string DashboardTypeBack { get; set; }
+    public string? CC1 { get; set; }
+    public string? CC2 { get; set; }
+    public string? CC3 { get; set; }
+    public string? EmailId { get; set; }
 }
 

@@ -47,6 +47,20 @@
                         </a>
 
                     </div>
+                    <div class="col-auto">
+                        @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReportShortExcess" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo" asp-route-AccountCode="@Model.AccountID">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            Short & Excess
+                        </a>
+
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="SendReport" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo" asp-route-AccountCode="@Model.AccountID" asp-route-emailTo="@Model.EmailId" asp-route-CC1="@Model.CC1" asp-route-CC2="@Model.CC2" asp-route-CC3="@Model.CC3">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            Send Report
+                        </a>
+
+
+                    </div>
 
                     <a asp-action="MRNDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
@@ -65,6 +79,10 @@
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            <input asp-for="EmailId" type="hidden" value="@Model.EmailId" />
+                            <input asp-for="CC1" type="hidden" value="@Model.CC1" />
+                            <input asp-for="CC2" type="hidden" value="@Model.CC2" />
+                            <input asp-for="CC3" type="hidden" value="@Model.CC3" />
                             <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">

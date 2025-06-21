@@ -29,6 +29,8 @@ using PdfSharp.Drawing;
 using PdfSharp.Pdf;
 using System.Drawing;
 using eTactWeb.Services;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 
 
@@ -84,7 +86,7 @@ namespace eTactWeb.Controllers
             return View(webReport);
         }
 
-        public IActionResult SendReport(int EntryId = 0, int YearCode = 0, string MrnNo = "", int AccountCode = 0, string emailTo = "", string CC1 = "bmr.client2021@gmail.com", string CC2 = "", string CC3 = "")
+        public IActionResult SendReport(int EntryId = 0, int YearCode = 0, string MrnNo = "", int AccountCode = 0, string emailTo = "", string CC1 = "", string CC2 = "", string CC3 = "")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -127,6 +129,8 @@ namespace eTactWeb.Controllers
                         Resolution = 300, // Higher quality
                         //ExportQuality = 100 // Maximum quality
                     };
+
+
 
                     // Export the report
                     webReport.Report.Export(imageExport, imageStream);
@@ -174,7 +178,7 @@ namespace eTactWeb.Controllers
                     {
                         _emailService.SendEmailAsync(
                             recipient,
-                            "Soft Copy Of Challan No: " + MRNNo + " From AutoComponent",
+                            "Soft Copy Of MRN No: " + MRNNo + " From AutoComponent",
                             CC1,
                             CC2,
                             CC3,
@@ -190,6 +194,85 @@ namespace eTactWeb.Controllers
             {
                 return Content($"Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}");
             }
+        }
+
+        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null, string CC1 = "", string CC2 = "", string CC3 = "")
+        {
+            var emailSettings = _iconfiguration.GetSection("EmailSettings");
+            emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                          .Where(x => !string.IsNullOrWhiteSpace(x))
+                          .Select(x => x.Trim()));
+            var mimeMessage = new MimeMessage();
+            mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
+            //mimeMessage.To.Add(MailboxAddress.Parse("infotech.bmr@gmail.com"));
+            //mimeMessage.To.Add(MailboxAddress.Parse(CC1));
+            //mimeMessage.To.Add(MailboxAddress.Parse(CC2));
+            var toEmails = emailTo.Split(',')
+                              .Where(x => !string.IsNullOrWhiteSpace(x))
+                              .Select(x => x.Trim());
+
+            foreach (var email in toEmails)
+            {
+                if (IsValidEmail(email))
+                    mimeMessage.To.Add(MailboxAddress.Parse(email));
+            }
+            mimeMessage.Subject = subject;
+            //if (!string.IsNullOrWhiteSpace(CC1))
+            //    mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
+            //if (!string.IsNullOrWhiteSpace(CC2))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+            //if (!string.IsNullOrWhiteSpace(CC3))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
+
+            // if (!string.IsNullOrWhiteSpace(CC1))
+            //  mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+            //if (!string.IsNullOrWhiteSpace(CC2))
+            //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+            //  if (!string.IsNullOrWhiteSpace(CC3))
+            //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+
+            var builder = new BodyBuilder();
+            builder.HtmlBody = message;
+
+            if (attachment != null && !string.IsNullOrEmpty(attachmentName))
+            {
+                builder.Attachments.Add(attachmentName, attachment);
+            }
+
+            mimeMessage.Body = builder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    await client.ConnectAsync(emailSettings["SmtpServer"],
+                        int.Parse(emailSettings["SmtpPort"]),
+                        MailKit.Security.SecureSocketOptions.StartTls);
+
+                    await client.AuthenticateAsync(emailSettings["SmtpUsername"],
+                        emailSettings["SmtpPassword"]);
+
+                    await client.SendAsync(mimeMessage);
+                }
+                catch (Exception ex)
+                {
+                    // Handle exception
+                    throw;
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
+        }
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch { return false; }
         }
 
         private byte[] ConvertImageToPdf(byte[] imageBytes)
