@@ -774,6 +774,7 @@ namespace eTactWeb.Controllers
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 List<StockAdjustmentModel> data = new List<StockAdjustmentModel>();
+                var errors = new List<string>();
 
                 using (var stream = excelFile.OpenReadStream())
                 using (var package = new ExcelPackage(stream))
@@ -806,6 +807,12 @@ namespace eTactWeb.Controllers
                             itemCCode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
                             itemName = itemCode.Result.Result.Rows.Count <= 0 ? "" : itemCode.Result.Result.Rows[0].ItemArray[1];
                         }
+                        else
+                        {
+                            errors.Add($"Invalid PartCode at row {row}");
+                            continue;
+
+                        }
                         var StockAdjustmentDate = IStockAdjust.GetmaxStockAdjustDate("GetEachItemsSADate", itemCCode);
 
                         var StockDateResult = StockAdjustmentDate.Result.Result != null && StockAdjustmentDate.Result.Result.Rows.Count > 0 ? StockAdjustmentDate.Result.Result.Rows[0].ItemArray[0] : "";
@@ -828,7 +835,7 @@ namespace eTactWeb.Controllers
                             var StoreLotStock = IStockAdjust.FillLotStock(itemCCode, storeIdResult, uniquebatchno, batchno);
                             StoreLotStockResult = StoreLotStock.Result.Result != null && StoreLotStock.Result.Result.Rows.Count > 0 ? (int)StoreLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
                         }
-                        else
+                        else if (worksheet.Cells[row, 1].Value.ToString() == "M")
                         {
                             var WCId = IStockAdjust.GetWorkCenterId(worksheet.Cells[row, 4].Value.ToString());
                             WCResult = WCId.Result.Result != null && WCId.Result.Result.Rows.Count > 0 ? (int)WCId.Result.Result.Rows[0].ItemArray[0] : 0;
@@ -901,6 +908,12 @@ namespace eTactWeb.Controllers
                             StockAdjustmentDate = "01/feb/2025"
                             //StockDateResult.ToString()
                         });
+
+                        
+                    }
+                    if (errors.Count > 0)
+                    {
+                        return BadRequest(string.Join("\n", errors));
                     }
                 }
                 var model = new StockAdjustmentModel();
