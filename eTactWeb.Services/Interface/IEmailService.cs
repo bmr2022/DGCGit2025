@@ -14,7 +14,7 @@ namespace eTactWeb.Services.Interface
             string CC1,
             string CC2,
             string CC3,
-        string message,
+            string message,
             byte[] attachment = null,
             string attachmentName = "Report.pdf");
         

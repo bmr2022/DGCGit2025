@@ -2392,6 +2392,10 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                      }
 
                  }
+                 if ($('#ApprovedByEmp' + i).val() == 0) {
+                      $.notify('Please Select ApprovedBy Name ' + partcode, "error");
+                         Err = 1;
+                 }
              }
              Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
