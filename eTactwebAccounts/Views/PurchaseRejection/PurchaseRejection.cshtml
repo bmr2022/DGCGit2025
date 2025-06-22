@@ -541,8 +541,8 @@
                 if (data && data.length > 0) {
                     data.forEach((item, index) => {
                         html += `<tr id="PRPopUpDataRow-j" style="font-size: 12px;">
-                        <td> "` + j + `</td>
-                        <td id="partCode-` + j + `>${item.partCode || ''}<input type="hidden" id="popupItemCode-` + j + `" value="${item.itemCode || ''}" /></td>
+                        <td> ` + j + `</td>
+                        <td id="partCode-` + j + `">${item.partCode || ''}<input type="hidden" id="popupItemCode-` + j + `" value="${item.itemCode || ''}" /></td>
                         <td id="popUpItemCodeName-` + j + `">${item.itemName || ''}</td>
                         <td id="popUpPurchBillEntryId-` + j + `">${item.againstPurchaseBillEntryId || ''}</td>
                         <td id="popUpPurchBillYearCode-` + j + `">${item.againstPurchaseBillYearCode || ''}</td>
