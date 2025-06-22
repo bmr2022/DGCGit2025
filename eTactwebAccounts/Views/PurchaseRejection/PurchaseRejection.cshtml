@@ -877,7 +877,7 @@
            $('#divAddPurchaseRejectionList').find('tr').each(function (index) {
                 const row = $(this);
                 const key = index + 1;
-                const uniqueKey = row.find('#hdnUniqueKey-' + key).val();
+                const uniqueKey = $('#hdnuniquekey-' + key).val();
                 if (!existingItemKeys.includes(uniqueKey)) {
                         existingItemKeys.push(uniqueKey);
                 }
@@ -892,7 +892,7 @@
                  if (entryId && yearCode && invoiceNo && itemCode) {
                      const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
                      if (!existingItemKeys.includes(uniqueKey)) {
-                        row.remove(); // Remove only if not found in main grid
+                        $row.remove(); // Remove only if not found in main grid
                     }
                  }
              });
