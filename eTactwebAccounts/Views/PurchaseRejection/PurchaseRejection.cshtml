@@ -873,38 +873,29 @@
         }
 
         function ClearPopupItemGrid() {
-            debugger
-            const existingItemKeys = [];
-
-            $('#divAddPurchaseRejectionList').find('[id^="GridIC-"]').each(function () {
-                const row = $(this).closest('tr');
-                const entryId = row.find('[id^="GridPurchBillEntryId-"]').val();
-                const yearCode = row.find('[id^="GridPurchBillYearCode-"]').val();
-                const invoiceNo = row.find('[id^="GridInvoiceNo-"]').val();
-                const itemCode = row.find('[id^="GridIC-"]').val();
-
-                if (entryId && yearCode && invoiceNo && itemCode) {
-                    const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
-                    if (!existingItemKeys.includes(uniqueKey)) {
+           const existingItemKeys = [];
+           $('#divAddPurchaseRejectionList').find('tr').each(function (index) {
+                const row = $(this);
+                const key = index + 1;
+                const uniqueKey = row.find('#hdnUniqueKey-' + key).val();
+                if (!existingItemKeys.includes(uniqueKey)) {
                         existingItemKeys.push(uniqueKey);
-                    }
                 }
             });
-
-            $('#divAddPurchaseRejectionPopupDataGrid').find('tr').each(function () {
-                const row = $(this);
-                const entryId = row.find('[id^="popupPurchBillEntryId-"]').val();
-                const yearCode = row.find('[id^="popupPurchBillYearCode-"]').val();
-                const invoiceNo = row.find('[id^="popupInvoiceNo-"]').val();
-                const itemCode = row.find('[id^="popupItemCode-"]').val();
-
-                if (entryId && yearCode && invoiceNo && itemCode) {
-                    const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
-                    if (!existingItemKeys.includes(uniqueKey)) {
+            $('#divAddPurchaseRejectionPopupDataGrid').find('tr').each(function (index) {
+                 const i = index + 1;
+                 const $row = $(this);
+                 const entryId   = ($row.find('#popUpPurchBillEntryId-' + i).text() || '').trim();
+                 const yearCode  = ($row.find('#popUpPurchBillYearCode-' + i).text() || '').trim();
+                 const invoiceNo = ($row.find('#popUpInvoiceNo-' + i).text() || '').trim();
+                 const itemCode  = ($row.find('#popupItemCode-' + i).val() || '').trim();
+                 if (entryId && yearCode && invoiceNo && itemCode) {
+                     const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
+                     if (!existingItemKeys.includes(uniqueKey)) {
                         row.remove(); // Remove only if not found in main grid
                     }
-                }
-            });
+                 }
+             });
 
             if ($('#divAddPurchaseRejectionPopupDataGrid tr').length === 0) {
                 const NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
@@ -1267,21 +1258,25 @@
                         }
                         if (obj.Result != null) {
                             let existingRowCount = $('#divAddPurchaseRejectionPopupDataGrid tr').length;
-                            var j = existingRowCount > 0 ? existingRowCount : 1;
+                            var j = existingRowCount > 0 ? existingRowCount : 0;
                             var checkedRowsCount = $('#divPurchaseRejectionDataGrid tr').length;
                             /* if(html == null) { */
                                 popUpItems = [];
                             /* } */
                             if (html != null) {
-                                $('#divAddPurchaseRejectionPopupDataGrid').find('tr').each(function () {
+                                $('#divAddPurchaseRejectionPopupDataGrid').find('tr').each(function (index) {
+                                    const i = index + 1;
                                     const $row = $(this);
-                                    const entryId   = ($row.find('#popUpPurchBillEntryId').text() || '').trim();
-                                    const yearCode  = ($row.find('#popUpPurchBillYearCode').text() || '').trim();
-                                    const invoiceNo = ($row.find('#popUpInvoiceNo').text() || '').trim();
-                                    const itemCode  = ($row.find('input[id^="popupItemCode-"]').val() || '').trim();
+                                    const entryId   = ($row.find('#popUpPurchBillEntryId-' + i).text() || '').trim();
+                                    const yearCode  = ($row.find('#popUpPurchBillYearCode-' + i).text() || '').trim();
+                                    const invoiceNo = ($row.find('#popUpInvoiceNo-' + i).text() || '').trim();
+                                    const itemCode  = ($row.find('#popupItemCode-' + i).val() || '').trim();
                                     if (entryId && yearCode && invoiceNo && itemCode) {
                                         const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
-                                        popUpItems.push({key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(), value: uniqueKey});
+                                        popUpItems.push({
+                                            key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(),
+                                            value: uniqueKey
+                                        });
                                     }
                                 });
                             }
