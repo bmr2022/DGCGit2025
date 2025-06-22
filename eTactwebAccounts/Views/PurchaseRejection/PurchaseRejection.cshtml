@@ -1514,7 +1514,7 @@
         function AddToItemsGrid(e) {
             e.preventDefault();
             EditEachItem = false;
-            if (!ValidateGrid()) {
+            if (ValidateGrid()) {
                 let matchKey = $('#DocAccountCode').val() + '_' + $('#ItemCode').val();
                 let matchingItems = popUpItems.filter(x => x.key === matchKey);
                 let lastMatch = '';
