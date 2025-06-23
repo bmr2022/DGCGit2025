@@ -594,7 +594,7 @@
 
                 // Handle "E-Invoice Only" click
                 $('#btnEinvoiceOnly').click(function () {
-                    generateEway = false;
+                    generateEway = 'EInvoice';
                                      if ( mode === "V") {
                     sendInvoiceRequest();
                              }
@@ -607,7 +607,7 @@
 
                 // Handle "E-Invoice + E-Way Bill" click
                 $('#btnEwaybill').click(function () {
-                    generateEway = true;
+                    generateEway = 'EwayAndEInvoice';
                                             if ( mode === "V") {
                             sendInvoiceRequest();
                                     }
@@ -641,7 +641,7 @@
                                 distanceKM: res.distanceKM.toString(),
                                 EntrybyId: res.entrybyId,
                                 MachineName: res.machineName,
-                                generateEway: generateEway ? "true" : "false"
+                                generateEway: generateEway 
                             };
 
                             fetch('@Url.Action("GenerateInvoice", "SaleInvoice")', {
@@ -697,7 +697,7 @@
                         distanceKM: '@Model.DistanceKM',
                         EntrybyId: '@Model.EntryByempId',
                         MachineName: '@Model.MachineName',
-                        generateEway: generateEway ? "true" : "false"
+                        generateEway: generateEway
                     };
 
                     $.ajax({

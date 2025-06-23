@@ -56,7 +56,7 @@ namespace eTactWeb.Data.BLL
             return await _EInvoiceDAL.CheckDuplicateIRN(entryId, invoiceNo, yearCode);
         }
        
-        public async Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode ,string transporterName, string vehicleNo, string distanceKM,int EntrybyId, string MachineName, string fromname,string generateEway)
+        public async Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode ,string transporterName, string vehicleNo, string distanceKM,int EntrybyId, string MachineName, string fromname,string generateEway,string flag)
         {
             var result = new ResponseResult();
 
@@ -64,7 +64,7 @@ namespace eTactWeb.Data.BLL
             {
                 var invoice = manInvoiceNo;
 
-                var dataResult = await _EInvoiceDAL.GetInvoiceDataAsync(manInvoiceNo, manYearCode);
+                var dataResult = await _EInvoiceDAL.GetInvoiceDataAsync(manInvoiceNo, manYearCode,flag);
                 if (dataResult?.Result == null || dataResult.Result.Rows.Count == 0)
                 {
                     return result;
@@ -79,7 +79,7 @@ namespace eTactWeb.Data.BLL
 
                 var invoiceDetails = buildResult.Result;
 
-                string ewbUrl = await _EInvoiceDAL.PostDataAsync(invoiceDetails, invoice, manYearCode, transporterName,vehicleNo,distanceKM, EntrybyId,MachineName,fromname, generateEway);
+                string ewbUrl = await _EInvoiceDAL.PostDataAsync(invoiceDetails, invoice, manYearCode, transporterName,vehicleNo,distanceKM, EntrybyId,MachineName,fromname, generateEway,flag);
                 if (!string.IsNullOrEmpty(ewbUrl))
                 {
                     result.Result = ewbUrl;

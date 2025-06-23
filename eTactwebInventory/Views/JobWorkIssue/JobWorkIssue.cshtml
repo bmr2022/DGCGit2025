@@ -35,10 +35,11 @@
             <h5>
                 <strong>Job Work Issue - @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient">
-                        <i class="fa-solid fa-money-bill"></i>
-                        E-Way Bill
-                    </a>
+                    <a id="btnEwayOnly" class="btn btn-sm btn-outline-light bg-gradient" >
+                                <i class="fa-solid fa-money-bill"></i>
+                                E-Way Bill
+                            </a>
+
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="JobWorkIssue" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT
@@ -713,7 +714,7 @@
                         <h5>
                             <strong>Job Work Issue - @Model.YearCode</strong>
                             <span class="d-flex float-end" style="margin-top:-2px;">
-                                <a type="button" class="btn btn-sm btn-outline-light bg-gradient">
+                                <a id="btnEwayOnlyD" type="button" class="btn btn-sm btn-outline-light bg-gradient">
                                     <i class="fa-solid fa-money-bill"></i>
                                     E-Way Bill
                                 </a>
@@ -868,6 +869,38 @@ $('#btnPrint').click(function () {
         submitForm(true, printWindow); // Send true and window object
     }, 300);
 });
+        $('#btnEwayOnly, #btnEwayOnlyD').click(function () {
+            const model = {
+                EntryId: '@Model.EntryId',
+                InvoiceNo: '@Model.JWChallanNo',
+                YearCode: '@Model.YearCode',
+                saleBillType: '', // keep empty or as needed
+                customerPartCode: '@Model.PartCode',
+                transporterName: '@Model.TransporterName',
+                vehicleNo: '@Model.VehicleNo',
+                distanceKM: '@Model.Distance',
+                EntrybyId: '@Model.EnteredByEmpid',
+                MachineName: '@Model.EnterByMachineName',
+                generateEway: 'Eway' // this flag will be used to identify E-Way only
+            };
+
+            $.ajax({
+                url: '@Url.Action("GenerateEwayBill")', // Add controller if not same
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model),
+                success: function (res) {
+                    if (res.redirectUrl) {
+                        window.location.href = res.redirectUrl;
+                    } else {
+                        $.notify('E-Way Bill generation failed.', 'error');
+                    }
+                },
+                error: function () {
+                    $.notify('An error occurred while generating the E-Way Bill.', 'error');
+                }
+            });
+        });
 
 // When user clicks "Close" or no print
 $('#btnClose').click(function () {

@@ -1510,13 +1510,14 @@ namespace eTactWeb.Controllers
                     input.EntrybyId,
                     input.MachineName,
                     "Sale Bill",
-                    input.generateEway
+                    input.generateEway,
+                    "SaleBillEInvoice"
                 );
 
                 string ewbUrl = result.Result as string;
                 if (!string.IsNullOrWhiteSpace(ewbUrl))
                 {
-                    if (input.generateEway != "true")
+                    if (input.generateEway == "EInvoice")
                     {
                         string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
                         if (!Directory.Exists(uploadsFolder))

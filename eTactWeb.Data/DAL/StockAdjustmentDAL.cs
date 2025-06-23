@@ -486,13 +486,14 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        public async Task<ResponseResult> FillPartCode(string Flag)
+        public async Task<ResponseResult> FillPartCode(string Flag,string search)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@PartCode", search));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_StockAdjustment", SqlParams);
             }
             catch (Exception ex)
@@ -504,13 +505,14 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillItemName(string Flag)
+        public async Task<ResponseResult> FillItemName(string Flag, string search)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@ItemName", search));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_StockAdjustment", SqlParams);
             }
             catch (Exception ex)

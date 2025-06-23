@@ -655,18 +655,31 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        public async Task<JsonResult> FillPartCode()
+    
+        //public async Task<JsonResult> FillPartCode()
+        //{
+        //    var JSON = await IStockAdjust.FillPartCode("FillPartCode");
+        //    string JsonString = JsonConvert.SerializeObject(JSON);
+        //    return Json(JsonString);
+        //}
+        public async Task<JsonResult> FillPartCode( string search)
         {
-            var JSON = await IStockAdjust.FillPartCode("FillPartCode");
+            var JSON = await IStockAdjust.FillPartCode("FillPartCode", search);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItemName()
+        public async Task<JsonResult> FillItemName(string search)
         {
-            var JSON = await IStockAdjust.FillItemName("FillItemName");
+            var JSON = await IStockAdjust.FillItemName("FillItemName", search);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        //public async Task<JsonResult> FillItemName()
+        //{
+        //    var JSON = await IStockAdjust.FillItemName("FillItemName");
+        //    string JsonString = JsonConvert.SerializeObject(JSON);
+        //    return Json(JsonString);
+        //}
         public async Task<JsonResult> GetmaxStockAdjustDate(int ItemCode)
         {
             var JSON = await IStockAdjust.GetmaxStockAdjustDate("GetEachItemsSADate", ItemCode);

@@ -18,6 +18,7 @@ using System.Net;
 using System.Globalization;
 using FastReport.Data;
 using System.Configuration;
+using System.Diagnostics;
 //using JobWorkGridDetail = eTactWeb.DOM.Models.JobWorkGridDetail;
 
 namespace eTactWeb.Controllers
@@ -29,9 +30,10 @@ namespace eTactWeb.Controllers
         private readonly IJobWorkIssue _IJobWorkIssue;
         private readonly ILogger<JobWorkIssueController> _logger;
         private readonly IIssueWithoutBom _IIssueWOBOM;
+        public readonly IEinvoiceService _IEinvoiceService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM)
+        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM,IEinvoiceService IEinvoiceService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -39,9 +41,94 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this._iconfiguration = iconfiguration;
             _IIssueWOBOM = IIssueWOBOM;
+            _IEinvoiceService = IEinvoiceService;
+        }
+        private async Task<string> GenerateQRCodeImage(string qrText, string filePath)
+        {
+            try
+            {
+                // Example using Zint barcode generator
+                string tempInputPath = Path.GetTempFileName();
+                await System.IO.File.WriteAllTextAsync(tempInputPath, qrText);
+
+                string zintPath = @"C:\Program Files (x86)\Zint\zint.exe";
+                if (!System.IO.File.Exists(zintPath))
+                    return "Zint not found";
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = zintPath,
+                        Arguments = $"-b 58 -o \"{filePath}\" -i \"{tempInputPath}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                await process.WaitForExitAsync();
+
+                if (!System.IO.File.Exists(filePath))
+                    return "Failed";
+
+                return "Success";
+            }
+            catch
+            {
+                return "Error";
+            }
         }
 
+        public async Task<IActionResult> GenerateEwayBill([FromBody] EInvoiceItemModel input)
+        {
+            try
+            {
+                if (input == null)
+                    return BadRequest("Invalid input");
 
+                var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode
+                );
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+
+                var result = await _IEinvoiceService.CreateIRNAsync(
+                    token,
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode,
+                    input.saleBillType,
+                    input.customerPartCode,
+                    input.transporterName,
+                    input.vehicleNo,
+                    input.distanceKM,
+                    input.EntrybyId,
+                    input.MachineName,
+                    "JobWork Challan",
+                    input.generateEway,
+                    "VendJobWorkEWayBil"
+                );
+
+                string ewbUrl = result.Result as string;
+                if (!string.IsNullOrWhiteSpace(ewbUrl))
+                {
+                    return Ok(new { redirectUrl = ewbUrl }); 
+
+                }
+                else
+                {
+                    return BadRequest("Invoice generation failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server Error: {ex.Message}");
+            }
+        }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
         {
             string my_connection_string;
