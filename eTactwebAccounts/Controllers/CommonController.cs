@@ -866,6 +866,7 @@ namespace eTactWeb.Controllers
                 }
                 else if (model.AdjPageName == "PurchaseBill")
                 {
+
                     string modelJsonData = HttpContext.Session.GetString("PurchaseBill");
                     if (!string.IsNullOrEmpty(modelJsonData))
                     {
@@ -940,11 +941,12 @@ namespace eTactWeb.Controllers
                     MainModel.adjustmentModel = new AdjustmentModel();
                 }
                 MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
+                //AdjustmentModel = MainModel.adjustmentModel.AdjAdjustmentDetailGrid;
 
                 StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
 
-                //string serializedGrid = JsonConvert.SerializeObject(MainModel.adjustmentModel.AdjAdjustmentDetailGrid);
-                //HttpContext.Session.SetString("KeyAdjGrid", serializedGrid);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.adjustmentModel);
+                HttpContext.Session.SetString("KeyAdjGrid", serializedGrid);
             }
             else
             {

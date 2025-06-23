@@ -2557,8 +2557,10 @@ function submitForm(shouldPrint,shouldSend, printWindow,sendWindow) {
                 "ProcessName": ProcessName,
                 "Storeid": $('#Storeid').val(),
                 "StoreName": StoreName,
-                "BatchNo": $('#BatchNo').val(),
-                "uniquebatchno": $('#uniquebatchno').val(),
+                /* "BatchNo": $('#BatchNo').val(),
+                "uniquebatchno": $('#uniquebatchno').val(), */
+                "BatchNo": $('#BatchNo option:selected').text().trim(),
+                "uniquebatchno": $('#uniquebatchno option:selected').text().trim(),
                 "TotalStock": parseInt($('#TotalStock').val()),
                 "BatchStock": $('#BatchStock').val(),
                 "AltQty": $('#AltQty').val(),

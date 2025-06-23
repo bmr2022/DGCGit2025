@@ -1541,8 +1541,10 @@
                 "DiscountAmt": $('#DiscountAmt').val(),
                 "StoreId": $('#StoreId').val(),
                 "StoreName": $('#StoreId').find(':selected').text() == "-Select-" ? "" : $('#StoreId').find(':selected').text(),
-                "Batchno": $('#Batchno').val(),
-                "Uniquebatchno": $('#Uniquebatchno').val(),
+                /* "Batchno": $('#Batchno').val(),
+                "Uniquebatchno": $('#Uniquebatchno').val(), */
+                    "Batchno": $('#Batchno').find(':selected').text().trim(),
+                    "Uniquebatchno": $('#Uniquebatchno').find(':selected').text().trim(),
                 "LotStock": $('#LotStock').val(),
                 "TotalStock": $('#TotalStock').val(),
                 "ItemSize": $('#ItemSize').val(),

@@ -172,7 +172,7 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "PurchaseBill")
             {
-                _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                //_MemoryCache.TryGetValue("PurchaseBill", out MainModel);
                 string modelJson = HttpContext.Session.GetString("PurchaseBill");
                 if (!string.IsNullOrEmpty(modelJson))
                 {

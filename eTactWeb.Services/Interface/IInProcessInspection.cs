@@ -11,8 +11,10 @@ namespace eTactWeb.Services.Interface
     {
 		Task<ResponseResult> FillPartCode(string InspectionType);
 		Task<ResponseResult> FillItemName();
+		Task<ResponseResult> FillShift();
 		Task<ResponseResult> FillMachineName();
 		Task<ResponseResult> FillCustomer();
 		Task<ResponseResult> FillColor(string PartNo);
+		Task<ResponseResult> FillEntryID(int YearCode);
 	}
 }

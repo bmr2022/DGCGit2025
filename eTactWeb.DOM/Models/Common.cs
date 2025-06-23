@@ -258,7 +258,7 @@ public class Common
     }
     public class AdjustmentModel : TimeStamp
     {
-        public IList<AdjustmentModel>? AdjAdjustmentDetailGrid { get; set; }
+        public List<AdjustmentModel>? AdjAdjustmentDetailGrid { get; set; }
         public IList<SelectListItem> AdjModeOfAdjustmentList { get; set; } = new List<SelectListItem>()
         {
             new() { Value = "NewRef", Text = "New Ref", Selected = true  },

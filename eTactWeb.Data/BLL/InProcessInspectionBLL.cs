@@ -37,9 +37,18 @@ namespace eTactWeb.Data.BLL
 		{
             return await _InProcessInspectionDAL.FillCustomer();
 		}
+         public async Task<ResponseResult> FillShift()
+		{
+            return await _InProcessInspectionDAL.FillShift();
+		}
+
          public async Task<ResponseResult> FillColor(string PartNo)
 		{
             return await _InProcessInspectionDAL.FillColor(PartNo);
+		}
+		public async Task<ResponseResult> FillEntryID(int YearCode)
+		{
+			return await _InProcessInspectionDAL.FillEntryID(YearCode);
 		}
 
 	}

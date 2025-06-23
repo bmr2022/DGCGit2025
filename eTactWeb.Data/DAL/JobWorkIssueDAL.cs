@@ -488,7 +488,7 @@ namespace eTactWeb.Data.DAL
                         });
                     }
                     model.JobDetailGrid = ItemList;
-                    model.JobDetailGrid = ItemList.OrderBy(item => item.ItemCode).ThenBy(item => item.SeqNo).ToList();
+                    model.JobDetailGrid = ItemList.OrderBy(item => item.SeqNo).ToList();
 
                 }
 

@@ -1293,8 +1293,8 @@
             if (!Validate_TransferGrid()) return;
 
             var ItemData = {
-                "PartCode": $('#PartCode').find(":selected").text(),
-                "ItemName": $('#ItemName').find(":selected").text(),
+                "PartCode": $('#PartCode').find(":selected").text().trim(),
+                "ItemName": $('#ItemName').find(":selected").text().trim(),
                 "ProdEntryId": parseInt($('#ProdEntryId').val()),
                 "ProdEntryYearCode": parseInt($('#ProdEntryYearCode').val()),
                 "ProdDate": $('#ProdDate').val(),
@@ -1321,8 +1321,10 @@
                 "ProcessName": $('#ProcessName').find(":selected").text() == '-Select-' ? "" : $('#ProcessName').find(":selected").text(),
                 "ProcessId": $('#ProcessName').val(),
                 "TotalStock": parseFloat($('#TotalStock').val()),
-                "BatchNo": $('#BatchNo').val(),
-                "UniqueBatchNo": $('#UniqueBatchNo').val(),
+               /*  "BatchNo": $('#BatchNo').val(),
+                "UniqueBatchNo": $('#UniqueBatchNo').val(), */
+                BatchNo: $('#BatchNo').find(':selected').text().trim(),
+                UniqueBatchNo: $('#UniqueBatchNo').find(':selected').text().trim(),
                 "BatchStock": parseFloat($('#BatchStock').val()),
                 "ReceivedByStoreQty": parseFloat($('#ReceivedByStoreQty').val()),
                 "ReceivedCompleted": $('#ReceivedCompleted').val(),
