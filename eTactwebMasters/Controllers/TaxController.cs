@@ -542,7 +542,8 @@ public class TaxController : Controller
                  {
                      Amount = group.Sum(item => item.Amount),
                      ItemCode = group.Key,
-                     PartCode = group.First().PartCode,
+                     PartCode = group.Select(x => x.PartCode).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     ItemName = group.Select(x => x.ItemName).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
                  })
                  .ToList();
 
@@ -606,10 +607,10 @@ public class TaxController : Controller
                      //MRP = group.Sum(item => item.MRP),
                      Amount = Convert.ToDecimal(group.Sum(item => item.Amount)),
                      ItemCode = group.Key,
-                     PartCode = group.First().PartCode,
-                     ItemText = group.First().ItemText,
-                     PartText = group.First().PartText,
-                     Item_Name = group.First().Item_Name,
+                     PartCode = group.Select(x => x.PartCode).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     ItemText = group.Select(x => x.ItemText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     PartText = group.Select(x => x.PartText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     Item_Name = group.Select(x => x.Item_Name).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
                  })
                  .ToList();
 

@@ -1002,31 +1002,28 @@
         }
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-
             e.preventDefault();
-
-            if (!ValidateSubmit()) return;
-
-            if ($('#divAddPurchaseRejectionList tr td').length <= 1) {
-                $.notify('Purchase Rejection Grid Should Have Atleast 1 Item...!', "error");
-            }
-            else if ($('#divAdjItemList tr td').length <= 1) {
-                $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
-            }
-            else if ($('#divdbCrItemList tr td').length <= 1) {
-                $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
-            }
-            else if ($('#GSTRegistered').val() == 'Y') {
-                if ($('#divTaxGrid tr td').length <= 1) {
-                    $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                } else {
-
+            if (ValidateSubmit()) {
+                saveagainstbillgrid();
+                if ($('#divAddPurchaseRejectionList tr td').length <= 1) {
+                    $.notify('Purchase Rejection Grid Should Have Atleast 1 Item...!', "error");
+                }
+                else if ($('#divAdjItemList tr td').length <= 1) {
+                    $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                }
+                else if ($('#divdbCrItemList tr td').length <= 1) {
+                    $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
+                }
+                else if ($('#GSTRegistered').val() == 'Y') {
+                    if ($('#divTaxGrid tr td').length <= 1) {
+                        $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                    } else {
+                        $("form").submit();
+                    }
+                }
+                else {
                     $("form").submit();
                 }
-            }
-            else {
-
-                $("form").submit();
             }
         });
 
@@ -1264,22 +1261,20 @@
                                 popUpItems = [];
                             /* } */
                             if (html != null) {
-                                $('#divAddPurchaseRejectionPopupDataGrid').find('tr').each(function (index) {
+                                 $('#divAddPurchaseRejectionList ').find('tr').each(function (index) {
                                     const i = index + 1;
-                                    const $row = $(this);
-                                    const entryId   = ($row.find('#popUpPurchBillEntryId-' + i).text() || '').trim();
-                                    const yearCode  = ($row.find('#popUpPurchBillYearCode-' + i).text() || '').trim();
-                                    const invoiceNo = ($row.find('#popUpInvoiceNo-' + i).text() || '').trim();
-                                    const itemCode  = ($row.find('#popupItemCode-' + i).val() || '').trim();
-                                    if (entryId && yearCode && invoiceNo && itemCode) {
-                                        const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
+                                    const uniqueKey = ($('#hdnuniquekey-' + i).val() || '').trim();
+                                    /* const key = ($('#DocAccountCode-' + i).val() || '').trim() + '_' + ($('#GridIC-' + i).val() || '').trim(); */
+                                    const key = ($('#GridIC-' + i).val() || '').trim();
+                                    if (uniqueKey) {
                                         popUpItems.push({
-                                            key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(),
+                                            key: key, // or extract from uniqueKey if needed
                                             value: uniqueKey
                                         });
                                     }
                                 });
                             }
+                            popuphtml = "";
                             for (var i = 1; i <= checkedRowsCount; i++) {/*  && popUpItems.indexOf($('#itemCode-' + j).val()) == -1 */
                                 if ($('#chkPurchaseRejection-' + i).is(':checked'))   {
                                     let entryId   = ($('#PurchBillEntryId-' + i).text() || '').trim();
@@ -1287,14 +1282,15 @@
                                     let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
                                     let itemCode = $('#itemCode-' + i).val();
                                     let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
-                                    let keyToCheck = $('#DocAccountCode').val() + '_' + $('#ItemCode').val();
+                                    /* let keyToCheck = $('#DocAccountCode').val() + '_' + $('#ItemCode').val(); */
+                                    let keyToCheck = $('#ItemCode').val();
                                     let exists = popUpItems.some(x => x.key === keyToCheck && x.value === uniqueKey);
                                     if (uniqueKey) {
                                         if (!exists) {
                                             j++;
-                                            popUpItems.push({key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(), value: uniqueKey});
-                                            //popUpItems.push($('#itemCode-' + j).val());
-                                            html += '<tr id="PRPopUpDataRow-' + j + '" style="font-size: 12px;">' +
+                                            /* popUpItems.push({key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(), value: uniqueKey}); */
+                                            popUpItems.push({key: $('#ItemCode').val(), value: uniqueKey});
+                                            popuphtml += '<tr id="PRPopUpDataRow-' + j + '" style="font-size: 12px;">' +
                                                 '<td>' + j + '</td>' +
                                                 '<td id="partCode-' + j + '">' + $('#PartCode').find(':selected').text() + '<input type="hidden" id="popupItemCode-' + j + '" value="' + $('#itemCode-' + i).val() + '"/></td>' +
                                                 '<td id="popUpItemCodeName-' + j + '"> ' + $('#ItemCode').find(':selected').text() + '</td>' +
@@ -1338,7 +1334,6 @@
                         BasicTotal();
                     }
                 }
-
             });
         }
 
@@ -1365,9 +1360,7 @@
         }
 
         function ValidateGrid() {
-
             var Err = 0;
-
             if ($('#PartCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode');
                 $.notify('please select ItemName...!', "error");
@@ -1376,7 +1369,6 @@
             else {
                 RemoveErrorCls('PartCode');
             }
-
             if ($('#Batchno').prop('selectedIndex') == 0) {
                 AddErrorCls('Batchno');
                 $.notify('please select Batchno...!', "error");
@@ -1385,7 +1377,6 @@
             else {
                 RemoveErrorCls('Batchno');
             }
-
             if ($('#Uniquebatchno').prop('selectedIndex') == 0) {
                 AddErrorCls('Uniquebatchno');
                 $.notify('please select Uniquebatchno...!', "error");
@@ -1394,7 +1385,6 @@
             else {
                 RemoveErrorCls('Uniquebatchno');
             }
-
             if ($('#DocAccountCode').prop('selectedIndex') == 0) {
                 AddErrorCls('DocAccountCode');
                 $.notify('please select Doc Head...!', "error");
@@ -1403,7 +1393,6 @@
             else {
                 RemoveErrorCls('DocAccountCode');
             }
-
             if ($('#DocAccountCode').val() == 0) {
                 AddErrorCls('DocAccountCode');
                 $.notify('please select Doc Account Name...!', "error");
@@ -1412,7 +1401,6 @@
             else {
                 RemoveErrorCls('DocAccountCode');
             }
-
             if ($('#ItemAmount').val() == 0) {
                 AddErrorCls('ItemAmount');
                 $.notify('please add Item Amount...!', "error");
@@ -1421,7 +1409,6 @@
             else {
                 RemoveErrorCls('ItemAmount');
             }
-
             if ($('#BillQty').val() == null) {
                 AddErrorCls('BillQty');
                 $.notify('please add Bill Qty...!', "error");
@@ -1430,7 +1417,6 @@
             else {
                 RemoveErrorCls('BillQty');
             }
-
             if ($('#RejectedQty').val() == null) {
                 AddErrorCls('RejectedQty');
                 $.notify('please add Rejected Qty...!', "error");
@@ -1439,7 +1425,6 @@
             else {
                 RemoveErrorCls('RejectedQty');
             }
-
             if ($('#LotStock').val() == null) {
                 AddErrorCls('LotStock');
                 $.notify('please add Lot Stock...!', "error");
@@ -1448,7 +1433,6 @@
             else {
                 RemoveErrorCls('LotStock');
             }
-
             if ($('#TotalStock').val() == null) {
                 AddErrorCls('TotalStock');
                 $.notify('please add Total Stock...!', "error");
@@ -1457,7 +1441,6 @@
             else {
                 RemoveErrorCls('TotalStock');
             }
-
             if ($('#BillQty').val() != null && $('#RejectedQty').val() != null && $('#LotStock').val() != null && $('#TotalStock').val() != null && (parseFloat($('#BillQty').val()) < parseFloat($('#RejectedQty').val()))
             || (parseFloat($('#LotStock').val()) < parseFloat($('#RejectedQty').val()))
             || (parseFloat($('#TotalStock').val()) < parseFloat($('#RejectedQty').val()))) {
@@ -1468,7 +1451,6 @@
             else {
                 RemoveErrorCls('RejectedQty');
             }
-
              var error = false;
              var rowcount = $('#divaddpurchaserejectionpopupdatagrid tr').length;
              //var rowcount = popupitems.length;
@@ -1481,21 +1463,20 @@
                      error = false;
                  }
              }
-
              if (error) {
                  $.notify('cannot add item which is not in popup data grid...!', "error");
              }
-
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) return false;
-
             return true;
         }
 
         var sum = 0;
+        var popuphtml = "";
         $('.ItemBtn').click(function (e) {
             AddToItemsGrid(e);
             if (isAddItem) {
+                html += popuphtml;
                 $('#divAddPurchaseRejectionPopupDataGrid').empty();
                 $('#divAddPurchaseRejectionPopupDataGrid').append(html);
             }
@@ -1510,7 +1491,8 @@
             e.preventDefault();
             EditEachItem = false;
             if (ValidateGrid()) {
-                let matchKey = $('#DocAccountCode').val() + '_' + $('#ItemCode').val();
+                /* let matchKey = $('#DocAccountCode').val() + '_' + $('#ItemCode').val(); */
+                let matchKey = $('#ItemCode').val();
                 let matchingItems = popUpItems.filter(x => x.key === matchKey);
                 let lastMatch = '';
                 if (matchingItems.length > 0) {
@@ -1676,6 +1658,55 @@
             DueDateCalculation();
         });
 
+        function saveagainstbillgrid() {
+            let itemList = [];
+            $('#divAddPurchaseRejectionPopupDataGrid tr').each(function (index) {
+                 const i = index + 1;
+                 itemList.push({
+                    PurchaseRejectionInvoiceNo: $('#popUpInvoiceNo-' + i).text().trim() || '',
+                    PurchaseRejectionVoucherNo: $('#popUpVoucherNo-' + i).text().trim() || '',
+                    AgainstPurchaseBillBillNo: $('#popUpBillNo-' + i).text().trim() || '',
+                    AgainstPurchaseBillYearCode: parseInt($('#popUpYearCode-' + i).text()) || 0,
+                    AgainstPurchaseBillDate: ($('#popUpBillDate-' + i).text().split(" ")[0]) || '',
+                    AgainstPurchaseBillEntryId: parseInt($('#popUpEntryId-' + i).text()) || 0,
+                    AgainstPurchaseVoucherNo: $('#popUpAgainstVoucherNo-' + i).text().trim() || '',
+                    PurchaseBillType: $('#popUpBillType-' + i).text().trim() || '',
+                    ItemCode: $('#popupItemCode-' + i).val() || '', // DebitNoteItemCode
+                    BillItemCode: $('#popupItemCode-' + i).val() || '',
+                    BillQty: parseFloat($('#popUpBillQty-' + i).text()) || 0,
+                    Unit: $('#popUpUnit-' + i).text().trim() || '',
+                    AltQty: parseFloat($('#popUpAltQty-' + i).text()) || 0,
+                    AltUnit: $('#popUpAltUnit-' + i).text().trim() || '',
+                    BillRate: parseFloat($('#popUpBillRate-' + i).text()) || 0,
+                    DiscountPer: parseFloat($('#popUpdisPer-' + i).text()) || 0,
+                    DiscountAmt: parseFloat($('#popUpDisAmt-' + i).text()) || 0,
+                    ItemSize: $('#popUpItemSize-' + i).text().trim() || '',
+                    ItemNetAmount: parseFloat($('#popUpItemNetAmount-' + i).text()) > 0 ? parseFloat($('#popUpItemNetAmount-' + i).text()) : 0,
+                    PONO: $('#popUpPONO-' + i).text().trim() || '',
+                    PODate: ($('#popUpPODate-' + i).text().split(" ")[0]) || '',
+                    POEntryId: parseInt($('#popUpPOEntryId-' + i).text()) || 0,
+                    POYearCode: parseInt($('#popUpPOYearCode-' + i).text()) || 0,
+                    PoRate: parseFloat($('#popUpPoRate-' + i).text()) || 0,
+                    PoAmmNo: $('#popUpPoAmmNo-' + i).text().trim() || '',
+                    BatchNo: $('#popUpBatchNo-' + i).text().trim() || '',
+                    UniqueBatchNo: $('#popUpUniqueBatchNo-' + i).text().trim() || ''
+                });
+            });
+
+            $.ajax({
+                type: "POST",
+                url: "MergePopupGridToSession",
+                contentType: "application/json; charset=utf-8",
+                data: JSON.stringify({ items: itemList }),
+                success: function (res) {
+                    console.log("Saved:", res);
+                    return true;
+                },
+                error: function (err) {
+                    console.error("Failed to save:", err);
+                }
+            });
+        }
 
         function BasicPopUpItemGrid() {
             var columnCount = $('#divPurchaseRejectionDataGrid tr td').length;
@@ -1799,10 +1830,6 @@
                 }
             });
         }
-
-        // $('#AgainstSalePurchase').change(function () {
-        //     FillCustomerName();
-        // }); by M
 
         $('#DebitNotePurchaseRejection').change(function () {
             FillCustomerName();
@@ -2339,7 +2366,6 @@
 
         }
         function PressBack() {
-
             sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
             sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
             sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());

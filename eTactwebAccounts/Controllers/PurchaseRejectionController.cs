@@ -11,6 +11,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Http;
 using NuGet.Packaging;
 using System.Runtime.Caching;
+using System.Reflection;
 
 namespace eTactWeb.Controllers
 {
@@ -513,7 +514,8 @@ namespace eTactWeb.Controllers
                     {
                      (model != null ? model.PurchaseRejEntryId : 0),
                      (model != null ? model.PurchaseRejYearCode : 0),
-                    Item.InvoiceNo ?? string.Empty,
+                    //Item.InvoiceNo ?? string.Empty,
+                    Item.PurchaseRejectionInvoiceNo ?? string.Empty,
                     Item.PurchaseRejectionVoucherNo ?? string.Empty,
                     Item.AgainstPurchaseBillBillNo ?? string.Empty,
                     Item.AgainstPurchaseBillYearCode ?? 0,
@@ -1036,7 +1038,7 @@ namespace eTactWeb.Controllers
             string uniquekey = string.Empty;
             if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
             {
-                uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault().ToString();
+                uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString();
                 purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
                 MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
 
@@ -1064,12 +1066,12 @@ namespace eTactWeb.Controllers
                 }
                 if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
                 {
-                     if (MainModel.AccPurchaseRejectionDetails.Any())
+                    if (MainModel.AccPurchaseRejectionDetails.Any())
                     {
                         bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode && a.hdnuniquekey == uniquekey); // && a.AgainstPurchaseBillEntryId == EntryId && a.AgainstPurchaseBillYearCode == YearCode
                         if (!IsExistsSameItem)
                         {
-                            PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo); 
+                            PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo);
                         }
                     }
                     else
@@ -1158,6 +1160,68 @@ namespace eTactWeb.Controllers
 
             return Json(rslt);
             //return RedirectToAction(nameof(DashBoard));   
+        }
+        [HttpPost]
+        public JsonResult MergePopupGridToSession(List<AccPurchaseRejectionAgainstBillDetail> model)
+        {
+            List<AccPurchaseRejectionAgainstBillDetail> purchaseRejectionPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+            string modelPRJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
+            if (!string.IsNullOrEmpty(modelPRJson))
+            {
+                purchaseRejectionPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRJson);
+            }
+            if (model != null && purchaseRejectionPopupGrid != null)
+            {
+                if (purchaseRejectionPopupGrid.Any())
+                {
+                    foreach (var item in model)
+                    {
+                        var existing = purchaseRejectionPopupGrid.FirstOrDefault(x =>
+                            x.ItemCode == item.ItemCode &&
+                            x.AgainstPurchaseBillEntryId == item.AgainstPurchaseBillEntryId &&
+                            x.AgainstPurchaseBillYearCode == item.AgainstPurchaseBillYearCode &&
+                            x.InvoiceNo == item.InvoiceNo);
+
+                        if (existing == null)
+                        {
+                            model.Add(item);
+                        }
+                        else
+                        {
+                            UpdateBlankFields(existing, item);
+                        }
+                    }
+                }
+            }
+            HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(model));
+            return Json(new { success = true, count = model.Count });
+        }
+        private void UpdateBlankFields<T>(T target, T source)
+        {
+            foreach (var prop in typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                var targetValue = prop.GetValue(target);
+                var sourceValue = prop.GetValue(source);
+
+                if (IsBlank(targetValue) && !IsBlank(sourceValue))
+                {
+                    prop.SetValue(target, sourceValue);
+                }
+            }
+        }
+
+        private bool IsBlank(object value)
+        {
+            if (value == null) return true;
+
+            if (value is string s) return string.IsNullOrWhiteSpace(s);
+            if (value is int i) return i == 0;
+            if (value is long l) return l == 0;
+            if (value is decimal d) return d == 0;
+            if (value is double db) return db == 0;
+            if (value is float f) return f == 0;
+
+            return false;
         }
     }
 }
