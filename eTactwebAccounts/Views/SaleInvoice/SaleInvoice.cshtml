@@ -1979,8 +1979,9 @@
                         "StoreName": $('#Storeid').find(':selected').text() == '-Select-' ? "" : $('#StoreId').find(':selected').text(),
                         "HSNNo": $('#HSNNo').val(),
                         "Unit": $('#Unit').val(),
-                        "Batchno": $('#Batchno').val(),
-                        "Uniquebatchno": $('#Uniquebatchno').val(),
+                        
+                "Batchno": $('#Batchno').find(':selected').text().trim(),
+               "Uniquebatchno": $('#Uniquebatchno').find(':selected').text().trim(),
                         "LotStock": $('#LotStock').val(),
                         "TotalStock": $('#TotalStock').val(),
                         "SOPendQty": $('#SOPendQty').val(),

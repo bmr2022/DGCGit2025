@@ -943,8 +943,8 @@
                 "Unit": $('#Unit').val(),
                 "AltUnit": $('#AltUnit').val(),
                 "Rate": $('#Rate').val(),
-                "BatchNo": $('#BatchNo').find(':selected').text(),
-                "UniqueBatchNo": $('#UniqueBatchNo').find(':selected').text(),
+                "BatchNo": $('#BatchNo').find(':selected').text().trim(),
+                "UniqueBatchNo": $('#UniqueBatchNo').find(':selected').text().trim(),
                 "ReasonOfTransfer": $('#ReasonOfTransfer').val(),
                 "RecStoreStock": $('#RecStoreStock').val(),
                 "SeqNo": parseInt($('#hiddenSeqNo').val()) == 0 ? (highestValue + 1) : parseInt($('#hiddenSeqNo').val())
