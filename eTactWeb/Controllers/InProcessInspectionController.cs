@@ -30,12 +30,37 @@ namespace eTactWeb.Controllers
             MainModel.DTSSGrid = new List<InProcessInspectionDetailModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
-			MainModel.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+			MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 			//MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-
+			MainModel.InspectionOptions = new List<InspectionOption>
+			{
+				new InspectionOption { Key = "BegingOfProduction", Text = "Beginning of Production" },
+				new InspectionOption { Key = "AfterMouldCorrection", Text = "After Mould Correction" },
+				new InspectionOption { Key = "AfterMachineBreackDown", Text = "After Machine Breakdown" },
+				new InspectionOption { Key = "AfterMaterialLotChange", Text = "After Material Lot Change" },
+				new InspectionOption { Key = "AfterMachineIdel", Text = "After Machine Idle" },
+				new InspectionOption { Key = "EndOfProduction", Text = "End of Production" }
+			};
 			return View(MainModel); // Pass the model with old data to the view
         }
-
+		public InProcessInspectionDetailModel ConvertToDetail(IList<string> selected)
+		{
+			return new InProcessInspectionDetailModel
+			{
+				BegingOfProduction = selected.Contains("BegingOfProduction"),
+				AfterMouldCorrection = selected.Contains("AfterMouldCorrection"),
+				AfterMachineBreackDown = selected.Contains("AfterMachineBreackDown"),
+				AfterMaterialLotChange = selected.Contains("AfterMaterialLotChange"),
+				AfterMachineIdel = selected.Contains("AfterMachineIdel"),
+				EndOfProduction = selected.Contains("EndOfProduction")
+			};
+		}
+		public async Task<JsonResult> FillEntryID(int YearCode)
+		{
+			var JSON = await _IInProcessInspection.FillEntryID(YearCode);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
 		public async Task<JsonResult> FillPartCode(string InspectionType)
 		{
 			var JSON = await _IInProcessInspection.FillPartCode(InspectionType);
@@ -48,6 +73,13 @@ namespace eTactWeb.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
+		 public async Task<JsonResult> FillShift()
+		{
+			var JSON = await _IInProcessInspection.FillShift();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+
         public async Task<JsonResult> FillCustomer()
 		{
 			var JSON = await _IInProcessInspection.FillCustomer();

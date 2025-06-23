@@ -22,6 +22,25 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
+		public async Task<ResponseResult> FillEntryID(int YearCode)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
+				SqlParams.Add(new SqlParameter("@InspYearCode", YearCode));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPInprocessInpection", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
 		public async Task<ResponseResult> FillPartCode(string InspectionType)
 		{
 			var _ResponseResult = new ResponseResult();
@@ -66,6 +85,24 @@ namespace eTactWeb.Data.DAL
 			{
 				var SqlParams = new List<dynamic>();
 				SqlParams.Add(new SqlParameter("@Flag", "FillMachineName"));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPInprocessInpection", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> FillShift()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FillShift"));
 				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPInprocessInpection", SqlParams);
 			}
 			catch (Exception ex)
