@@ -2,6 +2,7 @@
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Controllers
 {
@@ -23,7 +24,6 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public IActionResult CancelSaleBill()
         {
-            var model = new CancelSaleBillModel();
             return View("CancelSaleBill");
         }
 
@@ -60,7 +60,55 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        [HttpPost]
+        public async Task<IActionResult> SaveCancelation(int SaleBillYearCode, int CanSaleBillReqYearcode, string CanRequisitionNo, string SaleBillNo, int CancelBy, String Cancelreason, String Canceldate,bool CancelEInvoice,string CustomerName)
+        {
+            try
+            {
+                await _ICancelSaleBill.SaveCancelation(SaleBillYearCode, CanSaleBillReqYearcode, CanRequisitionNo, SaleBillNo, CancelBy, Cancelreason, Canceldate);
 
+                string invoiceMessage = null;
+
+                if (CancelEInvoice)
+                {
+                    var cancelResult = await _ICancelSaleBill.CancelEInvoice(SaleBillYearCode, CanRequisitionNo, SaleBillNo, CustomerName);
+
+                    if (cancelResult?.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                        return StatusCode(500, new { message = cancelResult?.Result ?? "E-Invoice cancellation failed." });
+
+                    invoiceMessage = cancelResult?.Result?.ToString();
+                }
+
+                return Ok(new { message = invoiceMessage ?? "Cancellation saved successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Server Error: {ex.Message}" });
+            }
+        }
+
+        //public async Task<IActionResult> CancelEInvoice(int SaleBillYearCode, string CanRequisitionNo, string SaleBillNo, string CustomerName)
+        //{
+        //    try
+        //    {
+        //        var result = await _ICancelSaleBill.CancelEInvoice(SaleBillYearCode, CanRequisitionNo, SaleBillNo, CustomerName);
+
+        //        if (result == null || result.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+        //        {
+        //            return StatusCode(500, result?.Result ?? "Something went wrong while cancelling the e-invoice.");
+        //        }
+
+        //        return Ok(new
+        //        {
+        //            Status = "Success",
+        //            Message = result.Result
+        //        });
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Server Error: {ex.Message}");
+        //    }
+        //}
 
     }
 }

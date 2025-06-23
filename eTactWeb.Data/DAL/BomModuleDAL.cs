@@ -532,6 +532,8 @@ namespace eTactWeb.Data.DAL
 
         public async Task<BomDashboard> GetSearchData(BomDashboard model)
         {
+            DataTable oDataTable = new DataTable();
+
             try
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))

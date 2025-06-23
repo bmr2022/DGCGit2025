@@ -36,11 +36,11 @@ namespace eTactWeb.DOM.Models
         public decimal BillRate { get; set; }
         public string Unit { get; set; }
         public decimal ItemAmount { get; set; }
+        public string Reasonofcancel { get; set; }
 
         public string SONO { get; set; }
         public DateTime SODate { get; set; }
         public int SOYearCode { get; set; }
 
-        public string Reasonofcancel { get; set; }
     }
 }
