@@ -5,6 +5,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -48,14 +49,29 @@ namespace eTactWeb.Data.BLL
         {
             return await _CancelSaleBillDAL.ShowSaleBillDetail(SaleBillEntryId,SaleBillYearCode, CanSaleBillReqYearcode, CanRequisitionNo, SaleBillNo);
         }
-     
-        //public async Task<ResponseResult> SaveCancelation(int EntryId, int YC, string SaleBillNo, string type, int EmpID)
-        //{
-        //    // Implementation for SaveCancelation
-        //    // Assuming _CancelSaleBillDAL has a method to handle this functionality
-        //    return await _CancelSaleBillDAL.SaveCancelation(EntryId, YC, SaleBillNo, type, EmpID);
-        //}
 
+        public async Task<ResponseResult> SaveCancelation(int SaleBillYearCode, int CanSaleBillReqYearcode, string CanRequisitionNo, string SaleBillNo, int CancelBy, String Cancelreason, String Canceldate)
+        {
+            // Implementation for SaveCancelation
+            // Assuming _CancelSaleBillDAL has a method to handle this functionality
+            return await _CancelSaleBillDAL.SaveCancelation(SaleBillYearCode, CanSaleBillReqYearcode, CanRequisitionNo, SaleBillNo, CancelBy, Cancelreason, Canceldate);
+        }
+      
+        public async Task<ResponseResult> CancelEInvoice(int SaleBillYearCode, string CanRequisitionNo, string SaleBillNo, string CustomerName)
+        {
+            var result = new ResponseResult();
+            var dataResult = await _CancelSaleBillDAL.GetInvoiceDataAsync(SaleBillNo, SaleBillYearCode);
+            if (dataResult?.Result == null || dataResult.Result.Rows.Count == 0)
+            {
+                return result;
+            }
+            string irn = dataResult.Result.Rows[0]["IRnno"]?.ToString();
+            string gstin = dataResult.Result.Rows[0]["GSTNO"]?.ToString();
+            result = await _CancelSaleBillDAL.CancelEInvoiceAsync(irn, gstin, SaleBillNo, SaleBillYearCode);
+            return result;
+
+        }
 
     }
+
 }
