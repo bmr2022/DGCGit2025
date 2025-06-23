@@ -2285,7 +2285,7 @@ function submitForm(shouldPrint, printWindow) {
                         }
                         else {
                             $('#PurchasePrice').val(obj.Result[0].Rate);
-                            $('#Rate').val(obj.Result[0].Rate);
+                            /* $('#Rate').val(obj.Result[0].Rate); */
 
                             if (parseFloat(obj.Result[0].Rate) == 0) {
                                 $('#PurchasePrice').prop("readonly", false);
@@ -2891,14 +2891,14 @@ function submitForm(shouldPrint, printWindow) {
                 else {
                     RemoveErrorCls('PurchasePrice');
                 }
-                if ($('#Rate').val() == '' || $('#Rate').val() == 0) {
+                /* if ($('#Rate').val() == '' || $('#Rate').val() == 0) {
                     AddErrorCls('Rate');
                     $.notify("Rate is required", "error");
                     Err = 1;
                 }
                 else {
                     RemoveErrorCls('Rate');
-                }
+                } */
             }
 
             if ($('#Mode').val() != "U") {
