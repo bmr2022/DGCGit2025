@@ -11,6 +11,7 @@ using Microsoft.CodeAnalysis;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 using NuGet.Packaging;
+
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using OfficeOpenXml;
@@ -1136,6 +1137,14 @@ public class PurchaseBillController : Controller
             string drCrGridJson = HttpContext.Session.GetString("KeyDrCrGrid");
             List<DbCrModel> DrCrGrid = drCrGridJson != null ? JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson) : null;
 
+            string AdjGridJson = HttpContext.Session.GetString("KeyAdjGrid");
+            PBItemDetail AdjGrid=  JsonConvert.DeserializeObject<PBItemDetail>(AdjGridJson);
+
+            string serializedGrid = HttpContext.Session.GetString("KeyAdjGrid");
+            AdjustmentModel adjustmentModel = JsonConvert.DeserializeObject<AdjustmentModel>(serializedGrid);
+            List<AdjustmentModel> gridData = adjustmentModel.AdjAdjustmentDetailGrid;
+
+
             var cc = stat.CurrentEntryCount;
             var pp = stat.CurrentEstimatedSize;
 
@@ -1179,10 +1188,10 @@ public class PurchaseBillController : Controller
                 DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
             }
 
-            if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
-            {
-                AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
-            }
+           
+                //AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
+                AdjDetailDT = CommonController.GetAdjDetailTable(gridData, MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
+            
 
             if (model.PreparedBy == 0)
             {

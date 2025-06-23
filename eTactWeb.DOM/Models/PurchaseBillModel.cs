@@ -157,7 +157,7 @@ public class PBDashBoard : TimeStamp
 [Serializable()]
 public class PBItemDetail : TaxModel, ITDSModel
 {
-    public AdjustmentModel adjustmentModel { get; set; }
+    public AdjustmentModel? adjustmentModel { get; set; }
     #region Inherit TDS
     private readonly TDSModel _tdsModel = new TDSModel();
 
