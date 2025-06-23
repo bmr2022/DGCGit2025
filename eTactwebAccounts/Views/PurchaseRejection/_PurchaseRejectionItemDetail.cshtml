@@ -66,35 +66,35 @@
                         <i class="fa" aria-hidden="true"></i>
                     </span>Store Name
                 </th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>Disc Per
-                </th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>Disc Amt
-                </th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="12" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Batch No*
                 </th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="13" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Unique BatchNo*
                 </th>
-                <th data-columnno="16" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Lot Stock*
                 </th>
-                <th data-columnno="17" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="15" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Total Stock*
+                </th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Disc Per
+                </th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Disc Amt
                 </th>
                 <th data-columnno="18" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
@@ -227,12 +227,6 @@
                     </select>
                 </td>
                 <td>
-                    <input asp-for="DiscountPer" class="form-control" />
-                </td>
-                <td>
-                    <input asp-for="DiscountAmt" class="form-control" />
-                </td>
-                <td>
                     <select asp-for="Batchno" class="form-control">
                         <option value="0">-Select-</option>
                     </select>
@@ -247,6 +241,12 @@
                 </td>
                 <td>
                     <input asp-for="TotalStock" class="form-control" readonly />
+                </td>
+                <td>
+                    <input asp-for="DiscountPer" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="DiscountAmt" class="form-control" />
                 </td>
                 <td>
                     <select asp-for="CostCenterId" class="form-control">

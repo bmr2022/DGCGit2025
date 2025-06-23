@@ -1315,34 +1315,35 @@
                 }
             });
         });
-        // function ExportSaleOrderFormate() {
-
-        //     $('#divSaleItemGrid').empty();
-        //     var wb = XLSX.utils.book_new();
-
-        //     var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Rate", "Qty", "Ori. MRP", "PO No.", "Date", "Sale Order No", "Cust Location", "Item Model", "Cust Item Category"] });
-
-        //     //ws['!ref'] = 'A1:I1';
-
-        //     XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
-
-        //     XLSX.writeFile(wb, "ImportSaleOrderFormat.xlsx");
-        // }
-
 
         function ExportSaleOrderFormate() {
+
+            $('#divSaleItemGrid').empty();
             var wb = XLSX.utils.book_new();
-            var headers = [];
 
-            $('#ItemThead th').slice(1).each(function () {
-                headers.push($(this).text().trim());
-            });
+            var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "Unit", "Rate", "Qty", "Delivery Date","Alt Qty","Alt Unit","Disc%","Disc Rs", "Sale Order No", "Cust Location", "Item Model", "Cust Item Category","Tol Limit","Description","Remark"] });
 
-            var ws = XLSX.utils.json_to_sheet([], { header: headers });
+            //ws['!ref'] = 'A1:I1';
 
             XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+
             XLSX.writeFile(wb, "ImportSaleOrderFormat.xlsx");
         }
+
+
+        // function ExportSaleOrderFormate() {
+        //     var wb = XLSX.utils.book_new();
+        //     var headers = [];
+
+        //     $('#ItemThead th').slice(1).each(function () {
+        //         headers.push($(this).text().trim());
+        //     });
+
+        //     var ws = XLSX.utils.json_to_sheet([], { header: headers });
+
+        //     XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
+        //     XLSX.writeFile(wb, "ImportSaleOrderFormat.xlsx");
+        // }
 
         function NewEntryId() {
 
@@ -1633,6 +1634,8 @@
             formData.append("SOType", $("#SOType").val());
             formData.append("SOEntryId", $('#EntryID').val());
             formData.append("SOYearCode", $('#YearCode').val());
+            formData.append("WEF", $('#WEF').val());
+            formData.append("soCloseDate", $('#SOCloseDate').val());
 
             // Get valid part codes from the hidden field
             var validPartCodes = $('#validPartCodes').val();

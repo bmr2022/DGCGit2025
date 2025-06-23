@@ -144,6 +144,7 @@ namespace eTactWeb.DOM.Models
         public string? Uniquebatchno { get; set; } = string.Empty;
         public float LotStock { get; set; }
         public float TotalStock { get; set; }
+        public string hdnuniquekey { get; set; }
     }
     public class AccPurchaseRejectionAgainstBillDetail : TaxModel
     {

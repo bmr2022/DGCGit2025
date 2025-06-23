@@ -1649,8 +1649,8 @@ public class SaleOrderController : Controller
 					}
 					if (isRowEmpty) continue;
 
-					var partCode = (worksheet.Cells[row, 2].Value ?? string.Empty).ToString().Trim();
-					var validateUnit = (worksheet.Cells[row, 7].Value ?? string.Empty).ToString().Trim();
+					var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
+					var validateUnit = (worksheet.Cells[row, 2].Value ?? string.Empty).ToString().Trim();
 
 					// **Validate Unit**
                     if (validateUnit.Length > 3)
@@ -1685,6 +1685,8 @@ public class SaleOrderController : Controller
                     string soType = Request.Form["SOType"];
                     string soEntryId = Request.Form["SOEntryId"];
                     string soYearCode = Request.Form["SOYearCode"];
+                    string wef = Request.Form["WEF"];
+                    string soCloseDate = Request.Form["soCloseDate"];
 
 					itemList.Add(new ItemDetail()
 					{
@@ -1702,6 +1704,10 @@ public class SaleOrderController : Controller
 						: 0;
 
 					decimal rate = decimal.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out decimal tempRate) ? tempRate : 0;
+					if(rate == 0)
+					{
+                        errors.Add($"Enter rate more then 0 at row {row}: {partCode}");
+                    }
 
 					if (isSOTypeClose && qty <= 0)
 					{
@@ -1710,9 +1716,28 @@ public class SaleOrderController : Controller
 					}
 
 					// **Delivery Date Validation**
-					string deliveryDateStr = worksheet.Cells[row, 7].Value?.ToString();
+					string deliveryDateStr = worksheet.Cells[row, 5].Value?.ToString();
+
+                    if (isSOTypeClose && deliveryDateStr == "")
+					{
+                        errors.Add($"DeliveryDate is manadatory {row} ");
+                        continue;
+                    }
+
+                        deliveryDateStr = ParseFormattedDate(deliveryDateStr);
 					DateTime? deliveryDate = null;
-					if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
+
+                    deliveryDate = DateTime.Parse(deliveryDateStr);
+                    DateTime wefDate = DateTime.Parse(wef);
+                    DateTime soClose = DateTime.Parse(soCloseDate);
+
+                    if (deliveryDate < wefDate || deliveryDate > soClose)
+                    {
+                        errors.Add($"DeliveryDate must between of wefDate and socloseDate at Row - {row} ");
+                        continue;
+                    }
+
+                    if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
 					{
 						if (tempDeliveryDate < DateTime.Today)
 						{
@@ -1745,13 +1770,13 @@ public class SaleOrderController : Controller
 						OtherRateCurr =rate,
 						StoreName = worksheet.Cells[row, 17].Value?.ToString() ?? "",
 						StockQty = decimal.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
-						UnitRate = worksheet.Cells[row, 10].Value?.ToString() ?? "",
-						DiscPer = decimal.TryParse(worksheet.Cells[row, 13].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
-						DiscRs = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
+						UnitRate = worksheet.Cells[row, 3].Value?.ToString() ?? "",
+						DiscPer = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
+						DiscRs = decimal.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
 						Amount = amount, // Auto-calculated value
-						TolLimit = decimal.TryParse(worksheet.Cells[row, 16].Value?.ToString(), out decimal tempTolLimit) ? tempTolLimit : 0,
-						Description = worksheet.Cells[row, 17].Value?.ToString() ?? "",
-						Remark = worksheet.Cells[row, 18].Value?.ToString() ?? "",
+						TolLimit = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempTolLimit) ? tempTolLimit : 0,
+						Description = worksheet.Cells[row, 15].Value?.ToString() ?? "",
+						Remark = worksheet.Cells[row, 16].Value?.ToString() ?? "",
 						AmendmentNo = worksheet.Cells[row, 19].Value?.ToString() ?? "",
 						AmendmentDate = DateTime.TryParse(worksheet.Cells[row, 20].Value?.ToString(), out DateTime tempAmendDate)
 							? tempAmendDate.ToString("yyyy-MM-dd")
@@ -1762,10 +1787,10 @@ public class SaleOrderController : Controller
 						Excessper = int.TryParse(worksheet.Cells[row, 24].Value?.ToString(), out int tempExcessper) ? tempExcessper : 0,
 						ProjQty1 = decimal.TryParse(worksheet.Cells[row, 25].Value?.ToString(), out decimal tempProjQty1) ? tempProjQty1 : 0,
 						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
-                        CustomerSaleOrder = worksheet.Cells[row, 27].Value?.ToString() ?? "",
-                        CustomerLocation = worksheet.Cells[row, 28].Value?.ToString() ?? "",
-                        ItemModel = worksheet.Cells[row, 29].Value?.ToString() ?? "",
-                        CustItemCategory = worksheet.Cells[row, 30].Value?.ToString() ?? "",
+                        CustomerSaleOrder = worksheet.Cells[row, 12].Value?.ToString() ?? "",
+                        CustomerLocation = worksheet.Cells[row, 13].Value?.ToString() ?? "",
+                        ItemModel = worksheet.Cells[row, 12].Value?.ToString() ?? "",
+                        CustItemCategory = worksheet.Cells[row, 13].Value?.ToString() ?? "",
                     });
 				}
 

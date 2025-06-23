@@ -441,7 +441,7 @@ namespace eTactWeb.Data.DAL
 
                 if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
                 {
-                    foreach (DataRow row in DS.Tables[1].Rows)
+                    foreach (DataRow row in DS.Tables[1].Select("", "seqno ASC"))
                     {
                         ItemList.Add(new JobWorkGridDetail
                         {

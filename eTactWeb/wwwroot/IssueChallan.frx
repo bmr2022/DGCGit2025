@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="01/19/2025 14:16:13" ReportInfo.Modified="04/03/2025 12:07:53" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="01/19/2025 14:16:13" ReportInfo.Modified="06/21/2025 14:54:59" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtRMIKdvL6pdj1f/P7ft+dbbr0FvcQ/FkacJxyQOdfb2xcuyVK9cjA2Mo1pgiCFTexW8AxzZBSsituyMgZRGQv50cxPKeEIP3JXfB26wdZSzzhJao8Eb8MJ1p/j3eWTw+8jvIrazBdUH4oJtElxCLhaw=">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtRMIKdvL6pdj1f/P7ft+dbbr0FvcQ/FkacJxyQOdfb2xcuyVK9cjA2Mo1pgiCFTexW8AxzZBSsituyMgZRGQv50cxPKeEIP3JXfB26wdZSzzhJao8Eb8MJ1p/j3eWTw+8lobJGpUJhzFVotiIyBHWDY=">
       <TableDataSource Name="Table1" Alias="sPreportIssueChallan" DataType="System.Int32" Enabled="true" SelectCommand="exec SPreportIssueChallan @EntryId = @entryparam, @YearCode = @yearparam">
         <Column Name="ROWNO" DataType="System.Int64"/>
         <Column Name="Account_Name" DataType="System.String"/>
@@ -100,11 +100,10 @@
       <TextObject Name="Text1" Left="264.6" Top="18.9" Width="368.55" Height="28.35" Text="[sPreportIssueChallan.CompName]" Font="Arial, 16pt" TextFill.Color="Red"/>
       <TextObject Name="Text2" Left="292.95" Top="47.25" Width="236.25" Height="18.9" Text="[sPreportIssueChallan.CompAdd]" Font="Arial, 10pt"/>
       <TextObject Name="Text3" Left="321.3" Top="66.15" Width="151.2" Height="18.9" Text="[sPreportIssueChallan.CompPinCode]" Font="Arial, 10pt"/>
-      <TextObject Name="Text4" Left="18.9" Top="47.25" Width="85.05" Height="18.9" Text="REF CODE:" Font="Arial, 10pt"/>
+      <TextObject Name="Text4" Left="18.9" Top="47.25" Width="85.05" Height="18.9" Text="REF CODE:" Font="Arial, 10pt, style=Bold"/>
       <LineObject Name="Line1" Left="9.45" Top="9.45" Width="699.3"/>
       <LineObject Name="Line2" Left="9.45" Top="9.45" Height="274.05"/>
       <LineObject Name="Line3" Left="708.75" Top="9.45" Height="274.05"/>
-      <LineObject Name="Line4" Left="9.45" Top="283.5" Width="699.3"/>
       <TextObject Name="Text5" Left="18.9" Top="66.15" Width="94.5" Height="18.9" Text="CLAUSE NO." Font="Arial, 10pt"/>
       <TextObject Name="Text6" Left="255.15" Top="85.05" Width="179.55" Height="18.9" Text="GATE PASS ( RGP )" HorzAlign="Center" Font="Arial, 10pt, style=Bold, Underline"/>
       <TextObject Name="Text7" Left="28.35" Top="103.95" Width="661.5" Height="28.35" Text="FOR MOVEMENTS OF INPUTS OR PARTIALY PROCESSED GOODS UNDER RULE 57AC(5) FROM ONE FACTORY TO ANOTHER FACTORY FOR FURTHER PROCESSING/ OPERATION" HorzAlign="Center" Font="Arial, 8pt"/>
@@ -128,7 +127,7 @@
       <TextObject Name="Text54" Left="538.65" Top="132.3" Width="160.65" Height="18.9" Text="[sPreportIssueChallan.ChallanNo]" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text55" Left="567" Top="189" Width="141.75" Height="18.9" Text="[sPreportIssueChallan.ChallanDate]" Format="Date" Format.Format="d" Font="Arial, 8pt, style=Bold"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="285.94" Width="718.2" Height="18.9">
+    <PageHeaderBand Name="PageHeader1" Top="287.35" Width="718.2" Height="18.9">
       <LineObject Name="Line5" Left="9.45" Top="18.9" Width="699.3"/>
       <LineObject Name="Line6" Left="9.45" Height="18.9"/>
       <LineObject Name="Line7" Left="708.75" Height="18.9"/>
@@ -145,8 +144,9 @@
       <TextObject Name="Text29" Left="415.8" Width="37.8" Height="18.9" Text="RATE" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text30" Left="453.6" Width="94.5" Height="18.9" Text="Assesable Value" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text31" Left="548.1" Width="160.65" Height="18.9" Text="Description" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
+      <LineObject Name="Line4" Left="9.45" Width="699.3"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="307.28" Width="718.2" Height="28.35" Condition="[sPreportIssueChallan.PartCode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="310.09" Width="718.2" Height="28.35" Condition="[sPreportIssueChallan.PartCode]">
       <LineObject Name="Line15" Left="9.45" Height="28.35"/>
       <LineObject Name="Line16" Left="37.8" Height="28.35"/>
       <LineObject Name="Line17" Left="184.46" Height="28.35"/>
@@ -160,10 +160,10 @@
       <TextObject Name="Text34" Left="37.8" Top="3.4" Width="141.75" Height="18.9" Text="[sPreportIssueChallan.ItemCode]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text35" Left="349.65" Top="3.4" Width="56.7" Height="18.9" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.Qty]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text36" Left="415.8" Top="3.4" Width="37.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[sPreportIssueChallan.Rate]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
-      <DataBand Name="Data1" Top="338.07" Width="718.2" DataSource="Table1"/>
-      <GroupFooterBand Name="GroupFooter1" Top="340.51" Width="718.2"/>
+      <DataBand Name="Data1" Top="342.29" Width="718.2" DataSource="Table1"/>
+      <GroupFooterBand Name="GroupFooter1" Top="346.13" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="373.73" Width="718.2" Height="179.55">
+    <ReportSummaryBand Name="ReportSummary1" Top="382.18" Width="718.2" Height="179.55">
       <LineObject Name="Line32" Left="9.45" Height="170.1"/>
       <LineObject Name="Line33" Left="708.75" Height="170.1"/>
       <TextObject Name="Text37" Left="349.65" Width="47.25" Height="18.9" Text="[Total]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
@@ -185,7 +185,7 @@
       <TextObject Name="Text57" Left="481.95" Top="18.9" Width="66.15" Height="18.9" Text="[sPreportIssueChallan.TAxAmount]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text58" Left="415.8" Top="18.9" Width="56.7" Height="18.9" Text="[sPreportIssueChallan.TaxPer]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 8pt, style=Bold" Trimming="EllipsisCharacter"/>
       <LineObject Name="Line23" Left="9.45" Width="699.3"/>
-      <ChildBand Name="Child1" Top="342.95" Width="718.2" Height="28.35" FillUnusedSpace="true">
+      <ChildBand Name="Child1" Top="349.98" Width="718.2" Height="28.35" FillUnusedSpace="true">
         <LineObject Name="Line24" Left="9.45" Height="28.35"/>
         <LineObject Name="Line25" Left="37.8" Height="28.35"/>
         <LineObject Name="Line26" Left="184.46" Height="28.35"/>
@@ -196,7 +196,7 @@
         <LineObject Name="Line31" Left="708.75" Height="28.35"/>
       </ChildBand>
     </ReportSummaryBand>
-    <PageFooterBand Name="PageFooter1" Top="555.72" Width="718.2" Height="20.79">
+    <PageFooterBand Name="PageFooter1" Top="565.57" Width="718.2" Height="20.79">
       <TextObject Name="Text49" Left="245.7" Width="37.8" Height="18.9" Text="Page" Font="Arial, 8pt"/>
       <TextObject Name="Text50" Left="274.05" Width="28.35" Height="18.9" Text="[Page]" Font="Arial, 8pt"/>
       <TextObject Name="Text51" Left="289.17" Top="1.89" Width="18.9" Height="18.9" Text="Of" Font="Arial, 6pt"/>

@@ -37,14 +37,14 @@
         @*<input type="hidden" asp-for="EnterByMachineName">*@
 
         <div class="card-header card-headerBG text-light bg-gradient">
-        <div class="d-none">
-            <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
-            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
-            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
-            <input asp-for="CustomerNameBack" type="hidden" value="@Model.CustomerNameBack" />
-            <input asp-for="CustomerOrderNoBack" type="hidden" value="@Model.CustomerOrderNoBack" />
-            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
-            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+            <div class="d-none">
+                <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                <input asp-for="CustomerNameBack" type="hidden" value="@Model.CustomerNameBack" />
+                <input asp-for="CustomerOrderNoBack" type="hidden" value="@Model.CustomerOrderNoBack" />
+                <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
             </div>
             <h5>
                 @if (Model.Mode != "SSA" && Model.Mode != "SSC")
@@ -83,7 +83,7 @@
                                 PARTIAL SAVE
                             </button>
                         }
-              
+
                     </div>
                     <partial name="_FormsButton" />
                 </span>
@@ -434,7 +434,7 @@
                                 </div>
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="DeliveryDate" class="form-label">Del Date</label>
-                                    <input asp-for="DeliveryDate" class="form-control DeliveryDate" />
+                                    <input asp-for="DeliveryDate" class="form-control DeliveryDate" readonly />
                                 </div>
                                 @if (Model.Mode == "SSA")
                                 {
@@ -482,14 +482,28 @@
                                         </button>
                                     </div>
                                 }
+                                else
+                                {
+                                    <div class="col-auto">
+                                        <input class="form-control" type="file" id="manualImport" />
+                                    </div>
+                                    <div class="col-auto">
+                                        <button type="button" class="Importbtn btn btn-sm btn-outline-success" id="manualImport">
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                        </button>
+                                    </div>
+                                }
+                                @* <div class="d-flex justify-content-end mb-2"> *@
                                 <div class="col-auto">
-                                    <input class="form-control" type="file" id="manualImport" />
+                                    <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
                                 </div>
                                 <div class="col-auto">
-                                    <button type="button" class="Importbtn btn btn-sm btn-outline-success" id="manualImport">
-                                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
-                                    </button>
+                                    <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportSaleSchFormate();">
+                                        <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        IMPORT FORMAT
+                                    </a>
                                 </div>
+                                @* </div> *@
 
                             </div>
                             <div class="progress my-2 mb-3 mt-3" style="height: 4px;">
@@ -497,15 +511,15 @@
                             </div>
                             <div class="card">
                                 <div class="card-body overflow-auto pb-0 ManualEntryGrid">
-                                    <div class="d-flex justify-content-end mb-2">
-                                        <div class="col-md-2 me-3">
-                                            <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
-                                        </div>
-                                        <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportSaleSchFormate();">
-                                            <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                            IMPORT FORMAT
-                                        </a>
+                                    @*<div class="d-flex justify-content-end mb-2">
+                                    <div class="col-md-2 me-3">
+                                    <input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
                                     </div>
+                                    <a class="btn btn-secondary btn-sm ImportExcel" onclick="ExportSaleSchFormate();">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                    IMPORT FORMAT
+                                    </a>
+                                    </div>*@
                                     <div class="table-responsive" style="max-height:150px;">
                                         <table class="table table-hover table-bordered table-striped" id="ItemTable">
                                             <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
@@ -525,6 +539,9 @@
                                                     <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Delivery Date</th>
                                                     <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
                                                     <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
+                                                    @*  <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>*@
+                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+
                                                     @if (Model.Mode == "SSA")
                                                     {
                                                         <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amendment Reason</th>
@@ -533,18 +550,18 @@
                                                     {
                                                         <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Other Detail</th>
                                                     }
-                                                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+
                                                 </tr>
                                             </thead>
                                             <tbody id="divSaleScheduleGrid">
                                                 <partial name="_SaleScheduleGrid" />
                                             </tbody>
                                         </table>
-                                        <div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 ms-auto">
-                                            <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnGridExcel">
-                                                <i class="fa-solid fa-upload fa-fw fa-lg "></i> EXCEL
-                                            </button>
-                                        </div>
+                                        @*<div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 ms-auto">
+                                        <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnGridExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i> EXCEL
+                                        </button>
+                                        </div>*@
                                     </div>
                                     <div class="row g-2 gx-3">
                                         <div class="col-12 text-center">
@@ -662,6 +679,11 @@
                                             Done @*<i class="fa fa-plus" aria-hidden="true"></i>*@
                                         </button>
                                     }
+                                    <div class="col-lg-2 col-md-3 col-sm-3 text-center mt-3 ms-auto">
+                                        <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;" type="button" id="btnGridExcel">
+                                            <i class="fa-solid fa-upload fa-fw fa-lg "></i> EXCEL
+                                        </button>
+                                    </div>
                                     <button type="button" class="btn btn-success mt-2 me-2 btn-sm mr-2 mb-2" onclick='newRowappend()' style="color:white!important; float:right;">
                                         <i class="fa fa-plus" aria-hidden="true"></i> Add Row
                                     </button>
@@ -850,11 +872,11 @@
             selectedSplitItemCodes = selectedSplitItemCodes.filter((item, i, ar) => ar.indexOf(item) === i);
         }
 
-        document.querySelector("#manualImport").onchange = function () {
+      /*   document.querySelector("#manualImport").onchange = function () {
 
             const fileName = this.files[0]?.name;
             const label = document.querySelector("label[for=manualImport]");
-        };
+        }; */
 
         $(function () {
             if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
@@ -877,7 +899,7 @@
                                 });
 
                                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                                    
+
                                     /* $('#CustomerOrderNo').val($('#hiddenCustOrderNo').val()).trigger("change"); */
                                     $('#CustomerOrderNo').val('@Model.CustomerOrderNo').trigger("change");
                                     $('#SONO').val($('#hiddenSONO').val());
@@ -946,12 +968,14 @@
                 NewAmmEntryId();
                 $('#Rate').prop("readonly", false);
                 $('#Rate').prop("disabled", false);
+              
             }
             else {
                 $('#Rate').prop("readonly", true);
                 $('#Rate').prop("disabled", true);
-                
+
                 viewMode = true;
+          
             }
 
 
@@ -1023,8 +1047,8 @@
                 if (ManualSplitMonthly == "Month") {
                     $('input[name="SaleSchGrid"][value="Month"]').prop('checked', true);
                 }
-                
-            $('input[type="radio"]').change();
+
+                $('input[type="radio"]').change();
                 hiddenSchDate = formateDashDateToSlashDate(hiddenSchDate.split(" ")[0]);
                 hiddenSchEffTillDate = formateDashDateToSlashDate(hiddenSchEffTillDate.split(" ")[0]);
 
@@ -1067,7 +1091,7 @@
                 SetSchTillDate();
             }
 
-                        viewMode = false;
+            viewMode = false;
 
             function UploadButton() {
                 var fileInput = $('#ExcelFile');
@@ -1121,6 +1145,7 @@
                     return 'Invalid Date'; // or handle accordingly based on your requirements
                 }
             }
+            $('#AltSchQty').rules('remove', 'required');
 
             $(document).on('click', '.removeRow', function () {
                 //var SplitItemCode = $(this).closest('tr').find('[id^="SplitSchItemCode-"]').val();
@@ -1162,7 +1187,9 @@
                 //$('.PartCode').append('<option value="' + SplitItemCode + '">' + SplitPartCode + '</option>');
 
             });
-        
+
+            /* TotalSchQty(); */
+
             /* if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 $('#CustomerOrderNo').val('@Model.CustomerOrderNo').trigger("change");
             }
@@ -2334,29 +2361,29 @@
                             for (var i = 0; i < rows; i++) {
                                 $('#MonthlyEntryData').append("<tr id='appendRow-" + i + "'>");  // Use 'i' instead of 'rows'
                                 $('#appendRow-' + i).append(`
-                                                                                                                                                                                                        <td style='width:15px;'>
-                                                                                                                                                                                                            <a class='table-link link-danger removeMonthlyRow'>
-                                                                                                                                                                                                                <span class='fa-stack'>
-                                                                                                                                                                                                                    <i class='fa fa-square fa-stack-2x'></i>
-                                                                                                                                                                                                                    <i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i>
-                                                                                                                                                                                                                </span>
-                                                                                                                                                                                                            </a>
-                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                        <td style='width:180px;'>
-                                                                                                                                                                                                            <input type="hidden" id="ImportExlData" value="ImportExlData" />
-                                                                                                                                                                                                            <input id='EditPartCode-${i}' value='${data.SaleGridList[i].PartCode}' class='SplitPC' onchange='ItemcodeChange(${i})' style='height:25px;width:250px;' readonly></input>
-                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                        <td style='width:250px;'>
-                                                                                                                                                                                                            <input type='hidden' id='CountDate' value='${count}'/><input type="hidden" id='EditSplitItemCode-${i}' value='${data.SaleGridList[i].ItemCode}' />
-                                                                                                                                                                                                            <input id='EditSplitItemName-${i}' value='${data.SaleGridList[i].ItemName}' class='SplitIN' onchange='PartCodeChange(${i})' style='height:25px;width:250px;' readonly></input>
-                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                        <td>
-                                                                                                                                                                                                            <input id='EditSplitUnit-${i}' value='${data.SaleGridList[i].Unit}' class='EditSplitUnitVal' type='text' style='width:50px;' readonly/>
-                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                        <td>
-                                                                                                                                                                                                            <input id='EditSplitRate-${i}' value='${data.SaleGridList[i].Rate}' class='EditSplitRateVal' type='text' style='width:50px;' readonly/>
-                                                                                                                                                                                                        </td>
-                                                                                                                                                                                                    `);
+                                                                                                                                                                                                                                                <td style='width:15px;'>
+                                                                                                                                                                                                                                                    <a class='table-link link-danger removeMonthlyRow'>
+                                                                                                                                                                                                                                                        <span class='fa-stack'>
+                                                                                                                                                                                                                                                            <i class='fa fa-square fa-stack-2x'></i>
+                                                                                                                                                                                                                                                            <i class='fa-solid fa-trash fa-stack-1x fa-inverse'></i>
+                                                                                                                                                                                                                                                        </span>
+                                                                                                                                                                                                                                                    </a>
+                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                                <td style='width:180px;'>
+                                                                                                                                                                                                                                                    <input type="hidden" id="ImportExlData" value="ImportExlData" />
+                                                                                                                                                                                                                                                    <input id='EditPartCode-${i}' value='${data.SaleGridList[i].PartCode}' class='SplitPC' onchange='ItemcodeChange(${i})' style='height:25px;width:250px;' readonly></input>
+                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                                <td style='width:250px;'>
+                                                                                                                                                                                                                                                    <input type='hidden' id='CountDate' value='${count}'/><input type="hidden" id='EditSplitItemCode-${i}' value='${data.SaleGridList[i].ItemCode}' />
+                                                                                                                                                                                                                                                    <input id='EditSplitItemName-${i}' value='${data.SaleGridList[i].ItemName}' class='SplitIN' onchange='PartCodeChange(${i})' style='height:25px;width:250px;' readonly></input>
+                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                                <td>
+                                                                                                                                                                                                                                                    <input id='EditSplitUnit-${i}' value='${data.SaleGridList[i].Unit}' class='EditSplitUnitVal' type='text' style='width:50px;' readonly/>
+                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                                <td>
+                                                                                                                                                                                                                                                    <input id='EditSplitRate-${i}' value='${data.SaleGridList[i].Rate}' class='EditSplitRateVal' type='text' style='width:50px;' readonly/>
+                                                                                                                                                                                                                                                </td>
+                                                                                                                                                                                                                                            `);
                             }
                             for (var k = 0; k < rows; k++) {
                                 for (var i = 0; i <= count; i++) {
@@ -2565,7 +2592,7 @@
                                 $('#SONO').val($('#hiddenSONO').val());
                                 $('#CustomerOrderNo').val('@Model.CustomerOrderNo').trigger("change");
                             }
-                            
+
                             if (!viewMode) {
                                 ClearGrid();
                             }
@@ -2611,7 +2638,7 @@
                             //  $('#SOYearCode').change();
                         }
                     }
-                    
+
                     if (!viewMode) {
                         ClearGrid();
                     }
@@ -2638,7 +2665,7 @@
                             });
 
                             $('#CustomerOrderNo').val($('#SONO').find(':selected').data('custorderno'));
-                            
+
                             $('#CustomerOrderNo').change();
                         }
                         else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
@@ -2647,7 +2674,7 @@
                             //  $('#SOYearCode').change();
                         }
                     }
-                    
+
                     /* if ($('#Mode').val() != "U" && $('#Mode').val() != "V" && $('#Mode').val() != "SSA" && $('#Mode').val() != "SSC") { */
                     if (!viewMode) {
                         ClearGrid();
@@ -2670,7 +2697,7 @@
                 success: function (result, status, xhr) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        
+
                         if (!viewMode) {
                             ClearGrid();
                         }
@@ -3291,7 +3318,7 @@
         }
 
         function ClearGrid() {
-            
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearGrid")",
@@ -3933,5 +3960,5 @@
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
-                                                        
+
 }

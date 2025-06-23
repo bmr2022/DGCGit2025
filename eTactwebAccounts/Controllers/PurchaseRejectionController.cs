@@ -177,7 +177,7 @@ namespace eTactWeb.Controllers
                     AdjGrid = JsonConvert.DeserializeObject<AdjustmentModel>(modelAdjJson);
                 }
 
-                 if (PurchaseRejectionDetail == null)
+                if (PurchaseRejectionDetail == null)
                 {
                     ModelState.Clear();
                     ModelState.TryAddModelError("PurchaseRejectionDetail", "Purchase Rejection Grid Should Have Atleast 1 Item...!");
@@ -349,7 +349,7 @@ namespace eTactWeb.Controllers
                             var errNum = string.Empty;
                             if (Result != null)
                             {
-                                if(Result.Result != null)
+                                if (Result.Result != null)
                                 {
                                     if (Result.Result.Rows.Count > 0)
                                     {
@@ -513,7 +513,7 @@ namespace eTactWeb.Controllers
                     {
                      (model != null ? model.PurchaseRejEntryId : 0),
                      (model != null ? model.PurchaseRejYearCode : 0),
-                    Item.PurchaseRejectionInvoiceNo ?? string.Empty,
+                    Item.InvoiceNo ?? string.Empty,
                     Item.PurchaseRejectionVoucherNo ?? string.Empty,
                     Item.AgainstPurchaseBillBillNo ?? string.Empty,
                     Item.AgainstPurchaseBillYearCode ?? 0,
@@ -531,7 +531,7 @@ namespace eTactWeb.Controllers
                     Item.DiscountPer ?? 0,
                     Item.DiscountAmt ?? 0,
                     Item.ItemSize ?? string.Empty,
-                    Item.Amount ?? 0,
+                    (Item.ItemNetAmount > 0) ? Item.ItemNetAmount : 0,
                     Item.PONO ?? string.Empty,
                     Item.PODate == null ? string.Empty :(Item.PODate.Split(" ")[0]),
                     Item.POEntryId ?? 0,
@@ -712,7 +712,7 @@ namespace eTactWeb.Controllers
             model.PurchaseRejectionDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
             model.PageNumber = pageNumber;
             model.PageSize = pageSize;
-            
+
             return PartialView("_PRDashBoardGrid", model);
         }
         public async Task<AccPurchaseRejectionDashboard> BindDashboardList(AccPurchaseRejectionDashboard MainModel, Dictionary<string, object> commonparams)
@@ -822,7 +822,7 @@ namespace eTactWeb.Controllers
             {
                 if (purchaseRejectionPopupGrid.Any())
                 {
-                    model.AddRange(purchaseRejectionPopupGrid.Where(p => !model.Any(m => m.ItemCode == p.ItemCode && m.AgainstPurchaseBillEntryId == p.AgainstPurchaseBillEntryId && m.AgainstPurchaseBillYearCode == p.AgainstPurchaseBillYearCode && m.PurchaseRejectionInvoiceNo == p.PurchaseRejectionInvoiceNo)).ToList());
+                    model.AddRange(purchaseRejectionPopupGrid.Where(p => !model.Any(m => m.ItemCode == p.ItemCode && m.AgainstPurchaseBillEntryId == p.AgainstPurchaseBillEntryId && m.AgainstPurchaseBillYearCode == p.AgainstPurchaseBillYearCode && m.InvoiceNo == p.InvoiceNo)).ToList());
                 }
             }
             var dataGrid = GetDetailFromPopup(model);
@@ -847,12 +847,6 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("PurchaseRejYearCode", typeof(int));
                 table.Columns.Add("PurchaseRejectionInvoiceNo", typeof(string));
                 table.Columns.Add("PurchaseRejectionVoucherNo", typeof(string));
-                //table.Columns.Add("AgainstSalebillBillNo", typeof(string));
-                //table.Columns.Add("AgainstSaleBillYearCode", typeof(int));
-                //table.Columns.Add("AgainstSaleBilldate", typeof(string));
-                //table.Columns.Add("AgainstSaleBillEntryId", typeof(int));
-                //table.Columns.Add("AgainstSalebillVoucherNo", typeof(string));
-                //table.Columns.Add("SaleBillTYpe", typeof(string));
                 table.Columns.Add("AgainstPurchasebillBillNo", typeof(string));
                 table.Columns.Add("AgainstPurchaseBillYearCode", typeof(int));
                 table.Columns.Add("AgainstPurchaseBilldate", typeof(string));
@@ -876,11 +870,6 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("POYearCode", typeof(int));
                 table.Columns.Add("PoRate", typeof(float));
                 table.Columns.Add("poammno", typeof(string));
-                //table.Columns.Add("SONO", typeof(string));
-                //table.Columns.Add("SOYearcode", typeof(int));
-                //table.Columns.Add("SODate", typeof(string));
-                //table.Columns.Add("CustOrderNo", typeof(string));
-                //table.Columns.Add("SOEntryId", typeof(int));
                 table.Columns.Add("BatchNo", typeof(string));
                 table.Columns.Add("UniqueBatchNo", typeof(string));
 
@@ -893,12 +882,6 @@ namespace eTactWeb.Controllers
                      Item.AgainstPurchaseBillYearCode,
                     Item.PurchaseRejectionInvoiceNo ?? string.Empty,
                    Item.PurchaseRejectionVoucherNo ?? string.Empty,
-                   //Item.AgainstSaleBillBillNo ?? string.Empty,
-                   //Item.AgainstSaleBillYearCode,
-                   //Item.AgainstSaleBillDate == null ? string.Empty : ParseFormattedDate(Item.AgainstSaleBillDate),
-                   //Item.AgainstSaleBillEntryId,
-                   //Item.AgainstSaleBillVoucherNo ?? string.Empty,
-                   //Item.SaleBillType ?? string.Empty,
                    Item.AgainstPurchaseBillBillNo ?? string.Empty,
                    Item.AgainstPurchaseBillYearCode,
                    Item.AgainstPurchaseBillDate == null ? string.Empty : ParseFormattedDate(Item.AgainstPurchaseBillDate),
@@ -922,11 +905,6 @@ namespace eTactWeb.Controllers
                    Item.POYearCode,
                    Item.PoRate,
                    Item.PoAmmNo ?? string.Empty,
-                   //Item.SONO ?? string.Empty,
-                   //Item.SOYearCode,
-                   //Item.SODate == null ? string.Empty : ParseFormattedDate(Item.SODate),
-                   //Item.CustOrderNo ?? string.Empty,
-                   //Item.SOEntryId,
                    Item.BatchNo ?? string.Empty,
                    Item.UniqueBatchNo ?? string.Empty
                         });
@@ -972,7 +950,7 @@ namespace eTactWeb.Controllers
                     }
                     else
                     {
-                        if (purchaseRejectionGrid.Any(x => x.ItemCode == model.ItemCode && x.StoreId == model.StoreId && x.Batchno == model.Batchno))
+                        if (purchaseRejectionGrid.Any(x => x.DocAccountCode == model.DocAccountCode && x.ItemCode == model.ItemCode && x.StoreId == model.StoreId && x.Batchno == model.Batchno))
                         {
                             return StatusCode(207, "Duplicate");
                         }
@@ -986,18 +964,14 @@ namespace eTactWeb.Controllers
                     //saleBillDetail = saleBillDetail.OrderBy(item => item.SeqNo).ToList();
                     MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
                     MainModel.ItemDetailGrid = purchaseRejectionDetail;
-
                     MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                     {
                         AbsoluteExpiration = DateTime.Now.AddMinutes(60),
                         SlidingExpiration = TimeSpan.FromMinutes(55),
                         Size = 1024,
                     };
-
-
                     //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
                     HttpContext.Session.SetString("KeyPurchaseRejectionGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionDetails));
-
                     MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
                     MainModel.ItemDetailGrid = purchaseRejectionDetail;
                     //_MemoryCache.Set("PurchaseRejectionModel", MainModel, cacheEntryOptions);
@@ -1037,7 +1011,7 @@ namespace eTactWeb.Controllers
             //var CNGrid = creditNoteGrid.Where(x => x.ItemCode == itemCode);
             var combinedData = new
             {
-                PurchaseRejectionGrid = purchaseRejectionGrid?.Where(x => x.ItemCode == itemCode),
+                PurchaseRejectionGrid = purchaseRejectionGrid?.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq),
                 PurchaseRejectionPopupGrid = purchaseRejectionPopupGrid
             };
             string JsonString = JsonConvert.SerializeObject(combinedData);
@@ -1046,136 +1020,78 @@ namespace eTactWeb.Controllers
         public IActionResult DeleteItemRow(int itemCode, string Mode, int Seq)
         {
             var MainModel = new AccPurchaseRejectionModel();
-            if (Mode == "U")
+            //_MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
+            string modelPRGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
+            List<AccPurchaseRejectionDetail> purchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
+            if (!string.IsNullOrEmpty(modelPRGridJson))
             {
-               // _MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
-                string modelPRGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
-                List<AccPurchaseRejectionDetail> purchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
-                if (!string.IsNullOrEmpty(modelPRGridJson))
-                {
-                    purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
-                }
-                string modelPRAgainstGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
-                List<AccPurchaseRejectionAgainstBillDetail> PRPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
-                if (!string.IsNullOrEmpty(modelPRAgainstGridJson))
-                {
-                    PRPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRAgainstGridJson);
-                }
-                if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
-                {
-                    purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode);
-
-                    MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
-
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
-                    HttpContext.Session.SetString("KeyPurchaseRejectionGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionDetails));
-                }
-
-                if (PRPopupGrid != null && PRPopupGrid.Count > 0)
-                {
-                    if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
-                    {
-                        if (MainModel.AccPurchaseRejectionDetails.Any())
-                        {
-                            bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode);
-                            if (!IsExistsSameItem)
-                            {
-                                PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode);
-                            }
-                        }
-                        else
-                        {
-                            PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode);
-                        }
-                    }
-                    else
-                    {
-                        PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode);
-                    }
-                    MainModel.AccPurchaseRejectionAgainstBillDetails = PRPopupGrid;
-
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
-                    HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionAgainstBillDetails));
-                }
+                purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
             }
-            else
+            string modelPRAgainstGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
+            List<AccPurchaseRejectionAgainstBillDetail> PRPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
+            if (!string.IsNullOrEmpty(modelPRAgainstGridJson))
             {
-                //_MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
-                string modelPRGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionGrid");
-                List<AccPurchaseRejectionDetail> purchaseRejectionDetail = new List<AccPurchaseRejectionDetail>();
-                if (!string.IsNullOrEmpty(modelPRGridJson))
-                {
-                    purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
-                }
-                string modelPRAgainstGridJson = HttpContext.Session.GetString("KeyPurchaseRejectionPopupGrid");
-                List<AccPurchaseRejectionAgainstBillDetail> PRPopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
-                if (!string.IsNullOrEmpty(modelPRAgainstGridJson))
-                {
-                    PRPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRAgainstGridJson);
-                }
-                
-                if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
-                {
-                    purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
-                    MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
+                PRPopupGrid = JsonConvert.DeserializeObject<List<AccPurchaseRejectionAgainstBillDetail>>(modelPRAgainstGridJson);
+            }
+            string uniquekey = string.Empty;
+            if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
+            {
+                uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault().ToString();
+                purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
+                MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
 
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
-                    HttpContext.Session.SetString("KeyPurchaseRejectionGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionDetails));
-                }
-                if (PRPopupGrid != null && PRPopupGrid.Count > 0)
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
-                    if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyPurchaseRejectionGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionDetails));
+            }
+            if (PRPopupGrid != null && PRPopupGrid.Count > 0)
+            {
+                int EntryId = 0;
+                int YearCode = 0;
+                var InvoiceNo = string.Empty;
+                if (!string.IsNullOrEmpty(uniquekey))
+                {
+                    var uniquekeyArray = uniquekey.Split("_").ToArray();
+                    EntryId = !string.IsNullOrEmpty(uniquekeyArray[0]) ? Convert.ToInt32(uniquekeyArray[0]) : 0;
+                    YearCode = !string.IsNullOrEmpty(uniquekeyArray[1]) ? Convert.ToInt32(uniquekeyArray[1]) : 0;
+                    InvoiceNo = uniquekeyArray[2];
+                }
+                if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
+                {
+                     if (MainModel.AccPurchaseRejectionDetails.Any())
                     {
-                        if (MainModel.AccPurchaseRejectionDetails.Any())
+                        bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode && a.hdnuniquekey == uniquekey); // && a.AgainstPurchaseBillEntryId == EntryId && a.AgainstPurchaseBillYearCode == YearCode
+                        if (!IsExistsSameItem)
                         {
-                            bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode);
-                            if (!IsExistsSameItem)
-                            {
-                                PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode);
-                            }
-                        }
-                        else
-                        {
-                            PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode);
+                            PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo); 
                         }
                     }
                     else
                     {
-                        PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode);
+                        PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo);
                     }
-                    MainModel.AccPurchaseRejectionAgainstBillDetails = PRPopupGrid;
-
-                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                    {
-                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                        SlidingExpiration = TimeSpan.FromMinutes(55),
-                        Size = 1024,
-                    };
-
-                    //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
-                    HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionAgainstBillDetails));
                 }
+                else
+                {
+                    PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo);
+                }
+                MainModel.AccPurchaseRejectionAgainstBillDetails = PRPopupGrid;
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+
+                //_MemoryCache.Set("KeyPurchaseRejectionGrid", MainModel.AccPurchaseRejectionDetails, cacheEntryOptions);
+                HttpContext.Session.SetString("KeyPurchaseRejectionPopupGrid", JsonConvert.SerializeObject(MainModel.AccPurchaseRejectionAgainstBillDetails));
             }
 
             return PartialView("_PurchaseRejectionGrid", MainModel);
