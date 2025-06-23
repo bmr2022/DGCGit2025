@@ -2279,11 +2279,13 @@ function submitForm(shouldPrint, printWindow) {
                         var obj = $.parseJSON(result);
                         if (obj.Result[0] == undefined) {
                             $('#PurchasePrice').prop("readonly", false);
+
                             //$('#PurchasePrice').val(0);
 
                         }
                         else {
                             $('#PurchasePrice').val(obj.Result[0].Rate);
+                            $('#Rate').val(obj.Result[0].Rate);
 
                             if (parseFloat(obj.Result[0].Rate) == 0) {
                                 $('#PurchasePrice').prop("readonly", false);
