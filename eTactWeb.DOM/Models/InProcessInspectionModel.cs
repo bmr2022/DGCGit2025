@@ -77,19 +77,29 @@ namespace eTactWeb.DOM.Models
 		public string MachineNo { get; set; }
 		public string LotNo { get; set; }
 		public string Shift { get; set; }
+		public int ShiftID { get; set; }
 		public string Time { get; set; }
 		public string Date { get; set; }
 		public string RevDate { get; set; }
-		public bool BegingOfProduction { get; set; }
-		public bool AfterMouldCorrection { get; set; }
+		public IList<string>? Inspection { get; set; }
+		
+		
+		public IList<string>? SelectedInspections { get; set; } 
+		public List<InspectionOption> InspectionOptions { get; set; }
 		//public IList<string>? BegingOfProduction { get; set; }
 		//public IList<BegingOfProductionDetail>? BegingOfProductionDetailList { get; set; }
 		//public IList<TextValue>? BegingOfProductionList { get; set; }
 
 		public IList<InProcessInspectionDetailModel> DTSSGrid { get; set; }
     }
-	
-	public class InProcessInspectionDetailModel
+
+    public class InspectionOption
+	{
+		public string Key { get; set; }
+		public string Text { get; set; }
+	}
+
+    public class InProcessInspectionDetailModel
     {
         public int SeqNo { get; set; }
         public string Mode { get; set; }
@@ -130,9 +140,12 @@ namespace eTactWeb.DOM.Models
         public string LastUpdatedByName { get; set; }
         public string? LastUpdationDate { get; set; }
         public string? CC { get; set; }
+        public bool? BegingOfProduction { get; set; }
+        public bool? AfterMouldCorrection { get; set; }
+        public bool? AfterMachineBreackDown { get; set; }
+        public bool? AfterMaterialLotChange { get; set; }
+        public bool? AfterMachineIdel { get; set; }
+        public bool? EndOfProduction { get; set; }
 
-        public IFormFile? UploadImage { get; set; }
-        public IFormFile? ItemImage { get; set; }
-        public string? ItemImageURL { get; set; }
     }
 }
