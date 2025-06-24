@@ -556,14 +556,21 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "DirectPurchaseBill")
             {
-                _MemoryCache.TryGetValue("KeyDirectPurchaseBill", out List<DPBItemDetail> DirectPurchaseBill);
-                string modelPRGridJson = HttpContext.Session.GetString("KeyDirectPurchaseBill");
-                List<DPBItemDetail> DirectPurchaseBill1 = new List<DPBItemDetail>();
-                if (!string.IsNullOrEmpty(modelPRGridJson) && DirectPurchaseBill == null)
+                //_MemoryCache.TryGetValue("KeyDirectPurchaseBill", out List<DPBItemDetail> DirectPurchaseBill);
+                //string modelPRGridJson = HttpContext.Session.GetString("KeyDirectPurchaseBill");
+                //List<DPBItemDetail> DirectPurchaseBill1 = new List<DPBItemDetail>();
+                //if (!string.IsNullOrEmpty(modelPRGridJson) && DirectPurchaseBill == null)
+                //{
+                //    DirectPurchaseBill1 = JsonConvert.DeserializeObject<List<DPBItemDetail>>(modelPRGridJson);
+                //}
+                string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    DirectPurchaseBill1 = JsonConvert.DeserializeObject<List<DPBItemDetail>>(modelPRGridJson);
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
                 }
-                ItemDetailGrid = DirectPurchaseBill1;
+
+                //ItemDetailGrid = MainModel;
+                ItemDetailGrid = MainModel.ItemDetailGrid;
 
                 //_MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
                 //ItemDetailGrid = MainModel.ItemDetailGrid;

@@ -405,6 +405,16 @@
                 }
             });
         });
+
+        function confirmDelete(event,entryID, yearCode, purchVouchNo, invNo, isDetail, cnt) {
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+
+            if (confirm("Are you sure you want to delete this entry?")) {
+                deleteItem(entryID, yearCode, purchVouchNo, invNo, isDetail, cnt);
+            }
+        }
+
         function deleteItem(entryID, yearCode, purchVouchNo, invNo, isDetail, cnt) {
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
