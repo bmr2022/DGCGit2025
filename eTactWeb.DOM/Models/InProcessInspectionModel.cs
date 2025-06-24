@@ -20,10 +20,36 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; }
         public string? EntryDate { get; set; }
         public string? EffectiveDate { get; set; }
+        public string? TestingDate { get; set; }
         public int YearCode { get; set; }
 
         public string RevNo { get; set; }
+        public string SlipNo { get; set; }
+        public string InspTimeFrom { get; set; }
+        public string InspTimeTo { get; set; }
+        public string SampleSize { get; set; }
+        public string ProjectDate { get; set; }
+        public int MachineId { get; set; }
+        public string MRNNo { get; set; }
+        public string MRNDate { get; set; }
+        public int MRNYearCode { get; set; }
+        public string ProdDate { get; set; }
+        public int ProdYearCode { get; set; }
+        public decimal MRNQty { get; set; }
+        public decimal ProdQty { get; set; }
+        public decimal InspActqty { get; set; }
+        public decimal OkQty { get; set; }
+        public decimal Rejqty { get; set; }
+        public decimal Weight { get; set; }
+        public string InpectionJudgement { get; set; }
+        public string InspectedOther1 { get; set; }
+        public string InspectedOther2 { get; set; }
+        public string InspectedOther3 { get; set; }
+        public string ProdSlipNo { get; set; }
+        public int WCID { get; set; }
+        public int WorkCenter { get; set; }
         public string ForInOutInprocess { get; set; } = "";
+        public string Remark { get; set; } = "";
         public int ItemCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
@@ -33,6 +59,8 @@ namespace eTactWeb.DOM.Models
         public int EngApprovedBy { get; set; }
         public int ApprovedBy { get; set; }
         public string ApprovedByEmpName { get; set; }
+        public int InspectedBy { get; set; }
+        public string InspectedByEmpName { get; set; }
         public string Remarks { get; set; } = "";
 
         public int UId { get; set; }

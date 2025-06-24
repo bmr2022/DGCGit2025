@@ -8,45 +8,45 @@
                 <th>Sr#</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <i class="fa" aria-hidden="true"></i>
                     </span>
                     Characteristic
                 </th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <i class="fa" aria-hidden="true"></i>
                     </span>
-                    EvalutionMeasurmentTechnique
+                    Evalution Measurment Technique
                 </th>
                 <th data-columnno="3" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <i class="fa" aria-hidden="true"></i>
                     </span>
-                    ControlMethod
+                    Control Method
                 </th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <i class="fa" aria-hidden="true"></i>
                     </span>
-                    SpecificationFrom
+                    Specification From
                 </th>
                 <th data-columnno="5" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <i class="fa" aria-hidden="true"></i>
                     </span>
-                    SpecificationTo
+                    Specification To
                 </th>
                 <th data-columnno="6" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <i class="fa " aria-hidden="true"></i>
                     </span>
-                    RejectionPlan
+                    Rejection Plan
                 </th>
                 <th data-columnno="7" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa fa-sort" aria-hidden="true"></i>
+                        <i class="fa " aria-hidden="true"></i>
                     </span>
-                    FrequencyofTesting
+                    Frequency of Testing
                 </th>
             </tr>
         </thead>
@@ -65,7 +65,8 @@
                     {
                         Cntr = Cntr + 1;
 
-                        <tr id="@Cntr" onclick="selection(this)">
+                        <tr id="SAGridRow-@Cntr" onclick="selection(this)">
+
                             <td>
                                 <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
                                     <span class="fa-stack">

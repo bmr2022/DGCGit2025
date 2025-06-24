@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -50,6 +51,9 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _InProcessInspectionDAL.FillEntryID(YearCode);
 		}
-
+		public async Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode)
+		{
+			return await _InProcessInspectionDAL.GetInprocessInspectionGridData( ItemCode);
+		}
 	}
 }

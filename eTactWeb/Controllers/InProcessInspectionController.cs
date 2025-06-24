@@ -98,6 +98,15 @@ namespace eTactWeb.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
+		public async Task<IActionResult> GetInprocessInspectionGridData(int ItemCode)
+		{
+			//model.Mode = "Search";
+			var model = new InProcessInspectionModel();
+			model = await _IInProcessInspection.GetInprocessInspectionGridData(ItemCode);
+			
+			return PartialView("_InprocessInspectionGrid", model);
+			
 
+		}
 	}
 }

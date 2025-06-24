@@ -1,4 +1,5 @@
 ﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -151,6 +152,59 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
+		public async Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode)
+		{
+			DataSet? oDataSet = new DataSet();
+			var model = new InProcessInspectionModel();
+			try
+			{
+				using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+				{
+					SqlCommand oCmd = new SqlCommand("SPInprocessInpection", myConnection)
+					{
+						CommandType = CommandType.StoredProcedure
+					};
+					oCmd.Parameters.AddWithValue("@Flag", "FillCharectristicDetail");
+					oCmd.Parameters.AddWithValue("@Itemcode", ItemCode);
 
+					await myConnection.OpenAsync();
+					using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+					{
+						oDataAdapter.Fill(oDataSet);
+					}
+				}
+				if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+				{
+					
+						model.DTSSGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+														select new InProcessInspectionDetailModel
+														{
+															Characteristic = dr["Characteristic"] != DBNull.Value ? Convert.ToString(dr["Characteristic"]) : string.Empty,
+															EvalutionMeasurmentTechnique = dr["EvalutionMeasurmentTechnique"] != DBNull.Value ? Convert.ToString(dr["EvalutionMeasurmentTechnique"]) : string.Empty,
+															ControlMethod = dr["ControlMethod"] != DBNull.Value ? Convert.ToString(dr["ControlMethod"]) : string.Empty,
+															SpecificationFrom = dr["SpecificationFrom"] != DBNull.Value ? Convert.ToString(dr["SpecificationFrom"]) : string.Empty,
+															SpecificationTo = dr["SpecificationTo"] != DBNull.Value ? Convert.ToString(dr["SpecificationTo"]) : string.Empty,
+															
+															RejectionPlan = dr["RejectionPlan"] != DBNull.Value ? Convert.ToString(dr["RejectionPlan"]) : string.Empty,
+															FrequencyofTesting = dr["FrequencyofTesting"] != DBNull.Value ? Convert.ToString(dr["FrequencyofTesting"]) : string.Empty,
+
+														}).ToList();
+				
+
+				}
+				
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+			finally
+			{
+				oDataSet.Dispose();
+			}
+			return model;
+		}
 	}
 }

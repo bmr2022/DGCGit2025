@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -16,5 +17,6 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillCustomer();
 		Task<ResponseResult> FillColor(string PartNo);
 		Task<ResponseResult> FillEntryID(int YearCode);
+		Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode);
 	}
 }

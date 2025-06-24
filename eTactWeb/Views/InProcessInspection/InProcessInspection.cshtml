@@ -88,17 +88,22 @@
 										<label asp-for="YearCode" class="form-label">YearCode</label>
 										<input asp-for="YearCode" class="form-control" readonly />
 									</div>
-
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="TestingDate" class="form-label">Testing Date</label>
+										<input asp-for="TestingDate" class="form-control" readonly />
+									</div>
+									
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 										<label asp-for="InspectionType" class="form-label" style="color:red"> Inspection Type*</label>
 										<select class="form-control"  asp-for="InspectionType">
 											<option value="">-Select-</option>
-											<option value="Incoming">Incoming</option>
+											<option value="Incoming" selected>Incoming</option>
 											<option value="InProcess">InProcess</option>
 											<option value="OutGoing">OutGoing</option>
 											
 										</select>
 									</div>
+									<input type="hidden" asp-for="ItemCode" />
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 										<label asp-for="PartNo" class="form-label" style="color:red"> Part No*</label>
 										<select class="form-control" id="PartNo" asp-for="PartNo">
@@ -121,6 +126,7 @@
 										</select>
 									</div>
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<input type="hidden" asp-for="AccountCode">
 										<label asp-for="CustomerName" class="form-label" > Customer Name</label>
 										<select class="form-control" asp-for="CustomerName">
 											<option value="">-Select-</option>
@@ -132,25 +138,35 @@
 									</div>
 									
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
-										<label asp-for="ProjectNo" class="form-label">Project</label>
+										<label asp-for="ProjectNo" class="form-label">Project No</label>
 										<input asp-for="ProjectNo" class="form-control"  />
 									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="ProjectDate" class="form-label">Project Date</label>
+										<input asp-for="ProjectDate" class="form-control" />
+									</div>
+
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="SlipNo" class="form-label">Slip No</label>
+										<input asp-for="SlipNo" class="form-control"  />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="InspTimeFrom" class="form-label"> Insp Time From</label>
+										<input asp-for="InspTimeFrom" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="InspTimeTo" class="form-label">Insp Time To</label>
+										<input asp-for="InspTimeTo" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="SampleSize" class="form-label">Sample Size</label>
+										<input asp-for="SampleSize" class="form-control" />
+									</div>
+
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 										<label asp-for="Color" class="form-label"> Color</label>
 										<select class="form-control" asp-for="Color">
 											<option value="">-Select-</option>
-											@* <option value="Red">Red</option>
-											<option value="Blue">Blue</option>
-											<option value="Green">Green</option>
-											<option value="Yellow">Yellow</option>
-											<option value="Black">Black</option>
-											<option value="White">White</option>
-											<option value="Pink">Pink</option>
-											<option value="Orange">Orange</option>
-											<option value="Purple">Purple</option>
-											<option value="Grey">Grey</option>
-											<option value="Brown">Brown</option>
-											<option value="Maroon">Maroon</option> *@
 											
 										</select>
 									</div>
@@ -163,6 +179,7 @@
 										<input asp-for="NoOfCavity" class="form-control"  />
 									</div>
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<input type="hidden" asp-for="MachineId" />
 										<label asp-for="MachineNo" class="form-label"> Machine No</label>
 										<select class="form-control" asp-for="MachineNo">
 											<option value="">-Select-</option>
@@ -178,6 +195,7 @@
 									</div>
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 										<label asp-for="Shift" class="form-label"> Shift</label>
+										<input type="hidden" asp-for="ShiftID" />
 										<select class="form-control" asp-for="Shift">
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
@@ -186,6 +204,18 @@
 											}
 										</select>
 									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+										<label asp-for="WorkCenter" class="form-label"> Shift</label>
+										<input type="hidden" asp-for="WCID" />
+										<select class="form-control" asp-for="WorkCenter">
+											<option value="">-Select-</option>
+											@if (Model.Mode == "U" || Model.Mode == "V")
+											{
+												<option value="@Model.WCID" selected>@Model.WorkCenter</option>
+											}
+										</select>
+									</div>
+
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
 										<label class="form-label">Process Time</label>
 										<input asp-for=Time id="Time" name="Time" type="time" class="form-control" value="@DateTime.Now.ToString("HH:mm")" />
@@ -203,6 +233,75 @@
 										<label asp-for="RevDate" class="form-label">Rev Date</label>
 										<input asp-for="RevDate" class="form-control" />
 									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="MRNNo" class="form-label">MRN No</label>
+										<input asp-for="MRNNo" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="MRNDate" class="form-label">MRN Date</label>
+										<input asp-for="MRNDate" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="MRNYearCode" class="form-label">MRN YearCode</label>
+										<input asp-for="MRNYearCode" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="ProdSlipNo" class="form-label">ProdSlip No</label>
+										<input asp-for="ProdSlipNo" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="ProdDate" class="form-label">Prod Date</label>
+										<input asp-for="ProdDate" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="ProdYearCode" class="form-label">Prod YearCode</label>
+										<input asp-for="ProdYearCode" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="MRNQty" class="form-label">MRN Qty</label>
+										<input asp-for="MRNQty" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="ProdQty" class="form-label">Prod Qty</label>
+										<input asp-for="ProdQty" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="InspActqty" class="form-label">Insp Act Qty</label>
+										<input asp-for="InspActqty" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="OkQty" class="form-label">Ok Qty</label>
+										<input asp-for="OkQty" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="Rejqty" class="form-label">Rej Qty</label>
+										<input asp-for="Rejqty" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="Weight" class="form-label">Weight</label>
+										<input asp-for="Weight" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="InpectionJudgement" class="form-label">Inpection Judgement</label>
+										<input asp-for="InpectionJudgement" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="InspectedOther1" class="form-label">Inspected Other 1</label>
+										<input asp-for="InspectedOther1" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="InspectedOther2" class="form-label">Inspected Other 2</label>
+										<input asp-for="InspectedOther2" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="InspectedOther3" class="form-label">Inspected Other3</label>
+										<input asp-for="InspectedOther3" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="Remark" class="form-label">Remark</label>
+										<input asp-for="Remark" class="form-control" />
+									</div>
+
 									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SelectedInspections" class="control-label">Inspection List</label>
 										<select id="Inspection" class="form-select" multiple="multiple"
@@ -216,7 +315,12 @@
 								<div class="progress my-2 mb-3" style="height: 4px;">
 									<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 								</div>
-								<div class="card">
+								<h2 class="accordion-header" id="H_SAGrid">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>InProcess Inspection Grid</strong>
+									</button>
+								</h2>
+								@* <div class="card">
 									<div class="card-body overflow-auto pb-0">
 										<table class="table table-hover table-bordered table-striped" id="GateMainTable">
 											<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
@@ -234,7 +338,7 @@
 													
 												</tr>
 											</thead>
-											<tbody id="divStockGrid">
+											<tbody id="divinProcessInspectionGrid">
 												<partial name="_InprocessInspectionGrid" />
 											</tbody>
 										</table>
@@ -250,12 +354,26 @@
 								<div class="progress my-3 mb-3" style="height: 4px;">
 									<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
 								</div>
-							</div>
+							</div> *@
+								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+									<div class="accordion-body">
+										<div class="card-body" id="divPendingMRP">
+											<div class="col-md-12 divStockRegister" id="divinProcessInspectionGrid">
+												<partial name="_InprocessInspectionGrid" />
+											</div>
+										</div>
+										<div class="row g-2 gx-3">
+											<div class="col-12 text-center">
 
-							</div>
+												<strong>TOTAL NO OF ITEMS : <span id="totalRows"></span></strong>
+											</div>
+										</div>
+
+									</div>
+							    </div>
 							<div class="accordion-item">
 								<h2 class="accordion-header" id="OtherGrid">
-									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+										<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
 										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
 									</button>
 								</h2>
@@ -273,6 +391,11 @@
 												<input type="hidden" asp-for="ApprovedBy" />
 												<input asp-for="ApprovedByEmpName" class="form-control" readonly />
 											</div>
+											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="InspectedBy" class="form-label">InspectedBy</label>
+												<input type="hidden" asp-for="ApprovedBy" />
+													<input asp-for="InspectedByEmpName" class="form-control" readonly />
+											</div>
 
 
 
@@ -282,7 +405,7 @@
 											</div>
 
 											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ActualEntryBy" class="form-label">ActualEntryByEmpid</label>
+												<label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
 												<input asp-for="ActualEntryByName " class="form-control" readonly />
 											</div>
 											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -392,47 +515,19 @@
 			const hours = now.getHours().toString().padStart(2, '0');
 			const minutes = now.getMinutes().toString().padStart(2, '0');
 			document.getElementById("Time").value = `${hours}:${minutes}`;
-			
+			GetInprocessInspectionGridData();
 
-			$('#BatchNo').css('background-color', 'rgb(248 255 178)');
-			//$('#BillNo').removeClass('Valid');
-			$('#SlipDate').rules("remove", "required");
-			$('#Uid').rules("remove", "required");
-			$('#UpdationDate').rules("remove", "required");
-			$('#UpdatedByEmpId').rules("remove", "required");
+			//$('#SlipDate').rules("remove", "required");
 
-			$('#OriginalItemCode').rules("remove", "required");
-			$('#OriginalPartCode').rules("remove", "required");
-			$('#OriginalItemName').rules("remove", "required");
-			$('#StoreId').rules("remove", "required");
-			$('#StoreName').rules("remove", "required");
-			$('#WcId').rules("remove", "required");
-			$('#WorkCenterName').rules("remove", "required");
-			$('#BatchNo').rules("remove", "required");
-			$('#UniqueBatchNo').rules("remove", "required");
-			$('#BatchStock').rules("remove", "required");
-			$('#TotalStock').rules("remove", "required");
-			$('#OriginalQty').rules("remove", "required");
-			$('#Unit').rules("remove", "required");
-			$('#AltStock').rules("remove", "required");
-			$('#AltPartCode').rules("remove", "required");
-			$('#AltItemCode').rules("remove", "required");
-			$('#AltItemName').rules("remove", "required");
-			$('#AltStoreId').rules("remove", "required");
-			$('#AltStoreName').rules("remove", "required");
-			$('#AltWCID').rules("remove", "required");
-			$('#AltWorkCenterName').rules("remove", "required");
-			$('#AltOriginalQty').rules("remove", "required");
-			$('#AltUnit').rules("remove", "required");
-			$('#PlanNo').rules("remove", "required");
-			$('#PlanYearCode').rules("remove", "required");
-			$('#PlanDate').rules("remove", "required");
-			$('#ProdSchNo').rules("remove", "required");
-			$('#ProdSchYearCode').rules("remove", "required");
-			$('#ProdSchDatetime').rules("remove", "required");
-			$('#OrigItemRate').rules("remove", "required");
-			$('#Remark').rules("remove", "required");
+			var InspectionType = $('#InspectionType').val();
+			if (!InspectionType || InspectionType === '' || InspectionType === null) {
 
+				$.notify('Inspection Type is mandatory to display the PartNo!', 'error');
+			}
+			var PartNo = $('#PartNo').val();
+			if (!PartNo || PartNo === '' || PartNo === null) {
+				$.notify('PartNo is mandatory to display the Color & Grid Data!', 'error');
+			}
 
 			$('#InspectionType').select2();
 			$('#PartNo').select2();
@@ -442,8 +537,8 @@
 			
 			$('#MachineNo').select2();
 			$('#Shift').select2();
+
 			
-			$('#totalRows').text($('#divStockGrid tr').length);
 
 
 			FillPartName();
@@ -455,9 +550,11 @@
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
-			
-		
-			$("#OriginalQty, #AltOriginalQty, #AltStock").on("input", function () {
+			if ($('#InspectionType').val() !== '') {
+				FillPartCode();
+			}
+
+				$("#NoOfCavity").on("input", function () {
 				let value = $(this).val();
 
 
@@ -491,7 +588,7 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#Date,#ActualEntryDate,#UpdationDate,#RevDate')
+			$('#Date,#ActualEntryDate,#UpdationDate,#RevDate,#TestingDate,#ProjectDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
 		}
@@ -504,25 +601,39 @@
 			FillColor();
 		});
 
-		$('#ItemName').change(function () {
-
-			$('#AltItemCode').val($('#AltItemName').val());
+		$('#PartNo').change(function () {
+			$('#ItemCode').val($('#PartNo').val());
 		});
-		$('#AltPartCode').change(function () {
-
-			$('#AltItemCode').val($('#AltPartCode').val());
+		$('#PartName').change(function () {
+			GetInprocessInspectionGridData();
 		});
 
-	debugger
+		$('#PartName').change(function () {
+            $('#ItemCode').val($('#PartName').val());
+        });
+	
+
+
 		$('#Shift').change(function () {
-			;
 			$('#ShiftID').val($(this).val());
-		});
+		})
+		$('#CustomerName').change(function () {
+			$('#AccountCode').val($(this).val());
+		})
+		$('#MachineNo').change(function () {
+
+			$('#MachineId').val($(this).val());
+		})
 
 
 		$('#AltStoreName').change(function () {
 			$('#AltStoreId').val($('#AltStoreName').val());
 		});
+		function selection(CurrentRow) {
+
+			$(CurrentRow).css({ 'background-color': '#00bcd4' });
+			$("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+		}
 
 
 		$('#Inspection').multiselect({
@@ -535,6 +646,55 @@
 				button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>'
 			}
 		});
+		function GetInprocessInspectionGridData() {
+			debugger
+			var ItemCode = $('#ItemCode').val();
+		
+			// if (!ItemCode || ItemCode === '0') 
+			// {
+			// 	$.notify('ItemName is mandatory to display the Grid!', 'error');
+			// 	return false; 
+			// }
+			
+			$.ajax({
+				type: 'POST',
+				url: '@Url.Action("GetInprocessInspectionGridData", "InProcessInspection")',
+				data: {
+					ItemCode: ItemCode
+				},
+				success: function (response) {
+					$('#divinProcessInspectionGrid').html(response);
+
+					var totalRows = $('#divStockRegisterBody tr').length;
+					$('#totalRows').text(totalRows);
+					
+				},
+				error: function (xhr, status, error) {
+					console.error("Error fetching BOM tree data:", error);
+				}
+			});
+		}
+		function DeleteRow(i) {
+
+			var indexToRemove = i - 1;
+			$('#SAGridRow-' + i).remove();
+			$('#ReportTable tbody tr').each(function (index) {
+				$(this).attr('id', 'SAGridRow-' + (index + 1));
+
+
+				$(this).find('td:first-child a:first-child').each(function (tdIndex) {
+					$(this).attr('id', (index + 1));
+				});
+
+				$(this).find('td[id^="amount-"]').each(function (tdIndex) {
+					$(this).attr('id', 'amount-' + (index + 1));
+				});
+
+			});
+
+			$('#totalRows').text($('#divStockRegisterBody tr').length);
+			$.notify("Row deleted successfully.", "success");
+		}
 		function FillEntryID() {
 
 			var YearCode = $('#YearCode').val();
@@ -817,78 +977,7 @@
 		}
 
 		var UniqueBatchNo = [];
-		// function FillStockBatchNo() {
-
-		//     var ItemCode = $('#OriginalItemCode').val();
-		//     var YearCode = $('#OpeningYearCode').val();
-		//     var StoreName = $('#StoreName').find(':selected').text();
-		//     var batchno = "";
-		//     $.ajax({
-		//         type: "POST",
-		//         url: "@Url.Action("FillStockBatchNo")",
-		//         async: false,
-		//         data: { "ItemCode": ItemCode, "StoreName": StoreName, "YearCode": YearCode, "batchno": batchno },
-		//         success: function (result, status, error) {
-
-		//             if (result != null) {
-		//                 var obj = $.parseJSON(result);
-		//                 if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-		//                     UniqueBatchNo = [];
-		//                     $('#BatchNo').empty();
-		//                     $('#BatchNo').append('<option value="" selected>-Select-</option>');
-		//                     $('#UniqueBatchNo').empty();
-		//                     $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
-
-		//                     $.each(obj.Result, function (index, val) {
-		//                         $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
-		//                     });
-
-		//                     var itemArrayLength = itemBatchArray.length;
-		//                     if (itemArrayLength > 0) {
-		//                         var itemsWithCode16 = itemBatchArray.filter(function (item) {
-		//                             return item.itemcode === parseInt(ItemCode);
-		//                         });
-		//                         var selectList = $('#BatchNo');
-		//                         var SelectUBList = $('#UniqueBatchNo');
-		//                         selectList.find('option').each(function () {
-		//                             var optionValue = $(this).val();
-
-		//                             var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-		//                                 return item.batchno === optionValue;
-		//                             });
-
-		//                             if (existsInItemsWithCode16) {
-		//                                 $(this).remove();
-		//                             }
-		//                         });
-
-		//                         SelectUBList.find('option').each(function () {
-
-		//                             var optionValue = $(this).val();
-
-		//                             var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-		//                                 return item.uniquebatchno === optionValue;
-		//                             });
-
-		//                             if (existsInItemsWithCode16) {
-		//                                 $(this).remove();
-		//                             }
-		//                         });
-		//                     }
-
-
-
-		//                 } else {
-		//                     $('#BatchNo').empty();
-		//                     $('#BatchNo').append('<option value="" selected>-Select-</option>');
-		//                     $('#UniqueBatchNo').empty();
-		//                     $('#UniqueBatchNo').append('<option value="" selected>-Select-</option>');
-		//                 }
-		//             }
-		//         }
-		//     });
-		// }
-
+		
 		$('#GridButton').click(function (e) {
 			e.preventDefault();
 
