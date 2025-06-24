@@ -186,6 +186,10 @@ namespace eTactWeb.Controllers
                     ? new List<DbCrModel>()
                     : JsonConvert.DeserializeObject<List<DbCrModel>>(drCrGridJson);
 
+                string serializedGrid = HttpContext.Session.GetString("KeyAdjGrid");
+                AdjustmentModel adjustmentModel = JsonConvert.DeserializeObject<AdjustmentModel>(serializedGrid);
+                List<AdjustmentModel> gridData = adjustmentModel.AdjAdjustmentDetailGrid;
+
 
                 var cc = stat.CurrentEntryCount;
                 var pp = stat.CurrentEstimatedSize;
@@ -230,9 +234,10 @@ namespace eTactWeb.Controllers
                     DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
                 }
 
-                if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                if (gridData != null && gridData.Count > 0)
                 {
-                    AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.EntryID, model.YearCode, model.AccountCode);
+                    AdjDetailDT = CommonController.GetAdjDetailTable(gridData, MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
+                    //AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.EntryID, model.YearCode, model.AccountCode);
                 }
 
                 if (model.PreparedBy == 0)
