@@ -26,6 +26,7 @@ using System.Configuration;
 using Microsoft.AspNetCore.Http;
 using System.Drawing.Printing;
 using Org.BouncyCastle.Asn1.Ocsp;
+using Newtonsoft.Json.Linq;
 
 
 namespace eTactWeb.Controllers
@@ -1513,12 +1514,16 @@ namespace eTactWeb.Controllers
                     input.generateEway,
                     "SaleBillEInvoice"
                 );
+                var responseObj = result.Result as JObject;
 
-                string ewbUrl = result.Result as string;
-                if (!string.IsNullOrWhiteSpace(ewbUrl))
+            
+                //if (!string.IsNullOrWhiteSpace(ewbUrl))
+                //{
+                if (responseObj != null)
                 {
                     if (input.generateEway == "EInvoice")
                     {
+                        string ewbUrl = (string)responseObj["ewbUrl"];
                         string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
                         if (!Directory.Exists(uploadsFolder))
                             Directory.CreateDirectory(uploadsFolder);
@@ -1531,10 +1536,22 @@ namespace eTactWeb.Controllers
                             return BadRequest("QR generation failed");
 
                         string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
-                        return Ok(new { redirectUrl = publicUrl });
+                        return Ok(new
+                        {
+                            redirectUrl = publicUrl,
+                            rawResponse = (string)responseObj["rawResponse"]
+                        });
+                  //      return Ok(new { redirectUrl = publicUrl });
                     }
-                    return Ok(new { redirectUrl = ewbUrl }); ;
-                }
+                    //return Ok(new { redirectUrl = ewbUrl }); ;
+                  
+                        return Ok(new
+                        {
+                            redirectUrl = (string)responseObj["ewbUrl"],
+                            rawResponse = (string)responseObj["rawResponse"]
+                        });
+                    }
+                //}
                 else
                 {
                     return BadRequest("Invoice generation failed");

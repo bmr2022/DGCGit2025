@@ -63,6 +63,7 @@ namespace eTactWeb.Data.BLL
             try
             {
                 var invoice = manInvoiceNo;
+                string ewbUrl = null;
 
                 var dataResult = await _EInvoiceDAL.GetInvoiceDataAsync(manInvoiceNo, manYearCode,flag);
                 if (dataResult?.Result == null || dataResult.Result.Rows.Count == 0)
@@ -78,14 +79,25 @@ namespace eTactWeb.Data.BLL
                 }
 
                 var invoiceDetails = buildResult.Result;
+                if (fromname == "JobWork Challan")
+                {
+                    ewbUrl = await _EInvoiceDAL.PostDataAsyncJW(invoiceDetails, invoice, manYearCode, transporterName, vehicleNo, distanceKM, EntrybyId, MachineName, fromname, generateEway, flag);
+                }
+                else
+                {
+                     ewbUrl = await _EInvoiceDAL.PostDataAsync(invoiceDetails, invoice, manYearCode, transporterName, vehicleNo, distanceKM, EntrybyId, MachineName, fromname, generateEway, flag);
 
-                string ewbUrl = await _EInvoiceDAL.PostDataAsync(invoiceDetails, invoice, manYearCode, transporterName,vehicleNo,distanceKM, EntrybyId,MachineName,fromname, generateEway,flag);
+                }
+                  
+                //if (!string.IsNullOrEmpty(ewbUrl))
+                //{
+                //    result.Result = ewbUrl;
+                //}
                 if (!string.IsNullOrEmpty(ewbUrl))
                 {
-                    result.Result = ewbUrl;
+                    result.Result = JsonConvert.DeserializeObject<JObject>(ewbUrl);
                 }
 
-               
             }
             catch (Exception ex)
             {

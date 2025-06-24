@@ -197,11 +197,11 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@flag", "GETIRNNO"));
                 SqlParams.Add(new SqlParameter("@SaleBillNo1", invoiceNo));
                 SqlParams.Add(new SqlParameter("@SaleBillNo2", invoiceNo));
                 SqlParams.Add(new SqlParameter("@SaleSaleBillYearCode", yearCode));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
+                SqlParams.Add(new SqlParameter("@flag", "GETIRNNO"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPIRNEInvoiceAndEwayBillData", SqlParams);
             }
             catch (Exception ex)
             {
@@ -302,7 +302,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@cancelledirnno", cancelledIrn)); // Ensure accountCode is of type int
                 SqlParams.Add(new SqlParameter("@cancelleddate", cancelledDate)); // Ensure accountCode is of type int
                 SqlParams.Add(new SqlParameter("@yearcode", SaleBillYearCode));
-                await _IDataLogic.ExecuteDataTable("InsertIRNdetail", SqlParams);
+                await _IDataLogic.ExecuteDataTable("SPEInvoiceIRNdetail", SqlParams);
                 result.Result = "EInvoice Cancelled Successfully";
                 return result;
             }
