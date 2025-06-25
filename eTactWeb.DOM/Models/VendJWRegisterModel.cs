@@ -27,6 +27,8 @@ namespace eTactWeb.DOM.Models
     public class VendJWRegisterDetail
     {
         public string Account_Name { get; set; }
+        public string VendorName { get; set; }
+        public string ChallanNo { get; set; }
         public string JInvNo { get; set; }
         public string InvDate { get; set; }
         public string MrnNo { get; set; }
@@ -37,6 +39,7 @@ namespace eTactWeb.DOM.Models
         public string Itemname { get; set; } 
         public string BillQty { get; set; }
         public string RecQty { get; set; }
+        public string ShortExcess { get; set; }
         public string JwRate { get; set; }
         public string JwRateUnit { get; set; }
         public string unit { get; set; }
@@ -96,6 +99,7 @@ namespace eTactWeb.DOM.Models
     public string altUnit { get; set; }
     public float pendqty { get; set;}
     public float PendAltQty { get; set; }
+    public float Actualpendqty { get; set; }
     public float Amount { get; set; }
     public string FORPROCESS { get; set; }
     public string STORENAME { get; set; }

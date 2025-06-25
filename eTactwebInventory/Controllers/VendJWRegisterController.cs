@@ -196,6 +196,11 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_VendorRecoIssueReceiveGrid", model);
             }
+            else if (model.ReportMode == "ONLY PENDING CHALLAN")
+            {
+                return PartialView("_ONLYPENDINGCHALLAN", model);
+            }
+
             //issue
             else if (model.ReportMode == "JOBWORKISSUECHALLANITEMDETAIL")
             {
@@ -209,9 +214,17 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_JWIssuePartyItemDetailReport", model);
             }
-             else if (model.ReportMode == "JOBWORKISSUECHALLANSUMMARY")
+            else if (model.ReportMode == "JOBWORKISSUECHALLANSUMMARY")
             {
                 return PartialView("_VenderJWIssueChallanGrid", model);
+            }
+            else if (model.ReportMode == "JOBWORK ISSUECHALLAN CONSOLIDATED")
+            {
+                return PartialView("_JOBWORKISSUECHALLANCONSOLIDATED", model);
+            }
+            else if (model.ReportMode == "JOBWORK RECEIVE CONSOLIDATED")
+            {
+                return PartialView("_JOBWORKRECEIVECONSOLIDATED", model);
             }
 
             else
