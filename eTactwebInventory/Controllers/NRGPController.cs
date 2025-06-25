@@ -188,7 +188,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="bmr.client2021@gmail.com",string CC2="",string CC3="",string Challanno="")
+        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="",string CC2="",string CC3="",string Challanno="")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;

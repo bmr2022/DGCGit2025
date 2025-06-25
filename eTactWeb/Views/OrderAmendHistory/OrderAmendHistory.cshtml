@@ -124,6 +124,9 @@
                                     <button class="btn btn-sm btn-outline-success" style="margin-top:25px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                         <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                     </button>
+                                <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                    <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                </button>
                                
                                 
                                     <a class="btn btn-sm btn-outline-danger" style="margin-top:25px;height:30px;width:100px;margin-left:20px;" asp-controller="OrderAmendHistory" asp-action="OrderAmendHistory">
@@ -274,6 +277,131 @@
             });
 
         }
+
+        $('#sendToPDF').click(async function () {
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            // Get dynamic values
+            var reportTypeText = $('#HistoryReportMode').find(":selected").text();
+            var reportTypeValue = $('#HistoryReportMode').val();
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            var WorkCenter = $('#WCID').find(":selected").text();
+            var PartCode = $('#PartCode').val();
+            var ItemName = $('#ItemName').val();
+            var ItemGroup = $('#ItemGroup').val();
+            var ItemType = $('#ItemType').val();
+            var BatchNo = $('#BatchNo').val();
+            var UniqueBatchNo = $('#UniqueBatchNo').val();
+
+            // Report Title (Bold and Color)
+            doc.setFontSize(16).setFont('helvetica', 'bold').setTextColor(41, 128, 185).text(reportTypeText, 40, 40);  // Blue color
+
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0);
+            doc.setFont('helvetica', 'bold');
+            doc.text('For the duration From:', 40, 58);
+            doc.setFont('helvetica', 'normal');
+            doc.text(fromDate, 160, 58);
+            doc.setFont('helvetica', 'bold');
+            doc.text('To:', 240, 58);
+            doc.setFont('helvetica', 'normal');
+            doc.text(toDate, 270, 58);
+
+            // Header Fields
+            const headerFields = [
+                { label: 'Work Center', value: (WorkCenter && WorkCenter !== '-Select-') ? WorkCenter : '' },
+                { label: 'Part Code', value: PartCode || '' },
+                { label: 'Item Name', value: ItemName || '' },
+                { label: 'Item Group', value: ItemGroup || '' },
+                { label: 'Item Type', value: ItemType || '' },
+                { label: 'Batch No', value: BatchNo || '' },
+                { label: 'Unique BatchNo', value: UniqueBatchNo || '' },
+            ];
+
+            // Adding headerFields to PDF with bold labels
+            let yPosition = 75; // starting position for header fields
+            doc.setFontSize(10);
+            doc.setTextColor(0, 0, 0); // Set black color once before loop
+
+            headerFields.forEach((field, index) => {
+                if (field.value) {
+                    doc.setFont('helvetica', 'bold');
+                    doc.text(`${field.label}:`, 40, yPosition);
+                    doc.setFont('helvetica', 'normal');
+                    doc.text(field.value, 140, yPosition);
+                    yPosition += 15;
+                }
+            });
+
+            // Fetch data
+            var resp = await fetch('/OrderAmendHistory/GetamendData');
+            var rows = await resp.json();
+            console.log(rows);
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+                case 'POAmendmentHistoryReport':
+                    headers = [
+                        "SrNo", "VendorName", "PONO", "PODate", "AmmNo", "AmmEffDate", "WEF", "POClosedate", "OrderType", "POType", "POFor",
+                        "BasicAmount", "NetAmount", "AmendPOSeq",
+                       
+
+                    ];
+                    body = rows.map((r, i) => [
+                        i + 1, r.vendorName, r.pono, r.poDate, r.ammNo, r.ammEffDate, r.wef, r.poClosedate,
+                        r.orderType, r.poType, r.poFor, r.basicAmount, r.netAmount,
+                       
+                        , r.amendPOSeq
+
+                    ]);
+                    break;
+               
+
+                // Add more cases for different report types here if needed
+                default:
+                    headers = ["Sr#", "Item Name", "Total Stock"];
+                    body = rows.map((r, i) => [i + 1, r.itemName, r.totStk]);
+                    break;
+            }
+
+            // Generate table with bold and colored header
+            doc.autoTable({
+                startY: yPosition, // after headerFields
+                head: [headers],
+                body: body,
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 3,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: [255, 255, 255],
+                    fontStyle: 'bold'
+                },
+                /* columnStyles: getColumnStyles(reportTypeValue), */
+                tableWidth: 'auto',
+                showHead: 'everyPage'
+            });
+
+           
+
+           
+            // Save the PDF
+            doc.save(`${reportTypeText.replace(/\s+/g, '_')}.pdf`);
+        });
+
 
         function FillItemName() {
 

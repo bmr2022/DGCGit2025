@@ -129,6 +129,19 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
+        public IActionResult GetamendData()
+        {
+            string modelJson = HttpContext.Session.GetString("KeyOrderAmendHistoryGrid");
+            List<OrderAmendHistoryModel> stockRegisterList = new List<OrderAmendHistoryModel>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                stockRegisterList = JsonConvert.DeserializeObject<List<OrderAmendHistoryModel>>(modelJson);
+            }
+
+            return Json(stockRegisterList);
+        }
+
+        [HttpGet]
         public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 20)
         {
             OrderAmendHistoryModel model = new OrderAmendHistoryModel();
