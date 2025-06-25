@@ -660,7 +660,18 @@
                                         $('#PasswordAllowPopup').modal("hide");
                                     window.location.href = data.redirectUrl;
                                    
-                                } else {
+                                }
+                                    if (data.rawResponse) {
+                                        try {
+                                        //    const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                                    $('#EinvoiceResponseBox').val(data.rawResponse.eInvoiceResponse || '');
+                                                     $('#ewayResponseBox').val(data.rawResponse.eWayBillResponse || '');
+                                        } catch (e) {
+                                            $('#EinvoiceResponseBox').val(res.rawResponse);
+                                            $('#ewayResponseBox').val(res.rawResponse);
+                                        }
+                                    }
+                                else {
                                    $.notify(data.redirectUrl, "error");
                                 }
                             }) // <-- this closing parenthesis was missing
@@ -708,7 +719,16 @@
                         success: function (res) {
                             if (res.redirectUrl) {
                                 window.location.href = res.redirectUrl;
-                            } else {
+                            }
+                              if (res.rawResponse) {
+                                        try {
+                                            const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                            $('#ewayResponseBox').val(formattedJson);
+                                        } catch (e) {
+                                            $('#ewayResponseBox').val(res.rawResponse);
+                                        }
+                                    }
+                            else {
                                 alert('E-Invoice generation failed.');
                             }
                             $('#PasswordAllowPopup').modal('hide');

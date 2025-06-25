@@ -398,171 +398,41 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        //   public async Task<string> PostDataAsync(
-        //Dictionary<string, object> dictData,
-        //string invoicenumber,
-        //int yearcodenumber,
-        //string transporterName,
-        //string vehicleNo,
-        //string distanceKM,
-        //int EntrybyId,
-        //string MachineName,
-        //string fromname,
-        //string generateEway,string flag)
-        //   {
-        //       try
-        //       {
-        //           string EwbNo = "", EwbDate = "", ewbUrl = "", EwbValidTill = "", ewayStatus = "";
-        //           var client = _httpClientFactory.CreateClient();
-
-        //           string urlToPost1 = "https://pro.mastersindia.co/generateEinvoice";
-        //           var requestContent = new StringContent(JsonConvert.SerializeObject(dictData), Encoding.UTF8, "application/json");
-        //           var response = await client.PostAsync(urlToPost1, requestContent);
-        //           token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
-
-        //           if (!response.IsSuccessStatusCode)
-        //               return $"Invoice API Error: {response.StatusCode}";
-
-        //           var responseString = await response.Content.ReadAsStringAsync();
-        //           var json = JObject.Parse(responseString);
-        //           irnNo = json.SelectToken("results.message.Irn")?.ToString();
-        //           barcodeVal = json.SelectToken("results.message.SignedQRCode")?.ToString();
-        //           var ackNo = json.SelectToken("results.message.AckNo")?.ToString();
-        //           var ackDate = json.SelectToken("results.message.AckDt")?.ToString();
-
-        //           if (string.IsNullOrEmpty(irnNo) || string.IsNullOrEmpty(barcodeVal))
-        //               return "Failed to generate invoice: missing IRN or QR code.";
-
-        //           var sellerDetails = dictData["seller_details"] as Dictionary<string, object>;
-        //           var buyerDetails = dictData["buyer_details"] as Dictionary<string, object>;
-
-        //           string pincodeFrom = sellerDetails?["pincode"]?.ToString() ?? "";
-        //           string pincodeTo = buyerDetails?["pincode"]?.ToString() ?? "";
-
-        //           var distanceResponse = await client.GetStringAsync($"http://pro.mastersindia.co/distance?access_token={token}&fromPincode={pincodeFrom}&toPincode={pincodeTo}");
-        //           var distanceJson = JObject.Parse(distanceResponse);
-        //           var distanceValue = distanceJson.SelectToken("results.distance")?.ToString();
-
-        //           var response1 = await GetInvoiceDataAsync(invoicenumber, yearcodenumber,flag);
-        //           var dataTable = response1.Result as DataTable;
-        //           if (dataTable.Rows.Count == 0) return "Invoice data not found";
-
-        //           var row = dataTable.Rows[0];
-        //           int entryid = row.Table.Columns.Contains("entry_id") && row["entry_id"] != DBNull.Value ? Convert.ToInt32(row["entry_id"]) : 0;
-        //           int accountCode = row.Table.Columns.Contains("account_code") && row["account_code"] != DBNull.Value ? Convert.ToInt32(row["account_code"]) : 0;
-
-        //           string transporterGst = await GetTransporterGSTAsync(transporterName);
-
-        //           if (generateEway == "true")
-        //           {
-        //               if (string.IsNullOrEmpty(transporterGst) && string.IsNullOrEmpty(vehicleNo))
-        //                   return "Transporter Name and Vehicle No cannot be empty at the same time. Please provide at least one of them.";
-        //           }
-
-        //           var dictData19 = new Dictionary<string, object>
-        //   {
-        //       { "access_token", token },
-        //       { "user_gstin", row["sellergstin"].ToString() },
-        //       { "irn", irnNo },
-        //       { "data_source", "ERP" },
-        //       {
-        //           "dispatch_details", new Dictionary<string, object>
-        //           {
-        //               { "company_name", row["sellername"].ToString() },
-        //               { "address1", row["selleraddress"].ToString() },
-        //               { "address2", "" },
-        //               { "location", row["sellerlocation"].ToString() },
-        //               { "pincode", row["sellerpincode"].ToString() },
-        //               { "state_code", row["sellerstate"].ToString() }
-        //           }
-        //       }
-        //   };
-
-        //           if (!string.IsNullOrEmpty(transporterGst))
-        //               dictData19.Add("transporter_id", transporterGst);
-
-        //           if (!string.IsNullOrEmpty(vehicleNo))
-        //           {
-        //               dictData19.Add("vehicle_number", vehicleNo);
-        //               dictData19.Add("transportation_mode", "1"); // Consider using constants
-        //               dictData19.Add("vehicle_type", "R");        // Consider using constants
-        //               dictData19.Add("transporter_name", transporterName);
-        //               dictData19.Add("distance", !string.IsNullOrEmpty(distanceKM) ? distanceKM : (distanceValue ?? "0"));
-        //           }
-
-        //           if (generateEway == "true")
-        //           {
-        //               ewayStatus = await PostData2(dictData19);
-        //               if (string.IsNullOrWhiteSpace(ewayStatus)) return "E-way bill response was empty.";
-        //               if (ewayStatus.StartsWith("Error")) return $"E-way bill generation failed: {ewayStatus}";
-
-        //               EwbNo = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Ewaybill No:"))?.Split("Ewaybill No:").Last()?.Trim();
-        //               EwbDate = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Date:"))?.Split("Date:").Last()?.Trim();
-        //               EwbValidTill = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("EwbValidTill:"))?.Split("EwbValidTill:").Last()?.Trim();
-        //               ewbUrl = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("PDF:"))?.Split("PDF:").Last()?.Trim();
-        //           }
-
-        //           // Insert final IRN + EWB data
-        //           await InsertIRNDetailAsync(
-        //               barcodeVal, invoicenumber, entryid, accountCode, yearcodenumber,
-        //               irnNo, ackNo, ackDate, token, EwbNo, EwbDate, EwbValidTill, fromname, EntrybyId, MachineName);
-
-        //           // Generate QR if only invoice was created
-        //           if (generateEway != "true")
-        //           {
-        //               var qrResult = await GenerateQRCode(barcodeVal, invoicenumber, yearcodenumber);
-        //               if (qrResult != "QR code generated and saved to database successfully.")
-        //                   return "QR generation failed.";
-        //           }
-
-        //           return generateEway == "true" ? ewbUrl : barcodeVal;
-        //       }
-        //       catch (Exception ex)
-        //       {
-        //           return $"Exception occurred: {ex.Message}";
-        //       }
-        //   }
         public async Task<string> PostDataAsync(
-       Dictionary<string, object> dictData,
-       string invoicenumber,
-       int yearcodenumber,
-       string transporterName,
-       string vehicleNo,
-       string distanceKM,
-       int EntrybyId,
-       string MachineName,
-       string fromname,
-       string generateEway, string flag)
+     Dictionary<string, object> dictData,
+     string invoicenumber,
+     int yearcodenumber,
+     string transporterName,
+     string vehicleNo,
+     string distanceKM,
+     int EntrybyId,
+     string MachineName,
+     string fromname,
+     string generateEway, string flag)
         {
             try
             {
                 string EwbNo = "", EwbDate = "", ewbUrl = "", EwbValidTill = "", ewayStatus = "";
                 var client = _httpClientFactory.CreateClient();
 
-                string token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
-                string irnNo = null, barcodeVal = null;
+                string urlToPost1 = "https://pro.mastersindia.co/generateEinvoice";
+                var requestContent = new StringContent(JsonConvert.SerializeObject(dictData), Encoding.UTF8, "application/json");
+                var response = await client.PostAsync(urlToPost1, requestContent);
+                token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
 
-                // Generate Invoice only if generateEway is "einvoice" or "both"
-                if (generateEway == "EInvoice" || generateEway == "EwayAndEInvoice")
-                {
-                    string urlToPost1 = "https://pro.mastersindia.co/generateEinvoice";
-                    var requestContent = new StringContent(JsonConvert.SerializeObject(dictData), Encoding.UTF8, "application/json");
-                    var response = await client.PostAsync(urlToPost1, requestContent);
+                if (!response.IsSuccessStatusCode)
+                    return $"Invoice API Error: {response.StatusCode}";
 
-                    if (!response.IsSuccessStatusCode)
-                        return $"Invoice API Error: {response.StatusCode}";
+                var responseString = await response.Content.ReadAsStringAsync();
+                var json = JObject.Parse(responseString);
+                irnNo = json.SelectToken("results.message.Irn")?.ToString();
+                barcodeVal = json.SelectToken("results.message.SignedQRCode")?.ToString();
+                var ackNo = json.SelectToken("results.message.AckNo")?.ToString();
+                var ackDate = json.SelectToken("results.message.AckDt")?.ToString();
 
-                    var responseString = await response.Content.ReadAsStringAsync();
-                    var json = JObject.Parse(responseString);
+                if (string.IsNullOrEmpty(irnNo) || string.IsNullOrEmpty(barcodeVal))
+                    return "Failed to generate invoice: missing IRN or QR code.";
 
-                    irnNo = json.SelectToken("results.message.Irn")?.ToString();
-                    barcodeVal = json.SelectToken("results.message.SignedQRCode")?.ToString();
-
-                    if (string.IsNullOrEmpty(irnNo) || string.IsNullOrEmpty(barcodeVal))
-                        return "Failed to generate invoice: missing IRN or QR code.";
-                }
-
-                // Get data for e-way bill preparation
                 var sellerDetails = dictData["seller_details"] as Dictionary<string, object>;
                 var buyerDetails = dictData["buyer_details"] as Dictionary<string, object>;
 
@@ -583,42 +453,45 @@ namespace eTactWeb.Data.DAL
 
                 string transporterGst = await GetTransporterGSTAsync(transporterName);
 
-                if ((generateEway == "Eway" || generateEway == "EwayAndEInvoice"))
+                if (generateEway == "EwayAndEInvoice")
                 {
                     if (string.IsNullOrEmpty(transporterGst) && string.IsNullOrEmpty(vehicleNo))
                         return "Transporter Name and Vehicle No cannot be empty at the same time. Please provide at least one of them.";
-
-                    var dictData19 = new Dictionary<string, object>
-            {
-                { "access_token", token },
-                { "user_gstin", row["sellergstin"].ToString() },
-                { "irn", irnNo ?? "" },
-                { "data_source", "ERP" },
-                {
-                    "dispatch_details", new Dictionary<string, object>
-                    {
-                        { "company_name", row["sellername"].ToString() },
-                        { "address1", row["selleraddress"].ToString() },
-                        { "address2", "" },
-                        { "location", row["sellerlocation"].ToString() },
-                        { "pincode", row["sellerpincode"].ToString() },
-                        { "state_code", row["sellerstate"].ToString() }
-                    }
                 }
-            };
 
-                    if (!string.IsNullOrEmpty(transporterGst))
-                        dictData19.Add("transporter_id", transporterGst);
+                var dictData19 = new Dictionary<string, object>
+           {
+               { "access_token", token },
+               { "user_gstin", row["sellergstin"].ToString() },
+               { "irn", irnNo },
+               { "data_source", "ERP" },
+               {
+                   "dispatch_details", new Dictionary<string, object>
+                   {
+                       { "company_name", row["sellername"].ToString() },
+                       { "address1", row["selleraddress"].ToString() },
+                       { "address2", "" },
+                       { "location", row["sellerlocation"].ToString() },
+                       { "pincode", row["sellerpincode"].ToString() },
+                       { "state_code", row["sellerstate"].ToString() }
+                   }
+               }
+           };
 
-                    if (!string.IsNullOrEmpty(vehicleNo))
-                    {
-                        dictData19.Add("vehicle_number", vehicleNo);
-                        dictData19.Add("transportation_mode", "1");
-                        dictData19.Add("vehicle_type", "R");
-                        dictData19.Add("transporter_name", transporterName);
-                        dictData19.Add("distance", !string.IsNullOrEmpty(distanceKM) ? distanceKM : (distanceValue ?? "0"));
-                    }
+                if (!string.IsNullOrEmpty(transporterGst))
+                    dictData19.Add("transporter_id", transporterGst);
 
+                if (!string.IsNullOrEmpty(vehicleNo))
+                {
+                    dictData19.Add("vehicle_number", vehicleNo);
+                    dictData19.Add("transportation_mode", "1"); // Consider using constants
+                    dictData19.Add("vehicle_type", "R");        // Consider using constants
+                    dictData19.Add("transporter_name", transporterName);
+                    dictData19.Add("distance", !string.IsNullOrEmpty(distanceKM) ? distanceKM : (distanceValue ?? "0"));
+                }
+                string EwayresponseString = null;
+                if (generateEway == "EwayAndEInvoice")
+                {
                     ewayStatus = await PostData2(dictData19);
                     if (string.IsNullOrWhiteSpace(ewayStatus)) return "E-way bill response was empty.";
                     if (ewayStatus.StartsWith("Error")) return $"E-way bill generation failed: {ewayStatus}";
@@ -627,23 +500,185 @@ namespace eTactWeb.Data.DAL
                     EwbDate = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Date:"))?.Split("Date:").Last()?.Trim();
                     EwbValidTill = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("EwbValidTill:"))?.Split("EwbValidTill:").Last()?.Trim();
                     ewbUrl = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("PDF:"))?.Split("PDF:").Last()?.Trim();
+                    EwayresponseString = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("responseString:"))?.Split("responseString:").Last()?.Trim();
                 }
 
-                if (!string.IsNullOrEmpty(irnNo) || !string.IsNullOrEmpty(EwbNo))
-                {
-                    await InsertIRNDetailAsync(
-                        barcodeVal, invoicenumber, entryid, accountCode, yearcodenumber,
-                        irnNo, null, null, token, EwbNo, EwbDate, EwbValidTill, fromname, EntrybyId, MachineName);
-                }
+                // Insert final IRN + EWB data
+                await InsertIRNDetailAsync(
+                    barcodeVal, invoicenumber, entryid, accountCode, yearcodenumber,
+                    irnNo, ackNo, ackDate, token, EwbNo, EwbDate, EwbValidTill, fromname, EntrybyId, MachineName);
 
-                if (generateEway == "EInvoice")
+                // Generate QR if only invoice was created
+                if (generateEway != "EwayAndEInvoice")
                 {
                     var qrResult = await GenerateQRCode(barcodeVal, invoicenumber, yearcodenumber);
                     if (qrResult != "QR code generated and saved to database successfully.")
                         return "QR generation failed.";
                 }
+                var resultJson = new JObject
+                {
+                    ["ewbUrl"] = generateEway == "EwayAndEInvoice" ? ewbUrl : barcodeVal,
+                    ["rawResponse"] = new JObject
+                    {
+                        ["eInvoiceResponse"] = responseString,
+                        ["eWayBillResponse"] = EwayresponseString // or the actual raw response string if you have it
+                    }
+                };
 
-                return generateEway == "EwayAndEInvoice" || generateEway == "Eway" ? ewbUrl : barcodeVal;
+                return resultJson.ToString();
+              //  return generateEway == "EwayAndEInvoice" ? ewbUrl : barcodeVal;
+            }
+            catch (Exception ex)
+            {
+                return $"Exception occurred: {ex.Message}";
+            }
+        }
+        public async Task<string> PostDataAsyncJW(
+       Dictionary<string, object> dictData,
+       string invoicenumber,
+       int yearcodenumber,
+       string transporterName,
+       string vehicleNo,
+       string distanceKM,
+       int EntrybyId,
+       string MachineName,
+       string fromname,
+       string generateEway,
+       string flag)
+        {
+            try
+            {
+                string EwbNo = "", EwbDate = "", ewbUrl = "", EwbValidTill = "", ewayStatus = "";
+                var client = _httpClientFactory.CreateClient();
+
+                string token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
+                string irnNo = null, barcodeVal = null, ackNo = "", ackDate = "";
+
+                var sellerDetails = dictData["seller_details"] as Dictionary<string, object>;
+                var buyerDetails = dictData["buyer_details"] as Dictionary<string, object>;
+
+                string pincodeFrom = sellerDetails?["pincode"]?.ToString() ?? "";
+                string pincodeTo = buyerDetails?["pincode"]?.ToString() ?? "";
+
+                var distanceResponse = await client.GetStringAsync($"http://pro.mastersindia.co/distance?access_token={token}&fromPincode={pincodeFrom}&toPincode={pincodeTo}");
+                var distanceJson = JObject.Parse(distanceResponse);
+                var distanceValue = distanceJson.SelectToken("results.distance")?.ToString();
+
+                var response1 = await GetInvoiceDataAsync(invoicenumber, yearcodenumber, flag);
+                var dataTable = response1.Result as DataTable;
+                if (dataTable.Rows.Count == 0) return "Invoice data not found";
+
+                var row = dataTable.Rows[0];
+                int entryid = row.Table.Columns.Contains("entry_id") && row["entry_id"] != DBNull.Value ? Convert.ToInt32(row["entry_id"]) : 0;
+                int accountCode = row.Table.Columns.Contains("account_code") && row["account_code"] != DBNull.Value ? Convert.ToInt32(row["account_code"]) : 0;
+
+                string transporterGst = await GetTransporterGSTAsync(transporterName);
+
+                if (string.IsNullOrEmpty(transporterGst) && string.IsNullOrEmpty(vehicleNo))
+                    return "Transporter Name and Vehicle No cannot be empty at the same time. Please provide at least one of them.";
+
+                var dictData19 = new Dictionary<string, object>
+                {
+                    { "access_token", token },
+                    { "userGstin", row["sellergstin"].ToString() },
+                    { "supply_type", "Outward" },
+                    { "sub_supply_type", "Others" },
+                    {"sub_supply_description", "sales from other country" },
+                    { "document_type", "Delivery Challan" },
+                    { "document_number", invoicenumber },
+                    { "document_date", row["invoice_date"].ToString() },
+
+                    { "gstin_of_consignor", row["sellergstin"].ToString() },
+                    { "legal_name_of_consignor", row["sellername"].ToString() },
+                    { "address1_of_consignor", row["selleraddress"].ToString() },
+                    { "address2_of_consignor", "" },
+                    { "place_of_consignor", row["sellerlocation"].ToString() },
+                    { "pincode_of_consignor", row["sellerpincode"].ToString() },
+                    { "state_of_consignor", row["sellerstate"].ToString() },
+                    { "actual_from_state_name", row["sellerstate"].ToString() },
+
+                    { "gstin_of_consignee", buyerDetails?["gstin"]?.ToString() ?? "URP" },
+                    { "legal_name_of_consignee", buyerDetails?["legal_name"]?.ToString() },
+                    { "address1_of_consignee", buyerDetails?["address1"]?.ToString() },
+                    { "address2_of_consignee", "" },
+                    { "place_of_consignee", buyerDetails?["location"]?.ToString() },
+                    { "pincode_of_consignee", buyerDetails?["pincode"]?.ToString() },
+                    { "state_of_supply", buyerDetails?["state_code"]?.ToString() },
+                    { "actual_to_state_name", buyerDetails?["state_code"]?.ToString() },
+
+                    { "transaction_type", 1 },
+                    { "other_value", 0 },
+                    { "total_invoice_value", row["TOATLINVVAL"].ToString() },
+                    { "taxable_amount", row["TOTALASSVAL"].ToString() },
+                    { "cgst_amount", row["cgstamt"].ToString() },
+                    { "sgst_amount", row["sgstamt"].ToString() },
+                    { "igst_amount", row["igstamt"].ToString() },
+                    { "cess_amount", "0" },
+                    { "cess_nonadvol_value", "0" },
+                    { "generate_status", "1" },
+                    { "user_ref", "" },
+                    { "location_code", "" },
+                    { "eway_bill_status", "ABC" },
+                    { "auto_print", "Y" },
+                    { "email", "info@bmrinfotech.com" },
+                    { "itemList", dictData["item_list"] }
+                };
+
+                if (!string.IsNullOrEmpty(transporterGst))
+                {
+                    dictData19["transporter_id"] = transporterGst;
+                }
+
+                if (!string.IsNullOrEmpty(vehicleNo))
+                {
+                    dictData19["vehicle_number"] = vehicleNo;
+                    dictData19["transportation_mode"] = "1";
+                    dictData19["vehicle_type"] = "R";
+                    dictData19["transporter_name"] = transporterName;
+                    dictData19["data_source"] = "ERP";
+                    dictData19["distance"] = !string.IsNullOrEmpty(distanceKM) ? distanceKM : (distanceValue ?? "0");
+                }
+
+
+                string urlToPost2 = "https://pro.mastersindia.co/ewayBillsGenerate";
+                using var client1 = _httpClientFactory.CreateClient();
+
+                var jsonContent = JsonConvert.SerializeObject(dictData19, Formatting.Indented);
+                var requestContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await client1.PostAsync(urlToPost2, requestContent);
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = JObject.Parse(responseString);
+                    string status = json.SelectToken("results.status")?.ToString();
+                    string errorMessage = json.SelectToken("results.errorMessage")?.ToString();
+
+                    if (status == "Failed")
+                    {
+                        return $"Error: {errorMessage}";
+                    }
+
+                    if (status == "Success")
+                    {
+                        EwbNo = json.SelectToken("results.message.ewayBillNo")?.ToString();
+                        EwbDate = json.SelectToken("results.message.ewayBillDate")?.ToString();
+                        ewbUrl = json.SelectToken("results.message.url")?.ToString();
+                        EwbValidTill = json.SelectToken("results.message.validUpto")?.ToString();
+                    }
+                }
+
+                await InsertIRNDetailAsync(
+                    barcodeVal, invoicenumber, entryid, accountCode, yearcodenumber,
+                    irnNo, ackNo, ackDate, token, EwbNo, EwbDate, EwbValidTill, fromname, EntrybyId, MachineName
+                );
+                return JsonConvert.SerializeObject(new
+                {
+                    ewbUrl = ewbUrl,
+                    rawResponse = responseString
+                });
+
             }
             catch (Exception ex)
             {
@@ -682,7 +717,7 @@ namespace eTactWeb.Data.DAL
                         string ewbUrl = json.SelectToken("results.message.EwaybillPdf")?.ToString();
                         string EwbValidTill = json.SelectToken("results.message.EwbValidTill")?.ToString();
                         string Alert = json.SelectToken("results.message.Alert")?.ToString();
-                        return $"Ewaybill No: {ewbNo}, Date: {ewbDt}, PDF: {ewbUrl},EwbValidTill:{EwbValidTill},Alert:{Alert}";
+                        return $"Ewaybill No: {ewbNo}, Date: {ewbDt}, PDF: {ewbUrl},EwbValidTill:{EwbValidTill},Alert:{Alert},responseString:{responseString}";
                     }
                 }
                 else
@@ -834,7 +869,7 @@ namespace eTactWeb.Data.DAL
             SqlParams.Add(new SqlParameter("@EntrybyId", EntrybyId));
             SqlParams.Add(new SqlParameter("@MachineName", MachineName));
 
-            await _IDataLogic.ExecuteDataTable("InsertIRNdetail", SqlParams);
+            await _IDataLogic.ExecuteDataTable("SPEInvoiceIRNdetail", SqlParams);
         }
         // Add this method to EInvoiceDAL
 
