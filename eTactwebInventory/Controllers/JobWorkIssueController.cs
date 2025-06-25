@@ -19,6 +19,7 @@ using System.Globalization;
 using FastReport.Data;
 using System.Configuration;
 using System.Diagnostics;
+using Newtonsoft.Json.Linq;
 //using JobWorkGridDetail = eTactWeb.DOM.Models.JobWorkGridDetail;
 
 namespace eTactWeb.Controllers
@@ -112,13 +113,21 @@ namespace eTactWeb.Controllers
                     input.generateEway,
                     "VendJobWorkEWayBil"
                 );
-
-                string ewbUrl = result.Result as string;
-                if (!string.IsNullOrWhiteSpace(ewbUrl))
+                var responseObj = result.Result as JObject;
+                if (responseObj != null)
                 {
-                    return Ok(new { redirectUrl = ewbUrl }); 
-
+                    return Ok(new
+                    {
+                        redirectUrl = (string)responseObj["ewbUrl"],
+                        rawResponse = (string)responseObj["rawResponse"]
+                    });
                 }
+                //string ewbUrl = result.Result as string;
+                //if (!string.IsNullOrWhiteSpace(ewbUrl))
+                //{
+                //    return Ok(new { redirectUrl = ewbUrl }); 
+
+                //}
                 else
                 {
                     return BadRequest("Invoice generation failed");
@@ -246,7 +255,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> JobWorkIssue(JobWorkIssueModel model, string ShouldPrint)
+        public async Task<IActionResult> JobWorkIssue(JobWorkIssueModel model, string ShouldPrint,string ShouldEway)
         {
             try
             {
@@ -311,6 +320,24 @@ namespace eTactWeb.Controllers
                                 yearCode = model.YearCode
                             });
                         }
+                        if (ShouldEway == "true")
+                        {
+                            return Json(new
+                            {
+                                status = "Success",
+                                entryId = model.EntryId,
+                                JWChallanNo = model.JWChallanNo,
+                                PartCode = model.PartCode,
+                                TransporterName = model.TransporterName,
+                                VehicleNo = model.VehicleNo,
+                                Distance = model.Distance,
+                                EnteredByEmpid = model.EnteredByEmpid,
+                                EnterByMachineName = model.EnterByMachineName,
+                                yearCode = model.YearCode
+                            });
+                        }
+
+
                         //return RedirectToAction(nameof(JobworkDashboard));
                         return Json(new { status = "Success" });
 
@@ -328,6 +355,23 @@ namespace eTactWeb.Controllers
                                 yearCode = model.YearCode
                             });
                         }
+                        if (ShouldEway == "true")
+                        {
+                            return Json(new
+                            {
+                                status = "Success",
+                                entryId = model.EntryId,
+                                JWChallanNo = model.JWChallanNo,
+                                PartCode = model.PartCode,
+                                TransporterName = model.TransporterName,
+                                VehicleNo = model.VehicleNo,
+                                Distance = model.Distance,
+                                EnteredByEmpid = model.EnteredByEmpid,
+                                EnterByMachineName = model.EnterByMachineName,
+                                yearCode = model.YearCode
+                            });
+                        }
+
                         //return RedirectToAction(nameof(JobworkDashboard));
                         return Json(new { status = "Success" });
 
