@@ -79,7 +79,7 @@ namespace eTactWeb.Data.BLL
                 }
 
                 var invoiceDetails = buildResult.Result;
-                if (fromname == "JobWork Challan")
+                if (fromname == "JobWork Challan" || fromname == "NRGP Challan")
                 {
                     ewbUrl = await _EInvoiceDAL.PostDataAsyncJW(invoiceDetails, invoice, manYearCode, transporterName, vehicleNo, distanceKM, EntrybyId, MachineName, fromname, generateEway, flag);
                 }

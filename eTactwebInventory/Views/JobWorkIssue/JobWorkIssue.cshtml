@@ -35,11 +35,13 @@
             <h5>
                 <strong>Job Work Issue - @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
+                    @if (Model.Mode == "V")
+                    {
                     <a id="btnEwayOnly" class="btn btn-sm btn-outline-light bg-gradient" >
                                 <i class="fa-solid fa-money-bill"></i>
                                 E-Way Bill
                             </a>
-
+                    }
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="JobWorkIssue" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT
@@ -58,6 +60,7 @@
                             <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
                             <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
                             <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
+                            <input type="hidden" id="ShouldEway" name="ShouldEway" />
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -703,21 +706,28 @@
                                     <label asp-for="UpdatedOn" class="form-label">Updated Date</label>
                                     <input asp-for="UpdatedOn" class="form-control" readonly />
                                 </div>
+                                <div class="col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label class="form-label"> E-Way Bill API Response</label>
+                                    <textarea id="ewayResponseBox" class="form-control"  rows="15"></textarea>
+                                </div>
+
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
+            
             <div class="card-footer p-3">
                 <div class="row justify-content-between g-2">
                     <div class="card-header card-headerBG text-light bg-gradient">
                         <h5>
                             <strong>Job Work Issue - @Model.YearCode</strong>
                             <span class="d-flex float-end" style="margin-top:-2px;">
+                                @if (Model.Mode == "V"){
                                 <a id="btnEwayOnlyD" type="button" class="btn btn-sm btn-outline-light bg-gradient">
                                     <i class="fa-solid fa-money-bill"></i>
                                     E-Way Bill
                                 </a>
+                                }
                                 <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="JobWorkIssue" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode">
                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                     PRINT
@@ -782,8 +792,47 @@
             </div>
     </form>
 </div>
-
 <div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Generate Save&Print or Save&Eway Bill</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Generate  Save&Print or Save&Eway Bil?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnClose">Save Only</button>
+
+                    <a href="#" class="btn btn-primary" id="btnPrint">
+                       Save & Print
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnEwayBill">Save & EWay Bill</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@*<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
      aria-labelledby="staticBackdropLabel" aria-hidden="true">
     <div class="modal-dialog modal-xl">
         <div class="modal-content">
@@ -820,7 +869,8 @@
         </div>
     </div>
 </div>
-@section Scripts {
+*@
+ @section Scripts {
     <script>
 
         var AccountStateCode = 0;
@@ -845,7 +895,7 @@
                 return false;
             }
 
-            else {
+          /*   else {
                 if (!checkPartCodeMusthaveAtLeastOneTax()) {
                     return false;
                 }
@@ -857,7 +907,7 @@
                         return false;
                     }
                 }
-            }
+            } */
             $('#PasswordAllowPopup').modal("show");
         });
         // When user clicks "Print"
@@ -866,10 +916,21 @@ $('#btnPrint').click(function () {
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(true, printWindow); // Send true and window object
+        submitForm(true, printWindow,false); // Send true and window object
     }, 300);
-});
-        $('#btnEwayOnly, #btnEwayOnlyD').click(function () {
+        });
+
+           $('#btnEwayBill').click(function () {
+           const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(false, printWindow,true); // Send true and window object
+            }, 300);
+                });
+
+        $(document).on('click', '#btnEwayOnly, #btnEwayOnlyD', function () {
+
             const model = {
                 EntryId: '@Model.EntryId',
                 InvoiceNo: '@Model.JWChallanNo',
@@ -890,11 +951,28 @@ $('#btnPrint').click(function () {
                 contentType: 'application/json',
                 data: JSON.stringify(model),
                 success: function (res) {
-                    if (res.redirectUrl) {
-                        window.location.href = res.redirectUrl;
+                  /*   if (res.redirectUrl) {
+                        
+                    }  */
+                            if (res.redirectUrl) {
+            const fullUrl = res.redirectUrl.startsWith("http")
+                ? res.redirectUrl
+                : "https://" + res.redirectUrl;
+            window.open(fullUrl, '_blank');
+        }
+
+                    if (res.rawResponse) {
+                        try {
+                            const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                            $('#ewayResponseBox').val(formattedJson);
+                        } catch (e) {
+                            $('#ewayResponseBox').val(res.rawResponse);
+                        }
+                                  $('#PasswordAllowPopup').modal("hide");
                     } else {
-                        $.notify('E-Way Bill generation failed.', 'error');
+                               $.notify('E-Way Bill generation failed.', 'error');
                     }
+                    
                 },
                 error: function () {
                     $.notify('An error occurred while generating the E-Way Bill.', 'error');
@@ -907,11 +985,106 @@ $('#btnClose').click(function () {
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(false, null); // no print
+        submitForm(false, null,false); // no print
     }, 300);
 });
 
-function submitForm(shouldPrint, printWindow) {
+        function submitForm(shouldPrint, printWindow, ShouldEway) {
+            $('#ShouldPrint').val(shouldPrint); // Set hidden input
+            $('#ShouldEway').val(ShouldEway);   // Set hidden input for ShouldEway
+            const formData = $('form').serialize(); // Serialize full form
+
+            $.ajax({
+                type: "POST",
+                url: $('form').attr('action'),
+                data: formData,
+                dataType: 'json',
+                success: function (res) {
+                    console.log("Server response:", res);
+
+                    if (res && res.status === "Success") {
+                        // Handle printing
+                        if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                            const printUrl = '/JobWorkIssue/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            printWindow.location.href = printUrl;
+                        }
+
+                        // Handle E-Way Bill
+                        if (ShouldEway && res.entryId && res.yearCode) {
+                                  
+                       /*      const ewayModel = {
+                               EntryId: res.entryId,
+                                        InvoiceNo: res.jwChallanNo,
+                                YearCode: res.yearCode,
+                                saleBillType: ' ',
+                                        customerPartCode: res.partCode,
+                                        transporterName: res.transporterName,
+                                        vehicleNo: res.vehicleNo,
+                                        distanceKM: res.distance,
+                                        EntrybyId: res.enteredByEmpid,
+                                        MachineName: res.enterByMachineName,
+                                generateEway: 'Eway'
+                            }; */
+                                    const ewayModel = {
+                                       entryId: res.entryId,
+                                       invoiceNo: res.jwChallanNo,
+                                       yearCode: res.yearCode,
+                                       saleBillType: '',
+                                       customerPartCode: res.partCode,
+                                       transporterName: res.transporterName,
+                                       vehicleNo: res.vehicleNo,
+                                       distanceKM: String(res.distance), // Convert to string
+                                       entrybyId: res.enteredByEmpid,
+                                       machineName: res.enterByMachineName,
+                                       generateEway: 'Eway'
+                                    };
+
+
+                            $.ajax({
+                                url: '/JobWorkIssue/GenerateEwayBill',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify(ewayModel),
+                                success: function (res) {
+                                    if (res.redirectUrl) {
+                                        const fullUrl = res.redirectUrl.startsWith("http")
+                                            ? res.redirectUrl
+                                            : "https://" + res.redirectUrl;
+                                        window.open(fullUrl, '_blank');
+                                    }
+
+                                    if (res.rawResponse) {
+                                        try {
+                                            const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                            $('#ewayResponseBox').val(formattedJson);
+                                        } catch (e) {
+                                            $('#ewayResponseBox').val(res.rawResponse);
+                                        }
+                                        $('#PasswordAllowPopup').modal("hide");
+                                    } else {
+                                        $.notify('E-Way Bill generation failed.', 'error');
+                                    }
+                                },
+                                error: function () {
+                                    $.notify('An error occurred while generating the E-Way Bill.', 'error');
+                                }
+                            });
+                        }
+
+                        // Final redirect
+                        window.location.href = '/JobWorkIssue/Index';
+                    } else {
+                        alert(res.message || "Something went wrong.");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error occurred:", xhr.responseText);
+                    alert("Save failed.");
+                }
+            });
+        }
+
+       /*  function submitForm(shouldPrint, printWindow,ShouldEway) {
     $('#ShouldPrint').val(shouldPrint); // Set hidden input
     const formData = $('form').serialize(); // Properly serialize full form
 
@@ -939,7 +1112,7 @@ function submitForm(shouldPrint, printWindow) {
             alert("Save failed.");
         }
     });
-}
+} */
         function checkPartCodeMusthaveAtLeastOneTax() {
 
             var errorPartCode = [];
@@ -965,7 +1138,7 @@ function submitForm(shouldPrint, printWindow) {
                 $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                 return false;
             }
-
+/* 
             else {
                 if (!checkPartCodeMusthaveAtLeastOneTax()) {
                     return false;
@@ -978,7 +1151,7 @@ function submitForm(shouldPrint, printWindow) {
                         return false;
                     }
                 }
-            }
+            } */
             $('#PasswordAllowPopup').modal("show");
         });
         function GetFormRights() {
