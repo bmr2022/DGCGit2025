@@ -800,7 +800,7 @@ namespace eTactWeb.Controllers
                         var itemCode = IStockAdjust.GetItemCode(worksheet.Cells[row, 2].Value.ToString());
                         var storeIdResult = 0;
                         var WCResult = 0;
-
+                        string SlipNo = Request.Form["SlipNo"];
 
                         //var duplicatePartCode = IStockAdjust.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
                         //var duplicateItemName = IStockAdjust.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
@@ -905,7 +905,7 @@ namespace eTactWeb.Controllers
                             ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
                             Unit = worksheet.Cells[row, 6].Value.ToString(),
                             altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
-                            batchno = worksheet.Cells[row, 8].Value.ToString(),
+                            batchno = SlipNo,
                             uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
                             reasonOfAdjustment = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
                             TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
