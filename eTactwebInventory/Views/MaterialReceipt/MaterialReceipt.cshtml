@@ -369,6 +369,8 @@
                                         </tbody>
                                     </table>
                                 </div>
+                                <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
                             </div>
                             @*<div class=" col-4 col-auto">
                             <div class="row justify-content-around">
@@ -658,6 +660,14 @@
 @section Scripts 
 {
         <script>
+                    function updateRowCount() {
+                        var rowCount = $('#divMRNGrid tr').length;
+                $('#totalRows').text(rowCount);
+            }
+
+            updateRowCount(); 
+            const observer = new MutationObserver(updateRowCount);
+            observer.observe(document.getElementById('divMRNGrid'), { childList: true, subtree: false });
             var checkBeforeInsert = "false";
             $("button[type='submit']").click(function (e) {
 
