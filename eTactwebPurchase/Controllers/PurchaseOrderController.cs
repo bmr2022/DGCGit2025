@@ -26,6 +26,7 @@ using Microsoft.AspNetCore.Mvc;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using FastReport.Export.PdfSimple;
 using System.Reflection;
+using DocumentFormat.OpenXml.Math;
 
 namespace eTactWeb.Controllers;
 
@@ -86,6 +87,38 @@ public class PurchaseOrderController : Controller
         webReport.Report.SetParameterValue("yearparam", YearCode);
         webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
         webReport.Report.SetParameterValue("AmmNo", AmmNo);
+        webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        webReport.Report.Refresh();
+        return View(webReport);
+    }
+    public IActionResult PrintPo_AmendmentReport(int EntryId = 0, int YearCode = 0, string PONO = "",string ShowOnlyAmendItem="",int AmmNo=0,int AccountCode=0,string Flag="")
+    {
+
+        string my_connection_string;
+        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        string webRootPath = _IWebHostEnvironment.WebRootPath;
+        webReport = new WebReport();
+        var ReportName = IPurchaseOrder.GetReportName();
+        ViewBag.EntryId = EntryId;
+        ViewBag.YearCode = YearCode;
+        ViewBag.PONO = PONO;
+        ViewBag.ShowOnlyAmendItem= ShowOnlyAmendItem;
+        ViewBag.AmmNo = AmmNo;
+        ViewBag.AccountCode = AccountCode;
+        
+        webReport.Report.Load(webRootPath + "\\POAmendment.frx"); // default report
+
+        
+        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        webReport.Report.SetParameterValue("entryparam", EntryId);
+        webReport.Report.SetParameterValue("yearparam", YearCode);
+        webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
+        webReport.Report.SetParameterValue("AmmNo", AmmNo);
+        webReport.Report.SetParameterValue("PoNo", PONO);
+        webReport.Report.SetParameterValue("Accountcode", AccountCode);
+        webReport.Report.SetParameterValue("Flag", "PURCHASEORDERPRINT");
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
         webReport.Report.Refresh();
         return View(webReport);
