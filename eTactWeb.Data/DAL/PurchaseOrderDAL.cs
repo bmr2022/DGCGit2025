@@ -177,7 +177,7 @@ public class PurchaseOrderDAL
         }
         return _ResponseResult;
     }
-    public async Task<ResponseResult> FillItems(string Type, string ShowAllItem)
+    public async Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode,string SearchPartCode)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -186,7 +186,8 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@Flag", "GetItemsOnAssets"));
             SqlParams.Add(new SqlParameter("@AType", Type));
             SqlParams.Add(new SqlParameter("@showAllItem", ShowAllItem));
-
+            SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+            SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_PurchaseOrder", SqlParams);
         }
         catch (Exception ex)
