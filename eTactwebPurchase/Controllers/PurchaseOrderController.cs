@@ -286,9 +286,9 @@ public class PurchaseOrderController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<JsonResult> FillItems(string Type, string ShowAllItem)
+    public async Task<JsonResult> FillItems(string Type, string ShowAllItem,string SearchItemCode, string SearchPartCode)
     {
-        var JSON = await IPurchaseOrder.FillItems(Type, ShowAllItem);
+        var JSON = await IPurchaseOrder.FillItems(Type, ShowAllItem, SearchItemCode, SearchPartCode);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }

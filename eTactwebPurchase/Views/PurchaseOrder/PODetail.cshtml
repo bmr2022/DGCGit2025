@@ -576,8 +576,8 @@
 				}
 			});
 			$('#AccountCode').select2();
-			$('#PartCode').select2();
-			$('#ItemCode').select2();
+			// $('#PartCode').select2();
+			// $('#ItemCode').select2();
 
 			FillVendors();
 			GetFormRights();
@@ -839,9 +839,13 @@
 				var itemCode = 0;
 
 				if (!showAllIndent) {
-					itemName = $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text().split("--->")[0];
-					partCode = $('#PartCode').find(':selected').text() == '-Select-' ? "" : $('#PartCode').find(':selected').text();
-					itemCode = $('#ItemCode').val();
+					// itemName = $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text().split("--->")[0];
+					// partCode = $('#PartCode').find(':selected').text() == '-Select-' ? "" : $('#PartCode').find(':selected').text();
+					// itemCode = $('#ItemCode').val();
+							itemName = $('#ItemNameText').val() === '-Select-' ? "" : $('#ItemNameText').val();
+							partCode = $('#PartCodeText').val() === '-Select-' ? "" : $('#PartCodeText').val();
+							itemCode = $('#ItemCode').val(); // This holds the actual item code from autocomplete selection
+
 				}
 
 				if (partCode == "" || itemCode == null) {
@@ -1310,44 +1314,456 @@
 			});
 		}
 		var isItemSelected = false;
-		function FillItems() {
+				function FillItems() {
+			// Source for PartCodeText
+			const partCodeSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("FillItems")',
+					type: 'POST',
+					data: {
+						Type: $('#POTypeServItem').val(),
+						ShowAllItem: 'N',
+						SearchItemCode: '',
+						SearchPartCode: request.term
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
 
-			$.ajax({
-				type: "GET",
-				url: "@Url.Action("FillItems")",
-				dataType: "json",
-				async: false,
-				data: { Type: $('#POTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
-				success: function (result, status, error) {
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+							let filtered = obj.Result.Table.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.PartCode.toLowerCase().includes(term);
+							});
 
-					if (result != null) {
-						var obj = $.parseJSON(result);
-						if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-							$('#PartCode,#ItemCode').empty();
-							$('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-							if (isItemSelected) {
-								const distinctItems = Array.from(
-									itemDataArray.reduce((map, item) => map.set(item.ItemCode, item), new Map()).values()
-								);
-
-								$.each(distinctItems, function (index, val) {
-									$('#PartCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.PartCode + "</option>");
-									$('#ItemCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.ItemName + "</option>");
-								});
-							}
-							else {
-
-								$.each(obj.Result.Table, function (index, val) {
-									$('#PartCode').append("<option value=" + val.Item_Code + " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription + ">" + val.PartCode + "</option>");
-									$('#ItemCode').append("<option value=" + val.Item_Code + " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription + ">" + val.ItemName + "</option>");
-								});
-							}
+							response($.map(filtered, function (item) {
+								return {
+									label: item.PartCode ,
+									value: item.PartCode,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code
+								};
+							}));
+						} else {
+							response([]);
 						}
 					}
-				}
+				});
+			};
+
+			// Source for ItemNameText
+			const itemNameSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("FillItems")',
+					type: 'POST',
+					data: {
+						Type: $('#POTypeServItem').val(),
+						ShowAllItem: 'N',
+						SearchItemCode: request.term,
+						SearchPartCode: ''
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+							let filtered = obj.Result.Table.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.ItemName.toLowerCase().includes(term);
+							});
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.ItemName ,
+									value: item.Item_Code,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code,
+									partCode: item.PartCode
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+			};
+
+			// Autocomplete for PartCodeText
+			$("#PartCodeText").autocomplete({
+				source: partCodeSource,
+				select: function (event, ui) {
+									$("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+					$("#ItemNameText").val(ui.item.itemName);
+					$('#ItemCode').val(ui.item.itemCode);
+					$('#PartCode').val(ui.item.itemCode);
+					GetItemPartCode("PartCode");
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#PartCodeText").val(ui.item.value);
+					return false;
+				},
+				minLength: 1
+			});
+
+			// Autocomplete for ItemNameText
+			$("#ItemNameText").autocomplete({
+				source: itemNameSource,
+				select: function (event, ui) {
+						   $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+					$("#PartCodeText").val(ui.item.partCode);
+					$('#ItemCode').val(ui.item.itemCode);
+					$('#PartCode').val(ui.item.itemCode);
+					GetItemPartCode("ItemCode");
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#ItemNameText").val(ui.item.itemName);
+					return false;
+				},
+				minLength: 1
 			});
 		}
 
+		// 		function cleanItemName(name) {
+		// 	return name ? name.replace(/--->.*$/, '').trim() : '';
+		// }
+
+		// function fetchItems(term, callback, filterBy = "both") {
+		// 	$.ajax({
+
+		// 				url: "@Url.Action("FillItems")",
+		// 		method: "GET",
+		// 				data: { Type: $('#POTypeServItem').val(), // Optional, depending on use
+		// 					ShowAllItem: $('#IN1').is(':checked') ? 'Y' : 'N',
+		// 					SearchItemCode: term },
+		// 		success: function (data) {
+		// 			let filtered = data;
+		// 			const t = term.toLowerCase();
+		// 			if (filterBy === "PartCode") {
+		// 				filtered = data.filter(d => d.PartCode && d.PartCode);
+		// 			} else if (filterBy === "ItemName") {
+		// 				filtered = data.filter(d => d.ItemName && d.ItemName);
+		// 			}
+
+		// 			callback(filtered);
+		// 		}
+		// 	});
+		// }
+
+		// function FillItems() {
+		// 	// Autocomplete for Part Code
+		// 	$("#PartCodeText").autocomplete({
+		// 		source: function (request, response) {
+		// 					  console.log("Searching PartCode for:", request.term);
+		// 					fetchItems(request.term, function (items) {
+		// 				response($.map(items, function (item) {
+		// 					return {
+		// 						label: item.PartCode, // Show only PartCode
+		// 								value: item.Item_Code,
+		// 								itemName: item.ItemName,
+		// 								partCode: item.PartCode
+		// 					};
+		// 				}));
+		// 			}, "PartCode");
+		// 		},
+		// 		select: function (event, ui) {
+		// 					$("#PartCodeText").val(ui.item.label);
+		// 			$("#PartCode").val(ui.item.value).trigger('change');
+		// 			$("#ItemNameText").val(ui.item.itemName);
+		// 			$("#ItemCode").val(ui.item.itemCode).trigger('change');
+		// 					GetItemPartCode("PartCodeText") ;
+		// 			return false;
+		// 		}
+		// 	});
+
+		
+		// 	$("#ItemNameText").autocomplete({
+		// 		source: function (request, response) {
+		// 			fetchItems(request.term, function (items) {
+		// 				response($.map(items, function (item) {
+		// 					return {
+		// 						label: cleanItemName(item.ItemName), // Show cleaned name
+		// 								value: Item_Code,
+		// 						itemCode: item.Item_Code,
+		// 						partCode: item.PartCode
+		// 					};
+		// 				}));
+		// 			}, "ItemName");
+		// 		},
+		// 		select: function (event, ui) {
+		// 					$("#ItemNameText").val(ui.item.label);
+		// 			$("#ItemCode").val(ui.item.itemCode).trigger('change');
+		// 			$("#PartCodeText").val(ui.item.partCode);
+		// 					$("#PartCode").val(ui.item.itemCode).trigger('change');
+		// 			GetItemPartCode("PartCodeText");
+		// 					return false;
+		// 		}
+		// 	});
+		// }
+
+		//  function fetchItems(searchTerm, callback) {
+		// 	$.ajax({
+		// 					type: "GET",
+		// 				url: "@Url.Action("FillItems")",
+		// 				dataType: "json",
+		// 				async: false,
+		// 		data: {
+		// 			Type: $('#POTypeServItem').val(), // Optional, depending on use
+		// 			ShowAllItem: $('#IN1').is(':checked') ? 'Y' : 'N',
+		// 			SearchItemCode: searchTerm
+		// 		},
+		// 		success: function (result) {
+		// 			var obj = JSON.parse(result);
+		// 			if (obj.StatusCode === 200 && obj.StatusText === "Success") {
+		// 				callback(obj.Result);
+		// 			} else {
+		// 				callback([]);
+		// 			}
+		// 		}
+		// 	});
+		// 		}
+		// 		function FillItems() {
+		// 		// Autocomplete for Part Code
+		// 				$("#PartCodeText").autocomplete({
+		// 			source: function (request, response) {
+		// 				fetchItems(request.term, function (items) {
+		// 					response($.map(items, function (item) {
+		// 						return {
+		// 							label: item.PartCode,    // Show only PartCode in the dropdown
+		// 							value: item.PartCode,    // Set this as the input value
+		// 							itemCode: item.Item_Code,
+		// 							itemName: item.ItemName
+		// 						};
+		// 					}));
+		// 				});
+		// 			},
+		// 			select: function (event, ui) {
+		// 				// On selecting PartCode, fill other fields
+		// 				$("#PartCodeText").val(ui.item.value);         // Visible textbox
+		// 				$("#PartCode").val(ui.item.value).trigger('change'); // Hidden select/input
+		// 				$("#ItemNameText").val(ui.item.itemName);      // Fill ItemNameText
+		// 				$("#ItemCode").val(ui.item.itemCode).trigger('change'); // Fill ItemCode
+		// 				return false; // Prevent default behaviour
+		// 			}
+		// 		});
+		// 		$("#ItemNameText").autocomplete({
+		// 				source: function (request, response) {
+		// 					fetchItems(request.term, function (items) {
+		// 						response($.map(items, function (item) {
+		// 							return {
+		// 								label: item.ItemName,         // Only ItemName shown in list
+		// 								value: item.ItemName,         // Fills input with ItemName
+		// 								itemCode: item.Item_Code,     // Additional data
+		// 								partCode: item.PartCode
+		// 							};
+		// 						}));
+		// 					});
+		// 				},
+		// 				select: function (event, ui) {
+		// 					// Set corresponding values on selection
+		// 					$("#ItemNameText").val(ui.item.value);              // Show ItemName in textbox
+		// 					$("#ItemCode").val(ui.item.itemCode).trigger('change');
+		// 					$("#PartCodeText").val(ui.item.partCode);           // Show PartCode in text
+		// 					$("#PartCode").val(ui.item.partCode).trigger('change');
+		// 					return false; // Prevent default behavior
+		// 				}
+		// 			});
+		// }
+		// 		function FillItems(){
+		// 							   $("#PartCodeText").autocomplete({
+		// 			   source: function (request, response) {
+		// 				   $.ajax({
+		// 					   url: '@Url.Action("FillPartCode")',
+		// 					   type: 'POST',
+		// 					   data: { search: request.term },
+		// 					   success: function (result) {
+		// 						   var obj = $.parseJSON(result);
+		// 						   if (obj.StatusCode === 200 && obj.StatusText === 'Success') {
+		// 							   response($.map(obj.Result, function (item) {
+		// 								   return {
+		// 									   label: item.PartCode,
+		// 									   value: item.PartCode,
+		// 									   itemCode: item.Item_Code
+		// 								   };
+		// 							   }));
+		// 						   } else {
+		// 							   response([]);
+		// 						   }
+		// 					   }
+		// 				   });
+		// 			   },
+		// 			   select: function (event, ui) {
+		// 				   $("#PartCode").val(ui.item.label).data("itemcode", ui.item.itemCode);
+		// 						  $('#ItemCode').val(ui.item.itemCode);
+		// 				   SetPartCodeItemName("PartCode");
+		// 				  GetItemPartCode("PartCode");
+		// 						 handleItemSelection()
+		// 				   return false;
+		// 			   },
+		// 			   focus: function (event, ui) {
+		// 				   $("#PartCode").val(ui.item.label);
+		// 				   return false;
+		// 			   },
+		// 			   minLength: 1
+		// 		   });
+
+		// }
+// 		 function FillItems() {
+// 		// Autocomplete for Part Code
+// 				$("#PartCodeText").autocomplete({
+// 			minLength: 2,
+// 			source: function (request, response) {
+// 				fetchItems(request.term, function (items) {
+// 					response($.map(items, function (item) {
+// 						return {
+// 							label: item.PartCode,    // Show only PartCode in the dropdown
+// 							value: item.PartCode,    // Set this as the input value
+// 							itemCode: item.Item_Code,
+// 							itemName: item.ItemName
+// 						};
+// 					}));
+// 				});
+// 			},
+// 			select: function (event, ui) {
+// 				// On selecting PartCode, fill other fields
+// 				$("#PartCodeText").val(ui.item.value);         // Visible textbox
+// 				$("#PartCode").val(ui.item.value).trigger('change'); // Hidden select/input
+// 				$("#ItemNameText").val(ui.item.itemName);      // Fill ItemNameText
+// 				$("#ItemCode").val(ui.item.itemCode).trigger('change'); // Fill ItemCode
+// 				return false; // Prevent default behaviour
+// 			}
+// 		});
+// 		$("#ItemNameText").autocomplete({
+// 				minLength: 2,
+// 				source: function (request, response) {
+// 					fetchItems(request.term, function (items) {
+// 						response($.map(items, function (item) {
+// 							return {
+// 								label: item.ItemName,         // Only ItemName shown in list
+// 								value: item.ItemName,         // Fills input with ItemName
+// 								itemCode: item.Item_Code,     // Additional data
+// 								partCode: item.PartCode
+// 							};
+// 						}));
+// 					});
+// 				},
+// 				select: function (event, ui) {
+// 					// Set corresponding values on selection
+// 					$("#ItemNameText").val(ui.item.value);              // Show ItemName in textbox
+// 					$("#ItemCode").val(ui.item.itemCode).trigger('change');
+// 					$("#PartCodeText").val(ui.item.partCode);           // Show PartCode in text
+// 					$("#PartCode").val(ui.item.partCode).trigger('change');
+// 					return false; // Prevent default behavior
+// 				}
+// 			});
+// }
+
+		// Autocomplete for Item Name
+
+		// function FillItems() {
+
+		// 	$.ajax({
+		// 		type: "GET",
+		// 		url: "@Url.Action("FillItems")",
+		// 		dataType: "json",
+		// 		async: false,
+		// 		data: { Type: $('#POTypeServItem').val(), ShowAllItem: $('#IN1').is(":checked") == true ? 'Y' : 'N' },
+		// 		success: function (result, status, error) {
+
+		// 			if (result != null) {
+		// 				var obj = $.parseJSON(result);
+		// 				if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+		// 					$('#PartCode,#ItemCode').empty();
+		// 					$('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
+		// 					if (isItemSelected) {
+		// 						const distinctItems = Array.from(
+		// 							itemDataArray.reduce((map, item) => map.set(item.ItemCode, item), new Map()).values()
+		// 						);
+
+		// 						$.each(distinctItems, function (index, val) {
+		// 							$('#PartCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.PartCode + "</option>");
+		// 							$('#ItemCode').append("<option value=" + val.ItemCode + " data-unipartcode = " + val.PartCode + ">" + val.ItemName + "</option>");
+		// 						});
+		// 					}
+		// 					else {
+
+		// 						$.each(obj.Result.Table, function (index, val) {
+		// 							$('#PartCode').append("<option value=" + val.Item_Code + " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription + ">" + val.PartCode + "</option>");
+		// 							$('#ItemCode').append("<option value=" + val.Item_Code + " data-unipartcode = " + val.UniversalPartCode + " data-unidesc = " + val.UniversalDescription + ">" + val.ItemName + "</option>");
+		// 						});
+		// 					}
+		// 				}
+		// 			}
+		// 		}
+		// 	});
+		// }
+
+		// 		function FillItems() {
+		// 	$.ajax({
+		// 		type: "GET",
+		// 		url: "@Url.Action("FillItems")",
+		// 		dataType: "json",
+		// 		async: false,
+		// 		data: {
+		// 			Type: $('#POTypeServItem').val(),
+		// 			ShowAllItem: $('#IN1').is(":checked") ? 'Y' : 'N',
+		// 					SearchItemCode: searchTerm
+		// 		},
+		// 		success: function (result) {
+		// 			if (result != null) {
+		// 				var obj = $.parseJSON(result);
+		// 				if (obj.StatusCode === 200 && obj.StatusText === "Success") {
+		// 					let sourceData = [];
+
+		// 					if (isItemSelected) {
+		// 						const distinctItems = Array.from(
+		// 							itemDataArray.reduce((map, item) => map.set(item.ItemCode, item), new Map()).values()
+		// 						);
+
+		// 						sourceData = distinctItems.map(val => ({
+		// 							label: val.PartCode + " - " + val.ItemName,
+		// 							value: val.ItemName,
+		// 							itemCode: val.ItemCode,
+		// 							partCode: val.PartCode
+		// 						}));
+		// 					} else {
+		// 						sourceData = obj.Result.Table.map(val => ({
+		// 							label: val.PartCode + " - " + val.ItemName,
+		// 							value: val.ItemName,
+		// 							itemCode: val.Item_Code,
+		// 							partCode: val.PartCode
+		// 						}));
+		// 					}
+
+		// 					// Autocomplete for PartCodeText
+		// 					$("#PartCodeText").autocomplete({
+		// 						source: sourceData,
+		// 						minLength: 1,
+		// 						select: function (event, ui) {
+		// 							$("#PartCodeText").val(ui.item.partCode);
+		// 							$("#ItemNameText").val(ui.item.value); // show Item Name
+		// 							$("#ItemCode").val(ui.item.itemCode);   // store ItemCode int
+		// 							$("#PartCode").val(ui.item.itemCode);   // store PartCode int (if needed)
+		// 							return false;
+		// 						}
+		// 					});
+
+		// 					// Autocomplete for ItemNameText
+		// 					$("#ItemNameText").autocomplete({
+		// 						source: sourceData,
+		// 						minLength: 1,
+		// 						select: function (event, ui) {
+		// 							$("#ItemNameText").val(ui.item.value);
+		// 							$("#PartCodeText").val(ui.item.partCode);
+		// 							$("#ItemCode").val(ui.item.itemCode);
+		// 							$("#PartCode").val(ui.item.itemCode); // assuming same
+		// 							return false;
+		// 						}
+		// 					});
+		// 				}
+		// 			}
+		// 		}
+		// 	});
+		// }
 
 		var currentSearchColumn = null;
 		$("#search-box").on("keyup", function () {
@@ -1601,7 +2017,7 @@
 			//    $("form").submit();
 			//}
 
-			$('#PartCode').prop('selectedIndex', 1).trigger("change");
+			//$('#PartCode').prop('selectedIndex', 1).trigger("change");
 
 			$('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
 			if (!ValidateForm()) {
@@ -1621,100 +2037,231 @@
 			e.preventDefault();
 			return false;
 		});
+		// 		$(document).on('autocompleteselect', '#ItemNameText, #PartCodeText', function (e, ui) {
+		// 	var cntId = e.target.id;
 
-		$(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
-			var cntId = e.target.id;
+		// 	if (cntId === 'ItemNameText') {
+		// 		ItemNameChange(cntId);
+		// 	} else if (cntId === 'PartCodeText') {
+		// 		PartCodeChange(cntId);
+		// 	}
+		// });
 
-			if (cntId == 'ItemCode') {
-				ItemNameChange(cntId);
+		function PartCodeChange(ID) {
+			const partCode = $('#PartCode').val();
+			const sumItemwiseQty = Array.from(
+				itemDataArray
+					.filter(item => item.ItemCode == partCode)
+					.reduce((map, item) => {
+						if (map.has(item.ItemCode)) {
+							map.get(item.ItemCode).Qty += item.Qty !== '' ? parseFloat(item.Qty) : 0;
+						} else {
+							map.set(item.ItemCode, {
+								...item,
+								Qty: item.Qty !== '' ? parseFloat(item.Qty) : 0
+							});
+						}
+						return map;
+					}, new Map()).values()
+			);
+
+			$('#POQty,#AltPOQty').val(sumItemwiseQty.length > 0 ? sumItemwiseQty[0].Qty : 0);
+			copyToClipboardForDropdown("#PartCode");
+
+			const selectedItem = itemDataArray.find(item => item.ItemCode == partCode);
+			if (selectedItem) {
+				$('#UniversalPartCode').val(selectedItem.UniversalPartCode || '');
+				$('#UniversalDescription').val(selectedItem.UniversalDescription || '');
 			}
-			else {
-				PartCodeChange(cntId);
-			}
 
-		});
+			$.when(SetPartCodeItemName(ID)).done(function () {
+				GetItemPartCode(ID);
+			});
+
+			$('#HSNNo').focus();
+		}
+
+		function ItemNameChange(ID) {
+			const itemCode = $('#ItemCode').val();
+			const sumItemwiseQty = Array.from(
+				itemDataArray
+					.filter(item => item.ItemCode == itemCode)
+					.reduce((map, item) => {
+						if (map.has(item.ItemCode)) {
+							map.get(item.ItemCode).Qty += item.Qty !== '' ? parseFloat(item.Qty) : 0;
+						} else {
+							map.set(item.ItemCode, {
+								...item,
+								Qty: item.Qty !== '' ? parseFloat(item.Qty) : 0
+							});
+						}
+						return map;
+					}, new Map()).values()
+			);
+
+			$('#POQty,#AltPOQty').val(sumItemwiseQty.length > 0 ? sumItemwiseQty[0].Qty : 0);
+			copyToClipboardForDropdown("#ItemCode");
+
+			$('#UniversalPartCode').val($('#ItemCode').find().data('unipartcode'));
+			$('#UniversalDescription').val($('#ItemCode').find().data('unidesc'));
+
+			SetPartCodeItemName(ID);
+			GetItemPartCode(ID);
+			$('#HSNNo').focus();
+		}
+
+		function SetPartCodeItemName(ID) {
+			if (!ID) return;
+			var v = $('#' + ID).val();
+			if (ID == "PartCode") {
+				$("#ItemCode").val(v).trigger("change");
+			} else if (ID == "ItemCode") {
+				$("#PartCode").val(v).trigger("change");
+			}
+		}
 
 		function copyToClipboardForDropdown(element) {
 			var $temp = $("<input>");
 			$("body").append($temp);
-			;
 			$temp.val($(element).find(":selected").text()).select();
 			document.execCommand("copy");
 			$temp.remove();
 		}
 
-		function SetPartCodeItemName(ID) {
-
-			if (!ID) return;
-			else {
-				var v = $('#' + ID).select2('val');
-				if (ID == "PartCode") {
-					$("#ItemCode").val(v).trigger("change");
-				}
-
-				if (ID == "ItemCode") {
-					$("#PartCode").val(v).trigger("change");
-				}
-			}
-		}
-
-		function PartCodeChange(ID) {
-
-			const sumItemwiseQty = Array.from(
-				itemDataArray
-					.filter(item => item.ItemCode == $('#PartCode').val())
-					.reduce((map, item) => {
-						if (map.has(item.ItemCode)) {
-							map.get(item.ItemCode).Qty += item.Qty !== '' ? parseFloat(item.Qty) : 0;
-						} else {
-							map.set(item.ItemCode, {
-								...item,
-								Qty: item.Qty !== '' ? parseFloat(item.Qty) : 0
-							});
+		async function GetItemPartCode(ID) {
+			$.getJSON({
+				url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+				data: { Code: $('#' + ID).val() },
+				async: false,
+				success: function (result, status, xhr) {
+					if (result) {
+						var obj = JSON.parse(result);
+						if (!obj) {
+							$('#Unit').val('0');
+							$('#HSNNo').val('0');
+							$('#AltUnit').val('NA');
+						} else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+							$('#Unit').val(obj.Result[0].Unit);
+							$('#HSNNo').val(obj.Result[0].HSNNo);
+							$('#PkgStd').val(obj.Result[0].StdPacking);
+							$('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
+							$('#UnitRate').prop('disabled', !$('#AltUnit').val());
 						}
-						return map;
-					}, new Map()).values()
-			);
-
-			$('#POQty,#AltPOQty').val(sumItemwiseQty.length > 0 ? sumItemwiseQty[0].Qty : 0);
-
-			copyToClipboardForDropdown("#PartCode");
-			$('#UniversalPartCode').val($('#PartCode').find(":selected").data('unipartcode'));
-			$('#UniversalDescription').val($('#PartCode').find(":selected").data('unidesc'));
-			$.when(SetPartCodeItemName(ID)).done(function () { GetItemPartCode(ID) });
-			$('#HSNNo').focus();
+					}
+				},
+				error: function (result, status, xhr) {
+					$.notify(result.responseText, "error");
+				}
+			});
 		}
 
+	// 	$(document).on('autocompleteselect', '#ItemNameText, #PartCodeText', function (e, ui) {
 
-		function ItemNameChange(ID) {
-			// $('#POQty,#AltPOQty').val(0);
+	// 	//$(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
+	// 		var cntId = e.target.id;
 
-			const sumItemwiseQty = Array.from(
-				itemDataArray
-					.filter(item => item.ItemCode == $('#ItemCode').val())
-					.reduce((map, item) => {
-						if (map.has(item.ItemCode)) {
-							map.get(item.ItemCode).Qty += item.Qty !== '' ? parseFloat(item.Qty) : 0;
-						} else {
-							map.set(item.ItemCode, {
-								...item,
-								Qty: item.Qty !== '' ? parseFloat(item.Qty) : 0
-							});
-						}
-						return map;
-					}, new Map()).values()
-			);
+	// 		if (cntId == 'ItemNameText') {
+	// 			ItemNameChange(cntId);
+	// 		}
+	// 		else {
+	// 			PartCodeChange(cntId);
+	// 		}
 
-			$('#POQty,#AltPOQty').val(sumItemwiseQty.length > 0 ? sumItemwiseQty[0].Qty : 0);
-			$('#UniversalPartCode').val($('#ItemCode').find(":selected").data('unipartcode'));
-			$('#UniversalDescription').val($('#ItemCode').find(":selected").data('unidesc'));
-			copyToClipboardForDropdown("#ItemCode");
+	// 	});
 
-			SetPartCodeItemName(ID);
-			GetItemPartCode(ID);
-			$('#HSNNo').focus();
+	// 	function copyToClipboardForDropdown(element) {
+	// 		var $temp = $("<input>");
+	// 		$("body").append($temp);
+	// 		;
+	// 		$temp.val($(element).find(":selected").text()).select();
+	// 		document.execCommand("copy");
+	// 		$temp.remove();
+	// 	}
 
-		}
+	// 	function SetPartCodeItemName(ID) {
+
+	// 		if (!ID) return;
+	// 		else {
+	// 			var v = $('#' + ID).select2('val');
+	// 			if (ID == "PartCode") {
+	// 				$("#ItemCode").val(v).trigger("change");
+	// 			}
+
+	// 			if (ID == "ItemCode") {
+	// 				$("#PartCode").val(v).trigger("change");
+	// 			}
+	// 		}
+	// 	}
+
+	// 	function PartCodeChange(ID) {
+
+	// 		const sumItemwiseQty = Array.from(
+	// 			itemDataArray
+	// 				.filter(item => item.ItemCode == $('#PartCode').val())
+	// 				.reduce((map, item) => {
+	// 					if (map.has(item.ItemCode)) {
+	// 						map.get(item.ItemCode).Qty += item.Qty !== '' ? parseFloat(item.Qty) : 0;
+	// 					} else {
+	// 						map.set(item.ItemCode, {
+	// 							...item,
+	// 							Qty: item.Qty !== '' ? parseFloat(item.Qty) : 0
+	// 						});
+	// 					}
+	// 					return map;
+	// 				}, new Map()).values()
+	// 		);
+
+	// 		$('#POQty,#AltPOQty').val(sumItemwiseQty.length > 0 ? sumItemwiseQty[0].Qty : 0);
+
+	// 		copyToClipboardForDropdown("#PartCode");
+	// 			const selectedItem = itemDataArray.find(item => item.ItemCode == partCode);
+
+	// 	if (selectedItem) {
+	// 		$('#UniversalPartCode').val(selectedItem.UniversalPartCode || '');
+	// 		$('#UniversalDescription').val(selectedItem.UniversalDescription || '');
+	// 	}
+
+	// 	$.when(SetPartCodeItemName(ID)).done(function () {
+	// 		GetItemPartCode(ID);
+	// 	});
+
+	// 		// $('#UniversalPartCode').val($('#PartCode').find(":selected").data('unipartcode'));
+	// 		// $('#UniversalDescription').val($('#PartCode').find(":selected").data('unidesc'));
+	// 	//	$.when(SetPartCodeItemName(ID)).done(function () { GetItemPartCode(ID) });
+	// 		$('#HSNNo').focus();
+	// 	}
+
+
+	// 	function ItemNameChange(ID) {
+	// 		// $('#POQty,#AltPOQty').val(0);
+
+	// 		const sumItemwiseQty = Array.from(
+	// 			itemDataArray
+	// 				.filter(item => item.ItemCode == $('#ItemCode').val())
+	// 				.reduce((map, item) => {
+	// 					if (map.has(item.ItemCode)) {
+	// 						map.get(item.ItemCode).Qty += item.Qty !== '' ? parseFloat(item.Qty) : 0;
+	// 					} else {
+	// 						map.set(item.ItemCode, {
+	// 							...item,
+	// 							Qty: item.Qty !== '' ? parseFloat(item.Qty) : 0
+	// 						});
+	// 					}
+	// 					return map;
+	// 				}, new Map()).values()
+	// 		);
+
+	// 		$('#POQty,#AltPOQty').val(sumItemwiseQty.length > 0 ? sumItemwiseQty[0].Qty : 0);
+
+	// $('#UniversalPartCode').val($('#ItemCode').find(":selected").data('unipartcode'));
+	// 	$('#UniversalDescription').val($('#ItemCode').find(":selected").data('unidesc'));
+	// 		copyToClipboardForDropdown("#ItemCode");
+
+	// 		SetPartCodeItemName(ID);
+	// 		GetItemPartCode(ID);
+	// 		$('#HSNNo').focus();
+
+	// 	}
 
 		function GetFormRights() {
 			$.ajax({
@@ -1765,31 +2312,31 @@
 			});
 		}
 
-		async function GetItemPartCode(ID) {
-			$.getJSON({
-				url: '@Url.Action("GetItemPartCode", "SaleOrder")',
-				data: { Code: $('#' + ID).val() },
-				async: false,
-				success: function (result, status, xhr) {
-					if (result) {
-						var obj = JSON.parse(result);
-						if (!obj) {
-							$('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
-						}
-						else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-							$('#Unit').val(obj.Result[0].Unit);
-							$('#HSNNo').val(obj.Result[0].HSNNo);
-							$('#PkgStd').val(obj.Result[0].StdPacking);
-							$('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
-							!$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
-						}
-					}
-				},
-				error: function (result, status, xhr) {
-					$.notify(result.responseText, "error");
-				}
-			});
-		}
+		// async function GetItemPartCode(ID) {
+		// 	$.getJSON({
+		// 		url: '@Url.Action("GetItemPartCode", "SaleOrder")',
+		// 		data: { Code: $('#' + ID).val() },
+		// 		async: false,
+		// 		success: function (result, status, xhr) {
+		// 			if (result) {
+		// 				var obj = JSON.parse(result);
+		// 				if (!obj) {
+		// 					$('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+		// 				}
+		// 				else if (obj.StatusCode == 200 && obj.StatusText == "Success") {
+		// 					$('#Unit').val(obj.Result[0].Unit);
+		// 					$('#HSNNo').val(obj.Result[0].HSNNo);
+		// 					$('#PkgStd').val(obj.Result[0].StdPacking);
+		// 					$('#AltUnit').val(obj.Result[0].AltUnit == null ? 'NA' : obj.Result[0].AltUnit);
+		// 					!$('#AltUnit').val() ? $('#UnitRate').prop('disabled', true) : $('#UnitRate').prop('disabled', false);
+		// 				}
+		// 			}
+		// 		},
+		// 		error: function (result, status, xhr) {
+		// 			$.notify(result.responseText, "error");
+		// 		}
+		// 	});
+		// }
 
 		//by sumu
 		//$('#PartCode,#ItemCode').change(function () {
@@ -2200,31 +2747,48 @@
 
 
 
-		$('#IN1').change(function () {
+		// $('#IN1').change(function () {
 
-			$('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
-			$.ajax({
-				type: "GET",
-				url: "@Url.Action("FillItems")",
-				dataType: "json",
-				async: false,
-				data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
-				success: function (result, status, error) {
-					if (result != null) {
-						var obj = $.parseJSON(result);
-						if (obj.StatusCode == 200 && obj.StatusText == "Success") {
-							$('#PartCode,#ItemCode').empty();
-							$('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
-							$.each(obj.Result.Table, function (index, val) {
-								$('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
-								$('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
-							});
-						}
+		// 	$('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
+		// 	$.ajax({
+		// 		type: "GET",
+		// 		url: "@Url.Action("FillItems")",
+		// 		dataType: "json",
+		// 		async: false,
+		// 		data: { Type: 'Item', ShowAllItem: $('#IN1').val() == 'true' ? 'Y' : 'N' },
+		// 		success: function (result, status, error) {
+		// 			if (result != null) {
+		// 				var obj = $.parseJSON(result);
+		// 				if (obj.StatusCode == 200 && obj.StatusText == "Success") {
 
-					}
-				}
-			});
-		});
+		// 					 var sourceData = $.map(obj.Result.Table, function (val) {
+		// 				return {
+		// 					label: val.ItemName,
+		// 					value: val.ItemName,
+		// 					itemcode: val.Item_Code,
+		// 					partcode: val.PartCode,
+		// 					itemname: val.ItemName.split('--->')[0],
+		// 					unipartcode: val.UniversalPartCode,
+		// 					unidesc: val.UniversalDescription
+		// 				};
+		// 			});
+
+		// 			// Rebind autocomplete sources
+		// 			$('#ItemNameText').autocomplete('option', 'source', sourceData);
+		// 			$('#PartCodeText').autocomplete('option', 'source', sourceData);
+
+		// 					// $('#PartCode,#ItemCode').empty();
+		// 					// $('#PartCode, #ItemCode').append("<option selected disabled>-Select-</option>");
+		// 					// $.each(obj.Result.Table, function (index, val) {
+		// 					// 	$('#PartCode').append("<option value=" + val.Item_Code + ">" + val.PartCode + "</option>");
+		// 					// 	$('#ItemCode').append("<option value=" + val.Item_Code + ">" + val.ItemName + "</option>");
+		// 					// });
+		// 				}
+
+		// 			}
+		// 		}
+		// 	});
+		// });
 
 
 		$('#SH').change(function () {
@@ -2670,19 +3234,19 @@
 
 
 		$('.ItemBtn').click(function () {
-			$("#PartCode").next(".select2-container").find(".select2-selection").focus();
-			$('#PartCode').css("border", "1px solid black");
+			// $("#PartCode").next(".select2-container").find(".select2-selection").focus();
+			// $('#PartCode').css("border", "1px solid black");
+			$("#PartCodeText").focus();
+			$('#PartCodeText').css("border", "1px solid black");
 			let IsError = 0;
 
-			$(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
-
-			if ($('#PartCode').prop('selectedIndex') == 0) {
-				AddErrorCls('PartCode');
-				IsError = 1;
-			}
-			else {
-				RemoveErrorCls('PartCode');
-			}
+		//	$(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
+				if ($('#PartCodeText').val().trim() === "" || $('#PartCode').val().trim() === "") {
+			AddErrorCls('PartCodeText');
+			IsError = 1;
+		} else {
+			RemoveErrorCls('PartCodeText');
+		}
 			if ($('#POFor').prop('selectedIndex') == 0) {
 				AddErrorCls('POFor');
 				IsError = 1;
@@ -2755,9 +3319,9 @@
 			else {
 				var ItemData = {
 					'PartCode': $('#PartCode').val(),
-					'PartText': $('#PartCode option:selected').text(),
+					'PartText': $('#PartCodeText').val(),
 					'ItemCode': $('#ItemCode').val(),
-					'ItemText': $('#ItemCode option:selected').text(),
+					'ItemText': $('#ItemNameText').val(),
 					'HSNNo': $('#HSNNo').val(),
 					'AdditionalRate': $('#AdditionalRate').val(),
 					'AltPendQty': $('#AltPendQty').val(),
@@ -2848,7 +3412,9 @@
 						$('#NetTotal').val(txTotal.toFixed(2));
 						$('#TotalDiscountPercentage').val(0);
 						$('#TotalAmtAftrDiscount').val(0);
-						$('#PartCode').select2('open').select2('focus');
+						$('#PartCodeText').focus().autocomplete("search", $('#PartCodeText').val());
+
+						//$('#PartCode').select2('open').select2('focus');
 					},
 					error: function (result, status, xhr) {
 						$.notify(result.responseText, "error");
@@ -2893,8 +3459,13 @@
 						else {
 
 							if (obj != null && obj.length == 1) {
-								$('#PartCode').val(obj[0].PartCode).trigger('change');
-								$('#ItemCode').val(obj[0].ItemCode).trigger('change');
+								// $('#PartCode').val(obj[0].PartCode).trigger('change');
+								// $('#ItemCode').val(obj[0].ItemCode).trigger('change');
+									$('#PartCode').val(obj[0].PartCode);
+								$('#ItemCode').val(obj[0].ItemCode);
+								 $('#PartCodeText').val(obj[0].PartText);
+								$('#ItemNameText').val(obj[0].ItemText);
+							
 								$('#HSNNo').val(obj[0].HSNNo);
 								$('#AdditionalRate').val(obj[0].AdditionalRate);
 								$('#AltPendQty').val(obj[0].AltPendQty);
@@ -3046,7 +3617,7 @@
 
 
 		function ClearItem() {
-			$('#PartCode').prop('selectedIndex', 0).removeClass('is-invalid').change(), $('#ItemCode').prop('selectedIndex', 0).removeClass('is-invalid').change(), $('#HSNNo').val('0'), $('#POQty').val('0'), $('#Rate').val('0.00'), $('#Unit').val('0.00'), $('#AltPOQty').val(0),
+					$('#PartCodeText').val('').removeClass('is-invalid'),	$('#PartCode').val('').change(),$('#ItemNameText').val('').removeClass('is-invalid'),$('#ItemCode').val('').change(), $('#HSNNo').val('0'), $('#POQty').val('0'), $('#Rate').val('0.00'), $('#Unit').val('0.00'), $('#AltPOQty').val(0),
 				$('#AltUnit').val('NA'), $('#OtherRateCurr').val('0'), $('#UnitRate').val('Unit'), $('#DiscPer').val('0'), $('#DiscRs').val('0.00'), $('#Amount').val('0.00'), $('#TolLimit').val(0),
 				$('#Remark').val(''), $('#Description').val(''), $('#StoreName').prop('selectedIndex', 0), $('#SizeDetail').val('0'), $('#AmendmentNo').val('0'), $('#AmendmentDate').val(''),
 				$('#AmendmentReason').val(''), $('#Color').val(''), $('#Process').prop('selectedIndex', 0).removeClass('is-invalid'), $('#TolLimitQty').val('0.00'), $('#TolLimitPercent').val('0.00'),
@@ -3177,7 +3748,9 @@
 		$('.pnl1BG').on("keydown", function (event) {
 			if (event.key === "Tab") {
 				if ($('.pnl1BG').attr('aria-expanded')) {
-					$('#PartCode').select2('open').select2('focus');
+					//$('#PartCode').select2('open').select2('focus');
+					$('#PartCodeText').focus().autocomplete('search', '');
+
 					event.preventDefault();
 				}
 			}

@@ -30,7 +30,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> PoallowtoprintWithoutApproval();
         Task<ResponseResult> FillEntryandPONumber(int YearCode);
-        Task<ResponseResult> FillItems(string Type, string ShowAllItem);
+        Task<ResponseResult> FillItems(string Type, string ShowAllItem,string SearchItemCode,string SearchPartCode);
         Task<ResponseResult> FillPONumber(int YearCode, string Ordertype, string Podate);
         Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty);
 

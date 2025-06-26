@@ -97,9 +97,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _PurchaseOrderDAL.GetAmmCompletedData(summaryDetail);
         }
-        public async Task<ResponseResult> FillItems(string Type, string ShowAllItem)
+        public async Task<ResponseResult> FillItems(string Type, string ShowAllItem, string SearchItemCode,string SearchPartCode)
         {
-            return await _PurchaseOrderDAL.FillItems(Type, ShowAllItem);
+            return await _PurchaseOrderDAL.FillItems(Type, ShowAllItem, SearchItemCode, SearchPartCode);
         }
         public async Task<ResponseResult> FillPONumber(int YearCode, string OrderType, string PODate)
         {
