@@ -653,7 +653,10 @@
                     <a href="#" class="btn btn-primary" id="btnPrint">
                         <i class="fa fa-print"></i> Print
                     </a>
-                    <button type="button" class="btn btn-danger" id="btnClose">Close</button>
+                    <a href="#" class="btn btn-primary" id="btnPrintEmail">
+                        <i class="fa fa-print"></i> Save & Print & Email
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnClose">Save</button>
                 </div>
             </div>
         </div>
@@ -749,22 +752,39 @@
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(true, printWindow); // Send true and window object
+        submitForm(true,true, printWindow, sendWindow); // Send true and window object // Send true and window object
     }, 300);
 });
+        $('#btnPrintEmail').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, true, printWindow, sendWindow); // Send true and window object
+            }, 300);
+        });
 
 // When user clicks "Close" or no print
 $('#btnClose').click(function () {
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(false, null); // no print
+        submitForm(false,false, null,null);
     }, 300);
 });
 
-function submitForm(shouldPrint, printWindow) {
+        function submitForm(shouldPrint, shouldSend, printWindow, sendWindow) {
     $('#ShouldPrint').val(shouldPrint); // Set hidden input
     const formData = $('form').serialize(); // Properly serialize full form
+            var Email = $('#EmailId').val();
+            var CC1 = $('#CC1').val();
+            var CC2 = $('#CC2').val();
+            var CC3 = $('#CC3').val();
+            var AccountCode = $('#AccountID').val();
+            
 
     $.ajax({
         type: "POST",
@@ -775,10 +795,17 @@ function submitForm(shouldPrint, printWindow) {
             console.log("Server response:", res);
 
             if (res && res.status === "Success") {
-                if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                        if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
                             const printUrl = '/MaterialReceipt/MRNTag?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&MrnNo=' + res.mrnno;
                     printWindow.location.href = printUrl;
-                }
+                        } else if (shouldPrint && shouldSend) {
+                            const printUrl = '/MaterialReceipt/MRNTag?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&MrnNo=' + res.mrnno;
+                            const sendUrl = '/MaterialReceipt/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&MrnNo=' + res.mrnno + '&AccountCode=' + AccountCode;
+                            printWindow.location.href = printUrl;
+                            /* sendWindow.location.href = sendUrl; */
+                            $.get(sendUrl);
+
+                        }
 
                 window.location.href = '/MaterialReceipt/MaterialReceipt';
             } else {
@@ -1945,6 +1972,30 @@ function submitForm(shouldPrint, printWindow) {
                 $('#CC').val($(this).find(":selected").data('branch'));
             GetgateItemdata();
                 GetGateMainData();
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetEmails", "NRGP")",
+                data: { AccountCode: $('#AccountID').val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $.each(obj.Result, function (index, val) {
+                                $('#EmailId').val(val.EmailId);
+                                $('#CC1').val(val.CC1);
+                                $('#CC2').val(val.CC2);
+                                $('#CC3').val(val.CC3);
+                            });
+                        }
+                    }
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
                
 
             });
