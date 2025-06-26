@@ -766,6 +766,27 @@ namespace eTactWeb.Controllers
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
         }
+        [HttpPost]
+        public async Task<IActionResult> CancelEwayBill(int SaleBillYearCode, string SaleBillNo)
+        {
+            try
+            {
+
+                string invoiceMessage = null;
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+                var cancelResult = await _IEinvoiceService.CancelEInvoice(token, SaleBillYearCode, SaleBillNo);
+
+                if (cancelResult?.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    return StatusCode(500, new { message = cancelResult?.Result ?? "E-Invoice cancellation failed." });
+
+                invoiceMessage = cancelResult?.Result?.ToString();
+                return Ok(new { message = invoiceMessage ?? "Cancellation saved successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Server Error: {ex.Message}" });
+            }
+        }
         public async Task<JsonResult> GetAddressDetails(int AccountCode)
         {
             var JSON = await _IIssueNRGP.GetAddressDetails(AccountCode);

@@ -7,25 +7,25 @@
 }
 <style>
     .disabled-link {
-        pointer-events: none; /* Disables clicking */
-        color: gray; /* Makes it look disabled */
-        text-decoration: none; /* Removes underline */
-        cursor: not-allowed; /* Changes cursor */
+    pointer-events: none; /* Disables clicking */
+    color: gray; /* Makes it look disabled */
+    text-decoration: none; /* Removes underline */
+    cursor: not-allowed; /* Changes cursor */
     }
     .select2-container--default .select2-selection--single {
-        background-color: #e0f2f1;
-        border: 1.5px solid #0a0a0a !important;
-        border-radius: 4px;
+    background-color: #e0f2f1;
+    border: 1.5px solid #0a0a0a !important;
+    border-radius: 4px;
     }
 
-        .select2-container--default .select2-selection--single .select2-selection__rendered {
-            /* border-bottom: 1.5px solid #000 !important; */
-            border-bottom: none !important;
-        }
+    .select2-container--default .select2-selection--single .select2-selection__rendered {
+    /* border-bottom: 1.5px solid #000 !important; */
+    border-bottom: none !important;
+    }
 
     .select2-container--default .select2-results > .select2-results__options {
-        background-color: #e0f2f1; /* Dropdown background color */
-        color: #000;
+    background-color: #e0f2f1; /* Dropdown background color */
+    color: #000;
 </style>
 <partial name="_BOMStatusConfirmation" />
 <partial name="_ClearTaxGrid" />
@@ -35,6 +35,13 @@
             <h5>
                 <strong>Job Work Issue - @Model.YearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
+                    @if (Model.Mode == "V" || Model.Mode == "U")
+                    {
+                        <a id="btncancelEwayOnly" class="btn btn-sm btn-outline-light bg-gradient">
+                            <i class="fa-solid fa-money-bill"></i>
+                            Cancel  E-Way Bill
+                        </a>
+                    }
                     @if (Model.Mode == "V")
                     {
                     <a id="btnEwayOnly" class="btn btn-sm btn-outline-light bg-gradient" >
@@ -926,7 +933,24 @@ $('#btnPrint').click(function () {
                 submitForm(true, false, false, printWindow, null); // Send true and window object
     }, 300);
         });
-
+                 $('#btncancelEwayOnly').on('click', function () {
+                                   $.ajax({
+                        type: "POST",
+                                url: "@Url.Action("CancelEwayBill")",
+                        data: {
+                             SaleBillYearCode:  '@Model.YearCode',
+                             SaleBillNo: '@Model.JWChallanNo'
+                        },
+                        success: function (response) {
+                            alert(response.message || "Cancellation  Successfully!");
+                                  window.location.href = '/JobWorkIssue/Index';
+                        },
+                        error: function (xhr) {
+                            console.error(xhr);
+                            alert("Something went wrong during cancellation.");
+                        }
+                    });
+                });
            $('#btnEwayBill').click(function () {
            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
             $('#PasswordAllowPopup').modal("hide");

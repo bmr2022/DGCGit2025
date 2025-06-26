@@ -42,6 +42,13 @@
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
                         </a>
+                        @if (Model.Mode == "V" || Model.Mode == "U")
+                        {
+                            <a id="btncancelEwayOnly" class="btn btn-sm btn-outline-light bg-gradient">
+                                <i class="fa-solid fa-money-bill"></i>
+                                Cancel  E-Way Bill
+                            </a>
+                        }
                         @if (Model.Mode == "V")
                         {
                             <a id="btnEwayOnly" class="btn btn-sm btn-outline-light bg-gradient">
@@ -773,6 +780,24 @@
                     submitForm(true,true,false, printWindow, sendWindow); // Send true and window object
                 }, 300);
             });
+                   $('#btncancelEwayOnly').on('click', function () {
+                                   $.ajax({
+                        type: "POST",
+                                url: "@Url.Action("CancelEwayBill")",
+                        data: {
+                             SaleBillYearCode:  '@Model.YearCode',
+                             SaleBillNo: '@Model.ChallanNo'
+                        },
+                        success: function (response) {
+                            alert(response.message || "Cancellation  Successfully!");
+                            window.location.href = '/NRGP/Index';
+                        },
+                        error: function (xhr) {
+                            console.error(xhr);
+                            alert("Something went wrong during cancellation.");
+                        }
+                    });
+                });
                 $('#btnEwayBill').click(function () {
                    const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
                     $('#PasswordAllowPopup').modal("hide");

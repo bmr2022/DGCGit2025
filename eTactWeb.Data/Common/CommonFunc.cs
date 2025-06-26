@@ -214,7 +214,12 @@ public static class CommonFunc
     }
     public static string ParseFormattedDateTime(string dateString)
     {
-        string[] formats = { "dd/MM/yyyy HH:mm:ss", "dd/MM/yyyy HH:mm:ss.fff", "yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd HH:mm:ss.fff" };
+        string[] formats = {"dd/MM/yyyy hh:mm:ss tt",         // 12-hour with AM/PM
+        "dd/MM/yyyy hh:mm:ss.fff tt",
+        "dd/MM/yyyy HH:mm:ss",            // 24-hour
+        "dd/MM/yyyy HH:mm:ss.fff",
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd HH:mm:ss.fff"};
         DateTime parsedDate;
 
         if (DateTime.TryParseExact(dateString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out parsedDate))
@@ -224,6 +229,54 @@ public static class CommonFunc
 
         throw new FormatException("Date string was not recognized as a valid DateTime.");
     }
+    public static string ParseFormattedDateTime1(string dateString)
+    {
+        dateString = dateString.Trim();
+
+        bool hasAmPm = dateString.EndsWith("AM", StringComparison.OrdinalIgnoreCase) ||
+                       dateString.EndsWith("PM", StringComparison.OrdinalIgnoreCase);
+
+        if (hasAmPm)
+        {
+            // Extract the time part
+            string[] parts = dateString.Split(' ');
+            if (parts.Length >= 2 && TimeSpan.TryParse(parts[1], out TimeSpan time))
+            {
+                if (time.Hours > 12)
+                {
+                    // 24-hour time with AM/PM is invalid, clean it up
+                    dateString = dateString.Replace("AM", "", StringComparison.OrdinalIgnoreCase)
+                                           .Replace("PM", "", StringComparison.OrdinalIgnoreCase).Trim();
+                    hasAmPm = false; // treat as 24-hour now
+                }
+            }
+        }
+
+        if (!hasAmPm)
+        {
+            // Remove any AM/PM if it sneaked in
+            dateString = dateString.Replace("AM", "", StringComparison.OrdinalIgnoreCase)
+                                   .Replace("PM", "", StringComparison.OrdinalIgnoreCase).Trim();
+        }
+
+        string[] formats = {
+        "dd/MM/yyyy hh:mm:ss tt",
+        "dd/MM/yyyy hh:mm:ss.fff tt",
+        "dd/MM/yyyy HH:mm:ss",
+        "dd/MM/yyyy HH:mm:ss.fff",
+        "yyyy-MM-dd HH:mm:ss",
+        "yyyy-MM-dd HH:mm:ss.fff"
+    };
+
+        if (DateTime.TryParseExact(dateString, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate))
+        {
+            return parsedDate.ToString("yyyy-MM-dd HH:mm:ss");
+        }
+
+
+        throw new FormatException("Date string was not recognized as a valid DateTime.");
+    }
+
     public static string ParseFormattedTime(string dateString)
     {
         if (string.IsNullOrEmpty(dateString))

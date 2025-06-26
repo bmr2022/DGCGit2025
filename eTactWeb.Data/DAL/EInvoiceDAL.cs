@@ -37,6 +37,7 @@ using System.Security.Cryptography.Xml;
 using System.Text.Json.Nodes;
 using System;
 using System.Reflection.PortableExecutable;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace eTactWeb.Data.DAL
@@ -356,15 +357,17 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetInvoiceDataAsync(int yearCode, int entryId)
+        public async Task<ResponseResult> GetInvoiceDataCancelAsync(string invoiceNo, int yearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
-                SqlParams.Add(new SqlParameter("@EntryId", entryId));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM Sale_Bill_Main WHERE year_code = @YearCode AND entry_id = @EntryId", SqlParams);
+                SqlParams.Add(new SqlParameter("@SaleBillNo1", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleBillNo2", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleSaleBillYearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@flag", "GETIRNNO"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPIRNEInvoiceAndEwayBillData", SqlParams);
             }
             catch (Exception ex)
             {
@@ -374,7 +377,89 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+        }
+        public async Task<string> PostCancelIRNAsync(Dictionary<string, object> dictData)
+        {
+            var urlToPost = "https://pro.mastersindia.co/ewayBillCancel";
+            using var client = new HttpClient();
 
+            try
+            {
+                var jsonData = JsonConvert.SerializeObject(dictData, Formatting.Indented);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(urlToPost, content);
+                response.EnsureSuccessStatusCode();
+
+                var resString = await response.Content.ReadAsStringAsync();
+                var json = JObject.Parse(resString);
+
+                var ewayBillNo = json.SelectToken("results.message.ewayBillNo")?.ToString();
+                var cancelDate = json.SelectToken("results.message.cancelDate")?.ToString();
+
+                var result = new
+                {
+                    EwayBillNo = ewayBillNo,
+                    CancelDate = cancelDate,
+                    RawJson = resString
+                };
+
+                return JsonConvert.SerializeObject(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error cancelling eway bill: {ex.Message}");
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        public async Task<ResponseResult> CancelEInvoiceAsync(string ewaybillno, string gstin, string SaleBillNo, int SaleBillYearCode,string  token)
+        {
+            var result = new ResponseResult();
+            try
+            {
+              
+
+                var dictData1 = new Dictionary<string, object>
+                    {
+                        { "access_token", token },
+                        { "userGstin", gstin },
+                        { "eway_bill_number", ewaybillno },
+                        { "reason_of_cancel","Others" },
+                        { "cancel_remarks", "Cancelled the order" },
+                        { "data_source", "ERP" }
+                    };
+                string InvoiceStatus = await PostCancelIRNAsync(dictData1);
+                var resultObj = JsonConvert.DeserializeObject<dynamic>(InvoiceStatus);
+                string cancelledEwayBillNo = resultObj.EwayBillNo;
+                string cancelledDate = resultObj.CancelDate;
+
+                if (string.IsNullOrWhiteSpace(cancelledEwayBillNo) || string.IsNullOrWhiteSpace(cancelledDate))
+                {
+                    result.StatusText = "Error";
+                    result.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    result.Result = $"EWay Bill Cancel Failed. Raw Response: {InvoiceStatus}";
+                    return result;
+                }
+          
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "UpdateIRNDetails"));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", SaleBillNo));
+                SqlParams.Add(new SqlParameter("@cancelledirnno", cancelledEwayBillNo)); // Ensure accountCode is of type int
+                SqlParams.Add(new SqlParameter("@cancelleddate", cancelledDate)); // Ensure accountCode is of type int
+                SqlParams.Add(new SqlParameter("@yearcode", SaleBillYearCode));
+                await _IDataLogic.ExecuteDataTable("SPEInvoiceIRNdetail", SqlParams);
+                result.Result = "EInvoice Cancelled Successfully";
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return result;
         }
 
         public async Task<ResponseResult> UpdateQRCodeImageAsync(string invoiceNo, int yearCode, byte[] image)
@@ -554,7 +639,7 @@ namespace eTactWeb.Data.DAL
                 string token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
                 string irnNo = null, barcodeVal = null, ackNo = "", ackDate = "";
 
-                var sellerDetails = dictData["seller_details"] as Dictionary<string, object>;
+               var sellerDetails = dictData["seller_details"] as Dictionary<string, object>;
                 var buyerDetails = dictData["buyer_details"] as Dictionary<string, object>;
 
                 string pincodeFrom = sellerDetails?["pincode"]?.ToString() ?? "";
@@ -671,7 +756,7 @@ namespace eTactWeb.Data.DAL
 
                 await InsertIRNDetailAsync(
                     barcodeVal, invoicenumber, entryid, accountCode, yearcodenumber,
-                    irnNo, ackNo, ackDate, token, EwbNo, EwbDate, EwbValidTill, fromname, EntrybyId, MachineName
+                    irnNo, ackNo, ackDate, token, EwbNo, CommonFunc.ParseFormattedDateTime1(EwbDate), CommonFunc.ParseFormattedDateTime1(EwbValidTill), fromname, EntrybyId, MachineName
                 );
                 return JsonConvert.SerializeObject(new
                 {
