@@ -59,45 +59,53 @@
                                     <input type="hidden" id="AmmApproved-@Cntr" value="@item.ApproveAmm" />
                                     <input type="hidden" id="PoYearCode" value="@item.YearCode" />
                                 </td>
+                            
+
                                 @{
-                                    if (Model.Mode == "Pending")
-                                    {
-                                        @if (yearCode >= item.YearCode)
+                    <td style="text-align:center;" id="editCursorDiv-@Cntr">
+                                        @if (Model.Mode == "Pending")
                                         {
-                                            <div id="editCursorDiv-@Cntr">
-                                            <td style="text-align:center;">
-                                                <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="POA",ID=item.EntryID,YC=item.YearCode})'">
-                                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                                </a>
-                                            </td>
-                                             </div>
+                                            if (yearCode >= item.YearCode)
+                                            {
+                                <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="POA",ID=item.EntryID,YC=item.YearCode})'">
+                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                </a>
+                                            }
+                                            else
+                                            {
+                                <a class="table-link link-primary noCursor">
+                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                </a>
+                                            }
                                         }
-                                        else
+                                        else if (Model.Mode == "U")
                                         {
-                                            <td style="text-align:center;">
-                                                <a class="table-link link-primary noCursor">
-                                                    <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                                </a>
-                                            </td>
+                            <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="PAU",ID=item.EntryID,YC=item.YearCode})'">
+                                <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                            </a>
                                         }
-                                    }
-                                    if (Model.Mode == "U")
-                                    {
-                                        <td style="text-align:center;">
-                                            <a class="table-link link-primary" onclick="location.href='@Url.Action("PODetail",new{Mode="PAU",ID=item.EntryID,YC=item.YearCode})'">
-                                                <i class="fa-solid fa-pencil" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                            </a>
-                                        </td>
-                                    }
-                                    if (Model.Mode == "Completed")
-                                    {
-                                        <td style="text-align:center;">
-                                            <a class="table-link link-primary" id="AmmCompleteView-@Cntr" onclick="location.href='@Url.Action("ViewPOCompleted",new{Mode="POC",ID=item.EntryID,YC=item.YearCode,PONO=item.PONO})'">
-                                                <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                            </a>
-                                        </td>
-                                    }
+                                        else if (Model.Mode == "Completed")
+                                        {
+                            <a class="table-link link-primary" id="AmmCompleteView-@Cntr" onclick="location.href='@Url.Action("ViewPOCompleted",new{Mode="POC",ID=item.EntryID,YC=item.YearCode,PONO=item.PONO})'">
+                                <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                            </a>
+                                        }
+
+                        <!-- ✅ Always Show Print Button -->
+                        <a id="printData-@Cntr" class="table-link link-dark ms-2" target="_blank"
+                           asp-action="PrintPo_AmendmentReport"
+                           asp-route-EntryId="@item.EntryId"
+                           asp-route-YearCode="@item.YearCode"
+                           asp-route-ShowOnlyAmendItem="@item.ShowOnlyAmendItem"
+                           asp-route-PONO="@item.PONO" asp-route-AmmNo="@item.AmmNo">
+                            <span class="fa-stack">
+                                <i class="fa fa-square fa-stack-2x"></i>
+                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </td>
                                 }
+
                                 <td class="FWB">@item.EntryID</td>
                                 <td class="FWB">@item.YearCode</td>
                                 <td class="FWB">@item.VendorName</td>
