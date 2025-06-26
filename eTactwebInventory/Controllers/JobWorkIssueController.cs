@@ -20,6 +20,41 @@ using FastReport.Data;
 using System.Configuration;
 using System.Diagnostics;
 using Newtonsoft.Json.Linq;
+using MimeKit;
+using PdfSharp.Drawing;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
+using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
+using System.Data;
+using Newtonsoft.Json;
+using System.Diagnostics;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
+using System.Diagnostics.SymbolStore;
+using FastReport.Web;
+using FastReport;
+using FastReport.Export.Html;
+using FastReport.Export.Image;
+using Microsoft.Extensions.Configuration;
+using System.Configuration;
+using System.Net;
+using System.Globalization;
+using FastReport.Data;
+using PdfSharp.Pdf;
+using PdfSharp.Drawing;
+using PdfSharp.Drawing.BarCodes;
+using eTactWeb.Services;
+using MimeKit;
+using MailKit.Net.Smtp;
+using System.Drawing;
+using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
+
 //using JobWorkGridDetail = eTactWeb.DOM.Models.JobWorkGridDetail;
 
 namespace eTactWeb.Controllers
@@ -32,9 +67,10 @@ namespace eTactWeb.Controllers
         private readonly ILogger<JobWorkIssueController> _logger;
         private readonly IIssueWithoutBom _IIssueWOBOM;
         public readonly IEinvoiceService _IEinvoiceService;
+        private readonly IEmailService _emailService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM,IEinvoiceService IEinvoiceService)
+        public JobWorkIssueController(ILogger<JobWorkIssueController> logger, IDataLogic iDataLogic, IJobWorkIssue iJobWorkIssue, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IIssueWithoutBom IIssueWOBOM,IEinvoiceService IEinvoiceService, IEmailService emailService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -43,6 +79,7 @@ namespace eTactWeb.Controllers
             this._iconfiguration = iconfiguration;
             _IIssueWOBOM = IIssueWOBOM;
             _IEinvoiceService = IEinvoiceService;
+            _emailService = emailService;
         }
         private async Task<string> GenerateQRCodeImage(string qrText, string filePath)
         {
@@ -168,6 +205,237 @@ namespace eTactWeb.Controllers
 
 
         }
+
+
+        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "", string CC1 = "", string CC2 = "", string CC3 = "", string Challanno = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            var ReportName = _IJobWorkIssue.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0]); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\IssueVendJobworkChallan.frx"); // default report
+            }
+
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("entryparam", EntryId);
+            webReport.Report.SetParameterValue("yearparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+
+            // Now call EmailReport
+            return EmailReport(webReport, emailTo, Challanno, CC1, CC2, CC3);
+        }
+
+        public IActionResult EmailReport(WebReport webReport, string emailTo, string Challanno, string CC1, string CC2, string CC3)
+        {
+            try
+            {
+                webReport.Report.Prepare(); // Prepare the report before exporting
+                // First export the report to an image
+                using (MemoryStream imageStream = new MemoryStream())
+                {
+                    // Configure image export
+                    var imageExport = new ImageExport()
+                    {
+                        ImageFormat = ImageExportFormat.Png, // Force PNG format
+                        Resolution = 300, // Higher quality
+                        //ExportQuality = 100 // Maximum quality
+                    };
+
+                    // Export the report
+                    webReport.Report.Export(imageExport, imageStream);
+                    imageStream.Position = 0;
+
+                    // Verify the image data
+                    if (imageStream.Length == 0)
+                        throw new Exception("Report export failed - empty image stream");
+
+                    // Convert to PDF with additional validation
+                    byte[] pdfBytes;
+                    try
+                    {
+                        pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                    }
+                    catch (Exception ex)
+                    {
+                        // Try alternative conversion if first attempt fails
+                        pdfBytes = ConvertImageToPdf(imageStream.ToArray());
+                    }
+                    //emailTo = "infotech.bmr@gmail.com,bmr.client2021@gmail.com";
+                    emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                         .Where(x => !string.IsNullOrWhiteSpace(x))
+                         .Select(x => x.Trim()));
+                    string body = $@"
+                        Dear Sir,<br/>
+                        Please find the attachment for the Challan No: <strong>{Challanno}</strong> from AutoComponent.<br/><br/>
+                        Regards,<br/>
+                        AutoComponent Team
+                        ";
+                    var emailToList = emailTo.Split(new[] { ',', ';' }, StringSplitOptions.RemoveEmptyEntries)
+                                   .Select(e => e.Trim())
+                                   .ToList();
+                    // Send email
+                    //_emailService.SendEmailAsync(
+                    //    emailTo,
+                    //    "Soft Copy Of Challan No: " +Challanno + " From AutoComponent",
+                    //    CC1,
+                    //    CC2,
+                    //    CC3,
+                    //    body,
+                    //    pdfBytes,
+                    //    "Report.pdf").Wait();
+                    foreach (var recipient in emailToList)
+                    {
+                        _emailService.SendEmailAsync(
+                            recipient,
+                            "Soft Copy Of Challan No: " + Challanno + " From AutoComponent",
+                            CC1,
+                            CC2,
+                            CC3,
+                            body,
+                            pdfBytes,
+                            "Report.pdf").Wait();
+                    }
+
+                    return Content("Report sent successfully");
+                }
+            }
+            catch (Exception ex)
+            {
+                return Content($"Error: {ex.Message}\n\nStack Trace: {ex.StackTrace}");
+            }
+        }
+
+
+        private byte[] ConvertImageToPdf(byte[] imageBytes)
+        {
+            // First ensure the image is in a supported format
+            using (var ms = new MemoryStream(imageBytes))
+            using (var image = Image.FromStream(ms))
+            using (var pdfStream = new MemoryStream())
+            {
+                // Convert to PNG if needed (PdfSharp works best with PNG)
+                if (image.RawFormat.Equals(ImageFormat.Png))
+                {
+                    using (var pngMs = new MemoryStream())
+                    {
+                        image.Save(pngMs, System.Drawing.Imaging.ImageFormat.Png);
+                        imageBytes = pngMs.ToArray();
+                    }
+                }
+
+                // Now create PDF
+                var document = new PdfDocument();
+                var page = document.AddPage();
+                page.Width = XUnit.FromMillimeter(image.Width / image.HorizontalResolution * 25.4);
+                page.Height = XUnit.FromMillimeter(image.Height / image.VerticalResolution * 25.4);
+
+                using (var xImage = XImage.FromStream(new MemoryStream(imageBytes)))
+                {
+                    XGraphics gfx = XGraphics.FromPdfPage(page);
+                    gfx.DrawImage(xImage, 0, 0, page.Width, page.Height);
+                }
+
+                document.Save(pdfStream, false);
+                return pdfStream.ToArray();
+            }
+        }
+        bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch { return false; }
+        }
+        public async Task SendEmailAsync(string emailTo, string subject, string message, byte[] attachment = null, string attachmentName = null, string CC1 = "", string CC2 = "", string CC3 = "", string Challanno = "")
+        {
+            var emailSettings = _iconfiguration.GetSection("EmailSettings");
+            emailTo = string.Join(",", new[] { emailTo, CC1, CC2, CC3 }
+                          .Where(x => !string.IsNullOrWhiteSpace(x))
+                          .Select(x => x.Trim()));
+            var mimeMessage = new MimeMessage();
+            mimeMessage.From.Add(new MailboxAddress(emailSettings["FromName"], emailSettings["FromEmail"]));
+            //mimeMessage.To.Add(MailboxAddress.Parse("infotech.bmr@gmail.com"));
+            //mimeMessage.To.Add(MailboxAddress.Parse(CC1));
+            //mimeMessage.To.Add(MailboxAddress.Parse(CC2));
+            var toEmails = emailTo.Split(',')
+                              .Where(x => !string.IsNullOrWhiteSpace(x))
+                              .Select(x => x.Trim());
+
+            foreach (var email in toEmails)
+            {
+                if (IsValidEmail(email))
+                    mimeMessage.To.Add(MailboxAddress.Parse(email));
+            }
+            mimeMessage.Subject = subject;
+            //if (!string.IsNullOrWhiteSpace(CC1))
+            //    mimeMessage.Cc.Add(new MailboxAddress("CC",CC1));
+            //if (!string.IsNullOrWhiteSpace(CC2))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC2));
+            //if (!string.IsNullOrWhiteSpace(CC3))
+            //    mimeMessage.Cc.Add(MailboxAddress.Parse(CC3));
+
+            // if (!string.IsNullOrWhiteSpace(CC1))
+            //  mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+            //if (!string.IsNullOrWhiteSpace(CC2))
+            //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+            //  if (!string.IsNullOrWhiteSpace(CC3))
+            //   mimeMessage.Cc.Add(MailboxAddress.Parse("bmr.client2021@gmail.com"));
+
+            var builder = new BodyBuilder();
+            builder.HtmlBody = message;
+
+            if (attachment != null && !string.IsNullOrEmpty(attachmentName))
+            {
+                builder.Attachments.Add(attachmentName, attachment);
+            }
+
+            mimeMessage.Body = builder.ToMessageBody();
+
+            using (var client = new SmtpClient())
+            {
+                try
+                {
+                    await client.ConnectAsync(emailSettings["SmtpServer"],
+                        int.Parse(emailSettings["SmtpPort"]),
+                        MailKit.Security.SecureSocketOptions.StartTls);
+
+                    await client.AuthenticateAsync(emailSettings["SmtpUsername"],
+                        emailSettings["SmtpPassword"]);
+
+                    await client.SendAsync(mimeMessage);
+                }
+                catch (Exception ex)
+                {
+                    // Handle exception
+                    throw;
+                }
+                finally
+                {
+                    await client.DisconnectAsync(true);
+                }
+            }
+        }
+
+
+
+
+
+
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0)
         {
             using (Report report = new Report())
@@ -439,6 +707,12 @@ namespace eTactWeb.Controllers
 
                 return View("Error", ResponseResult);
             }
+        }
+        public async Task<JsonResult> GetEmails(int AccountCode)
+        {
+            var JSON = await _IJobWorkIssue.GetEmails(AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
 
         [Route("{controller}/Index")]

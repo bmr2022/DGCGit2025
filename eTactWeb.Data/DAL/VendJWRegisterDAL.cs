@@ -84,7 +84,7 @@ namespace eTactWeb.Data.DAL
                     }
                     if (IssueChallanType == "REC")
                     {
-                        if (ReportMode=="JOBWORKReceiveDETAIL" || ReportMode=="JOBWORKReceiveSUMMARY" || ReportMode=="JOBWORKReceiveWithAdjustemntDETAIL" || ReportMode == "JOBWORKReceiveItemWiseSUMM")
+                        if (ReportMode=="JOBWORKReceiveDETAIL" || ReportMode=="JOBWORKReceiveSUMMARY" || ReportMode=="JOBWORKReceiveWithAdjustemntDETAIL" || ReportMode == "JOBWORKReceiveItemWiseSUMM"|| ReportMode == "JOBWORK RECEIVE CONSOLIDATED")
                         {
                             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                             {
@@ -101,7 +101,7 @@ namespace eTactWeb.Data.DAL
                     }
                     else if(IssueChallanType == "ISSUE")
                     {
-                        if (ReportMode == "JOBWORKISSUECHALLANSUMMARY" || ReportMode == "JOBWORKISSUECHALLANITEMDETAIL"|| ReportMode == "JOBWORKISSUEITEMDETAIL" || ReportMode == "JOBWORKISSUEPatyITEMDETAIL" )
+                        if (ReportMode == "JOBWORKISSUECHALLANSUMMARY" || ReportMode == "JOBWORKISSUECHALLANITEMDETAIL"|| ReportMode == "JOBWORKISSUEITEMDETAIL" || ReportMode == "JOBWORKISSUEPatyITEMDETAIL" || ReportMode == "JOBWORK ISSUECHALLAN CONSOLIDATED")
                         {
                             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                             {
@@ -118,7 +118,7 @@ namespace eTactWeb.Data.DAL
                     }
                     else if(IssueChallanType == "RECO")
                     {
-                        if (ReportMode == "JOBWORKRecoDETAIL" || ReportMode == "JOBWORKRecoSummary")
+                        if (ReportMode == "JOBWORKRecoDETAIL" || ReportMode == "JOBWORKRecoSummary"|| ReportMode == "ONLY PENDING CHALLAN")
                         {
                             if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                             {

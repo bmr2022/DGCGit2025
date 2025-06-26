@@ -214,6 +214,9 @@ namespace eTactWeb.Data.DAL
                                                            BillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
                                                            RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
                                                            Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
+                                                           InvoiceNo = string.IsNullOrEmpty(dr["INVNo"].ToString()) ? "" : dr["INVNo"].ToString(),
+                                                           InvoiceDate = string.IsNullOrEmpty(dr["INVDate"].ToString()) ? "" : dr["INVDate"].ToString(),
+                                                           Amount = Convert.ToDecimal(dr["Amount"].ToString())
                                                        }).ToList();
                         }
                     }

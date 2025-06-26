@@ -25,6 +25,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillEmployee();
         Task<ResponseResult> FillProcess();
         Task<ResponseResult> FillStore();
+        public Task<ResponseResult> GetEmails(int AccountCode);
         Task<ResponseResult> FillAdditionalFields(string Flag, int AccountCode);
         Task<ResponseResult> CheckFeatureOption();
         Task<ResponseResult> FillEntryandJWNo(int YearCode);

@@ -34,6 +34,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _JobWorkIssueDAL.GetFormRights(ID);
         }
+        public async Task<ResponseResult> GetEmails(int AccountCode)
+        {
+            return await _JobWorkIssueDAL.GetEmails(AccountCode);
+        }
         public async Task<ResponseResult> CheckFeatureOption()
         {
             return await _JobWorkIssueDAL.CheckFeatureOption();

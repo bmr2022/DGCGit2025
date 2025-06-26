@@ -1417,7 +1417,7 @@
 
                 else {
                     if (holdQty > (recQty - (accQty + rejQty))) {
-                        $('#RejectedQty-' + i).val(recQty - (accQty + devQty + holdQty + reWorkQty));
+                        $('#AcceptedQty-' + i).val(recQty - (accQty + devQty + holdQty + reWorkQty));
                         rejQty = parseFloat($('#AcceptedQty-' + i).val() == '' ? 0 : parseFloat($('#AcceptedQty-' + i).val()));
                     }
                     else {
