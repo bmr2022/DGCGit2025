@@ -708,6 +708,12 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+        public async Task<JsonResult> GetEmails(int AccountCode)
+        {
+            var JSON = await _IJobWorkIssue.GetEmails(AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [Route("{controller}/Index")]
         [HttpGet]
