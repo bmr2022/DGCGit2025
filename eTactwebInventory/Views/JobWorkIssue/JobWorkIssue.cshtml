@@ -61,6 +61,10 @@
                             <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
                             <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
                             <input type="hidden" id="ShouldEway" name="ShouldEway" />
+                            <input type="hidden" id="Email" />
+                            <input type="hidden" id="CC1" />
+                            <input type="hidden" id="CC2" />
+                            <input type="hidden" id="CC3" />
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -825,6 +829,9 @@
                     <a href="#" class="btn btn-primary" id="btnPrint">
                        Save & Print
                     </a>
+                    <a href="#" class="btn btn-primary" id="btnPrintEmail">
+                        <i class="fa fa-print"></i> Save & Print & Email
+                    </a>
                     <button type="button" class="btn btn-danger" id="btnEwayBill">Save & EWay Bill</button>
                 </div>
             </div>
@@ -916,7 +923,7 @@ $('#btnPrint').click(function () {
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(true, printWindow,false); // Send true and window object
+                submitForm(true, false, false, printWindow, null); // Send true and window object
     }, 300);
         });
 
@@ -925,9 +932,20 @@ $('#btnPrint').click(function () {
             $('#PasswordAllowPopup').modal("hide");
 
             setTimeout(() => {
-                submitForm(false, printWindow,true); // Send true and window object
+                submitForm(false, false, true, null, null); // Send true and window object
             }, 300);
                 });
+        $('#btnPrintEmail').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+
+            $('#PasswordAllowPopup').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, true, false, printWindow, sendWindow); // Send true and window object
+            }, 300);
+        });
 
         $(document).on('click', '#btnEwayOnly, #btnEwayOnlyD', function () {
 
@@ -985,14 +1003,19 @@ $('#btnClose').click(function () {
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {
-        submitForm(false, null,false); // no print
+                submitForm(false, false, false, null, null); // no print
     }, 300);
 });
 
-        function submitForm(shouldPrint, printWindow, ShouldEway) {
+        function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow) {
             $('#ShouldPrint').val(shouldPrint); // Set hidden input
             $('#ShouldEway').val(ShouldEway);   // Set hidden input for ShouldEway
             const formData = $('form').serialize(); // Serialize full form
+            var Email = $('#Email').val();
+            var CC1 = $('#CC1').val();
+            var CC2 = $('#CC2').val();
+            var CC3 = $('#CC3').val();
+            var ChallanNo = $('#JWChallanNo').val();
 
             $.ajax({
                 type: "POST",
@@ -1004,9 +1027,17 @@ $('#btnClose').click(function () {
 
                     if (res && res.status === "Success") {
                         // Handle printing
-                        if (shouldPrint && res.entryId && res.yearCode && printWindow) {
+                        if(shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
                             const printUrl = '/JobWorkIssue/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
                             printWindow.location.href = printUrl;
+                        }
+                        else if (shouldPrint && shouldSend) {
+                            const printUrl = '/JobWorkIssue/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            const sendUrl = '/JobWorkIssue/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + ChallanNo;
+                            printWindow.location.href = printUrl;
+                            /* sendWindow.location.href = sendUrl; */
+                            $.get(sendUrl);
+
                         }
 
                         // Handle E-Way Bill
@@ -2140,6 +2171,29 @@ $('#btnClose').click(function () {
                                         }
                                         $('#GstType').val(val.GSTPartyTypes);
                                         AccountStateCode = val.statecode == null ? 0 : val.statecode;
+                                    });
+                                }
+                            }
+                        },
+                        error: function (req, status, error) {
+                            alert(error);
+                        }
+                    });
+                    $.ajax({
+                        type: "POST",
+                        url: "@Url.Action("GetEmails")",
+                        data: dataParams,
+                        dataType: "json",
+                        async: false,
+                        success: function (result, status, error) {
+                            if (result != null) {
+                                var obj = $.parseJSON(result);
+                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                                    $.each(obj.Result, function (index, val) {
+                                        $('#Email').val(val.EmailId);
+                                        $('#CC1').val(val.CC1);
+                                        $('#CC2').val(val.CC2);
+                                        $('#CC3').val(val.CC3);
                                     });
                                 }
                             }

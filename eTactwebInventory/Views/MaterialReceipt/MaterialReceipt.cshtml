@@ -325,6 +325,7 @@
                                     <table class="table table-hover table-bordered table-striped">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
                                             <tr>
+                                                <th>SrNo</th>
                                                 <th>PO No</th>
                                                 <th>PO Year</th>
                                                 <th>Sch No</th>
@@ -367,8 +368,12 @@
                                                     <partial name="_MaterialReceiptGridEdit" />
                                             }
                                         </tbody>
+                                       
                                     </table>
+                                    <center><lable>total rows:</lable><input type="text" id="TotalRows" /></center>
                                 </div>
+                                <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
                             </div>
                             @*<div class=" col-4 col-auto">
                             <div class="row justify-content-around">
@@ -658,6 +663,14 @@
 @section Scripts 
 {
         <script>
+                    function updateRowCount() {
+                        var rowCount = $('#divMRNGrid tr').length;
+                $('#totalRows').text(rowCount);
+            }
+
+            updateRowCount(); 
+            const observer = new MutationObserver(updateRowCount);
+            observer.observe(document.getElementById('divMRNGrid'), { childList: true, subtree: false });
             var checkBeforeInsert = "false";
             $("button[type='submit']").click(function (e) {
 
@@ -1976,7 +1989,7 @@ function submitForm(shouldPrint, printWindow) {
                                         val.SchNo = "NA";
                                     }
 
-                                    html += '<tr><td><input type="hidden" id="VendorBatchMand' + i + '" value=' + val.VendorBatchcodeMand + ' /><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px" id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input style="width:70px" id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input style="width:80px" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly ></td><td><input style="width:100px !important;" id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input style="width:50px" id="unit' + i + '" value=' + val.unit + ' readonly ></td><td><input style="width:50px" id="Qty' + i + '" value=' + val.Qty + ' readonly ></td><td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + val.BillQty + ' ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + val.RecQty + ' ></td><td><input style="width:70px" id="altqty' + i + '" value=' + val.altqty + ' readonly ></td><td><input style="width:50px" id="RateUnit' + i + '" readonly value=' + val.RateUnit + ' ></td><td><input style="width:50px" id="altunit' + i + '" value="' + val.altunit + '" readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + val.AltRecQty + ' ></td><td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + val.ShortExcessQty + ' ></td><td><input style="width:50px;"  id="Rate' + i + '" value=' + val.Rate + ' ></td><td><input style="width:50px;" id="RateInOtherCurr' + i + '" readonly value=' + val.RateInOtherCurr + ' ></td><td><input style="width:50px;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input style="width:50px;" id="PendPOQty' + i + '" readonly value=' + val.PendPOQty + ' > </td><td> <input style="width:50px;" id="QCCompleted' + i + '" readonly value=' + val.QCCompleted + ' ></td><td><input style="width:50px;" id="RetChallanPendQty' + i + '" readonly value=' + val.RetChallanPendQty + ' ></td><td><input style="width:50px;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input style="width:50px;" id="SaleBillNo' + i + '" readonly value=' + val.SaleBillNo + ' ></td><td><input style="width:50px;" id="SaleBillYearCode' + i + '" readonly value=' + val.SaleBillYearCode + ' ></td><td><input style="width:50px;" id="AgainstChallanNo' + i + '" readonly value=' + val.AgainstChallanNo + ' ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input id="SupplierBatchNo' + i + '" readonly value=' + val.SupplierBatchNo + ' > </td><td><input id="ShelfLife' + i + '" readonly value=' + val.ShelfLife + ' ></td><td> <input id="ItemSize' + i + '" readonly value=' + JSON.stringify(val.ItemSize) + ' ></td><td><input id="ItemColor' + i + '" readonly value=' + JSON.stringify(val.ItemColor) + ' ></td><td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
+                                    html += '<tr><td>'+ i +'</td><td><input type="hidden" id="VendorBatchMand' + i + '" value=' + val.VendorBatchcodeMand + ' /><input readonly id="PONo' + i + '" value=' + val.PONo + '  ></td><td><input style="width:50px" id="POYearCode' + i + '" value=' + val.POYearCode + ' readonly ></td><td><input style="width:80px" id="SchNo' + i + '" value=' + val.SchNo + ' readonly ></td><td><input style="width:50px" id="SchYearCode' + i + '" value=' + val.SchYearCode + ' readonly ></td><td><input style="width:70px" id="POType' + i + '" readonly value=' + val.POType + '  ></td><td><input style="width:80px" id="PODate' + i + '" value=' + val.PODate + ' readonly ></td><td><input id="Item_Name' + i + '" value=' + JSON.stringify(val.Item_Name) + ' readonly ></td><td><input style="width:100px !important;" id="PartCode' + i + '" value=' + val.PartCode + ' readonly ></td><td><input style="width:50px" id="unit' + i + '" value=' + val.unit + ' readonly ></td><td><input style="width:50px" id="Qty' + i + '" value=' + val.Qty + ' readonly ></td><td><input style="width:50px" readonly id="BillQty' + i + '" onchange="BillQtyChange(' + i + ');" value=' + val.BillQty + ' ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="RecQty' + i + '" onchange="RecQtyChange(' + i + ');" value=' + val.RecQty + ' ></td><td><input style="width:70px" id="altqty' + i + '" value=' + val.altqty + ' readonly ></td><td><input style="width:50px" id="RateUnit' + i + '" readonly value=' + val.RateUnit + ' ></td><td><input style="width:50px" id="altunit' + i + '" value="' + val.altunit + '" readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="NoofCase' + i + '" value=' + val.NoofCase + ' readonly ></td><td><input style="width:50px;background-color:#ffd6dd !important" id="AltRecQty' + i + '" value=' + val.AltRecQty + ' ></td><td><input style="width:50px;" id="ShortExcessQty' + i + '" readonly value=' + val.ShortExcessQty + ' ></td><td><input style="width:50px;"  id="Rate' + i + '" value=' + val.Rate + ' ></td><td><input style="width:50px;" id="RateInOtherCurr' + i + '" readonly value=' + val.RateInOtherCurr + ' ></td><td><input style="width:50px;" id="Amount' + i + '" readonly value=' + val.Amount + ' ></td><td><input style="width:50px;" id="PendPOQty' + i + '" readonly value=' + val.PendPOQty + ' > </td><td> <input style="width:50px;" id="QCCompleted' + i + '" readonly value=' + val.QCCompleted + ' ></td><td><input style="width:50px;" id="RetChallanPendQty' + i + '" readonly value=' + val.RetChallanPendQty + ' ></td><td><input style="width:50px;" id="BatchWise' + i + '" readonly value=' + val.Batchwise + ' ></td><td><input style="width:50px;" id="SaleBillNo' + i + '" readonly value=' + val.SaleBillNo + ' ></td><td><input style="width:50px;" id="SaleBillYearCode' + i + '" readonly value=' + val.SaleBillYearCode + ' ></td><td><input style="width:50px;" id="AgainstChallanNo' + i + '" readonly value=' + val.AgainstChallanNo + ' ></td><td><input id="BatchNo' + i + '" readonly value=' + val.BatchNo + ' ></td><td><input id="Uniquebatchno' + i + '" readonly value=' + val.Uniquebatchno + ' ></td><td><input id="SupplierBatchNo' + i + '" readonly value=' + val.SupplierBatchNo + ' > </td><td><input id="ShelfLife' + i + '" readonly value=' + val.ShelfLife + ' ></td><td> <input id="ItemSize' + i + '" readonly value=' + JSON.stringify(val.ItemSize) + ' ></td><td><input id="ItemColor' + i + '" readonly value=' + JSON.stringify(val.ItemColor) + ' ></td><td><input id="ItemCode' + i + '" type="hidden" value=' + val.ItemCode + ' ></td></tr > ';
                                     i++;
                                 });
                                 $('#divMRNGrid').append(html);
@@ -1985,6 +1998,7 @@ function submitForm(shouldPrint, printWindow) {
                                     AltUnitConversion($('#ItemCode' + i).val(), $('#BillQty' + i).val(), i);
                                     AltRecUnitConversion($('#ItemCode' + i).val(), $('#RecQty' + i).val(), i);
                                 }
+                                $("#TotalRows").val(rowCount);
                             }
                         }
                         if ($('#PONO').val() == '') {
