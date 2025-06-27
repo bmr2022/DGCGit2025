@@ -1709,7 +1709,7 @@
 				}
 
 				function Validate_GridButton() {
-
+					debugger
 					var Err = 0;
 					if ($('#Type').val() == "") {
 						AddErrorCls('Type');
@@ -1782,7 +1782,7 @@
 					}
 
 					if ($('#ModeOfAdjustment').val() == "Advance") {
-						if($('#BankType').val() == "Creditors"){
+						if($('#BankType').val().trim() == "Creditors" || $('#BankType').val() == "Sundry Creditors"){
 							if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
 							AddErrorCls('PONo');
 							$.notify("PONo is required.", "error");

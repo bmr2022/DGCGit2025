@@ -1740,30 +1740,30 @@
             }
 
             if ($('#ModeOfAdjustment').val() == "Advance") {
-                        if($('#BankType').val() == "Creditors"){
-                            if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
-                            AddErrorCls('PONo');
-                            $.notify("PONo is required.", "error");
-                            Err = 1;
-                        } else {
-                            RemoveErrorCls('PONo');
-                        }
-                        if ($('#PoDate').val() == "" || $('#PoDate').val() == null) {
-                            AddErrorCls('PoDate');
-                            $.notify("PoDate is required.", "error");
-                            Err = 1;
-                        } else {
-                            RemoveErrorCls('PoDate');
-                        }
-                        if ($('#POYear').val() == 0 || $('#POYear').val() == null) {
-                            AddErrorCls('POYear');
-                            $.notify("POYear is required.", "error");
-                            Err = 1;
-                        } else {
-                            RemoveErrorCls('POYear');
-                        }
-                        }
-                    }
+                        if($('#BankType').val().trim() == "Creditors" || $('#BankType').val() == "Sundry Creditors"){
+							if ($('#PONo').val() == 0 || $('#PONo').val() == null) {
+							AddErrorCls('PONo');
+							$.notify("PONo is required.", "error");
+							Err = 1;
+						} else {
+							RemoveErrorCls('PONo');
+						}
+						if ($('#PoDate').val() == "" || $('#PoDate').val() == null) {
+							AddErrorCls('PoDate');
+							$.notify("PoDate is required.", "error");
+							Err = 1;
+						} else {
+							RemoveErrorCls('PoDate');
+						}
+						if ($('#POYear').val() == 0 || $('#POYear').val() == null) {
+							AddErrorCls('POYear');
+							$.notify("POYear is required.", "error");
+							Err = 1;
+						} else {
+							RemoveErrorCls('POYear');
+						}
+						}
+					}
 
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;

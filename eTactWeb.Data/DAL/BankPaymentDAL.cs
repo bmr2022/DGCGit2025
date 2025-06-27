@@ -366,7 +366,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<BankPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<BankPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankPaymentModel();
@@ -384,9 +384,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
                     oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@Bank", Bank);
                     oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
-                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
                     oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
+                    oCmd.Parameters.AddWithValue("@PONO", PONo);
+                    oCmd.Parameters.AddWithValue("@AgainstBillNo", AgainstBillno);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -449,7 +451,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<BankPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank ,string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankPaymentModel();
@@ -467,9 +469,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
                     oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@Bank", Bank);
                     oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
-                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
                     oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
+                    oCmd.Parameters.AddWithValue("@PONO", PONo);
+                    oCmd.Parameters.AddWithValue("@AgainstBillNo", AgainstBillno);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -489,6 +493,8 @@ namespace eTactWeb.Data.DAL
                                                  VoucherNo = dr["VoucherNo"] != DBNull.Value ? dr["VoucherNo"].ToString() : string.Empty,
                                                  VoucherDocDate = dr["VoucherDocdate"] != DBNull.Value ? dr["VoucherDocdate"].ToString() : string.Empty,
                                                  Currency = dr["Currency"] != DBNull.Value ? dr["Currency"].ToString() : string.Empty,
+                                                 DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
+                                                 CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
                                                  VoucherType = dr["Vouchertype"] != DBNull.Value ? dr["Vouchertype"].ToString() : string.Empty,
                                                  UID = dr["uid"] != DBNull.Value ? Convert.ToInt32(dr["uid"]) : 0,
                                                  ActualEntryby = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,

@@ -1,43 +1,266 @@
 ﻿<!DOCTYPE html>
-<html>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Combined Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            margin: 20px;
+        }
+
+        h2 {
+            margin-top: 40px;
+            margin-bottom: 20px;
+        }
+
+        .dashboard {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+            .card h3 {
+                margin: 0;
+                font-size: 1rem;
+                color: #555;
+            }
+
+            .card .value {
+                font-size: 2rem;
+                font-weight: bold;
+                margin-top: 10px;
+            }
+
+        canvas {
+            margin-top: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+            table th, table td {
+                padding: 8px;
+                border-bottom: 1px solid #eee;
+                text-align: left;
+            }
+
+        ul {
+            padding-left: 20px;
+        }
+
+        .highlight-red {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
+</head>
 <body>
 
-    <canvas id="myChart" style="width:100%;max-width:600px"></canvas>
+    <!-- Inventory Dashboard -->
+    <h2>Inventory Dashboard</h2>
+    <div class="dashboard">
+        <div class="card">     
+            <h3>Total Stock Value (₹)</h3>
+            <div class="value">6,05,000</div>
+        </div>
+        <div class="card">
+            <h3>Total Items in Stock</h3>
+            <div class="value">125</div>
+        </div>
+        <div class="card">
+            <h3>Dead Stock Items</h3>
+            <div class="value highlight-red">15</div>
+        </div>
+        <div class="card">
+            <h3>Inventory by Category</h3>
+            <canvas id="categoryChart"></canvas>
+        </div>
+        <div class="card">
+            <h3>Fast vs Slow Moving Items</h3>
+            <canvas id="fastSlowChart"></canvas>
+        </div>
+        <div class="card">
+            <h3>Stock Movement (Last 30 Days)</h3>
+            <canvas id="movementChart"></canvas>
+        </div>
+        <div class="card">
+            <h3>Items Near Expiry / Calibration</h3>
+            <ul>
+                <li>Tool calibration due next week</li>
+                <li>Expiry-sensitive item: CHEM-123</li>
+            </ul>
+        </div>
+        <div class="card">
+            <h3>Top Items by Stock Value</h3>
+            <table>
+                <thead><tr><th>Code</th><th>Name</th><th>Qty</th><th>Value</th></tr></thead>
+                <tbody>
+                    <tr><td>RM-001</td><td>RM-007</td><td>1500</td><td>3000</td></tr>
+                    <tr><td>FG-002</td><td>FG-002</td><td>1500</td><td>2000</td></tr>
+                    <tr><td>C-003</td><td>C-003</td><td>500</td><td>250</td></tr>
+                    <tr><td>RM-004</td><td>RM-004</td><td>250</td><td>200</td></tr>
+                    <tr><td>FG-005</td><td>FG-005</td><td>250</td><td>400</td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="card">
+            <h3>Open Purchase Orders</h3>
+            <table>
+                <thead><tr><th>PO Qty</th><th>Delivery</th><th>Supplier</th></tr></thead>
+                <tbody>
+                    <tr><td>21,000</td><td>27 Jun 2023</td><td>ABC Ltd.</td></tr>
+                    <tr><td>21,000</td><td>20 Jun 2023</td><td>XYZ Corp.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
 
+    <!-- Supply Chain Dashboard -->
+    <h2>Supply Chain Dashboard</h2>
+    <div class="dashboard">
+        <div class="card">
+            <h3>Perfect Orders</h3>
+            <canvas id="perfectOrdersChart"></canvas>
+            <p>In Time, Meet Quality/Quantity, Correct Invoice</p>
+        </div>
+        <div class="card">
+            <h3>Total Shipping Cost</h3>
+            <div class="value">770.7K</div>
+        </div>
+        <div class="card">
+            <h3>Total Quantity Shipped</h3>
+            <div class="value">1.52M</div>
+        </div>
+        <div class="card">
+            <h3>Total International Shipment</h3>
+            <div class="value">1.07M</div>
+        </div>
+        <div class="card">
+            <h3>Perfect Orders by Warehouse</h3>
+            <canvas id="warehouseBarChart"></canvas>
+        </div>
+        <div class="card">
+            <h3>Return by Product Type</h3>
+            <canvas id="returnByProdChart"></canvas>
+        </div>
+        <div class="card">
+            <h3>Total Return & Trend</h3>
+            <canvas id="returnTrendChart"></canvas>
+        </div>
+    </div>
+
+    <!-- Chart JS Scripts -->
     <script>
+        // Inventory Dashboard Charts
+        new Chart("categoryChart", {
+          type: "bar",
+          data: {
+            labels: ["Raw Materials", "Finished Goods", "Tools"],
+            datasets: [{
+              backgroundColor: ["#3498db", "#2ecc71", "#f39c12"],
+              data: [32000, 30000, 25000]
+            }]
+          },
+          options: { legend: { display: false }, scales: { y: { beginAtZero: true } } }
+        });
 
-         <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label   class="form-label">XON ERP</label>
-                                    
-                                </div>
-        // const xValues = [];
-        // const yValues = [55, 49, 44, 24, 15];
-        // const barColors = [
-        //     "#b91d47",
-        //     "#00aba9",
-        //     "#2b5797",
-        //     "#e8c3b9",
-        //     "#1e7145"
-        // ];
+        new Chart("fastSlowChart", {
+          type: "doughnut",
+          data: {
+            labels: ["Fast Movers", "Slow Movers"],
+            datasets: [{
+              backgroundColor: ["#1abc9c", "#e67e22"],
+              data: [70, 30]
+            }]
+          }
+        });
 
-        // new Chart("myChart", {
-        //     type: "pie",
-        //     data: {
-        //         labels: xValues,
-        //         datasets: [{
-        //             backgroundColor: barColors,
-        //             data: yValues
-        //         }]
-        //     },
-        //     options: {
-        //         title: {
-        //             display: true,
-        //             text: "Item Wise Production"
-        //         }
-        //     }
-        // });
+        new Chart("movementChart", {
+          type: "line",
+          data: {
+            labels: ["Day 1", "Day 5", "Day 10", "Day 15", "Day 20", "Day 25", "Day 30"],
+            datasets: [
+              { label: "Raw Materials", borderColor: "#3498db", fill: false, data: [100, 120, 140, 160, 180, 200, 220] },
+              { label: "Finished Goods", borderColor: "#2ecc71", fill: false, data: [80, 100, 110, 130, 160, 180, 210] }
+            ]
+          },
+          options: { legend: { display: true }, scales: { y: { beginAtZero: true } } }
+        });
+
+        // Supply Chain Dashboard Charts
+        new Chart("perfectOrdersChart", {
+          type: "doughnut",
+          data: {
+            labels: ["Perfect", "Others"],
+            datasets: [{
+              data: [90.1, 9.9],
+              backgroundColor: ["#2ecc71", "#ecf0f1"]
+            }]
+          },
+          options: {
+            cutout: '70%',
+            plugins: { legend: { display: false } }
+          }
+        });
+
+        new Chart("warehouseBarChart", {
+          type: "bar",
+          data: {
+            labels: ["California", "Texas", "Kansas", "New Jersey"],
+            datasets: [{
+              label: "Perfect Orders",
+              data: [30, 25, 15, 10],
+              backgroundColor: "#3498db"
+            }]
+          },
+          options: { scales: { y: { beginAtZero: true } } }
+        });
+
+        new Chart("returnByProdChart", {
+          type: "bar",
+          data: {
+            labels: ["Type A", "Type B", "Type C", "Type D"],
+            datasets: [
+              { label: "US", data: [10, 14, 8, 6], backgroundColor: "#e74c3c" },
+              { label: "Canada", data: [6, 9, 5, 4], backgroundColor: "#2ecc71" },
+              { label: "Germany", data: [4, 7, 3, 2], backgroundColor: "#f1c40f" }
+            ]
+          },
+          options: {
+            plugins: { legend: { position: 'bottom' } },
+            scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+          }
+        });
+
+        new Chart("returnTrendChart", {
+          type: "line",
+          data: {
+            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+            datasets: [
+              {
+                label: "Return Volume",
+                data: [20000, 25000, 30000, 28000, 31000, 34000],
+                borderColor: "#e67e22",
+                fill: false,
+                tension: 0.3
+              }
+            ]
+          },
+          options: { scales: { y: { beginAtZero: true } } }
+        });
     </script>
-
 </body>
 </html>

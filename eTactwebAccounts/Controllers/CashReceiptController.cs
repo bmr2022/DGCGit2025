@@ -841,20 +841,20 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
             HttpContext.Session.Remove("KeyCashReceiptGrid");
             HttpContext.Session.Remove("KeyCashReceiptGridEdit");
             var model = new CashReceiptModel();
-            model = await _ICashReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
+            model = await _ICashReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName,Bank, VoucherNo, AgainstVoucherNo, SoNo,AgainstBillno);
             return PartialView("_CashReceiptDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
             HttpContext.Session.Remove("KeyCashReceiptGrid");
             HttpContext.Session.Remove("KeyCashReceiptGridEdit");
             var model = new CashReceiptModel();
-            model = await _ICashReceipt.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
+            model = await _ICashReceipt.GetDashBoardSummaryData(FromDate, ToDate, LedgerName,Bank, VoucherNo, AgainstVoucherNo, SoNo,AgainstBillno);
             return PartialView("_CashReceiptDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)
