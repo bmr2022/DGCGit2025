@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="06/26/2025 13:00:07" ReportInfo.Modified="06/26/2025 17:23:33" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="06/26/2025 13:00:07" ReportInfo.Modified="06/27/2025 16:17:23" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqtkzNtsLCrjFFKG01JH5m8VJ+Sh/Xox0qR8hUHXe2FjLO4/6zyOAe5VwCbCs+kvmsoMCoW06DlN/XqWxbD/P8+FuAMe4ImXxwNMizue8l1NkJFfCk3bI8VyNXHFr+o3m9nfGunlvNQOoRng8PLl+ebdahBMVHSVLUoJZBKcITnm3hgWn87aBzvTNqiPU0SFarD+DwSsfjfuPzVlnL7coeGA==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqtkzNtsLCrjFFKG01JH5m8VJ+Sh/Xox0qR8hUHXe2FjLO4/6zyOAe5VwCbCs+kvmsoMCoW06DlN/XqWxbD/P8+FuAMe4ImXxwNMizue8l1NkJFfCk3bI8VyNXHFr+o3m9nfGunlvNQOoRng8PLl+ebdahBMVHSVLUoJZBKcITnm3hgWn87aBzvTNqiPU0SFarAKrrnuTaHG0DO8ZVCOstAw==">
       <TableDataSource Name="Table" Alias="SPReportPurchaseOrderAmendment" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPurchaseOrderAmendment @EntryId = @entryparam , @yearCode = @yearparam,@PONo=@PoNo&#13;&#10;,@AmendNo=@AmmNo,@Flag= N'PURCHASEORDERPRINT'">
         <Column Name="SeqNo" DataType="System.Int64"/>
         <Column Name="Account_Name" DataType="System.String"/>
@@ -178,36 +178,19 @@
     <Parameter Name="MyParameter" DataType="System.String" Expression="MyParameter"/>
   </Dictionary>
   <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
-    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="311.85">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="340.2">
       <TextObject Name="Text1" Left="255.15" Top="66.15" Width="179.55" Height="28.35" Text="PO Amendment" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
       <LineObject Name="Line1" Left="18.9" Top="18.9" Width="670.95"/>
-      <LineObject Name="Line2" Left="18.9" Top="18.9" Height="292.95"/>
-      <LineObject Name="Line3" Left="689.85" Top="18.9" Height="292.95"/>
+      <LineObject Name="Line2" Left="18.9" Top="18.9" Height="321.3"/>
+      <LineObject Name="Line3" Left="689.85" Top="18.9" Height="321.3"/>
       <TextObject Name="Text2" Left="226.8" Top="28.35" Width="245.7" Height="28.35" Text="Auto Component" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
       <LineObject Name="Line4" Left="18.9" Top="94.5" Width="670.95"/>
-      <LineObject Name="Line5" Left="349.65" Top="94.5" Height="217.35"/>
+      <LineObject Name="Line5" Left="349.65" Top="94.5" Height="245.7"/>
       <TextObject Name="Text3" Left="28.35" Top="103.95" Width="141.75" Height="18.9" Text="Auto Component" Font="Arial, 11pt, style=Bold"/>
-      <TextObject Name="Text4" Left="28.35" Top="122.85" Width="321.3" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.CompAdd]" Font="Arial, 9pt"/>
       <TextObject Name="Text271" Left="359.1" Top="103.95" Width="113.4" Height="18.9" Text="Supplier Code:" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text327" Left="472.5" Top="103.95" Width="217.35" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Party_Code]" Font="Arial, 9pt"/>
       <TextObject Name="Text328" Left="359.1" Top="132.3" Width="330.75" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Account_Name]" Font="Arial, 9pt, style=Bold"/>
       <TextObject Name="Text329" Left="359.1" Top="151.2" Width="330.75" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.VendorAddress]" Font="Arial, 9pt"/>
-      <TextObject Name="Text8" Left="28.35" Top="151.2" Width="75.6" Height="18.9" Text="PAN No." Font="Arial, 10pt"/>
-      <TextObject Name="Text9" Left="28.35" Top="170.1" Width="75.6" Height="18.9" Text="GSTIN       " Font="Arial, 10pt"/>
-      <TextObject Name="Text11" Left="28.35" Top="188.24" Width="75.6" Height="18.9" Text="P.O. No." Font="Arial, 10pt"/>
-      <TextObject Name="Text14" Left="28.35" Top="207.14" Width="75.6" Height="18.9" Text="PO Date" Font="Arial, 10pt"/>
-      <TextObject Name="Text308" Left="28.35" Top="226.04" Width="94.5" Height="18.9" Text="PO Close Dt:" Font="Arial, 10pt"/>
-      <TextObject Name="Text15" Left="28.35" Top="244.94" Width="75.6" Height="18.9" Text="P.O. Type" Font="Arial, 10pt"/>
-      <TextObject Name="Text12" Left="28.35" Top="263.84" Width="75.6" Height="18.9" Text="Amm. No.:" Font="Arial, 10pt"/>
-      <TextObject Name="Text16" Left="28.35" Top="282.74" Width="85.05" Height="18.9" Text="Amm. Date:" Font="Arial, 10pt"/>
-      <TextObject Name="Text309" Left="122.85" Top="151.2" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.CompPANNo]" Font="Arial, 9pt"/>
-      <TextObject Name="Text310" Left="122.85" Top="170.1" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.CompGSTNO]" Font="Arial, 9pt"/>
-      <TextObject Name="Text311" Left="122.85" Top="189" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.PONo]" Font="Arial, 9pt"/>
-      <TextObject Name="Text312" Left="122.85" Top="207.9" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.PODate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
-      <TextObject Name="Text313" Left="122.85" Top="226.8" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.POCloseDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
-      <TextObject Name="Text314" Left="122.85" Top="245.7" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.POType]" Font="Arial, 9pt"/>
-      <TextObject Name="Text315" Left="122.85" Top="264.6" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.AmmNo]" Font="Arial, 9pt"/>
-      <TextObject Name="Text316" Left="122.85" Top="283.5" Width="226.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.AmmEffDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
       <TextObject Name="Text39" Left="359.1" Top="179.55" Width="75.6" Height="18.9" Text="City" Font="Arial, 10pt"/>
       <TextObject Name="Text40" Left="359.1" Top="198.45" Width="75.6" Height="18.9" Text="GST IN" Font="Arial, 10pt"/>
       <TextObject Name="Text41" Left="359.1" Top="217.35" Width="75.6" Height="18.9" Text="PAN No." Font="Arial, 10pt"/>
@@ -219,9 +202,25 @@
       <TextObject Name="Text332" Left="434.7" Top="217.35" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Vendorpanno]" Font="Arial, 9pt"/>
       <TextObject Name="Text333" Left="425.25" Top="236.25" Width="264.6" Height="18.9" Text="[SPReportPurchaseOrderAmendment.VendorPurchasePersonEmailId]" Font="Arial, 9pt"/>
       <TextObject Name="Text334" Left="444.15" Top="274.05" Width="245.7" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Vendorbankifsccode]" Font="Arial, 9pt"/>
-      <LineObject Name="Line6" Left="18.9" Top="311.85" Width="670.95"/>
+      <TextObject Name="Text4" Left="28.35" Top="122.85" Width="321.3" Height="37.8" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.CompAdd]" Font="Arial, 9pt"/>
+      <TextObject Name="Text8" Left="28.35" Top="179.55" Width="75.6" Height="18.9" Text="PAN No." Font="Arial, 10pt"/>
+      <TextObject Name="Text9" Left="28.35" Top="198.45" Width="75.6" Height="18.9" Text="GSTIN       " Font="Arial, 10pt"/>
+      <TextObject Name="Text11" Left="28.35" Top="216.59" Width="75.6" Height="18.9" Text="P.O. No." Font="Arial, 10pt"/>
+      <TextObject Name="Text14" Left="28.35" Top="235.49" Width="75.6" Height="18.9" Text="PO Date" Font="Arial, 10pt"/>
+      <TextObject Name="Text308" Left="28.35" Top="254.39" Width="94.5" Height="18.9" Text="PO Close Dt:" Font="Arial, 10pt"/>
+      <TextObject Name="Text15" Left="28.35" Top="273.29" Width="75.6" Height="18.9" Text="P.O. Type" Font="Arial, 10pt"/>
+      <TextObject Name="Text309" Left="122.85" Top="179.55" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.CompPANNo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text310" Left="122.85" Top="198.45" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.CompGSTNO]" Font="Arial, 9pt"/>
+      <TextObject Name="Text311" Left="122.85" Top="217.35" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.PONo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text312" Left="122.85" Top="236.25" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.PODate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text313" Left="122.85" Top="255.15" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.POCloseDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text314" Left="122.85" Top="274.05" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.POType]" Font="Arial, 9pt"/>
+      <TextObject Name="Text315" Left="122.85" Top="283.5" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.AmmNo]" Font="Arial, 9pt"/>
+      <TextObject Name="Text12" Left="28.35" Top="292.19" Width="75.6" Height="18.9" Text="Amm. No.:" Font="Arial, 10pt"/>
+      <TextObject Name="Text316" Left="122.85" Top="302.4" Width="226.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.AmmEffDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
+      <TextObject Name="Text16" Left="28.35" Top="311.09" Width="85.05" Height="18.9" Text="Amm. Date:" Font="Arial, 10pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="315.05" Width="718.2" Height="47.25">
+    <PageHeaderBand Name="PageHeader1" Top="343.4" Width="718.2" Height="47.25">
       <TextObject Name="Text106" Left="472.5" Top="22.9" Width="37.8" Height="18.9" Text="Rate " HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text108" Left="510.3" Top="22.9" Width="37.8" Height="18.9" Text="Amt" Font="Arial, 8pt"/>
       <TextObject Name="Text109" Left="548.1" Top="22.9" Width="37.8" Height="18.9" Text="Rate " HorzAlign="Center" Font="Arial, 8pt"/>
@@ -260,8 +259,9 @@
       <LineObject Name="Line216" Left="18.9" Height="47.25"/>
       <LineObject Name="Line217" Left="18.9" Top="47.25" Width="670.95"/>
       <TextObject Name="Text110" Left="548.1" Top="4" Width="75.6" Height="18.9" Text="SGST" HorzAlign="Center" Font="Arial, 8pt"/>
+      <LineObject Name="Line6" Left="18.9" Width="670.95"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="365.5" Width="718.2" Height="41.58" Condition="[SPReportPurchaseOrderAmendment.PartCode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="393.85" Width="718.2" Height="41.58" Condition="[SPReportPurchaseOrderAmendment.PartCode]">
       <LineObject Name="Line171" Left="18.9" Height="40.82" CanGrow="true"/>
       <LineObject Name="Line175" Left="37.42" Height="40.82"/>
       <LineObject Name="Line176" Left="119.45" Height="40.82"/>
@@ -277,7 +277,6 @@
       <LineObject Name="Line213" Left="509.92" Height="40.82"/>
       <LineObject Name="Line218" Left="387.07" Height="40.82"/>
       <LineObject Name="Line219" Left="652.05" Height="40.82"/>
-      <LineObject Name="Line174" Left="754.11" Height="40.82"/>
       <LineObject Name="Line204" Left="689.85" Height="40.82"/>
       <LineObject Name="Line220" Left="18.9" Top="41.58" Width="670.95"/>
       <TextObject Name="Text336" Left="18.9" Top="9.45" Width="18.9" Height="28.35" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 7pt"/>
@@ -295,10 +294,10 @@
       <TextObject Name="Text348" Left="585.9" Top="9.45" Width="28.35" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.SGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text349" Left="614.25" Top="9.45" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.IGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text350" Left="652.05" Top="9.45" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.IGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
-      <DataBand Name="Data1" Top="410.28" Width="718.2" DataSource="Table"/>
-      <GroupFooterBand Name="GroupFooter1" Top="413.48" Width="718.2"/>
+      <DataBand Name="Data1" Top="438.63" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="441.83" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="461.46" Width="718.2" Height="491.4">
+    <ReportSummaryBand Name="ReportSummary1" Top="489.81" Width="718.2" Height="491.4">
       <LineObject Name="Line112" Left="20.79" Top="350.03" Width="670.95"/>
       <LineObject Name="Line191" Left="20.79" Top="354.74" Width="670.95"/>
       <TextObject Name="Text167" Left="56.7" Top="179.55" Width="94.5" Height="18.9" Text="Prepared By:" Font="Arial, 10pt"/>
@@ -335,7 +334,7 @@
       <TextObject Name="Text360" Left="122.85" Top="132.3" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Remark]" Font="Arial, 7pt"/>
       <TextObject Name="Text361" Left="66.15" Top="198.45" Width="66.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.PreparedBy]" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text362" Left="557.55" Top="198.45" Width="132.3" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Approved]" HorzAlign="Center" Font="Arial, 8pt"/>
-      <ChildBand Name="Child1" Top="416.68" Width="718.2" Height="41.58" FillUnusedSpace="true">
+      <ChildBand Name="Child1" Top="445.03" Width="718.2" Height="41.58" FillUnusedSpace="true">
         <LineObject Name="Line221" Left="18.9" Height="40.82" CanGrow="true"/>
         <LineObject Name="Line222" Left="37.42" Height="40.82"/>
         <LineObject Name="Line223" Left="119.45" Height="40.82"/>
