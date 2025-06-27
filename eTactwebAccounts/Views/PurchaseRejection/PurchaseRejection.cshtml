@@ -686,6 +686,7 @@
             }
             if ($('#Mode').val() == "V" || $('#Mode').val() == "U")
             {
+                GetTaxPartItem();
                 GetDbCrDetail();
             }
         });
@@ -700,7 +701,7 @@
                 const batchNo = $(`#popUpBatchNo-${j}`).val();
                 const uniqueBatchNo = $(`#popUpUniqueBatchNo-${j}`).val();
                 let matched = false;
-                $('#divAddPurchaseRejectionList tr').each(function () {debugger
+                $('#divAddPurchaseRejectionList tr').each(function () {
                     const count = $(this).index();
                     const gridItemCode = $(`#GridIC-${count}`).val();
                     const gridBatchNo = $(`#GridBatchNo-${count}`).text().trim();
@@ -978,7 +979,7 @@
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
                 async: false,
-                data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq":  seq},
+                       data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq":  seq, "uniquekeyid": $('#hdnuniquekey-' + seq).val()},
                 success: function (data, status, xhr) {
                     $('#divAddPurchaseRejectionList').html(data);
 
@@ -2350,26 +2351,66 @@
         });
 
         $('#fromBillDate').change(function () {
-
             $('#toBillDate').datepicker("option", "minDate", $('#fromBillDate').val());
         });
-
+        $("#PurchaseRejEntryDate", "#PurchaseRejInvoiceDate", "#PurchaseRejectionVoucherDate", "#ActualEntryDate", "#LastUpdationDate", "#fromBillDate", "#toBillDate").on("change", function () {
+            validateDate(this);
+        });
+        function validateDate(e) {
+            var today = new Date();
+            var day = today.getDate().toString().padStart(2, '0'); // Ensure two digits
+            var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
+            var year = today.getFullYear();
+            var formattedCurrentDate = `${day}/${month}/${year}`;
+            var formattedCurrentDateObject = new Date(`${month}/${day}/${year}`);
+            var entryDateValue = $("#PurchaseRejEntryDate").val();
+            var parts = entryDateValue.split('/');
+            var entryDateValueObject = new Date(parts[2], parts[1] - 1, parts[0]);
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth() + 1; // Months are 0-based in JS, so adding 1
+            var financialYearStart, financialYearEnd;
+            if (month < 4) {
+                financialYearStart = (year - 1);
+                financialYearEnd = year;
+            } else {
+                financialYearStart = year;
+                financialYearEnd = (year + 1);
+            }
+            var finYearFirstDateValueObject = new Date(financialYearStart, 3, 1);
+            if (entryDateValueObject > formattedCurrentDateObject) {
+                alert("Future dates are not allowed!");
+                $(this).val(formattedCurrentDate); // Reset to today's date
+            } else if (entryDateValueObject < finYearFirstDateValueObject) {
+                alert("The selected date cannot be before the start of the financial year (April 1st).");
+                $(this).val(formattedCurrentDate); // Reset to today's date
+            }
+        }
         function GetServerDate() {
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate", "SaleOrder")",
                 async: false,
                 success: function (result, status, error) {
-
                     result = parseDateToFormat(result);
-
                     const [day, month, year] = result.split("/").map(Number);
                     const currentDate = new Date(year, month - 1, day);
                     var past2Month = currentDate.setMonth(currentDate.getMonth() - 2);
                     var formattedPastDate = parseDateToFormat(new Date(past2Month).toISOString().split('T')[0]);
 
-                    var finFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
-                    var finToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
+                    //var finFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+                    //var finToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
+                     /* var entryDate = $("#PurchaseRejEntryDate").val();
+                    entryDate = parseDateToFormat(entryDate);
+                    const [dayy, monthh, yearr] = entryDate.split("/").map(Number);
+                    const entryDateObj = new Date(yearr, monthh - 1, dayy); // Convert to Date object
+
+                    const fyStartYear = (entryDateObj.getMonth() + 1) >= 4 ? entryDateObj.getFullYear() : entryDateObj.getFullYear() - 1;
+                    const finFromDateObj = new Date(fyStartYear, 3, 1);     // April 1 of that FY
+                    const finToDateObj = new Date(fyStartYear + 1, 2, 31);  // March 31 of next year
+
+                    const finFromDate = parseDateToFormat(finFromDateObj.toISOString().split("T")[0]);
+                    const finToDate = parseDateToFormat(finToDateObj.toISOString().split("T")[0]); */
 
                     var past2Year = currentDate.setYear(currentDate.getFullYear() - 2);
                     var formattedYear = parseDateToFormat(new Date(past2Year).toISOString().split("T")[0]);
@@ -2381,18 +2422,20 @@
                     $('#fromBillDate').datepicker("option", "minDate", formattedYear);
                     $('#toBillDate').datepicker("option", "minDate", formattedYear);
                     $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
-                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);
-
-                    $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
-                    $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", result);
-
+                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);                    
+                   
                     if($('#Mode').val() == "U" || $('#Mode').val() == "V"){
                             var vouchDate = $('#PurchaseRejectionVoucherDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionVoucherDate').val()) : result;
                             $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate).datepicker("option", { changeMonth: true, changeYear: true });
                             $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate);
                             $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
                             $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
+
+                            var invoiceDate = $('#PurchaseRejectionInvoiceDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionInvoiceDate').val()) : result;
+                            $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate);
+                            $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
 
                             var entryDate = $('#PurchaseRejEntryDate').val() != "" ? parseDateToFormat($('#PurchaseRejEntryDate').val()) : result;
                             $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate).datepicker("option", { changeMonth: true, changeYear: true });
@@ -2423,6 +2466,11 @@
                            $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                            $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
                            $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
+                           
+                           $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                           $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                           $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
+                           $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
 
                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);

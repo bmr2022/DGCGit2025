@@ -72,18 +72,26 @@ namespace eTactWeb.Controllers
                 model.ID = ID;
                 model.DocAccountCode = Convert.ToInt32(model.AccPurchaseRejectionDetails?.FirstOrDefault().DocAccountCode ?? 0);
                 model.DocAccountName = model.AccPurchaseRejectionDetails?.FirstOrDefault().DocAccountName;
+                
+                model.FinFromDate = model.FinFromDate ?? HttpContext.Session.GetString("FromDate");
+                model.FinToDate = model.FinToDate ?? HttpContext.Session.GetString("ToDate");
+                model.PurchaseRejYearCode = model.PurchaseRejYearCode != null && model.PurchaseRejYearCode > 0 ? model.PurchaseRejYearCode : Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = model.CC ?? HttpContext.Session.GetString("Branch");
+            }
+            else
+            {
+                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                model.FinToDate = HttpContext.Session.GetString("ToDate");
+                model.PurchaseRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                model.CC = HttpContext.Session.GetString("Branch");
             }
 
-            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            {
-                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                SlidingExpiration = TimeSpan.FromMinutes(55),
-                Size = 1024,
-            };
-            model.FinFromDate = HttpContext.Session.GetString("FromDate");
-            model.FinToDate = HttpContext.Session.GetString("ToDate");
-            model.PurchaseRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            model.CC = HttpContext.Session.GetString("Branch");
+             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+             {
+                 AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                 SlidingExpiration = TimeSpan.FromMinutes(55),
+                 Size = 1024,
+             };
 
             model.FromDateBack = FromDate;
             model.ToDateBack = ToDate;
@@ -1012,7 +1020,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(combinedData);
             return Json(JsonString);
         }
-        public IActionResult DeleteItemRow(int itemCode, string Mode, int Seq)
+        public IActionResult DeleteItemRow(int itemCode, string Mode, int Seq, string uniquekeyid)
         {
             var MainModel = new AccPurchaseRejectionModel();
             //_MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
@@ -1031,7 +1039,7 @@ namespace eTactWeb.Controllers
             string uniquekey = string.Empty;
             if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
             {
-                uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString();
+                uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString() ?? (uniquekeyid ?? string.Empty);
                 purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
                 MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
 
@@ -1059,6 +1067,7 @@ namespace eTactWeb.Controllers
                     InvoiceNo = uniquekeyArray[2];
                     PurchBillItemCode = !string.IsNullOrEmpty(uniquekeyArray[3]) ? Convert.ToInt32(uniquekeyArray[3]) : 0;
                 }
+                var PopupGrid = PRPopupGrid;
                 if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
                 {
                     if (MainModel.AccPurchaseRejectionDetails.Any())
@@ -1066,19 +1075,37 @@ namespace eTactWeb.Controllers
                         bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode && a.hdnuniquekey == uniquekey); // && a.AgainstPurchaseBillEntryId == EntryId && a.AgainstPurchaseBillYearCode == YearCode
                         if (!IsExistsSameItem)
                         {
-                            PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo && x.PurchBillItemCode == PurchBillItemCode);
+                            foreach(var item in PRPopupGrid.ToList())
+                            {
+                                if(item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+                                {
+                                    PopupGrid.Remove(item);
+                                }
+                            }
                         }
                     }
                     else
                     {
-                        PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo && x.PurchBillItemCode == PurchBillItemCode);
+                        foreach (var item in PRPopupGrid.ToList())
+                        {
+                            if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+                            {
+                                PopupGrid.Remove(item);
+                            }
+                        }
                     }
                 }
                 else
                 {
-                    PRPopupGrid.RemoveAll(x => x.ItemCode == itemCode && x.AgainstPurchaseBillEntryId == EntryId && x.AgainstPurchaseBillYearCode == YearCode && x.PurchaseRejectionInvoiceNo == InvoiceNo && x.PurchBillItemCode == PurchBillItemCode);
+                    foreach (var item in PRPopupGrid.ToList())
+                    {
+                        if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+                        {
+                            PopupGrid.Remove(item);
+                        }
+                    }
                 }
-                MainModel.AccPurchaseRejectionAgainstBillDetails = PRPopupGrid;
+                MainModel.AccPurchaseRejectionAgainstBillDetails = PopupGrid;
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
