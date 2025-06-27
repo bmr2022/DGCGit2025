@@ -559,7 +559,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@summDetail", DataTable.SumDetail);
                     oCmd.Parameters.AddWithValue("@Accountcode", DataTable.AccountCode);
                     oCmd.Parameters.AddWithValue("@yearcode", DataTable.YearCode);
-                    oCmd.Parameters.AddWithValue("@VoucherDate", ParseFormattedDate(DataTable.VoucherDate));
+                    oCmd.Parameters.AddWithValue("@VoucherDate", CommonFunc.ParseFormattedDate(DataTable.VoucherDate));
                     oCmd.Parameters.AddWithValue("@AccEntryid", DataTable.AccEntryId);
                     oCmd.Parameters.AddWithValue("@Accyearcode", DataTable.AccYearCode);
                     await myConnection.OpenAsync();
