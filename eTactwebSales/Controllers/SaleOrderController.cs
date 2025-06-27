@@ -1693,7 +1693,8 @@ public class SaleOrderController : Controller
 					    SOEntryId = Convert.ToInt32(soEntryId),
 						SOYearCode = Convert.ToInt32(soYearCode),
 						ItemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]),
-						PartText = partCode
+						PartText = partCode,
+                        CustomerSaleOrder = worksheet.Cells[row, 10].Value?.ToString() ?? ""
                     });
 
 					bool isSOTypeClose = soType.Equals("Close", StringComparison.OrdinalIgnoreCase);
@@ -1787,23 +1788,23 @@ public class SaleOrderController : Controller
 						Excessper = int.TryParse(worksheet.Cells[row, 24].Value?.ToString(), out int tempExcessper) ? tempExcessper : 0,
 						ProjQty1 = decimal.TryParse(worksheet.Cells[row, 25].Value?.ToString(), out decimal tempProjQty1) ? tempProjQty1 : 0,
 						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
-                        CustomerSaleOrder = worksheet.Cells[row, 12].Value?.ToString() ?? "",
-                        CustomerLocation = worksheet.Cells[row, 13].Value?.ToString() ?? "",
+                        CustomerSaleOrder = worksheet.Cells[row, 10].Value?.ToString() ?? "",
+                        CustomerLocation = worksheet.Cells[row, 11].Value?.ToString() ?? "",
                         ItemModel = worksheet.Cells[row, 12].Value?.ToString() ?? "",
                         CustItemCategory = worksheet.Cells[row, 13].Value?.ToString() ?? "",
+                        
                     });
 				}
 
-                var duplicateItems = itemList
-					   .GroupBy(x => x.ItemCode)
-					   .Where(g => g.Count() > 1)
-					   .SelectMany(g => g.Select(x => x.PartText))
-					   .Distinct() 
-					   .ToList();
+                var duplicateItems = SaleGridList
+     .GroupBy(x => new { x.PartText, x.CustomerSaleOrder })
+     .Where(g => g.Count() > 1)
+     .Select(g => $"[PartCode: {g.Key.PartText}, OrderNo: {g.Key.CustomerSaleOrder}]")
+     .ToList();
 
                 if (duplicateItems.Any())
                 {
-					var duplicateErrorMsg = "Duplicate ItemCodes: " + string.Join(", ", duplicateItems);
+                    var duplicateErrorMsg = "Duplicate PartCode + CustomerOrderNo found:\n" + string.Join("\n", duplicateItems);
                     return BadRequest(string.Join("\n", duplicateErrorMsg));
                 }
 

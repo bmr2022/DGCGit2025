@@ -492,6 +492,30 @@ public class TaxController : Controller
             if (TxModel.TxPageName == "ItemList")
             {
                 ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxModel.TxPageName) ?? string.Empty);
+
+
+
+
+               
+                var _ItemGrid = new List<ItemDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new ItemDetail
+                 {
+                     Amount = group.Sum(item => item.Amount),
+                     ItemCode = group.Key,
+                     PartText = group.Select(x => x.PartText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     ItemText = group.Select(x => x.ItemText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                 })
+                 .ToList();
+
+                ItemDetailGrid = _ItemGrid;
+
+
+
             }
             else if (TxModel.TxPageName == "PurchaseOrder")
             {
@@ -587,6 +611,7 @@ public class TaxController : Controller
                      PartCode = group.First().PartCode,
                      ItemText = group.First().ItemText,
                      PartText = group.First().PartText,
+                     
                  })
                  .ToList();
 
