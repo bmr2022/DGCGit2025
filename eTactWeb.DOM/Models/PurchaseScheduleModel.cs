@@ -232,7 +232,7 @@ public class PurchaseSubScheduleModel : PurchaseScheduleGrid
 
     public int AmmEntryId { get; set; }
     public int AmmYearCode { get; set; }
-    public int MRPNO { get; set; }
+    public int? MRPNO { get; set; }
     public int? MRPentryId { get; set; }
     public int? MRPNoYearCode { get; set; }
 
