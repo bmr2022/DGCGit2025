@@ -1723,7 +1723,7 @@
 			}
 
 			if ($('#ModeOfAdjustment').val() == "Advance") {
-						if($('#BankType').val() == "Creditors"){
+						if($('#BankType').val().trim() == "Creditors" || $('#BankType').val() == "Sundry Creditors"){
 							if ($('#CustOrderNo').val() == "" || $('#CustOrderNo').val() == null) {
 							AddErrorCls('CustOrderNo');
 							$.notify("CustOrderNo is required.", "error");

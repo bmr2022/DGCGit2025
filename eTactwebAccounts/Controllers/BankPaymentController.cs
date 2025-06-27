@@ -872,16 +872,16 @@ namespace eTactwebAccounts.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
             var model = new BankPaymentModel();
-            model = await _IBankPayment.GetDashBoardDetailData(FromDate, ToDate,LedgerName,VoucherNo,AgainstVoucherRefNo,AgainstVoucherNo);
+            model = await _IBankPayment.GetDashBoardDetailData(FromDate, ToDate,LedgerName,Bank,VoucherNo, AgainstVoucherNo, PoNo,AgainstBillno);
             return PartialView("_BankPaymentDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             var model = new BankPaymentModel();
-            model = await _IBankPayment.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, VoucherNo, AgainstVoucherRefNo, AgainstVoucherNo);
+            model = await _IBankPayment.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank,VoucherNo, AgainstVoucherNo, PONo,AgainstBillno);
             return PartialView("_BankPaymentDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)

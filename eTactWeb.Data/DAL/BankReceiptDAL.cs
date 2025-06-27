@@ -294,7 +294,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankReceiptModel();
@@ -312,9 +312,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
                     oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@Bank", Bank);
                     oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
-                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
                     oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
+                    oCmd.Parameters.AddWithValue("@SONO", SONo);
+                    oCmd.Parameters.AddWithValue("@AgainstBillNo", AgainstBillno);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -377,7 +379,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();
             var model = new BankReceiptModel();
@@ -395,9 +397,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@fromdate", ParseFormattedDate(FromDate));
                     oCmd.Parameters.AddWithValue("@todate", ParseFormattedDate(ToDate));
                     oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@Bank", Bank);
                     oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
-                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
                     oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
+                    oCmd.Parameters.AddWithValue("@SONO", SONo);
+                    oCmd.Parameters.AddWithValue("@AgainstBillNo", AgainstBillno);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -427,6 +431,8 @@ namespace eTactWeb.Data.DAL
                                                  UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
                                                  EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? dr["EntryByMachine"].ToString() : string.Empty,
                                                  CC = dr["CC"] != DBNull.Value ? dr["CC"].ToString() : string.Empty,
+                                                 DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
+                                                 CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
 
                                              }).ToList();
                 }
