@@ -201,7 +201,6 @@ public class AccountController : Controller
         conn.Close();
         List<string> detail = new() { CC, year_code };
 
-        //return Json(CC, JsonRequestBehavior.AllowGet);
         return Json(detail);
     }
     public List<LoginModel> GetCombodata(string Tablename, string fieldname)

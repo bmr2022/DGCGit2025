@@ -594,7 +594,7 @@
 
                 // Handle "E-Invoice Only" click
                 $('#btnEinvoiceOnly').click(function () {
-                    generateEway = false;
+                    generateEway = 'EInvoice';
                                      if ( mode === "V") {
                     sendInvoiceRequest();
                              }
@@ -607,7 +607,7 @@
 
                 // Handle "E-Invoice + E-Way Bill" click
                 $('#btnEwaybill').click(function () {
-                    generateEway = true;
+                    generateEway = 'EwayAndEInvoice';
                                             if ( mode === "V") {
                             sendInvoiceRequest();
                                     }
@@ -641,7 +641,7 @@
                                 distanceKM: res.distanceKM.toString(),
                                 EntrybyId: res.entrybyId,
                                 MachineName: res.machineName,
-                                generateEway: generateEway ? "true" : "false"
+                                generateEway: generateEway 
                             };
 
                             fetch('@Url.Action("GenerateInvoice", "SaleInvoice")', {
@@ -660,7 +660,18 @@
                                         $('#PasswordAllowPopup').modal("hide");
                                     window.location.href = data.redirectUrl;
                                    
-                                } else {
+                                }
+                                    if (data.rawResponse) {
+                                        try {
+                                        //    const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                                    $('#EinvoiceResponseBox').val(data.rawResponse.eInvoiceResponse || '');
+                                                     $('#ewayResponseBox').val(data.rawResponse.eWayBillResponse || '');
+                                        } catch (e) {
+                                            $('#EinvoiceResponseBox').val(res.rawResponse);
+                                            $('#ewayResponseBox').val(res.rawResponse);
+                                        }
+                                    }
+                                else {
                                    $.notify(data.redirectUrl, "error");
                                 }
                             }) // <-- this closing parenthesis was missing
@@ -697,7 +708,7 @@
                         distanceKM: '@Model.DistanceKM',
                         EntrybyId: '@Model.EntryByempId',
                         MachineName: '@Model.MachineName',
-                        generateEway: generateEway ? "true" : "false"
+                        generateEway: generateEway
                     };
 
                     $.ajax({
@@ -708,7 +719,16 @@
                         success: function (res) {
                             if (res.redirectUrl) {
                                 window.location.href = res.redirectUrl;
-                            } else {
+                            }
+                              if (res.rawResponse) {
+                                        try {
+                                            const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                            $('#ewayResponseBox').val(formattedJson);
+                                        } catch (e) {
+                                            $('#ewayResponseBox').val(res.rawResponse);
+                                        }
+                                    }
+                            else {
                                 alert('E-Invoice generation failed.');
                             }
                             $('#PasswordAllowPopup').modal('hide');
@@ -1979,8 +1999,9 @@
                         "StoreName": $('#Storeid').find(':selected').text() == '-Select-' ? "" : $('#StoreId').find(':selected').text(),
                         "HSNNo": $('#HSNNo').val(),
                         "Unit": $('#Unit').val(),
-                        "Batchno": $('#Batchno').val(),
-                        "Uniquebatchno": $('#Uniquebatchno').val(),
+                        
+                "Batchno": $('#Batchno').find(':selected').text().trim(),
+               "Uniquebatchno": $('#Uniquebatchno').find(':selected').text().trim(),
                         "LotStock": $('#LotStock').val(),
                         "TotalStock": $('#TotalStock').val(),
                         "SOPendQty": $('#SOPendQty').val(),

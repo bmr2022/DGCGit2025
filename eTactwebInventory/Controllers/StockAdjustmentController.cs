@@ -655,18 +655,31 @@ namespace eTactWeb.Controllers
             }
             return model;
         }
-        public async Task<JsonResult> FillPartCode()
+    
+        //public async Task<JsonResult> FillPartCode()
+        //{
+        //    var JSON = await IStockAdjust.FillPartCode("FillPartCode");
+        //    string JsonString = JsonConvert.SerializeObject(JSON);
+        //    return Json(JsonString);
+        //}
+        public async Task<JsonResult> FillPartCode( string search)
         {
-            var JSON = await IStockAdjust.FillPartCode("FillPartCode");
+            var JSON = await IStockAdjust.FillPartCode("FillPartCode", search);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillItemName()
+        public async Task<JsonResult> FillItemName(string search)
         {
-            var JSON = await IStockAdjust.FillItemName("FillItemName");
+            var JSON = await IStockAdjust.FillItemName("FillItemName", search);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        //public async Task<JsonResult> FillItemName()
+        //{
+        //    var JSON = await IStockAdjust.FillItemName("FillItemName");
+        //    string JsonString = JsonConvert.SerializeObject(JSON);
+        //    return Json(JsonString);
+        //}
         public async Task<JsonResult> GetmaxStockAdjustDate(int ItemCode)
         {
             var JSON = await IStockAdjust.GetmaxStockAdjustDate("GetEachItemsSADate", ItemCode);
@@ -774,6 +787,7 @@ namespace eTactWeb.Controllers
 
                 ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
                 List<StockAdjustmentModel> data = new List<StockAdjustmentModel>();
+                var errors = new List<string>();
 
                 using (var stream = excelFile.OpenReadStream())
                 using (var package = new ExcelPackage(stream))
@@ -786,7 +800,7 @@ namespace eTactWeb.Controllers
                         var itemCode = IStockAdjust.GetItemCode(worksheet.Cells[row, 2].Value.ToString());
                         var storeIdResult = 0;
                         var WCResult = 0;
-
+                        string SlipNo = Request.Form["SlipNo"];
 
                         //var duplicatePartCode = IStockAdjust.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
                         //var duplicateItemName = IStockAdjust.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
@@ -805,6 +819,12 @@ namespace eTactWeb.Controllers
                         {
                             itemCCode = itemCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCode.Result.Result.Rows[0].ItemArray[0];
                             itemName = itemCode.Result.Result.Rows.Count <= 0 ? "" : itemCode.Result.Result.Rows[0].ItemArray[1];
+                        }
+                        else
+                        {
+                            errors.Add($"Invalid PartCode at row {row}");
+                            continue;
+
                         }
                         var StockAdjustmentDate = IStockAdjust.GetmaxStockAdjustDate("GetEachItemsSADate", itemCCode);
 
@@ -828,7 +848,7 @@ namespace eTactWeb.Controllers
                             var StoreLotStock = IStockAdjust.FillLotStock(itemCCode, storeIdResult, uniquebatchno, batchno);
                             StoreLotStockResult = StoreLotStock.Result.Result != null && StoreLotStock.Result.Result.Rows.Count > 0 ? (int)StoreLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
                         }
-                        else
+                        else if (worksheet.Cells[row, 1].Value.ToString() == "M")
                         {
                             var WCId = IStockAdjust.GetWorkCenterId(worksheet.Cells[row, 4].Value.ToString());
                             WCResult = WCId.Result.Result != null && WCId.Result.Result.Rows.Count > 0 ? (int)WCId.Result.Result.Rows[0].ItemArray[0] : 0;
@@ -885,7 +905,7 @@ namespace eTactWeb.Controllers
                             ActualStockQty = Convert.ToSingle(worksheet.Cells[row, 5].Value.ToString()),
                             Unit = worksheet.Cells[row, 6].Value.ToString(),
                             altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
-                            batchno = worksheet.Cells[row, 8].Value.ToString(),
+                            batchno = SlipNo,
                             uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
                             reasonOfAdjustment = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
                             TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
@@ -901,6 +921,12 @@ namespace eTactWeb.Controllers
                             StockAdjustmentDate = "01/feb/2025"
                             //StockDateResult.ToString()
                         });
+
+                        
+                    }
+                    if (errors.Count > 0)
+                    {
+                        return BadRequest(string.Join("\n", errors));
                     }
                 }
                 var model = new StockAdjustmentModel();

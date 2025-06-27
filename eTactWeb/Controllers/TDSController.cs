@@ -129,7 +129,7 @@ public class TDSController : Controller
                 string Data = HttpContext.Session.GetString("PurchaseBill");
                 //if (!string.IsNullOrEmpty(Data))
                 //{
-                //    MainModel = JsonConvert.DeserializeObject<SaleOrderModel>(Data);
+                //    MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(Data);
                 //}
 
 
@@ -200,6 +200,8 @@ public class TDSController : Controller
             //CacheExtensions.Set(_MemoryCache, "KeyTaxGrid", MainModel.TaxDetailGridd, cacheEntryOptions);
 
             StoreInCache("KeyTDSGrid", MainModel.TDSDetailGridd);
+            string serializedGrid = JsonConvert.SerializeObject(MainModel.TDSDetailGridd);
+            HttpContext.Session.SetString("KeyTDSGrid", serializedGrid);
         }
         else
         {

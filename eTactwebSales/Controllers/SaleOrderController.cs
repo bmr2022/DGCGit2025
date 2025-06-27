@@ -1685,13 +1685,16 @@ public class SaleOrderController : Controller
                     string soType = Request.Form["SOType"];
                     string soEntryId = Request.Form["SOEntryId"];
                     string soYearCode = Request.Form["SOYearCode"];
+                    string wef = Request.Form["WEF"];
+                    string soCloseDate = Request.Form["soCloseDate"];
 
 					itemList.Add(new ItemDetail()
 					{
 					    SOEntryId = Convert.ToInt32(soEntryId),
 						SOYearCode = Convert.ToInt32(soYearCode),
 						ItemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]),
-						PartText = partCode
+						PartText = partCode,
+                        CustomerSaleOrder = worksheet.Cells[row, 10].Value?.ToString() ?? ""
                     });
 
 					bool isSOTypeClose = soType.Equals("Close", StringComparison.OrdinalIgnoreCase);
@@ -1702,6 +1705,10 @@ public class SaleOrderController : Controller
 						: 0;
 
 					decimal rate = decimal.TryParse(worksheet.Cells[row, 3].Value?.ToString(), out decimal tempRate) ? tempRate : 0;
+					if(rate == 0)
+					{
+                        errors.Add($"Enter rate more then 0 at row {row}: {partCode}");
+                    }
 
 					if (isSOTypeClose && qty <= 0)
 					{
@@ -1710,9 +1717,28 @@ public class SaleOrderController : Controller
 					}
 
 					// **Delivery Date Validation**
-					string deliveryDateStr = worksheet.Cells[row, 7].Value?.ToString();
+					string deliveryDateStr = worksheet.Cells[row, 5].Value?.ToString();
+
+                    if (isSOTypeClose && deliveryDateStr == "")
+					{
+                        errors.Add($"DeliveryDate is manadatory {row} ");
+                        continue;
+                    }
+
+                        deliveryDateStr = ParseFormattedDate(deliveryDateStr);
 					DateTime? deliveryDate = null;
-					if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
+
+                    deliveryDate = DateTime.Parse(deliveryDateStr);
+                    DateTime wefDate = DateTime.Parse(wef);
+                    DateTime soClose = DateTime.Parse(soCloseDate);
+
+                    if (deliveryDate < wefDate || deliveryDate > soClose)
+                    {
+                        errors.Add($"DeliveryDate must between of wefDate and socloseDate at Row - {row} ");
+                        continue;
+                    }
+
+                    if (DateTime.TryParse(deliveryDateStr, out DateTime tempDeliveryDate))
 					{
 						if (tempDeliveryDate < DateTime.Today)
 						{
@@ -1744,14 +1770,14 @@ public class SaleOrderController : Controller
 						Rate = rate,
 						OtherRateCurr =rate,
 						StoreName = worksheet.Cells[row, 17].Value?.ToString() ?? "",
-						StockQty = decimal.TryParse(worksheet.Cells[row, 23].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
-						UnitRate = worksheet.Cells[row, 12].Value?.ToString() ?? "",
-						DiscPer = decimal.TryParse(worksheet.Cells[row, 13].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
-						DiscRs = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
+						StockQty = decimal.TryParse(worksheet.Cells[row, 5].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
+						UnitRate = worksheet.Cells[row, 3].Value?.ToString() ?? "",
+						DiscPer = decimal.TryParse(worksheet.Cells[row, 8].Value?.ToString(), out decimal tempDiscPer) ? tempDiscPer : 0,
+						DiscRs = decimal.TryParse(worksheet.Cells[row, 9].Value?.ToString(), out decimal tempDiscRs) ? tempDiscRs : 0,
 						Amount = amount, // Auto-calculated value
-						TolLimit = decimal.TryParse(worksheet.Cells[row, 16].Value?.ToString(), out decimal tempTolLimit) ? tempTolLimit : 0,
-						Description = worksheet.Cells[row, 17].Value?.ToString() ?? "",
-						Remark = worksheet.Cells[row, 18].Value?.ToString() ?? "",
+						TolLimit = decimal.TryParse(worksheet.Cells[row, 14].Value?.ToString(), out decimal tempTolLimit) ? tempTolLimit : 0,
+						Description = worksheet.Cells[row, 15].Value?.ToString() ?? "",
+						Remark = worksheet.Cells[row, 16].Value?.ToString() ?? "",
 						AmendmentNo = worksheet.Cells[row, 19].Value?.ToString() ?? "",
 						AmendmentDate = DateTime.TryParse(worksheet.Cells[row, 20].Value?.ToString(), out DateTime tempAmendDate)
 							? tempAmendDate.ToString("yyyy-MM-dd")
@@ -1762,23 +1788,23 @@ public class SaleOrderController : Controller
 						Excessper = int.TryParse(worksheet.Cells[row, 24].Value?.ToString(), out int tempExcessper) ? tempExcessper : 0,
 						ProjQty1 = decimal.TryParse(worksheet.Cells[row, 25].Value?.ToString(), out decimal tempProjQty1) ? tempProjQty1 : 0,
 						ProjQty2 = decimal.TryParse(worksheet.Cells[row, 26].Value?.ToString(), out decimal tempProjQty2) ? tempProjQty2 : 0,
-                        CustomerSaleOrder = worksheet.Cells[row, 8].Value?.ToString() ?? "",
-                        CustomerLocation = worksheet.Cells[row, 9].Value?.ToString() ?? "",
-                        ItemModel = worksheet.Cells[row, 10].Value?.ToString() ?? "",
-                        CustItemCategory = worksheet.Cells[row, 11].Value?.ToString() ?? "",
+                        CustomerSaleOrder = worksheet.Cells[row, 10].Value?.ToString() ?? "",
+                        CustomerLocation = worksheet.Cells[row, 11].Value?.ToString() ?? "",
+                        ItemModel = worksheet.Cells[row, 12].Value?.ToString() ?? "",
+                        CustItemCategory = worksheet.Cells[row, 13].Value?.ToString() ?? "",
+                        
                     });
 				}
 
-                var duplicateItems = itemList
-					   .GroupBy(x => x.ItemCode)
-					   .Where(g => g.Count() > 1)
-					   .SelectMany(g => g.Select(x => x.PartText))
-					   .Distinct() 
-					   .ToList();
+                var duplicateItems = SaleGridList
+     .GroupBy(x => new { x.PartText, x.CustomerSaleOrder })
+     .Where(g => g.Count() > 1)
+     .Select(g => $"[PartCode: {g.Key.PartText}, OrderNo: {g.Key.CustomerSaleOrder}]")
+     .ToList();
 
                 if (duplicateItems.Any())
                 {
-					var duplicateErrorMsg = "Duplicate ItemCodes: " + string.Join(", ", duplicateItems);
+                    var duplicateErrorMsg = "Duplicate PartCode + CustomerOrderNo found:\n" + string.Join("\n", duplicateItems);
                     return BadRequest(string.Join("\n", duplicateErrorMsg));
                 }
 

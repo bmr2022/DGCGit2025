@@ -1313,14 +1313,14 @@ public class PurchaseBillDAL
             SqlParams.Add(new SqlParameter("@Currency", model.Currency));
             SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
             SqlParams.Add(new SqlParameter("@ConversionFactor", model.ExchangeRate));
-            SqlParams.Add(new SqlParameter("@BillAmt", (float)Math.Round(model.NetTotal, 2)));
+            SqlParams.Add(new SqlParameter("@BillAmt", (float)(model.ItemNetAmount)));
             SqlParams.Add(new SqlParameter("@RoundOffAmt", (float)Math.Round(model.TotalRoundOffAmt, 2)));
             SqlParams.Add(new SqlParameter("@RoundoffType", model.TotalRoundOff));
             SqlParams.Add(new SqlParameter("@GSTAmount", 0));
             SqlParams.Add(new SqlParameter("@Taxableamt", (float)Math.Round(model.TxAmount, 2)));
             SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", (float)Math.Round(model.TotalDiscountPercentage, 2)));
             SqlParams.Add(new SqlParameter("@TotalDiscountAmount", (float)Math.Round(model.TotalAmtAftrDiscount, 2)));
-            SqlParams.Add(new SqlParameter("@NetAmt", (float)model.ItemNetAmount));
+            SqlParams.Add(new SqlParameter("@NetAmt", (float)model.NetTotal));
             SqlParams.Add(new SqlParameter("@Remark", model.Remark));
             SqlParams.Add(new SqlParameter("@CC", model.Branch));
             SqlParams.Add(new SqlParameter("@UID", model.CreatedBy));

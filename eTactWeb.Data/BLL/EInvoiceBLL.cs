@@ -55,16 +55,32 @@ namespace eTactWeb.Data.BLL
         {
             return await _EInvoiceDAL.CheckDuplicateIRN(entryId, invoiceNo, yearCode);
         }
-       
-        public async Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode ,string transporterName, string vehicleNo, string distanceKM,int EntrybyId, string MachineName, string fromname,string generateEway)
+        public async Task<ResponseResult> CancelEInvoice(   string token,int SaleBillYearCode, string SaleBillNo)
+        {
+            var result = new ResponseResult();
+            var dataResult = await _EInvoiceDAL.GetInvoiceDataCancelAsync(SaleBillNo, SaleBillYearCode);
+            if (dataResult?.Result == null || dataResult.Result.Rows.Count == 0)
+            {
+                return result;
+            }
+
+            string EwbNo = dataResult.Result.Rows[0]["EwbNo"]?.ToString();
+            string gstin = dataResult.Result.Rows[0]["GSTNO"]?.ToString();
+            result = await _EInvoiceDAL.CancelEInvoiceAsync(EwbNo, gstin, SaleBillNo, SaleBillYearCode, token);
+            return result;
+
+        }
+
+        public async Task<ResponseResult> CreateIRNAsync(string token, int manEntryId, string manInvoiceNo, int manYearCode, string saleBillType, string customerPartCode ,string transporterName, string vehicleNo, string distanceKM,int EntrybyId, string MachineName, string fromname,string generateEway,string flag)
         {
             var result = new ResponseResult();
 
             try
             {
                 var invoice = manInvoiceNo;
+                string ewbUrl = null;
 
-                var dataResult = await _EInvoiceDAL.GetInvoiceDataAsync(manInvoiceNo, manYearCode);
+                var dataResult = await _EInvoiceDAL.GetInvoiceDataAsync(manInvoiceNo, manYearCode,flag);
                 if (dataResult?.Result == null || dataResult.Result.Rows.Count == 0)
                 {
                     return result;
@@ -78,14 +94,25 @@ namespace eTactWeb.Data.BLL
                 }
 
                 var invoiceDetails = buildResult.Result;
+                if (fromname == "JobWork Challan" || fromname == "NRGP Challan")
+                {
+                    ewbUrl = await _EInvoiceDAL.PostDataAsyncJW(invoiceDetails, invoice, manYearCode, transporterName, vehicleNo, distanceKM, EntrybyId, MachineName, fromname, generateEway, flag);
+                }
+                else
+                {
+                     ewbUrl = await _EInvoiceDAL.PostDataAsync(invoiceDetails, invoice, manYearCode, transporterName, vehicleNo, distanceKM, EntrybyId, MachineName, fromname, generateEway, flag);
 
-                string ewbUrl = await _EInvoiceDAL.PostDataAsync(invoiceDetails, invoice, manYearCode, transporterName,vehicleNo,distanceKM, EntrybyId,MachineName,fromname, generateEway);
+                }
+                  
+                //if (!string.IsNullOrEmpty(ewbUrl))
+                //{
+                //    result.Result = ewbUrl;
+                //}
                 if (!string.IsNullOrEmpty(ewbUrl))
                 {
-                    result.Result = ewbUrl;
+                    result.Result = JsonConvert.DeserializeObject<JObject>(ewbUrl);
                 }
 
-               
             }
             catch (Exception ex)
             {

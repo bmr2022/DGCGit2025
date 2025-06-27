@@ -282,13 +282,15 @@
                                                 <th>Unit</th>
                                                 <th>Lot Stock</th>
                                                 <th>Total Stock</th>
+                                                <th>Work Center</th>
+                                                <th>WIP Stock</th>
                                                 <th>Alt Qty</th>
+                                                
                                                 <th>Alt Unit</th>
                                                 <th>Std Packing</th>
                                                 <th>Rate</th>
                                                 <th>Remark</th>
-                                                <th>Work Center</th>
-                                                <th>WIP Stock</th>
+                                               
                                                 <th>Alt Part Code</th>
                                                 <th>Alt Item Name</th>
                                                 <th>Original Part Code</th>
@@ -1383,8 +1385,8 @@ function submitForm(shouldPrint, printWindow) {
                     "ReqQty": $('#MainGridReqQty-' + i).val(),
                     "StoreId": $('#MainGridStoreId-' + i).val(),
                     "StoreName": $('#MainGridStorename-' + i).val(),
-                    "BatchNo": $('#MainGridBatchNo-' + i).val(),
-                    // "uniqueBatchNo": $('#MainGridUniqueBatchNo-' + i).val(),
+                    "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
+                    
                     "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
                     "IssueQty": $('#MainGridIssueQty-' + i).val(),
                     "Unit": $('#MainGridUnit-' + i).val(),
@@ -1412,8 +1414,9 @@ function submitForm(shouldPrint, printWindow) {
                 });
 
                 BatchNoArray.push({
-                    "BatchNo": $('#MainGridBatchNo-' + i).val(),
-                    "UniqueBatchNo": $('#MainGridUniqueBatchNo-' + i).val()
+                    
+                    "BatchNo": $('#MainGridBatchNo-' + i + ' option:selected').text().trim(),
+                     "uniqueBatchNo" : $('#MainGridUniqueBatchNo-' + i + ' option:selected').text().trim(),
                 });
 
 

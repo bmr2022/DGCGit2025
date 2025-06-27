@@ -168,6 +168,8 @@
                                                 <label class="form-label">Total Amount</label>
                                                 <input id="TotalAmountForRec" class="form-control" readonly />
                                             </div>
+                                           
+
                                         </div>
                                         <div class="row" id="TOTALRecSummary">
                                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -229,6 +231,18 @@
                                                 <input id="TotalIssueItemPartyAmount" class="form-control" readonly />
                                             </div>
                                         </div>
+                                         <div class="row" id="TOTALPendingChallanDetail">
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Issue Qty</label>
+                                                <input id="TotalIssueQtyItemParty" class="form-control" readonly />
+                                            </div>
+                                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                                <label class="form-label">Total Pend Qty</label>
+                                                <input id="TotalPendQtyItemParty" class="form-control" readonly />
+                                            </div>
+                                            
+                                        </div>
+
                                         <div class="row" id="TOTALRecoDetail">
                                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                                 <label class="form-label">Total Issue Qty</label>
@@ -253,6 +267,7 @@
                                                 <input id="TotalRecRecoQty" class="form-control" readonly />
                                             </div>
                                         </div>
+
                                     </div>
                                 </div>
                             </div>
@@ -275,6 +290,8 @@
         
 
         $(document).ready(function () {
+
+            $('#IssueChallanType').select2();
             GetServerDate();
             console.log('before'+$('#FromDate').val());
             console.log('before'+$('#ToDate').val());
@@ -296,10 +313,23 @@
             AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
 
             document.getElementById('IssNo').style.display = 'none';
+
+          
+            const selectedReportMode = $('#ReportMode option:selected').val();
+
+            // if (selectedReportMode === 'JOBWORK RECEIVE CONSOLIDATED') {
+            //     // Check if the ShortExcess field is already added to avoid duplication
+            //     if ($('#TotalShortExcessForRec').length === 0) {
+            //         $('#TOTALRecDetail').append(shortExcessHtml);
+            //     }
+            // }
+
+           
         $('#ReportMode').append('<option data-info="JWRecDe" selected value="JOBWORKReceiveDETAIL">JobWork Receive Detail</option>\
                                                                            <option data-info="JWRecSum" value="JOBWORKReceiveSUMMARY">Jobwork Receive Summary</option>\
                                                                           <option data-info="JWRecDeadj" value="JOBWORKReceiveWithAdjustemntDETAIL">Jobwork Receive with Adjustment Detail   </option>\
                                                                           <option data-info="JWRecItem" value="JOBWORKReceiveItemWiseSUMM">Jobwork Receive Item Wise Sum</option>\
+                                                                          <option data-info="JOBWORK RECEIVE CONSOLIDATED" value="JOBWORK RECEIVE CONSOLIDATED">Jobwork Receive Consolidated</option>\
                                                         ');
         $('#TOTALRecDetail').show();
         $('#TOTALRecSummary').hide();
@@ -308,6 +338,7 @@
         $('#TOTALIssueChallanItemParty').hide();
         $('#TOTALRecoDetail').hide();
         $('#TOTALRecoSummary').hide();
+            $('#TOTALPendingChallanDetail').hide();
         $('#ItemHeading').text('');
         $('#ItemHeading').text('JobWork Receive Detail Grid');
             GetRCRegisterData();
@@ -322,6 +353,7 @@
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Receive Detail Grid');
                 }
@@ -333,6 +365,7 @@
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Receive Item Wise Sum Grid');
                 }
@@ -344,6 +377,7 @@
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Receive Summary Grid');
                 }
@@ -355,6 +389,7 @@
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Receive Adjustment Detail Grid');
                 }
@@ -366,6 +401,7 @@
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Issue Challan Summary Grid');
                 }
@@ -377,6 +413,7 @@
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Issue Challan Detail Grid');
                 }
@@ -388,9 +425,23 @@
                     $('#TOTALIssueChallanItemParty').show();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Issue Item Detail Grid');
                 }
+                
+               
+                else if (selectedValue === 'ONLY PENDING CHALLAN') {
+                   
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('Only Pending Challan Grid');
+                }
+                else if (selectedValue === 'JOBWORK RECEIVE CONSOLIDATED') {
+                   
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('JobWork Receive Consolidated Grid');
+                }
+
                 else if (selectedValue === 'JOBWORKISSUEPatyITEMDETAIL') {
                     $('#TOTALRecDetail').hide();
                     $('#TOTALRecSummary').hide();
@@ -399,8 +450,21 @@
                     $('#TOTALIssueChallanItemParty').show();
                     $('#TOTALRecoDetail').hide();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Issue Party Detail Grid');
+                }
+                else if (selectedValue === 'JOBWORK ISSUECHALLAN CONSOLIDATED') {
+                    $('#TOTALRecDetail').hide();
+                    $('#TOTALRecSummary').hide();
+                    $('#TOTALIssueChallanSummary').hide();
+                    $('#TOTALIssueChallanDetail').hide();
+                    $('#TOTALIssueChallanItemParty').show();
+                    $('#TOTALRecoDetail').hide();
+                    $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
+                    $('#ItemHeading').text('');
+                    $('#ItemHeading').text('JobWork Issue Challan Consolidated Grid');
                 }
                 else if (selectedValue === 'JOBWORKRecoDETAIL') {
                     $('#TOTALRecDetail').hide();
@@ -410,6 +474,7 @@
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').show();
                     $('#TOTALRecoSummary').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Reco Detail Grid');
                 }
@@ -420,13 +485,61 @@
                     $('#TOTALIssueChallanDetail').hide();
                     $('#TOTALIssueChallanItemParty').hide();
                     $('#TOTALRecoDetail').hide();
+                    $('#TOTALPendingChallanDetail').hide();
                     $('#TOTALRecoSummary').show();
                     $('#ItemHeading').text('');
                     $('#ItemHeading').text('JobWork Reco Summary Grid');
                 } 
             });
+          
         });
+        const shortExcessHtml = `
+                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Total ShortExcess</label>
+                        <input id="TotalShortExcessForRec" class="form-control" readonly />
+                    </div>
+                `;
 
+        const adjQtyHtml = `
+                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Total AdjQTY</label>
+                        <input id="TotalAdjQTYForReco" class="form-control" readonly />
+                    </div>
+                `;
+
+        const actualPendQtyHtml = `
+                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                        <label class="form-label">Total Actual Pend Qty</label>
+                        <input id="TotalActualpendqtyForReco" class="form-control" readonly />
+                    </div>
+                `;
+
+        // ReportMode change event handler
+        $('#ReportMode').change(function () {
+            const selected = $(this).val();
+
+            // Show ShortExcess for JOBWORK RECEIVE CONSOLIDATED
+            if (selected === 'JOBWORK RECEIVE CONSOLIDATED') {
+                if ($('#TotalShortExcessForRec').length === 0) {
+                    $('#TOTALRecDetail').append(shortExcessHtml);
+                }
+            } else {
+                $('#TotalShortExcessForRec').closest('.col-xxl-2').remove();
+            }
+
+            // Show AdjQTY and ActualPendQty for ONLY PENDING CHALLAN
+            if (selected === 'ONLY PENDING CHALLAN') {
+                if ($('#TotalAdjQTYForReco').length === 0) {
+                    $('#TOTALRecoDetail').append(adjQtyHtml);
+                }
+                if ($('#TotalActualpendqtyForReco').length === 0) {
+                    $('#TOTALRecoDetail').append(actualPendQtyHtml);
+                }
+            } else {
+                $('#TotalAdjQTYForReco').closest('.col-xxl-2').remove();
+                $('#TotalActualpendqtyForReco').closest('.col-xxl-2').remove();
+            }
+        });
         function loadPage(pageNumber) {
             debugger
             var ReportType = $('#ReportMode').val();
@@ -591,6 +704,37 @@
                         10: { cellWidth: 30 }  // itemAmount
                     };
                     break;
+                case 'JOBWORK RECEIVE CONSOLIDATED':
+                    headers = [
+                        "#Sr", "Vendor Name", "Challan No", "Challan Date", "MRN No", "PartCode",
+                        "Itemname", "BillQty", "RecQty", "Short/Excess", "Unit", "JWRate", "Amount"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.account_Name,
+                        item.challanNo,item.challanDate?.split(" ")[0] || "", item.mrnNo,item.partcode,
+                        item.itemname, item.billQty,item.recQty, item.shortExcess, item.unit, item.jwRate,
+                        item.amount
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },   // #Sr
+                        1: { cellWidth: 70 },   // Vendor Name
+                        2: { cellWidth: 70 },   // Challan No
+                        3: { cellWidth: 60 },   // Challan Date
+                        4: { cellWidth: 50 },   // MRN No
+                        5: { cellWidth: 70 },   // PartCode
+                        6: { cellWidth: 70 },   // Itemname
+                        7: { cellWidth: 50 },   // BillQty
+                        8: { cellWidth: 50 },   // RecQty
+                        9: { cellWidth: 60 },   // Short/Excess
+                        10: { cellWidth: 40 },  // Unit
+                        11: { cellWidth: 50 },  // JWRate
+                        12: { cellWidth: 60 }   // Amount
+                    };
+                    break;
                 case 'JOBWORKRecoSummary':
                     headers = [
                         "#Sr", "Issue Challan No", "Challan Date", "Vendor Name", "Issue Part Code",
@@ -654,6 +798,39 @@
                         17: { cellWidth: 30 } // closed
                     };
                 break;
+                case 'ONLY PENDING CHALLAN':
+                    headers = [
+                        "#Sr", "Issue Challan No", "Challan Date", "Vendor Name",
+                        "Issue Part Code", "Issue Item Name", "Issue Qty",
+                        "Pending Qty", "Adjust Qty", "Actual Pending Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.issueChallanNo,
+                        item.challanDate ? item.challanDate.split(" ")[0] : "",
+                        item.account_Name,
+                        item.issuePartCode,
+                        item.issueItemName,
+                        item.issQty,
+                        item.pendqty,
+                        item.adjqTY,
+                        item.actualpendqty
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // #Sr
+                        1: { cellWidth: 50 },  // Issue Challan No
+                        2: { cellWidth: 50 },  // Challan Date
+                        3: { cellWidth: 80 },  // Vendor Name
+                        4: { cellWidth: 60 },  // Issue Part Code
+                        5: { cellWidth: 80 },  // Issue Item Name
+                        6: { cellWidth: 40 },  // Issue Qty
+                        7: { cellWidth: 40 },  // Pending Qty
+                        8: { cellWidth: 40 },  // Adjust Qty
+                        9: { cellWidth: 50 }   // Actual Pending Qty
+                    };
+                break;
                 case 'JOBWORKISSUEITEMDETAIL':
                     headers = [
                         "#Sr", "ItemName", "PartCode", "IssQty", "Unit", "Amount",
@@ -678,6 +855,43 @@
                         7: { cellWidth: 70 },  // storename
                         8: { cellWidth: 40 },  // purchasePrice
                         9: { cellWidth: 30 }   // pendqty
+                    };
+                break;
+                case 'JOBWORK ISSUECHALLAN CONSOLIDATED':
+                    headers = [
+                        "#Sr", "Vendor Name", "Challan No", "Challan Date", "Issued Qty",
+                        "Unit", "Purchase Price", "Pending Qty", "For Process",
+                        "Remark", "Closed", "Completely Receive"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.vendorName,
+                        item.challanNo,
+                        item.challanDate ? item.challanDate.split(" ")[0] : "",
+                        item.issQty,
+                        item.unit,
+                        item.purchasePrice,
+                        item.pendqty,
+                        item.forprocess,
+                        item.remark,
+                        item.closed,
+                        item.completlyReceive
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },   // #Sr
+                        1: { cellWidth: 80 },   // Vendor Name
+                        2: { cellWidth: 70 },   // Challan No
+                        3: { cellWidth: 60 },   // Challan Date
+                        4: { cellWidth: 40 },   // Issued Qty
+                        5: { cellWidth: 30 },   // Unit
+                        6: { cellWidth: 50 },   // Purchase Price
+                        7: { cellWidth: 40 },   // Pending Qty
+                        8: { cellWidth: 70 },   // For Process
+                        9: { cellWidth: 70 },   // Remark
+                        10: { cellWidth: 30 },  // Closed
+                        11: { cellWidth: 50 }   // Completely Receive
                     };
                 break;
                 case 'JOBWORKISSUEPatyITEMDETAIL':
@@ -770,6 +984,9 @@
                 Rowcount = 0;
             }
             $('#TotalBillQtyforRec').val(0);
+            $('#TotalShortExcessForRec').val(0);
+            $('#TotalAdjQTYForReco').val(0);
+            $('#TotalActualpendqtyForReco').val(0);
             $('#TotalRecQtyforRec').val(0);
             $('#TotalAmountForRec').val(0);
             $('#NetAmountForRecSummary').val(0);
@@ -791,6 +1008,9 @@
             $('#TotalIssueRecoQty').val(0);
             $('#TotalRecRecoQty').val(0);
             var BillQty = 0;
+            var TotalShortExcess = 0;
+            var TotalAdjqTY = 0;
+            var TotalActualpendqty = 0;
             var RecQty = 0;
             var TotalAmountForrecSummary=0;
             var TotalAmount=0;
@@ -815,6 +1035,9 @@
             
             for (i = 1; i <= Rowcount; i++) {
                 BillQty += $('#SAGridRow-' + i).find('#GridBillQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridBillQty').text());
+                TotalShortExcess += $('#SAGridRow-' + i).find('#GridShortExcess').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridShortExcess').text());
+                TotalAdjqTY += $('#SAGridRow-' + i).find('#TotalAdjqTYReco').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#TotalAdjqTYReco').text());
+                TotalActualpendqty += $('#SAGridRow-' + i).find('#TotalActualpendqtyReco').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#TotalActualpendqtyReco').text());
                 RecQty += $('#SAGridRow-' + i).find('#GridRecQty').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridRecQty').text());
                 TotalAmount += $('#SAGridRow-' + i).find('#GridTotalAmount').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridTotalAmount').text());
                 TotalAmountForrecSummary += $('#SAGridRow-' + i).find('#GridTotalAmountForSummary').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#GridTotalAmountForSummary').text());
@@ -837,6 +1060,9 @@
                 TotalRecRecoQty += $('#SAGridRow-' + i).find('#PenQtyrecototal').text() == '' ? 0 : parseFloat($('#SAGridRow-' + i).find('#PenQtyrecototal').text());
             }
             $('#TotalBillQtyforRec').val(BillQty);
+            $('#TotalShortExcessForRec').val(TotalShortExcess);
+            $('#TotalAdjQTYForReco').val(TotalAdjqTY);
+            $('#TotalActualpendqtyForReco').val(TotalActualpendqty);
             $('#TotalRecQtyforRec').val(RecQty);
             $('#TotalAmountForRec').val(TotalAmount.toFixed(2));
             $('#NetAmountForRecSummary').val(NetAmountForRecSummary);
@@ -919,6 +1145,7 @@
                                                   <option data-info="JWIssDe" value="JOBWORKISSUECHALLANITEMDETAIL">JobWork Issue Challan Detail</option>\
                                                   <option data-info="JWIssChaSum" value="JOBWORKISSUEITEMDETAIL">JobWork Issue Item Detail</option>\
                                                   <option data-info="JWIssChaDe" value="JOBWORKISSUEPatyITEMDETAIL">JobWork Issue Party Detail</option>\
+                                                  <option data-info="JOBWORK ISSUECHALLAN CONSOLIDATED" value="JOBWORK ISSUECHALLAN CONSOLIDATED">JobWork IssueChallan Consolidated</option>\
                                         ');
                 $('#TOTALRecDetail').hide();
                 $('#TOTALRecSummary').hide();
@@ -940,6 +1167,7 @@
                                                                    <option data-info="JWRecSum" value="JOBWORKReceiveSUMMARY">Jobwork Receive Summary</option>\
                                                                   <option data-info="JWRecDeadj" value="JOBWORKReceiveWithAdjustemntDETAIL">Jobwork Receive with Adjustment Detail   </option>\
                                                                   <option data-info="JWRecItem" value="JOBWORKReceiveItemWiseSUMM">Jobwork Receive Item Wise Sum</option>\
+                                                                  <option data-info="JOBWORK RECEIVE CONSOLIDATED" value="JOBWORK RECEIVE CONSOLIDATED">JobWork Receive Consolidated</option>\
                                                 ');
                 $('#TOTALRecDetail').show();
                 $('#TOTALRecSummary').hide();
@@ -959,6 +1187,7 @@
                 $('#ReportMode').empty();
                 $('#ReportMode').append('<option data-info="JWRecoDetail" selected value="JOBWORKRecoDETAIL">JobWork Reco Detail</option>\
                                                  <option data-info="JWRecoIssue" value="JOBWORKRecoSummary">JobWork Reco Issue</option>\
+                                                 <option data-info="ONLY PENDING CHALLAN" value="ONLY PENDING CHALLAN">Only Pendig Challan</option>\
                 ');
                 $('#TOTALRecDetail').hide();
                 $('#TOTALRecSummary').hide();

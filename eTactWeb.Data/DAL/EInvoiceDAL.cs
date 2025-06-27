@@ -37,6 +37,7 @@ using System.Security.Cryptography.Xml;
 using System.Text.Json.Nodes;
 using System;
 using System.Reflection.PortableExecutable;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 
 namespace eTactWeb.Data.DAL
@@ -335,7 +336,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<ResponseResult> GetInvoiceDataAsync(string invoiceNo, int yearCode)
+        public async Task<ResponseResult> GetInvoiceDataAsync(string invoiceNo, int yearCode ,string flag)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -344,7 +345,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SaleBillNo1", invoiceNo));
                 SqlParams.Add(new SqlParameter("@SaleBillNo2", invoiceNo));
                 SqlParams.Add(new SqlParameter("@SaleSaleBillYearCode", yearCode));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("getIRNData", SqlParams);
+                SqlParams.Add(new SqlParameter("@flag", flag));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPIRNEInvoiceAndEwayBillData", SqlParams);
             }
             catch (Exception ex)
             {
@@ -355,15 +357,17 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetInvoiceDataAsync(int yearCode, int entryId)
+        public async Task<ResponseResult> GetInvoiceDataCancelAsync(string invoiceNo, int yearCode)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@YearCode", yearCode));
-                SqlParams.Add(new SqlParameter("@EntryId", entryId));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SELECT Excise_Amt_Word FROM Sale_Bill_Main WHERE year_code = @YearCode AND entry_id = @EntryId", SqlParams);
+                SqlParams.Add(new SqlParameter("@SaleBillNo1", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleBillNo2", invoiceNo));
+                SqlParams.Add(new SqlParameter("@SaleSaleBillYearCode", yearCode));
+                SqlParams.Add(new SqlParameter("@flag", "GETIRNNO"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPIRNEInvoiceAndEwayBillData", SqlParams);
             }
             catch (Exception ex)
             {
@@ -373,7 +377,89 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+        }
+        public async Task<string> PostCancelIRNAsync(Dictionary<string, object> dictData)
+        {
+            var urlToPost = "https://pro.mastersindia.co/ewayBillCancel";
+            using var client = new HttpClient();
 
+            try
+            {
+                var jsonData = JsonConvert.SerializeObject(dictData, Formatting.Indented);
+                var content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(urlToPost, content);
+                response.EnsureSuccessStatusCode();
+
+                var resString = await response.Content.ReadAsStringAsync();
+                var json = JObject.Parse(resString);
+
+                var ewayBillNo = json.SelectToken("results.message.ewayBillNo")?.ToString();
+                var cancelDate = json.SelectToken("results.message.cancelDate")?.ToString();
+
+                var result = new
+                {
+                    EwayBillNo = ewayBillNo,
+                    CancelDate = cancelDate,
+                    RawJson = resString
+                };
+
+                return JsonConvert.SerializeObject(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                Console.WriteLine($"Error cancelling eway bill: {ex.Message}");
+                return $"Error: {ex.Message}";
+            }
+        }
+
+        public async Task<ResponseResult> CancelEInvoiceAsync(string ewaybillno, string gstin, string SaleBillNo, int SaleBillYearCode,string  token)
+        {
+            var result = new ResponseResult();
+            try
+            {
+              
+
+                var dictData1 = new Dictionary<string, object>
+                    {
+                        { "access_token", token },
+                        { "userGstin", gstin },
+                        { "eway_bill_number", ewaybillno },
+                        { "reason_of_cancel","Others" },
+                        { "cancel_remarks", "Cancelled the order" },
+                        { "data_source", "ERP" }
+                    };
+                string InvoiceStatus = await PostCancelIRNAsync(dictData1);
+                var resultObj = JsonConvert.DeserializeObject<dynamic>(InvoiceStatus);
+                string cancelledEwayBillNo = resultObj.EwayBillNo;
+                string cancelledDate = resultObj.CancelDate;
+
+                if (string.IsNullOrWhiteSpace(cancelledEwayBillNo) || string.IsNullOrWhiteSpace(cancelledDate))
+                {
+                    result.StatusText = "Error";
+                    result.StatusCode = System.Net.HttpStatusCode.BadRequest;
+                    result.Result = $"EWay Bill Cancel Failed. Raw Response: {InvoiceStatus}";
+                    return result;
+                }
+          
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "UpdateIRNDetails"));
+                SqlParams.Add(new SqlParameter("@InvoiceNo", SaleBillNo));
+                SqlParams.Add(new SqlParameter("@cancelledirnno", cancelledEwayBillNo)); // Ensure accountCode is of type int
+                SqlParams.Add(new SqlParameter("@cancelleddate", cancelledDate)); // Ensure accountCode is of type int
+                SqlParams.Add(new SqlParameter("@yearcode", SaleBillYearCode));
+                await _IDataLogic.ExecuteDataTable("SPEInvoiceIRNdetail", SqlParams);
+                result.Result = "EInvoice Cancelled Successfully";
+                return result;
+            }
+            catch (Exception ex)
+            {
+
+            }
+
+            return result;
         }
 
         public async Task<ResponseResult> UpdateQRCodeImageAsync(string invoiceNo, int yearCode, byte[] image)
@@ -407,7 +493,7 @@ namespace eTactWeb.Data.DAL
      int EntrybyId,
      string MachineName,
      string fromname,
-     string generateEway)
+     string generateEway, string flag)
         {
             try
             {
@@ -442,7 +528,7 @@ namespace eTactWeb.Data.DAL
                 var distanceJson = JObject.Parse(distanceResponse);
                 var distanceValue = distanceJson.SelectToken("results.distance")?.ToString();
 
-                var response1 = await GetInvoiceDataAsync(invoicenumber, yearcodenumber);
+                var response1 = await GetInvoiceDataAsync(invoicenumber, yearcodenumber, flag);
                 var dataTable = response1.Result as DataTable;
                 if (dataTable.Rows.Count == 0) return "Invoice data not found";
 
@@ -452,30 +538,30 @@ namespace eTactWeb.Data.DAL
 
                 string transporterGst = await GetTransporterGSTAsync(transporterName);
 
-                if (generateEway == "true")
+                if (generateEway == "EwayAndEInvoice")
                 {
                     if (string.IsNullOrEmpty(transporterGst) && string.IsNullOrEmpty(vehicleNo))
                         return "Transporter Name and Vehicle No cannot be empty at the same time. Please provide at least one of them.";
                 }
 
                 var dictData19 = new Dictionary<string, object>
-        {
-            { "access_token", token },
-            { "user_gstin", row["sellergstin"].ToString() },
-            { "irn", irnNo },
-            { "data_source", "ERP" },
-            {
-                "dispatch_details", new Dictionary<string, object>
-                {
-                    { "company_name", row["sellername"].ToString() },
-                    { "address1", row["selleraddress"].ToString() },
-                    { "address2", "" },
-                    { "location", row["sellerlocation"].ToString() },
-                    { "pincode", row["sellerpincode"].ToString() },
-                    { "state_code", row["sellerstate"].ToString() }
-                }
-            }
-        };
+           {
+               { "access_token", token },
+               { "user_gstin", row["sellergstin"].ToString() },
+               { "irn", irnNo },
+               { "data_source", "ERP" },
+               {
+                   "dispatch_details", new Dictionary<string, object>
+                   {
+                       { "company_name", row["sellername"].ToString() },
+                       { "address1", row["selleraddress"].ToString() },
+                       { "address2", "" },
+                       { "location", row["sellerlocation"].ToString() },
+                       { "pincode", row["sellerpincode"].ToString() },
+                       { "state_code", row["sellerstate"].ToString() }
+                   }
+               }
+           };
 
                 if (!string.IsNullOrEmpty(transporterGst))
                     dictData19.Add("transporter_id", transporterGst);
@@ -488,8 +574,8 @@ namespace eTactWeb.Data.DAL
                     dictData19.Add("transporter_name", transporterName);
                     dictData19.Add("distance", !string.IsNullOrEmpty(distanceKM) ? distanceKM : (distanceValue ?? "0"));
                 }
-
-                if (generateEway == "true")
+                string EwayresponseString = null;
+                if (generateEway == "EwayAndEInvoice")
                 {
                     ewayStatus = await PostData2(dictData19);
                     if (string.IsNullOrWhiteSpace(ewayStatus)) return "E-way bill response was empty.";
@@ -499,6 +585,7 @@ namespace eTactWeb.Data.DAL
                     EwbDate = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("Date:"))?.Split("Date:").Last()?.Trim();
                     EwbValidTill = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("EwbValidTill:"))?.Split("EwbValidTill:").Last()?.Trim();
                     ewbUrl = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("PDF:"))?.Split("PDF:").Last()?.Trim();
+                    EwayresponseString = ewayStatus.Split(',').FirstOrDefault(x => x.Contains("responseString:"))?.Split("responseString:").Last()?.Trim();
                 }
 
                 // Insert final IRN + EWB data
@@ -507,19 +594,229 @@ namespace eTactWeb.Data.DAL
                     irnNo, ackNo, ackDate, token, EwbNo, EwbDate, EwbValidTill, fromname, EntrybyId, MachineName);
 
                 // Generate QR if only invoice was created
-                if (generateEway != "true")
+                if (generateEway != "EwayAndEInvoice")
                 {
                     var qrResult = await GenerateQRCode(barcodeVal, invoicenumber, yearcodenumber);
                     if (qrResult != "QR code generated and saved to database successfully.")
                         return "QR generation failed.";
                 }
+                var resultJson = new JObject
+                {
+                    ["ewbUrl"] = generateEway == "EwayAndEInvoice" ? ewbUrl : barcodeVal,
+                    ["rawResponse"] = new JObject
+                    {
+                        ["eInvoiceResponse"] = responseString,
+                        ["eWayBillResponse"] = EwayresponseString // or the actual raw response string if you have it
+                    }
+                };
 
-                return generateEway == "true" ? ewbUrl : barcodeVal;
+                return resultJson.ToString();
+              //  return generateEway == "EwayAndEInvoice" ? ewbUrl : barcodeVal;
             }
             catch (Exception ex)
             {
                 return $"Exception occurred: {ex.Message}";
             }
+        }
+        public async Task<string> PostDataAsyncJW(
+       Dictionary<string, object> dictData,
+       string invoicenumber,
+       int yearcodenumber,
+       string transporterName,
+       string vehicleNo,
+       string distanceKM,
+       int EntrybyId,
+       string MachineName,
+       string fromname,
+       string generateEway,
+       string flag)
+        {
+            try
+            {
+                string EwbNo = "", EwbDate = "", ewbUrl = "", EwbValidTill = "", ewayStatus = "";
+                var client = _httpClientFactory.CreateClient();
+
+                string token = dictData.ContainsKey("access_token") ? dictData["access_token"]?.ToString() : null;
+                string irnNo = null, barcodeVal = null, ackNo = "", ackDate = "";
+
+               var sellerDetails = dictData["seller_details"] as Dictionary<string, object>;
+                var buyerDetails = dictData["buyer_details"] as Dictionary<string, object>;
+
+                string pincodeFrom = sellerDetails?["pincode"]?.ToString() ?? "";
+                string pincodeTo = buyerDetails?["pincode"]?.ToString() ?? "";
+
+                var distanceResponse = await client.GetStringAsync($"http://pro.mastersindia.co/distance?access_token={token}&fromPincode={pincodeFrom}&toPincode={pincodeTo}");
+                var distanceJson = JObject.Parse(distanceResponse);
+                var distanceValue = distanceJson.SelectToken("results.distance")?.ToString();
+
+                var response1 = await GetInvoiceDataAsync(invoicenumber, yearcodenumber, flag);
+                var dataTable = response1.Result as DataTable;
+                if (dataTable.Rows.Count == 0) return "Invoice data not found";
+
+                var row = dataTable.Rows[0];
+                int entryid = row.Table.Columns.Contains("entry_id") && row["entry_id"] != DBNull.Value ? Convert.ToInt32(row["entry_id"]) : 0;
+                int accountCode = row.Table.Columns.Contains("account_code") && row["account_code"] != DBNull.Value ? Convert.ToInt32(row["account_code"]) : 0;
+
+                string transporterGst = await GetTransporterGSTAsync(transporterName);
+
+                if (string.IsNullOrEmpty(transporterGst) && string.IsNullOrEmpty(vehicleNo))
+                    return "Transporter Name and Vehicle No cannot be empty at the same time. Please provide at least one of them.";
+
+                var dictData19 = new Dictionary<string, object>
+                {
+                    { "access_token", token },
+                    { "userGstin", row["sellergstin"].ToString() },
+                    { "supply_type", "Outward" },
+                    { "sub_supply_type", "Others" },
+                    {"sub_supply_description", "sales from other country" },
+                    { "document_type", "Delivery Challan" },
+                    { "document_number", invoicenumber },
+                    { "document_date", row["invoice_date"].ToString() },
+
+                    { "gstin_of_consignor", row["sellergstin"].ToString() },
+                    { "legal_name_of_consignor", row["sellername"].ToString() },
+                    { "address1_of_consignor", row["selleraddress"].ToString() },
+                    { "address2_of_consignor", "" },
+                    { "place_of_consignor", row["sellerlocation"].ToString() },
+                    { "pincode_of_consignor", row["sellerpincode"].ToString() },
+                    { "state_of_consignor", row["sellerstate"].ToString() },
+                    { "actual_from_state_name", row["sellerstate"].ToString() },
+
+                    { "gstin_of_consignee", buyerDetails?["gstin"]?.ToString() ?? "URP" },
+                    { "legal_name_of_consignee", buyerDetails?["legal_name"]?.ToString() },
+                    { "address1_of_consignee", buyerDetails?["address1"]?.ToString() },
+                    { "address2_of_consignee", "" },
+                    { "place_of_consignee", buyerDetails?["location"]?.ToString() },
+                    { "pincode_of_consignee", buyerDetails?["pincode"]?.ToString() },
+                    { "state_of_supply", buyerDetails?["state_code"]?.ToString() },
+                    { "actual_to_state_name", buyerDetails?["state_code"]?.ToString() },
+
+                    { "transaction_type", 1 },
+                    { "other_value", 0 },
+                    { "total_invoice_value", row["TOATLINVVAL"].ToString() },
+                    { "taxable_amount", row["TOTALASSVAL"].ToString() },
+                    { "cgst_amount", row["cgstamt"].ToString() },
+                    { "sgst_amount", row["sgstamt"].ToString() },
+                    { "igst_amount", row["igstamt"].ToString() },
+                    { "cess_amount", "0" },
+                    { "cess_nonadvol_value", "0" },
+                    { "generate_status", "1" },
+                    { "user_ref", "" },
+                    { "location_code", "" },
+                    { "eway_bill_status", "ABC" },
+                    { "auto_print", "Y" },
+                    { "email", "info@bmrinfotech.com" },
+                    { "itemList", dictData["item_list"] }
+                };
+
+                if (!string.IsNullOrEmpty(transporterGst))
+                {
+                    dictData19["transporter_id"] = transporterGst;
+                }
+
+                if (!string.IsNullOrEmpty(vehicleNo))
+                {
+                    dictData19["vehicle_number"] = vehicleNo;
+                    dictData19["transportation_mode"] = "1";
+                    dictData19["vehicle_type"] = "R";
+                    dictData19["transporter_name"] = transporterName;
+                    dictData19["data_source"] = "ERP";
+                    dictData19["distance"] = !string.IsNullOrEmpty(distanceKM) ? distanceKM : (distanceValue ?? "0");
+                }
+
+
+                string urlToPost2 = "https://pro.mastersindia.co/ewayBillsGenerate";
+                using var client1 = _httpClientFactory.CreateClient();
+
+                var jsonContent = JsonConvert.SerializeObject(dictData19, Formatting.Indented);
+                var requestContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await client1.PostAsync(urlToPost2, requestContent);
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = JObject.Parse(responseString);
+                    string status = json.SelectToken("results.status")?.ToString();
+                    string errorMessage = json.SelectToken("results.errorMessage")?.ToString();
+
+                    if (status == "Failed")
+                    {
+                        return $"Error: {errorMessage}";
+                    }
+
+                    if (status == "Success")
+                    {
+                        EwbNo = json.SelectToken("results.message.ewayBillNo")?.ToString();
+                        EwbDate = json.SelectToken("results.message.ewayBillDate")?.ToString();
+                        ewbUrl = json.SelectToken("results.message.url")?.ToString();
+                        EwbValidTill = json.SelectToken("results.message.validUpto")?.ToString();
+                    }
+                }
+
+                await InsertIRNDetailAsync(
+                    barcodeVal, invoicenumber, entryid, accountCode, yearcodenumber,
+                    irnNo, ackNo, ackDate, token, EwbNo, CommonFunc.ParseFormattedDateTime1(EwbDate), CommonFunc.ParseFormattedDateTime1(EwbValidTill), fromname, EntrybyId, MachineName
+                );
+                return JsonConvert.SerializeObject(new
+                {
+                    ewbUrl = ewbUrl,
+                    rawResponse = responseString
+                });
+
+            }
+            catch (Exception ex)
+            {
+                return $"Exception occurred: {ex.Message}";
+            }
+        }
+
+        public async Task<string> PostData2(Dictionary<string, object> dictData)
+        {
+            try
+            {
+                string urlToPost2 = "https://pro.mastersindia.co/generateEwaybillByIrn";
+
+                using var client = _httpClientFactory.CreateClient();
+                var jsonContent = JsonConvert.SerializeObject(dictData, Formatting.Indented);
+                var requestContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
+
+                var response = await client.PostAsync(urlToPost2, requestContent);
+                string responseString = await response.Content.ReadAsStringAsync();
+
+                if (response.IsSuccessStatusCode)
+                {
+                    var json = JObject.Parse(responseString);
+                    string status = json.SelectToken("results.status")?.ToString();
+                    string errorMessage = json.SelectToken("results.errorMessage")?.ToString();
+
+                    if (status == "Failed")
+                    {
+                        return $"Error: {errorMessage}";
+                    }
+
+                    if (status == "Success")
+                    {
+                        string ewbNo = json.SelectToken("results.message.EwbNo")?.ToString();
+                        string ewbDt = json.SelectToken("results.message.EwbDt")?.ToString();
+                        string ewbUrl = json.SelectToken("results.message.EwaybillPdf")?.ToString();
+                        string EwbValidTill = json.SelectToken("results.message.EwbValidTill")?.ToString();
+                        string Alert = json.SelectToken("results.message.Alert")?.ToString();
+                        return $"Ewaybill No: {ewbNo}, Date: {ewbDt}, PDF: {ewbUrl},EwbValidTill:{EwbValidTill},Alert:{Alert},responseString:{responseString}";
+                    }
+                }
+                else
+                {
+                    return $"Error: HTTP {response.StatusCode} - {responseString}";
+                }
+            }
+            catch (Exception ex)
+            {
+                return $"Exception: {ex.Message}";
+            }
+
+            // Ensure all code paths return a value  
+            return "Unexpected error occurred.";
         }
 
         public async Task<string> GenerateQRCode(string barcodeValue, string invoicenumber, int yearcodenumber)
@@ -597,54 +894,7 @@ namespace eTactWeb.Data.DAL
             }
         }
 
-        public async Task<string> PostData2(Dictionary<string, object> dictData)
-        {
-            try
-            {
-                string urlToPost2 = "https://pro.mastersindia.co/generateEwaybillByIrn";
-
-                using var client = _httpClientFactory.CreateClient();
-                var jsonContent = JsonConvert.SerializeObject(dictData, Formatting.Indented);
-                var requestContent = new StringContent(jsonContent, Encoding.UTF8, "application/json");
-
-                var response = await client.PostAsync(urlToPost2, requestContent);
-                string responseString = await response.Content.ReadAsStringAsync();
-
-                if (response.IsSuccessStatusCode)
-                {
-                    var json = JObject.Parse(responseString);
-                    string status = json.SelectToken("results.status")?.ToString();
-                    string errorMessage = json.SelectToken("results.errorMessage")?.ToString();
-
-                    if (status == "Failed")
-                    {
-                        return $"Error: {errorMessage}";
-                    }
-
-                    if (status == "Success")
-                    {
-                        string ewbNo = json.SelectToken("results.message.EwbNo")?.ToString();
-                        string ewbDt = json.SelectToken("results.message.EwbDt")?.ToString();
-                        string ewbUrl = json.SelectToken("results.message.EwaybillPdf")?.ToString();
-                        string EwbValidTill = json.SelectToken("results.message.EwbValidTill")?.ToString();
-                        string Alert = json.SelectToken("results.message.Alert")?.ToString();
-                        return $"Ewaybill No: {ewbNo}, Date: {ewbDt}, PDF: {ewbUrl},EwbValidTill:{EwbValidTill},Alert:{Alert}";
-                    }
-                }
-                else
-                {
-                    return $"Error: HTTP {response.StatusCode} - {responseString}";
-                }
-            }
-            catch (Exception ex)
-            {
-                return $"Exception: {ex.Message}";
-            }
-
-            // Ensure all code paths return a value  
-            return "Unexpected error occurred.";
-        }
-
+    
         public async Task<string> GetTransporterGSTAsync(string transporterName)
         {
             try
@@ -704,7 +954,7 @@ namespace eTactWeb.Data.DAL
             SqlParams.Add(new SqlParameter("@EntrybyId", EntrybyId));
             SqlParams.Add(new SqlParameter("@MachineName", MachineName));
 
-            await _IDataLogic.ExecuteDataTable("InsertIRNdetail", SqlParams);
+            await _IDataLogic.ExecuteDataTable("SPEInvoiceIRNdetail", SqlParams);
         }
         // Add this method to EInvoiceDAL
 

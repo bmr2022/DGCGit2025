@@ -15,8 +15,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> StockAdjBackDatePassword();
         Task<DataSet> BindAllDropDowns(string Flag);
         Task<ResponseResult> NewEntryId(int YearCode);
-        Task<ResponseResult> FillPartCode(string Flag);
-        Task<ResponseResult> FillItemName(string Flag);
+        Task<ResponseResult> FillPartCode(string Flag,string search);
+        Task<ResponseResult> FillItemName(string Flag, string search);
         Task<ResponseResult> GetmaxStockAdjustDate(string Flag, int ItemCode);
         Task<ResponseResult> StockAdjustByFeaturesOptions(string Flag);
         Task<ResponseResult> FillLotStock(int ItemCode, int Storeid, string UniqueBatchNo, string BatchNo);

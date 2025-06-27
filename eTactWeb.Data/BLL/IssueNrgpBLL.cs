@@ -70,6 +70,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueNRGPDAL.GetAddressDetails(AccountCode);
         }
+        public async Task<ResponseResult> GetEmails(int AccountCode)
+        {
+            return await _IssueNRGPDAL.GetEmails(AccountCode);
+        }
         public async Task<ResponseResult> FillCurrentBatchINStore(int ItemCode, int YearCode, string FinStartDate, string StoreName, string batchno)
         {
             return await _IssueNRGPDAL.FillCurrentBatchINStore(ItemCode, YearCode, FinStartDate, StoreName, batchno);

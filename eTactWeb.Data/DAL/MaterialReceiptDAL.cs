@@ -315,6 +315,10 @@ namespace eTactWeb.Data.DAL
             model.ActualEntryByName = DS.Tables[0].Rows[0]["ActualEntryBY"].ToString();
             model.ActualEntryDate = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]);
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+            model.CC1 = DS.Tables[0].Rows[0]["CC1"].ToString();
+            model.CC2 = DS.Tables[0].Rows[0]["CC2"].ToString();
+            model.CC3 = DS.Tables[0].Rows[0]["CC3"].ToString();
+            model.EmailId = DS.Tables[0].Rows[0]["EmailId"].ToString();
 
             if (!string.IsNullOrEmpty(DS.Tables[0].Rows[0]["UpdatedBy"].ToString()))
             {

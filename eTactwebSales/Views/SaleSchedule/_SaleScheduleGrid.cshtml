@@ -53,7 +53,7 @@ else
             <td>@item.PartCode <input type="hidden" id="ItemCode-@Cntr" value="@item.ItemCode" data-partCode="@item.PartCode" data-itemName="@item.ItemName" /></td>
             <td>@item.ItemName</td>
             <td>@item.Unit</td>
-            <td id="SchQty-@Cntr"></td>
+            <td id="SchQty-@Cntr">@item.SchQty</td>
             <td>@item.PendQty</td>
             <td>@item.AltUnit</td>
             <td>@item.AltSchQty</td>
@@ -70,8 +70,9 @@ else
             }
             <td>@item.ItemSize</td>
             <td>@item.ItemColor</td>
-            <td>@item.OtherDetail</td>
             <td>@item.Remarks</td>
+            <td>@item.OtherDetail</td>
+           
         </tr>
 
     }

@@ -64,6 +64,9 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
                 SqlParams.Add(new SqlParameter("@LastUpdationDate", upDate));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? ""));
+                SqlParams.Add(new SqlParameter("@ItemimagePath", model.ItemImageURL ?? ""));
+                SqlParams.Add(new SqlParameter("@DrawingNo", model.DrawingNo ?? ""));
+                SqlParams.Add(new SqlParameter("@DrawingNoImagePath", model.ImageURL ?? ""));
 
                 SqlParams.Add(new SqlParameter("@DTSSGrid", GIGrid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPQCControlPlanMain", SqlParams);
@@ -345,8 +348,10 @@ namespace eTactWeb.Data.DAL
                 model.ItemName = DS.Tables[0].Rows[0]["Item_Name"].ToString();
                 model.ItemCode = Convert.ToInt32(DS.Tables[0].Rows[0]["ItemCode"].ToString());
 
-                //model.ImageURL = DS.Tables[0].Rows[0]["DrawingNoImagePath"].ToString();
-                //model.ItemImageURL = DS.Tables[0].Rows[0]["ItemimagePath"].ToString();
+                model.ImageURL = DS.Tables[0].Rows[0]["DrawingNoImagePath"].ToString();
+                model.ItemImageURL = DS.Tables[0].Rows[0]["ItemimagePath"].ToString();
+                model.DrawingNo = DS.Tables[0].Rows[0]["DrawingNo"].ToString();
+
                 model.ActualEntryByName = DS.Tables[0].Rows[0]["ActualEmployee"].ToString();
                 model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"] != DBNull.Value ? Convert.ToDateTime(DS.Tables[0].Rows[0]["ActualEntryDate"]).ToString("dd/MM/yyyy") : string.Empty;
                 model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
@@ -375,17 +380,17 @@ namespace eTactWeb.Data.DAL
                             ControlMethod = row["ControlMethod"].ToString(),
                             RejectionPlan = row["RejectionPlan"].ToString(),
                             Remarks = row["Remarks"].ToString(),
-                            ItemImageURL = row["ItemimagePath"].ToString(),
-                            DrawingNo = row["DrawingNo"].ToString(),
-                            ImageURL = row["DrawingNoImagePath"].ToString(),
+                            //ItemImageURL = row["ItemimagePath"].ToString(),
+                            //DrawingNo = row["DrawingNo"].ToString(),
+                            //ImageURL = row["DrawingNoImagePath"].ToString(),
                          
 
 
                         });
                     }
                     model.DTSSGrid = ItemList;
-                    model.ImageURL = DS.Tables[1].Rows[0]["DrawingNoImagePath"].ToString();
-                    model.ItemImageURL = DS.Tables[1].Rows[0]["ItemimagePath"].ToString();
+                    model.ImageURL = DS.Tables[0].Rows[0]["DrawingNoImagePath"].ToString();
+                    model.ItemImageURL = DS.Tables[0].Rows[0]["ItemimagePath"].ToString();
                 }
                 return model;
             }

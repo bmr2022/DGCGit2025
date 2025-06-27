@@ -698,7 +698,7 @@ public class PurchaseScheduleDAL
 
                 SqlParams.Add(new SqlParameter("@SchApproved", model.Approved ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@SchAppBy", model.Approvedby));
-                SqlParams.Add(new SqlParameter("@SchAmmApprove", model.AmmApproved ?? string.Empty));
+                SqlParams.Add(new SqlParameter("@SchAmmApprove", "N" ));
                 SqlParams.Add(new SqlParameter("@SchAmmAppby", model.AmmApprovedby));
             }
             SqlParams.Add(new SqlParameter("@CreatedBY", model.CreatedBy));

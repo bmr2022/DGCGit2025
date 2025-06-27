@@ -144,18 +144,15 @@ namespace eTactWeb.DOM.Models
         public string? Uniquebatchno { get; set; } = string.Empty;
         public float LotStock { get; set; }
         public float TotalStock { get; set; }
+        public string hdnuniquekey { get; set; }
     }
     public class AccPurchaseRejectionAgainstBillDetail : TaxModel
     {
         public int CheckBoxNo { get; set; }
         public string PurchaseRejectionInvoiceNo { get; set; } = string.Empty;
+        public string? InvoiceNo { get; set; } = string.Empty;
+        public string? InvoiceDate { get; set; } = string.Empty;
         public string PurchaseRejectionVoucherNo { get; set; } = string.Empty;
-        //public string? AgainstSaleBillBillNo { get; set; }
-        //public int? AgainstSaleBillYearCode { get; set; }
-        //public string? AgainstSaleBillDate { get; set; }
-        //public int? AgainstSaleBillEntryId { get; set; }
-        //public string? AgainstSaleBillVoucherNo { get; set; }
-        //public string? SaleBillType { get; set; }
         public string? AgainstPurchaseBillBillNo { get; set; }
         public int? AgainstPurchaseBillYearCode { get; set; }
         public string? AgainstPurchaseBillDate { get; set; }

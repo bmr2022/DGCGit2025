@@ -24,8 +24,8 @@
                 <th data-columnno="3" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Item Name                
-                 </th>
+                    </span>Item Name
+                </th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
@@ -66,35 +66,35 @@
                         <i class="fa" aria-hidden="true"></i>
                     </span>Store Name
                 </th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>Disc Per
-                </th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>Disc Amt
-                </th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="12" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Batch No*
                 </th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="13" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Unique BatchNo*
                 </th>
-                <th data-columnno="16" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Lot Stock*
                 </th>
-                <th data-columnno="17" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="15" data-sortorder="asc" class="sortCol" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
                     </span>Total Stock*
+                </th>
+                <th data-columnno="16" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Disc Per
+                </th>
+                <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon">
+                        <i class="fa" aria-hidden="true"></i>
+                    </span>Disc Amt
                 </th>
                 <th data-columnno="18" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
@@ -184,124 +184,126 @@
             </tr>
         </thead>
         <tbody id="divInputPurchaseRejectionList">
-        <td>
-            <select asp-for="DocAccountCode" class="form-control" style="width:180px;">
-                <option value="0">-Select-</option>
-            </select>
-        </td>
-        <td>
-            <select asp-for="PartCode" class="form-control" style="width:200px;">
-                <option value="0">-Select-</option>
-            </select>
-        </td>
-        <td>
-            <select asp-for="ItemCode" class="form-control" style="width:200px;">
-                <option value="0">-Select-</option>
-            </select>
-        </td>
-        <td>
-            <input asp-for="HSNNo" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="BillQty" class="form-control" readonly />
-        </td>
-        <td>
-            <input asp-for="BillRate" class="form-control" readonly />
-        </td>
-        <td>
-            <input asp-for="RejectedQty" class="form-control" onchange="CalculateItemAmount();" />
-        </td>
-        <td>
-            <input asp-for="Unit" class="form-control" readonly />
-        </td>
-        <td>
-            <input asp-for="PRRate" class="form-control" type="number" min="0" onchange="CalculateItemAmount();" />
-        </td>
-        <td>
-            <input asp-for="ItemAmount" class="form-control" readonly />
-        </td>
-        <td>
-            <select asp-for="StoreId" class="form-control">
-                <option value="0">-Select-</option>
-            </select>
-        </td>
-        <td>
-            <input asp-for="DiscountPer" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="DiscountAmt" class="form-control" />
-        </td>
-        <td>
-            <select asp-for="Batchno" class="form-control">
-                <option value="0">-Select-</option>
-            </select>
-        </td>
-        <td>
-            <select asp-for="Uniquebatchno" class="form-control">
-                <option value="0">-Select-</option>
-            </select>
-        </td>
-        <td>
-            <input asp-for="LotStock" class="form-control" readonly />
-        </td>
-        <td>
-            <input asp-for="TotalStock" class="form-control" readonly />
-        </td>
-        <td>
-            <select asp-for="CostCenterId" class="form-control">
-                <option value="0">-Select-</option>
-            </select>
-        </td>
+            <tr>
+                <td>
+                    <select asp-for="DocAccountCode" class="form-control" style="width:180px;">
+                        <option value="0">-Select-</option>
+                    </select>
+                </td>
+                <td>
+                    <select asp-for="PartCode" class="form-control" style="width:200px;">
+                        <option value="0">-Select-</option>
+                    </select>
+                </td>
+                <td>
+                    <select asp-for="ItemCode" class="form-control" style="width:200px;">
+                        <option value="0">-Select-</option>
+                    </select>
+                </td>
+                <td>
+                    <input asp-for="HSNNo" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="BillQty" class="form-control" readonly />
+                </td>
+                <td>
+                    <input asp-for="BillRate" class="form-control" readonly />
+                </td>
+                <td>
+                    <input asp-for="RejectedQty" class="form-control" onchange="CalculateItemAmount();" />
+                </td>
+                <td>
+                    <input asp-for="Unit" class="form-control" readonly />
+                </td>
+                <td>
+                    <input asp-for="PRRate" class="form-control" type="number" min="0" onchange="CalculateItemAmount();" />
+                </td>
+                <td>
+                    <input asp-for="ItemAmount" class="form-control" readonly />
+                </td>
+                <td>
+                    <select asp-for="StoreId" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </td>
+                <td>
+                    <select asp-for="Batchno" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </td>
+                <td>
+                    <select asp-for="Uniquebatchno" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </td>
+                <td>
+                    <input asp-for="LotStock" class="form-control" readonly />
+                </td>
+                <td>
+                    <input asp-for="TotalStock" class="form-control" readonly />
+                </td>
+                <td>
+                    <input asp-for="DiscountPer" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="DiscountAmt" class="form-control" />
+                </td>
+                <td>
+                    <select asp-for="CostCenterId" class="form-control">
+                        <option value="0">-Select-</option>
+                    </select>
+                </td>
 
-        <td>
-            <input asp-for="AltQty" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="AltUnit" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="AltRate" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="UnitRate" class="form-control" />
-        </td>
+                <td>
+                    <input asp-for="AltQty" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="AltUnit" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="AltRate" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="UnitRate" class="form-control" />
+                </td>
 
-        <td>
-            <input asp-for="NoOfCase" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="ItemSize" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="ItemDescription" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="Remark" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="MIRNo" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="MIREntryID" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="MIRYearCode" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="MIRDate" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="InprocessNo" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="InprocessEntryID" class="form-control" />
-        </td>
-        <td>
-            <input asp-for="InprocessYearCode " class="form-control" />
-        </td>
-        <td>
-            <input asp-for="InprocessDate" class="form-control" />
-        </td>
+                <td>
+                    <input asp-for="NoOfCase" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="ItemSize" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="ItemDescription" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="Remark" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="MIRNo" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="MIREntryID" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="MIRYearCode" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="MIRDate" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="InprocessNo" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="InprocessEntryID" class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="InprocessYearCode " class="form-control" />
+                </td>
+                <td>
+                    <input asp-for="InprocessDate" class="form-control" />
+                </td>
+            </tr>
         </tbody>
     </table>
 </div>

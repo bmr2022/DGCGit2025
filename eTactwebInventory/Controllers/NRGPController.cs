@@ -27,6 +27,7 @@ using MimeKit;
 using MailKit.Net.Smtp;
 using System.Drawing;
 using System.Security.Cryptography;
+using Newtonsoft.Json.Linq;
 namespace eTactWeb.Controllers
 {
     public class NRGPController : Controller
@@ -37,12 +38,13 @@ namespace eTactWeb.Controllers
         private readonly ITaxModule _ITaxModule;
         private readonly ILogger<NRGPController> _logger;
         private readonly IItemMaster itemMaster;
+        public readonly IEinvoiceService _IEinvoiceService;
         private EncryptDecrypt _EncryptDecrypt { get; }
         private IWebHostEnvironment _IWebHostEnvironment { get; }
         private LoggerInfo LoggerInfo { get; }
         private readonly IConfiguration _iconfiguration;
         private readonly IEmailService _emailService;
-        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IEmailService emailService)
+        public NRGPController(ILogger<NRGPController> logger, IConfiguration configuration, IDataLogic iDataLogic, IIssueNRGP iIssueNRGP, ITaxModule iTaxModule, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IEmailService emailService, IEinvoiceService IEinvoiceService)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -54,6 +56,7 @@ namespace eTactWeb.Controllers
             LoggerInfo = loggerInfo;
             _iconfiguration = configuration;
             _emailService = emailService;
+            _IEinvoiceService = IEinvoiceService;
         }
 
         [Route("{controller}/Index")]
@@ -185,7 +188,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="bmr.client2021@gmail.com",string CC2="",string CC3="",string Challanno="")
+        public IActionResult SendReport(string emailTo = "", int EntryId = 0, int YearCode = 0, string Type = "",string CC1="",string CC2="",string CC3="",string Challanno="")
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -528,7 +531,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> IssueNRGP(IssueNRGPModel model, string ShouldPrint)
+        public async Task<IActionResult> IssueNRGP(IssueNRGPModel model, string ShouldPrint, string ShouldEway)
         {
             try
             {
@@ -587,6 +590,23 @@ namespace eTactWeb.Controllers
                                     yearCode = model.YearCode
                                 });
                             }
+                            if (ShouldEway == "true")
+                            {
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    ChallanNo = model.ChallanNo,
+                                    PartCode = model.PartCode,
+                                    TransporterName = model.Transporter,
+                                    VehicleNo = model.VehicleNo,
+                                    Distance = model.Distance,
+                                    EnteredByEmpid = model.UpdatedByEmpId,
+                                    EnterByMachineName = model.MachineName,
+                                    yearCode = model.YearCode
+                                });
+                            }
+
                             HttpContext.Session.Remove("KeyIssueNRGPGrid");
                             HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
                             return Json(new { status = "Success" });
@@ -604,6 +624,23 @@ namespace eTactWeb.Controllers
                                     yearCode = model.YearCode
                                 });
                             }
+                            if (ShouldEway == "true")
+                            {
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    entryId = model.EntryId,
+                                    ChallanNo = model.ChallanNo,
+                                    PartCode = model.PartCode,
+                                    TransporterName = model.Transporter,
+                                    VehicleNo = model.VehicleNo,
+                                    Distance = model.Distance,
+                                    EnteredByEmpid = model.UpdatedByEmpId,
+                                    EnterByMachineName = model.MachineName,
+                                    yearCode = model.YearCode
+                                });
+                            }
+
                             HttpContext.Session.Remove("KeyIssueNRGPGrid");
                             HttpContext.Session.Remove("KeyIssueNRGPTaxGrid");
                             return Json(new { status = "Success" });
@@ -674,10 +711,92 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+        public async Task<IActionResult> GenerateEwayBill([FromBody] EInvoiceItemModel input)
+        {
+            try
+            {
+                if (input == null)
+                    return BadRequest("Invalid input");
 
+                var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode
+                );
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+
+                var result = await _IEinvoiceService.CreateIRNAsync(
+                    token,
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode,
+                    input.saleBillType,
+                    input.customerPartCode,
+                    input.transporterName,
+                    input.vehicleNo,
+                    input.distanceKM,
+                    input.EntrybyId,
+                    input.MachineName,
+                    "NRGP Challan",
+                    input.generateEway,
+                    "NRGPEwayBill"
+                );
+                var responseObj = result.Result as JObject;
+                if (responseObj != null)
+                {
+                    return Ok(new
+                    {
+                        redirectUrl = (string)responseObj["ewbUrl"],
+                        rawResponse = (string)responseObj["rawResponse"]
+                    });
+                }
+                //string ewbUrl = result.Result as string;
+                //if (!string.IsNullOrWhiteSpace(ewbUrl))
+                //{
+                //    return Ok(new { redirectUrl = ewbUrl }); 
+
+                //}
+                else
+                {
+                    return BadRequest("Invoice generation failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server Error: {ex.Message}");
+            }
+        }
+        [HttpPost]
+        public async Task<IActionResult> CancelEwayBill(int SaleBillYearCode, string SaleBillNo)
+        {
+            try
+            {
+
+                string invoiceMessage = null;
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+                var cancelResult = await _IEinvoiceService.CancelEInvoice(token, SaleBillYearCode, SaleBillNo);
+
+                if (cancelResult?.StatusCode == System.Net.HttpStatusCode.InternalServerError)
+                    return StatusCode(500, new { message = cancelResult?.Result ?? "E-Invoice cancellation failed." });
+
+                invoiceMessage = cancelResult?.Result?.ToString();
+                return Ok(new { message = invoiceMessage ?? "Cancellation saved successfully!" });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = $"Server Error: {ex.Message}" });
+            }
+        }
         public async Task<JsonResult> GetAddressDetails(int AccountCode)
         {
             var JSON = await _IIssueNRGP.GetAddressDetails(AccountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> GetEmails(int AccountCode)
+        {
+            var JSON = await _IIssueNRGP.GetEmails(AccountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

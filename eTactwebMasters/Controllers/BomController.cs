@@ -941,6 +941,7 @@ public class BomController : Controller
                     FGPartCode = worksheet.Cells[row, 1].Value?.ToString(),
                     RMPartCode = worksheet.Cells[row, 3].Value.ToString()
                 };
+                var RMQty = Convert.ToDouble(worksheet.Cells[row, 6].Value.ToString());
 
                 importDataList.Add(bomPartCodeData);
 
@@ -1015,6 +1016,7 @@ public class BomController : Controller
                         duplicateBom = "true";
                     }
                 }
+                
                 data.Add(new BomViewModel()
                 {
                     FGPartCode = worksheet.Cells[row, 1].Value == null ? "" : worksheet.Cells[row, 1].Value.ToString(),
@@ -1024,7 +1026,7 @@ public class BomController : Controller
                     RMPartCode = worksheet.Cells[row, 3].Value == null ? "" : worksheet.Cells[row, 3].Value.ToString(),
                     RMItemName = RMItemName,
                     BomName = worksheet.Cells[row, 5].Value == null ? "" : worksheet.Cells[row, 5].Value.ToString(),
-                    RMQty = worksheet.Cells[row, 6].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 6].Value.ToString())),
+                    RMQty = worksheet.Cells[row, 6].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString()) ? 0 : Convert.ToDecimal(RMQty)),
                     RMUnit = worksheet.Cells[row, 7].Value == null ? "" : worksheet.Cells[row, 7].Value.ToString(),
                     Location = worksheet.Cells[row, 8].Value == null ? "" : worksheet.Cells[row, 8].Value.ToString(),
                     MPNNumber = worksheet.Cells[row, 9].Value == null ? "" : worksheet.Cells[row, 9].Value.ToString(),

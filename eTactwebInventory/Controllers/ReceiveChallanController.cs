@@ -302,15 +302,17 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (RCDetail.Any(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.Storeid == item.Storeid))
+                            if (RCDetail.Any(x => x.ItemCode == item.ItemCode && x.BatchNo == item.BatchNo && x.Storeid == item.Storeid && x.IssueChallanNo==item.IssueChallanNo))
                             {
-                                //return StatusCode(207, "Duplicate");
+                                
                                 var duplicateInfo = new
                                 {
                                     item.ItemCode,
                                     item.Storeid,
-                                    item.BatchNo
+                                    item.BatchNo,
+                                    item.IssueChallanNo
                                 };
+                                return StatusCode(207, "Duplicate");
                             }
                             else
                             {

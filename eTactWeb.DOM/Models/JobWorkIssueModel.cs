@@ -59,6 +59,12 @@ public class JWIssueDashboard
     public decimal RecQty { get; set; }
     public string? RecItemName { get; set; }
 
+    public string? SalesPersonEmailId { get; set; }
+    public string? eMailFromCC1 { get; set; }
+    public string? eMailFromCC2 { get; set; }
+    public string? eMailFromCC3 { get; set; }
+
+
     public IList<JWIssueDashboard>? JWIssQDashboard { get; set; }
     public IList<JobWorkGridDetail> ItemDetailGrid { get; set; }
 }

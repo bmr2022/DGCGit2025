@@ -172,7 +172,7 @@ public class TaxController : Controller
             }
             else if (model.TxPageName == "PurchaseBill")
             {
-                _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
+                //_MemoryCache.TryGetValue("PurchaseBill", out MainModel);
                 string modelJson = HttpContext.Session.GetString("PurchaseBill");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
@@ -492,6 +492,30 @@ public class TaxController : Controller
             if (TxModel.TxPageName == "ItemList")
             {
                 ItemDetailGrid = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString(TxModel.TxPageName) ?? string.Empty);
+
+
+
+
+               
+                var _ItemGrid = new List<ItemDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new ItemDetail
+                 {
+                     Amount = group.Sum(item => item.Amount),
+                     ItemCode = group.Key,
+                     PartText = group.Select(x => x.PartText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     ItemText = group.Select(x => x.ItemText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                 })
+                 .ToList();
+
+                ItemDetailGrid = _ItemGrid;
+
+
+
             }
             else if (TxModel.TxPageName == "PurchaseOrder")
             {
@@ -532,6 +556,22 @@ public class TaxController : Controller
                     purchaseRejectionDetail = JsonConvert.DeserializeObject<List<AccPurchaseRejectionDetail>>(modelPRGridJson);
                 }
                 ItemDetailGrid = purchaseRejectionDetail;
+                var _ItemGrid = new List<AccPurchaseRejectionDetail>();
+                _ItemGrid = ItemDetailGrid;
+                var Amount = 0.0;
+                var itemCodeArray = new List<int>();
+                _ItemGrid = _ItemGrid
+                 .GroupBy(item => item.ItemCode)
+                 .Select(group => new AccPurchaseRejectionDetail
+                 {
+                     Amount = group.Sum(item => item.Amount),
+                     ItemCode = group.Key,
+                     PartCode = group.Select(x => x.PartCode).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     ItemName = group.Select(x => x.ItemName).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                 })
+                 .ToList();
+
+                ItemDetailGrid = _ItemGrid;
             }
             else if (TxModel.TxPageName == "SaleRejection")
             {
@@ -540,14 +580,21 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "DirectPurchaseBill")
             {
-                _MemoryCache.TryGetValue("KeyDirectPurchaseBill", out List<DPBItemDetail> DirectPurchaseBill);
-                string modelPRGridJson = HttpContext.Session.GetString("KeyDirectPurchaseBill");
-                List<DPBItemDetail> DirectPurchaseBill1 = new List<DPBItemDetail>();
-                if (!string.IsNullOrEmpty(modelPRGridJson) && DirectPurchaseBill == null)
+                //_MemoryCache.TryGetValue("KeyDirectPurchaseBill", out List<DPBItemDetail> DirectPurchaseBill);
+                //string modelPRGridJson = HttpContext.Session.GetString("KeyDirectPurchaseBill");
+                //List<DPBItemDetail> DirectPurchaseBill1 = new List<DPBItemDetail>();
+                //if (!string.IsNullOrEmpty(modelPRGridJson) && DirectPurchaseBill == null)
+                //{
+                //    DirectPurchaseBill1 = JsonConvert.DeserializeObject<List<DPBItemDetail>>(modelPRGridJson);
+                //}
+                string modelJson = HttpContext.Session.GetString("DirectPurchaseBill");
+                if (!string.IsNullOrEmpty(modelJson))
                 {
-                    DirectPurchaseBill1 = JsonConvert.DeserializeObject<List<DPBItemDetail>>(modelPRGridJson);
+                    MainModel = JsonConvert.DeserializeObject<DirectPurchaseBillModel>(modelJson);
                 }
-                ItemDetailGrid = DirectPurchaseBill1;
+
+                //ItemDetailGrid = MainModel;
+                ItemDetailGrid = MainModel.ItemDetailGrid;
 
                 //_MemoryCache.TryGetValue("DirectPurchaseBill", out MainModel);
                 //ItemDetailGrid = MainModel.ItemDetailGrid;
@@ -564,6 +611,7 @@ public class TaxController : Controller
                      PartCode = group.First().PartCode,
                      ItemText = group.First().ItemText,
                      PartText = group.First().PartText,
+                     
                  })
                  .ToList();
 
@@ -591,10 +639,10 @@ public class TaxController : Controller
                      //MRP = group.Sum(item => item.MRP),
                      Amount = Convert.ToDecimal(group.Sum(item => item.Amount)),
                      ItemCode = group.Key,
-                     PartCode = group.First().PartCode,
-                     ItemText = group.First().ItemText,
-                     PartText = group.First().PartText,
-                     Item_Name = group.First().Item_Name,
+                     PartCode = group.Select(x => x.PartCode).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     ItemText = group.Select(x => x.ItemText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     PartText = group.Select(x => x.PartText).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
+                     Item_Name = group.Select(x => x.Item_Name).FirstOrDefault(x => !string.IsNullOrEmpty(x)),
                  })
                  .ToList();
 
@@ -1405,7 +1453,7 @@ public class TaxController : Controller
                 {
                     foreach (var item in ListOfItems)
                     {
-                        if (SN != "CreditNote" || SN != "PurchaseRejection")
+                        if (SN != "CreditNote")
                         {
                             //Basic Total Amount
                             BasicTotal = BasicTotal + (item.Amount == null ? 0 : item.Amount);

@@ -41,13 +41,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _StockAdjustmentDAL.NewEntryId(YearCode);
         }
-        public async Task<ResponseResult> FillPartCode(string Flag)
+        public async Task<ResponseResult> FillPartCode(string Flag, string search)
         {
-            return await _StockAdjustmentDAL.FillPartCode(Flag);
+            return await _StockAdjustmentDAL.FillPartCode(Flag,search);
         }
-        public async Task<ResponseResult> FillItemName(string Flag)
+        public async Task<ResponseResult> FillItemName(string Flag,string  search)
         {
-            return await _StockAdjustmentDAL.FillItemName(Flag);
+            return await _StockAdjustmentDAL.FillItemName(Flag,search);
         }
         public async Task<ResponseResult> GetmaxStockAdjustDate(string Flag, int ItemCode)
         {
