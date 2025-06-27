@@ -1,0 +1,780 @@
+﻿@model eTactWeb.DOM.Models.PurchaseMISModel;
+
+@{
+    ViewData["Title"] = "PurchaseMIS Report";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<head>
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+</head>
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <div class="card-header card-headerBG text-light bg-gradient">
+        <h5>
+            <strong>Purchase MIS Report</strong>
+            <span class="d-flex float-end" style="margin-top:-2px;">
+                @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+
+            </span>
+        </h5>
+    </div>
+    <div>
+    </div>
+    <div class="card-body bg-light pt-0">
+        <div class="accordion shadow-lg">
+            <div class="card-body">
+                <div class="card overflow-auto">
+                    <div class="card-body">
+                        <form id="SParam">
+                            <div class="row">
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+                                    <div class="row">
+                                        <input type="hidden" value="@Model.Mode" asp-for="Mode" />
+                                        <input type="hidden" value="@Model.YearCode" asp-for="YearCode" />
+
+                                        <div class="col">
+                                            <!-- Set proper width -->
+                                            <label class="form-label">To Date</label>
+                                            <input asp-for="ToDate" class="form-control" style="width: 100%;" />
+                                        </div>
+
+
+                                    </div>
+
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ReportType" class="form-label">Report Type</label>
+                                    <select asp-for="ReportType" class="form-select">
+                                        <option disabled value="">-Select-</option>
+                                        <option value="Monthly Rate Analysis" selected>Monthly Rate Analysis</option>
+                                    </select>
+
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="PartCode" class="form-label"> Part Code</label>
+                                    <input type="hidden" asp-for="@Model.Itemcode" />
+                                    <select asp-for="PartCode" class="form-select">
+                                        <option value="@Model.PartCode">-Select-</option>
+                                    </select>
+                                </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ItemName" class="form-label"> Item Name</label>
+                                    <input type="hidden" asp-for="@Model.Itemcode" />
+                                    <select asp-for="ItemName" class="form-select">
+                                        <option value="@Model.ItemName">-Select-</option>
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountName" class="form-label">Vendore Name</label>
+                                    <input type="hidden" asp-for="@Model.AccountCode" />
+                                    <select asp-for="AccountName" class="form-select" style="width:190px;" required>
+                                        <option value="@Model.AccountName">-Select-</option>
+                                    </select>
+                                   
+                                </div>
+                                
+                              
+                                <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                    <label class="form-label">Global search</label>
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+                                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                                <div class=" d-flex justify-content-center  mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+
+                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetPurchaseMISDetailsData(); ">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+                                    </button>
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="PurchaseMIS" asp-action="PurchaseMIS">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="accordion-item">
+                                <h2 class="accordion-header" id="H_SAGrid">
+                                    <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Purchase MIS Grid</strong>
+                                    </button>
+                                </h2>
+
+                                <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
+                                    <div class="accordion-body">
+                                        <div class="card-body" id="divPendingMRP">
+                                            <div class="col-md-12 divStockRegister" id="divStockMainRegister">
+                                                @*  <partial name="_BOMReportGrid" /> *@
+                                            </div>
+                                        </div>
+                                        <div class="d-flex justify-content-end mt-2" id="reportFields">
+                                        </div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>
+
+@section Scripts
+{
+    <script>
+
+        $(document).ready(function () {
+            console.log("Ready");
+
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#totalRows').text($('#divStockRegisterBody tr').length);
+            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", 'now');
+           
+
+            $('#ItemName').select2();
+            $('#PartCode').select2();
+            $('#AccountName').select2();
+            $('#ReportType').select2();
+         
+            FillPartCode();
+            FillItemName();
+            FillAccountName();
+        });
+
+        $('#ReportType').change(function () {
+            // GetInventoryAgingDetailsData();
+        });
+
+
+        $('#StoreName').change(function () {
+            //GetInventoryAgingDetailsData();
+        });
+
+
+        $('#ItemName').change(function () {
+            $('#Itemcode').val($('#ItemName').val());
+        });
+        $('#PartCode').change(function () {
+            $('#Itemcode').val($('#PartCode').val());
+        });
+        $('#AccountName').change(function () {
+            $('#AccountCode').val($('#AccountName').val());
+        });
+
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+            $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+        function FillItemName() {
+
+            $.ajax({
+                url: '@Url.Action("FillItemName", "PurchaseMIS")',
+                type: 'GET',
+                async: false,
+                data: {
+                    ToDate: $('#ToDate').val(),
+                },
+                success: function (response, status, error) {
+
+                    var ItemNameDropdown = $('#ItemName');
+                    var obj = $.parseJSON(response);
+                    ItemNameDropdown.empty();
+                    ItemNameDropdown.append('<option value="">--Select--</option>');
+
+
+                    $.each(obj.Result, function (index, ledger) {
+
+                        ItemNameDropdown.append('<option value="' + ledger.Itemcode + '">' + ledger.Item_Name + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        function FillPartCode() {
+
+            $.ajax({
+                url: '@Url.Action("FillPartCode", "PurchaseMIS")',
+                type: 'GET',
+                async: false,
+                data: {
+                    ToDate: $('#ToDate').val()
+                },
+                success: function (response, status, error) {
+
+                    var PartCodeDropdown = $('#PartCode');
+                    var obj = $.parseJSON(response);
+                    PartCodeDropdown.empty();
+                    PartCodeDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+
+                        PartCodeDropdown.append('<option value="' + ledger.Itemcode + '">' + ledger.PartCode + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemName') {
+                RMItemNameChange(cntId);
+            }
+            else {
+                RMPartCodeChange(cntId);
+            }
+        });
+
+        function RMItemNameChange(ID) {
+            RMSetPartCodeItemName(ID);
+        }
+
+        function RMPartCodeChange(ID) {
+            $.when(RMSetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function RMSetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemName").val(v).trigger("change");
+                }
+                if (ID == "ItemName") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+        function FillAccountName() {
+            $.ajax({
+                url: '@Url.Action("FillAccountName", "PurchaseMIS")',
+                type: 'GET',
+                async: false,
+                data: {
+                    ToDate: $('#ToDate').val()
+                },
+                success: function (response, status, error) {
+
+                    var acccountNameDropdown = $('#AccountName');
+                    var obj = $.parseJSON(response);
+                    acccountNameDropdown.empty();
+                    acccountNameDropdown.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, account) {
+
+                        acccountNameDropdown.append('<option value="' + account.Account_Code + '">' + account.Account_Name + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+
+        }
+       
+        
+        function GetPurchaseMISDetailsData() {
+            debugger
+            var reportType = $('#ReportType').val();
+            var toDate = $('#ToDate').val();
+            var YearCode = $('#YearCode').val();
+            var Itemcode = $('#Itemcode').val();
+            var AccountCode = $('#AccountCode').val();
+            // if (Foduration === '') {
+            //     $.notify('For duration is mandatory to display the report!', 'error');
+            //     return false;
+            // }
+
+            $.ajax({
+                type: 'POST',
+                url: '@Url.Action("GetPurchaseMISDetailsData", "PurchaseMIS")',
+                data: {
+                    ReportType: reportType,
+                    ToDate: toDate,
+                    YearCode: YearCode,
+                    Itemcode: Itemcode,
+                    AccountCode: AccountCode
+                },
+                success: function (response) {
+                    $('#divStockMainRegister').html(response);
+
+                    var totalRows = $('#divStockMainRegister tr').length;
+                    $('#totalRows').text(totalRows);
+                    //countAllTotal();
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+        }
+        var isGlobalSearch = false;
+        var globalSearchString = "";
+        $("#search-box").on("input", function () {
+            debugger
+            var searchString = $(this).val().trim();
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
+            var dashboardType = $('#ReportType').val();
+            $.ajax({
+                url: "/PurchaseMIS/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                success: function (data) {
+
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(data);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        function loadPage(pageNumber) {
+            debugger
+            var url = '';
+            var ReportType = $('#ReportType').val();
+            var formData = $('#SParam').serializeArray();
+            if (isGlobalSearch) {
+                url = '/PurchaseMIS/GlobalSearch';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            }
+            else {
+                url = '@Url.Action("GetPurchaseMISDetailsData", "PurchaseMIS")';
+            }
+
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+
+
+        // function GetServerDate() {
+        //     $.ajax({
+        //         type: "GET",
+        //         url: "@Url.Action("GetServerDate")",
+        //         async: false,
+        //         success: function (result, status, error) {
+        //             console.log(result);
+        //             if (result != null) {
+        //                 // $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+        //                 //$('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+        //                 var firstDayOfMonth = getFirstDayOfMonth(result);
+        //                 $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
+
+        //                 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+        //             }
+        //         }
+        //     });
+        // }
+
+        function getFirstDayOfMonth(dateString) {
+            const [day, month, year] = dateString.split('/');
+
+            // Create a new Date object (months are 0-indexed, so subtract 1 from the month)
+            const currentDate = new Date(year, month - 1, day);
+
+            // Set the date to the 1st day of the month
+            currentDate.setDate(1);
+
+            // Format the result as dd/mm/YYYY
+            const firstDayOfMonth = `${currentDate.getDate().toString().padStart(2, '0')}/${(currentDate.getMonth() + 1).toString().padStart(2, '0')}/${currentDate.getFullYear()}`;
+
+            return firstDayOfMonth;
+        }
+
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportType').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/PurchaseMIS/ExportPurchaseMISToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
+
+        $('#sendToPDF').click(async function () {
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
+
+            var fromDate = $('#ToDate').val();
+
+            var reportTypeText = $('#ReportType option:selected').text();
+            var reportTypeValue = $('#ReportType').val();
+
+            var PartCodeText = $('#PartCode option:selected').text();
+            var PartCodeValue = $('#PartCode').val();
+
+            var ItemNameText = $('#ItemName option:selected').text();
+            var ItemNameValue = $('#ItemName').val();
+
+            var accountNameText = $('#AccountName option:selected').text();
+            var accountNameValue = $('#AccountName').val();
+
+
+
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            var resp = await fetch('/PurchaseMIS/GetPurchaseMISReportForPDF');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); // Log full error
+                console.error("Error body:", errorText);
+                return; // Exit early
+            }
+
+            var rows = await resp.json();
+
+
+            // Declare headers and body
+            let headers = [];
+            let body = [];
+
+            // Handle report type logic
+            switch (reportTypeValue) {
+                case 'Monthly Rate Analysis':
+                    headers = [
+                        "#Sr", "Item Name", "Part Code", "Account Name", "APR", "MAY", "JUN", "JUL",
+                        "AUG", "SEP", "OCT", "NOV", "DEC", "JAN", "FEB", "MAR"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.itemName, item.partCode, item.accountName,
+                        item.apr, item.may, item.jun, item.jul,
+                        item.aug, item.sep, item.oct, item.nov,
+                        item.dec, item.jan, item.feb, item.mar
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },
+                        1: { cellWidth: 60 },
+                        2: { cellWidth: 60 },
+                        3: { cellWidth: 60 },
+                        4: { cellWidth: 30 },
+                        5: { cellWidth: 30 },
+                        6: { cellWidth: 30 },
+                        7: { cellWidth: 30 },
+                        8: { cellWidth: 30 },
+                        9: { cellWidth: 30 },
+                        10: { cellWidth: 30 },
+                        11: { cellWidth: 30 },
+                        12: { cellWidth: 30 },
+                        13: { cellWidth: 30 },
+                        14: { cellWidth: 30 },
+                        15: { cellWidth: 30 }
+                    };
+                    break;
+                
+                default:
+                    $.notify(reportTypeValue + " report has no data to display!", "error");
+                    return;
+            }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15,
+                head: [headers],
+                body: body,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                tableWidth: 'auto',
+                columnStyles: columnStyles,
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`PurchaseMIS_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
+
+        });
+
+        // $('#sendToExcel').click(function () {
+        //     let table = $("#ReportTable");
+        //     console.log(table);
+        //     TableToExcel.convert(table[0], {
+        //         name: `ReportTable.xlsx`,
+        //         sheet: {
+        //             name: 'ReportTable'
+        //         }
+        //     });
+        // });
+
+        //sumu written
+
+        // Assumes you have js-xlsx included in your project
+
+        // $('#sendToExcel').click(function () {
+        //     let table = $("#ReportTable");
+        //     let wb = XLSX.utils.table_to_book(table[0], { sheet: "ReportTable" });
+        //     let ws = wb.Sheets["ReportTable"];
+
+        //     // Example: Highlight the header row
+        //     const headerRange = XLSX.utils.decode_range(ws['!ref']);
+        //     for (let C = headerRange.s.c; C <= headerRange.e.c; ++C) {
+        //         const address = XLSX.utils.encode_cell({ r: headerRange.s.r, c: C });
+        //         if (!ws[address]) continue;
+        //         ws[address].s = {
+        //             fill: {
+        //                 patternType: "solid",
+        //                 fgColor: { rgb: "FFFF0000" } // Red
+        //             },
+        //             font: {
+        //                 bold: true
+        //             }
+        //         };
+        //     }
+
+        //     // Add filter (example - assumes header row is row 1)
+        //     ws['!autofilter'] = {
+        //         ref: XLSX.utils.encode_range({
+        //             s: { r: 0, c: 0 },  // Start at header row
+        //             e: { r: table[0].rows.length - 1, c: table[0].rows[0].cells.length - 1 } //End at last row and column
+        //         })
+        //     };
+
+
+        //     XLSX.writeFile(wb, `ReportTable.xlsx`);
+        // });
+
+
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var month = monthNames[date.getMonth()];
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+
+        $(document).on("click", ".sortCol", function () {
+            ;
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ReportTable');
+            var rows = table.find('#divStockRegisterBody > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divStockRegisterBody').append(row);
+            });
+        }
+        function countAllTotal() {
+
+            var rowCount = $('#divStockRegisterBody tr').length;
+
+            var TotQty = 0;
+            var TotStoreStock = 0;
+            var TotWIPStock = 0;
+            var TotAmount = 0;
+            for (var i = 1; i <= rowCount; i++) {
+
+                TotQty += $('#totQtyG-' + i).text() == '' ? 0 : parseFloat($('#totQtyG-' + i).text());
+                TotStoreStock += $('#totStoreStockG-' + i).text() == '' ? 0 : parseFloat($('#totStoreStockG-' + i).text());
+                TotWIPStock += $('#totWIPStockG-' + i).text() == '' ? 0 : parseFloat($('#totWIPStockG-' + i).text());
+                TotAmount += $('#totAmountG-' + i).text() == '' ? 0 : parseFloat($('#totAmountG-' + i).text());
+                //if(totAmount < 0){
+                //    $('#SAGridRow-' + i).css('background-color', 'red');
+                //}
+            }
+
+
+            $('#totQty').val(isNaN(TotQty) ? 0 : TotQty.toFixed(2));
+            $('#totStoreStock').val(isNaN(TotStoreStock) ? 0 : TotStoreStock.toFixed(2));
+            $('#totWIPStock').val(isNaN(TotWIPStock) ? 0 : TotWIPStock.toFixed(2));
+            $('#totAmount').val(isNaN(TotAmount) ? 0 : TotAmount.toFixed(2));
+        }
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divStockRegisterBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+
+
+
+        function DeleteRow(i) {
+
+            var indexToRemove = i - 1;
+            $('#SAGridRow-' + i).remove();
+            $('#ReportTable tbody tr').each(function (index) {
+                $(this).attr('id', 'SAGridRow-' + (index + 1));
+
+
+                $(this).find('td:first-child a:first-child').each(function (tdIndex) {
+                    $(this).attr('id', (index + 1));
+                });
+
+                $(this).find('td[id^="amount-"]').each(function (tdIndex) {
+                    $(this).attr('id', 'amount-' + (index + 1));
+                });
+
+            });
+            //$('#ReportTable tr:eq(' + indexToRemove + ')').remove();
+            countAllTotal();
+            $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+        }
+
+
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+
+
+
+}
+<style>
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+</style>
