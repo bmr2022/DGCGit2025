@@ -455,13 +455,13 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@EndDate", endDt));
             var Result = await _IDataLogic.ExecuteDataTable("SP_PurchaseOrder", SqlParams);
 
-            if (((DataTable)Result.Result).Rows.Count > 0)
+            if (Result?.Result is DataTable dt && dt.Rows.Count > 0)
             {
-                var oDT = Result.Result.DefaultView.ToTable(true, "EntryID", "AmmNo", "PONo", "POType", "POFor", "YearCode", "FOC", "Currency",
+                var oDT = dt.DefaultView.ToTable(true, "EntryID", "AmmNo", "PONo", "POType", "POFor", "YearCode", "FOC", "Currency",
                     "POTypeServItem", "CC", "OrderType", "PaymentTerms", "POCloseDate", "PODate", "VendorName", "VendorAddress", "WEF", "Approved",
                     "CreatedBy", "UpdatedBy", "Active", "UpdatedOn", "CreatedOn", "OrderAmt", "OrderNetAmt", "Approval1Levelapproved", "ApproveAmm", "EnteredBy", "UpdatedByName");
-                oDT.TableName = "PODASHBOARD";
 
+                oDT.TableName = "PODASHBOARD";
                 DashBoardData.PODashboard = CommonFunc.DataTableToList<PODashBoard>(oDT);
             }
         }
