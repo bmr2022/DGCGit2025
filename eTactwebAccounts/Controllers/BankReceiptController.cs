@@ -338,7 +338,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
         public async Task<JsonResult> FillLedgerName(string VoucherType, string ShowAll)
-            {
+        {
             var JSON = await _IBankReceipt.FillLedgerName(VoucherType, ShowAll);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
@@ -734,7 +734,7 @@ namespace eTactWeb.Controllers
                 return PartialView("_BankReceiptGrid", MainModel);
             }
         }
-        public async Task<IActionResult> BankReceiptDashBoard(string FromDate = "", string ToDate = "",string Flag = "True", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
+        public async Task<IActionResult> BankReceiptDashBoard(string FromDate = "", string ToDate = "", string Flag = "True", string LedgerName = "", string Bank = "", string VoucherNo = "", string AgainstVoucherRefNo = "", string AgainstVoucherNo = "", string Searchbox = "", string DashboardType = "")
         {
             try
             {
@@ -767,7 +767,7 @@ namespace eTactWeb.Controllers
                         }
                     }
                 }
-                
+
                 return View(model);
             }
             catch (Exception ex)
@@ -775,20 +775,20 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
             HttpContext.Session.Remove("KeyBankReceiptGrid");
             HttpContext.Session.Remove("KeyBankReceiptGridEdit");
             var model = new BankReceiptModel();
-            model = await _IBankReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName,Bank, VoucherNo, AgainstVoucherNo, SoNo,AgainstBillno);
+            model = await _IBankReceipt.GetDashBoardDetailData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, SoNo, AgainstBillno);
             return PartialView("_BankReceiptDashBoardDetailGrid", model);
         }
-        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
+        public async Task<IActionResult> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PoNo, string AgainstBillno)
         {
             HttpContext.Session.Remove("KeyBankReceiptGrid");
             HttpContext.Session.Remove("KeyBankReceiptGridEdit");
             var model = new BankReceiptModel();
-            model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate, LedgerName,Bank, VoucherNo, AgainstVoucherNo, PoNo,AgainstBillno);
+            model = await _IBankReceipt.GetDashBoardSummaryData(FromDate, ToDate, LedgerName, Bank, VoucherNo, AgainstVoucherNo, PoNo, AgainstBillno);
             return PartialView("_BankReceiptDashBoardGrid", model);
         }
         public async Task<IActionResult> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable)

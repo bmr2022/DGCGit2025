@@ -224,6 +224,7 @@ namespace eTactWeb
             services.TryAddScoped<IItemGroup, ItemGroupBLL>();
             services.TryAddScoped<ILedgerOpeningEntry, LedgerOpeningEntryBLL>();
             services.TryAddScoped<ISubVoucher, SubVoucherBLL>();
+            services.TryAddScoped<IDashboard, DashboardBLL>();
             services.TryAddScoped<IFeatures_Options, Features_OptionsBLL>();
             services.TryAddScoped<ICompanyDetail, CompanyDetailBLL>();
             services.TryAddScoped<IPrimaryAccountGroupMaster, PrimaryAccountGroupMasterBLL>();
