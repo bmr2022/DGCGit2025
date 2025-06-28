@@ -1,8 +1,8 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="06/26/2025 13:00:07" ReportInfo.Modified="06/27/2025 16:17:23" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="06/26/2025 13:00:07" ReportInfo.Modified="06/28/2025 10:29:38" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqtkzNtsLCrjFFKG01JH5m8VJ+Sh/Xox0qR8hUHXe2FjLO4/6zyOAe5VwCbCs+kvmsoMCoW06DlN/XqWxbD/P8+FuAMe4ImXxwNMizue8l1NkJFfCk3bI8VyNXHFr+o3m9nfGunlvNQOoRng8PLl+ebdahBMVHSVLUoJZBKcITnm3hgWn87aBzvTNqiPU0SFarAKrrnuTaHG0DO8ZVCOstAw==">
-      <TableDataSource Name="Table" Alias="SPReportPurchaseOrderAmendment" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPurchaseOrderAmendment @EntryId = @entryparam , @yearCode = @yearparam,@PONo=@PoNo&#13;&#10;,@AmendNo=@AmmNo,@Flag= N'PURCHASEORDERPRINT'">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqtkzNtsLCrjFFKG01JH5m8VJ+Sh/Xox0qR8hUHXe2FjLO4/6zyOAe5VwCbCs+kvmsoMCoW06DlN/XqWxbD/P8+FuAMe4ImXxwNMizue8l1NkJFfCk3bI8VyNXHFr+o3m9nfGunlvNQOoRng8PLl+ebdahBMVHSVLUoJZBKcITnm3hgWn87aBzvTNqiPU0SFarDLoNmXC80E3LSMm2B8DtkQ==">
+      <TableDataSource Name="Table" Alias="SPReportPurchaseOrderAmendment" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportPurchaseOrderAmendment @EntryId = @entryparam , @yearCode = @yearparam,@PONo=@PoNo&#13;&#10;,@AmendNo=@AmmNo,@Flag= N'PURCHASEORDERPRINT',@ShowOnlyAmendItem=N'Y'">
         <Column Name="SeqNo" DataType="System.Int64"/>
         <Column Name="Account_Name" DataType="System.String"/>
         <Column Name="Vendorcity" DataType="System.String"/>
@@ -220,7 +220,7 @@
       <TextObject Name="Text316" Left="122.85" Top="302.4" Width="226.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.AmmEffDate]" Format="Date" Format.Format="d" Font="Arial, 9pt"/>
       <TextObject Name="Text16" Left="28.35" Top="311.09" Width="85.05" Height="18.9" Text="Amm. Date:" Font="Arial, 10pt"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="343.4" Width="718.2" Height="47.25">
+    <PageHeaderBand Name="PageHeader1" Top="344.2" Width="718.2" Height="47.25">
       <TextObject Name="Text106" Left="472.5" Top="22.9" Width="37.8" Height="18.9" Text="Rate " HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text108" Left="510.3" Top="22.9" Width="37.8" Height="18.9" Text="Amt" Font="Arial, 8pt"/>
       <TextObject Name="Text109" Left="548.1" Top="22.9" Width="37.8" Height="18.9" Text="Rate " HorzAlign="Center" Font="Arial, 8pt"/>
@@ -261,7 +261,7 @@
       <TextObject Name="Text110" Left="548.1" Top="4" Width="75.6" Height="18.9" Text="SGST" HorzAlign="Center" Font="Arial, 8pt"/>
       <LineObject Name="Line6" Left="18.9" Width="670.95"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="393.85" Width="718.2" Height="41.58" Condition="[SPReportPurchaseOrderAmendment.PartCode]">
+    <GroupHeaderBand Name="GroupHeader1" Top="395.45" Width="718.2" Height="41.58" Condition="[SPReportPurchaseOrderAmendment.PartCode]">
       <LineObject Name="Line171" Left="18.9" Height="40.82" CanGrow="true"/>
       <LineObject Name="Line175" Left="37.42" Height="40.82"/>
       <LineObject Name="Line176" Left="119.45" Height="40.82"/>
@@ -294,10 +294,10 @@
       <TextObject Name="Text348" Left="585.9" Top="9.45" Width="28.35" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.SGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text349" Left="614.25" Top="9.45" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.IGSTPER]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
       <TextObject Name="Text350" Left="652.05" Top="9.45" Width="37.8" Height="28.35" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.IGSTAMT]" Format="Number" Format.UseLocale="true" Format.DecimalDigits="2" HorzAlign="Right" WordWrap="false" Font="Arial, 7pt" Trimming="EllipsisCharacter"/>
-      <DataBand Name="Data1" Top="438.63" Width="718.2" DataSource="Table"/>
-      <GroupFooterBand Name="GroupFooter1" Top="441.83" Width="718.2"/>
+      <DataBand Name="Data1" Top="441.03" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="445.03" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="489.81" Width="718.2" Height="491.4">
+    <ReportSummaryBand Name="ReportSummary1" Top="494.61" Width="718.2" Height="491.4">
       <LineObject Name="Line112" Left="20.79" Top="350.03" Width="670.95"/>
       <LineObject Name="Line191" Left="20.79" Top="354.74" Width="670.95"/>
       <TextObject Name="Text167" Left="56.7" Top="179.55" Width="94.5" Height="18.9" Text="Prepared By:" Font="Arial, 10pt"/>
@@ -334,7 +334,7 @@
       <TextObject Name="Text360" Left="122.85" Top="132.3" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Remark]" Font="Arial, 7pt"/>
       <TextObject Name="Text361" Left="66.15" Top="198.45" Width="66.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.PreparedBy]" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text362" Left="557.55" Top="198.45" Width="132.3" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPurchaseOrderAmendment.Approved]" HorzAlign="Center" Font="Arial, 8pt"/>
-      <ChildBand Name="Child1" Top="445.03" Width="718.2" Height="41.58" FillUnusedSpace="true">
+      <ChildBand Name="Child1" Top="449.03" Width="718.2" Height="41.58" FillUnusedSpace="true">
         <LineObject Name="Line221" Left="18.9" Height="40.82" CanGrow="true"/>
         <LineObject Name="Line222" Left="37.42" Height="40.82"/>
         <LineObject Name="Line223" Left="119.45" Height="40.82"/>
