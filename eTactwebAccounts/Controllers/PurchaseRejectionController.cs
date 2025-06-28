@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Http;
 using NuGet.Packaging;
 using System.Runtime.Caching;
 using System.Reflection;
+using Newtonsoft.Json.Linq;
+using System.Diagnostics;
 
 namespace eTactWeb.Controllers
 {
@@ -21,15 +23,17 @@ namespace eTactWeb.Controllers
         private readonly ILogger<PurchaseRejectionController> _logger;
         private readonly IDataLogic _IDataLogic;
         private readonly IMemoryCache _MemoryCache;
+        public readonly IEinvoiceService _IEinvoiceService;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public PurchaseRejectionController(IPurchaseRejection purchRej, IDataLogic iDataLogic, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger, IMemoryCache memoryCache)
+        public PurchaseRejectionController(IPurchaseRejection purchRej, IDataLogic iDataLogic, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger, IMemoryCache memoryCache, IEinvoiceService IEinvoiceService)
         {
             _purchRej = purchRej;
             _IDataLogic = iDataLogic;
             _IWebHostEnvironment = IWebHostEnvironment;
             _logger = logger;
             _MemoryCache = memoryCache;
+            _IEinvoiceService = IEinvoiceService;
         }
 
         [HttpGet]
@@ -129,7 +133,7 @@ namespace eTactWeb.Controllers
 
         [HttpPost]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> PurchaseRejection(AccPurchaseRejectionModel model)
+        public async Task<IActionResult> PurchaseRejection(AccPurchaseRejectionModel model,string ShouldEinvoice)
         {
             try
             {
@@ -318,11 +322,29 @@ namespace eTactWeb.Controllers
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             //_MemoryCache.Remove("KeyPurchaseRejectionGrid");
                             //_MemoryCache.Remove("PurchaseRejectionModel");
+                            if (ShouldEinvoice == "true")
+                            {
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    EntryId = model.PurchaseRejEntryId,
+                                    InvoiceNo = model.PurchaseRejectionVoucherNo,
+                                    YearCode = model.PurchaseRejYearCode,
+                                    saleBillType = model.PurchaseBillType,
+                                    customerPartCode = model.PartCode,
+                                    transporterName = model.Transporter,
+                                    vehicleNo = model.Vehicleno,
+                                    distanceKM = model.Distance,
+                                    EntrybyId = model.EntryByempId,
+                                    MachineName = model.MachineName
+
+                                });
+                            }
                             HttpContext.Session.Remove("KeyPurchaseRejectionGrid");
                             HttpContext.Session.Remove("PurchaseRejectionModel");
 
                             //return View(model1);
-                            return RedirectToAction(nameof(PurchaseRejection), new { Id = 0, Mode = "", YC = 0 });
+                         //   return RedirectToAction(nameof(PurchaseRejection), new { Id = 0, Mode = "", YC = 0 });
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -339,9 +361,27 @@ namespace eTactWeb.Controllers
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             //_MemoryCache.Remove("KeyPurchaseRejectionGrid");
                             //_MemoryCache.Remove("PurchaseRejectionModel");
+                            if (ShouldEinvoice == "true")
+                            {
+                                return Json(new
+                                {
+                                    status = "Success",
+                                    EntryId = model.PurchaseRejEntryId,
+                                    InvoiceNo = model.PurchaseRejectionVoucherNo,
+                                    YearCode = model.PurchaseRejYearCode,
+                                    saleBillType = model.PurchaseBillType,
+                                    customerPartCode = model.PartCode,
+                                    transporterName = model.Transporter,
+                                    vehicleNo = model.Vehicleno,
+                                    distanceKM = model.Distance,
+                                    EntrybyId = model.EntryByempId,
+                                    MachineName = model.MachineName
+
+                                });
+                            }
                             HttpContext.Session.Remove("KeyPurchaseRejectionGrid");
                             HttpContext.Session.Remove("PurchaseRejectionModel");
-                            return View(model1);
+                         //   return View(model1);
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -374,8 +414,8 @@ namespace eTactWeb.Controllers
                         }
                         HttpContext.Session.SetString("PurchaseRejection", JsonConvert.SerializeObject(model));
                     }
-
-                    return View(model);
+                    return Json(new { status = "Success" });
+                    //   return View(model);
                 }
             }
             catch (Exception ex)
@@ -1246,5 +1286,123 @@ namespace eTactWeb.Controllers
 
             return false;
         }
+        private async Task<string> GenerateQRCodeImage(string qrText, string filePath)
+        {
+            try
+            {
+                // Example using Zint barcode generator
+                string tempInputPath = Path.GetTempFileName();
+                await System.IO.File.WriteAllTextAsync(tempInputPath, qrText);
+
+                string zintPath = @"C:\Program Files (x86)\Zint\zint.exe";
+                if (!System.IO.File.Exists(zintPath))
+                    return "Zint not found";
+
+                var process = new Process
+                {
+                    StartInfo = new ProcessStartInfo
+                    {
+                        FileName = zintPath,
+                        Arguments = $"-b 58 -o \"{filePath}\" -i \"{tempInputPath}\"",
+                        RedirectStandardOutput = true,
+                        RedirectStandardError = true,
+                        UseShellExecute = false,
+                        CreateNoWindow = true
+                    }
+                };
+
+                process.Start();
+                await process.WaitForExitAsync();
+
+                if (!System.IO.File.Exists(filePath))
+                    return "Failed";
+
+                return "Success";
+            }
+            catch
+            {
+                return "Error";
+            }
+        }
+
+        public async Task<IActionResult> GenerateInvoice([FromBody] EInvoiceItemModel input)
+        {
+            try
+            {
+                if (input == null)
+                    return BadRequest("Invalid input");
+
+                var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode
+                );
+                var token = await _IEinvoiceService.GetAccessTokenAsync();
+
+                var result = await _IEinvoiceService.CreateIRNAsync(
+                    token,
+                    input.EntryId,
+                    input.InvoiceNo,
+                    input.YearCode,
+                    input.saleBillType,
+                    input.customerPartCode,
+                    input.transporterName,
+                    input.vehicleNo,
+                    input.distanceKM,
+                    input.EntrybyId,
+                    input.MachineName,
+                    "Sale Bill",
+                    input.generateEway,
+                    "AccPurchaseRejectionEInvoice"
+                );
+                var responseObj = result.Result as JObject;
+
+
+                //if (!string.IsNullOrWhiteSpace(ewbUrl))
+                //{
+                if (responseObj != null)
+                {
+                    if (input.generateEway == "EInvoice")
+                    {
+                        string ewbUrl = (string)responseObj["ewbUrl"];
+                        string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
+                        if (!Directory.Exists(uploadsFolder))
+                            Directory.CreateDirectory(uploadsFolder);
+
+                        string fileName = $"{Guid.NewGuid()}.png";
+                        string outputPath = Path.Combine(uploadsFolder, fileName);
+
+                        var qrResult = await GenerateQRCodeImage(ewbUrl, outputPath);
+                        if (qrResult != "Success")
+                            return BadRequest("QR generation failed");
+
+                        string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
+                        return Ok(new
+                        {
+                            redirectUrl = publicUrl,
+                            rawResponse = (string)responseObj["rawResponse"]
+                        });
+                        //      return Ok(new { redirectUrl = publicUrl });
+                    }
+                    //return Ok(new { redirectUrl = ewbUrl }); ;
+
+                    return Ok(new
+                    {
+                        redirectUrl = (string)responseObj["ewbUrl"],
+                        rawResponse = (string)responseObj["rawResponse"]
+                    });
+                }
+                //}
+                else
+                {
+                    return BadRequest("Invoice generation failed");
+                }
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, $"Server Error: {ex.Message}");
+            }
+        }
+
     }
 }

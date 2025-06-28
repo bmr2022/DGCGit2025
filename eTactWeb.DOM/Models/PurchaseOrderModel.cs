@@ -37,6 +37,7 @@ public class PODashBoard : TimeStamp
     public string? PODate { get; set; }
     public string? POFor { get; set; }
     public string? PONo { get; set; }
+    public string? OrderNo { get; set; }
     public IList<TextValue>? PONoList { get; set; }
     public string? POType { get; set; }
     public string? POTypeServItem { get; set; }

@@ -10,6 +10,7 @@ using Newtonsoft.Json.Linq;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Http;
 
 namespace eTactWeb.Data.Common;
 
@@ -1923,6 +1924,31 @@ public static class CommonFunc
 
         return item;
     }
+    public static T DataRowToClassSafe<T>(this DataRow row) where T : new()
+    {
+        T item = new T();
+        var props = typeof(T).GetProperties(BindingFlags.Instance | BindingFlags.Public)
+                             .Where(p => p.CanWrite && p.PropertyType != typeof(IFormFile)); // Ignore IFormFile
+
+        foreach (var prop in props)
+        {
+            if (!row.Table.Columns.Contains(prop.Name) || row[prop.Name] == DBNull.Value)
+                continue;
+
+            try
+            {
+                object value = Convert.ChangeType(row[prop.Name], Nullable.GetUnderlyingType(prop.PropertyType) ?? prop.PropertyType);
+                prop.SetValue(item, value);
+            }
+            catch (Exception)
+            {
+                // Log or handle type mismatch if needed
+            }
+        }
+
+        return item;
+    }
+
     public static bool IsDeliveryDateInRange(DateTime delDate, DateTime effFrom, DateTime effTill, out string errorMsg, int row)
     {
         errorMsg = string.Empty;
