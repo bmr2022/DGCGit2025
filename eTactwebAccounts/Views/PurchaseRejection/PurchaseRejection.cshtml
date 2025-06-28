@@ -687,42 +687,55 @@
                                    generateEway: generateEway
                                };
 
-                               fetch('@Url.Action("GenerateInvoice", "PurchaseRejection")', {
-                                   method: 'POST',
-                                   headers: {
-                                       'Content-Type': 'application/json'
-                                   },
-                                   body: JSON.stringify(payload)
-                               })
-                               .then(response => {
-                                   if (!response.ok) throw new Error("Failed to generate invoice");
-                                   return response.json();
-                               })
-                               .then(data => {
-                                   if (data.redirectUrl) {
-                                           $('#PasswordAllowPopup').modal("hide");
-                                       window.location.href = data.redirectUrl;
+                                    fetch('@Url.Action("GenerateInvoice", "PurchaseRejection")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to generate invoice");
+            return response.json();
+        })
+        .then(data => {
+            $('#PasswordAllowPopup').modal("hide");
 
-                                   }
-                                       if (data.rawResponse) {
-                                           try {
-                                           //    const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
-                                                       $('#EinvoiceResponseBox').val(data.rawResponse.eInvoiceResponse || '');
-                                                        $('#ewayResponseBox').val(data.rawResponse.eWayBillResponse || '');
-                                           } catch (e) {
-                                               $('#EinvoiceResponseBox').val(res.rawResponse);
-                                               $('#ewayResponseBox').val(res.rawResponse);
-                                           }
-                                       }
-                                   else {
-                                      $.notify(data.redirectUrl, "error");
-                                   }
-                               }) // <-- this closing parenthesis was missing
-                               .catch(error => {
-                                   console.log(JSON.stringify(payload));
-                                   console.error("Invoice error:", error);
-                                   alert("Failed to generate invoice.");
-                               });
+            // Show eInvoice response
+            if (data.rawEInvoice) {
+                $('#einvoiceResponseBox').val(data.rawEInvoice);
+            }
+
+            // Show eWayBill response
+            if (data.rawEWayBill) {
+                $('#ewayResponseBox').val(data.rawEWayBill);
+            }
+
+            // Open PDF if available
+            if (data.ewbPdfUrl && data.ewbPdfUrl.trim() !== "") {
+                window.open(data.ewbPdfUrl, '_blank');
+            }
+            // Open QR code image if available
+            else if (data.qrCodeUrl && data.qrCodeUrl.trim() !== "") {
+                window.open(data.qrCodeUrl, '_blank');
+            }
+
+            // Fallback: no data at all
+            if (
+                !data.rawEInvoice &&
+                !data.rawEWayBill &&
+                !data.qrCodeUrl &&
+                !data.ewbPdfUrl
+            ) {
+                $.notify("Invoice generated, but no detailed response or QR/PDF available.", "warn");
+            }
+        })
+        .catch(error => {
+            console.log(JSON.stringify(payload));
+            console.error("Invoice error:", error);
+            alert("Failed to generate invoice.");
+        });
+
 
                            } else {
                                window.location.href = '/PurchaseRejection/PurchaseRejection';
@@ -765,21 +778,44 @@
                          contentType: 'application/json',
                          data: JSON.stringify(model),
                          success: function (res) {
-                             if (res.redirectUrl) {
+                        /*      if (res.redirectUrl) {
                                  window.location.href = res.redirectUrl;
                              }
-                               if (res.rawResponse) {
+                               /* if (res.rawResponse) {
                                          try {
                                              const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
                                              $('#ewayResponseBox').val(formattedJson);
                                          } catch (e) {
                                              $('#ewayResponseBox').val(res.rawResponse);
                                          }
-                                     }
+                                     } */
+                                  /*        if (res.rawEInvoice) {
+            $('#einvoiceResponseBox').val(res.rawEInvoice);
+        }
+
+        // EWAY BILL RESPONSE
+        if (res.rawEWayBill) {
+            $('#ewayResponseBox').val(res.rawEWayBill);
+        }
                              else {
                                  alert('E-Invoice generation failed.');
-                             }
-                             $('#PasswordAllowPopup').modal('hide');
+                             } */ 
+                              if (res.rawEInvoice)
+                $('#einvoiceResponseBox').val(res.rawEInvoice);
+            if (res.rawEWayBill)
+                $('#ewayResponseBox').val(res.rawEWayBill);
+
+            // Handle PDF or QR
+            if (res.ewbPdfUrl && res.ewbPdfUrl.trim() !== "") {
+                window.open(res.ewbPdfUrl, '_blank');
+            }  
+            else if (res.qrCodeUrl) {
+               window.open(res.qrCodeUrl, '_blank');
+            } else {
+                alert("No QR code or PDF found.");
+            }
+
+            $('#PasswordAllowPopup').modal('hide');
                          },
                          error: function () {
                              alert('An error occurred while generating the E-Invoice.');

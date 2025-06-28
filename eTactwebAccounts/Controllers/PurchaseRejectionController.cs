@@ -1324,7 +1324,7 @@ namespace eTactWeb.Controllers
                 return "Error";
             }
         }
-
+        [HttpPost]
         public async Task<IActionResult> GenerateInvoice([FromBody] EInvoiceItemModel input)
         {
             try
@@ -1332,13 +1332,7 @@ namespace eTactWeb.Controllers
                 if (input == null)
                     return BadRequest("Invalid input");
 
-                var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
-                    input.EntryId,
-                    input.InvoiceNo,
-                    input.YearCode
-                );
                 var token = await _IEinvoiceService.GetAccessTokenAsync();
-
                 var result = await _IEinvoiceService.CreateIRNAsync(
                     token,
                     input.EntryId,
@@ -1351,58 +1345,174 @@ namespace eTactWeb.Controllers
                     input.distanceKM,
                     input.EntrybyId,
                     input.MachineName,
-                    "Sale Bill",
+                    "Purchase Rejection",
                     input.generateEway,
                     "AccPurchaseRejectionEInvoice"
                 );
-                var responseObj = result.Result as JObject;
 
+                var responseObj = JObject.FromObject(result.Result);
+                var rawResponse = responseObj["rawResponse"] as JObject;
 
-                //if (!string.IsNullOrWhiteSpace(ewbUrl))
-                //{
-                if (responseObj != null)
+                if (rawResponse == null)
+                    return BadRequest("Invalid raw response format.");
+
+                var eInvoiceStr = rawResponse["eInvoiceResponse"]?.ToString();
+                if (string.IsNullOrWhiteSpace(eInvoiceStr))
+                    return BadRequest("Missing eInvoice response.");
+
+                JObject eInvoiceObj;
+                try
                 {
-                    if (input.generateEway == "EInvoice")
-                    {
-                        string ewbUrl = (string)responseObj["ewbUrl"];
-                        string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
-                        if (!Directory.Exists(uploadsFolder))
-                            Directory.CreateDirectory(uploadsFolder);
-
-                        string fileName = $"{Guid.NewGuid()}.png";
-                        string outputPath = Path.Combine(uploadsFolder, fileName);
-
-                        var qrResult = await GenerateQRCodeImage(ewbUrl, outputPath);
-                        if (qrResult != "Success")
-                            return BadRequest("QR generation failed");
-
-                        string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
-                        return Ok(new
-                        {
-                            redirectUrl = publicUrl,
-                            rawResponse = (string)responseObj["rawResponse"]
-                        });
-                        //      return Ok(new { redirectUrl = publicUrl });
-                    }
-                    //return Ok(new { redirectUrl = ewbUrl }); ;
-
-                    return Ok(new
-                    {
-                        redirectUrl = (string)responseObj["ewbUrl"],
-                        rawResponse = (string)responseObj["rawResponse"]
-                    });
+                    eInvoiceObj = JObject.Parse(eInvoiceStr);
                 }
-                //}
-                else
+                catch (Exception ex)
                 {
-                    return BadRequest("Invoice generation failed");
+                    return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
                 }
+                string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
+                if (!Directory.Exists(uploadsFolder))
+                    Directory.CreateDirectory(uploadsFolder);
+                string signedQrText = eInvoiceObj["results"]?["message"]?["SignedQRCode"]?.ToString();
+
+                string fileName = $"{Guid.NewGuid()}.png";
+                string outputPath = Path.Combine(uploadsFolder, fileName);
+
+                var qrResult = await GenerateQRCodeImage(signedQrText, outputPath);
+                if (qrResult != "Success")
+                    return BadRequest("QR generation failed");
+
+                string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
+
+                string ewbPdfUrl = rawResponse["ewbUrl"]?.ToString() ?? "";
+
+                return Ok(new
+                {
+                    qrCodeUrl=  publicUrl,
+                    ewbPdfUrl,
+                    rawEInvoice = eInvoiceObj.ToString(Formatting.Indented),
+                    rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
+                });
             }
             catch (Exception ex)
             {
                 return StatusCode(500, $"Server Error: {ex.Message}");
             }
         }
+
+        //public async Task<IActionResult> GenerateInvoice([FromBody] EInvoiceItemModel input)
+        //{
+        //    try
+        //    {
+        //        if (input == null)
+        //            return BadRequest("Invalid input");
+
+        //        var duplicateIRNResult = await _IEinvoiceService.CheckDuplicateIRN(
+        //            input.EntryId,
+        //            input.InvoiceNo,
+        //            input.YearCode
+        //        );
+        //        var token = await _IEinvoiceService.GetAccessTokenAsync();
+
+        //        var result = await _IEinvoiceService.CreateIRNAsync(
+        //            token,
+        //            input.EntryId,
+        //            input.InvoiceNo,
+        //            input.YearCode,
+        //            input.saleBillType,
+        //            input.customerPartCode,
+        //            input.transporterName,
+        //            input.vehicleNo,
+        //            input.distanceKM,
+        //            input.EntrybyId,
+        //            input.MachineName,
+        //            "Sale Bill",
+        //            input.generateEway,
+        //            "AccPurchaseRejectionEInvoice"
+        //        );
+        //     //   var responseObj = result.Result as JObject;
+        //        var responseObj = JObject.FromObject(result.Result);
+        //        var rawResponse = responseObj["rawResponse"] as JObject;
+
+        //        if (rawResponse == null)
+        //            return BadRequest("Invalid raw response format.");
+
+        //        // Step 3: Parse nested eInvoiceResponse JSON string
+        //        var eInvoiceStr = rawResponse["eInvoiceResponse"]?.ToString();
+        //        if (string.IsNullOrWhiteSpace(eInvoiceStr))
+        //            return BadRequest("Missing eInvoice response.");
+
+        //        JObject eInvoiceObj;
+        //        try
+        //        {
+        //            eInvoiceObj = JObject.Parse(eInvoiceStr);
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
+        //        }
+
+        //        // Step 4: Extract QR code URL
+        //        string qrCodeUrl = eInvoiceObj["results"]?["message"]?["QRCodeUrl"]?.ToString();
+        //        string ewbError = rawResponse["eWayBillResponse"]?.ToString();
+        //        string rawResponseStr = rawResponse.ToString();
+        //        //if (!string.IsNullOrWhiteSpace(ewbUrl))
+        //        //{
+        //        if (responseObj != null)
+        //        {
+        //            //if (input.generateEway == "EInvoice")
+        //            //{
+        //            //    string ewbUrl = (string)responseObj["ewbUrl"];
+        //            //    string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
+        //            //    if (!Directory.Exists(uploadsFolder))
+        //            //        Directory.CreateDirectory(uploadsFolder);
+
+        //            //    string fileName = $"{Guid.NewGuid()}.png";
+        //            //    string outputPath = Path.Combine(uploadsFolder, fileName);
+
+        //            //    var qrResult = await GenerateQRCodeImage(ewbUrl, outputPath);
+        //            //    if (qrResult != "Success")
+        //            //        return BadRequest("QR generation failed");
+
+        //            //    string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
+        //            //    string rawEInvoice = rawResponse["eInvoiceResponse"]?.ToString() ?? "";
+        //            //    string rawEWayBill = rawResponse["eWayBillResponse"]?.ToString() ?? "";
+
+        //            //    return Ok(new
+        //            //    {
+        //            //        redirectUrl = qrCodeUrl ?? "",
+        //            //        rawEInvoice,
+        //            //        rawEWayBill
+        //            //    });
+        //            //    //return Ok(new
+        //            //    //{
+        //            //    //    redirectUrl = publicUrl,
+        //            //    //    // rawResponse = (string)responseObj["rawResponse"]
+        //            //    //    rawResponse = rawResponseStr
+        //            //    //});
+        //            //    //      return Ok(new { redirectUrl = publicUrl });
+        //            //}
+        //            ////return Ok(new { redirectUrl = ewbUrl }); ;
+
+        //            return Ok(new
+        //            {
+        //               // redirectUrl = (string)responseObj["ewbUrl"],
+        //                //rawResponse = (string)responseObj["rawResponse"]
+        //                redirectUrl = qrCodeUrl ?? "",
+        //                rawEInvoice = eInvoiceObj.ToString(Formatting.Indented),
+        //                rawEWayBill = ewbError
+        //            });
+        //        }
+        //        //}
+        //        else
+        //        {
+        //            return BadRequest("Invoice generation failed");
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        return StatusCode(500, $"Server Error: {ex.Message}");
+        //    }
+        //}
 
     }
 }
