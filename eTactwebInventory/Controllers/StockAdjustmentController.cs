@@ -801,6 +801,9 @@ namespace eTactWeb.Controllers
                         var storeIdResult = 0;
                         var WCResult = 0;
                         string SlipNo = Request.Form["SlipNo"];
+                        string EntryId = Request.Form["EntryId"];
+                        var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                        string UniqueBatchNo="ADJ/"+EntryId+"/"+YearCode+"/"+worksheet.Cells[row, 2].Value.ToString()+"/"+SlipNo;
 
                         //var duplicatePartCode = IStockAdjust.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
                         //var duplicateItemName = IStockAdjust.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
@@ -857,7 +860,7 @@ namespace eTactWeb.Controllers
                             var WIPLotStock = IStockAdjust.GetWIPStockBatchWise(itemCCode, WCResult, uniquebatchno, batchno);
                             WCLotStockResult = WIPLotStock.Result.Result != null && WIPLotStock.Result.Result.Rows.Count > 0 ? (int)WIPLotStock.Result.Result.Rows[0].ItemArray[0] : 0;
                         }
-                        var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                        
                         var AltQty = IStockAdjust.GetAltUnitQty(itemCCode, 0, worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock);
                         var AltQtyResult = AltQty.Result.Result != null && AltQty.Result.Result.Rows.Count > 0 ? (int)AltQty.Result.Result.Rows[0].ItemArray[0] : 0;
                         var Rate = IStockAdjust.FillRateAmount(itemCCode, YearCode, uniquebatchno, batchno);
@@ -906,7 +909,7 @@ namespace eTactWeb.Controllers
                             Unit = worksheet.Cells[row, 6].Value.ToString(),
                             altUnit = worksheet.Cells[row, 7].Value?.ToString() ?? string.Empty,
                             batchno = SlipNo,
-                            uniqbatchno = worksheet.Cells[row, 9].Value.ToString(),
+                            uniqbatchno = UniqueBatchNo,
                             reasonOfAdjustment = worksheet.Cells[row, 10].Value?.ToString() ?? string.Empty,
                             TotalStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? GetStoreTotalStock : WorkCenterTotalStock,
                             LotStock = worksheet.Cells[row, 1].Value.ToString() == "S" ? StoreLotStockResult : WCLotStockResult,
