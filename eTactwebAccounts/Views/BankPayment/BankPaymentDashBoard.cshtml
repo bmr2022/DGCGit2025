@@ -210,7 +210,7 @@
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                    if ($('#gateDashboardtable').val() == '') {
+                   if ($('#gateDashboardtable tr').length < 1) {
                         var dashGrid = 0;
                         $('#totalRows').text(dashGrid);
                     } else {
