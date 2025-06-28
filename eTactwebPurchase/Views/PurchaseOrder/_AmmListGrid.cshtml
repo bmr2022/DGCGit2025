@@ -86,9 +86,12 @@
                                         }
                                         else if (Model.Mode == "Completed")
                                         {
-                            <a class="table-link link-primary" id="AmmCompleteView-@Cntr" onclick="location.href='@Url.Action("ViewPOCompleted",new{Mode="POC",ID=item.EntryID,YC=item.YearCode,PONO=item.PONO})'">
-                                <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                            </a>
+                                                        <a class="table-link link-primary" id="AmmCompleteView-@Cntr" onclick="location.href='@Url.Action("PODetail",new{Mode="PAU",ID=item.EntryID,YC=item.YearCode})'">
+                                                <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                            </a>
+                            // <a class="table-link link-primary" id="AmmCompleteView-@Cntr" onclick="location.href='@Url.Action("ViewPOCompleted",new{Mode="POC",ID=item.EntryID,YC=item.YearCode,PONO=item.PONO})'">
+                            //     <i class="fa-regular fa-eye" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                            // </a>
                                         }
 
                         <!-- ✅ Always Show Print Button -->

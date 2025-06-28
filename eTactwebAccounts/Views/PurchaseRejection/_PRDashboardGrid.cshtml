@@ -86,24 +86,42 @@
                                             </span>
                                         </a>
                                     </div>
-                                    <div id="editCursorDiv-@srNo">
 
-                                        <a class="table-link link-primary" asp-action="PurchaseRejection" asp-route-Mode="U" asp-route-ID="@item.PurchaseRejEntryId" asp-route-YC="@item.PurchaseRejYearCode" onclick="BackButtonData(event)">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>
-
-                                    @*<div id="deleteCursorDiv-@srNo">
-                                        <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.PurchaseRejEntryId" asp-route-YC="@item.PurchaseRejYearCode" asp-route-accountCode="@item.AccountCode" asp-route-entryByMachineName="@item.MachineName" onclick="confirmdelete(event)">
-                                            <span class="fa-stack">
-                                                <i class="fa fa-square fa-stack-2x"></i>
-                                                <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                            </span>
-                                        </a>
-                                    </div>*@
+                                    @if (/*  item.Approved == "Y" ||item.Approval1Levelapproved == "Y" || item.ApproveAmm=="Y" ||*/  item.PurchaseRejYearCode.ToString() != yearCode.ToString())
+                                    {
+                                        <div>
+                                            <a class="table-link link-primary noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div id="editCursorDiv-@srNo">
+                                            <a class="table-link link-primary" asp-action="PurchaseRejection" asp-route-Mode="U" asp-route-ID="@item.PurchaseRejEntryId" asp-route-YC="@item.PurchaseRejYearCode" onclick="BackButtonData(event)">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    @if ( /* @item.Approved == "Y" ||item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.PurchaseRejYearCode.ToString() != yearCode.ToString())
+                                    {
+                                        <div>
+                                            <a class="table-link link-danger noCursor">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
+                                    }
+                                    else
+                                    {
                                     <div id="deleteCursorDiv-@srNo"
                                          class="table-link link-danger"
                                          style="cursor: pointer;"
@@ -113,6 +131,7 @@
                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </div>
+                                    }
                                 </div>
                             </td>
                             
