@@ -823,7 +823,8 @@
                          }
                      });
                  }
-
+    </script>
+    <script>
             function FillPopUpGridDetails(modeId) {
             html = '';
             if (modeId === 'U' || modeId === 'V') {
@@ -831,33 +832,6 @@
                 j = 1;
                 if (data && data.length > 0) {
                     data.forEach((item, index) => {
-                        let uniqueKey = "";
-                        $('#divAddPurchaseRejectionList tr').each(function () {
-                            const count = $(this).index();
-                            const gridItemCode = $(`#GridIC-${count}`).val();
-                            const gridBatchNo = $(`#GridBatchNo-${count}`).val();
-                            const gridUniqueBatchNo = $(`#GridUniqueBatchNo-${count}`).val();
-
-                            if (gridItemCode === item.itemCode &&
-                                gridBatchNo === item.batchNo &&
-                                gridUniqueBatchNo === item.uniqueBatchNo) {
-                                let entryId   = (item.againstPurchaseBillEntryId || '').trim();
-                                let yearCode  = (item.againstPurchaseBillYearCode || '').trim();
-                                let invoiceNo = (item.invoiceNo || '').trim();
-                                let pbitemCode = (item.purchBillItemCode || '').trim();
-                                let itemCode = (item.itemCode || '').trim();
-                                let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
-                                if($(`#hdnuniquekey-${count}`).val() != null && $(`#hdnuniquekey-${count}`).val() != "" && $(`#hdnuniquekey-${count}`).val() != undefined) { $(`#hdnuniquekey-${count}`).val(uniqueKey); }
-                                let keyToCheck = (item.itemCode || '').trim();
-                                let exists = popUpItems.some(x => x.key === keyToCheck && x.value === uniqueKey);
-                                if (uniqueKey) {
-                                    if (!exists) {
-                                        popUpItems.push({key: (item.itemCode || '').trim(), value: uniqueKey});
-                                    }
-                                }
-                            }
-                        });
-
                         html += `<tr id="PRPopUpDataRow-j" style="font-size: 12px;">
                         <td> ` + j + `</td>
                         <td id="partCode-` + j + `">${item.partCode || ''}<input type="hidden" id="popupItemCode-` + j + `" value="${item.itemCode || ''}" /><input type="hidden" id="popupPurchBillItemCode-` + j + `" value="${item.purchBillItemCode || ''}" /><input type="hidden" id="popUpBatchNo-` + j + `" value="${item.batchNo || ''}" /><input type="hidden" id="popUpUniqueBatchNo-` + j + `" value="${item.uniqueBatchNo || ''}" /></td>
@@ -925,7 +899,6 @@
             BasicItemGridTotal();
             GetCostCenter();
             DueDateCalculation();
-            setUniqueKeysFromRenderedPopup();
             $('#GstRegUnreg').rules("remove", "required");
             $('#Transporter').rules("remove", "required");
             $('#HSNNo').rules("remove", "required");
@@ -981,6 +954,13 @@
                 GetDbCrDetail();
             }
         });
+
+         document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                setUniqueKeysFromRenderedPopup();
+            }, 500);
+        });
+
          function setUniqueKeysFromRenderedPopup() {
             $('#divAddPurchaseRejectionPopupDataGrid tr').each(function (index) {
                 const j = index + 1;
@@ -2646,40 +2626,83 @@
         $('#fromBillDate').change(function () {
             $('#toBillDate').datepicker("option", "minDate", $('#fromBillDate').val());
         });
-        $("#PurchaseRejEntryDate", "#PurchaseRejInvoiceDate", "#PurchaseRejectionVoucherDate", "#ActualEntryDate", "#LastUpdationDate", "#fromBillDate", "#toBillDate").on("change", function () {
+        /* #PurchaseRejEntryDate, #PurchaseRejInvoiceDate, #PurchaseRejectionVoucherDate, #ActualEntryDate, #LastUpdationDate, */
+        $("#fromBillDate, #toBillDate").on("change", function () {
             validateDate(this);
         });
         function validateDate(e) {
-            var today = new Date();
-            var day = today.getDate().toString().padStart(2, '0'); // Ensure two digits
-            var month = (today.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
-            var year = today.getFullYear();
-            var formattedCurrentDate = `${day}/${month}/${year}`;
-            var formattedCurrentDateObject = new Date(`${month}/${day}/${year}`);
-            var entryDateValue = $("#PurchaseRejEntryDate").val();
-            var parts = entryDateValue.split('/');
-            var entryDateValueObject = new Date(parts[2], parts[1] - 1, parts[0]);
-            var today = new Date();
-            var year = today.getFullYear();
-            var month = today.getMonth() + 1; // Months are 0-based in JS, so adding 1
-            var financialYearStart, financialYearEnd;
-            if (month < 4) {
-                financialYearStart = (year - 1);
-                financialYearEnd = year;
-            } else {
-                financialYearStart = year;
-                financialYearEnd = (year + 1);
-            }
-            var finYearFirstDateValueObject = new Date(financialYearStart, 3, 1);
-            if (entryDateValueObject > formattedCurrentDateObject) {
-                alert("Future dates are not allowed!");
-                $(this).val(formattedCurrentDate); // Reset to today's date
-            } else if (entryDateValueObject < finYearFirstDateValueObject) {
-                alert("The selected date cannot be before the start of the financial year (April 1st).");
-                $(this).val(formattedCurrentDate); // Reset to today's date
+            const today = new Date();
+            const day = today.getDate().toString().padStart(2, '0');
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const year = today.getFullYear();
+            const formattedCurrentDate = `${day}/${month}/${year}`;
+            const formattedCurrentDateObject = new Date(`${month}/${day}/${year}`); // MM/DD/YYYY for JS compatibility
+
+            const selectedDateValue = $(e).val();
+            if (!selectedDateValue) return;
+
+            const [dd, mm, yyyy] = selectedDateValue.split("/");
+            const selectedDate = new Date(yyyy, mm - 1, dd);
+
+            const fyStartYear = (today.getMonth() + 1) < 4 ? year - 1 : year;
+            const fyStartDate = new Date(fyStartYear, 3, 1);     // April 1 of FY
+            const fyEndDate = new Date(fyStartYear + 1, 2, 31);  // March 31 of next year
+
+            if (selectedDate > formattedCurrentDateObject) {
+                $.notify(`The selected date must be within the financial year: ${fyStartDate.toLocaleDateString()} to ${fyEndDate.toLocaleDateString()}`, "error");
+                $(e).val(formattedCurrentDate);
+            } else if (selectedDate < fyStartDate || selectedDate > fyEndDate) {
+                $.notify(`The selected date must be within the financial year: ${fyStartDate.toLocaleDateString()} to ${fyEndDate.toLocaleDateString()}`, "error");
+                $(e).val(formattedCurrentDate);
             }
         }
+
+        function setFinancialAndBillDates() {
+            const entryDateRaw = $("#PurchaseRejEntryDate").val();
+            if (!entryDateRaw) return;
+
+            const entryDate = parseDateToFormat(entryDateRaw); 
+            const [day, month, year] = entryDate.split("/").map(Number);
+            const entryDateObj = new Date(year, month - 1, day);
+
+            const fyStartYear = (entryDateObj.getMonth() + 1) >= 4
+                ? entryDateObj.getFullYear()
+                : entryDateObj.getFullYear() - 1;
+            console.log($('#FinFromDate').val());
+            console.log($('#FinToDate').val());
+            // Try reading current FinFromDate value
+            const existingFrom = $('#FinFromDate').val();
+            let existingFYStartYear = null;
+
+            if (existingFrom) {
+                const [fd, fm, fy] = parseDateToFormat(existingFrom).split("/").map(Number);
+                const existingFromDateObj = new Date(fy, fm - 1, fd);
+                existingFYStartYear = (existingFromDateObj.getMonth() + 1) >= 4
+                    ? existingFromDateObj.getFullYear()
+                    : existingFromDateObj.getFullYear() - 1;
+            }
+
+            // Only set new FinFromDate/ToDate if FY differs
+            if (existingFYStartYear !== fyStartYear) {
+                const finFromDateObj = new Date(fyStartYear, 3, 1);     // 1st April
+                const finToDateObj = new Date(fyStartYear + 1, 2, 31);  // 31st March
+
+                const finFromDate = parseDateToFormat(
+                    `${finFromDateObj.getFullYear()}-${(finFromDateObj.getMonth() + 1).toString().padStart(2, '0')}-${finFromDateObj.getDate().toString().padStart(2, '0')}`
+                );
+                const finToDate = parseDateToFormat(
+                    `${finToDateObj.getFullYear()}-${(finToDateObj.getMonth() + 1).toString().padStart(2, '0')}-${finToDateObj.getDate().toString().padStart(2, '0')}`
+                );
+
+                $('#FinFromDate').val(finFromDate);
+                $('#FinToDate').val(finToDate);
+            }
+
+            console.log("finFromDate", $('#FinFromDate').val());
+            console.log("finToDate", $('#FinToDate').val());
+        }
         function GetServerDate() {
+            setFinancialAndBillDates();
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate", "SaleOrder")",
@@ -2693,17 +2716,6 @@
 
                     var finFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
                     var finToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
-                     /* var entryDate = $("#PurchaseRejEntryDate").val();
-                    entryDate = parseDateToFormat(entryDate);
-                    const [dayy, monthh, yearr] = entryDate.split("/").map(Number);
-                    const entryDateObj = new Date(yearr, monthh - 1, dayy); // Convert to Date object
-
-                    const fyStartYear = (entryDateObj.getMonth() + 1) >= 4 ? entryDateObj.getFullYear() : entryDateObj.getFullYear() - 1;
-                    const finFromDateObj = new Date(fyStartYear, 3, 1);     // April 1 of that FY
-                    const finToDateObj = new Date(fyStartYear + 1, 2, 31);  // March 31 of next year
-
-                    const finFromDate = parseDateToFormat(finFromDateObj.toISOString().split("T")[0]);
-                    const finToDate = parseDateToFormat(finToDateObj.toISOString().split("T")[0]); */
 
                     var past2Year = currentDate.setYear(currentDate.getFullYear() - 2);
                     var formattedYear = parseDateToFormat(new Date(past2Year).toISOString().split("T")[0]);
