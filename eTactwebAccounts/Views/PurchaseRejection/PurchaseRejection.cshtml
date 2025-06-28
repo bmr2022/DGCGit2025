@@ -2691,8 +2691,8 @@
                     var past2Month = currentDate.setMonth(currentDate.getMonth() - 2);
                     var formattedPastDate = parseDateToFormat(new Date(past2Month).toISOString().split('T')[0]);
 
-                    //var finFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
-                    //var finToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
+                    var finFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
+                    var finToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
                      /* var entryDate = $("#PurchaseRejEntryDate").val();
                     entryDate = parseDateToFormat(entryDate);
                     const [dayy, monthh, yearr] = entryDate.split("/").map(Number);
