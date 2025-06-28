@@ -735,7 +735,7 @@ public class AccountController : Controller
             ModelState.AddModelError(string.Empty, "Invalid Username or Password");
             return View(model);
         }
-        return RedirectToAction("Dashboard", "ItemCategory");
+        return RedirectToAction("Dashboard", "Home");
         /*var model1 = GeteDTRModel();
         model.AccList = model1.AccList;
         model.StoreLst = model1.StoreLst;

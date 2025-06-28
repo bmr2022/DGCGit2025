@@ -181,8 +181,9 @@
             $('#LedgerName').select2();
             $('#Bank').select2();
             $('#VoucherNo').select2();
-            $('#AgainstVoucherRefNo').select2();
             $('#AgainstVoucherNo').select2();
+            $('#PONo').select2();
+            $('#AgainstBillno').select2();
             GetSearchData();
             FillLedgerInDashboard();
             FillBankInDashboard();
@@ -407,7 +408,7 @@
                 async: false,
                 dataType: "json",
                 success: function (response, status, error) {
-                    var obj = $.parseJSON(response);\
+                    var obj = $.parseJSON(response);
                     $('#Bank').empty();
                     $('#Bank').append('<option value="">--Select--</option>');
                     $.each(obj.Result, function (key, val) {

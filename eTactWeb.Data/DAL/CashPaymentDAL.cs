@@ -368,6 +368,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@VoucherType", "Cash-Payment"));
                 SqlParams.Add(new SqlParameter("@fromdate", fromDt));
                 SqlParams.Add(new SqlParameter("@todate", toDt));
+
                 responseResult = await _IDataLogic.ExecuteDataSet("AccSpVoucherEntry", SqlParams).ConfigureAwait(false);
             }
             catch (Exception ex)
@@ -378,7 +379,7 @@ namespace eTactWeb.Data.DAL
             }
             return responseResult;
         }
-        public async Task<CashPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<CashPaymentModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();
             var model = new CashPaymentModel();
@@ -398,9 +399,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@fromdate", fromDt);
                     oCmd.Parameters.AddWithValue("@todate", toDt);
                     oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@Bank", Bank);
                     oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
-                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
                     oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
+                    oCmd.Parameters.AddWithValue("@PONO", PONo);
+                    oCmd.Parameters.AddWithValue("@AgainstBillNo", AgainstBillno);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -457,7 +460,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<CashPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<CashPaymentModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string PONo, string AgainstBillno)
         {
             DataSet? oDataSet = new DataSet();
             var model = new CashPaymentModel();
@@ -477,9 +480,11 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@fromdate", fromDt);
                     oCmd.Parameters.AddWithValue("@todate", toDt);
                     oCmd.Parameters.AddWithValue("@LedgerName", LedgerName);
+                    oCmd.Parameters.AddWithValue("@Bank", Bank);
                     oCmd.Parameters.AddWithValue("@voucherNo", VoucherNo);
-                    oCmd.Parameters.AddWithValue("@AgainstVoucherRefNo", AgainstVoucherRefNo);
                     oCmd.Parameters.AddWithValue("@AgainstVoucherNo", AgainstVoucherNo);
+                    oCmd.Parameters.AddWithValue("@PONO", PONo);
+                    oCmd.Parameters.AddWithValue("@AgainstBillNo", AgainstBillno);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -509,6 +514,8 @@ namespace eTactWeb.Data.DAL
                                                  UpdatedOn = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToDateTime(dr["LastUpdatedDate"]) : (DateTime?)null,
                                                  EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? dr["EntryByMachine"].ToString() : string.Empty,
                                                  CC = dr["CC"] != DBNull.Value ? dr["CC"].ToString() : string.Empty,
+                                                 DrAmt = dr["DrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DrAmt"]) : 0,
+                                                 CrAmt = dr["CrAmt"] != DBNull.Value ? Convert.ToDecimal(dr["CrAmt"]) : 0,
 
                                              }).ToList();
                 }

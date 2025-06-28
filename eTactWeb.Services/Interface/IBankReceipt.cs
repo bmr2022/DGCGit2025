@@ -20,8 +20,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode,string VoucherDate);
         Task<ResponseResult> SaveBankReceipt(BankReceiptModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);
-        Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo);
-        Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo);
+        Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno);
+        Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate,string VoucherType);
         Task<ResponseResult> FillBankType(int AccountCode);
         Task<BankReceiptModel> PopUpForPendingVouchers(PopUpDataTableAgainstRef DataTable);

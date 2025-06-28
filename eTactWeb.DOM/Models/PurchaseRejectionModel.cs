@@ -160,6 +160,7 @@ namespace eTactWeb.DOM.Models
         public string? AgainstPurchaseVoucherNo { get; set; }
         public string? PurchaseBillType { get; set; }
         public int ItemCode { get; set; }
+        public int PurchBillItemCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
         public float? BillQty { get; set; }
@@ -175,16 +176,12 @@ namespace eTactWeb.DOM.Models
         public int? POYearCode { get; set; }
         public float? PoRate { get; set; }
         public string? PoAmmNo { get; set; }
-        //public string? SONO { get; set; }
-        //public int? SOYearCode { get; set; }
-        //public string? SODate { get; set; }
-        //public string? CustOrderNo { get; set; }
-        //public int? SOEntryId { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
         public float? AltQty { get; set; }
         public string? AltUnit { get; set; }
-
+        [Column(TypeName = "decimal(10, 4)")]
+        public decimal BillAmount { get; set; }
         [Column(TypeName = "decimal(10, 4)")]
         public decimal ItemNetAmount { get; set; }
 

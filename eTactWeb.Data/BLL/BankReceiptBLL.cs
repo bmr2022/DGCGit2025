@@ -68,13 +68,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.GetDashBoardData( FromDate,  ToDate);
         }
-        public async Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<BankReceiptModel> GetDashBoardDetailData(string FromDate, string ToDate, string LedgerName,string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo,string AgainstBillno)
         {
-            return await _BankReceiptDAL.GetDashBoardDetailData( FromDate,  ToDate,LedgerName,VoucherNo,AgainstVoucherRefNo,AgainstVoucherNo);
+            return await _BankReceiptDAL.GetDashBoardDetailData( FromDate,  ToDate,LedgerName,Bank,VoucherNo,AgainstVoucherNo,SoNo,AgainstBillno);
         }
-        public async Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string VoucherNo, string AgainstVoucherRefNo, string AgainstVoucherNo)
+        public async Task<BankReceiptModel> GetDashBoardSummaryData(string FromDate, string ToDate, string LedgerName, string Bank, string VoucherNo, string AgainstVoucherNo, string SoNo, string AgainstBillno)
         {
-            return await _BankReceiptDAL.GetDashBoardSummaryData(FromDate, ToDate,LedgerName,VoucherNo,AgainstVoucherRefNo,AgainstVoucherNo);
+            return await _BankReceiptDAL.GetDashBoardSummaryData(FromDate, ToDate,LedgerName,Bank,VoucherNo, AgainstVoucherNo, SoNo,AgainstBillno);
         }
         public async Task<ResponseResult> DeleteByID(int ID, int YearCode, int ActualEntryBy, string EntryByMachine, string ActualEntryDate,string VoucherType)
         {
