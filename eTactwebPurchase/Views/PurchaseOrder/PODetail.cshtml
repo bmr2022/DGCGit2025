@@ -585,7 +585,11 @@
 			FillCurrency();
 			$('#POTypeServItem').val('Item');
 			FillItems();
-
+			//add by mayuri
+						if ( $('#Mode').val() == "PAU") {
+								var accountCode = @Html.Raw(Json.Serialize(Model.AccountCode));
+								$('#AccountCode').val(accountCode).trigger('change.select2');
+							}
 			var finFromDate = $('#FinFromDate').val();
 			var finToDate = $('#FinToDate').val();
 
