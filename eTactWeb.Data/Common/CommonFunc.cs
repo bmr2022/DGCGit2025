@@ -601,6 +601,8 @@ public static class CommonFunc
                      && typeProperty.PropertyInfo.Name != "UpdatedOn"
                      && typeProperty.PropertyInfo.Name != "PoallowtoprintWithoutApproval"
                       && typeProperty.PropertyInfo.Name != "ShowOnlyAmendItem"
+                      && typeProperty.PropertyInfo.Name != "EntryByMachineName"
+                      && typeProperty.PropertyInfo.Name != "OrderNo"
                       )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
