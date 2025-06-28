@@ -1221,7 +1221,7 @@ public class PurchaseOrderDAL
                         foreach (DataRow row in oDataSet.Tables[0].Rows)
                         {
 
-                            var poApprovalDetail = CommonFunc.DataRowToClass<PurchaseOrderModel>(row);
+                            var poApprovalDetail = CommonFunc.DataRowToClassSafe<PurchaseOrderModel>(row);
 
                             model = poApprovalDetail;
                         }

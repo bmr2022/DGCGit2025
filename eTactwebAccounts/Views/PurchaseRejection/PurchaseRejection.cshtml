@@ -33,6 +33,14 @@
             <h5>
                 <strong>@ViewData["Title"] - @Model.PurchaseRejYearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
+                    @if (Model.Mode == "V")
+                    {
+                        <a type="button" class="btn btn-sm btn-outline-light bg-gradient" id="btnGenerateEinvoiceview"
+                           asp-route-EntryId="@Model.PurchaseRejEntryId" asp-route-InvoiceNo="@Model.PurchaseRejectionInvoiceNo" asp-route-YearCode="@Model.PurchaseRejYearCode">
+                            <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                            GENARATE EINVOICE
+                        </a>
+                    }
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
                        asp-controller="PurchaseRejection" asp-route-EntryId="@Model.PurchaseRejEntryId" asp-route-YearCode="@Model.PurchaseRejEntryId">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
@@ -64,6 +72,8 @@
                         <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
                         <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
                         <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
+                        <input type="hidden" id="ShouldEinvoice" name="ShouldEinvoice" />
+
                         <div class="col-auto">
                             <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
                                 <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
@@ -520,6 +530,82 @@
 
     </form>
 </div>
+<div class="modal fade" id="EinvoicePopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">E-Invoice Confirmation</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do you want to generate E-Invoice now?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
+                        yes
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnClose">No</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="PasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Generate EInvoice</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Generate Einvoice?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <a href="#" class="btn btn-primary" id="btnEwaybill">
+                        E-Invoice + E-Way Bill
+                    </a>
+                    <button type="button" class="btn btn-danger" id="btnEinvoiceOnly">E-Invoice Only</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 <style>
     #divTaxGrid tr td {
         font-weight: 300;
@@ -533,6 +619,175 @@
 @section Scripts
 {
     <script>
+         let generateEway = null;
+        const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
+          $('#btngenrateEinvoice').click(function () {
+                          $('#EinvoicePopup').modal("hide");
+                          $('#PasswordAllowPopup').modal("show");
+
+                    // setTimeout(() => {
+                    //     submitForm(true, printWindow); // Send true and window object
+                    // }, 300);
+                });
+                   $('#btnClose').click(function () {
+                                        $('#btngenrateEinvoice').val('false'); // set flag for no printing
+                                        $('#EinvoicePopup').modal("hide");
+                                        setTimeout(() => {
+                                            $('form').submit();
+                                        }, 300);
+                                    });
+        $('#btnEinvoiceOnly').click(function () {
+                       generateEway = 'EInvoice';
+                                        if ( mode === "V") {
+                       sendInvoiceRequest();
+                                }
+                       else {
+                                      setTimeout(() => {
+                                           submitForm(true, null); // no print
+                               }, 300);
+                       }
+                   });
+
+                   // Handle "E-Invoice + E-Way Bill" click
+                   $('#btnEwaybill').click(function () {
+                       generateEway = 'EwayAndEInvoice';
+                                               if ( mode === "V") {
+                               sendInvoiceRequest();
+                                       }
+                               else {
+                                              setTimeout(() => {
+                                           submitForm(true, null); // no print
+                                       }, 300);
+                               }
+                   });
+                        function submitForm(ShouldEinvoice, printWindow) {
+               $('#ShouldEinvoice').val(ShouldEinvoice);
+
+               const formData = $('form').serialize();
+
+               $.ajax({
+                   type: "POST",
+                   url: $('form').attr('action'),
+                   data: formData,
+                   dataType: 'json', // Expect JSON response
+                   success: function (res) {
+                       if (res && res.status === "Success") {
+                           if (ShouldEinvoice) {
+                               const payload = {
+                                   EntryId: res.entryId,
+                                   InvoiceNo: res.invoiceNo,
+                                   YearCode: res.yearCode,
+                                   saleBillType:'',
+                                   customerPartCode: res.customerPartCode,
+                                   transporterName: res.transporterName,
+                                   vehicleNo: res.vehicleNo,
+                                   distanceKM: res.distanceKM.toString(),
+                                   EntrybyId: res.entrybyId,
+                                   MachineName: res.machineName,
+                                   generateEway: generateEway
+                               };
+
+                               fetch('@Url.Action("GenerateInvoice", "PurchaseRejection")', {
+                                   method: 'POST',
+                                   headers: {
+                                       'Content-Type': 'application/json'
+                                   },
+                                   body: JSON.stringify(payload)
+                               })
+                               .then(response => {
+                                   if (!response.ok) throw new Error("Failed to generate invoice");
+                                   return response.json();
+                               })
+                               .then(data => {
+                                   if (data.redirectUrl) {
+                                           $('#PasswordAllowPopup').modal("hide");
+                                       window.location.href = data.redirectUrl;
+
+                                   }
+                                       if (data.rawResponse) {
+                                           try {
+                                           //    const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                                       $('#EinvoiceResponseBox').val(data.rawResponse.eInvoiceResponse || '');
+                                                        $('#ewayResponseBox').val(data.rawResponse.eWayBillResponse || '');
+                                           } catch (e) {
+                                               $('#EinvoiceResponseBox').val(res.rawResponse);
+                                               $('#ewayResponseBox').val(res.rawResponse);
+                                           }
+                                       }
+                                   else {
+                                      $.notify(data.redirectUrl, "error");
+                                   }
+                               }) // <-- this closing parenthesis was missing
+                               .catch(error => {
+                                   console.log(JSON.stringify(payload));
+                                   console.error("Invoice error:", error);
+                                   alert("Failed to generate invoice.");
+                               });
+
+                           } else {
+                               window.location.href = '/PurchaseRejection/PurchaseRejection';
+                           }
+                       } else {
+                           alert(res.message || "Something went wrong.");
+                       }
+                   },
+                   error: function (xhr) {
+                       console.error("Error occurred:", xhr.responseText);
+                       alert("Save failed.");
+                   }
+               });
+           }
+
+        $('#btnGenerateEinvoiceview').click(function (e) {
+                      e.preventDefault();
+                      $('#PasswordAllowPopup').modal("show");
+                  });
+                  
+        function sendInvoiceRequest() {
+
+                     const model = {
+                         EntryId: '@Model.PurchaseRejEntryId',
+                         InvoiceNo: '@Model.PurchaseRejectionVoucherNo',
+                         YearCode: '@Model.PurchaseRejYearCode',
+                         saleBillType: ' ',
+                         customerPartCode: '@Model.PartCode',
+                         transporterName: '@Model.Transporter',
+                         vehicleNo: '@Model.Vehicleno',
+                         distanceKM: '@Model.Distance',
+                         EntrybyId: '@Model.EntryByempId',
+                         MachineName: '@Model.MachineName',
+                         generateEway: generateEway
+                     };
+
+                     $.ajax({
+                         url: '@Url.Action("GenerateInvoice")',
+                         method: 'POST',
+                         contentType: 'application/json',
+                         data: JSON.stringify(model),
+                         success: function (res) {
+                             if (res.redirectUrl) {
+                                 window.location.href = res.redirectUrl;
+                             }
+                               if (res.rawResponse) {
+                                         try {
+                                             const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                             $('#ewayResponseBox').val(formattedJson);
+                                         } catch (e) {
+                                             $('#ewayResponseBox').val(res.rawResponse);
+                                         }
+                                     }
+                             else {
+                                 alert('E-Invoice generation failed.');
+                             }
+                             $('#PasswordAllowPopup').modal('hide');
+                         },
+                         error: function () {
+                             alert('An error occurred while generating the E-Invoice.');
+                             $('#PasswordAllowPopup').modal('hide');
+                         }
+                     });
+                 }
+
             function FillPopUpGridDetails(modeId) {
             var html = '';
             if (modeId === 'U' || modeId === 'V') {
@@ -1005,24 +1260,26 @@
             e.preventDefault();
             if (ValidateSubmit()) {
                 saveagainstbillgrid();
-                if ($('#divAddPurchaseRejectionList tr td').length <= 1) {
+                if ($('#divAddPurchaseRejectionList tr td').length < 1) {
                     $.notify('Purchase Rejection Grid Should Have Atleast 1 Item...!', "error");
                 }
-                else if ($('#divAdjItemList tr td').length <= 1) {
+                else if ($('#divAdjItemList tr td').length < 1) {
                     $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
                 }
-                else if ($('#divdbCrItemList tr td').length <= 1) {
+                else if ($('#divdbCrItemList tr td').length < 1) {
                     $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
                 }
                 else if ($('#GSTRegistered').val() == 'Y') {
-                    if ($('#divTaxGrid tr td').length <= 1) {
+                    if ($('#divTaxGrid tr td').length < 1) {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                     } else {
-                        $("form").submit();
+                        $('#EinvoicePopup').modal('show');
+                        /* $("form").submit(); */
                     }
                 }
                 else {
-                    $("form").submit();
+                    $('#EinvoicePopup').modal('show');
+                    /* $("form").submit(); */
                 }
             }
         });
