@@ -979,6 +979,31 @@
                                 </li>
                             </ul>
                         </li>
+                         <li>
+                            <a class="dropdown-item" href="#">SalesPerson Transfer &raquo;</a>
+                            <ul class="submenu dropdown-menu">
+                                @*<li>
+                                <a class="dropdown-item" asp-action="SOAmendment" asp-controller="SOAmendment">
+                                <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> SO Amendment
+                                </a>
+                                </li>*@
+                                <li>
+                                    <a class="dropdown-item " asp-action="SalesPersonTransfer" asp-controller="SalesPersonTransfer" id="SalesPersonTransfer">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> SalesPerson Transfer
+                                    </a>
+
+
+                                </li>
+                                <li>
+                                    <a class="dropdown-item SalesPersonTransfer" asp-action="SalesPersonTransferDashBoard" asp-controller="SalesPersonTransfer" id="SalesPersonTransfer">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                    <input class="userRightsPermission" type="hidden" value="Sale Order Amendment" />
+
+                                </li>
+                            </ul>
+                        </li>
+
                         <li><hr class="dropdown-divider"></li>
                         <li>
                             <a class="dropdown-item" href="#">Sale Schedule &raquo;</a>
