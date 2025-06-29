@@ -1473,7 +1473,7 @@
 				}
 
 				function PopUpForPendingVouchers(Action, SrNO) {
-					debugger
+					 
 					$('#CheckUnCheckAll').prop('checked', false);
 					if ($('#BankType').val() == "Bank" && $('#ModeOfAdjustment').find(":selected").text() == "Against Ref") {
 						$('#DisplayRoutingDetailModal').modal('hide');
@@ -1589,7 +1589,7 @@
 				}
 
 				function ChangeAdjustAmt(i) {
-					debugger
+					 
 					if ($('#AdjustAmt-' + i).val() > parseFloat($('#BalanceAmt-' + i).text())) {
 						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
 						$('#AdjustAmt-' + i).val(0);
@@ -1709,7 +1709,7 @@
 				}
 
 				function Validate_GridButton() {
-					debugger
+					 
 					var Err = 0;
 					if ($('#Type').val() == "") {
 						AddErrorCls('Type');

@@ -548,7 +548,7 @@
 @section Scripts {
     <script>
         // $('.submitBTN').click(function (e) {
-        //     debugger
+        //      
         //    // e.preventDefault();
         //     var rowCount = $('#divControlPlanGrid tbody tr').length;
         //     console.log("Rows:", rowCount);
@@ -634,7 +634,7 @@
             $('#LastUpdationDate').rules("remove", "required");
             $('#ItemCode').val($('#ItemName').val());
             //$('#ItemCode').val($('#PartCode').val());
-            debugger
+             
             const itemCode = '@Model.ItemCode';
             if (itemCode && parseInt(itemCode) > 0) {
                 $('#PartCode').val(itemCode).trigger("change");
@@ -1125,7 +1125,7 @@
             }
         }
         $('#btnImport').click(function () {
-            debugger
+             
             var fileInput = document.getElementById('importFile');
             var file = fileInput.files[0];
             if (!file) {
@@ -1222,7 +1222,7 @@
         var EditEachItem = false;
 
         $('.GridButton').click(function (e) {
-            debugger
+             
             e.preventDefault();
             var imageUrl = $('#hdnImageURL').val();
             var itemImageUrl = $('#hdnItemImageURL').val();
@@ -1360,7 +1360,7 @@
             }
         }
         function EditItemRows(SeqNo) {
-            debugger
+             
             var RowCount = $('#divControlPlanGrid tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -1410,7 +1410,7 @@
             }
         }
         async function DeleteItemRow(SeqNo) {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",

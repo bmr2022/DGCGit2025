@@ -12,6 +12,7 @@ using Microsoft.Extensions.Caching.Memory;
 using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
 using Newtonsoft.Json;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers;
 
@@ -29,7 +30,6 @@ public class HomeController : Controller
     private bool IsDrOpen = false;
     private string sql = string.Empty;
     private string year_code;
-
     public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService,IDashboard IDashboard)
     {
         _logger = logger;
@@ -867,6 +867,18 @@ public class HomeController : Controller
     public async Task<JsonResult> FillInventoryDashboardForPendingData()
     {
         var JSON = await _IDashboard.FillInventoryDashboardForPendingData();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillInventoryByCategory()
+    {
+        var JSON = await _IDashboard.FillInventoryByCategory();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> GetTopItemByStockValue()
+    {
+        var JSON = await _IDashboard.GetTopItemByStockValue();
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }

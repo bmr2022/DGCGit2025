@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
@@ -28,6 +29,14 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillInventoryDashboardForPendingData()
         {
             return await _DashboardDAL.FillInventoryDashboardForPendingData();
+        }
+        public async Task<ResponseResult> FillInventoryByCategory()
+        {
+            return await _DashboardDAL.FillInventoryByCategory();
+        }
+        public async Task<ResponseResult> GetTopItemByStockValue()
+        {
+            return await _DashboardDAL.GetTopItemByStockValue();
         }
     }
 }

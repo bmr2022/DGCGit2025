@@ -432,7 +432,7 @@
         var isGlobalSearch = false;
         var globalSearchString = "";
         $("#search-box").on("input", function () {
-            debugger
+             
             var searchString = $(this).val().trim();
             globalSearchString = searchString;
             isGlobalSearch = searchString !== "";
@@ -454,7 +454,7 @@
             });
         });
         function loadPage(pageNumber) {
-            debugger
+             
             var url = '';
             var ReportType = $('#ReportMode').val();
 
@@ -499,7 +499,7 @@
 
 
         function GetOrderBasedProdPlanData() {
-            debugger
+             
 
             var forTheMonth = $('#ForTheMonth').val();
             if (!forTheMonth || forTheMonth === "0") {
@@ -522,7 +522,7 @@
                     WCID: $('#WCID').val(),
                 },
                 success: function (result, status, error) {
-                    debugger
+                     
                     $('#divOrderBasedProdPlanGrid').empty();
                     $('#divOrderBasedProdPlanGrid').html(result);
                     $('#totalRows').text($('#divOrderBasedProdPlanGrid tr').length - 1);

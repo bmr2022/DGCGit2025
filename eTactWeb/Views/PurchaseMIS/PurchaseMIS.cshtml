@@ -301,7 +301,7 @@
        
         
         function GetPurchaseMISDetailsData() {
-            debugger
+             
             var reportType = $('#ReportType').val();
             var toDate = $('#ToDate').val();
             var YearCode = $('#YearCode').val();
@@ -337,7 +337,7 @@
         var isGlobalSearch = false;
         var globalSearchString = "";
         $("#search-box").on("input", function () {
-            debugger
+             
             var searchString = $(this).val().trim();
             globalSearchString = searchString;
             isGlobalSearch = searchString !== "";
@@ -359,7 +359,7 @@
             });
         });
         function loadPage(pageNumber) {
-            debugger
+             
             var url = '';
             var ReportType = $('#ReportType').val();
             var formData = $('#SParam').serializeArray();
