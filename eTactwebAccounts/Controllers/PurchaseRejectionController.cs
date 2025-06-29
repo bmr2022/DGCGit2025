@@ -1080,8 +1080,16 @@ namespace eTactWeb.Controllers
             if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
             {
                 uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString() ?? (uniquekeyid ?? string.Empty);
-                purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
+                //purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
                 MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
+                foreach (var item in purchaseRejectionDetail.ToList())
+                {
+                    if (item.ItemCode == itemCode && item.SeqNo == Seq)
+                    {
+                        MainModel.AccPurchaseRejectionDetails.Remove(item);
+                    }
+                }
+                //MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
