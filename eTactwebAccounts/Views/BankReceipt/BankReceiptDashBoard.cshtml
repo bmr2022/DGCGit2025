@@ -57,12 +57,6 @@
                                 </select>
                             </div>
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
-                                <label asp-for="AgainstVoucherRefNo" class="form-label">Against Voucher RefNo</label>
-                                <select class="form-select" asp-for="AgainstVoucherRefNo">
-                                    <option value="">-Select-</option>
-                                </select>
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="AgainstVoucherNo" class="form-label">Against Voucher No</label>
                                 <select class="form-select" asp-for="AgainstVoucherNo">
                                     <option value="">-Select-</option>
@@ -203,7 +197,7 @@
                 async: false,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
-                    if ($('#gateDashboardtable').val() == '') {
+                   if ($('#gateDashboardtable tr').length < 1) {
                         var dashGrid = 0;
                         $('#totalRows').text(dashGrid);
                     } else {
@@ -313,7 +307,7 @@
         });
 
         function confirmDelete(event) {
-            debugger
+             
             event.preventDefault();
             if (confirm("Are you sure you want to Delete this entry?")) {
                  var urlHref = $(event.currentTarget).attr("href");

@@ -337,7 +337,7 @@
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
         function loadPage(pageNumber) {
-            debugger
+             
             var ReportType = $('#ReportMode').val();
             
             var formData = $('#SParam').serializeArray();
@@ -356,7 +356,7 @@
             });
         }
         $("#search-box").on("input", function () {
-            debugger
+             
             var searchString = $(this).val().trim();
             var dashboardType = $('#ReportMode').val();
             $.ajax({

@@ -139,7 +139,7 @@
             $("#FromDate").on('keydown', function (e) { e.preventDefault(); return false; });
             $("#ToDate").datepicker({ changeMonth: true, changeYear: true, dateFormat: 'dd/mm/yy' });
             $("#ToDate").on('keydown', function (e) { e.preventDefault(); return false; });
-            debugger
+             
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
             var dashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
@@ -174,7 +174,7 @@
         });
 
         function BackButtonData(event) {
-            debugger
+             
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
@@ -286,7 +286,7 @@
 
         function CheckSchApproved() {
             var rowSSGrid = $('#divSSGrid tr').length;
-            debugger
+             
             for (var i = 1; i <= rowSSGrid; i++) {
                 var entryId = $('#gridSchEntryId-' + i).val();
                 var Approved = $('#hiddenSSApproved-' + i).val();

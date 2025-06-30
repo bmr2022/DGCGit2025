@@ -1292,7 +1292,7 @@
 
                         adjustedData.push(rowData);
                     });
-                    debugger
+                     
                     console.log("Adustdata:", adjustedData);
 
                     $.ajax({
@@ -1912,7 +1912,7 @@
                         RemoveErrorCls('Uniquebatchno');
                         RemoveErrorCls('Qty');
                     }
-                    debugger
+                     
                     if ($('#SONO').val() != '' && $('#CustOrderNo').val() != '0') {
                         if (parseFloat($('#Qty').val()) > parseFloat($('#SOPendQty').val())) {
                             $.notify('Bill Qty should not more then Pend Qty...!', "error");
@@ -3666,7 +3666,7 @@
                         LowestStock = 'pendQty';
                     }
 
-                    debugger
+                     
                     if (parseFloat($('#Qty').val()) > MinQtyVal) {
                         AddErrorCls('Qty');
                         Err = 1;

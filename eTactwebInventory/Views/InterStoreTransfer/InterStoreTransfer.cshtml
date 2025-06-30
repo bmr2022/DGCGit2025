@@ -910,6 +910,7 @@
 
 
         var itemBatchArray = [];
+        var itemWIPBatchArray = [];
         $('.GridButton').click(function (e) {
 
             e.preventDefault();
@@ -987,6 +988,9 @@
                             "batchno": batchNoo,
                             "uniquebatchno": uniquebatchnoo
                         });
+
+                        
+
                         //TotalNoOfRows();
                     }
                 },
@@ -1340,6 +1344,39 @@
                                 //$('#UniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
                             });
                             GetBatchInventory();
+
+                            var itemArrayLength = itemBatchArray.length;
+                            if (itemArrayLength > 0) {
+                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                                    return item.itemcode === parseInt(ItemCode);
+                                });
+                                var selectList = $('#BatchNo');
+                                var SelectUBList = $('#UniqueBatchNo');
+                                selectList.find('option').each(function () {
+                                    var optionValue = $(this).val();
+
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.batchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+
+                                SelectUBList.find('option').each(function () {
+
+                                    var optionValue = $(this).val();
+
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.uniquebatchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+                            }
                         } else {
                             $('#BatchNo').empty();
                             $('#BatchNo').append('<option value="" disabled selected>-Select-</option>');

@@ -216,7 +216,8 @@ namespace eTactWeb.Data.DAL
                                                            Unit = string.IsNullOrEmpty(dr["unit"].ToString()) ? "" : dr["unit"].ToString(),
                                                            InvoiceNo = string.IsNullOrEmpty(dr["INVNo"].ToString()) ? "" : dr["INVNo"].ToString(),
                                                            InvoiceDate = string.IsNullOrEmpty(dr["INVDate"].ToString()) ? "" : dr["INVDate"].ToString(),
-                                                           Amount = Convert.ToDecimal(dr["Amount"].ToString())
+                                                           Amount = Convert.ToDecimal(dr["Amount"].ToString()),
+                                                           Rate = Convert.ToDecimal(dr["Rate"].ToString()),
                                                        }).ToList();
                         }
                     }

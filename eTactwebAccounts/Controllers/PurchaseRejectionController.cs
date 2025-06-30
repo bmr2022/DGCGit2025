@@ -308,13 +308,13 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
 
-                            var model1 = new SaleBillModel();
+                            var model1 = new AccPurchaseRejectionModel();
                             model1.adjustmentModel = model1.adjustmentModel ?? new AdjustmentModel();
 
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
                             var yearCodeStr = HttpContext.Session.GetString("YearCode");
-                            model1.SaleBillYearCode = !string.IsNullOrEmpty(yearCodeStr) ? Convert.ToInt32(yearCodeStr) : 0;
+                            model1.PurchaseRejYearCode = !string.IsNullOrEmpty(yearCodeStr) ? Convert.ToInt32(yearCodeStr) : 0;
                             model1.CC = HttpContext.Session.GetString("Branch");
                             var uidStr = HttpContext.Session.GetString("UID");
                             model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
@@ -350,12 +350,12 @@ namespace eTactWeb.Controllers
                         {
                             ViewBag.isSuccess = true;
                             TempData["202"] = "202";
-                            var model1 = new SaleBillModel();
+                            var model1 = new AccPurchaseRejectionModel();
                             model1.adjustmentModel = new AdjustmentModel();
                             model1.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
                             model1.FinFromDate = HttpContext.Session.GetString("FromDate");
                             model1.FinToDate = HttpContext.Session.GetString("ToDate");
-                            model1.SaleBillYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                            model1.PurchaseRejYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                             model1.CC = HttpContext.Session.GetString("Branch");
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -1080,8 +1080,16 @@ namespace eTactWeb.Controllers
             if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
             {
                 uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString() ?? (uniquekeyid ?? string.Empty);
-                purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
+                //purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
                 MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
+                foreach (var item in purchaseRejectionDetail.ToList())
+                {
+                    if (item.ItemCode == itemCode && item.SeqNo == Seq)
+                    {
+                        MainModel.AccPurchaseRejectionDetails.Remove(item);
+                    }
+                }
+                //MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
