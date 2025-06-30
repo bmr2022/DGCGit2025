@@ -1375,7 +1375,14 @@ namespace eTactWeb.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
+                    return Ok(new
+                    {
+                        qrCodeUrl = "",
+                        ewbPdfUrl = "",
+                        rawEInvoice = rawResponse["eInvoiceResponse"]?.ToString(),
+                        rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
+                    });
+                    // return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
                 }
                 string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
                 if (!Directory.Exists(uploadsFolder))
@@ -1390,8 +1397,47 @@ namespace eTactWeb.Controllers
                     return BadRequest("QR generation failed");
 
                 string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
+                if (input.generateEway == "EInvoice")
+                {
+                    return Ok(new
+                    {
+                        qrCodeUrl = publicUrl,
+                        ewbPdfUrl = "",
+                        rawEInvoice = eInvoiceObj.ToString(Formatting.Indented),
+                        rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
+                    });
+                }
+             //   string ewbPdfUrl = rawResponse["ewbUrl"]?.ToString() ?? "";
+                string ewayInvoiceStr = rawResponse["eWayBillResponse"]?.ToString();
 
-                string ewbPdfUrl = rawResponse["ewbUrl"]?.ToString() ?? "";
+                if (string.IsNullOrWhiteSpace(ewayInvoiceStr))
+                    return BadRequest("Missing eInvoice response.");
+
+                int jsonStart = ewayInvoiceStr.IndexOf("responseString:");
+                //if (jsonStart == -1)
+                //    return BadRequest("Invalid format: 'responseString' not found.");
+
+                string jsonPart = ewayInvoiceStr.Substring(jsonStart + "responseString:".Length).Trim();
+
+                JObject eInvoiceObj1;
+                try
+                {
+                    eInvoiceObj1 = JObject.Parse(jsonPart);
+                }
+                catch (Exception ex)
+                {
+                  //  return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
+                    string rawEWayBill = rawResponse["eWayBillResponse"]?.ToString();
+
+                    return Ok(new
+                    {
+                        qrCodeUrl = publicUrl,
+                        ewbPdfUrl = "",
+                        rawEInvoice = eInvoiceObj.ToString(Formatting.Indented),
+                        rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
+                    });
+                }
+                string ewbPdfUrl = eInvoiceObj1["results"]?["message"]?["EwaybillPdf"]?.ToString() ?? "";
 
                 return Ok(new
                 {
