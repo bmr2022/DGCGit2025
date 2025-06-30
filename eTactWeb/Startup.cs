@@ -224,6 +224,7 @@ namespace eTactWeb
             services.TryAddScoped<IItemGroup, ItemGroupBLL>();
             services.TryAddScoped<ILedgerOpeningEntry, LedgerOpeningEntryBLL>();
             services.TryAddScoped<ISubVoucher, SubVoucherBLL>();
+            services.TryAddScoped<IDashboard, DashboardBLL>();
             services.TryAddScoped<IFeatures_Options, Features_OptionsBLL>();
             services.TryAddScoped<ICompanyDetail, CompanyDetailBLL>();
             services.TryAddScoped<IPrimaryAccountGroupMaster, PrimaryAccountGroupMasterBLL>();
@@ -273,10 +274,11 @@ namespace eTactWeb
             services.TryAddScoped<ISaleOrderRegister, SaleOrderRegisterBLL>();
             services.TryAddScoped<IInProcessInspection, InProcessInspectionBLL>();
             services.TryAddScoped<IPurchaseMIS, PurchaseMISBLL>();
+            services.TryAddScoped<ISalesPersonTransfer, SalesPersonTransferBLL>();
+
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
             services.TryAddTransient<IOrderBasedProdPlan, OrderBasedProdPlanBLL>();
-           
             services.TryAddTransient<IPurchaseOrder, PurchaseOrderBLL>();
             services.TryAddTransient<IPurchaseSchedule, PurchaseScheduleBLL>();
             services.TryAddTransient<IGateInward, GateInwardBLL>();

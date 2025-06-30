@@ -67,7 +67,6 @@ namespace eTactWeb.Data.DAL
             DS.Tables[3].TableName = "DRCRDetail";
             DS.Tables[4].TableName = "AdjustmentDetail";
             DS.Tables[5].TableName = "PurchaseRejectionAgainstBillGrid";
-            int cnt = 0;
             #region MainTable
             model.PurchaseRejEntryId = DS.Tables[0].Rows[0]["PurchaseRejEntryId"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejEntryId"]) : 0;
             model.PurchaseRejYearCode = DS.Tables[0].Rows[0]["PurchaseRejYearCode"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["PurchaseRejYearCode"]) : 0;
@@ -138,10 +137,12 @@ namespace eTactWeb.Data.DAL
             #endregion
             if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
             {
+                int cnt = 1;
                 foreach (DataRow row in DS.Tables[1].Rows)
                 {
                     purchaseRejectionGrid.Add(new AccPurchaseRejectionDetail
                     {
+                        SeqNo = cnt,
                         ItemCode = row["Itemcode"] != DBNull.Value ? Convert.ToInt32(row["Itemcode"]) : 0,
                         ItemName = row["ItemName"]?.ToString(),
                         PartCode = row["PartCode"]?.ToString(),
@@ -176,6 +177,7 @@ namespace eTactWeb.Data.DAL
                         ItemDescription = row["ItemDescription"]?.ToString(),
                         Remark = row["Remark"]?.ToString(),
                     });
+                    cnt++;
                 }
                 purchaseRejectionGrid = purchaseRejectionGrid.OrderBy(item => item.SeqNo).ToList();
                 model.AccPurchaseRejectionDetails = purchaseRejectionGrid;
@@ -193,7 +195,8 @@ namespace eTactWeb.Data.DAL
                         TxPartName = row["PartCode"]?.ToString(),
                         TxItemName = row["itemNamePartCode"]?.ToString(),
                         TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
-                        TxTaxTypeName = row["TaxTypeID"]?.ToString(),
+                        TxTaxTypeName = row["TaxAccountName"]?.ToString(),
+                        TxTaxType = row["TaxTypeID"] != DBNull.Value ? Convert.ToInt32(row["TaxTypeID"]) : 0,
                         TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
                         TxAccountName = row["TaxAccountName"]?.ToString(),
                         TxPercentg = row["TaxPer"] != DBNull.Value ? Convert.ToDecimal(row["TaxPer"]) : 0,
@@ -210,7 +213,7 @@ namespace eTactWeb.Data.DAL
             
             if (DS.Tables.Count != 0 && DS.Tables[4].Rows.Count > 0)
             {
-                var cnt1 = 1;
+                int cnt1 = 1;
                 foreach (DataRow row in DS.Tables[4].Rows)
                 {
                     adjustGrid.Add(new AdjustmentModel
@@ -323,7 +326,41 @@ namespace eTactWeb.Data.DAL
                 }
                 model.DbCrGrid = DRCRGrid ?? new List<DbCrModel>();
             }
+            #region set hdnuniquekey
+            var popupList = model.AccPurchaseRejectionAgainstBillDetails ?? new List<AccPurchaseRejectionAgainstBillDetail>();
+            var gridList = model.AccPurchaseRejectionDetails ?? new List<AccPurchaseRejectionDetail>();
 
+            var popUpItems = new List<KeyValuePair<string, string>>();
+
+            foreach (var popupRow in popupList)
+            {
+                if (popupRow == null)
+                    continue;
+                bool matched = false;
+                foreach (var gridRow in gridList)
+                {
+                    if (gridRow == null)
+                        continue;
+                    if (gridRow.ItemCode == popupRow.ItemCode &&
+                        string.Equals(gridRow.BatchNo?.Trim(), popupRow.BatchNo?.Trim(), StringComparison.OrdinalIgnoreCase) &&
+                        string.Equals(gridRow.UniqueBatchNo?.Trim(), popupRow.UniqueBatchNo?.Trim(), StringComparison.OrdinalIgnoreCase))
+                    {
+                        string uniqueKey = $"{popupRow.AgainstPurchaseBillEntryId}_{popupRow.AgainstPurchaseBillYearCode}_{popupRow.InvoiceNo}_{popupRow.PurchBillItemCode}_{popupRow.ItemCode}";
+
+                        if (string.IsNullOrEmpty(gridRow.hdnuniquekey))
+                        {
+                            gridRow.hdnuniquekey = uniqueKey;
+                        }
+
+                        if (!popUpItems.Any(x => x.Key == popupRow.ItemCode.ToString() && x.Value == uniqueKey))
+                        {
+                            popUpItems.Add(new KeyValuePair<string, string>(popupRow.ItemCode.ToString(), uniqueKey));
+                        }
+                        matched = true;
+                    }
+                }
+            }
+            #endregion
             return model;
         }
         public async Task<ResponseResult> NewEntryId(int YearCode)

@@ -1,270 +1,629 @@
-﻿@{
-    ViewData["Title"] = "Dashboard";
-    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+﻿@model eTactWeb.DOM.Models.DashboardModel
+
+@{
+	ViewData["Title"] = "Dashboard";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Combined Dashboard</title>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background: #f4f6f8;
-            margin: 20px;
-        }
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Combined Dashboard</title>
+	<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+	<style>
+		body {
+			font-family: 'Segoe UI', sans-serif;
+			background-color: #f7f9fa;
+			margin: 20px;
+		}
 
-        h2 {
-            margin-top: 40px;
-            margin-bottom: 20px;
-        }
+		h2 {
+			text-align: center;
+			font-size: 28px;
+			margin-bottom: 20px;
+		}
 
-        .dashboard {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-            gap: 20px;
-        }
+		.dashboard {
+			display: grid;
+			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+			gap: 20px;
+		}
 
-        .card {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-        }
+		.card {
+			background: white;
+			padding: 20px;
+			border-radius: 12px;
+			box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+		}
 
-            .card h3 {
-                margin: 0;
-                font-size: 1rem;
-                color: #555;
-            }
+			.card h3 {
+				margin: 0;
+				font-size: 1rem;
+				color: #555;
+			}
 
-            .card .value {
-                font-size: 2rem;
-                font-weight: bold;
-                margin-top: 10px;
-            }
+			.card .value {
+				font-size: 2rem;
+				font-weight: bold;
+				margin-top: 10px;
+			}
 
-        canvas {
-            margin-top: 10px;
-        }
+		.wide-card {
+			grid-column: span 2;
+		}
 
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.9rem;
-        }
+		canvas {
+			margin-top: 10px;
+		}
 
-            table th, table td {
-                padding: 8px;
-                border-bottom: 1px solid #eee;
-                text-align: left;
-            }
+		table {
+			width: 100%;
+			border-collapse: collapse;
+			font-size: 0.9rem;
+		}
 
-        ul {
-            padding-left: 20px;
-        }
+			table th, table td {
+				padding: 8px;
+				border-bottom: 1px solid #eee;
+				text-align: left;
+			}
 
-        .highlight-red {
-            color: red;
-            font-weight: bold;
-        }
-    </style>
+		ul {
+			padding-left: 20px;
+		}
+
+		.highlight-red {
+			color: red;
+			font-weight: bold;
+		}
+
+		.card-container {
+			display: flex;
+			gap: 20px;
+			justify-content: center;
+			flex-wrap: wrap;
+			margin-bottom: 30px;
+		}
+
+		.dashboard-card {
+			display: flex;
+			flex: 1 1 250px; /* grows and shrinks, minimum width 250px */
+			background-color: white;
+			border-radius: 10px;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+			max-width: 320px;
+			overflow: hidden;
+			min-height: 80px;
+		}
+
+			.dashboard-card .icon-box {
+				width: 80px;
+				background-color: #7ba5e7;
+				color: white;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				font-size: 40px;
+			}
+
+			.dashboard-card.red .icon-box {
+				background-color: #d06359;
+			}
+
+			.dashboard-card .card-content {
+				padding: 12px 15px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+			}
+
+				.dashboard-card .card-content h3 {
+					font-size: 20px;
+					margin: 0;
+					color: #333;
+				}
+
+				.dashboard-card .card-content .value {
+					font-size: 30px;
+					font-weight: bold;
+					color: #111;
+				}
+
+		/* Chart section */
+		.chart-section {
+			max-width: 800px;
+			margin: 0 auto;
+			background-color: #fff;
+			border-radius: 10px;
+			padding: 20px;
+			box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+		}
+
+		canvas {
+			width: 100% !important;
+			height: 300px !important;
+		}
+	</style>
 </head>
 <body>
 
-    <!-- Inventory Dashboard -->
-    <h2>Inventory Dashboard</h2>
-    <div class="dashboard">
-        <div class="card">     
-            <h3>Total Stock Value (₹)</h3>
-            <div class="value">6,05,000</div>
-        </div>
-        <div class="card">
-            <h3>Total Items in Stock</h3>
-            <div class="value">125</div>
-        </div>
-        <div class="card">
-            <h3>Dead Stock Items</h3>
-            <div class="value highlight-red">15</div>
-        </div>
-        <div class="card">
-            <h3>Inventory by Category</h3>
-            <canvas id="categoryChart"></canvas>
-        </div>
-        <div class="card">
-            <h3>Fast vs Slow Moving Items</h3>
-            <canvas id="fastSlowChart"></canvas>
-        </div>
-        <div class="card">
-            <h3>Stock Movement (Last 30 Days)</h3>
-            <canvas id="movementChart"></canvas>
-        </div>
-        <div class="card">
-            <h3>Items Near Expiry / Calibration</h3>
-            <ul>
-                <li>Tool calibration due next week</li>
-                <li>Expiry-sensitive item: CHEM-123</li>
-            </ul>
-        </div>
-        <div class="card">
-            <h3>Top Items by Stock Value</h3>
-            <table>
-                <thead><tr><th>Code</th><th>Name</th><th>Qty</th><th>Value</th></tr></thead>
-                <tbody>
-                    <tr><td>RM-001</td><td>RM-007</td><td>1500</td><td>3000</td></tr>
-                    <tr><td>FG-002</td><td>FG-002</td><td>1500</td><td>2000</td></tr>
-                    <tr><td>C-003</td><td>C-003</td><td>500</td><td>250</td></tr>
-                    <tr><td>RM-004</td><td>RM-004</td><td>250</td><td>200</td></tr>
-                    <tr><td>FG-005</td><td>FG-005</td><td>250</td><td>400</td></tr>
-                </tbody>
-            </table>
-        </div>
-        <div class="card">
-            <h3>Open Purchase Orders</h3>
-            <table>
-                <thead><tr><th>PO Qty</th><th>Delivery</th><th>Supplier</th></tr></thead>
-                <tbody>
-                    <tr><td>21,000</td><td>27 Jun 2023</td><td>ABC Ltd.</td></tr>
-                    <tr><td>21,000</td><td>20 Jun 2023</td><td>XYZ Corp.</td></tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
+	<!-- Inventory Dashboard -->
+	<h2>Inventory Dashboard</h2>
+	<div class="card-container">
+		<input type="hidden" id="TotalRMValue" />
+		<input type="hidden" id="TotalFGValue" />
+		<input type="hidden" id="TotalStockValue" />
+		<input type="hidden" id="TotalConsValue" />
+		<input type="hidden" id="TotalToolsValue" />
+		<input type="hidden" id="TotalOthersValue" />
+		<div class="dashboard-card">
+			<div class="icon-box">
+				<i class="fas fa-coins"></i>
+			</div>
+			<div class="card-content">
+				<h3>Total Stock Value (₹)</h3>
+				<div class="value TotalStockValue" id="TotalStockValue"></div>
+			</div>
+		</div>
+		<div class="dashboard-card">
+			<div class="icon-box">
+				<i class="fas fa-box"></i>
+			</div>
+			<div class="card-content">
+				<h3>Total Items in Stock</h3>
+				<div class="value" id="TotalNoofItemInStock"></div>
+			</div>
+		</div>
+		<div class="dashboard-card red">
+			<div class="icon-box">
+				<i class="fas fa-triangle-exclamation"></i>
+			</div>
+			<div class="card-content">
+				<h3>Dead Stock Items</h3>
+				<div class="value" id="TotalNoOfDeadStockItems"></div>
+			</div>
+		</div>
+		<div class="dashboard-card red">
+			<div class="icon-box">
+				<i class="fas fa-circle-exclamation"></i>
+			</div>
+			<div class="card-content">
+				<h3>Dead Stock Value (₹)</h3>
+				<div class="value" id="TotalValueOfDeadStock"></div>
+			</div>
+		</div>
+	</div>
+	<div class="dashboard">
+		<div class="card">
+			<h3>
+				Valuation By Category
+			</h3>
+			<h3>Total Stock Value (₹): <span class="TotalStockValue">0</span></h3>
+			<canvas id="valuationByCategoryChart"></canvas>
+		</div>
+		<div class="card wide-card">
+			<h3>Inventory by Category</h3>
+			<canvas id="inventoryByCategoryChart"></canvas>
+		</div>
+		<div class="card">
+			<h3>Fast vs Slow Moving Items</h3>
+			<canvas id="fastSlowChart"></canvas>
+		</div>
+	</div>
+	<div class="dashboard">
+		<div class="card">
+			<h3>Stock Movement (Last 30 Days)</h3>
+			<canvas id="movementChart"></canvas>
+		</div>
+		<div class="card">
+			<h3>Pending</h3>
+			<table>
+				<thead><tr><th></th><th>Form</th><th>Quantity</th></tr></thead>
+				<tbody>
+					<tr>
+						<td>
+							<a class="table-link link-primary" asp-action="PendingRequisitionToIssue" asp-controller="PendingRequisitionToIssue" id="MaterialtoIssueWOBOM">
+								<span class="fa-stack">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+								</span>
+							</a>
+						</td>
+						<td><span>Req Without BOM</span></td>
+						<td><span id="PendRequisitionWithoutBOM">0</span></td>
+					</tr>
+					<tr>
+						<td>
+							<a class="table-link link-primary" asp-action="PendingMaterialToIssueThrBOM" asp-controller="PendingMaterialToIssueThrBOM" id="MaterialtoIssueThrBOM">
+								<span class="fa-stack">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+								</span>
+							</a>
+						</td>
+						<td><span>Req Against BOM</span></td>
+						<td><span id="PendingReqAgainstBOM">0</span></td>
+					</tr>
+					<tr>
+						<td>
+							<a class="table-link link-primary" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">
+								<span class="fa-stack">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+								</span>
+							</a>
+						</td>
+						<td><span>Against Plan</span></td>
+						<td><span id="PendingAgainstPlan">0</span></td>
+					</tr>
+					<tr>
+						<td>
+							<a class="table-link link-primary" asp-action="MaterialReceipt" asp-controller="MaterialReceipt" id="MaterialReceiptNote">
+								<span class="fa-stack">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+								</span>
+							</a>
+						</td>
+						<td><span>Gate Entry For MRN</span></td>
+						<td><span id="PendingGateEntryForMRN">0</span></td>
+					</tr>
+					<tr>
+						<td>
+							<a class="table-link link-primary" asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" id="MRIR">
+								<span class="fa-stack">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+								</span>
+							</a>
+						</td>
+						<td><span>MRN For Qc</span></td>
+						<td><span id="PendingMRNForQc">0</span></td>
+					</tr>
+					<tr>
+						<td>
+							<a class="table-link link-primary" asp-action="JobWorkReceive" asp-controller="JobWorkReceive" id="JobWorkReceive">
+								<span class="fa-stack">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+								</span>
+							</a>
+						</td>
+						<td><span>Gate Entry For JW MRN</span></td>
+						<td><span id="PendingGateEntryForJWMrn">0</span></td>
+					</tr>
+					<tr>
+						<td>
+							<a class="table-link link-primary" asp-action="PendingToReceiveItem" asp-controller="PendingToReceiveItem" id="ReceiveItemInStore">
+								<span class="fa-stack">
+									<i class="fa fa-square fa-stack-2x"></i>
+									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+								</span>
+							</a>
+						</td>
+						<td><span>ReceiveItem In Store</span></td>
+						<td><span id="PendingToReceiveItemInStore">0</span></td>
+					</tr>
+				</tbody>
+			</table>
+		</div>
+		<div class="card">
+			<h3>Top Items by Stock Value</h3>
+			<table>
+				<thead><tr><th>PartCode</th><th>ItemName</th><th>Stock</th><th>Value</th><th>Rate</th></tr></thead>
+				<tbody id="TopItemByStockValue">
+				</tbody>
+			</table>
+		</div>
+		<div class="card">
+			<h3>Open Purchase Orders</h3>
+			<table>
+				<thead><tr><th>PO Qty</th><th>Delivery</th><th>Supplier</th></tr></thead>
+				<tbody>
+					<tr><td>21,000</td><td>27 Jun 2023</td><td>ABC Ltd.</td></tr>
+					<tr><td>21,000</td><td>20 Jun 2023</td><td>XYZ Corp.</td></tr>
+				</tbody>
+			</table>
+		</div>
+	</div>
 
-    <!-- Supply Chain Dashboard -->
-    <h2>Supply Chain Dashboard</h2>
-    <div class="dashboard">
-        <div class="card">
-            <h3>Perfect Orders</h3>
-            <canvas id="perfectOrdersChart"></canvas>
-            <p>In Time, Meet Quality/Quantity, Correct Invoice</p>
-        </div>
-        <div class="card">
-            <h3>Total Shipping Cost</h3>
-            <div class="value">770.7K</div>
-        </div>
-        <div class="card">
-            <h3>Total Quantity Shipped</h3>
-            <div class="value">1.52M</div>
-        </div>
-        <div class="card">
-            <h3>Total International Shipment</h3>
-            <div class="value">1.07M</div>
-        </div>
-        <div class="card">
-            <h3>Perfect Orders by Warehouse</h3>
-            <canvas id="warehouseBarChart"></canvas>
-        </div>
-        <div class="card">
-            <h3>Return by Product Type</h3>
-            <canvas id="returnByProdChart"></canvas>
-        </div>
-        <div class="card">
-            <h3>Total Return & Trend</h3>
-            <canvas id="returnTrendChart"></canvas>
-        </div>
-    </div>
-
-    <!-- Chart JS Scripts -->
-    <script>
-        // Inventory Dashboard Charts
-        new Chart("categoryChart", {
-          type: "bar",
-          data: {
-            labels: ["Raw Materials", "Finished Goods", "Tools"],
-            datasets: [{
-              backgroundColor: ["#3498db", "#2ecc71", "#f39c12"],
-              data: [32000, 30000, 25000]
-            }]
-          },
-          options: { legend: { display: false }, scales: { y: { beginAtZero: true } } }
-        });
-
-        new Chart("fastSlowChart", {
-          type: "doughnut",
-          data: {
-            labels: ["Fast Movers", "Slow Movers"],
-            datasets: [{
-              backgroundColor: ["#1abc9c", "#e67e22"],
-              data: [70, 30]
-            }]
-          }
-        });
-
-        new Chart("movementChart", {
-          type: "line",
-          data: {
-            labels: ["Day 1", "Day 5", "Day 10", "Day 15", "Day 20", "Day 25", "Day 30"],
-            datasets: [
-              { label: "Raw Materials", borderColor: "#3498db", fill: false, data: [100, 120, 140, 160, 180, 200, 220] },
-              { label: "Finished Goods", borderColor: "#2ecc71", fill: false, data: [80, 100, 110, 130, 160, 180, 210] }
-            ]
-          },
-          options: { legend: { display: true }, scales: { y: { beginAtZero: true } } }
-        });
-
-        // Supply Chain Dashboard Charts
-        new Chart("perfectOrdersChart", {
-          type: "doughnut",
-          data: {
-            labels: ["Perfect", "Others"],
-            datasets: [{
-              data: [90.1, 9.9],
-              backgroundColor: ["#2ecc71", "#ecf0f1"]
-            }]
-          },
-          options: {
-            cutout: '70%',
-            plugins: { legend: { display: false } }
-          }
-        });
-
-        new Chart("warehouseBarChart", {
-          type: "bar",
-          data: {
-            labels: ["California", "Texas", "Kansas", "New Jersey"],
-            datasets: [{
-              label: "Perfect Orders",
-              data: [30, 25, 15, 10],
-              backgroundColor: "#3498db"
-            }]
-          },
-          options: { scales: { y: { beginAtZero: true } } }
-        });
-
-        new Chart("returnByProdChart", {
-          type: "bar",
-          data: {
-            labels: ["Type A", "Type B", "Type C", "Type D"],
-            datasets: [
-              { label: "US", data: [10, 14, 8, 6], backgroundColor: "#e74c3c" },
-              { label: "Canada", data: [6, 9, 5, 4], backgroundColor: "#2ecc71" },
-              { label: "Germany", data: [4, 7, 3, 2], backgroundColor: "#f1c40f" }
-            ]
-          },
-          options: {
-            plugins: { legend: { position: 'bottom' } },
-            scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
-          }
-        });
-
-        new Chart("returnTrendChart", {
-          type: "line",
-          data: {
-            labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-            datasets: [
-              {
-                label: "Return Volume",
-                data: [20000, 25000, 30000, 28000, 31000, 34000],
-                borderColor: "#e67e22",
-                fill: false,
-                tension: 0.3
-              }
-            ]
-          },
-          options: { scales: { y: { beginAtZero: true } } }
-        });
-    </script>
+	<!-- Supply Chain Dashboard -->
+	<h2>Supply Chain Dashboard</h2>
+	<div class="dashboard">
+		<div class="card">
+			<h3>Perfect Orders</h3>
+			<canvas id="perfectOrdersChart"></canvas>
+			<p>In Time, Meet Quality/Quantity, Correct Invoice</p>
+		</div>
+		<div class="card">
+			<h3>Total Shipping Cost</h3>
+			<div class="value">770.7K</div>
+		</div>
+		<div class="card">
+			<h3>Total Quantity Shipped</h3>
+			<div class="value">1.52M</div>
+		</div>
+		<div class="card">
+			<h3>Total International Shipment</h3>
+			<div class="value">1.07M</div>
+		</div>
+		<div class="card">
+			<h3>Perfect Orders by Warehouse</h3>
+			<canvas id="warehouseBarChart"></canvas>
+		</div>
+		<div class="card">
+			<h3>Return by Product Type</h3>
+			<canvas id="returnByProdChart"></canvas>
+		</div>
+		<div class="card">
+			<h3>Total Return & Trend</h3>
+			<canvas id="returnTrendChart"></canvas>
+		</div>
+	</div>
 </body>
 </html>
+
+@section Scripts {
+
+	<!-- Chart JS Scripts -->
+	<script>
+
+		$(document).ready(function () {
+			FillInventoryDashboardData();
+			FillInventoryDashboardForPendingData();
+			GetTopItemByStockValue();
+			FillInventoryByCategory();
+		});
+
+		function FillInventoryDashboardData(){
+			$.ajax({
+						url: '@Url.Action("FillInventoryDashboardData", "Home")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+							 
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								$('.TotalStockValue').text(obj.Result[0].TotalStockValue);
+								$('#TotalNoofItemInStock').text(obj.Result[0].TotalNoofItemInStock);
+								$('#TotalNoOfDeadStockItems').text(obj.Result[0].TotalNoOfDeadStockItems);
+								$('#TotalValueOfDeadStock').text(obj.Result[0].TotalValueOfDeadStock);
+								$('#TotalRMValue').val(obj.Result[0].TotalRMValue);
+								$('#TotalFGValue').val(obj.Result[0].TotalFGValue);
+								$('#TotalConsValue').val(obj.Result[0].TotalConsValue);
+								$('#TotalToolsValue').val(obj.Result[0].TotalToolsValue);
+								$('#TotalOthersValue').val(obj.Result[0].TotalOthersValue);
+
+								var dataMap = {
+								  RM: $('#TotalRMValue').val(),
+								  FG: $('#TotalFGValue').val(),
+								  Cons: $('#TotalConsValue').val(),
+								  Tools: $('#TotalToolsValue').val(),
+								  Others: $('#TotalOthersValue').val()
+								};
+
+								var xValues = Object.entries(dataMap).map(([key, val]) => {
+								  var percent = ((val) / 100).toFixed(0); // Round to whole number
+								  return `${key} - ${percent}%`;
+								});
+								var yValues = Object.values(dataMap);
+								var barColors = [
+									"#b91d47",
+									"#2b5797",
+									"#e8c3b9",
+									"#1e7145",
+									"#ff9900"
+								];
+
+								new Chart("valuationByCategoryChart", {
+								  type: "pie",
+								  data: {
+									labels: xValues,
+									datasets: [{
+									  backgroundColor: barColors,
+									  data: yValues
+									}]
+								  },
+								  options: {
+									title: {
+									  display: true,
+									  text: "Valuation by Category"
+									}
+								  }
+								});
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to load ledger names.');
+						}
+					});
+		}
+
+		function FillInventoryDashboardForPendingData(){
+			$.ajax({
+						url: '@Url.Action("FillInventoryDashboardForPendingData", "Home")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+							 
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								$('#PendRequisitionWithoutBOM').text(obj.Result[0].PendRequisitionWithoutBOM);
+								$('#PendingReqAgainstBOM').text(obj.Result[0].PendingReqAgainstBOM);
+								$('#PendingAgainstPlan').text(obj.Result[0].PendingAgainstPlan);
+								$('#PendingGateEntryForMRN').text(obj.Result[0].PendingGateEntryForMRN);
+								$('#PendingMRNForQc').text(obj.Result[0].PendingMRNForQc);
+								$('#PendingGateEntryForJWMrn').text(obj.Result[0].PendingGateEntryForJWMrn);
+								$('#PendingToReceiveItemInStore').text(obj.Result[0].PendingToReceiveItemInStore);
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to load ledger names.');
+						}
+					});
+		}
+
+				function FillInventoryByCategory(){
+			$.ajax({
+						url: '@Url.Action("FillInventoryByCategory", "Home")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+							 
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								var result = obj.Result;
+								var xValues = result.map(x => x.ItemCategory);
+								var yValues = result.map(x => x.CategoryStock);
+
+								var barColors = ["#b91d47", "#00aba9", "#2b5797", "#e8c3b9", "#1e7145", "#f39c12"];
+
+								new Chart("inventoryByCategoryChart", {
+					type: "bar",
+					data: {
+						labels: xValues,
+						datasets: [{
+							backgroundColor: barColors,
+							data: yValues
+						}]
+					},
+					options: {
+							   plugins: {
+		  legend: {
+			display: false // ✅ Hide legend so no 'undefined' appears
+		  }
+		},
+							  title: {
+							display: true,
+							text: "Inventory By Category"
+						}
+					}
+				});
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to load ledger names.');
+						}
+					});
+		}
+
+		function GetTopItemByStockValue(){
+			 
+			$.ajax({
+						url: '@Url.Action("GetTopItemByStockValue", "Home")',
+						type: 'POST',
+						async: false,
+						success: function (data, status, error) {
+							debugger
+							var obj = $.parseJSON(data);
+							var html = '';
+							$.each(obj.Result, function (i, item) {
+								html += '<tr>';
+								html += '<td>' + item.PartCode + '</td>';
+								html += '<td>' + item.ItemName + '</td>';
+								html += '<td>' + item.Stock + '</td>';
+								html += '<td>' + item.StockValue + '</td>';
+								html += '<td>' + item.Rate + '</td>';
+								html += '</tr>';
+							});
+							$('#TopItemByStockValue').empty().append(html);
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to load ledger names.');
+						}
+					});
+		}
+
+
+		// Inventory Dashboard Charts
+
+		new Chart("fastSlowChart", {
+		  type: "doughnut",
+		  data: {
+			labels: ["Fast Movers", "Slow Movers"],
+			datasets: [{
+			  backgroundColor: ["#1abc9c", "#e67e22"],
+			  data: [70, 30]
+			}]
+		  }
+		});
+
+		new Chart("movementChart", {
+		  type: "line",
+		  data: {
+			labels: ["Day 1", "Day 5", "Day 10", "Day 15", "Day 20", "Day 25", "Day 30"],
+			datasets: [
+			  { label: "Raw Materials", borderColor: "#3498db", fill: false, data: [100, 120, 140, 160, 180, 200, 220] },
+			  { label: "Finished Goods", borderColor: "#2ecc71", fill: false, data: [80, 100, 110, 130, 160, 180, 210] }
+			]
+		  },
+		  options: { legend: { display: true }, scales: { y: { beginAtZero: true } } }
+		});
+
+		// Supply Chain Dashboard Charts
+		new Chart("perfectOrdersChart", {
+		  type: "doughnut",
+		  data: {
+			labels: ["Perfect", "Others"],
+			datasets: [{
+			  data: [90.1, 9.9],
+			  backgroundColor: ["#2ecc71", "#ecf0f1"]
+			}]
+		  },
+		  options: {
+			cutout: '70%',
+			plugins: { legend: { display: false } }
+		  }
+		});
+
+		new Chart("warehouseBarChart", {
+		  type: "bar",
+		  data: {
+			labels: ["California", "Texas", "Kansas", "New Jersey"],
+			datasets: [{
+			  label: "Perfect Orders",
+			  data: [30, 25, 15, 10],
+			  backgroundColor: "#3498db"
+			}]
+		  },
+		  options: { scales: { y: { beginAtZero: true } } }
+		});
+
+		new Chart("returnByProdChart", {
+		  type: "bar",
+		  data: {
+			labels: ["Type A", "Type B", "Type C", "Type D"],
+			datasets: [
+			  { label: "US", data: [10, 14, 8, 6], backgroundColor: "#e74c3c" },
+			  { label: "Canada", data: [6, 9, 5, 4], backgroundColor: "#2ecc71" },
+			  { label: "Germany", data: [4, 7, 3, 2], backgroundColor: "#f1c40f" }
+			]
+		  },
+		  options: {
+			plugins: { legend: { position: 'bottom' } },
+			scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+		  }
+		});
+
+		new Chart("returnTrendChart", {
+		  type: "line",
+		  data: {
+			labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+			datasets: [
+			  {
+				label: "Return Volume",
+				data: [20000, 25000, 30000, 28000, 31000, 34000],
+				borderColor: "#e67e22",
+				fill: false,
+				tension: 0.3
+			  }
+			]
+		  },
+		  options: { scales: { y: { beginAtZero: true } } }
+		});
+	</script>
+}

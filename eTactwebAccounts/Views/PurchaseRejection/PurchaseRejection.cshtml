@@ -687,42 +687,55 @@
                                    generateEway: generateEway
                                };
 
-                               fetch('@Url.Action("GenerateInvoice", "PurchaseRejection")', {
-                                   method: 'POST',
-                                   headers: {
-                                       'Content-Type': 'application/json'
-                                   },
-                                   body: JSON.stringify(payload)
-                               })
-                               .then(response => {
-                                   if (!response.ok) throw new Error("Failed to generate invoice");
-                                   return response.json();
-                               })
-                               .then(data => {
-                                   if (data.redirectUrl) {
-                                           $('#PasswordAllowPopup').modal("hide");
-                                       window.location.href = data.redirectUrl;
+                                    fetch('@Url.Action("GenerateInvoice", "PurchaseRejection")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        })
+        .then(response => {
+            if (!response.ok) throw new Error("Failed to generate invoice");
+            return response.json();
+        })
+        .then(data => {
+            $('#PasswordAllowPopup').modal("hide");
 
-                                   }
-                                       if (data.rawResponse) {
-                                           try {
-                                           //    const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
-                                                       $('#EinvoiceResponseBox').val(data.rawResponse.eInvoiceResponse || '');
-                                                        $('#ewayResponseBox').val(data.rawResponse.eWayBillResponse || '');
-                                           } catch (e) {
-                                               $('#EinvoiceResponseBox').val(res.rawResponse);
-                                               $('#ewayResponseBox').val(res.rawResponse);
-                                           }
-                                       }
-                                   else {
-                                      $.notify(data.redirectUrl, "error");
-                                   }
-                               }) // <-- this closing parenthesis was missing
-                               .catch(error => {
-                                   console.log(JSON.stringify(payload));
-                                   console.error("Invoice error:", error);
-                                   alert("Failed to generate invoice.");
-                               });
+            // Show eInvoice response
+            if (data.rawEInvoice) {
+                $('#einvoiceResponseBox').val(data.rawEInvoice);
+            }
+
+            // Show eWayBill response
+            if (data.rawEWayBill) {
+                $('#ewayResponseBox').val(data.rawEWayBill);
+            }
+
+            // Open PDF if available
+            if (data.ewbPdfUrl && data.ewbPdfUrl.trim() !== "") {
+                window.open(data.ewbPdfUrl, '_blank');
+            }
+            // Open QR code image if available
+            else if (data.qrCodeUrl && data.qrCodeUrl.trim() !== "") {
+                window.open(data.qrCodeUrl, '_blank');
+            }
+
+            // Fallback: no data at all
+            if (
+                !data.rawEInvoice &&
+                !data.rawEWayBill &&
+                !data.qrCodeUrl &&
+                !data.ewbPdfUrl
+            ) {
+                $.notify("Invoice generated, but no detailed response or QR/PDF available.", "warn");
+            }
+        })
+        .catch(error => {
+            console.log(JSON.stringify(payload));
+            console.error("Invoice error:", error);
+            alert("Failed to generate invoice.");
+        });
+
 
                            } else {
                                window.location.href = '/PurchaseRejection/PurchaseRejection';
@@ -765,21 +778,44 @@
                          contentType: 'application/json',
                          data: JSON.stringify(model),
                          success: function (res) {
-                             if (res.redirectUrl) {
+                        /*      if (res.redirectUrl) {
                                  window.location.href = res.redirectUrl;
                              }
-                               if (res.rawResponse) {
+                               /* if (res.rawResponse) {
                                          try {
                                              const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
                                              $('#ewayResponseBox').val(formattedJson);
                                          } catch (e) {
                                              $('#ewayResponseBox').val(res.rawResponse);
                                          }
-                                     }
+                                     } */
+                                  /*        if (res.rawEInvoice) {
+            $('#einvoiceResponseBox').val(res.rawEInvoice);
+        }
+
+        // EWAY BILL RESPONSE
+        if (res.rawEWayBill) {
+            $('#ewayResponseBox').val(res.rawEWayBill);
+        }
                              else {
                                  alert('E-Invoice generation failed.');
-                             }
-                             $('#PasswordAllowPopup').modal('hide');
+                             } */ 
+                              if (res.rawEInvoice)
+                $('#einvoiceResponseBox').val(res.rawEInvoice);
+            if (res.rawEWayBill)
+                $('#ewayResponseBox').val(res.rawEWayBill);
+
+            // Handle PDF or QR
+            if (res.ewbPdfUrl && res.ewbPdfUrl.trim() !== "") {
+                window.open(res.ewbPdfUrl, '_blank');
+            }  
+            else if (res.qrCodeUrl) {
+               window.open(res.qrCodeUrl, '_blank');
+            } else {
+                alert("No QR code or PDF found.");
+            }
+
+            $('#PasswordAllowPopup').modal('hide');
                          },
                          error: function () {
                              alert('An error occurred while generating the E-Invoice.');
@@ -787,9 +823,10 @@
                          }
                      });
                  }
-
+    </script>
+    <script>
             function FillPopUpGridDetails(modeId) {
-            var html = '';
+            html = '';
             if (modeId === 'U' || modeId === 'V') {
                 var data = @Html.Raw(Json.Serialize(Model.AccPurchaseRejectionAgainstBillDetails));
                 j = 1;
@@ -797,15 +834,15 @@
                     data.forEach((item, index) => {
                         html += `<tr id="PRPopUpDataRow-j" style="font-size: 12px;">
                         <td> ` + j + `</td>
-                        <td id="partCode-` + j + `">${item.partCode || ''}<input type="hidden" id="popupItemCode-` + j + `" value="${item.itemCode || ''}" /></td>
+                        <td id="partCode-` + j + `">${item.partCode || ''}<input type="hidden" id="popupItemCode-` + j + `" value="${item.itemCode || ''}" /><input type="hidden" id="popupPurchBillItemCode-` + j + `" value="${item.purchBillItemCode || ''}" /><input type="hidden" id="popUpBatchNo-` + j + `" value="${item.batchNo || ''}" /><input type="hidden" id="popUpUniqueBatchNo-` + j + `" value="${item.uniqueBatchNo || ''}" /></td>
                         <td id="popUpItemCodeName-` + j + `">${item.itemName || ''}</td>
                         <td id="popUpPurchBillEntryId-` + j + `">${item.againstPurchaseBillEntryId || ''}</td>
                         <td id="popUpPurchBillYearCode-` + j + `">${item.againstPurchaseBillYearCode || ''}</td>
-                        <td id="popUpInvoiceNo-` + j + `">${item.purchaseRejectionInvoiceNo || ''}</td>
+                        <td id="popUpInvoiceNo-` + j + `">${item.invoiceNo || ''}</td>
                         <td id="popUpInvoiceDate-` + j + `">${item.againstPurchaseBillDate || ''}</td>
                         <td id="popUpItemName-` + j + `">${item.itemName || ''}</td>
                         <td id="popUpPartCode-` + j + `">${item.partCode || ''}</td>
-                        <td id="popUpINVNetAmt-` + j + `">${item.itemNetAmount || 0}</td>
+                        <td id="popUpINVNetAmt-` + j + `">${item.billAmount || 0}</td>
                         <td id="popUpDueDate-` + j + `">${item.poDate || ''}</td>
                         <td id="popUpPaidAmt-` + j + `">0</td>
                         <td id="popUpRemainingAmt-` + j + `">0</td>
@@ -817,6 +854,7 @@
                     </tr>`;
                         billQty += parseFloat(item.BillQty) || 0;
                         billRate += parseFloat(item.BillRate) || 0;
+                        j++
                     });
                 } else {
                     html = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
@@ -912,9 +950,55 @@
             }
             if ($('#Mode').val() == "V" || $('#Mode').val() == "U")
             {
+                GetTaxPartItem();
                 GetDbCrDetail();
             }
         });
+
+         document.addEventListener('DOMContentLoaded', function () {
+            setTimeout(function () {
+                setUniqueKeysFromRenderedPopup();
+            }, 500);
+        });
+
+         function setUniqueKeysFromRenderedPopup() {
+            $('#divAddPurchaseRejectionPopupDataGrid tr').each(function (index) {
+                const j = index + 1;
+                const itemCode = $(`#popupItemCode-${j}`).val() || "";
+                const purchBillItemCode = $(`#popupPurchBillItemCode-${j}`).val() || "";
+                const entryId = $(`#popUpPurchBillEntryId-${j}`).text().trim();
+                const yearCode = $(`#popUpPurchBillYearCode-${j}`).text().trim();
+                const invoiceNo = $(`#popUpInvoiceNo-${j}`).text().trim();
+                const batchNo = $(`#popUpBatchNo-${j}`).val();
+                const uniqueBatchNo = $(`#popUpUniqueBatchNo-${j}`).val();
+                let matched = false;
+                $('#divAddPurchaseRejectionList tr').each(function () {
+                    const count = $(this).index();
+                    const gridItemCode = $(`#GridIC-${count}`).val();
+                    const gridBatchNo = $(`#GridBatchNo-${count}`).text().trim();
+                    const gridUniqueBatchNo = $(`#GridUniqueBatchNo-${count}`).text().trim();
+                    if (gridItemCode === itemCode &&
+                        gridBatchNo === batchNo &&
+                        gridUniqueBatchNo === uniqueBatchNo)
+                        {
+                        const uniqueKey = `${entryId}_${yearCode}_${invoiceNo}_${purchBillItemCode}_${itemCode}`;
+                        const $hdn = $(`#hdnuniquekey-${count}`);
+                        if ($hdn.length && !$hdn.val()) {
+                            $hdn.val(uniqueKey);
+                        }
+                        const exists = popUpItems.some(x => x.key === itemCode && x.value === uniqueKey);
+                        if (!exists && uniqueKey) {
+                            popUpItems.push({ key: itemCode, value: uniqueKey });
+                        }
+                        matched = true;
+                    }
+                });
+                if (!matched) {
+                    console.warn(`No match found for popup row ${j} (itemCode: ${itemCode})`);
+                }
+            });
+            console.log("Final Unique Key Set:", popUpItems);
+        }
 
         $('#AdjModeOfAdjstment').change(function () {
             $('#AdjNewRefNo').val($('#PurchaseRejectionInvoiceNo').val());
@@ -1143,9 +1227,10 @@
                  const entryId   = ($row.find('#popUpPurchBillEntryId-' + i).text() || '').trim();
                  const yearCode  = ($row.find('#popUpPurchBillYearCode-' + i).text() || '').trim();
                  const invoiceNo = ($row.find('#popUpInvoiceNo-' + i).text() || '').trim();
+                 const pbitemCode  = ($row.find('#popupPurchBillItemCode-' + i).val() || '').trim();
                  const itemCode  = ($row.find('#popupItemCode-' + i).val() || '').trim();
-                 if (entryId && yearCode && invoiceNo && itemCode) {
-                     const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
+                 if (entryId && yearCode && invoiceNo && pbitemCode && itemCode) {
+                     const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
                      if (!existingItemKeys.includes(uniqueKey)) {
                         $row.remove(); // Remove only if not found in main grid
                     }
@@ -1165,7 +1250,7 @@
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
                 async: false,
-                data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq":  seq},
+                       data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq":  seq, "uniquekeyid": $('#hdnuniquekey-' + seq).val()},
                 success: function (data, status, xhr) {
                     $('#divAddPurchaseRejectionList').html(data);
 
@@ -1248,15 +1333,22 @@
             });
         }
 
-        function ValidateSubmit() {
+        async function ValidateSubmit() {
             if ($('#PaymentCreditDay').val() == '') {
                 $.notify("Please enter payment Credit days..!", "error");
+                return false;
+            }
+            try {
+                await saveagainstbillgrid();
+                return true;
+            } catch (err) {
+                console.error("Error during Against grid Save:", err);
                 return false;
             }
             return true;
         }
 
-        $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
+        $('#submitBTN,#submitBTNfooter,#UpdateButton').click(async function (e) {
             e.preventDefault();
             if (ValidateSubmit()) {
                 saveagainstbillgrid();
@@ -1461,27 +1553,32 @@
                 if ($('#chkPurchaseRejection-' + i).is(':checked')) {
                     let dataObj = {
                         "CheckBoxNo": $('#chkPurchaseRejection-' + i).val(),
+                        "PurchaseRejEntryId": $('#PurchaseRejEntryId').val() || "",
+                        "PurchaseRejYearCode": $('#PurchaseRejYearCode').val() || "",
                         "PurchaseRejectionInvoiceNo": $('#PurchaseRejectionInvoiceNo').val() || "",
                         "InvoiceNo": row.find('#InvoiceNo-' + i).text(),
                         "PurchaseRejectionVoucherNo": $('#PurchaseRejectionVoucherNo').val() || "",
-                        "AgainstPurchaseBillBillNo": "",
+                        "AgainstPurchaseBillBillNo": row.find('#InvoiceNo-' + i).text(),
                         "AgainstPurchaseBillYearCode": row.find('#PurchBillYearCode-' + i).text() || "",
-                        "AgainstPurchaseBillDate": "",
+                        "InvoiceDate": row.find('#InvoiceDate-' + i).text(),
+                        "AgainstPurchaseBillDate": row.find('#InvoiceDate-' + i).text(),
                         "AgainstPurchaseBillEntryId": row.find('#PurchBillEntryId-' + i).text() || "",
-                        "AgainstPurchaseVoucherNo": "",
-                        "PurchaseBillType": "",
+                        "AgainstPurchaseVoucherNo": $('#VoucherNo').val() || "",
+                        "PurchaseBillType": $('#DebitNotePurchaseRejection').val() || "",
                         "ItemCode": $('#ItemCode').val() || "",
+                        "PurchBillItemCode": $('#itemCode-' + i).val() || "",
                         "PartCode": $('#PartCode').find(':selected').text() !== '-Select-' ? $('#PartCode').find(':selected').text() : "",
                         "ItemName": $('#ItemName').find(':selected').text() !== '-Select-' ? $('#ItemName').find(':selected').text() : "",
                         "BillQty": row.find('#BillQty-' + i).text() || "",
                         "Unit": $('#Unit').val() || "",
                         "BillRate": row.find('#BillRate-' + i).text() || "",
+                        "BillAmount": row.find('#INVNetAmt-' + i).text() || "",
                         "DiscountPer": row.find('#disPer-' + i).text() || "",
                         "DiscountAmt": row.find('#DisAmt-' + i).text() || "",
                         "ItemSize": $('#ItemSize').val() || "",
-                        "Amount": $('#ItemAmount-' + i).val() || "",
+                        "Amount": $('#ItemAmount-' + i).text() || "",
                         "PONO": row.find('#pono-' + i).text() || "",
-                        "PODate": row.find('#poDate-' + i).text() || "",
+                        "PODate": row.find('#poDate-' + i).text() || (row.find('#DueDate-' + i).text()|| ""),
                         "POEntryId": row.find('#poEntryId-' + i).text() || "",
                         "POYearCode": row.find('#poYearCode-' + i).text() || "",
                         "PoRate": 0,
@@ -1537,8 +1634,9 @@
                                     let entryId   = ($('#PurchBillEntryId-' + i).text() || '').trim();
                                     let yearCode  = ($('#PurchBillYearCode-' + i).text() || '').trim();
                                     let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
-                                    let itemCode = $('#itemCode-' + i).val();
-                                    let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + itemCode;
+                                    let pbitemCode = $('#itemCode-' + i).val();
+                                    let itemCode = $('#ItemCode').val();
+                                    let uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
                                     /* let keyToCheck = $('#DocAccountCode').val() + '_' + $('#ItemCode').val(); */
                                     let keyToCheck = $('#ItemCode').val();
                                     let exists = popUpItems.some(x => x.key === keyToCheck && x.value === uniqueKey);
@@ -1549,7 +1647,7 @@
                                             popUpItems.push({key: $('#ItemCode').val(), value: uniqueKey});
                                             popuphtml += '<tr id="PRPopUpDataRow-' + j + '" style="font-size: 12px;">' +
                                                 '<td>' + j + '</td>' +
-                                                '<td id="partCode-' + j + '">' + $('#PartCode').find(':selected').text() + '<input type="hidden" id="popupItemCode-' + j + '" value="' + $('#itemCode-' + i).val() + '"/></td>' +
+                                                '<td id="partCode-' + j + '">' + $('#PartCode').find(':selected').text() + '<input type="hidden" id="popupItemCode-' + j + '" value="' + $('#ItemCode').val() + '"/><input type="hidden" id="popupPurchBillItemCode-' + j + '" value="' + $('#itemCode-' + i).val() + '"/><input type="hidden" id="popUpBatchNo-' + j + '" value="" /><input type="hidden" id="popUpUniqueBatchNo-' + j + '" value="" /></td>' +
                                                 '<td id="popUpItemCodeName-' + j + '"> ' + $('#ItemCode').find(':selected').text() + '</td>' +
                                                 '<td id="popUpPurchBillEntryId-' + j + '">' + $('#PurchBillEntryId-' + i).text() + '</td>' +
                                                 '<td id="popUpPurchBillYearCode-' + j + '">' + $('#PurchBillYearCode-' + i).text() + '</td>' +
@@ -1739,7 +1837,7 @@
             }
             BasicTotal();
         });
-        
+
         $('#AddPopDataInGrid').click(function (e) {
             FillDetailFromPopupGrid(e);
         });
@@ -1919,42 +2017,49 @@
             let itemList = [];
             $('#divAddPurchaseRejectionPopupDataGrid tr').each(function (index) {
                  const i = index + 1;
+                 let entryId = $('#popUpPurchBillEntryId-' + i).text().trim();
+                 let yearCode = $('#popUpPurchBillYearCode-' + i).text().trim();
+                 let invoiceNo = $('#popUpInvoiceNo-' + i).text().trim();
+                 let pbitemCode = $('#popupPurchBillItemCode-' + i).val();
+                 let itemCode = $('#popupItemCode-' + i).val();
+                 let uniqueKey = `${entryId}_${yearCode}_${invoiceNo}_${pbitemCode}_${itemCode}`;
+                 let matchingInput = $(`#divAddPurchaseRejectionList input[id^='hdnuniquekey-']`).filter(function () {
+                     return $(this).val().trim() === uniqueKey;
+                 });
+                 let rowNo = '';
+                 if (matchingInput.length > 0) {
+                     let idParts = matchingInput.attr("id").split('-');
+                     rowNo = idParts[idParts.length - 1];
+                 }
                  itemList.push({
-                    PurchaseRejectionInvoiceNo: $('#popUpInvoiceNo-' + i).text().trim() || '',
-                    PurchaseRejectionVoucherNo: $('#popUpVoucherNo-' + i).text().trim() || '',
-                    AgainstPurchaseBillBillNo: $('#popUpBillNo-' + i).text().trim() || '',
-                    AgainstPurchaseBillYearCode: parseInt($('#popUpYearCode-' + i).text()) || 0,
-                    AgainstPurchaseBillDate: ($('#popUpBillDate-' + i).text().split(" ")[0]) || '',
-                    AgainstPurchaseBillEntryId: parseInt($('#popUpEntryId-' + i).text()) || 0,
-                    AgainstPurchaseVoucherNo: $('#popUpAgainstVoucherNo-' + i).text().trim() || '',
-                    PurchaseBillType: $('#popUpBillType-' + i).text().trim() || '',
+                    PurchaseRejEntryId: $('#PurchaseRejEntryId').val() || "",
+                    PurchaseRejYearCode: $('#PurchaseRejYearCode').val() || "",
+                    PurchaseRejectionInvoiceNo: $('#PurchaseRejectionInvoiceNo').val() || '',
+                    PurchaseRejectionVoucherNo: $('#PurchaseRejectionVoucherNo').text().trim() || '',
+                    AgainstPurchaseBillBillNo: $('#popUpInvoiceNo-' + i).text().trim() || '',
+                    InvoiceNo: $('#popUpInvoiceNo-' + i).text().trim() || '',
+                    AgainstPurchaseBillYearCode: parseInt($('#popUpPurchBillYearCode-' + i).text()) || 0,
+                    InvoiceDate: ($('#popUpInvoiceDate-' + i).text().split(" ")[0]) || '',
+                    AgainstPurchaseBillDate: ($('#popUpInvoiceDate-' + i).text().split(" ")[0]) || '',
+                    PODate: ($('#popUpDueDate-' + i).text().split(" ")[0]) || '',
+                    AgainstPurchaseBillEntryId: parseInt($('#popUpPurchBillEntryId-' + i).text()) || 0,
+                    AgainstPurchaseVoucherNo: $('#VoucherNo').val() || '',
+                    PurchaseBillType: $('#DebitNotePurchaseRejection').val() || '',
                     ItemCode: $('#popupItemCode-' + i).val() || '', // DebitNoteItemCode
-                    BillItemCode: $('#popupItemCode-' + i).val() || '',
-                    BillQty: parseFloat($('#popUpBillQty-' + i).text()) || 0,
-                    Unit: $('#popUpUnit-' + i).text().trim() || '',
-                    AltQty: parseFloat($('#popUpAltQty-' + i).text()) || 0,
-                    AltUnit: $('#popUpAltUnit-' + i).text().trim() || '',
-                    BillRate: parseFloat($('#popUpBillRate-' + i).text()) || 0,
-                    DiscountPer: parseFloat($('#popUpdisPer-' + i).text()) || 0,
-                    DiscountAmt: parseFloat($('#popUpDisAmt-' + i).text()) || 0,
-                    ItemSize: $('#popUpItemSize-' + i).text().trim() || '',
-                    ItemNetAmount: parseFloat($('#popUpItemNetAmount-' + i).text()) > 0 ? parseFloat($('#popUpItemNetAmount-' + i).text()) : 0,
-                    PONO: $('#popUpPONO-' + i).text().trim() || '',
-                    PODate: ($('#popUpPODate-' + i).text().split(" ")[0]) || '',
-                    POEntryId: parseInt($('#popUpPOEntryId-' + i).text()) || 0,
-                    POYearCode: parseInt($('#popUpPOYearCode-' + i).text()) || 0,
-                    PoRate: parseFloat($('#popUpPoRate-' + i).text()) || 0,
-                    PoAmmNo: $('#popUpPoAmmNo-' + i).text().trim() || '',
-                    BatchNo: $('#popUpBatchNo-' + i).text().trim() || '',
-                    UniqueBatchNo: $('#popUpUniqueBatchNo-' + i).text().trim() || ''
+                    PurchBillItemCode: $('#popupPurchBillItemCode-' + i).val() || '',
+                    Amount: parseFloat($('#popUpItemAmount-' + i).text()) > 0 ? parseFloat($('#popUpItemAmount-' + i).text()) : 0,
+                    BillAmount: parseFloat($('#popUpINVNetAmt-' + i).text()) > 0 ? parseFloat($('#popUpINVNetAmt-' + i).text()) : 0,
+                    //ItemNetAmount: parseFloat($('#popUpItemNetAmount-' + i).text()) > 0 ? parseFloat($('#popUpItemNetAmount-' + i).text()) : 0,
+                    BatchNo: rowNo ? $('#GridBatchNo-' + rowNo).text().trim() || '' : '',
+                    UniqueBatchNo: rowNo ? $('#GridUniqueBatchNo-' + rowNo).text().trim() || '' : '',
                 });
             });
 
-            $.ajax({
+            return $.ajax({
                 type: "POST",
                 url: "MergePopupGridToSession",
                 contentType: "application/json; charset=utf-8",
-                data: JSON.stringify({ items: itemList }),
+                data: JSON.stringify(itemList),
                 success: function (res) {
                     console.log("Saved:", res);
                     return true;
@@ -2519,19 +2624,91 @@
         });
 
         $('#fromBillDate').change(function () {
-
             $('#toBillDate').datepicker("option", "minDate", $('#fromBillDate').val());
         });
+        /* #PurchaseRejEntryDate, #PurchaseRejInvoiceDate, #PurchaseRejectionVoucherDate, #ActualEntryDate, #LastUpdationDate, */
+        $("#fromBillDate, #toBillDate").on("change", function () {
+            validateDate(this);
+        });
+        function validateDate(e) {
+            const today = new Date();
+            const day = today.getDate().toString().padStart(2, '0');
+            const month = (today.getMonth() + 1).toString().padStart(2, '0');
+            const year = today.getFullYear();
+            const formattedCurrentDate = `${day}/${month}/${year}`;
+            const formattedCurrentDateObject = new Date(`${month}/${day}/${year}`); // MM/DD/YYYY for JS compatibility
 
+            const selectedDateValue = $(e).val();
+            if (!selectedDateValue) return;
+
+            const [dd, mm, yyyy] = selectedDateValue.split("/");
+            const selectedDate = new Date(yyyy, mm - 1, dd);
+
+            const fyStartYear = (today.getMonth() + 1) < 4 ? year - 1 : year;
+            const fyStartDate = new Date(fyStartYear, 3, 1);     // April 1 of FY
+            const fyEndDate = new Date(fyStartYear + 1, 2, 31);  // March 31 of next year
+
+            if (selectedDate > formattedCurrentDateObject) {
+                $.notify(`The selected date must be within the financial year: ${fyStartDate.toLocaleDateString()} to ${fyEndDate.toLocaleDateString()}`, "error");
+                $(e).val(formattedCurrentDate);
+            } else if (selectedDate < fyStartDate || selectedDate > fyEndDate) {
+                $.notify(`The selected date must be within the financial year: ${fyStartDate.toLocaleDateString()} to ${fyEndDate.toLocaleDateString()}`, "error");
+                $(e).val(formattedCurrentDate);
+            }
+        }
+
+        function setFinancialAndBillDates() {
+            const entryDateRaw = $("#PurchaseRejEntryDate").val();
+            if (!entryDateRaw) return;
+
+            const entryDate = parseDateToFormat(entryDateRaw); 
+            const [day, month, year] = entryDate.split("/").map(Number);
+            const entryDateObj = new Date(year, month - 1, day);
+
+            const fyStartYear = (entryDateObj.getMonth() + 1) >= 4
+                ? entryDateObj.getFullYear()
+                : entryDateObj.getFullYear() - 1;
+            console.log($('#FinFromDate').val());
+            console.log($('#FinToDate').val());
+            // Try reading current FinFromDate value
+            const existingFrom = $('#FinFromDate').val();
+            let existingFYStartYear = null;
+
+            if (existingFrom) {
+                const [fd, fm, fy] = parseDateToFormat(existingFrom).split("/").map(Number);
+                const existingFromDateObj = new Date(fy, fm - 1, fd);
+                existingFYStartYear = (existingFromDateObj.getMonth() + 1) >= 4
+                    ? existingFromDateObj.getFullYear()
+                    : existingFromDateObj.getFullYear() - 1;
+            }
+
+            // Only set new FinFromDate/ToDate if FY differs
+            if (existingFYStartYear !== fyStartYear) {
+                const finFromDateObj = new Date(fyStartYear, 3, 1);     // 1st April
+                const finToDateObj = new Date(fyStartYear + 1, 2, 31);  // 31st March
+
+                const finFromDate = parseDateToFormat(
+                    `${finFromDateObj.getFullYear()}-${(finFromDateObj.getMonth() + 1).toString().padStart(2, '0')}-${finFromDateObj.getDate().toString().padStart(2, '0')}`
+                );
+                const finToDate = parseDateToFormat(
+                    `${finToDateObj.getFullYear()}-${(finToDateObj.getMonth() + 1).toString().padStart(2, '0')}-${finToDateObj.getDate().toString().padStart(2, '0')}`
+                );
+
+                $('#FinFromDate').val(finFromDate);
+                $('#FinToDate').val(finToDate);
+            }
+
+            console.log("finFromDate", $('#FinFromDate').val());
+            console.log("finToDate", $('#FinToDate').val());
+        }
         function GetServerDate() {
+            setFinancialAndBillDates();
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("GetServerDate", "SaleOrder")",
                 async: false,
                 success: function (result, status, error) {
-
                     result = parseDateToFormat(result);
-
                     const [day, month, year] = result.split("/").map(Number);
                     const currentDate = new Date(year, month - 1, day);
                     var past2Month = currentDate.setMonth(currentDate.getMonth() - 2);
@@ -2550,18 +2727,20 @@
                     $('#fromBillDate').datepicker("option", "minDate", formattedYear);
                     $('#toBillDate').datepicker("option", "minDate", formattedYear);
                     $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
-                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);
-
-                    $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                    $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
-                    $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", result);
-
+                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);                    
+                   
                     if($('#Mode').val() == "U" || $('#Mode').val() == "V"){
                             var vouchDate = $('#PurchaseRejectionVoucherDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionVoucherDate').val()) : result;
                             $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate).datepicker("option", { changeMonth: true, changeYear: true });
                             $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate);
                             $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
                             $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
+
+                            var invoiceDate = $('#PurchaseRejectionInvoiceDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionInvoiceDate').val()) : result;
+                            $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate).datepicker("option", { changeMonth: true, changeYear: true });
+                            $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate);
+                            $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
+                            $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
 
                             var entryDate = $('#PurchaseRejEntryDate').val() != "" ? parseDateToFormat($('#PurchaseRejEntryDate').val()) : result;
                             $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate).datepicker("option", { changeMonth: true, changeYear: true });
@@ -2592,6 +2771,11 @@
                            $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                            $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
                            $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
+                           
+                           $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                           $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                           $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
+                           $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
 
                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);

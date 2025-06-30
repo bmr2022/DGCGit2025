@@ -11,28 +11,26 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.Extensions.Caching.Memory;
 using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
+using Newtonsoft.Json;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers;
 
 public class HomeController : Controller
 {
     private readonly IDataLogic _IDataLogic;
+    public IDashboard _IDashboard { get; set; }
     private readonly ILogger<HomeController> _logger;
     private readonly IConfiguration _configuration;
     private readonly EncryptDecrypt _EncryptDecrypt;
     private readonly IConnectionStringHelper _connectionStringHelper;
     private readonly UserContextService _userContextService;
     private readonly ConnectionStringService _connectionStringService;
-
-    //private readonly string FilterData;
     private string CC;
-
     private bool IsDrOpen = false;
     private string sql = string.Empty;
     private string year_code;
-
-    //public HomeController(ILogger<HomeController> logger)
-    public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService)
+    public HomeController(IConfiguration config, ILogger<HomeController> logger, IDataLogic iDataLogic, EncryptDecrypt encryptDecrypt, IConnectionStringHelper connectionStringHelper, UserContextService userContextService, ConnectionStringService connectionStringService,IDashboard IDashboard)
     {
         _logger = logger;
         this._IDataLogic = iDataLogic;
@@ -41,8 +39,8 @@ public class HomeController : Controller
         _connectionStringHelper = connectionStringHelper;
         _userContextService = userContextService;
         _connectionStringService = connectionStringService;
+        _IDashboard = IDashboard;
     }
-
     [HttpPost]
     public JsonResult AutoComplete(string Schema, string ColName, string prefix, string FromDate = "", string ToDate = "", int ItemCode = 0, int Storeid = 0)
     {
@@ -63,7 +61,6 @@ public class HomeController : Controller
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
-
     public void ChangeConnectionString(string companyName)
     {
         string connectionstring = _configuration.GetConnectionString("eTactDB1");
@@ -125,7 +122,6 @@ public class HomeController : Controller
         conn.Close();
         return Json(detail);
     }
-
     public IActionResult GetYearCode(string branchName, string companyName)
     {
         string connectionstring = _configuration.GetConnectionString("eTactDB1");
@@ -157,7 +153,6 @@ public class HomeController : Controller
         conn.Close();
         return Json(detail);
     }
-
     [HttpGet]
     public JsonResult GetCC(string compname)
     {
@@ -264,13 +259,11 @@ public class HomeController : Controller
             return StatusCode(500, $"An error occurred: {ex.Message}");
         }
     }
-
     static string GetServerNameFromConnectionString(string connectionString)
     {
         var builder = new SqlConnectionStringBuilder(connectionString);
         return builder.DataSource; // DataSource property contains the server name
     }
-
     public LoginModel GeteDTRModel()
     {
         var model = new LoginModel();
@@ -299,7 +292,6 @@ public class HomeController : Controller
         model.StoreLst = GetCombodata("Store_Master", "Store_Name");
         return model;
     }
-
     //app.UseStatusCodePagesWithReExecute("/Home/HandleError/{0}"); enable this code if the line used in startup.cs
     //https://www.infoworld.com/article/3545304/how-to-handle-404-errors-in-aspnet-core-mvc.html#:~:text=A%20simple%20solution%20is%20to,a%20404%20error%20has%20occurred.
     //[Route("/Home/HandleError/{code:int}")]
@@ -327,7 +319,6 @@ public class HomeController : Controller
         LoginModel model = GeteDTRModel();
         return View(model);
     }
-
     [HttpPost]
     [AllowAnonymous]
     public async Task<IActionResult> Login(LoginModel model)
@@ -795,14 +786,12 @@ public class HomeController : Controller
     {
         return View();
     }
-
     //public JsonResult GetRights()
     //{
     //    var JSON = await _IReqWithoutBOM.FillWorkCenter();
     //    string JsonString = JsonConvert.SerializeObject(JSON);
     //    return Json(JsonString);
     //}
-
     public string GetConnectionString(string databaseName)
     {
         string baseConnectionString = _configuration.GetConnectionString("eTactDB");
@@ -861,7 +850,6 @@ public class HomeController : Controller
         //return Json(CC, JsonRequestBehavior.AllowGet);
         return Json(detail);
     }
-
     [HttpPost]
     public JsonResult GetRights()
     {
@@ -870,5 +858,28 @@ public class HomeController : Controller
         // Render profile page with username
         return Json(EmpID);
     }
-
+    public async Task<JsonResult> FillInventoryDashboardData()
+    {
+        var JSON = await _IDashboard.FillInventoryDashboardData();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillInventoryDashboardForPendingData()
+    {
+        var JSON = await _IDashboard.FillInventoryDashboardForPendingData();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillInventoryByCategory()
+    {
+        var JSON = await _IDashboard.FillInventoryByCategory();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> GetTopItemByStockValue()
+    {
+        var JSON = await _IDashboard.GetTopItemByStockValue();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 }

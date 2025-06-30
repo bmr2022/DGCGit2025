@@ -821,7 +821,7 @@
         });
 
         function calculateTotalBalance() {
-            debugger
+             
             let drTotal = 0;
             let crTotal = 0;
 
@@ -1569,7 +1569,7 @@
         }
 
         function ChangeAdjustAmt(i) {
-                    debugger
+                     
                     if ($('#AdjustAmt-' + i).val() > parseFloat($('#BalanceAmt-' + i).text())) {
                         $('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
                         $('#AdjustAmt-' + i).val(0);
@@ -1606,7 +1606,7 @@
         }
 
         function AdjustButton() {
-            debugger
+             
             if (!Validate_AdjustButton()) return;
             var rowCount = $('#divDisplayPopupForPendingVouchersDetail tr').length;
             var ItemData = [];

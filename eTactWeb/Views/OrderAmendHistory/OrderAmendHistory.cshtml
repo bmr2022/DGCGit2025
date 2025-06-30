@@ -527,7 +527,7 @@
         var isGlobalSearch = false;
         var globalSearchString = "";
         $("#search-box").on("input", function () {
-            debugger
+             
             var searchString = $(this).val().trim();
             globalSearchString = searchString;
             isGlobalSearch = searchString !== "";
@@ -549,7 +549,7 @@
             });
         });
         function loadPage(pageNumber) {
-            debugger
+             
             var url = '';
             var ReportType = $('#ReportMode').val();
 
@@ -594,7 +594,7 @@
 
 
             function GetOrderAmendHistoryData() {
-                debugger
+                 
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("GetOrderAmendHistoryData")",
@@ -611,7 +611,7 @@
                         HistoryReportMode: $('#HistoryReportMode').val()
                     },
                     success: function (result, status, error) {
-                        debugger
+                         
                         $('#divOrderAmendHistoryGrid').empty();
                         $('#divOrderAmendHistoryGrid').html(result);
                         $('#totalRows').text($('#divOrderAmendHistoryGrid tr').length - 1);

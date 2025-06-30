@@ -573,7 +573,7 @@
     <script>
 
                        function Validate_Submit() {
-                           debugger
+                            
             var Err = 0;
             var DrAmt = parseFloat($('#DrAmt').val()) || 0;
             var CrAmt = parseFloat($('#CrAmt').val()) || 0;
@@ -1674,7 +1674,7 @@
         }
 
                function ChangeAdjustAmt(i) {
-                            debugger
+                             
                             if ($('#AdjustAmt-' + i).val() > parseFloat($('#BalanceAmt-' + i).text())) {
                                 $('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
                                 $('#AdjustAmt-' + i).val(0);
