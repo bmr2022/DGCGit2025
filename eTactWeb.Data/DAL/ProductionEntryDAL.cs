@@ -2786,6 +2786,29 @@ public class ProductionEntryDAL
         }
         return _ResponseResult;
     }
+    public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "ChkWIPStockBeforeSaving"));
+            SqlParams.Add(new SqlParameter("@WCId", WcId));
+            SqlParams.Add(new SqlParameter("@TransferMatEntrydate", ParseFormattedDate(TransferMatEntryDate)));
+            SqlParams.Add(new SqlParameter("@TransferMatYearCode", TransferMatYearCode));
+            SqlParams.Add(new SqlParameter("@TransferMatEntryId", TransferMatEntryId));
+            SqlParams.Add(new SqlParameter("@DTItemGrid", TransferGrid));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int DocType)
     {
         var _ResponseResult = new ResponseResult();

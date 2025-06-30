@@ -1168,7 +1168,11 @@
 
             e.preventDefault();
             if (!ValidateGI_Grid()) return;
-            $('form').submit();
+            ChkWIPStockBeforeSaving(function (isValid) {
+                if (isValid) {
+                    $('form').submit(); // proceed only if no stock errors
+                }
+            });
         });
         function GetFormRights() {
             $.ajax({
@@ -4719,6 +4723,41 @@
                 CheckAutoOrManual();
             }
         })
+
+        function ChkWIPStockBeforeSaving(callback) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ChkWIPStockBeforeSaving")",
+                dataType: "json",
+                data: {
+                    "WcId": parseInt($('#WorkCenter').val()),
+                    "TransferMatEntryDate": $('#EntryDate').val(),
+                    "TransferMatEntryId": $('#EntryId').val(),
+                    "TransferMatYearCode": parseInt($('#TransferMatYearCode').val())
+                },
+                success: function (response) {
+                    if (response.success === false) {
+                        response.errors.forEach(function (err) {
+                            $.notify(err, {
+                                className: 'error',
+                                globalPosition: 'top right'
+                            });
+                        });
+                        callback(false); // indicate failure
+                    } else {
+                        callback(true); // indicate success
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $.notify("Error checking stock: " + error, {
+                        className: 'error',
+                        globalPosition: 'top right'
+                    });
+                    callback(false); // prevent submission on error
+                }
+            });
+        }
+
 
         function ValidatePE_Grid() {
              

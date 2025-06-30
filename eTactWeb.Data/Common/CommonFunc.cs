@@ -653,7 +653,7 @@ public static class CommonFunc
                 {
                     if (typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID"
               && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" &&
-              typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "ApproveAmm" && typeProperty.PropertyInfo.Name != "Approval1Levelapproved"
+              typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "Approval1Levelapproved"
               && typeProperty.PropertyInfo.Name != "DeliveryDate" && typeProperty.PropertyInfo.Name != "PODashboard" && typeProperty.PropertyInfo.Name != "PONoList"
               && typeProperty.PropertyInfo.Name != "PSDashboard" && typeProperty.PropertyInfo.Name != "POComplete"
                && typeProperty.PropertyInfo.Name != "ApprovedDate" && typeProperty.PropertyInfo.Name != "Approved" && typeProperty.PropertyInfo.Name != "SchQty" && typeProperty.PropertyInfo.Name != "UserName" && typeProperty.PropertyInfo.Name != "DashboardType"

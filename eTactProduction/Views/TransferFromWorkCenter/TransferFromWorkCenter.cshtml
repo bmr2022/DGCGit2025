@@ -623,6 +623,7 @@
             if (!ValidateTransfer_SubmitGrid()) return;
             ChkWIPStockBeforeSaving(function (isValid) {
                 if (isValid) {
+                   
                     $('form').submit(); // proceed only if no stock errors
                 }
             });
@@ -1022,7 +1023,8 @@
                     "WcId": parseInt($('#IssueFromWc').val()),
                     "TransferMatEntryDate": $('#TransferMatEntrydate').val(),
                     "TransferMatEntryId": $('#TransferMatEntryId').val(),
-                    "TransferMatYearCode": parseInt($('#TransferMatYearCode').val())
+                    "TransferMatYearCode": parseInt($('#TransferMatYearCode').val()),
+                    "Mode": $('#Mode').val()
                 },
                 success: function (response) {
                     if (response.success === false) {
