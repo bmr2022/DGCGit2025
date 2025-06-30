@@ -66,25 +66,25 @@
                         <i class="fa" aria-hidden="true"></i>
                     </span>Store Name
                 </th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="12" data-sortorder="asc" class="sortCol batchclass" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Batch No*
+                    </span>Batch No<span class="requiredsign">*</span>
                 </th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="13" data-sortorder="asc" class="sortCol batchclass" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Unique BatchNo*
+                    </span>Unique BatchNo<span class="requiredsign">*</span>
                 </th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="14" data-sortorder="asc" class="sortCo batchclass" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Lot Stock*
+                    </span>Lot Stock<span class="requiredsign">*</span>
                 </th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol" style="color:yellow">
+                <th data-columnno="15" data-sortorder="asc" class="sortCol batchclass" style="color:yellow">
                     <span style="padding:5px;margin:5px" class="sort-icon">
                         <i class="fa" aria-hidden="true"></i>
-                    </span>Total Stock*
+                    </span>Total Stock<span class="requiredsign">*</span>
                 </th>
                 <th data-columnno="16" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon">
@@ -227,12 +227,12 @@
                     </select>
                 </td>
                 <td>
-                    <select asp-for="Batchno" class="form-control">
+                    <select asp-for="Batchno" class="form-control requiredsignparent">
                         <option value="0">-Select-</option>
                     </select>
                 </td>
                 <td>
-                    <select asp-for="Uniquebatchno" class="form-control">
+                    <select asp-for="Uniquebatchno" class="form-control requiredsignparent">
                         <option value="0">-Select-</option>
                     </select>
                 </td>
