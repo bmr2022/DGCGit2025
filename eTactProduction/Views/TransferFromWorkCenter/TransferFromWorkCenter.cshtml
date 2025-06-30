@@ -1286,7 +1286,7 @@
 
             return true;
         }
-
+        var itemBatchArray = [];
         $('.ItemBtn').click(function (e) {
 
             e.preventDefault();
@@ -1342,7 +1342,12 @@
                     console.log(1);
                 },
                 success: function (data, status, xhr) {
-                    console.log(2);
+                    
+                    itemBatchArray.push({
+                        "itemcode": parseInt($('#ItemCode').val()),
+                        "batchno": $('#BatchNo').val(),
+                        "uniqueBatchNo": $('#UniqueBatchNo').val()
+                    });
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
@@ -1548,8 +1553,8 @@
             }
         }
 
-        var itemBatchArray = [];//for deleting and adding batchnos in batchlist if its performed
-        var BatchUniqueUpd = [];//for deleting batches in sequence
+        /* var itemBatchArray = [];//for deleting and adding batchnos in batchlist if its performed
+        var BatchUniqueUpd = [];//for deleting batches in sequence */
         var SeqForBatch = 1;
         function GetBatchNo() {
 
@@ -1584,23 +1589,16 @@
                                 //$('#RmUniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
                             });
 
-                            var selectListLength = $('#BatchNo option').length - 1;
-                            // var selectList
                             var itemArrayLength = itemBatchArray.length;
                             if (itemArrayLength > 0) {
-
                                 var itemsWithCode16 = itemBatchArray.filter(function (item) {
                                     return item.itemcode === parseInt(ItemCode);
                                 });
-                                var selectList = $('#BatchNo');
-                                selectList.find('option').each(function () {
-
+                                $('#BatchNo option').each(function () {
                                     var optionValue = $(this).val();
-
                                     var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
                                         return item.batchno === optionValue;
                                     });
-
                                     if (existsInItemsWithCode16) {
                                         $(this).remove();
                                     }
