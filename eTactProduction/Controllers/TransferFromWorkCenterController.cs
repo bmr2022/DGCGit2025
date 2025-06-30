@@ -214,7 +214,7 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
-        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId)
+        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode,int TransferMatEntryId,string Mode)
         {
             var TransferGrid = new DataTable();
             string serializedGrid = HttpContext.Session.GetString("KeyTransferFromWorkCenterGrid");
@@ -225,7 +225,7 @@ namespace eTactWeb.Controllers
             }
             //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
             TransferGrid = GetDetailTable(TransferFromWorkCenterDetail);
-            var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid);
+            var ChechedData = await _ITransferFromWorkCenter.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid,Mode);
             if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
             {
                 DataTable dt = ChechedData.Result;

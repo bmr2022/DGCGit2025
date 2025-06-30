@@ -41,10 +41,16 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetDetailsData(string FromDate, string ToDate, int AccountCode, string ReportType)
+        public async Task<JsonResult> FillLedgerName()
+        {
+            var JSON = await _TransactionLedger.FillLedgerName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<IActionResult> GetDetailsData(string FromDate, string ToDate, int AccountCode, string ReportType, int Ledger, string VoucherType)
         {
             var model = new TransactionLedgerModel();
-            model = await _TransactionLedger.GetDetailsData(FromDate, ToDate, AccountCode,  ReportType);
+            model = await _TransactionLedger.GetDetailsData(FromDate, ToDate, AccountCode,  ReportType,Ledger,VoucherType);
             return PartialView("_TransactionLedgerGrid", model);
 
         } 
@@ -54,6 +60,12 @@ namespace eTactWeb.Controllers
             model = await _TransactionLedger.GetTransactionLedgerMonthlySummaryDetailsData(FromentryDate, ToEntryDate, AccountCode);
             return PartialView("_TransactionLedgerMonthlySummaryGrid", model);
 
+        }
+        public async Task<JsonResult> FillVoucherName()
+        {
+            var JSON = await _TransactionLedger.FillVoucherName();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
     }
 }

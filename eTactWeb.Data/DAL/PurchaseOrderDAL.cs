@@ -716,7 +716,7 @@ public class PurchaseOrderDAL
                         var oDT = ResponseResult.Result.DefaultView.ToTable(true, "VendorName", "VendorAddress", "EntryDate", "PONo", "OrderNo", "AmmNo", "AmmEffDate", "PODate",
                         "WEF", "POCloseDate", "OrderType", "POType", "POFor", "POTypeServItem", "Currency", "ItemName", "rate", "OldRate",
                          "POQty", "PendQty", "unit", "DiscPer", "DiscRs", "Amount", "AltPOQty", "PendAltQty", "AltUnit", "AdditionalRate", "HSNNo", "TolLimitQty",
-                         "TolLimitPercentage", "Description", "orderamt", "OrderNetAmt", "ApproveddByEmp", "ApprovedDate", "ActualEntryBY", "EntryID", "YearCode",
+                         "TolLimitPercentage", "Description", "orderamt", "OrderNetAmt", "ApproveddByEmp", "ApprovedDate", "ActualEntryBY", "ApproveAmm", "EntryID", "YearCode",
                          "Branch", "DeliveryTerms", "PaymentTerms", "UpdatedBy", "UpdatedOn");
 
                         //var oDT = ResponseResult.Result.DefaultView.ToTable(true, "EntryID", "AmmNo", "PONo", "POType", "POFor", "YearCode", "FOC", "Currency",
@@ -731,7 +731,7 @@ public class PurchaseOrderDAL
                     {
                         var oDT = ResponseResult.Result.DefaultView.ToTable(true, "VendorName", "VendorAddress", "EntryDate", "PONo", "OrderNo", "AmmNo", "AmmEffDate", "PODate",
                             "WEF", "POCloseDate", "OrderType", "POType", "POFor", "POTypeServItem", "Currency", "orderamt", "OrderNetAmt",
-                             "ApproveddByEmp", "ApprovedDate", "ActualEntryBY", "EntryID", "YearCode",
+                             "ApproveddByEmp", "ApprovedDate", "ActualEntryBY", "ApproveAmm", "EntryID", "YearCode",
                              "Branch", "DeliveryTerms", "PaymentTerms", "UpdatedBy", "UpdatedOn");
 
                         oDT.TableName = "POCompletedSummary";
@@ -1066,7 +1066,7 @@ public class PurchaseOrderDAL
 
                 var oDT = ResponseResult.Result.DefaultView.ToTable(true, "VendorName", "VendorAddress", "EntryDate", "PONo", "OrderNo", "AmmNo", "AmmEffDate", "PODate",
                     "WEF", "POCloseDate", "OrderType", "POType", "POFor", "POTypeServItem", "Currency", "orderamt", "OrderNetAmt",
-                     "ApproveddByEmp", "ApprovedDate", "ActualEntryBY", "EntryID", "YearCode",
+                     "ApproveddByEmp", "ApprovedDate", "ActualEntryBY", "ApproveAmm", "EntryID", "YearCode",
                      "Branch", "DeliveryTerms", "PaymentTerms", "UpdatedBy", "UpdatedOn");
 
                 oDT.TableName = "POCompletedSummary";
