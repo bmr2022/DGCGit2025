@@ -27,13 +27,21 @@ namespace eTactWeb.Data.BLL
         {
             return await _TransactionLedgerDAL.GetLedgerName();
         }
-        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode,string ReportType)
+        public async Task<ResponseResult> FillLedgerName()
         {
-            return await _TransactionLedgerDAL.GetDetailsData(FromDate, ToDate, AccountCode, ReportType);
+            return await _TransactionLedgerDAL.FillLedgerName();
+        }
+        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode,string ReportType, int Ledger, string VoucherType)
+        {
+            return await _TransactionLedgerDAL.GetDetailsData(FromDate, ToDate, AccountCode, ReportType, Ledger,VoucherType);
         }
         public async Task<TransactionLedgerModel> GetTransactionLedgerMonthlySummaryDetailsData(string FromentryDate, string ToEntryDate, int AccountCode)
         {
             return await _TransactionLedgerDAL.GetTransactionLedgerMonthlySummaryDetailsData( FromentryDate,  ToEntryDate,  AccountCode);
+        }
+        public async Task<ResponseResult> FillVoucherName()
+        {
+            return await _TransactionLedgerDAL.FillVoucherName();
         }
     }
 }
