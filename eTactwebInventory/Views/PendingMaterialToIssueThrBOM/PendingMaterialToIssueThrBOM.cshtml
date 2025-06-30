@@ -239,7 +239,7 @@
                 var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
                     ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
                     parsedFromDate.getFullYear();
-                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", "now");
+                    $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
                 $('#IssueDate').datepicker("option", "minDate", formattedDate);
             }
             var inputToDateStr = $("#ToDate").val();
