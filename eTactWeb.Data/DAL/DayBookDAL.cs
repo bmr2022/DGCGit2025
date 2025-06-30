@@ -119,6 +119,7 @@ namespace eTactWeb.Data.DAL
                                                   EntryByMachine = row["EntryByMachine"] == DBNull.Value ? "N" : row["EntryByMachine"].ToString(),
                                                   AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]),
                                                   AccEntryId = row["AccEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccEntryId"]),
+                                                  DocEntryId = row["DocEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["DocEntryId"]),
                                                   AccYearCode = row["AccYearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccYearCode"])
                                               }).ToList();
                 }

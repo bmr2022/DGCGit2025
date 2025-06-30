@@ -102,7 +102,10 @@
 								</div>
 								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
 									<label asp-for="VoucherType" class="form-label">Voucher Type</label>
-									<input asp-for="VoucherType" class="form-control" />
+									<select asp-for="VoucherType" class="form-control">
+										<option value="@Model.VoucherType">-Select-</option>
+										</select>
+									@* <input asp-for="VoucherType" class="form-control" /> *@
 								</div>
 								<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
 									<label asp-for="VoucherNo" class="form-label">Voucher No</label>
@@ -223,6 +226,7 @@
 			 var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
 			 FillLedgerName();
 			 updateGroupLedger();
+			 FillVoucherName();
 			 FillParentLedgerName();
 			 $('#BackButton').hide();
 				 var dynamicTitle = "Sales Invoice Ledger"; // Example dynamic value
@@ -276,6 +280,35 @@
 				$('#BackButton').hide(); // Hide back button
 			}
 
+				function FillVoucherName() {
+			var FromDate = $('#FromDate').val();
+			var ToDate = $('#ToDate').val();
+			$.ajax({
+				url: '@Url.Action("FillVoucherName", "TransactionLedger")', // Action that returns FillGroup data
+				/* data: {
+					FromDate: FromDate,
+					ToDate: ToDate
+				}, */
+				type: 'GET',
+				async: false,
+				success: function (response, status, error) {
+
+					var VoucherTypeDropdown = $('#VoucherType');
+					var obj = $.parseJSON(response);
+					VoucherTypeDropdown.empty();
+					VoucherTypeDropdown.append('<option value="">--Select--</option>');
+
+					$.each(obj.Result, function (index, Voucher) {
+
+						VoucherTypeDropdown.append('<option value="' + Voucher.vouchertype + '">' + Voucher.vouchertype + '</option>');
+					});
+
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
 
 		 function updateGroupLedger() {
 
@@ -358,7 +391,7 @@
 			 //var FromDate = $('#FromDate').val();
 			 //var ToDate = $('#ToDate').val();
 			 $.ajax({
-				 url: '@Url.Action("GetLedgerName", "TransactionLedger")',
+				 url: '@Url.Action("FillLedgerName", "TransactionLedger")',
 				 type: 'GET',
 				 async: false,
 				 success: function (response, status, error) {
@@ -369,8 +402,9 @@
 					 ledgerNameDropdown.append('<option value="">--Select--</option>');
 
 					 $.each(obj.Result, function (index, ledger) {
-						 ledgerNameDropdown.append('<option value="' + ledger.ParentAccountCode + '">' + ledger.ParentLedger + '</option>');
+						 ledgerNameDropdown.append('<option value="' + ledger.Account_Code + '">' + ledger.ParentLedger + '</option>');
 					 });
+
 
 				 },
 				 error: function (xhr, status, error) {
@@ -385,6 +419,8 @@
 			 var FromDate = $('#FromDate').val();
 			 var ToDate = $('#ToDate').val();
 			 var AccountCode = $('#AccountCode').val();
+			var Ledger = $('#ParentLedgerName').val();
+			var VoucherType = $('#VoucherType').val();
 			 if (ReportType === "MonthlySummary") {
 				 if($('#LedgerName').val() == '' || $('#LedgerName').val() == 0 || $('#LedgerName').val() == null){
 					 $.notify('Account Code is mandatory to display details data', "error");
@@ -402,7 +438,9 @@
 						 "FromDate": FromDate,
 						 "ToDate": ToDate,
 						 "AccountCode": AccountCode,
-						 "ReportType": ReportType
+						 "ReportType": ReportType,
+						  "Ledger" : Ledger,
+						"VoucherType" : VoucherType,
 					 },
 					 success: function (response) {
 						 $('#divStockMainRegister').html(response);
