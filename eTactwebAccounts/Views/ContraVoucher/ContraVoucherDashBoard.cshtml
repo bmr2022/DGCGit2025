@@ -1,19 +1,19 @@
-﻿@model eTactWeb.DOM.Models.BankReceiptModel;
+﻿@model eTactWeb.DOM.Models.ContraVoucherModel;
 @{
-    ViewData["Title"] = "Bank Receipt";
+    ViewData["Title"] = "Contra Voucher";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <div class="shadow-lg">
-    <form id="SParam" method="post" asp-controller="BankReceipt" asp-action="BankReceiptDashBoard" autocomplete="off">
+    <form id="SParam" method="post" asp-controller="ContraVoucher" asp-action="ContraVoucherDashBoard" autocomplete="off">
         <div class="card rounded border-light bg-gradient">
             <div class="card-header card-headerBG text-light bg-gradient">
                 <h5>
-                    Bank Receipt - <strong>Dashboard</strong>
+                    Contra Voucher - <strong>Dashboard</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
-                        <a asp-action="BankReceipt" asp-controller="BankReceipt" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <a asp-action="ContraVoucher" asp-controller="ContraVoucher" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                             <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                             Add New
                         </a>
@@ -56,7 +56,7 @@
                                     <option value="">-Select-</option>
                                 </select>
                             </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
+                          @*  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="AgainstVoucherNo" class="form-label">Against Voucher No</label>
                                 <select class="form-select" asp-for="AgainstVoucherNo">
                                     <option value="">-Select-</option>
@@ -73,7 +73,7 @@
                                 <select class="form-select" asp-for="AgainstBillno">
                                     <option value="">-Select-</option>
                                 </select>
-                            </div>
+                            </div>*@
                             <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:200px">
                                 <label asp-for="DashboardType" class="form-label">Dashboard Type</label>
                                 <select asp-for="DashboardType" class="form-select" onchange="GetSearchData();">
@@ -82,7 +82,7 @@
                                     <option value="Detail">Detail</option>
                                 </select>
                             </div>
-                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>  
+                            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD " placeholder="Search...">
@@ -94,8 +94,8 @@
                                 <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="BankReceipt"
-                                   asp-action="BankReceiptDashBoard">
+                                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ContraVoucher"
+                                   asp-action="ContraVoucherDashBoard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                             </div>
@@ -111,7 +111,7 @@
             <div class="card-body">
                 <div class="card overflow-auto">
                     <div class="card-body" id="divDashboardGrid">
-                        <partial name="_BankReceiptDashBoardGrid" />
+                        <partial name="_ContraVoucherDashBoardGrid" />
                     </div>
                 </div>
             </div>
@@ -161,10 +161,10 @@
             FillLedgerInDashboard();
             FillBankInDashboard();
             FillVoucherNoInDashboard();
-            FillAgainstVoucherNoInDashboard();
-            FillAgainstVoucherRefNoInDashboard();
-            FillAgainstBillNoInDashboard();
-            FillSoNoInDashboard();
+            // FillAgainstVoucherNoInDashboard();
+            // FillAgainstVoucherRefNoInDashboard();
+            // FillAgainstBillNoInDashboard();
+            // FillSoNoInDashboard();
             GetSearchData();
 
             sessionStorage.removeItem('FromDateBack');
@@ -179,8 +179,7 @@
         });
 
         function GetSearchData() {
-      
-        
+
             if ($('#DashboardType').val() == "Summary") {
                 GetDashBoardSummaryData();
             }
@@ -192,7 +191,7 @@
         function GetDashBoardSummaryData() {
 
             $.ajax({
-                url: '@Url.Action("GetDashBoardSummaryData", "BankReceipt")',
+                url: '@Url.Action("GetDashBoardSummaryData", "ContraVoucher")',
                 type: "POST",
                 data: $('#SParam').serializeArray(),
                 async: false,
@@ -216,14 +215,14 @@
         }
 
         function GetDashBoardDetailData() {
-              
+
             $.ajax({
-                url: '@Url.Action("GetDashBoardDetailData", "BankReceipt")',
+                url: '@Url.Action("GetDashBoardDetailData", "ContraVoucher")',
                 type: "POST",
                 data: $('#SParam').serializeArray(),
                 async: false,
                 success: function (data) {
-                      
+
                     $('#divDashboardGrid').empty().append(data);
                     if ($('#gateDashboardtable tr').length < 1) {
                         var dashGrid = 0;
@@ -308,7 +307,7 @@
         });
 
         function confirmDelete(event) {
-             
+
             event.preventDefault();
             if (confirm("Are you sure you want to Delete this entry?")) {
                  var urlHref = $(event.currentTarget).attr("href");
@@ -320,7 +319,7 @@
 
         function confirmEdit(event) {
             event.preventDefault();
-        sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
         sessionStorage.setItem('ToDateBack', $('#ToDate').val());
         sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
         sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
@@ -328,7 +327,6 @@
         sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
         sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
         sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
-
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
@@ -338,7 +336,7 @@
         function BackButtonData(event) {
 
             event.preventDefault();
-         sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
         sessionStorage.setItem('ToDateBack', $('#ToDate').val());
         sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
         sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
@@ -346,12 +344,10 @@
         sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
         sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
         sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
-
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
             window.location.href = linkUrl;
-
         }
 
         $('#FromDate').change(function(){
@@ -377,7 +373,7 @@
         function FillLedgerInDashboard() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("FillLedgerInDashboard", "BankReceipt")',
+                url: '@Url.Action("FillLedgerInDashboard", "ContraVoucher")',
                 data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
                 async: false,
                 dataType: "json",
@@ -398,7 +394,7 @@
         function FillBankInDashboard() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("FillBankInDashboard", "BankReceipt")',
+                url: '@Url.Action("FillBankInDashboard", "ContraVoucher")',
                 data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
                 async: false,
                 dataType: "json",
@@ -419,7 +415,7 @@
         function FillVoucherNoInDashboard() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("FillVoucherNoInDashboard", "BankReceipt")',
+                url: '@Url.Action("FillVoucherNoInDashboard", "ContraVoucher")',
                 data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
                 async: false,
                 dataType: "json",
@@ -440,7 +436,7 @@
         function FillAgainstVoucherRefNoInDashboard() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("FillAgainstVoucherRefNoInDashboard", "BankReceipt")',
+                url: '@Url.Action("FillAgainstVoucherRefNoInDashboard", "ContraVoucher")',
                 data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
                 async: false,
                 dataType: "json",
@@ -461,7 +457,7 @@
         function FillAgainstVoucherNoInDashboard() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("FillAgainstVoucherNoInDashboard", "BankReceipt")',
+                url: '@Url.Action("FillAgainstVoucherNoInDashboard", "ContraVoucher")',
                 data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
                 async: false,
                 dataType: "json",
@@ -482,7 +478,7 @@
         function FillSoNoInDashboard() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("FillSoNoInDashboard", "BankReceipt")',
+                url: '@Url.Action("FillSoNoInDashboard", "ContraVoucher")',
                 data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
                 async: false,
                 dataType: "json",
@@ -503,7 +499,7 @@
          function FillAgainstBillNoInDashboard() {
             $.ajax({
                 type: 'POST',
-                url: '@Url.Action("FillAgainstBillNoInDashboard", "BankReceipt")',
+                url: '@Url.Action("FillAgainstBillNoInDashboard", "ContraVoucher")',
                 data:{ "FromDate" : $('#FromDate').val(), "ToDate" : $('#ToDate').val() },
                 async: false,
                 dataType: "json",
