@@ -289,6 +289,8 @@
              
             var FGPartCode = document.querySelector('[name="FGPartCode"]').value;
             var FGName = document.querySelector('[name="FGItemName"]').value;
+            var RMPartCode = document.querySelector('[name="RMPartCode"]').value;
+            var RMName = document.querySelector('[name="RMItemName"]').value;
             var Storeid = document.querySelector('[name="Storeid"]').value;
             var WCID = document.querySelector('[name="WCID"]').value;
            // var WCID = document.getElementById('WCID').value;
@@ -297,7 +299,7 @@
             var CalForQty = document.getElementById('calculateQty').value;
             //var FGItemName = document.querySelector('[name="FGItemName"]').value;
 
-            var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
+            var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&RMPartCode=${encodeURIComponent(RMPartCode)}&RMName=${encodeURIComponent(RMName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
 
            //window.location.href = url;
             window.open(url, '_blank');
