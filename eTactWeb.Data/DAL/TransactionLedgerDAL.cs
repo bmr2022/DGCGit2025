@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.Data.Common.CommonFunc;
 using eTactWeb.Data.Common;
+using Microsoft.Extensions.Logging;
 
 namespace eTactWeb.Data.DAL
 {
@@ -44,7 +45,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
 
         }
-        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode, string ReportType)
+        public async Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode, string ReportType,int Ledger,string VoucherType)
         {
             var resultList = new TransactionLedgerModel();
             DataSet oDataSet = new DataSet();
@@ -62,10 +63,12 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@flag", "VoucherDetail");
                     var fromDt = CommonFunc.ParseFormattedDate(FromDate);
                     var toDt = CommonFunc.ParseFormattedDate(ToDate);
-                    command.Parameters.Add(new SqlParameter("fromDate", fromDt));
+                    command.Parameters.Add(new SqlParameter("@fromDate", fromDt));
                     command.Parameters.Add(new SqlParameter("@ToDate", toDt));
                     command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
                     command.Parameters.AddWithValue("@ReportType", ReportType);
+                    command.Parameters.AddWithValue("@LedgerHead", Ledger);
+                    command.Parameters.AddWithValue("@VoucherType", VoucherType);
 
                     await connection.OpenAsync();
 
@@ -163,6 +166,43 @@ namespace eTactWeb.Data.DAL
             }
 
             return resultList;
+        }
+        public async Task<ResponseResult> FillVoucherName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+            
+                SqlParams.Add(new SqlParameter("@flag", "VOUCHERTYPE"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpTransactionLedger", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillLedgerName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetGroupLedger"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpTRansactionLedgerAndGroupList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
         }
     }
 }

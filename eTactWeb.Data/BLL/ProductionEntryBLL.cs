@@ -22,6 +22,11 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _ProductionEntryDAL = new ProductionEntryDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
+
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId, DataTable TransferGrid)
+        {
+            return await _ProductionEntryDAL.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid);
+        }
         public async Task<PendingProductionEntryModel> GetPendingProductionEntry(int Yearcode)
         {
             return await _ProductionEntryDAL.GetPendingProductionEntry(Yearcode);

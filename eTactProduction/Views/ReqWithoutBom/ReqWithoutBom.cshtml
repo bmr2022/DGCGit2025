@@ -778,12 +778,12 @@
 
             if ($('#Mode').val() == "U") {
                  
-                var formattedDate2 = getFormattedDateOnly($('#hiddenReqDate').val());
-                var formattedDate3 = getFormattedDateOnly($('#hiddenExpectedDate').val());
+                var formattedDate2 = ($('#hiddenReqDate').val());
+                var formattedDate3 = ($('#hiddenExpectedDate').val());
 
                 // $('#ReqDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
                 $('#ExpectedDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
-                $('#ExpectedDate').datepicker("option", "mindate", 'now');
+                // $('#ExpectedDate').datepicker("option", "mindate", 'now');
 
                 var finFromDate = $('#FinFromDate').val();
                 var finToDate = $('#FinToDate').val();
