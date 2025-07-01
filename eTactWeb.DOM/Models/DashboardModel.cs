@@ -9,11 +9,7 @@ namespace eTactWeb.DOM.Models
     public class DashboardModel
     {
         public List<Item> ItemsList { get; set; }
-        public string? PartCode { get; set; }
-        public string? ItemName { get; set; }
-        public decimal Qty { get; set; }
-        public decimal Value { get; set; }
-        public decimal Rate { get; set; }
+        public int NoOfItemInStock { get; set; }
     }
     public class Item
     {
