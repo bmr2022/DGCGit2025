@@ -68,7 +68,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId,string TransferMatEntryDate,int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid)
+        public async Task<ResponseResult> ChkWIPStockBeforeSaving(int WcId,string TransferMatEntryDate,int TransferMatYearCode,int TransferMatEntryId, DataTable TransferGrid,string Mode)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -80,6 +80,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@TransferMatYearCode", TransferMatYearCode));
                 SqlParams.Add(new SqlParameter("@TransferMatEntryId", TransferMatEntryId));
                 SqlParams.Add(new SqlParameter("@DTItemGrid", TransferGrid));
+                SqlParams.Add(new SqlParameter("@Mode", Mode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
             }
             catch (Exception ex)

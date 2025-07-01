@@ -23,6 +23,7 @@ namespace eTactWeb.DOM.Models
         public string EntryByMachine { get; set; }
         public int AccountCode { get; set; }
         public int AccEntryId { get; set; }
+        public int DocEntryId { get; set; }
         public int AccYearCode { get; set; }
         public string SaleDocNo { get; set; }
         public string SaleVoucherType { get; set; } 

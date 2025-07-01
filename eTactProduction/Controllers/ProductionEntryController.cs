@@ -386,6 +386,48 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+
+        public async Task<JsonResult> ChkWIPStockBeforeSaving(int WcId, string TransferMatEntryDate, int TransferMatYearCode, int TransferMatEntryId)
+        {
+            var TransferGrid = new DataTable();
+            string serializedGrid = HttpContext.Session.GetString("KeyProductionEntryGrid");
+            List<ProductionEntryItemDetail> ProductionEntryItemDetail = new();
+            if (!string.IsNullOrEmpty(serializedGrid))
+            {
+                ProductionEntryItemDetail = JsonConvert.DeserializeObject<List<ProductionEntryItemDetail>>(serializedGrid);
+            }
+            //_MemoryCache.TryGetValue("KeyTransferFromWorkCenterGrid", out List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail);
+            TransferGrid = GetDetailTable(ProductionEntryItemDetail);
+            var ChechedData = await _IProductionEntry.ChkWIPStockBeforeSaving(WcId, TransferMatEntryDate, TransferMatYearCode, TransferMatEntryId, TransferGrid);
+            if (ChechedData.StatusCode == HttpStatusCode.OK && ChechedData.StatusText == "Success")
+            {
+                DataTable dt = ChechedData.Result;
+
+                List<string> errorMessages = new List<string>();
+
+                foreach (DataRow row in dt.Rows)
+                {
+                    string itemName = row["ItemName"].ToString();
+                    string batchNo = row["BatchNo"].ToString();
+                    decimal availableQty = Convert.ToDecimal(row["CalWIPStock"]);
+
+                    string error = $"{itemName} + {batchNo} has only {availableQty} quantity available in stock.";
+                    errorMessages.Add(error);
+                }
+
+                return Json(new
+                {
+                    success = false,
+                    errors = errorMessages
+                });
+            }
+            return Json(new
+            {
+                success = true,
+                message = "No errors found."
+            });
+        }
+
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));

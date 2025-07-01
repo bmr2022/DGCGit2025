@@ -1060,7 +1060,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(combinedData);
             return Json(JsonString);
         }
-        public IActionResult DeleteItemRow(int itemCode, string Mode, int Seq, string uniquekeyid)
+        public IActionResult DeleteItemRow(int itemCode, string Mode, int Seq, string uniquekeyid, bool IsDeleteAll = false)
         {
             var MainModel = new AccPurchaseRejectionModel();
             //_MemoryCache.TryGetValue("KeyPurchaseRejectionGrid", out List<AccPurchaseRejectionDetail> purchaseRejectionDetail);
@@ -1079,17 +1079,24 @@ namespace eTactWeb.Controllers
             string uniquekey = string.Empty;
             if (purchaseRejectionDetail != null && purchaseRejectionDetail.Count > 0)
             {
-                uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString() ?? (uniquekeyid ?? string.Empty);
-                //purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
                 MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
-                foreach (var item in purchaseRejectionDetail.ToList())
+                if (!IsDeleteAll)
                 {
-                    if (item.ItemCode == itemCode && item.SeqNo == Seq)
+                    uniquekey = purchaseRejectionDetail.Where(x => x.ItemCode == itemCode && x.SeqNo == Seq).Select(x => x.hdnuniquekey).FirstOrDefault()?.ToString() ?? (uniquekeyid ?? string.Empty);
+                    //purchaseRejectionDetail.RemoveAll(x => x.ItemCode == itemCode && x.SeqNo == Seq);
+                    foreach (var item in purchaseRejectionDetail.ToList())
                     {
-                        MainModel.AccPurchaseRejectionDetails.Remove(item);
+                        if (item.ItemCode == itemCode && item.SeqNo == Seq)
+                        {
+                            MainModel.AccPurchaseRejectionDetails.Remove(item);
+                        }
                     }
+                    //MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
                 }
-                //MainModel.AccPurchaseRejectionDetails = purchaseRejectionDetail;
+                else
+                {
+                    MainModel.AccPurchaseRejectionDetails = new List<AccPurchaseRejectionDetail>();
+                }
 
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
@@ -1116,16 +1123,29 @@ namespace eTactWeb.Controllers
                     PurchBillItemCode = !string.IsNullOrEmpty(uniquekeyArray[3]) ? Convert.ToInt32(uniquekeyArray[3]) : 0;
                 }
                 var PopupGrid = PRPopupGrid;
-                if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
+                if (!IsDeleteAll)
                 {
-                    if (MainModel.AccPurchaseRejectionDetails.Any())
+                    if (MainModel != null && MainModel.AccPurchaseRejectionDetails != null)
                     {
-                        bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode && a.hdnuniquekey == uniquekey); // && a.AgainstPurchaseBillEntryId == EntryId && a.AgainstPurchaseBillYearCode == YearCode
-                        if (!IsExistsSameItem)
+                        if (MainModel.AccPurchaseRejectionDetails.Any())
                         {
-                            foreach(var item in PRPopupGrid.ToList())
+                            bool IsExistsSameItem = MainModel.AccPurchaseRejectionDetails.Exists(a => a.ItemCode == itemCode && a.hdnuniquekey == uniquekey); // && a.AgainstPurchaseBillEntryId == EntryId && a.AgainstPurchaseBillYearCode == YearCode
+                            if (!IsExistsSameItem)
                             {
-                                if(item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+                                foreach (var item in PRPopupGrid.ToList())
+                                {
+                                    if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
+                                    {
+                                        PopupGrid.Remove(item);
+                                    }
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (var item in PRPopupGrid.ToList())
+                            {
+                                if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
                                 {
                                     PopupGrid.Remove(item);
                                 }
@@ -1145,13 +1165,7 @@ namespace eTactWeb.Controllers
                 }
                 else
                 {
-                    foreach (var item in PRPopupGrid.ToList())
-                    {
-                        if (item.ItemCode == itemCode && item.AgainstPurchaseBillEntryId == EntryId && item.AgainstPurchaseBillYearCode == YearCode && item.InvoiceNo == InvoiceNo && item.PurchBillItemCode == PurchBillItemCode)
-                        {
-                            PopupGrid.Remove(item);
-                        }
-                    }
+                    PopupGrid = new List<AccPurchaseRejectionAgainstBillDetail>();
                 }
                 MainModel.AccPurchaseRejectionAgainstBillDetails = PopupGrid;
 
@@ -1167,6 +1181,11 @@ namespace eTactWeb.Controllers
             }
 
             return PartialView("_PurchaseRejectionGrid", MainModel);
+        }
+        public async Task<JsonResult> ClearTaxGrid()
+        {
+            HttpContext.Session.Remove("KeyTaxGrid");
+            return Json(new { Result = "Success" });
         }
         public async Task<JsonResult> CheckLockYear(int YearCode)
         {
@@ -1375,7 +1394,14 @@ namespace eTactWeb.Controllers
                 }
                 catch (Exception ex)
                 {
-                    return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
+                    return Ok(new
+                    {
+                        qrCodeUrl = "",
+                        ewbPdfUrl = "",
+                        rawEInvoice = rawResponse["eInvoiceResponse"]?.ToString(),
+                        rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
+                    });
+                    // return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
                 }
                 string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
                 if (!Directory.Exists(uploadsFolder))
@@ -1390,8 +1416,47 @@ namespace eTactWeb.Controllers
                     return BadRequest("QR generation failed");
 
                 string publicUrl = $"{Request.Scheme}://{Request.Host}/Uploads/QRCode/{fileName}";
+                if (input.generateEway == "EInvoice")
+                {
+                    return Ok(new
+                    {
+                        qrCodeUrl = publicUrl,
+                        ewbPdfUrl = "",
+                        rawEInvoice = eInvoiceObj.ToString(Formatting.Indented),
+                        rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
+                    });
+                }
+             //   string ewbPdfUrl = rawResponse["ewbUrl"]?.ToString() ?? "";
+                string ewayInvoiceStr = rawResponse["eWayBillResponse"]?.ToString();
 
-                string ewbPdfUrl = rawResponse["ewbUrl"]?.ToString() ?? "";
+                if (string.IsNullOrWhiteSpace(ewayInvoiceStr))
+                    return BadRequest("Missing eInvoice response.");
+
+                int jsonStart = ewayInvoiceStr.IndexOf("responseString:");
+                //if (jsonStart == -1)
+                //    return BadRequest("Invalid format: 'responseString' not found.");
+
+                string jsonPart = ewayInvoiceStr.Substring(jsonStart + "responseString:".Length).Trim();
+
+                JObject eInvoiceObj1;
+                try
+                {
+                    eInvoiceObj1 = JObject.Parse(jsonPart);
+                }
+                catch (Exception ex)
+                {
+                  //  return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
+                    string rawEWayBill = rawResponse["eWayBillResponse"]?.ToString();
+
+                    return Ok(new
+                    {
+                        qrCodeUrl = publicUrl,
+                        ewbPdfUrl = "",
+                        rawEInvoice = eInvoiceObj.ToString(Formatting.Indented),
+                        rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
+                    });
+                }
+                string ewbPdfUrl = eInvoiceObj1["results"]?["message"]?["EwaybillPdf"]?.ToString() ?? "";
 
                 return Ok(new
                 {

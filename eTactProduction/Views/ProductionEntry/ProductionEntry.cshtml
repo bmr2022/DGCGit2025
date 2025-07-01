@@ -116,7 +116,7 @@
                     <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3 align-items-center">
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:80px">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
                                     <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
                                     <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
@@ -1168,7 +1168,11 @@
 
             e.preventDefault();
             if (!ValidateGI_Grid()) return;
-            $('form').submit();
+            ChkWIPStockBeforeSaving(function (isValid) {
+                if (isValid) {
+                    $('form').submit(); // proceed only if no stock errors
+                }
+            });
         });
         function GetFormRights() {
             $.ajax({
@@ -4719,6 +4723,41 @@
                 CheckAutoOrManual();
             }
         })
+
+        function ChkWIPStockBeforeSaving(callback) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ChkWIPStockBeforeSaving")",
+                dataType: "json",
+                data: {
+                    "WcId": parseInt($('#WorkCenter').val()),
+                    "TransferMatEntryDate": $('#EntryDate').val(),
+                    "TransferMatEntryId": $('#EntryId').val(),
+                    "TransferMatYearCode": parseInt($('#YearCode').val())
+                },
+                success: function (response) {
+                    if (response.success === false) {
+                        response.errors.forEach(function (err) {
+                            $.notify(err, {
+                                className: 'error',
+                                globalPosition: 'top right'
+                            });
+                        });
+                        callback(false); // indicate failure
+                    } else {
+                        callback(true); // indicate success
+                    }
+                },
+                error: function (xhr, status, error) {
+                    $.notify("Error checking stock: " + error, {
+                        className: 'error',
+                        globalPosition: 'top right'
+                    });
+                    callback(false); // prevent submission on error
+                }
+            });
+        }
+
 
         function ValidatePE_Grid() {
              

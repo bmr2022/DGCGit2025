@@ -149,6 +149,14 @@
                                         </select>
                                     
                                 </div>
+                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                    <label asp-for="MRNNO" class="control-label" style="color: red;"> MRN No </label>
+                                    <select class="form-select" asp-for="MRNNO">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    
+                                </div>
                                 
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 
@@ -177,10 +185,8 @@
                                     <label asp-for="MIRDate" class="form-label" style="color: blue;">MIRDate</label>
                                     <input asp-for="MIRDate" class="form-control" readonly style="background-color: lightblue !important;" />
                                 </div>
-                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="MRNNO" class="form-label" style="color: blue;">MRNNO</label>
-                                    <input asp-for="MRNNO" class="form-control" readonly style="background-color: lightblue !important;" />
-                                </div>
+                                
+                                
                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="MrnYearCode" class="form-label" style="color: blue;">MrnYearCode</label>
                                     <input asp-for="MrnYearCode" class="form-control" readonly style="background-color: lightblue !important;" />
@@ -274,6 +280,7 @@
                                                 <th>PrevDeviationQty</th>
                                                 <th>DeviationQty</th>
                                                 <th>ResponsibleEmpForDeviation</th>
+                                               <th>ApprovedByEmp<input id="SHA5" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                   <th>Process</th>
                                                 <th>BatchNo</th>
                                                 <th>uniqueBatchno</th>
@@ -283,7 +290,6 @@
                                                 <th>Unit</th>
                                                 <th>AltUnit</th>
                                                 <th>Defaulttype</th>
-                                                <th>ApprovedByEmp<input id="SHA5" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                                                 
                                                 <th>Color</th>
                                                 <th>ItemSize</th>
@@ -525,6 +531,7 @@
         $(document).ready(function () {
              $('#QcType').select2();
              $('#MIRNo').select2();
+             $('#MRNNO').select2();
              $('#MIRYearCode').select2();
              $('#QCStore').select2();
              $('#ItemName').select2();
@@ -567,6 +574,12 @@
         $('#QcType').change(function () { 
             /* ClearGridAjax(); */
             FILLMIRNO();
+            FILLMRNNO();
+        });
+         $('#MRNNO').change(function () { 
+            /* ClearGridAjax(); */
+            FILLMIRNO();
+            /* FILLMRNNO(); */
         });
         $('#MIRNo').change(function () { 
             /* ClearGridAjax(); */
@@ -741,12 +754,13 @@
 
         function FILLMIRNO() {
             var ReofferMir = $('#QcType').val();
+            var MRNNO = $('#MRNNO').val();
              $('#MIRNo').empty();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("FILLMIRNO")",
                 dataType: "json",
-                data: { ReofferMir: ReofferMir },
+                data: { ReofferMir: ReofferMir, MRNNO:MRNNO  },
                 async: false,
                 
                 success: function (result, status, error) {
@@ -769,6 +783,38 @@
                 }
             });
         }
+
+        function FILLMRNNO() {
+            var ReofferMir = $('#QcType').val();
+             $('#MRNNO').empty();
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FILLMRNNO")",
+                dataType: "json",
+                data: { ReofferMir: ReofferMir },
+                async: false,
+                
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#MRNNO').empty();
+                            $('#MRNNO').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#MRNNO').append('<option value="' + val.MRNNo + '">' + val.MRNNo + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var MRNNO = "@Model.MRNNO";
+                                $('#MRNNO').val(MRNNO).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
          function FILLMIRYearCode() {
              var MIRNO = $('#MIRNo').val();
             $.ajax({
@@ -1659,6 +1705,8 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                                         ' onfocusout="handleInput(this)"></td>' +
 
                                 '<td><input id="ResponsibleEmpForDeviation' + i + '" value="" class="textbox"></td>' +
+                            '<td><select id="ApprovedByEmp' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="ApprovedByEmpChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
+
                                 '<td><input id="ProcessId' + i + '"  value=""  class="textbox"></td>' +
 
                                  '<td><input id="BatchNo' + i + '" value=' + val.BatchNo + ' class="textbox"></td>' +
@@ -1669,7 +1717,6 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
                                 '<td><input id="Unit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
                                 '<td><input id="AltUnit' + i + '" value=' + val.Unit + ' readonly style="width:60px;" class="textbox"></td>' +
                                 '<td><input id="Defaulttype' + i + '"  value="" class="textbox"></td>' +
-                                '<td><select id="ApprovedByEmp' + i + '" style="background-color:#ffd6dd;" class="textbox" onchange="ApprovedByEmpChange(' + i + ')"><option value="" selected>-Select-</option></select></td>' +   
 
                                 
                                 '<td><input id="Color' + i + '"  value="" style="width:60px;" class="textbox"></td>' +
@@ -2356,6 +2403,16 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
 
                  var Reworkqty = parseFloat($('#Reworkqty' + i).val()) || 0;
                  var ReworkLotStock = parseFloat($('#ReworkLotStock' + i).val()) || 0;
+                 var RecQty=parseFloat($('#RecQty' + i).val()) || 0;
+
+                 var totalQty=AcceptedQty+RejectedQty+ HoldQty + Reworkqty;
+
+                 if (totalQty != RecQty) {
+                     
+                         $.notify('sum of all qty must be same as RecQty' + partcode, "error");
+                         Err = 1;
+                     }
+                 
 
                  if (AccLotStock < PrevAcceptedQty) {
                      if (PrevAcceptedQty > AcceptedQty) {

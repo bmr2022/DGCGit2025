@@ -63,7 +63,7 @@ namespace eTactWeb.Controllers
             MainModel.FinFromDate = HttpContext.Session.GetString("FromDate");
             MainModel.FinToDate = HttpContext.Session.GetString("ToDate");
             MainModel.PreparedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            MainModel.PreparedByName = HttpContext.Session.GetString("EmpName");
+             MainModel.PreparedByName = HttpContext.Session.GetString("EmpName");
             MainModel.Branch = HttpContext.Session.GetString("Branch");
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))

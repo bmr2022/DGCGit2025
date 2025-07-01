@@ -11,7 +11,9 @@ namespace eTactWeb.Services.Interface
     public interface ITransactionLedger
     {
         Task<ResponseResult> GetLedgerName();
-        public Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode,string ReportType);
+        Task<ResponseResult> FillLedgerName();
+        public Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode,string ReportType, int Ledger, string VoucherType);
         public Task<TransactionLedgerModel> GetTransactionLedgerMonthlySummaryDetailsData(string FromentryDate,string ToEntryDate,int AccountCode);
+        public Task<ResponseResult> FillVoucherName();
     }
 }

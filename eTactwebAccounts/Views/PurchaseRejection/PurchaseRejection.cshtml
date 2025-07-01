@@ -1245,16 +1245,17 @@
             BasicTotal();
         }
 
-        function DeleteItemRow(itemCode, seq) {
+        function DeleteItemRow(itemCode, seq, IsDeleteAll) {
             $.ajax({
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
                 async: false,
-                       data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq":  seq, "uniquekeyid": $('#hdnuniquekey-' + seq).val()},
+                       data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq":  seq, "uniquekeyid": $('#hdnuniquekey-' + seq).val(), "IsDeleteAll": IsDeleteAll},
                 success: function (data, status, xhr) {
                     $('#divAddPurchaseRejectionList').html(data);
 
                     ClearDRCRGrid();
+                    ClearTax();
                     ClearAdjustmentGrid();
 
                     var rowCount = $('#divAddPurchaseRejectionList tr td').length;
@@ -1285,7 +1286,27 @@
             var showAllDoc = document.getElementById('DA').checked ? "T" : "F";
             FillDocument(showAllDoc);
         });
-
+        $('.btnClearTax').click(function () {
+            btnClearTax();
+        });
+        function btnClearTax() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearTaxGrid")",
+                data: { },
+                dataType: "json",
+                success: function (result, status, error) {
+                    $('#divTaxGrid').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divTaxGrid').html(NoData);
+                    var txAmt = $('#lblItemNetAmount').text();
+                    $('#NetTotal').val(txAmt);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
         function FillDocument(showAllDoc) {
             $.ajax({
                 type: "POST",
@@ -1608,6 +1629,8 @@
                             $('#billRate-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
                         }
                         if (obj.Result != null) {
+                            billQty = 0;
+                            billRate = 0;
                             let existingRowCount = $('#divAddPurchaseRejectionPopupDataGrid tr').length;
                             var j = existingRowCount > 0 ? existingRowCount : 0;
                             var checkedRowsCount = $('#divPurchaseRejectionDataGrid tr').length;
@@ -1716,6 +1739,7 @@
 
         function ValidateGrid() {
             var Err = 0;
+            var Type = $('#DebitNotePurchaseRejection').val();
             if ($('#PartCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode');
                 $.notify('please select ItemName...!', "error");
@@ -1724,7 +1748,7 @@
             else {
                 RemoveErrorCls('PartCode');
             }
-            if ($('#Batchno').prop('selectedIndex') == 0) {
+            if ($('#Batchno').prop('selectedIndex') == 0 && Type.toLowerCase() != 'debit-note') {
                 AddErrorCls('Batchno');
                 $.notify('please select Batchno...!', "error");
                 Err = 1;
@@ -1732,7 +1756,7 @@
             else {
                 RemoveErrorCls('Batchno');
             }
-            if ($('#Uniquebatchno').prop('selectedIndex') == 0) {
+            if ($('#Uniquebatchno').prop('selectedIndex') == 0 && Type.toLowerCase() != 'debit-note') {
                 AddErrorCls('Uniquebatchno');
                 $.notify('please select Uniquebatchno...!', "error");
                 Err = 1;
@@ -1780,7 +1804,7 @@
             else {
                 RemoveErrorCls('RejectedQty');
             }
-            if ($('#LotStock').val() == null) {
+            if ($('#LotStock').val() == null && Type.toLowerCase() != 'debit-note') {
                 AddErrorCls('LotStock');
                 $.notify('please add Lot Stock...!', "error");
                 Err = 1;
@@ -1788,7 +1812,7 @@
             else {
                 RemoveErrorCls('LotStock');
             }
-            if ($('#TotalStock').val() == null) {
+            if ($('#TotalStock').val() == null && Type.toLowerCase() != 'debit-note') {
                 AddErrorCls('TotalStock');
                 $.notify('please add Total Stock...!', "error");
                 Err = 1;
@@ -1796,11 +1820,16 @@
             else {
                 RemoveErrorCls('TotalStock');
             }
-            if ($('#BillQty').val() != null && $('#RejectedQty').val() != null && $('#LotStock').val() != null && $('#TotalStock').val() != null && (parseFloat($('#BillQty').val()) < parseFloat($('#RejectedQty').val()))
+            if (Type.toLowerCase() != 'debit-note' && $('#BillQty').val() != null && $('#RejectedQty').val() != null && $('#LotStock').val() != null && $('#TotalStock').val() != null && ((parseFloat($('#BillQty').val()) < parseFloat($('#RejectedQty').val()))
             || (parseFloat($('#LotStock').val()) < parseFloat($('#RejectedQty').val()))
-            || (parseFloat($('#TotalStock').val()) < parseFloat($('#RejectedQty').val()))) {
+            || (parseFloat($('#TotalStock').val()) < parseFloat($('#RejectedQty').val())))) {
                 AddErrorCls('RejectedQty');
                 $.notify('Rej Qty can not greter then billQty or LotStock or TotalStock...!', "error");
+                Err = 1;
+            }
+            else if ($('#BillQty').val() != null && $('#RejectedQty').val() != null && (parseFloat($('#BillQty').val()) < parseFloat($('#RejectedQty').val()))) {
+                AddErrorCls('RejectedQty');
+                $.notify('Rej Qty can not greter then billQty...!', "error");
                 Err = 1;
             }
             else {
@@ -2196,6 +2225,38 @@
         $('#DebitNotePurchaseRejection').change(function () {
             FillCustomerName();
             FillSubvoucher();
+            if(this.value.toLowerCase()  == 'debit-note') {
+                DeleteItemRow('', 0, true);
+                ClearTax();
+                btnClearTax();
+                ClearDRCRGrid();
+                ClearAdjustmentGrid();
+                document.getElementById("Batchno").value = "0";
+                document.getElementById("Batchno").disabled = true;
+                document.getElementById("Uniquebatchno").value = "0";
+                document.getElementById("Uniquebatchno").disabled = true;
+                document.querySelectorAll('th.batchclass').forEach(function (th) {
+                    th.style.color = "white";
+                    const asterisk = th.querySelector('.requiredsign');
+                    if (asterisk) asterisk.style.display = "none";
+                });
+            }
+            else {
+                DeleteItemRow('', 0, true);
+                ClearTax();
+                btnClearTax();
+                ClearDRCRGrid();
+                ClearAdjustmentGrid();
+                document.getElementById("Batchno").value = "0";
+                document.getElementById("Batchno").disabled = false;
+                document.getElementById("Uniquebatchno").value = "0";
+                document.getElementById("Uniquebatchno").disabled = false;
+                document.querySelectorAll('th.batchclass').forEach(function (th) {
+                    th.style.color = "yellow";
+                    const asterisk = th.querySelector('.requiredsign');
+                    if (!asterisk) asterisk.style.display = "";
+                });
+            }
         });
 
         $('#DiscountAmt' ).change(function () {

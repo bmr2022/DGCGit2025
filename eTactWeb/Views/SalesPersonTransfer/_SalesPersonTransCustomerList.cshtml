@@ -10,7 +10,10 @@
     <thead class="bg-gradient card-headerBG text-light">
         <tr>
             <th>Sr#</th>
-            <th>Action</th>
+            <th>
+                <input type="checkbox" id="selectAllCheckbox" onclick="toggleAllCheckboxes(this)" style="margin-top:5px;"/>
+                Action
+            </th>
             <th data-columnno="1" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Customer Name
             </th>
@@ -45,44 +48,17 @@
                 foreach (var item in Model.SalesPersonTransferGrid)
                 {
                     Cntr = Cntr + 1;
-                    <tr onclick="selection(this)">
+                    <tr>
                         <th>@Cntr</th>
                         <td style="text-align:center;white-space: nowrap;">
                             <div id="container">
-
-                                <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="MaterialConversion" asp-route-Mode="V" >
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div id="editCursorDiv-@Cntr">
-
-                                    <a class="table-link link-primary" asp-action="MaterialConversion" onclick="confirmEdit(event)">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div id="deleteCursorDiv-@Cntr">
-                                    <a class="table-link link-danger" asp-action="DeleteByID" a>
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-
+                                <input type="checkbox" id="rowCheckbox-@Cntr" class="form-check-input row-checkbox" data-custnamecode="@item.CustNameCode" />
+                               
 
                             </div>
                         </td>
-
-                       
-                        <td>@item.CustomerName</td>
-                        <td>@item.CustAddress</td>
+                        <td style="white-space: normal; word-break: break-word; max-width: 200px;">@item.CustomerName</td>
+                        <td style="white-space: normal; word-break: break-word; max-width: 250px;">@item.CustAddress</td>
                         <td>@item.CustCity</td>
                         <td>@item.CustState</td>
                         <td>@item.CustStateCode</td>
@@ -97,7 +73,12 @@
 </table>
 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
-
+<script>
+    function toggleAllCheckboxes(source) {
+        const checkboxes = document.querySelectorAll('#DashboardGrid input[type="checkbox"]');
+        checkboxes.forEach(cb => cb.checked = source.checked);
+    }
+</script>
 <style>
     #container {
         display: flex;
