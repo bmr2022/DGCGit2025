@@ -2403,6 +2403,16 @@ $('#DivDetailGrid').on('click', '.deleteRowBtn', function () {
 
                  var Reworkqty = parseFloat($('#Reworkqty' + i).val()) || 0;
                  var ReworkLotStock = parseFloat($('#ReworkLotStock' + i).val()) || 0;
+                 var RecQty=parseFloat($('#RecQty' + i).val()) || 0;
+
+                 var totalQty=AcceptedQty+RejectedQty+ HoldQty + Reworkqty;
+
+                 if (totalQty != RecQty) {
+                     
+                         $.notify('sum of all qty must be same as RecQty' + partcode, "error");
+                         Err = 1;
+                     }
+                 
 
                  if (AccLotStock < PrevAcceptedQty) {
                      if (PrevAcceptedQty > AcceptedQty) {
