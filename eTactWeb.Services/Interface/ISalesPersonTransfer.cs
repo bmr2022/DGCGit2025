@@ -13,5 +13,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillNewSalesEmpName(string ShowAllEmp);
 		Task<ResponseResult> FillOldSalesEmpName(string ShowAllEmp);
         Task<SalesPersonTransferModel> FillCustomerList(string ShowAllCust);
-    }
+        Task<ResponseResult> FillEntryID(int YearCode);
+		Task<ResponseResult> SaveSalesPersonTransfer(SalesPersonTransferModel model, DataTable GIGrid);
+	}
 }
