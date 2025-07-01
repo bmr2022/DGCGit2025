@@ -11,6 +11,7 @@ namespace eTactWeb.DOM.Models
         public string Flag { get; set; } 
         public string Mode { get; set; } 
         public string ShowAllEmp { get; set; } 
+        public string ShowAllOldEmp { get; set; } 
         public string ShowAllCust { get; set; } 
         public int SalesPersTransfYearCode { get; set; } 
         public int SalesPersTransfEntryId { get; set; }
@@ -44,9 +45,15 @@ namespace eTactWeb.DOM.Models
         public string CustState { get; set; } 
         public string CustStateCode { get; set; } 
         public string CustNameCode { get; set; } 
+        public string Searchbox { get; set; } 
         public int seqno { get; set; } 
+        public int AccountCode { get; set; } 
        
       
         public IList<SalesPersonTransferModel> SalesPersonTransferGrid { get; set; }
     }
+	public class SelectedRow
+	{
+		public int CustNameCode { get; set; }
+	}
 }

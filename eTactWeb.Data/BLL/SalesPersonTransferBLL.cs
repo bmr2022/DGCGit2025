@@ -30,9 +30,17 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _SalesPersonTransferDAL.FillOldSalesEmpName(ShowAllEmp);
 		}
+		public async Task<ResponseResult> FillEntryID(int YearCode)
+		{
+			return await _SalesPersonTransferDAL.FillEntryID(YearCode);
+		}
         public async Task<SalesPersonTransferModel> FillCustomerList(string ShowAllCust)
         {
             return await _SalesPersonTransferDAL.FillCustomerList( ShowAllCust);
         }
-    }
+		public async Task<ResponseResult> SaveSalesPersonTransfer(SalesPersonTransferModel model, DataTable GIGrid)
+		{
+			return await _SalesPersonTransferDAL.SaveSalesPersonTransfer(model, GIGrid);
+		}
+	}
 }

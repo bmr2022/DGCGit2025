@@ -2794,11 +2794,11 @@ public class ProductionEntryDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "ChkWIPStockBeforeSaving"));
             SqlParams.Add(new SqlParameter("@WCId", WcId));
-            SqlParams.Add(new SqlParameter("@TransferMatEntrydate", ParseFormattedDate(TransferMatEntryDate)));
-            SqlParams.Add(new SqlParameter("@TransferMatYearCode", TransferMatYearCode));
-            SqlParams.Add(new SqlParameter("@TransferMatEntryId", TransferMatEntryId));
+            SqlParams.Add(new SqlParameter("@Entrydate", ParseFormattedDate(TransferMatEntryDate)));
+            SqlParams.Add(new SqlParameter("@Yearcode", TransferMatYearCode));
+            SqlParams.Add(new SqlParameter("@Entryid", TransferMatEntryId));
             SqlParams.Add(new SqlParameter("@DTItemGrid", TransferGrid));
-            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_TransferMaterialFromWc", SqlParams);
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionEntry", SqlParams);
         }
         catch (Exception ex)
         {

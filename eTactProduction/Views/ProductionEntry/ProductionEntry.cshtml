@@ -116,7 +116,7 @@
                     <div id="B_RParameter" class="accordion-collapse collapse show pnl1 bg-gradient" aria-labelledby="H_RParameter">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3 align-items-center">
-                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style=" width:80px">
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
                                     <input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
                                     <input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
                                     <input type="hidden" value="@Model.Mode" asp-for="Mode" />
@@ -4733,7 +4733,7 @@
                     "WcId": parseInt($('#WorkCenter').val()),
                     "TransferMatEntryDate": $('#EntryDate').val(),
                     "TransferMatEntryId": $('#EntryId').val(),
-                    "TransferMatYearCode": parseInt($('#TransferMatYearCode').val())
+                    "TransferMatYearCode": parseInt($('#YearCode').val())
                 },
                 success: function (response) {
                     if (response.success === false) {
