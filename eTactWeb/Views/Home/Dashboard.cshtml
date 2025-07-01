@@ -28,6 +28,7 @@
 			display: grid;
 			grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
 			gap: 20px;
+			margin: 10px;
 		}
 
 		.card {
@@ -202,13 +203,49 @@
 			<h3>Total Stock Value (₹): <span class="TotalStockValue">0</span></h3>
 			<canvas id="valuationByCategoryChart"></canvas>
 		</div>
-		<div class="card wide-card">
+		<div class="card">
 			<h3>Inventory by Category</h3>
 			<canvas id="inventoryByCategoryChart"></canvas>
 		</div>
 		<div class="card">
 			<h3>Fast vs Slow Moving Items</h3>
 			<canvas id="fastSlowChart"></canvas>
+		</div>
+		<div class="card">
+			<h3>Pending</h3>
+			<table>
+				<thead><tr><th>Form</th><th>Qty</th></tr></thead>
+				<tbody>
+					<tr>
+						<td><a class="table-link link-primary" asp-action="PendingRequisitionToIssue" asp-controller="PendingRequisitionToIssue" id="MaterialtoIssueWOBOM">Req Without BOM</a></td>
+						<td><span id="PendRequisitionWithoutBOM">0</span></td>
+					</tr>
+					<tr>
+						<td><a class="table-link link-primary" asp-action="PendingMaterialToIssueThrBOM" asp-controller="PendingMaterialToIssueThrBOM" id="MaterialtoIssueThrBOM">Req Against BOM</a></td>
+						<td><span id="PendingReqAgainstBOM">0</span></td>
+					</tr>
+					<tr>
+						<td><a class="table-link link-primary" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">Against Plan</a></td>
+						<td><span id="PendingAgainstPlan">0</span></td>
+					</tr>
+					<tr>
+						<td><a class="table-link link-primary" asp-action="MaterialReceipt" asp-controller="MaterialReceipt" id="MaterialReceiptNote">Gate Entry For MRN</a></td>
+						<td><span id="PendingGateEntryForMRN">0</span></td>
+					</tr>
+					<tr>
+						<td><a class="table-link link-primary" asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" id="MRIR">MRN For Qc</a></td>
+						<td><span id="PendingMRNForQc">0</span></td>
+					</tr>
+					<tr>
+						<td><a class="table-link link-primary" asp-action="JobWorkReceive" asp-controller="JobWorkReceive" id="JobWorkReceive">Gate Entry For JW MRN</a></td>
+						<td><span id="PendingGateEntryForJWMrn">0</span></td>
+					</tr>
+					<tr>
+						<td><a class="table-link link-primary" asp-action="PendingToReceiveItem" asp-controller="PendingToReceiveItem" id="ReceiveItemInStore">ReceiveItem In Store</a></td>
+						<td><span id="PendingToReceiveItemInStore">0</span></td>
+					</tr>
+				</tbody>
+			</table>
 		</div>
 	</div>
 	<div class="dashboard">
@@ -217,117 +254,23 @@
 			<canvas id="movementChart"></canvas>
 		</div>
 		<div class="card">
-			<h3>Pending</h3>
-			<table>
-				<thead><tr><th></th><th>Form</th><th>Quantity</th></tr></thead>
-				<tbody>
-					<tr>
-						<td>
-							<a class="table-link link-primary" asp-action="PendingRequisitionToIssue" asp-controller="PendingRequisitionToIssue" id="MaterialtoIssueWOBOM">
-								<span class="fa-stack">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-								</span>
-							</a>
-						</td>
-						<td><span>Req Without BOM</span></td>
-						<td><span id="PendRequisitionWithoutBOM">0</span></td>
-					</tr>
-					<tr>
-						<td>
-							<a class="table-link link-primary" asp-action="PendingMaterialToIssueThrBOM" asp-controller="PendingMaterialToIssueThrBOM" id="MaterialtoIssueThrBOM">
-								<span class="fa-stack">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-								</span>
-							</a>
-						</td>
-						<td><span>Req Against BOM</span></td>
-						<td><span id="PendingReqAgainstBOM">0</span></td>
-					</tr>
-					<tr>
-						<td>
-							<a class="table-link link-primary" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">
-								<span class="fa-stack">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-								</span>
-							</a>
-						</td>
-						<td><span>Against Plan</span></td>
-						<td><span id="PendingAgainstPlan">0</span></td>
-					</tr>
-					<tr>
-						<td>
-							<a class="table-link link-primary" asp-action="MaterialReceipt" asp-controller="MaterialReceipt" id="MaterialReceiptNote">
-								<span class="fa-stack">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-								</span>
-							</a>
-						</td>
-						<td><span>Gate Entry For MRN</span></td>
-						<td><span id="PendingGateEntryForMRN">0</span></td>
-					</tr>
-					<tr>
-						<td>
-							<a class="table-link link-primary" asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" id="MRIR">
-								<span class="fa-stack">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-								</span>
-							</a>
-						</td>
-						<td><span>MRN For Qc</span></td>
-						<td><span id="PendingMRNForQc">0</span></td>
-					</tr>
-					<tr>
-						<td>
-							<a class="table-link link-primary" asp-action="JobWorkReceive" asp-controller="JobWorkReceive" id="JobWorkReceive">
-								<span class="fa-stack">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-								</span>
-							</a>
-						</td>
-						<td><span>Gate Entry For JW MRN</span></td>
-						<td><span id="PendingGateEntryForJWMrn">0</span></td>
-					</tr>
-					<tr>
-						<td>
-							<a class="table-link link-primary" asp-action="PendingToReceiveItem" asp-controller="PendingToReceiveItem" id="ReceiveItemInStore">
-								<span class="fa-stack">
-									<i class="fa fa-square fa-stack-2x"></i>
-									<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-								</span>
-							</a>
-						</td>
-						<td><span>ReceiveItem In Store</span></td>
-						<td><span id="PendingToReceiveItemInStore">0</span></td>
-					</tr>
-				</tbody>
-			</table>
-		</div>
-		<div class="card">
 			<h3>Top Items by Stock Value</h3>
-			<table>
-				<thead><tr><th>PartCode</th><th>ItemName</th><th>Stock</th><th>Value</th><th>Rate</th></tr></thead>
-				<tbody id="TopItemByStockValue">
-				</tbody>
-			</table>
-		</div>
-		<div class="card">
-			<h3>Open Purchase Orders</h3>
-			<table>
-				<thead><tr><th>PO Qty</th><th>Delivery</th><th>Supplier</th></tr></thead>
-				<tbody>
-					<tr><td>21,000</td><td>27 Jun 2023</td><td>ABC Ltd.</td></tr>
-					<tr><td>21,000</td><td>20 Jun 2023</td><td>XYZ Corp.</td></tr>
-				</tbody>
-			</table>
+			<div class="table-responsive" style="max-height:350px;">
+				<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" style="width: 100%;">
+					<thead>
+						<tr>
+							<th>PartCode</th>
+							<th>ItemName</th>
+							<th>Stock</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody id="TopItemByStockValue">
+					</tbody>
+				</table>
+			</div>
 		</div>
 	</div>
-
 	<!-- Supply Chain Dashboard -->
 	<h2>Supply Chain Dashboard</h2>
 	<div class="dashboard">
@@ -383,7 +326,7 @@
 						async: false,
 						data: {},
 						success: function (response, status, error) {
-							 
+
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
 								$('.TotalStockValue').text(obj.Result[0].TotalStockValue);
@@ -410,11 +353,11 @@
 								});
 								var yValues = Object.values(dataMap);
 								var barColors = [
-									"#b91d47",
-									"#2b5797",
-									"#e8c3b9",
-									"#1e7145",
-									"#ff9900"
+									"#f28ea3",
+									"#6a92cc",
+									"#f3ddd8",
+									"#4da97b",
+									"#ffbb4d"
 								];
 
 								new Chart("valuationByCategoryChart", {
@@ -423,6 +366,7 @@
 									labels: xValues,
 									datasets: [{
 									  backgroundColor: barColors,
+									  hoverBackgroundColor: barColors,
 									  data: yValues
 									}]
 								  },
@@ -448,7 +392,7 @@
 						async: false,
 						data: {},
 						success: function (response, status, error) {
-							 
+
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
 								$('#PendRequisitionWithoutBOM').text(obj.Result[0].PendRequisitionWithoutBOM);
@@ -473,36 +417,54 @@
 						async: false,
 						data: {},
 						success: function (response, status, error) {
-							 
+
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
 								var result = obj.Result;
 								var xValues = result.map(x => x.ItemCategory);
 								var yValues = result.map(x => x.CategoryStock);
 
-								var barColors = ["#b91d47", "#00aba9", "#2b5797", "#e8c3b9", "#1e7145", "#f39c12"];
+								var barColors = ["#f28ea3", "#66d9d0", "#7fa6d9", "#f4dcd6", "#6fcf97", "#fbd490"];
 
-								new Chart("inventoryByCategoryChart", {
-					type: "bar",
-					data: {
-						labels: xValues,
-						datasets: [{
-							backgroundColor: barColors,
-							data: yValues
-						}]
+										new Chart("inventoryByCategoryChart", {
+			type: "bar",
+			data: {
+				labels: xValues,
+				datasets: [{
+					backgroundColor: barColors,
+					hoverBackgroundColor: barColors,
+					data: yValues,
+					barThickness: 25, // Force specific bar width (px)
+				}]
+			},
+			options: {
+				maintainAspectRatio: false, // Allow custom height/width
+				plugins: {
+					legend: {
+						display: false
 					},
-					options: {
-							   plugins: {
-		  legend: {
-			display: false // ✅ Hide legend so no 'undefined' appears
-		  }
-		},
-							  title: {
-							display: true,
-							text: "Inventory By Category"
-						}
+					title: {
+						display: true,
+						text: "Inventory By Category"
 					}
-				});
+				},
+				scales: {
+					x: {
+						categoryPercentage: 0.5, // Reduce spacing between bars
+						barPercentage: 1.0,      // Use full width inside category
+						ticks: {
+							autoSkip: false,
+							maxRotation: 30,
+							minRotation: 30
+						}
+					},
+					y: {
+						beginAtZero: true
+					}
+				}
+			}
+		});
+
 							}
 						},
 						error: function (xhr, status, error) {
@@ -512,13 +474,12 @@
 		}
 
 		function GetTopItemByStockValue(){
-			 
+
 			$.ajax({
 						url: '@Url.Action("GetTopItemByStockValue", "Home")',
 						type: 'POST',
 						async: false,
 						success: function (data, status, error) {
-							debugger
 							var obj = $.parseJSON(data);
 							var html = '';
 							$.each(obj.Result, function (i, item) {
@@ -527,7 +488,6 @@
 								html += '<td>' + item.ItemName + '</td>';
 								html += '<td>' + item.Stock + '</td>';
 								html += '<td>' + item.StockValue + '</td>';
-								html += '<td>' + item.Rate + '</td>';
 								html += '</tr>';
 							});
 							$('#TopItemByStockValue').empty().append(html);
