@@ -36,7 +36,7 @@ namespace eTactWeb.Controllers
             model.YearCode= Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             return View(model);
         }
-        public IActionResult PrintReport(string FGPartCode = "", string FGName = "",int StoreId = 0,int WCID = 0,string CurrentDate="",int YearCode=0,int CalForQty=0)
+        public IActionResult PrintReport(string FGPartCode = "", string FGName = "", string RMPartCode = "", string RMName = "", int StoreId = 0,int WCID = 0,string CurrentDate="",int YearCode=0,int CalForQty=0)
         {
             string my_connection_string;
             string contentRootPath = _IWebHostEnvironment.ContentRootPath;
@@ -51,6 +51,8 @@ namespace eTactWeb.Controllers
            
             webReport.Report.SetParameterValue("FGPartcodeparam", FGPartCode);
             webReport.Report.SetParameterValue("FGNameparam", FGName);
+            webReport.Report.SetParameterValue("RMPartcodeparam", RMPartCode);
+            webReport.Report.SetParameterValue("RMNameparam", RMName);
             webReport.Report.SetParameterValue("Storeidparam", StoreId);
             webReport.Report.SetParameterValue("WCIDparam", WCID);
             webReport.Report.SetParameterValue("CurrentDateparam", CommonFunc.ParseFormattedDate( CurrentDate));
