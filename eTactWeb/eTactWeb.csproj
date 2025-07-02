@@ -54,6 +54,7 @@
 
 	<ItemGroup>
 		<Content Remove="bundleconfig.json" />
+		<Content Remove="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 		<Content Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 		<Content Remove="Views\Home\Dashboard.cshtml" />
 		<Content Remove="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
@@ -63,6 +64,7 @@
 
 	<ItemGroup>
 		<None Include="bundleconfig.json" />
+		<None Include="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 		<None Include="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 		<None Include="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
 
@@ -162,6 +164,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <_ContentIncludedByDefault Remove="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 	  <_ContentIncludedByDefault Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 	  <_ContentIncludedByDefault Remove="Views\Home\Dashboard.cshtml" />
 	  <_ContentIncludedByDefault Remove="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
@@ -214,6 +217,10 @@
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 	</ItemGroup>
 
 </Project>

@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/24/2025 17:15:26" ReportInfo.Modified="07/01/2025 18:59:40" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/24/2025 17:15:26" ReportInfo.Modified="07/02/2025 13:44:03" ReportInfo.CreatorVersion="2023.2.0.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -50,8 +50,8 @@ namespace FastReport
 }
 </ScriptText>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0t4dbpm9aekdEf62ygZHdojlQqek764bZ9INGkvHUPUV+deyY+JxyarX98eaYgeMH13KF0/gv6rgeye/roylMLTZiCeXxUNvTiiznEAExN0Tk2w6KWY8APd4n1dzo3XLTorpQR72luyNm3bLMGeoOp/GAG/0qed9rtGtM/wgWbyEUkwUrn2/T/DSAcYTvpAKqw==">
-      <TableDataSource Name="Table" Alias="SPBOMPrintReportForDirectBOMStockShortExcess" DataType="System.Int32" Enabled="true" SelectCommand="exec SPBOMPrintReportForDirectBOMStockShortExcess @CurrentDate= @CurrentDateparam , @WCID=@WCIDparam&#13;&#10;,@Storeid= @Storeidparam ,@Yearcode= @YearCodeparam ,@CalForQty= @CalForQtyparam,@FGPartcode= @FGPartCodeparam, @FGName = @FGNameparam ,@RMPartcode=@RMPartCodeparam">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqHE+UVBHO0O0957hJkIVu0t4dbpm9aekdEf62ygZHdojlQqek764bZ9INGkvHUPUV+deyY+JxyarX98eaYgeMH13KF0/gv6rgeye/roylMLTZiCeXxUNvTiiznEAExN0Tk2w6KWY8APd4n1dzo3XLTorpQR72luyNm3bLMGeoOp/GAG/0qed9rtGtM/wgWbyEEJND/Cvs4n09Lvq6jNrHGg==">
+      <TableDataSource Name="Table" Alias="SPBOMPrintReportForDirectBOMStockShortExcess" DataType="System.Int32" Enabled="true" SelectCommand="exec SPBOMPrintReportForDirectBOMStockShortExcess @CurrentDate= @CurrentDateparam , @WCID=@WCIDparam&#13;&#10;,@Storeid= @Storeidparam ,@Yearcode= @YearCodeparam ,@CalForQty= @CalForQtyparam,@FGItemcode= @FGPartCodeparam, @FGName = @FGNameparam ">
         <Column Name="FGItemName" DataType="System.String"/>
         <Column Name="FGPartCode" DataType="System.String"/>
         <Column Name="FGUnit" DataType="System.String"/>

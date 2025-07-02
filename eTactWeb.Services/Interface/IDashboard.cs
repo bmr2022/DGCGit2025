@@ -14,5 +14,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillInventoryDashboardForPendingData();
         Task<ResponseResult> GetTopItemByStockValue();
         Task<ResponseResult> FillInventoryByCategory();
+        Task<ResponseResult> NoOfItemInStock();
     }
 }

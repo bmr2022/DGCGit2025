@@ -1054,6 +1054,23 @@
                                 </li>
                             </ul>
                         </li>
+
+                        <li>
+                            <a class="dropdown-item" href="#">Customer Sale Rate Master</a>
+                            <ul class="submenu dropdown-menu">
+                               @*  <li>
+                                    <a class="dropdown-item " asp-action="SSAmendmentList" asp-controller="SaleSchedule" id="SaleScheduleAmendment">
+                                        <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> New SS Amendment
+                                    </a>
+                                </li> *@
+                                <li>
+                                    <a class="dropdown-item CustomerSaleRate" asp-action="Index" asp-controller="CustSaleNewRate" id="CustomerSaleRateDash">
+                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                    </a>
+                                    <input class="userRightsPermission" type="hidden" value="Sale Schedule Amendment" />
+                                </li>
+                            </ul>
+                        </li>
                         @* <li>
                         <a class="dropdown-item" href="#">Performa Invoice &raquo;</a>
                         <ul class="submenu dropdown-menu">

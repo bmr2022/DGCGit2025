@@ -351,6 +351,7 @@ namespace eTactWeb
             services.TryAddTransient<IConnectionStringHelper, ConnectionStringHelper>();
             services.TryAddSingleton<ConnectionStringService>();
             services.AddScoped<UserContextService>();
+            services.TryAddTransient<ICustSaleNewRate , CustSaleNewRateBLL>();
         }
     }
 }
