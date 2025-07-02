@@ -119,13 +119,13 @@
                                                 </div>
                                             </div>
                                             <div class="d-flex justify-content-end mt-2 " >
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:90px;">
-                                                    <label class="form-label" >Total Cr Amt</label>
-                                                    <input id="totCr" class="form-control" readonly  />
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:170px;">
+                                                    <label class="form-label  modern-label">Total Cr Amt</label>
+                                                    <input id="totCr" class=" modern-highlight" readonly />
                                                 </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:90px;">
-                                                    <label class="form-label" >Total Dr Amt</label>
-                                                    <input id="totDr" class="form-control" readonly />
+                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:170px;">
+                                                    <label class="form-label  modern-label">Total Dr Amt</label>
+                                                    <input id="totDr" class="modern-highlight" readonly />
                                                 </div>
                                             </div>
                                            
@@ -144,7 +144,26 @@
 
 
 </div>
+<style>
+    .modern-highlight {
+        background: #e8f0fe; /* soft blue */
+        border: 1px solid #90caf9;
+        border-radius: 10px;
+        padding: 5px 10px;
+        font-size: 1rem;
+        font-weight: 600;
+        width: 150px;
+        color: #0d47a1;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    }
 
+    .modern-label {
+        font-size: 1.25rem;
+        font-weight: 600;
+        color: #1565c0;
+        margin-bottom: 4px;
+    }
+</style>
 @section Scripts
 {
     <script>
