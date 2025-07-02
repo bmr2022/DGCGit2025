@@ -926,6 +926,7 @@ public class BomController : Controller
         {
             var worksheet = package.Workbook.Worksheets[0];
             List<ImportBomData> importDataList = new();
+            var BomData = _IBom.CheckDupeConstraint();
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var FGPartCode = worksheet.Cells[row, 1].Value.ToString();
@@ -938,14 +939,14 @@ public class BomController : Controller
 
                 var bomPartCodeData = new ImportBomData()
                 {
-                    FGPartCode = worksheet.Cells[row, 1].Value?.ToString(),
-                    RMPartCode = worksheet.Cells[row, 3].Value.ToString()
+                    FGPartCode = FGPartCode,
+                    RMPartCode = RMPartCode
                 };
                 var RMQty = Convert.ToDouble(worksheet.Cells[row, 6].Value.ToString());
 
                 importDataList.Add(bomPartCodeData);
 
-                if (!string.IsNullOrEmpty(AltPartCode1))
+                if (!string.IsNullOrEmpty(AltPartCode1) && AltPartCode1 != "0")
                 {
                     var AltPC = _IBom.GetAltItemCode(AltPartCode1);
                     if (AltPC != null)
@@ -961,7 +962,7 @@ public class BomController : Controller
                         }
                     }
                 }
-                if (!string.IsNullOrEmpty(AltPartCode2))
+                if (!string.IsNullOrEmpty(AltPartCode2) && AltPartCode2 != "0")
                 {
                     var AltPC = _IBom.GetAltItemCode(AltPartCode2);
                     if (AltPC != null)
@@ -984,19 +985,18 @@ public class BomController : Controller
                     if (resultDataSet != null)
                     {
                         var firstTable = resultDataSet.Tables[0];
-                        foreach (DataRow row1 in firstTable.Rows)
-                        {
-                            FGItemCode = Convert.ToInt32(row1["FGItemCode"]);
-                            RmItemCode = Convert.ToInt32(row1["RMItemCode"]);
-                            FGItemName = row1["FGItemName"].ToString();
-                            RMItemName = row1["RMItemName"].ToString();
-                        }
+                        var row1 = firstTable.Rows[0];
+
+                        FGItemCode = !Convert.IsDBNull(row1["FGItemCode"]) ? Convert.ToInt32(row1["FGItemCode"]) : 0;
+                        RmItemCode = !Convert.IsDBNull(row1["RMItemCode"]) ? Convert.ToInt32(row1["RMItemCode"]) : 0;
+                        FGItemName = !Convert.IsDBNull(row1["FGItemName"]) ? row1["FGItemName"].ToString() : "";
+                        RMItemName = !Convert.IsDBNull(row1["RMItemName"]) ? row1["RMItemName"].ToString() : "";
                     }
                 }
 
-                var BomData = _IBom.CheckDupeConstraint();
+                
                 var BomRevNo = _IBom.GetBomNo(FGItemCode, "GetBomNo");
-                var BomRevNoChck = _IBom.GetBomNo(FGItemCode, "GetCheckBomNo");
+                //var BomRevNoChck = _IBom.GetBomNo(FGItemCode, "GetCheckBomNo");
 
                 var duplicateBom = "";
 
@@ -1019,14 +1019,14 @@ public class BomController : Controller
                 
                 data.Add(new BomViewModel()
                 {
-                    FGPartCode = worksheet.Cells[row, 1].Value == null ? "" : worksheet.Cells[row, 1].Value.ToString(),
+                    FGPartCode = FGPartCode,
                     FGItemName = FGItemName,
                     FGItemCode = FGItemCode,
                     RMItemCode = RmItemCode,
-                    RMPartCode = worksheet.Cells[row, 3].Value == null ? "" : worksheet.Cells[row, 3].Value.ToString(),
+                    RMPartCode = RMPartCode,
                     RMItemName = RMItemName,
                     BomName = worksheet.Cells[row, 5].Value == null ? "" : worksheet.Cells[row, 5].Value.ToString(),
-                    RMQty = worksheet.Cells[row, 6].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString()) ? 0 : Convert.ToDecimal(RMQty)),
+                    RMQty =  (string.IsNullOrEmpty(worksheet.Cells[row, 6].Value.ToString()) ? 0 : Convert.ToDecimal(RMQty)),
                     RMUnit = worksheet.Cells[row, 7].Value == null ? "" : worksheet.Cells[row, 7].Value.ToString(),
                     Location = worksheet.Cells[row, 8].Value == null ? "" : worksheet.Cells[row, 8].Value.ToString(),
                     MPNNumber = worksheet.Cells[row, 9].Value == null ? "" : worksheet.Cells[row, 9].Value.ToString(),
@@ -1034,11 +1034,11 @@ public class BomController : Controller
                     AltItemCode1 = AltItemCode1,
                     AltItemCode2 = AltItemCode2,
                     AltPartCode2 = worksheet.Cells[row, 11].Value == null ? "" : worksheet.Cells[row, 11].Value.ToString(),
-                    AltQty1 = worksheet.Cells[row, 12].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 12].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 12].Value.ToString())),
-                    AltQty2 = worksheet.Cells[row, 13].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 13].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 13].Value.ToString())),
-                    Scrap = worksheet.Cells[row, 14].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 14].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 14].Value.ToString())),
-                    GrossWeight = worksheet.Cells[row, 15].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 15].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 15].Value.ToString())),
-                    NetWeight = worksheet.Cells[row, 16].Value == null ? 0 : (string.IsNullOrEmpty(worksheet.Cells[row, 16].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 16].Value.ToString())),
+                    AltQty1 =  (string.IsNullOrEmpty(worksheet.Cells[row, 12].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 12].Value.ToString())),
+                    AltQty2 = (string.IsNullOrEmpty(worksheet.Cells[row, 13].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 13].Value.ToString())),
+                    Scrap = (string.IsNullOrEmpty(worksheet.Cells[row, 14].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 14].Value.ToString())),
+                    GrossWeight = (string.IsNullOrEmpty(worksheet.Cells[row, 15].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 15].Value.ToString())),
+                    NetWeight = (string.IsNullOrEmpty(worksheet.Cells[row, 16].Value.ToString()) ? 0 : Convert.ToDecimal(worksheet.Cells[row, 16].Value.ToString())),
                     Remark = worksheet.Cells[row, 17].Value == null ? "" : worksheet.Cells[row, 17].Value.ToString(),
                     BomNo = BomRevNo,
                     ConstraintExists = duplicateBom,
