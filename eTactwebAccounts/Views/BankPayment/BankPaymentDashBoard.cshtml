@@ -337,6 +337,14 @@
 
         function confirmEdit(event) {
             event.preventDefault();
+              sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+            sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNo').val());
+            sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
             linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
@@ -344,8 +352,16 @@
         }
 
         function confirmDelete(event) {
+           event.preventDefault();
+            sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+            sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+            sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
+            sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+            sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNo').val());
+            sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
+            sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+            sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
 
-                event.preventDefault();
                if (confirm("Are you sure you want to delete this entry?")) {
                 var linkUrl = $(event.currentTarget).attr("href");
                 linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&LedgerName=" + $('#LedgerName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&AgainstVoucherRefNo=" + $('#AgainstVoucherRefNo').val() + "&AgainstVoucherNo=" + $('#AgainstVoucherNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
@@ -354,6 +370,14 @@
         }
 
         function BackButtonData(event) {
+        sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+        sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+        sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
+        sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+        sessionStorage.setItem('AgainstVoucherRefNoBack', $('#AgainstVoucherRefNo').val());
+        sessionStorage.setItem('AgainstVoucherNoBack', $('#AgainstVoucherNo').val());
+        sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+        sessionStorage.setItem('DashboardTypeBack', $('#DashboardType').val());
 
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");

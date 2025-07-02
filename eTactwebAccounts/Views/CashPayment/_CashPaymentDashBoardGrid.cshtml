@@ -47,7 +47,7 @@
                             <td style="text-align:center;white-space: nowrap;" class="sticky-action">
                                 <div id="container">
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" asp-route-ID="@Cntr" asp-action="CashPayment" asp-route-Mode="V" onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="CashPayment" asp-route-Mode="V" onclick="BackButtonData(event);" asp-controller="CashPayment" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
