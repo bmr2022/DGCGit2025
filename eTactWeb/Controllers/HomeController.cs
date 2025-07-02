@@ -882,4 +882,10 @@ public class HomeController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+    public async Task<JsonResult> GetTopItemBelowMinLevel()
+    {
+        var JSON = await _IDashboard.GetTopItemBelowMinLevel();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 }
