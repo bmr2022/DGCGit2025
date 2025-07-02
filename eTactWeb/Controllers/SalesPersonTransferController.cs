@@ -1,10 +1,13 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using DocumentFormat.OpenXml.Wordprocessing;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace eTactWeb.Controllers
 {
@@ -24,7 +27,10 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
-        public async Task<ActionResult> SalesPersonTransfer(int ID, int YC, string Mode, string FromDate, string ToDate)
+        public async Task<ActionResult> SalesPersonTransfer(int ID, int YC, string Mode,string FromDate,string ToDate
+        , string SlipNo, string NewSalesEmpName, string NewSalesCode, string Designation, string Department, string OldSalesEmpName, string OldSalesCode, string EntryByMachine, string CC,
+        int RevNo, int NewSalesEmpId, int OldSalesEmpId,int AccountCode,int EntryByEmpId,int UpdatedByEmpId,
+        string ShowAllEmp, string ShowAllOldEmp,string EntryDate, string EffFrom, string EffTillDate)
         {
             var MainModel = new SalesPersonTransferModel();
 
@@ -38,18 +44,28 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeySalesPersonTransferGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-                //MainModel = await _IMaterialConversion.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
-                //MainModel.Mode = Mode;
-                //MainModel.EntryId = ID;
-                //MainModel.OpeningYearCode = YC;
-                //MainModel.StoreId = StoreId;
-                //MainModel.StoreName = StoreName;
-                //MainModel.OriginalItemCode = OriginalItemCode;
-                //MainModel.OriginalPartCode = OriginalPartCode;
-                //MainModel.OriginalItemName = OriginalItemName;
-                //MainModel.OriginalQty = OriginalQty;
-                //MainModel.Unit = Unit;
-               
+                MainModel = await _ISalesPersonTransfer.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
+                MainModel.Mode = Mode;
+                MainModel.SalesPersTransfEntryId = ID;
+                MainModel.SalesPersTransfYearCode = YC;
+                MainModel.SalesPersTransfEntryDate = EntryDate;
+                MainModel.SalesPersTransfSlipNo = SlipNo;
+                MainModel.RevNo = RevNo;
+                MainModel.ShowAllEmp = ShowAllEmp;
+                MainModel.NewSalesEmpName = NewSalesEmpName;
+                MainModel.NewSalesCode = NewSalesCode;
+                MainModel.NewSalesEmpId = NewSalesEmpId;
+                MainModel.EffFrom = EffFrom;
+                MainModel.Designation = Designation;
+                MainModel.Department = Department;
+                MainModel.ShowAllOldEmp = ShowAllOldEmp;
+                MainModel.OldSalesEmpName = OldSalesEmpName;
+                MainModel.OldSalesEmpId = OldSalesEmpId;
+                MainModel.OldSalesCode = OldSalesCode;
+                MainModel.EffTillDate = EffTillDate;
+                MainModel.AccountCode = AccountCode;
+                MainModel.EntryByEmpId = EntryByEmpId;
+
                 if (Mode == "U")
                 {
                     MainModel.UpdatedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -97,6 +113,13 @@ namespace eTactWeb.Controllers
 				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 				model.EntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
 				model.CC = HttpContext.Session.GetString("Branch");
+				if (model.Mode == "U")
+				{
+					model.UpdatedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+					model.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
+					model.UpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+
+				}
 				GIGrid = GetDetailTable(SalesPersonTransferGrid);
 				var Result = await _ISalesPersonTransfer.SaveSalesPersonTransfer(model, GIGrid);
 				if (Result != null)
@@ -199,6 +222,80 @@ namespace eTactWeb.Controllers
             model = await _ISalesPersonTransfer.FillCustomerList(ShowAllCust);
 
             return PartialView("_SalesPersonTransCustomerList", model);
+
+        }
+
+        public async Task<IActionResult> SalesPersonTransferDashBoard(string ReportType, string FromDate, string ToDate)
+        {
+            var model = new SalesPersonTransferModel();
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            //DateTime now = DateTime.Now;
+            //DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            //Dictionary<int, string> monthNames = new Dictionary<int, string>
+            //{
+            //    {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+            //    {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            //};
+
+            //model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            //model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+            
+            model.EntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            //model.ReportType = "SUMMARY";
+            var Result = await _ISalesPersonTransfer.GetDashboardData(model);
+
+            if (Result.Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null && DS.Tables.Count > 0)
+                {
+                    var dt = DS.Tables[0];
+                    model.SalesPersonTransferGrid = CommonFunc.DataTableToList<SalesPersonTransferModel>(dt, "SalesPersonTransferDashBoard");
+                }
+                //var DT = DS.Tables[0]
+                //.DefaultView.ToTable(true, "OriginalItemCode", "Unit",
+                //"OriginalQty", "AltItemCode", "AltUnit", "AltOriginalQty", "OriginalStoreId", 
+                //"AltStoreId", "OriginalWCID", "AltWCID", "BatchNo", "UniqueBatchNo", "BatchStock",
+                //"TotalStock", "AltStock", "PlanNo", "PlanYearCode", "PlanDate", "ProdSchNo",
+                //"ProdSchYearCode", "ProdSchdatetime", "OrigItemRate", "Remark");
+                //model.MaterialConversionGrid = CommonFunc.DataTableToList<MaterialConversionModel>(DT, "MaterialConversionDashboard");
+
+
+            }
+
+            return View(model);
+        }
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            //model.Mode = "Search";
+            var model = new SalesPersonTransferModel();
+            model = await _ISalesPersonTransfer.GetDashboardDetailData(FromDate, ToDate, ReportType);
+         
+            return PartialView("_SalesPersonTransferDashBoardGrid", model);
+           
+        }
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            var Result = await _ISalesPersonTransfer.DeleteByID(EntryId, YearCode, EntryDate, EntryByempId);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("SalesPersonTransferDashBoard");
 
         }
     }
