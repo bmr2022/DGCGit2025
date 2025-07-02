@@ -134,18 +134,19 @@
 										<label asp-for="Department" class="form-label" style="color:red">Department*</label>
 										<input asp-for="Department" class="form-control" />
 									</div>
+									<input type="hidden" asp-for="OldSalesEmpId" />
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
 										<input type="checkbox" asp-for="ShowAllOldEmp" style="margin-top:5px;" />
 										<label asp-for="ShowAllOldEmp" class="form-label" style="color:blue;margin-right:15px;">Show All</label>
 										<label asp-for="OldSalesEmpName" class="form-label" style="color:red">Old SalesEmp Name*</label>
-										<input type="hidden" asp-for="OldSalesEmpId" />
+									
 										<select class="form-select" asp-for="OldSalesEmpName" style="width:270px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="OldSalesCode" class="form-label">Old SalesCode</label>
-										<input type="hidden" asp-for="OldSalesEmpId" />
+										
 										<select class="form-select" asp-for="OldSalesCode">
 											<option value="">-Select-</option>
 										</select>
@@ -304,7 +305,7 @@
 		$(document).ready(function () {
 			GetFormRights();
 			if ($('#Mode').val() !== "U") {
-
+				setFormattedDate();
 				FillEntryID();
 				TotalNoOfRows();
 				
@@ -345,7 +346,7 @@
 			FillNewSalesCode();
 			FillCustomerList();
 		
-			setFormattedDate();
+			
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
@@ -527,8 +528,8 @@
 						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpName + '</option>');
 					});
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var NewSalesEmpName = '@Model.NewSalesEmpName';
-						$('#NewSalesEmpName').val(NewSalesEmpName);
+						var NewSalesEmpId = '@Model.NewSalesEmpId';
+						$('#NewSalesEmpName').val(NewSalesEmpId);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -555,7 +556,7 @@
 						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpCode + '</option>');
 					});
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var NewSalesCode = '@Model.NewSalesCode';
+						var NewSalesCode = '@Model.NewSalesEmpId';
 						$('#NewSalesCode').val(NewSalesCode);
 					}
 				},
@@ -619,9 +620,15 @@
 						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpName + '</option>');
 					});
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var OldSalesEmpName = '@Model.OldSalesEmpName';
+						var OldSalesEmpName = '@Model.OldSalesEmpId';
 						$('#OldSalesEmpName').val(OldSalesEmpName);
 					}
+					// if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+					// 	var oldEmpId = '@Model.OldSalesEmpId';
+					// 	setTimeout(function () {
+					// 		$('#OldSalesEmpName').val(oldEmpId).trigger('change');
+					// 	}, 100);
+					// }
 				},
 				error: function (xhr, status, error) {
 					alert('Failed to load groups.');
@@ -647,7 +654,7 @@
 						Dropdown.append('<option value="' + value.EmpId + '">' + value.EmpCode + '</option>');
 					});
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var OldSalesCode = '@Model.OldSalesCode';
+						var OldSalesCode = '@Model.OldSalesEmpId';
 						$('#OldSalesCode').val(OldSalesCode);
 					}
 				},

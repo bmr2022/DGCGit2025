@@ -537,13 +537,14 @@ namespace eTactWeb.Data.DAL
             var _ResponseResult = new ResponseResult();
             try
             {
+               
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DELETEBYID"));
                 SqlParams.Add(new SqlParameter("@AccEntryId", ID));
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", ActualEntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDateTime(ActualEntryDate)));
                 SqlParams.Add(new SqlParameter("@Vouchertype", VoucherType));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }

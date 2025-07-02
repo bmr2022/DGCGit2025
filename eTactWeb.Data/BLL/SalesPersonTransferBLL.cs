@@ -42,5 +42,21 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _SalesPersonTransferDAL.SaveSalesPersonTransfer(model, GIGrid);
 		}
-	}
+        public async Task<ResponseResult> GetDashboardData(SalesPersonTransferModel model)
+        {
+            return await _SalesPersonTransferDAL.GetDashboardData(model);
+        }
+        public async Task<SalesPersonTransferModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _SalesPersonTransferDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+        }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            return await _SalesPersonTransferDAL.DeleteByID(EntryId, YearCode, EntryDate, EntryByempId);
+        }
+        public async Task<SalesPersonTransferModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
+        {
+            return await _SalesPersonTransferDAL.GetViewByID(ID, YC, FromDate, ToDate);
+        }
+    }
 }

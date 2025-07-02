@@ -386,8 +386,8 @@
                     ledgerDropdown.append('<option value="">--Select--</option>');
 
                     $.each(obj.Result, function (index, ledger) {
-                         
-                        ledgerDropdown.append('<option value="' + ledger.PartCode + '">' + ledger.ItemName + '</option>');
+
+                        ledgerDropdown.append('<option value="' + ledger.Item_Code + '">' + ledger.ItemName + '</option>');
                     });
                    
                 },
@@ -406,12 +406,12 @@
                     var ledgerDropdown = $('#FGPartCode');
                     var obj = $.parseJSON(response);
                     ledgerDropdown.empty();
-                    ledgerDropdown.append('<option value="">--Select--</option>');
+                    ledgerDropdown.append('<option value="0">--Select--</option>');
 
 
                     $.each(obj.Result, function (index, ledger) {
-                         
-                        ledgerDropdown.append('<option value="' + ledger.PartCode + '">' + ledger.PartCode + '</option>');
+
+                        ledgerDropdown.append('<option value="' + ledger.Item_Code + '">' + ledger.PartCode + '</option>');
                     });
 
                 },
@@ -589,7 +589,7 @@
             var reportType = $('#ReportType').val(); // Get ReportType from a dropdown or input element
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
-            var FGPartCode = $('#FGPartCode').val();
+            var FGItemCode = $('#FGPartCode').val();
             //var FGItemName = $('#FGItemName').val();
             var RMPartCode = $('#RMPartCode').val();
             var Yearcode = $('#YearCode').val();
@@ -604,7 +604,7 @@
                     ReportType: reportType,
                     FromDate: fromDate,
                     ToDate: toDate,
-                    FGPartCode:FGPartCode,
+                    FGItemCode: FGItemCode,
                     //FGItemName: FGItemName,
                     RMPartCode: RMPartCode,
                     Yearcode: Yearcode,

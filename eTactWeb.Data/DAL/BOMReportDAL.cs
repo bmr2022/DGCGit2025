@@ -187,7 +187,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid,float calculateQty)
+        public async Task<BOMReportModel> GetBomTreeDetailsData(string fromDate, string toDate, int Yearcode, string ReportType, string FGPartCode, string RMPartCode, int Storeid,float calculateQty,int FGItemCode)
         {
             var resultList = new BOMReportModel();
             DataSet oDataSet = new DataSet();
@@ -208,7 +208,7 @@ namespace eTactWeb.Data.DAL
                         command.Parameters.AddWithValue("@Storeid", Storeid);
                         command.Parameters.AddWithValue("@Yearcode", Yearcode);
                         command.Parameters.AddWithValue("@CalForQty", calculateQty);
-                        command.Parameters.AddWithValue("@FGPartcode", FGPartCode ?? string.Empty);
+                        command.Parameters.AddWithValue("@FGItemcode", FGItemCode );
                         command.Parameters.AddWithValue("@RMpartcode", RMPartCode ?? string.Empty);
                     }
                     else
@@ -220,7 +220,7 @@ namespace eTactWeb.Data.DAL
                         //command.Parameters.AddWithValue("@FGItemcode", fgItemcode);
                         //command.Parameters.AddWithValue("@RMItemcode", rmItemcode);
                         //command.Parameters.AddWithValue("@FGName", FGName ?? string.Empty);
-                        command.Parameters.AddWithValue("@FGPartcode", FGPartCode ?? string.Empty);
+                        command.Parameters.AddWithValue("@FGItemcode", FGItemCode );
                         //command.Parameters.AddWithValue("@RMName", RMName ?? string.Empty);
                         command.Parameters.AddWithValue("@RMpartcode", RMPartCode ?? string.Empty);
                         //command.Parameters.AddWithValue("@RMpartcode", RMPartCode ?? string.Empty);
