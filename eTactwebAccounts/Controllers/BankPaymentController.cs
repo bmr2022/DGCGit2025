@@ -46,7 +46,7 @@ namespace eTactwebAccounts.Controllers
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U" || Mode == "V")
             {
                 MainModel = await _IBankPayment.GetViewByID(ID, YearCode, VoucherNo).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
