@@ -48,6 +48,9 @@ namespace eTactWeb.DOM.Models
         public string Searchbox { get; set; } 
         public int seqno { get; set; } 
         public int AccountCode { get; set; } 
+        public string FromDate { get; set; } 
+        public string ToDate { get; set; } 
+       
        
       
         public IList<SalesPersonTransferModel> SalesPersonTransferGrid { get; set; }
