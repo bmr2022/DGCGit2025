@@ -1246,8 +1246,9 @@ namespace eTactWeb.Controllers
                 TempData["500"] = "500";
                 rslt = "false";
             }
+            return Json(new { success = rslt, message = Result.StatusText });
 
-            return Json(rslt);
+          //  return Json(rslt);
             //return RedirectToAction(nameof(DashBoard));   
         }
         [HttpPost]
