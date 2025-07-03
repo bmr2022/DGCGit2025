@@ -30,9 +30,9 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _SalesPersonTransferDAL.FillOldSalesEmpName(ShowAllEmp);
 		}
-		public async Task<ResponseResult> FillEntryID(int YearCode)
+		public async Task<ResponseResult> FillEntryID(int YearCode, string EntryDate)
 		{
-			return await _SalesPersonTransferDAL.FillEntryID(YearCode);
+			return await _SalesPersonTransferDAL.FillEntryID(YearCode,  EntryDate);
 		}
         public async Task<SalesPersonTransferModel> FillCustomerList(string ShowAllCust)
         {

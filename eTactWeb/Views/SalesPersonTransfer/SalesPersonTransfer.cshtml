@@ -176,40 +176,6 @@
 												</div>
 											</button>
 										</h2>
-										@* <div class="card-body pb-0 pt-0">
-											<div class="progress" style="height: 4px;">
-												<div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-											</div>
-										</div>
-										<div class="card-body">
-											<div class="card overflow-auto">
-												<div class="card-body" id="divDashboardGrid">
-													<partial name="_SalesPersonTransCustomerList" />
-												</div>
-											</div>
-										</div> *@
-										@* <div class="card">
-											<div class="card-body overflow-auto pb-0">
-												<table class="table table-hover table-bordered table-striped">
-													<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
-														<tr>
-															<th>Action</th>
-															<th>Seq No</th>
-															<th>Customer Name</th>
-															<th>Address</th>
-															<th>City</th>
-															<th>State</th>
-															<th>State Code</th>
-															<th>Account Code</th>
-															
-														</tr>
-													</thead>
-													<tbody id="divDashboardGrid">
-														<partial name="_SalesPersonTransCustomerList" />
-													</tbody>
-												</table>
-											</div>
-										</div> *@
 
 									</div>
 
@@ -351,8 +317,8 @@
 				setFormattedDate();
 			});
 			
-			
-			
+
+
 		});
 
 		$('.submitBTN').click(function (e) {
@@ -700,7 +666,11 @@
 				}
 			}
 		}
-
+		var selectedCustCodes = @Html.Raw(Json.Serialize(
+		(ViewBag.SelectedCustCodes is string sc) ? new string[] { sc } :
+		(ViewBag.SelectedCustCodes is int i) ? new int[] { i } :
+		ViewBag.SelectedCustCodes ?? new string[] { }
+		));
 		function FillCustomerList() {
 
 			var ShowAllCust = $('#ShowAllCust').is(':checked') ? "Y" : "N";
@@ -715,6 +685,15 @@
 					var totalRows = $('#divDashboardGrid tbody tr').length;
 					$('#totalRows').text(totalRows);
 					// RowCount();
+
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						$('.row-checkbox').each(function () {
+							var custCode = $(this).data('custnamecode');  // get cust code from data attribute
+							if (selectedCustCodes.includes(custCode)) {
+								$(this).prop('checked', true);  // check the checkbox
+							}
+						});
+					}
 				},
 				error: function (response) {
 					alert(response.responseText);
@@ -782,13 +761,15 @@
 
 		
 		function FillEntryID() {
-
+			
 			var YearCode = $('#SalesPersTransfYearCode').val();
+			var EntryDate = $('#SalesPersTransfEntryDate').val();
 			$.ajax({
 				url: '@Url.Action("FillEntryID", "SalesPersonTransfer")',
 				type: 'POST',
 				data: {
-					YearCode: YearCode
+					YearCode: YearCode,
+					EntryDate: EntryDate
 				},
 				async: false,
 				success: function (data, status, xhr) {
