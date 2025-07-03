@@ -45,6 +45,9 @@ namespace eTactWeb.Controllers
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
                 MainModel = await _ISalesPersonTransfer.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
+                var fullCustomerList = await _ISalesPersonTransfer.FillCustomerList("N");
+                ViewBag.FullCustomerList = fullCustomerList.SalesPersonTransferGrid;
+                ViewBag.SelectedCustCodes = MainModel.AccountCode;
                 MainModel.Mode = Mode;
                 MainModel.SalesPersTransfEntryId = ID;
                 MainModel.SalesPersTransfYearCode = YC;
@@ -208,9 +211,9 @@ namespace eTactWeb.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
-        public async Task<JsonResult> FillEntryID(int YearCode)
+        public async Task<JsonResult> FillEntryID(int YearCode, string EntryDate)
 		{
-			var JSON = await _ISalesPersonTransfer.FillEntryID(YearCode);
+			var JSON = await _ISalesPersonTransfer.FillEntryID(YearCode,  EntryDate);
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
