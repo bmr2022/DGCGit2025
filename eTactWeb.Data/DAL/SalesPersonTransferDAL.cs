@@ -65,7 +65,7 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
-        public async Task<ResponseResult> FillEntryID(int YearCode)
+        public async Task<ResponseResult> FillEntryID(int YearCode,string EntryDate)
 		{
 			var _ResponseResult = new ResponseResult();
 			try
@@ -74,6 +74,7 @@ namespace eTactWeb.Data.DAL
 
 				SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
 				SqlParams.Add(new SqlParameter("@SalesPersTransfYearCode", YearCode));
+				SqlParams.Add(new SqlParameter("@SalesPersTransfEntryDate", EntryDate));
 
 				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPSalesPersonTransfer", SqlParams);
 			}

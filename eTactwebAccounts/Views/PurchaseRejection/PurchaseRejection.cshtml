@@ -546,7 +546,7 @@
                                 <div class="card-body overflow-auto pb-0">
                                     <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
                                         <div class="d-flex align-items-center">
-                                            <h6 class="mb-0 me-2">Do you want to generate E-Invoice now?</h6>
+                                            <h6 class="mb-0 me-2">Do you want to save & generate E-Invoice now?</h6>
                                         </div>
                                     </div>
                                 </div>
@@ -559,9 +559,9 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
-                        yes
+                        Save & Einvoice
                     </a>
-                    <button type="button" class="btn btn-danger" id="btnClose">No</button>
+                    <button type="button" class="btn btn-danger" id="btnClose">Save</button>
                 </div>
             </div>
         </div>
@@ -633,7 +633,7 @@
                                         $('#btngenrateEinvoice').val('false'); // set flag for no printing
                                         $('#EinvoicePopup').modal("hide");
                                         setTimeout(() => {
-                                            $('form').submit();
+                                           submitForm(false, null); 
                                         }, 300);
                                     });
         $('#btnEinvoiceOnly').click(function () {
@@ -660,7 +660,7 @@
                                        }, 300);
                                }
                    });
-                        function submitForm(ShouldEinvoice, printWindow) {
+        function submitForm(ShouldEinvoice, printWindow) {
                $('#ShouldEinvoice').val(ShouldEinvoice);
 
                const formData = $('form').serialize();
@@ -738,7 +738,7 @@
 
 
                            } else {
-                               window.location.href = '/PurchaseRejection/PurchaseRejection';
+                               window.location.href = '/PurchaseRejection/Index?ID=0';
                            }
                        } else {
                            alert(res.message || "Something went wrong.");

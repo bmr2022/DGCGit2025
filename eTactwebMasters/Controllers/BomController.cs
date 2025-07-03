@@ -929,7 +929,14 @@ public class BomController : Controller
             var BomData = _IBom.CheckDupeConstraint();
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
+                var cellValue = worksheet.Cells[row, 1].Value;
+
+                if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
+                    break; // Stop when column 1 is empty
                 var FGPartCode = worksheet.Cells[row, 1].Value.ToString();
+
+               
+
                 var RMPartCode = worksheet.Cells[row, 3].Value.ToString();
                 var AltPartCode1 = worksheet.Cells[row, 8].Value == null ? "" : worksheet.Cells[row, 8].Value.ToString();
                 var AltPartCode2 = worksheet.Cells[row, 9].Value == null ? "" : worksheet.Cells[row, 9].Value.ToString();

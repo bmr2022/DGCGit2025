@@ -553,7 +553,10 @@ public class PurchaseOrderController : Controller
     }
 
     public async Task<IActionResult> DeleteByID(int ID, int YC, int createdBy, string entryByMachineName)
+
     {
+        entryByMachineName = @Environment.MachineName;
+        //string.IsNullOrEmpty(entryByMachineName) ? HttpContext.Session.GetString("MachineName") : entryByMachineName;
         var Result = await IPurchaseOrder.DeleteByID(ID, YC, createdBy, entryByMachineName, "DELETEBYID");
 
         if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)

@@ -463,10 +463,17 @@
                 },
                 success: function (response) {
                     if (response != null && response != undefined && response != '') {
-                        if (response == true || response == 'true') {
+                         if (response.success== true || response.success== 'true') {
                             $.notify("Item Deleted Successfully...!", { className: "success", globalPosition: "top center" });
                             GetSearchData();
                         }
+                        else{
+                               $.notify(response.message, "error");
+                        }
+                        // if (response == true || response == 'true') {
+                        //     $.notify("Item Deleted Successfully...!", { className: "success", globalPosition: "top center" });
+                        //     GetSearchData();
+                        // }
                     }
                 },
                 error: function (xhr, status, error) {

@@ -2077,6 +2077,8 @@
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
             var drCrGrid = $('#divdbCrItemList tr').length;
+            var AdjustGrid= $('#divAdjItemList tr').length;
+
 
             //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
             var AdjPendAmt = $('#AdjPendAmt').val();
@@ -2105,6 +2107,10 @@
             }
             else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
                 $.notify("Tax Grid should at least have one item", "error");
+                return;
+            }
+               else if (AdjustGrid < 1) {
+                 $.notify("Adjustment Amount Status Grid should at least have one item", "error");
                 return;
             }
             else if ($('#AccountCode').val() == '0') {

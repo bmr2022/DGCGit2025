@@ -126,25 +126,41 @@
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                                <div class=" d-flex justify-content-center  mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                <div class="d-flex justify-content-center mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" style="width: 100%; gap: 7px;">
 
-                                    <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetBomTreeDetailsData();">
-                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                                    <button class="btn btn-sm btn-outline-info d-flex align-items-center justify-content-center"
+                                            type="button"
+                                            style="padding: 3px 10px; height: 36px; width: 120px;"
+                                            onclick="GetBomTreeDetailsData();">
+                                        <i class="fa-solid fa-magnifying-glass fa-fw fa-lg me-2"></i>SEARCH
                                     </button>
-                                    <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
-                                        <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                                    </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="BOMReport" asp-action="BOMReport">
-                                        <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
-                                    </a>
-                                  
 
-                                    <a href="#" target="_blank"  id="printBtn" class="btn btn-sm btn-outline-light bg-gradient">
-                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                                        PRINT
+                                    <button class="btn btn-sm btn-outline-success d-flex align-items-center justify-content-center"
+                                            type="button" id="sendToExcel"
+                                            style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg me-2"></i>EXCEL
+                                    </button>
+
+                                    <a class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                       asp-controller="BOMReport" asp-action="BOMReport"
+                                       style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa-solid fa-rotate fa-fw fa-lg me-2"></i>RESET
                                     </a>
+
+                                    <a href="#" target="_blank" id="printBtn"
+                                       class="btn btn-sm btn-dark bg-gradient d-flex align-items-center justify-content-center"
+                                       style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg me-2" aria-hidden="true"></i>PRINT
+                                    </a>
+
+                                    <button class="btn btn-sm btn-outline-danger d-flex align-items-center justify-content-center"
+                                            type="button" id="sendToPDF"
+                                            style="padding: 3px 10px; height: 36px; width: 120px;">
+                                        <i class="fa-solid fa-file-pdf fa-fw fa-lg me-2"></i>PDF
+                                    </button>
 
                                 </div>
+
                             </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -368,7 +384,281 @@
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields for other report types
             }
         }
-       
+        $('#sendToPDF').click(async function () {
+
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF({ orientation: 'portrait', unit: 'pt', format: 'a4' });
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+
+            var reportTypeText = $('#ReportType option:selected').text();
+            var reportTypeValue = $('#ReportType').val();
+
+            var rmPartCodeText = $('#RMPartCode option:selected').text();
+            var rmPartCodeValue = $('#RMPartCode').val();
+
+            var fgPartCodeText = $('#FGPartCode option:selected').text();
+            var fgPartCodeValue = $('#FGPartCode').val();
+
+            var rmItemNameText = $('#RMItemName option:selected').text();
+            var rmItemNameValue = $('#RMItemName').val();
+
+            var fgItemNameText = $('#FGItemName option:selected').text();
+            var fgItemNameValue = $('#FGItemName').val();
+
+            var storeNameText = $('#StoreName option:selected').text();
+            var storeNameValue = $('#StoreName').val();
+
+            var wcNameText = $('#WorkCenterName option:selected').text();
+            var wcNameValue = $('#WorkCenterName').val();
+
+            var bomRevNoText = $('#BomRevNo option:selected').text();
+            var bomRevNoValue = $('#BomRevNo').val();
+
+
+
+            // Report Title
+            doc.setFontSize(16).text(reportTypeText, 40, 40);
+
+            // Date Range
+            doc.setFontSize(10).text(`For the duration From: ${fromDate} to ${toDate}`, 40, 58);
+
+            let currentY = 75;
+            const headerFields = [
+                { label: 'FG Item Name', value: fgItemNameText },
+                { label: 'FG Part Code', value: fgPartCodeText }
+            ];
+
+            // Filter out any fields with empty values
+            const filled = headerFields.filter(field => field.value);
+
+            // If there is at least one non-empty value, print the header
+            if (filled.length > 0) {
+                filled.forEach(field => {
+                    doc.setFontSize(10)
+                        .text(`${field.label}: ${field.value}`, 40, currentY);
+                    currentY += 15;
+                });
+            }
+
+            // Fetch data
+            /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
+            va r rows = await resp.json();*/
+
+            var resp = await fetch('/BOMReport/GetBOMReportForPDF');
+
+            if (!resp.ok) {
+                console.error("Fetch failed with status:", resp.status);
+                const errorText = await resp.text(); 
+                console.error("Error body:", errorText);
+                return; 
+            }
+
+            var rows = await resp.json();
+
+            let headers = [];
+            let body = [];
+            let foot = [];
+
+            switch (reportTypeValue) {
+                case 'BOMSTOCK':/*done*/
+                    headers = [
+                        "#Sr","BOM Part Code", "BOM Item Name", "FG Part Code", "FG Item Name", "FG Unit", 
+                        "RM Part Code", "RM Item Name", "RM Unit", "Store Stock", "WIP Stock", "Net ReqQty", "Sub BOM", "BOM Revision No"
+
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.fgPartCode,item.fgItemName,item.fgPartCode,item.fgItemName,item.fgUnit,item.rmPartCode,
+                        item.rmItemName,item.rmUnit,item.storeStock,item.wipStock,item.netReqQty,item.subBom,item.bomRevNo
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // Sr
+                        1: { cellWidth: 50 },  // FG Part Code
+                        2: { cellWidth: 70 },  // FG Item Name
+                        3: { cellWidth: 50 },  // FG Part Code
+                        4: { cellWidth: 70 },  // FG Item Name
+                        5: { cellWidth: 30 },  // FG Unit
+                        6: { cellWidth: 50 },  // RM Part Code
+                        7: { cellWidth: 70 },  // RM Item Name
+                        8: { cellWidth: 30 },  // RM Unit
+                        9: { cellWidth: 30 },  // Store Stock
+                        10: { cellWidth: 30 },  // WIP Stock
+                        11: { cellWidth: 30 },  // Net ReqQty
+                        12: { cellWidth: 30 },  // Sub BOM
+                        13: { cellWidth: 50 }   // BOM Rev No
+                    };
+                    break;
+                case 'DirectBOM':
+                    headers = [
+                        "#Sr", "FG Part Code", "FG Item Name",
+                        "RM Part Code", "RM Item Name", "BOM Revision No", "Quantity", "FG Item Code", "RM Item Code"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1, item.fgPartCode, item.fgItemName, item.rmPartCode, item.rmItemName, item.bomRevNo,
+                        item.netReqQty, item.fgItemcode, item.rmItemcode
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // #Sr
+                        1: { cellWidth: 50 },  // FG Part Code
+                        2: { cellWidth: 70 },  // FG Item Name
+                        3: { cellWidth: 50 },  // RM Part Code
+                        4: { cellWidth: 70 },  // RM Item Name
+                        5: { cellWidth: 50 },  // BOM Revision No
+                        6: { cellWidth: 40 },  // Quantity
+                        7: { cellWidth: 50 },  // FG Item Code
+                        8: { cellWidth: 50 }   // RM Item Code
+                    };
+                    break;
+                case 'BOMSTOCK(WITH SUB BOM)':
+                    headers = [
+                        "#Sr", "RM Part Code", "RM Item Name", "Store Stock", "TotalReqQty", "Unit", "ShortExcess"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1,  item.rmPartCode, item.rmItemName, item.storeStock,
+                        item.totalReqQty, item.unit, item.shortExcess
+
+                    ]);
+
+                    columnStyles = {
+                        0: { cellWidth: 20 },  
+                        1: { cellWidth: 50 },  
+                        2: { cellWidth: 70 },  
+                        3: { cellWidth: 40 },  
+                        4: { cellWidth: 40 }, 
+                        5: { cellWidth: 40 },  
+                        6: { cellWidth: 40 }, 
+                    };
+                break;
+                case 'BOMSTOCK(DIRECT CHILD)':
+                    headers = [
+                        "#Sr", "RM Part Code", "RM Item Name", "Store Stock", "TotalReqQty", "Unit", "ShortExcess"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1,  item.rmPartCode, item.rmItemName, item.storeStock,
+                        item.totalReqQty, item.fgUnit, item.shortExcess
+
+                    ]);
+                    let totalReqQty = 0;
+                    let totalshortExcess = 0;
+                    let totalstoreStock = 0;
+
+                    rows.forEach(r => {
+                        totalReqQty += Number(r.totalReqQty) || 0;
+                        totalstoreStock += Number(r.storeStock) || 0;
+                        totalshortExcess += Number(r.shortExcess) || 0;
+                    });
+
+                    // Footer row with totals
+                    foot = [[
+                        '', '', 'Total:',
+                        totalstoreStock.toFixed(2),
+                        totalReqQty.toFixed(2),
+                        '',
+                        totalshortExcess.toFixed(2)
+
+                    ]];
+                    columnStyles = {
+                        0: { cellWidth: 20 },  
+                        1: { cellWidth: 100 },  
+                        2: { cellWidth: 100 },  
+                        3: { cellWidth: 50 },  
+                        4: { cellWidth: 50 }, 
+                        5: { cellWidth: 50 },  
+                        6: { cellWidth: 50 }, 
+                    };
+                    
+                break;
+
+                case 'BOMTREE':
+                    headers = [
+                        "#Sr", "RM Part Code",
+                        "RM Item Name","Net Req Qty","Store Stock","RM Qty"
+                    ];
+
+                    console.log("Data:", rows);
+                    body = rows.map((item, i) => [
+                        i + 1,item.rmPartCode,
+                        item.rmItemName,item.netReqQty,item.storeStock, item.rmQty
+
+                    ]);
+                    let totalNetQty = 0;
+                    let totalStoreStock = 0;
+                    let totalRMQty = 0;
+
+                    rows.forEach(r => {
+                        totalNetQty += Number(r.netReqQty) || 0;
+                        totalStoreStock += Number(r.storeStock) || 0;
+                        totalRMQty += Number(r.rmQty) || 0;
+                    });
+
+                    foot = [[
+                        '', '', 'Total:',
+                        totalNetQty.toFixed(2),
+                        totalStoreStock.toFixed(2),
+                        totalRMQty.toFixed(2)
+                    ]];
+                    columnStyles = {
+                        0: { cellWidth: 20 },  // #Sr
+                        1: { cellWidth: 70 },  // RM Part Code
+                        2: { cellWidth: 90 },  // RM Item Name
+                        3: { cellWidth: 60 },  // Net Req Qty
+                        4: { cellWidth: 60 },  // Store Stock
+                        5: { cellWidth: 50 }  // RM Qty
+                    };
+                   
+                break;
+
+
+                default:
+                    $.notify(reportTypeValue + " report has no data to display!", "error");
+                    return;
+            }
+
+            // Generate table with custom column width handling
+            doc.autoTable({
+                startY: currentY + 15,
+                head: [headers],
+                body: body,
+                foot: foot,
+                styles: { cellWidth: 'wrap' },
+                theme: 'grid',
+                margin: { left: 40, right: 40 },
+                styles: {
+                    fontSize: 7,
+                    cellPadding: 1,
+                    overflow: 'linebreak',
+                    halign: 'center',
+                    valign: 'middle'
+                },
+                headStyles: {
+                    fillColor: [41, 128, 185],
+                    textColor: 255,
+                    fontStyle: 'bold'
+                },
+                bodyStyles: {       
+                    textColor: [0, 0, 0]
+                },
+                tableWidth: 'auto',
+                columnStyles: columnStyles,
+                showHead: 'everyPage'
+            });
+
+            // Save the PDF
+            doc.save(`BOM_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
+
+        });
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
@@ -825,6 +1115,8 @@
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
     <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
 
 
 
@@ -847,6 +1139,11 @@
         vertical-align: super;
     }
 
+    #printBtn:hover {
+        background-color: #f8f9fa; 
+        color: #000;
+        border-color: #f8f9fa;
+    }
         
 
 </style>

@@ -1946,6 +1946,7 @@
             var taxGrid = $('#divTaxGrid tr td').length;
             var txRowCount = $('#divTaxGrid tr').length;
             var drCrGrid = $('#divdbCrItemList tr').length;
+             var AdjustGrid= $('#divAdjItemList tr').length;
 
             //if ($('#AccountCode').find(':selected').data('gstregister') == 'Y') {
             var AdjPendAmt = $('#AdjPendAmt').val();
@@ -1979,11 +1980,36 @@
                 $.notify("Debit And Credid Amount Status Grid should at least have one item", "error");
                 return;
             }
+             else if (AdjustGrid < 1) {
+                 $.notify("Adjustment Amount Status Grid should at least have one item", "error");
+                return;
+            }
             else if (drCrGrid >= 1 && $('#TotalDr').text() != $('#TotalCr').text()) {
                 $.notify("Total Debit And Total Credit Amount should be same", "error");
                 return;
             }
-            else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+     /*      else if ($('#divAdjItemList tr td').length > 1) {
+            var hasDR = false;
+
+            $('tr.adjGridRow').each(function () {
+                $(this).find('.GridAdjDrCr').each(function () {
+                    if ($(this).text().trim().toUpperCase() === 'DR') {
+                        hasDR = true;
+                        return false; // exits inner .each()
+                    }
+                });
+
+                if (hasDR) {
+                    return false; // exits outer .each()
+                }
+            });
+
+            if (hasDR) {
+                $.notify('AdjGrid should not have DR value...!', "error");
+            }
+        } */
+
+             else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
                 $.notify("Tax Grid should at least have one item", "error");
                 return;
             }

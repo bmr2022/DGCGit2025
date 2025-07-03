@@ -668,9 +668,9 @@ namespace eTactWeb.Controllers
                     {
                         if (MaterialReceiptDetail == null)
                         {
-                            item.SeqNo += seqNo + 1;
+                            //item.SeqNo += seqNo + 1;
                             MaterialGrid.Add(item);
-                            seqNo++;
+                            //seqNo++;
                         }
                         else
                         {
@@ -682,7 +682,7 @@ namespace eTactWeb.Controllers
                             }
                             else
                             {
-                                item.SeqNo = MaterialReceiptDetail.Count + 1;
+                                //item.SeqNo = MaterialReceiptDetail.Count + 1;
                                 //MaterialGrid = MaterialReceiptDetail.Where(x => x != null).ToList();
                                 SSGrid.AddRange(MaterialGrid);
                                 MaterialReceiptDetail.Add(item);
