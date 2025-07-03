@@ -631,7 +631,7 @@ namespace eTactWeb.Data.DAL
                     model.ItemDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                         select new MirDetail
                                         {
-                                            SeqNo = count++,
+                                            SeqNo = string.IsNullOrEmpty(dr["SeqNo"].ToString()) ? 0 : Convert.ToInt32(dr["SeqNo"].ToString()),
                                             PONo = dr["PONo"].ToString() ?? "",
                                             POYearCode = string.IsNullOrEmpty(dr["POYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["POYearCode"].ToString()),
                                             SchNo = dr["SchNo"].ToString() ?? "",
@@ -670,7 +670,8 @@ namespace eTactWeb.Data.DAL
                                             //batchqty= string.IsNullOrEmpty(dr["batchqty"].ToString()) ? 0 : Convert.ToDecimal(dr["batchqty"].ToString()),
                                             //batchnotype= dr["bathnotype"].ToString() ?? "",
                                             //number= string.IsNullOrEmpty(dr["number"].ToString()) ? 0 : Convert.ToInt32(dr["number"].ToString()),
-                                        }).ToList();
+                                        }).OrderBy(x => x.SeqNo) // 👈 Ordering here
+                    .ToList();
                 }
 
             }
