@@ -257,8 +257,8 @@ namespace eTactWeb.Data.DAL
                                                          BomRevNo = Convert.ToInt32(row["BomRevNo"].ToString()),
                                                         ItemLvl = Convert.ToInt32(row["ItemLvl"]),
                                                         BOMItemCode = Convert.ToInt32(row["BOMITEMCODE"].ToString()),
-                                                        FGItemCode = Convert.ToInt32(row["Item_Code"].ToString()),
-                                                        RMItemCode = Convert.ToInt32(row["Item_Code"].ToString()),
+                                                        FgItemcode = Convert.ToInt32(row["Item_Code"].ToString()),
+                                                        RMItemcode = Convert.ToInt32(row["Item_Code"].ToString()),
                                                         SubBOM = row["SubBOM"].ToString()
                                                     }).ToList();
                     }
@@ -287,8 +287,8 @@ namespace eTactWeb.Data.DAL
                                                         RMItemName = row["RMItemName"] != DBNull.Value ? row["RMItemName"].ToString() : string.Empty,
                                                         //ItemLvl = Convert.ToInt32(row["ItemLvl"]),
                                                         BomRevNo = row["BomRevNo"] != DBNull.Value ? Convert.ToInt32(row["BomRevNo"]) : 0,
-                                                        FGItemCode = Convert.ToInt32(row["FGItemCode"].ToString()),
-                                                        RMItemCode = Convert.ToInt32(row["RMItemCode"].ToString()),
+                                                        FgItemcode = Convert.ToInt32(row["FGItemCode"].ToString()),
+                                                        RMItemcode = Convert.ToInt32(row["RMItemCode"].ToString()),
                                                         // FgItemCode = row["FgItemCode"] != DBNull.Value ? Convert.ToInt32(row["FgItemCode"]) : 0,
                                                         // RMItemCode = row["RMItemCode"] != DBNull.Value ? Convert.ToInt32(row["RMItemCode"]) : 0
                                                     }).ToList();
