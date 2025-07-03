@@ -1,46 +1,75 @@
 ﻿@model eTactWeb.DOM.Models.DashboardModel
 
-<div>
-	<form asp-action="XONDashboard" asp-controller="XONDashboard" method="post" class="form-horizontal">
-		<input type="hidden" id="NoOfItemInStock" />
-		<div class="col-auto">
-			<button type="submit" class="btn btn-primary btn-sm submitBTN" onclick="FillNoOfItemInStock()">
-				<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-				Click here to Refresh No Of item In Stock
-			</button>
-		</div>
-		<div class="col-auto">
-			<button type="submit" class="btn btn-primary btn-sm submitBTN" onclick="FillNoOfItemInStock()">
-				<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-				Click here to Refresh No Of item In Stock
-			</button>
-		</div>
-		<div class="col-auto">
-			<button type="submit" class="btn btn-primary btn-sm submitBTN" onclick="FillNoOfItemInStock()">
-				<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-				Click here to Refresh No Of item In Stock
-			</button>
-		</div>
-		<div class="col-auto">
-			<button type="submit" class="btn btn-primary btn-sm submitBTN" onclick="FillNoOfItemInStock()">
-				<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-				Click here to Refresh No Of item In Stock
-			</button>
-		</div>
-		<div class="col-auto">
-			<button type="submit" class="btn btn-primary btn-sm submitBTN" onclick="FillNoOfItemInStock()">
-				<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-				Click here to Refresh No Of item In Stock
-			</button>
-		</div>
-	</form>
+<style>
+	.dashboard-action-buttons {
+		margin: 20px;
+		display: flex;
+		flex-direction: column;
+		gap: 15px;
+		max-width: 400px;
+	}
+
+	.dashboard-action-buttons .btn {
+		text-align: left;
+		padding: 12px 20px;
+		font-size: 14px;
+		font-weight: 500;
+		border-radius: 8px;
+		box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+		transition: all 0.3s ease;
+	}
+
+	.dashboard-action-buttons .btn:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+	}
+
+	.dashboard-action-buttons i {
+		margin-right: 10px;
+	}
+</style>
+
+<div class="dashboard-action-buttons">
+	<input type="hidden" id="NoOfItemInStock" />
+
+	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
+		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+		Click here to Refresh No Of item In Stock
+	</button>
+
+	<button type="button" class="btn btn-primary submitBTN" onclick="StockValuation()">
+		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+		Click here to Calculate Stock Valuation
+	</button>
+
+	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
+		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+		Click here to Get List of Dead item
+	</button>
+
+	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
+		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+		Click here to get Pending Job List
+	</button>
+
+	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
+		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+		Click here to get Item Below Min Level
+	</button>
+
+	<button type="button" class="btn btn-success submitBTN" onclick="RefreshAllData()">
+		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+		Click To refresh All
+	</button>
 </div>
 
 @section Scripts {
 	<script>
-		$(document).ready(function () {
+
+		function RefreshAllData(){
 			FillNoOfItemInStock();
-		})
+			StockValuation();
+		}
 
 		function FillNoOfItemInStock(){
 			$.ajax({
@@ -52,11 +81,30 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								$('#NoOfItemInStock').text(obj.Result[0].NoOfItemInStock);
+								$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
 							}
 						},
 						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function StockValuation(){
+			$.ajax({
+						url: '@Url.Action("StockValuation", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								$.notify('Successfully Calculate Stock Valuation...!', { position: "top center", className: "success" });
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
 						}
 					});
 		}

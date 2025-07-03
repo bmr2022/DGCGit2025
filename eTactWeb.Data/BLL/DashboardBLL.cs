@@ -38,9 +38,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.GetTopItemByStockValue();
         }
+        public async Task<ResponseResult> GetTopItemBelowMinLevel()
+        {
+            return await _DashboardDAL.GetTopItemBelowMinLevel();
+        }
         public async Task<ResponseResult> NoOfItemInStock()
         {
             return await _DashboardDAL.NoOfItemInStock();
+        }
+        public async Task<ResponseResult> StockValuation()
+        {
+            return await _DashboardDAL.StockValuation();
         }
     }
 }
