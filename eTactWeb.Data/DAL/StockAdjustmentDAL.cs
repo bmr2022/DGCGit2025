@@ -277,7 +277,7 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@WCID", WCID));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", CommonFunc.ParseFormattedDate(DateTime.Now.ToString())));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", DateTime.Now));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("GETWIPotalSTOCK", SqlParams);
             }
             catch (Exception ex)

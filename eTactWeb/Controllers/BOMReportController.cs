@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using FastReport.Data;
 using FastReport.Web;
 using FastReport;
+using System.Runtime.Caching;
 
 namespace eTactWeb.Controllers
 {
@@ -19,14 +20,15 @@ namespace eTactWeb.Controllers
         private readonly ILogger<BOMReportController> _logger;
         private readonly IConfiguration _iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-       
-        public BOMReportController(ILogger<BOMReportController> logger, IDataLogic iDataLogic, IBOMReport iBOMReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
+        private readonly IMemoryCache _MemoryCache;
+        public BOMReportController(ILogger<BOMReportController> logger, IDataLogic iDataLogic, IBOMReport iBOMReport, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration, IMemoryCache iMemoryCache)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IBOMReport = iBOMReport;
             _IWebHostEnvironment = iWebHostEnvironment;
             _iconfiguration = iconfiguration;
+            _MemoryCache = iMemoryCache;
         }
         [Route("{controller}/Index")]
         public async Task<ActionResult> BOMReport()
@@ -124,7 +126,15 @@ namespace eTactWeb.Controllers
         {
             var model = new BOMReportModel();
             model = await _IBOMReport.GetBomTreeDetailsData(fromDate, toDate, Yearcode,ReportType, FGPartCode, RMPartCode, Storeid, calculateQty, FGItemCode);
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
 
+            //_MemoryCache.Set("KeyBomList", model, cacheEntryOptions);
+            _MemoryCache.Set("KeyBomList", model.BOMReportGrid, cacheEntryOptions);
             if (ReportType == "BOMTREE")
             {
                  return PartialView("_BOMReportGrid", model);
@@ -147,6 +157,15 @@ namespace eTactWeb.Controllers
             }
 
             return null;
+        }
+        [HttpGet]
+        public IActionResult GetBOMReportForPDF()
+        {
+            if (_MemoryCache.TryGetValue("KeyBomList", out List<BOMReportModel> stockRegisterList))
+            {
+                return Json(stockRegisterList);
+            }
+            return Json(new List<BOMReportModel>());
         }
 
         //public async Task<IActionResult> GetBOMTree(string ReportType, string FromDate, string ToDate)
