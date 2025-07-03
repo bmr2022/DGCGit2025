@@ -450,9 +450,9 @@
                 </div>
                 <div class="modal-footer">
                     <a href="#" class="btn btn-primary" id="btngenrateEinvoice">
-                        yes
+                        save & Generate Einvoice
                     </a>
-                    <button type="button" class="btn btn-danger" id="btnClose">No</button>
+                    <button type="button" class="btn btn-danger" id="btnClose">Save</button>
                 </div>
             </div>
         </div>
@@ -561,7 +561,7 @@
                                         $('#btngenrateEinvoice').val('false'); // set flag for no printing
                                         $('#EinvoicePopup').modal("hide");
                                         setTimeout(() => {
-                                            $('form').submit();
+                                             submitForm(false, null);
                                         }, 300);
                                     });
                 //   $('.submitBTN').click(function (e) {
@@ -716,7 +716,7 @@
         });
 
                         } else {
-                            window.location.href = '/SaleInvoice/SaleInvoice';
+                            window.location.href = '/SaleInvoice/SaleInvoice/0';
                         }
                     } else {
                         alert(res.message || "Something went wrong.");
