@@ -52,7 +52,8 @@
                         <th>@Cntr</th>
                         <td style="text-align:center;white-space: nowrap;">
                             <div id="container">
-                                <input type="checkbox" id="rowCheckbox-@Cntr" class="form-check-input row-checkbox" data-custnamecode="@item.CustNameCode" />
+                                <input type="checkbox" id="rowCheckbox-@Cntr" class="form-check-input row-checkbox" data-custnamecode="@item.CustNameCode"
+                                @(ViewBag.SelectedCustCodes != null && ((List<string>)ViewBag.SelectedCustCodes).Contains(item.CustNameCode) ? "checked" : "") />
                                
 
                             </div>
