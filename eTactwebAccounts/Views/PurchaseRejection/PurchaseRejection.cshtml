@@ -1373,25 +1373,34 @@
             e.preventDefault();
             if (ValidateSubmit()) {
                 saveagainstbillgrid();
+                var Err = 0;
                 if ($('#divAddPurchaseRejectionList tr td').length < 1) {
+                    Err = 1;
                     $.notify('Purchase Rejection Grid Should Have Atleast 1 Item...!', "error");
                 }
                 else if ($('#divAdjItemList tr td').length < 1) {
+                    Err = 1;
                     $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
                 }
                 else if ($('#divdbCrItemList tr td').length < 1) {
+                    Err = 1;
                     $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
                 }
                 else if ($('#GSTRegistered').val() == 'Y') {
                     if ($('#divTaxGrid tr td').length < 1) {
+                        Err = 1;
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                     } else {
-                        $('#EinvoicePopup').modal('show');
+                        if(Err == 1){
+                            $('#EinvoicePopup').modal('show');
+                        }
                         /* $("form").submit(); */
                     }
                 }
                 else {
-                    $('#EinvoicePopup').modal('show');
+                    if(Err == 1){
+                            $('#EinvoicePopup').modal('show');
+                    }
                     /* $("form").submit(); */
                 }
             }
@@ -1621,12 +1630,16 @@
                 success: function (result, status, error) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        var rowCount = $('#divAddPurchaseRejectionList tr').length;
+                        var rowCount = $('#divInputPurchaseRejectionList tr').length; /* divAddPurchaseRejectionList */
                         for (var i = 1; i <= rowCount; i++) {
-                            $('#prdiscAmt-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
-                            $('#prbillQty-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
-                            $('#prdiscPer-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
-                            $('#prbillRate-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
+                            $('#DiscountAmt').text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
+                            $('#BillQty').text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
+                            $('#DiscountPer').text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
+                            $('#BillRate').text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
+                            /*$('#discAmt-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
+                            $('#billQty-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
+                            $('#discPer-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
+                            $('#billRate-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2)); */
                         }
                         if (obj.Result != null) {
                             billQty = 0;

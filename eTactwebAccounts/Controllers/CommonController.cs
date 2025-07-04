@@ -1077,7 +1077,7 @@ namespace eTactWeb.Controllers
                         0,//AgainstOpeningVoucheryearcode
                         Item.AdjNewRefNo,
                         Item.AdjDescription,
-                        Item.DueDate == null ? (Item.AdjDueDate != null ? ParseFormattedDate(Item.AdjDueDate.ToString().Split(" ")[0]).Split(" ")[0] :  AdjDueDt) : ParseFormattedDate(Item.DueDate.Split(" ")[0]).Split(" ")[0],
+                        Item.DueDate == null ? (Item.AdjDueDate != null ? ParseFormattedDate(Item.AdjDueDate.ToString()) :  AdjDueDt) : ParseFormattedDate(Item.DueDate.ToString()),
                         string.Empty,//AgainstOrderno
                         0,//AgainstOrderYeearCode
                         AdjOrderDt,//AgainstOrderDate
@@ -1116,7 +1116,7 @@ namespace eTactWeb.Controllers
                         Item.AdjAgnstOpeningYearCode ?? (Item.AdjOpeningYearCode ?? 0),
                         string.Empty,//Item.AdjNewRefNo,
                         string.Empty,//Item.AdjDescription,
-                        Item.DueDate == null ? string.Empty : ParseFormattedDate(Item.DueDate.Split(" ")[0]),
+                        Item.DueDate == null ? (Item.AdjDueDate != null ? ParseFormattedDate(Item.AdjDueDate.ToString()) :  AdjDueDt) : ParseFormattedDate(Item.DueDate.ToString()),
                         string.Empty,//AgainstOrderno
                         0,//AgainstOrderYeearCode
                         AdjOrderDt,//AgainstOrderDate
