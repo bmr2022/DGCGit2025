@@ -4561,7 +4561,7 @@
                                 $('#BOMNo').append('<option ' + isSelected + ' value="' + val.BomNo + '">' + val.BomNo + '</option>')
                             })
                             if (BomEffecDate != null) {
-                                $('#BomEffecDate').val(BomEffecDate.split("T")[0]);
+                                $('#BomEffecDate').val(BomEffecDate);
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var bomno = $('#BOMNo').val();
