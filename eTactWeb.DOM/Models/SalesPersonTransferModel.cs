@@ -28,6 +28,7 @@ namespace eTactWeb.DOM.Models
         public string? NewSalesPersEffdate { get; set; }
         public string? OldSalesPersTillDate { get; set; }
         public int EntryByEmpId { get; set; } 
+        public string EntryBYEmpName { get; set; } 
         public int UpdatedByEmpId { get; set; } 
         public string UpdatedByEmpName { get; set; } 
         public string? UpdationDate { get; set; }
@@ -36,8 +37,10 @@ namespace eTactWeb.DOM.Models
         public int CreatedBy { get; set; } 
         public int ApprovedBy { get; set; } 
         public string ApprovedByEmpName { get; set; } 
+        public int DesignationId { get; set; } 
         public string Designation { get; set; } 
         public string Department { get; set; } 
+        public int DepartmentId { get; set; } 
         public string EffTillDate { get; set; } 
         public string CustomerName { get; set; } 
         public string CustAddress { get; set; } 
@@ -49,11 +52,17 @@ namespace eTactWeb.DOM.Models
         public int seqno { get; set; } 
         public int AccountCode { get; set; } 
         public string FromDate { get; set; } 
-        public string ToDate { get; set; } 
-       
-       
-      
-        public IList<SalesPersonTransferModel> SalesPersonTransferGrid { get; set; }
+        public string ToDate { get; set; }
+
+
+		public string FromDateBack { get; set; }
+		public string ToDateBack { get; set; }
+		public string CustomerNameBack { get; set; }
+		public string OldEmpNameBack { get; set; }
+		public string NewEmpNameBack { get; set; }
+		public string GlobalSearchBack { get; set; }
+
+		public IList<SalesPersonTransferModel> SalesPersonTransferGrid { get; set; }
     }
 	public class SelectedRow
 	{

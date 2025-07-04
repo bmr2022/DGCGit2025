@@ -34,10 +34,19 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _SalesPersonTransferDAL.FillEntryID(YearCode,  EntryDate);
 		}
+		public async Task<ResponseResult> FillDesignation(int NewSalesEmpId, int OldSalesEmpId)
+		{
+			return await _SalesPersonTransferDAL.FillDesignation(NewSalesEmpId,OldSalesEmpId);
+		}
         public async Task<SalesPersonTransferModel> FillCustomerList(string ShowAllCust)
         {
             return await _SalesPersonTransferDAL.FillCustomerList( ShowAllCust);
         }
+		public List<string> GetSelectedCustomerCodes(int salesPersTransfEntryId)
+		{
+			return _SalesPersonTransferDAL.GetSelectedCustomerCodes(salesPersTransfEntryId);
+		}
+
 		public async Task<ResponseResult> SaveSalesPersonTransfer(SalesPersonTransferModel model, DataTable GIGrid)
 		{
 			return await _SalesPersonTransferDAL.SaveSalesPersonTransfer(model, GIGrid);
@@ -46,9 +55,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SalesPersonTransferDAL.GetDashboardData(model);
         }
-        public async Task<SalesPersonTransferModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<SalesPersonTransferModel> GetDashboardDetailData(string FromDate, string ToDate, string NewSalesEmpName, string OldSalesEmpName, string CustomerName)
         {
-            return await _SalesPersonTransferDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            return await _SalesPersonTransferDAL.GetDashboardDetailData(FromDate, ToDate, NewSalesEmpName, OldSalesEmpName, CustomerName);
         }
         public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
         {

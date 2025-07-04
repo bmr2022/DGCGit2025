@@ -407,7 +407,8 @@ namespace eTactWeb.Controllers
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             HttpContext.Session.Remove("KeyReceiveChallan");
-                            return RedirectToAction("ReceiveChallan", model1);
+                            //return RedirectToAction("ReceiveChallan", model1);
+                            return RedirectToAction(nameof(ReceiveChallan));
                         }
                         if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -421,7 +422,8 @@ namespace eTactWeb.Controllers
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             HttpContext.Session.Remove("KeyReceiveChallan");
-                            return RedirectToAction("ReceiveChallan", model1);
+                            //return RedirectToAction("ReceiveChallan", model1);
+                            return RedirectToAction(nameof(ReceiveChallan));
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
