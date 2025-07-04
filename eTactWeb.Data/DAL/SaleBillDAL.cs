@@ -855,7 +855,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SaleBillEntryDate", DateTime.Now));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", machineName));
 
-                ResponseResult = await _IDataLogic.ExecuteDataSet("SP_SaleBillMainDetail", SqlParams);
+                ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
 
             }
             catch (Exception ex)

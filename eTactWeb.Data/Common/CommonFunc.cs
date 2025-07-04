@@ -217,7 +217,8 @@ public static class CommonFunc
     {
         string[] formats = {"dd/MM/yyyy hh:mm:ss tt",         // 12-hour with AM/PM
         "dd/MM/yyyy hh:mm:ss.fff tt",
-        "dd/MM/yyyy HH:mm:ss",            // 24-hour
+        "dd/MM/yyyy HH:mm:ss",
+        "dd-MM-yyyy HH:mm:ss",// 24-hour
         "dd/MM/yyyy HH:mm:ss.fff",
         "yyyy-MM-dd HH:mm:ss",
         "yyyy-MM-dd HH:mm:ss.fff"};

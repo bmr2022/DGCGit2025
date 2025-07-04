@@ -911,6 +911,14 @@ namespace eTactwebAccounts.Controllers
             {
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
+                var dt = Result.Result as DataTable;
+
+                if (dt != null && dt.Rows.Count > 0)
+                {
+
+                    TempData["DeleteMessage"] = dt.Rows[0]["Result"].ToString();
+
+                }
             }
 
             return RedirectToAction("BankPaymentDashBoard", new {EntryByMachine = EntryByMachine,ActualEntryDate = ActualEntryDate, Flag = "False", FromDate = FromDate, ToDate = ToDate,LedgerName = LedgerName, Bank=Bank,VoucherNo = VoucherNo, AgainstVoucherRefNo = AgainstVoucherRefNo, AgainstVoucherNo = AgainstVoucherNo, Searchbox = Searchbox, DashboardType = DashboardType});

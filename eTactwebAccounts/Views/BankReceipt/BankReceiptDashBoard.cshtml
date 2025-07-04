@@ -139,7 +139,11 @@
 
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", firstDayOfMonth);
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+           var deleteMessage = '@TempData["DeleteMessage"]';
 
+            if (deleteMessage) {
+                $.notify(deleteMessage, "error");
+            }
              if (FromDateBack != null  &&  FromDateBack != ''){
                 $('#FromDate').val(FromDateBack);
                 $('#ToDate').val(ToDateBack);
