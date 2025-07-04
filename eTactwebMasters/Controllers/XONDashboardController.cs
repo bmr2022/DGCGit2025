@@ -34,5 +34,11 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> PendingInventoryTask()
+        {
+            var JSON = await _IDashboard.PendingInventoryTask();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

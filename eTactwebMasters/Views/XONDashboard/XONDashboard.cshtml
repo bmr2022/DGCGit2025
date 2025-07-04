@@ -109,5 +109,24 @@
 					});
 		}
 
+		function PendingInventoryTask(){
+			$.ajax({
+						url: '@Url.Action("PendingInventoryTask", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								$.notify('Successfully Added Pending Job List...!', { position: "top center", className: "success" });
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
 	</script>
 }

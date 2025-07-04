@@ -101,6 +101,25 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetTopFastMovingItem()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "INVENTORY"));
+                SqlParams.Add(new SqlParameter("@FLAG", "TopFastMovingItem"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillInventoryByCategory()
         {
             var _ResponseResult = new ResponseResult();
@@ -147,6 +166,26 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@FLAG", "StockValuation"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> PendingInventoryTask()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@FLAG", "PendingInventoryTask"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);

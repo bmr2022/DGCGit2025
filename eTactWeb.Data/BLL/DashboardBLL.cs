@@ -50,5 +50,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.StockValuation();
         }
+        public async Task<ResponseResult> GetTopFastMovingItem()
+        {
+            return await _DashboardDAL.GetTopFastMovingItem();
+        }
+        public async Task<ResponseResult> PendingInventoryTask()
+        {
+            return await _DashboardDAL.PendingInventoryTask();
+        }
     }
 }
