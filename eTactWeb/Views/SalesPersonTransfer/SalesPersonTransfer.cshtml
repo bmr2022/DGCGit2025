@@ -76,6 +76,13 @@
 						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
 							<div class="accordion-body">
 								<div class="row g-2">
+									<input type="hidden" asp-for="FromDateBack" id="FromDateBack" />
+									<input type="hidden" asp-for="ToDateBack" id="ToDateBack" />
+									<input type="hidden" asp-for="CustomerNameBack" id="CustomerNameBack" />
+									<input type="hidden" asp-for="OldEmpNameBack" id="OldEmpNameBack" />
+									<input type="hidden" asp-for="NewEmpNameBack" id="NewEmpNameBack" />
+									<input type="hidden" asp-for="GlobalSearchBack" id="GlobalSearchBack" />
+
 									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
 									
 									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
@@ -99,7 +106,7 @@
 										<input asp-for="SalesPersTransfSlipNo" class="form-control"  />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="RevNo" class="form-label" style="color:red">Rev No*</label>
+										<label asp-for="RevNo" class="form-label" >Rev No</label>
 										<input asp-for="RevNo" class="form-control"  />
 									</div>
 
@@ -124,21 +131,24 @@
 									<input type="hidden" asp-for="NewSalesEmpId" />
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="EffFrom" class="form-label">Eff From</label>
-										<input asp-for="EffFrom" class="form-control"  />
+										<input asp-for="EffFrom" class="form-control" readonly />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="Designation" class="form-label" style="color:red">Designation*</label>
-										<input asp-for="Designation" class="form-control" />
+										<input asp-for="Designation" class="form-control" readonly/>
+										<input type="hidden" asp-for="DesignationId" class="form-control" />
+
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="Department" class="form-label" style="color:red">Department*</label>
-										<input asp-for="Department" class="form-control" />
+										<input asp-for="Department" class="form-control" readonly/>
+										<input type="hidden" asp-for="DepartmentId" class="form-control" />
 									</div>
 									<input type="hidden" asp-for="OldSalesEmpId" />
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:300px;">
 										<input type="checkbox" asp-for="ShowAllOldEmp" style="margin-top:5px;" />
 										<label asp-for="ShowAllOldEmp" class="form-label" style="color:blue;margin-right:15px;">Show All</label>
-										<label asp-for="OldSalesEmpName" class="form-label" style="color:red">Old SalesEmp Name*</label>
+										<label asp-for="OldSalesEmpName" class="form-label" >Old SalesEmp Name</label>
 									
 										<select class="form-select" asp-for="OldSalesEmpName" style="width:270px;">
 											<option value="">-Select-</option>
@@ -153,7 +163,7 @@
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
 										<label asp-for="EffTillDate" class="form-label">Effective TillDate</label>
-										<input asp-for="EffTillDate" class="form-control" />
+										<input asp-for="EffTillDate" class="form-control" readonly/>
 									</div>
 									<div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
 										<label class="form-label">Global search</label>
@@ -311,8 +321,8 @@
 			FillOldSalesCode();
 			FillNewSalesCode();
 			FillCustomerList();
-		
-			
+			FillDesignation();
+			initDates();
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
@@ -345,14 +355,11 @@
 
 			const requiredFields = [
 				{ id: '#SalesPersTransfSlipNo', label: 'Slip No' },
-				{ id: '#RevNo', label: 'Rev No' },
 				{ id: '#NewSalesEmpName', label: 'New SalesEmp Name' },
 				{ id: '#NewSalesCode', label: 'New SalesCode' },
 				{ id: '#EffFrom', label: 'Eff From' },
 				{ id: '#Designation', label: 'Designation' },
-				{ id: '#Department', label: 'Department' },
-				{ id: '#OldSalesEmpName', label: 'Old SalesEmp Name' },
-				{ id: '#OldSalesCode', label: 'Old SalesCode' },
+				{ id: '#Department', label: 'Department' }
 			];
 
 			$.each(requiredFields, function (i, field) {
@@ -416,7 +423,10 @@
 		$('#NewSalesEmpName').on('select2:select', function (e) {
 			$('#NewSalesEmpId').val($(this).val());
 		});
-
+		$('#OldSalesEmpName,#NewSalesEmpName').change(function () {
+			FillDesignation();
+			
+		});
 		function setFormattedDate() {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
@@ -426,10 +436,60 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#SalesPersTransfEntryDate, #EffFrom, #EffTillDate')
+			$('#SalesPersTransfEntryDate, #EffFrom')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
+			updateEffTillDate(formattedDate);
 		}
+		function updateEffTillDate(effFromStr) {
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var parts = effFromStr.split('/');
+
+			if (parts.length === 3) {
+				var day = parseInt(parts[0], 10);
+				var month = monthNames.indexOf(parts[1]);
+				var year = parseInt(parts[2], 10);
+
+				var effFromDate = new Date(year, month, day);
+
+				
+				var effTillDate = new Date(effFromDate);
+				effTillDate.setDate(effTillDate.getDate() - 1);
+
+				var effTillDay = ('0' + effTillDate.getDate()).slice(-2);
+				var effTillMonth = monthNames[effTillDate.getMonth()];
+				var effTillYear = effTillDate.getFullYear();
+
+				var formattedTillDate = effTillDay + '/' + effTillMonth + '/' + effTillYear;
+
+				$('#EffTillDate')
+					.datepicker('destroy') 
+					.datepicker({
+						dateFormat: 'dd/M/yy',
+						maxDate: effFromDate 
+					})
+					.val(formattedTillDate);
+			}
+		}
+		function initDates() {
+			var isUmode = $('#Mode').val() === 'U' || $('#Mode').val() === 'V';
+
+			var transfDateVal = $('#SalesPersTransfEntryDate').val();
+			var effFromVal = $('#EffFrom').val();
+			var effTillVal = $('#EffTillDate').val();
+
+			if (isUmode && transfDateVal && effFromVal && effTillVal) {
+				// U mode and all dates already have values
+				// Just initialize datepickers without setting default dates
+				$('#SalesPersTransfEntryDate, #EffFrom, #EffTillDate').datepicker({
+					dateFormat: 'dd/M/yy'
+				});
+			} else {
+				// No values or not U mode → run your default function
+				setFormattedDate();
+			}
+		}
+
 		function GetFormRights() {
 			$.ajax({
 				url: "@Url.Action("GetFormRights")",
@@ -570,7 +630,14 @@
 		}
 
 		function FillOldSalesEmpName() {
-			var ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			//var ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			debugger
+			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+				var ShowAllEmp = "Y";
+			}
+			else{
+				ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			}
 			$.ajax({
 				url: '@Url.Action("FillOldSalesEmpName", "SalesPersonTransfer")',
 				type: 'POST',
@@ -604,7 +671,12 @@
 
 		}
 		function FillOldSalesCode() {
-			var ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+				var ShowAllEmp = "Y";
+			}
+			else {
+				ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
+			}
 			$.ajax({
 				url: '@Url.Action("FillOldSalesEmpName", "SalesPersonTransfer")',
 				type: 'POST',
@@ -666,18 +738,15 @@
 				}
 			}
 		}
-		var selectedCustCodes = @Html.Raw(Json.Serialize(
-		(ViewBag.SelectedCustCodes is string sc) ? new string[] { sc } :
-		(ViewBag.SelectedCustCodes is int i) ? new int[] { i } :
-		ViewBag.SelectedCustCodes ?? new string[] { }
-		));
+	
 		function FillCustomerList() {
 
 			var ShowAllCust = $('#ShowAllCust').is(':checked') ? "Y" : "N";
+			var entryId = ($('#Mode').val() === "U" || $('#Mode').val() === "V") ? $('#SalesPersTransfEntryId').val() : null;
 			$.ajax({
 				url: '@Url.Action("FillCustomerList", "SalesPersonTransfer")',
 				type: "POST",
-				data: { ShowAllCust: ShowAllCust},
+				data: { ShowAllCust: ShowAllCust, entryId: entryId },
 				async: false,
 				success: function (data) {
 
@@ -686,14 +755,14 @@
 					$('#totalRows').text(totalRows);
 					// RowCount();
 
-					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
-						$('.row-checkbox').each(function () {
-							var custCode = $(this).data('custnamecode');  // get cust code from data attribute
-							if (selectedCustCodes.includes(custCode)) {
-								$(this).prop('checked', true);  // check the checkbox
-							}
-						});
-					}
+					// if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+					// 	$('.row-checkbox').each(function () {
+					// 		var custCode = $(this).data('custnamecode');  // get cust code from data attribute
+					// 		if (selectedCustCodes.includes(custCode)) {
+					// 			$(this).prop('checked', true);  // check the checkbox
+					// 		}
+					// 	});
+					// }
 				},
 				error: function (response) {
 					alert(response.responseText);
@@ -703,6 +772,49 @@
 				}
 			});
 		}
+
+		// function FillCustomerList() {
+		// 	var ShowAllCust = $('#ShowAllCust').is(':checked') ? "Y" : "N";
+
+		// 	// 🟢 Save current selections
+		// 	var userSelectedCustCodes = [];
+		// 	$('.row-checkbox:checked').each(function () {
+		// 		userSelectedCustCodes.push($(this).data('custnamecode'));
+		// 	});
+
+		// 	$.ajax({
+		// 		url: '@Url.Action("FillCustomerList", "SalesPersonTransfer")',
+		// 		type: "POST",
+		// 		data: { ShowAllCust: ShowAllCust },
+		// 		async: false,
+		// 		success: function (data) {
+		// 			$('#divDashboardGrid').empty().append(data);
+		// 			var totalRows = $('#divDashboardGrid tbody tr').length;
+		// 			$('#totalRows').text(totalRows);
+
+		// 			$('.row-checkbox').each(function () {
+		// 				var custCode = $(this).data('custnamecode');
+
+		// 				// 🟢 Reapply user selection if any
+		// 				if (userSelectedCustCodes.includes(custCode)) {
+		// 					$(this).prop('checked', true);
+		// 				}
+		// 				// 🟢 Or use server-side selectedCustCodes on first load only
+		// 				else if (($('#Mode').val() === "U" || $('#Mode').val() === "V") &&
+		// 					userSelectedCustCodes.length === 0 &&
+		// 					selectedCustCodes.includes(custCode)) {
+		// 					$(this).prop('checked', true);
+		// 				}
+		// 			});
+		// 		},
+		// 		error: function (response) {
+		// 			alert(response.responseText);
+		// 		},
+		// 		failure: function (response) {
+		// 			alert(response.responseText);
+		// 		}
+		// 	});
+		// }
 
 		var currentSearchColumn = null;
 
@@ -723,43 +835,7 @@
 			currentSearchColumn = $(this).data('columnno');
 			$("#search-box").val('').trigger('keyup');
 		});
-		// $(document).on('select2:select', '#OriginalItemName,#OriginalPartCode', function (e) {
 
-		// 	var cntId = e.target.id;
-		// 	if (cntId == 'OriginalItemName') {
-		// 		ItemNameChange(cntId);
-		// 	}
-		// 	else {
-		// 		PartCodeChange(cntId);
-		// 	}
-		// });
-
-		// function ItemNameChange(ID) {
-		// 	SetPartCodeItemName(ID);
-		// }
-
-		// function PartCodeChange(ID) {
-
-		// 	$.when(SetPartCodeItemName(ID)).done(function () {
-		// 	});
-		// }
-
-		// function SetPartCodeItemName(ID) {
-		// 	if (!ID) return;
-		// 	else {
-
-		// 		var v = $('#' + ID).select2('val');
-		// 		if (ID == "OriginalPartCode") {
-		// 			$("#OriginalItemName").val(v).trigger("change");
-		// 		}
-
-		// 		if (ID == "OriginalItemName") {
-		// 			$("#OriginalPartCode").val(v).trigger("change");
-		// 		}
-		// 	}
-		// }
-
-		
 		function FillEntryID() {
 			
 			var YearCode = $('#SalesPersTransfYearCode').val();
@@ -784,6 +860,111 @@
 				}
 			});
 		}
+		// function FillDesignation() {
+		// 	var NewSalesEmpId = $('#NewSalesEmpName').val();
+		// 	var OldSalesEmpId = $('#OldSalesEmpName').val();
+		// 	if (!$('#OldSalesEmpName').val() && !$('#NewSalesEmpName').val()) {
+		// 		$.notify("Please select at least one EmpName.", "error");
+		// 		return false;
+		// 	}
+
+		// 	$.ajax({
+		// 		url: '@Url.Action("FillDesignation", "SalesPersonTransfer")',
+		// 		type: 'POST',
+		// 		async: false,
+		// 		data: {
+		// 			NewSalesEmpId: NewSalesEmpId,
+		// 			OldSalesEmpId: OldSalesEmpId
+		// 		},
+		// 		success: function (response, status, error) {
+
+		// 			var Dropdown = $('#Designation');
+		// 			var obj = $.parseJSON(response);
+		// 			Dropdown.empty();
+		// 			Dropdown.append('<option value="">--Select--</option>');
+		// 			$.each(obj.Result, function (index, value) {
+		// 				Dropdown.append('<option value="' + value.DesigId + '">' + value.Designation + '</option>');
+		// 			});
+		// 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+		// 				var DesignationId = '@Model.DesignationId';
+		// 				$('#Designation').val(DesignationId);
+		// 			}
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			alert('Failed to load groups.');
+		// 		}
+		// 	});
+
+
+		// }
+		// function FillDepartment() {
+		// 	var NewSalesEmpId = $('#NewSalesEmpName').val();
+		// 	var OldSalesEmpId = $('#OldSalesEmpName').val();
+		// 	if (!$('#OldSalesEmpName').val() && !$('#NewSalesEmpName').val()) {
+		// 		$.notify("Please select at least one EmpName.", "error");
+		// 		return false;
+		// 	}
+
+		// 	$.ajax({
+		// 		url: '@Url.Action("FillDesignation", "SalesPersonTransfer")',
+		// 		type: 'POST',
+		// 		async: false,
+		// 		data: {
+		// 			NewSalesEmpId: NewSalesEmpId,
+		// 			OldSalesEmpId: OldSalesEmpId
+		// 		},
+		// 		success: function (response, status, error) {
+
+		// 			var Dropdown = $('#Department');
+		// 			var obj = $.parseJSON(response);
+		// 			Dropdown.empty();
+		// 			Dropdown.append('<option value="">--Select--</option>');
+		// 			$.each(obj.Result, function (index, value) {
+		// 				Dropdown.append('<option value="' + value.deptId + '">' + value.DeptName + '</option>');
+		// 			});
+		// 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+		// 				var DepartmentId = '@Model.DepartmentId';
+		// 				$('#Department').val(DepartmentId);
+		// 			}
+		// 		},
+		// 		error: function (xhr, status, error) {
+		// 			alert('Failed to load groups.');
+		// 		}
+		// 	});
+
+
+		// }
+
+		function FillDesignation() {
+			debugger
+			var NewSalesEmpId = $('#NewSalesEmpName').val();
+			var OldSalesEmpId = $('#OldSalesEmpName').val();
+			if (!$('#OldSalesEmpName').val() && !$('#NewSalesEmpName').val()) {
+				$.notify("Please select at least one EmpName.", "error");
+				return false;
+			}
+
+			$.ajax({
+				url: '@Url.Action("FillDesignation", "SalesPersonTransfer")',
+				type: 'POST',
+				data: {
+					NewSalesEmpId: NewSalesEmpId,
+					OldSalesEmpId: OldSalesEmpId
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#Designation').val(obj.Result[0].Designation || '');
+						$('#Department').val(obj.Result[0].DeptName || '');
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load data.');
+				}
+			});
+		}
+		
 		
 		function ClearItems() {
 
@@ -1041,17 +1222,42 @@
 
 
 		function PressBack() {
-			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
-			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
-			sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
-			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
-			sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
-			sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
-			sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
-			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+			// Get FromDate and ToDate values, or set defaults
+			var fromDate = $('#FromDate').val();
+			var toDate = $('#ToDate').val();
+
+			// Month names in short format
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
+				"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+			if (!fromDate) {
+				var today = new Date();
+				fromDate = '01/' + monthNames[today.getMonth()] + '/' + today.getFullYear();
+			}
+			if (!toDate) {
+				var today = new Date();
+				toDate = ('0' + today.getDate()).slice(-2) + '/' +
+					monthNames[today.getMonth()] + '/' +
+					today.getFullYear();
+			}
+
+			sessionStorage.setItem('FromDateBack', fromDate);
+			sessionStorage.setItem('ToDateBack', toDate);
+
+			var newEmpName = $('#NewSalesEmpName option:selected').text().split('--->')[0].trim();
+			var oldEmpName = $('#OldSalesEmpName option:selected').text().split('--->')[0].trim();
+
+
+			sessionStorage.setItem('CustomerNameBack', $('#CustomerName').val());
+			sessionStorage.setItem('OldEmpNameBack', oldEmpName);
+			sessionStorage.setItem('NewEmpNameBack', newEmpName);
+			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearch').val());
 
 			window.history.back();
 		}
+
+
+
 	</script>
 }
 
