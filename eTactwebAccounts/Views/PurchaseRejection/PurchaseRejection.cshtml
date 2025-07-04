@@ -1623,10 +1623,10 @@
                         var obj = $.parseJSON(result);
                         var rowCount = $('#divAddPurchaseRejectionList tr').length;
                         for (var i = 1; i <= rowCount; i++) {
-                            $('#discAmt-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
-                            $('#billQty-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
-                            $('#discPer-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
-                            $('#billRate-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
+                            $('#prdiscAmt-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountAmt == null) ? 0 : (obj.Result[i - 1].DiscountAmt).toFixed(2));
+                            $('#prbillQty-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillQty == null) ? 0 : (obj.Result[i - 1].BillQty).toFixed(2));
+                            $('#prdiscPer-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].DiscountPer == null) ? 0 : (obj.Result[i - 1].DiscountPer).toFixed(2));
+                            $('#prbillRate-' + i).text((obj.Result[i - 1] == null || obj.Result[i - 1] == undefined || obj.Result[i - 1].BillRate == null) ? 0 : (obj.Result[i - 1].BillRate).toFixed(2));
                         }
                         if (obj.Result != null) {
                             billQty = 0;
