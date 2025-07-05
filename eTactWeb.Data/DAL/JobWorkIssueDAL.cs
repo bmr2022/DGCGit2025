@@ -200,8 +200,10 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(Constants.FYStartDate.ToString("dd/MM/yyyy"))));
-                SqlParams.Add(new SqlParameter("@Todate", CommonFunc.ParseFormattedDate(Constants.FYEndDate.ToString("dd/MM/yyyy"))));
+                //SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(Constants.FYStartDate.ToString("dd/MM/yyyy"))));
+                //SqlParams.Add(new SqlParameter("@Todate", CommonFunc.ParseFormattedDate(Constants.FYEndDate.ToString("dd/MM/yyyy"))));
+                SqlParams.Add(new SqlParameter("@FromDate", ""));
+                SqlParams.Add(new SqlParameter("@Todate", ""));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_JobworkIssue", SqlParams);
             }
@@ -225,11 +227,11 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                    DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                    //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
-                    //var fromDt = CommonFunc.ParseFormattedDate(FromDate);
-                    //var toDt = CommonFunc.ParseFormattedDate(ToDate);
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     oCmd.Parameters.AddWithValue("@Flag", "Search");
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                     oCmd.Parameters.AddWithValue("@ChallanNo", ChallanNo);
