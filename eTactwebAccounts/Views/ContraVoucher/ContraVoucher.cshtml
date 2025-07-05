@@ -157,7 +157,7 @@
 						<button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
 							<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Contra Voucher Grid</strong>
 						</button>
-						<button class="btn btn-sm btn-outline-danger" style="width:150px;" type="button" onclick="GridButton()">
+						<button class="btn btn-sm btn-outline-danger GridButton" style="width:150px;" type="button" onclick="GridButton()">
 							<i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
 						</button>
 					</h2>
@@ -843,6 +843,88 @@
 					});
 					FillLedgerName();
 					checkModeOfAdjustment();
+											let lastEnterTime = 0;
+		const doubleEnterThreshold = 400; // milliseconds
+
+		document.addEventListener("keydown", function (e) {
+			if (e.key === "Enter") {
+				const now = Date.now();
+
+				const active = document.activeElement;
+
+				// Let Select2 handle selection first
+				if ($('.select2-container--open').length) {
+					return;
+				}
+
+				e.preventDefault();
+
+				const form = document.querySelector("form");
+
+				const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
+					.filter(el =>
+						el.offsetParent !== null &&
+						el.type !== "hidden" &&
+						!el.disabled &&
+						!el.readOnly
+					);
+
+				let current = active;
+				if (current.classList.contains("select2-selection") || current.closest(".select2-selection")) {
+					const container = current.closest(".select2-container");
+					if (container && container.previousElementSibling) {
+						current = container.previousElementSibling;
+					}
+				}
+
+				const index = focusable.indexOf(current);
+
+				// Double Enter pressed
+				if (now - lastEnterTime < doubleEnterThreshold) {
+					// Trigger GridButton click
+					const gridBtn = document.querySelector(".GridButton");
+					if (gridBtn) gridBtn.click();
+					lastEnterTime = 0; // reset
+					return;
+				}
+
+				lastEnterTime = now;
+
+				// Move to next field
+				if (index > -1 && index < focusable.length - 1) {
+					let next = focusable[index + 1];
+					next.focus();
+
+					if (next.classList.contains("select2-hidden-accessible")) {
+						$(next).select2("open");
+					}
+				}
+			}
+		});
+
+		$(document).on('select2:select', function (e) {
+			const current = e.target;
+			const form = current.closest("form");
+
+			const focusable = Array.from(form.querySelectorAll("input, select, textarea"))
+				.filter(el =>
+					el.offsetParent !== null &&
+					el.type !== "hidden" &&
+					!el.disabled
+				);
+
+			const index = focusable.indexOf(current);
+
+			if (index > -1 && index < focusable.length - 1) {
+				const next = focusable[index + 1];
+				setTimeout(() => {
+					next.focus();
+					if (next.classList.contains("select2-hidden-accessible")) {
+						$(next).select2("open");
+					}
+				}, 100);
+			}
+		});
 				});
 
 				function calculateTotalBalance() {

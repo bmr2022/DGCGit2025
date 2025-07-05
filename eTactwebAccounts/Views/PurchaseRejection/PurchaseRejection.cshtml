@@ -1390,17 +1390,20 @@
                     if ($('#divTaxGrid tr td').length < 1) {
                         Err = 1;
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                    } else {
-                        if(Err == 1){
-                            $('#EinvoicePopup').modal('show');
-                        }
+                    }
+                    else {
+                      /*   if(Err == 1){
+                           $('#EinvoicePopup').modal('show');
+                        } */
+                          $('#EinvoicePopup').modal('show');
                         /* $("form").submit(); */
                     }
                 }
                 else {
-                    if(Err == 1){
+                  /*   if(Err == 1){
                             $('#EinvoicePopup').modal('show');
-                    }
+                    } */
+                        $('#EinvoicePopup').modal('show');
                     /* $("form").submit(); */
                 }
             }
