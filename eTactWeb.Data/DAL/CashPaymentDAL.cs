@@ -544,7 +544,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@YearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", EntryByMachine));
-                SqlParams.Add(new SqlParameter("@ActualEntryDate", CommonFunc.ParseFormattedDateTime(ActualEntryDate)));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", ParseFormattedDate(ActualEntryDate)));
                 SqlParams.Add(new SqlParameter("@Vouchertype", VoucherType));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpVoucherEntry", SqlParams);
             }

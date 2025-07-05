@@ -1,5 +1,6 @@
 ﻿using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Wordprocessing;
+using eTactWeb.Data.BLL;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
@@ -40,6 +41,7 @@ namespace eTactWeb.Controllers
             MainModel.EntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
+            MainModel.EntryBYEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             HttpContext.Session.Remove("KeySalesPersonTransferGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
@@ -47,7 +49,8 @@ namespace eTactWeb.Controllers
                 MainModel = await _ISalesPersonTransfer.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
                 var fullCustomerList = await _ISalesPersonTransfer.FillCustomerList("N");
                 ViewBag.FullCustomerList = fullCustomerList.SalesPersonTransferGrid;
-                ViewBag.SelectedCustCodes = MainModel.AccountCode;
+                ViewBag.SelectedCustCodes = _ISalesPersonTransfer.GetSelectedCustomerCodes(ID);
+                //ViewBag.SelectedCustCodes = AccountCode;
                 MainModel.Mode = Mode;
                 MainModel.SalesPersTransfEntryId = ID;
                 MainModel.SalesPersTransfYearCode = YC;
@@ -73,7 +76,8 @@ namespace eTactWeb.Controllers
                 {
                     MainModel.UpdatedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     MainModel.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
-                    MainModel.UpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+					
+					MainModel.UpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
                    
                     MainModel.EntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     MainModel.SalesPersTransfEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
@@ -147,7 +151,7 @@ namespace eTactWeb.Controllers
 					}
 				}
 
-				return RedirectToAction(nameof(SalesPersonTransfer));
+				return RedirectToAction(nameof(SalesPersonTransferDashBoard));
 
 			}
 			catch (Exception ex)
@@ -217,14 +221,24 @@ namespace eTactWeb.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
+        public async Task<JsonResult> FillDesignation(int NewSalesEmpId, int OldSalesEmpId)
+		{
+			var JSON = await _ISalesPersonTransfer.FillDesignation(NewSalesEmpId,OldSalesEmpId);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
 
-        public async Task<IActionResult> FillCustomerList(string ShowAllCust="")
+        public async Task<IActionResult> FillCustomerList(int? entryId,string ShowAllCust="")
         {
             //model.Mode = "Search";
             var model = new SalesPersonTransferModel();
             model = await _ISalesPersonTransfer.FillCustomerList(ShowAllCust);
-
-            return PartialView("_SalesPersonTransCustomerList", model);
+			if (entryId.HasValue)
+			{
+				var selectedCustCodes = _ISalesPersonTransfer.GetSelectedCustomerCodes(entryId.Value);
+				ViewBag.SelectedCustCodes = selectedCustCodes;
+			}
+			return PartialView("_SalesPersonTransCustomerList", model);
 
         }
 
@@ -232,20 +246,11 @@ namespace eTactWeb.Controllers
         {
             var model = new SalesPersonTransferModel();
             var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            //DateTime now = DateTime.Now;
-            //DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
-            //Dictionary<int, string> monthNames = new Dictionary<int, string>
-            //{
-            //    {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
-            //    {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
-            //};
-
-            //model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
-            //model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
-            
+           
             model.EntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
-            //model.ReportType = "SUMMARY";
-            var Result = await _ISalesPersonTransfer.GetDashboardData(model);
+			model.UpdatedByEmpName = HttpContext.Session.GetString("EmpName");
+			model.EntryBYEmpName = HttpContext.Session.GetString("EmpName");
+			var Result = await _ISalesPersonTransfer.GetDashboardData(model);
 
             if (Result.Result != null)
             {
@@ -256,24 +261,16 @@ namespace eTactWeb.Controllers
                     var dt = DS.Tables[0];
                     model.SalesPersonTransferGrid = CommonFunc.DataTableToList<SalesPersonTransferModel>(dt, "SalesPersonTransferDashBoard");
                 }
-                //var DT = DS.Tables[0]
-                //.DefaultView.ToTable(true, "OriginalItemCode", "Unit",
-                //"OriginalQty", "AltItemCode", "AltUnit", "AltOriginalQty", "OriginalStoreId", 
-                //"AltStoreId", "OriginalWCID", "AltWCID", "BatchNo", "UniqueBatchNo", "BatchStock",
-                //"TotalStock", "AltStock", "PlanNo", "PlanYearCode", "PlanDate", "ProdSchNo",
-                //"ProdSchYearCode", "ProdSchdatetime", "OrigItemRate", "Remark");
-                //model.MaterialConversionGrid = CommonFunc.DataTableToList<MaterialConversionModel>(DT, "MaterialConversionDashboard");
-
-
+                
             }
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string NewSalesEmpName, string OldSalesEmpName, string CustomerName)
         {
             //model.Mode = "Search";
             var model = new SalesPersonTransferModel();
-            model = await _ISalesPersonTransfer.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            model = await _ISalesPersonTransfer.GetDashboardDetailData(FromDate, ToDate,  NewSalesEmpName,  OldSalesEmpName,  CustomerName);
          
             return PartialView("_SalesPersonTransferDashBoardGrid", model);
            

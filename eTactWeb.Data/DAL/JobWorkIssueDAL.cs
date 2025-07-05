@@ -200,8 +200,10 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(Constants.FYStartDate.ToString("dd/MM/yyyy"))));
-                SqlParams.Add(new SqlParameter("@Todate", CommonFunc.ParseFormattedDate(Constants.FYEndDate.ToString("dd/MM/yyyy"))));
+                //SqlParams.Add(new SqlParameter("@FromDate", CommonFunc.ParseFormattedDate(Constants.FYStartDate.ToString("dd/MM/yyyy"))));
+                //SqlParams.Add(new SqlParameter("@Todate", CommonFunc.ParseFormattedDate(Constants.FYEndDate.ToString("dd/MM/yyyy"))));
+                SqlParams.Add(new SqlParameter("@FromDate", ""));
+                SqlParams.Add(new SqlParameter("@Todate", ""));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_JobworkIssue", SqlParams);
             }
@@ -266,10 +268,10 @@ namespace eTactWeb.Data.DAL
                                                  EnteredBy = dr["EnteredBy"].ToString(),
                                                  UpdatedBy = dr["UpdatedBy"].ToString(),
                                                  EntryDate = dr["EntryDate"].ToString(),
-                                                 SalesPersonEmailId = dr["SalesPersonEmailId"].ToString(),
-                                                 eMailFromCC1 = dr["eMailFromCC1"].ToString(),
-                                                 eMailFromCC2 = dr["eMailFromCC2"].ToString(),
-                                                 eMailFromCC3 = dr["eMailFromCC3"].ToString(),
+                                                 //SalesPersonEmailId = dr["SalesPersonEmailId"].ToString(),
+                                                 //eMailFromCC1 = dr["eMailFromCC1"].ToString(),
+                                                 //eMailFromCC2 = dr["eMailFromCC2"].ToString(),
+                                                 //eMailFromCC3 = dr["eMailFromCC3"].ToString(),
                                              }).ToList();
                 }
 

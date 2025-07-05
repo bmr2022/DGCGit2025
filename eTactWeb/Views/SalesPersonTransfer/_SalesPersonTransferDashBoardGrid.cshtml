@@ -26,15 +26,11 @@
             <th data-columnno="5" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Rev No
             </th>
-            <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> New Emp ID
-            </th>
+            
             <th data-columnno="7" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> New Emp Name
             </th>
-            <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Old Emp ID
-            </th>
+           
             <th data-columnno="9" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Old Emp Name
             </th>
@@ -44,11 +40,9 @@
             <th data-columnno="11" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Old Till Date
             </th>
-            <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Account Code
-            </th>
+            
             <th data-columnno="13" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Account Name
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Customer Name
             </th>
             <th data-columnno="14" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By
@@ -138,16 +132,16 @@
                        
                         <td>@(string.IsNullOrEmpty(item.SalesPersTransfEntryDate) ? "" : item.SalesPersTransfEntryDate.Split(" ")[0])</td>
                         <td>@item.RevNo</td>
-                        <td>@item.NewSalesEmpId</td>
-                        <td>@item.NewSalesEmpName</td>
-                        <td>@item.OldSalesEmpId</td>
-                        <td>@item.OldSalesEmpName</td>
+                       
+                        <td>@item.NewSalesEmpName<input type="hidden" asp-for="NewSalesEmpId" Value="@item.NewSalesEmpId" /></td>
+                       
+                        <td>@item.OldSalesEmpName<input type="hidden" asp-for="OldSalesEmpId" Value="@item.OldSalesEmpId" /></td>
                         <td>@(string.IsNullOrEmpty(item.NewSalesPersEffdate) ? "" : item.NewSalesPersEffdate.Split(" ")[0])</td>
                         <td>@(string.IsNullOrEmpty(item.OldSalesPersTillDate) ? "" : item.OldSalesPersTillDate.Split(" ")[0])</td>
-                        <td>@item.AccountCode</td>
+                     
                         <td>@item.CustomerName</td>
-                        <td>@item.EntryByEmpId</td>
-                        <td>@item.UpdatedByEmpId</td>
+                        <td>@item.EntryBYEmpName</td>
+                        <td>@item.UpdatedByEmpName</td>
                         <td>@(string.IsNullOrEmpty(item.UpdationDate) ? "" : item.UpdationDate.Split(" ")[0])</td>
                         <td>@item.EntryByMachine</td>
                         <td>@item.CC</td>

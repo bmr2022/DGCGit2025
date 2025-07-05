@@ -87,6 +87,28 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
+        public async Task<ResponseResult> FillDesignation(int NewSalesEmpId, int OldSalesEmpId)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+
+				SqlParams.Add(new SqlParameter("@Flag", "GetDepartment"));
+				SqlParams.Add(new SqlParameter("@NewSalesEmpId", NewSalesEmpId));
+				SqlParams.Add(new SqlParameter("@OldSalesEmpId", OldSalesEmpId));
+
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPSalesPersonTransfer", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
 
         public async Task<SalesPersonTransferModel> FillCustomerList(string ShowAllCust)
         {
@@ -138,6 +160,34 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+		public List<string> GetSelectedCustomerCodes(int salesPersTransfEntryId)
+		{
+			List<string> selectedCustCodes = new List<string>();
+
+			using (SqlConnection con = new SqlConnection(DBConnectionString))
+			{
+                string query = @"SELECT AccountCode FROM SalesPersonTransfer 
+                                WHERE SalesPersTransfEntryId= @SalesPersTransfEntryId";
+                using (SqlCommand cmd = new SqlCommand(query, con))
+				{
+
+
+                    cmd.CommandType = CommandType.Text;
+                    cmd.Parameters.AddWithValue("@SalesPersTransfEntryId", salesPersTransfEntryId);
+					con.Open();
+
+					using (SqlDataReader reader = cmd.ExecuteReader())
+					{
+						while (reader.Read())
+						{
+							selectedCustCodes.Add(reader["AccountCode"].ToString());
+						}
+					}
+				}
+			}
+			return selectedCustCodes;
+		}
+
 		public async Task<ResponseResult> SaveSalesPersonTransfer(SalesPersonTransferModel model, DataTable GIGrid)
 		{
 			var _ResponseResult = new ResponseResult();
@@ -207,7 +257,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<SalesPersonTransferModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<SalesPersonTransferModel> GetDashboardDetailData(string FromDate, string ToDate, string NewSalesEmpName, string OldSalesEmpName, string CustomerName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new SalesPersonTransferModel();
@@ -221,8 +271,11 @@ namespace eTactWeb.Data.DAL
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     //oCmd.Parameters.AddWithValue("@REportType", ReportType);
-                    //oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
-                    //oCmd.Parameters.AddWithValue("@Todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@Fromdate", FromDate);
+                    oCmd.Parameters.AddWithValue("@Todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@NewSalesEmpName", NewSalesEmpName);
+                    oCmd.Parameters.AddWithValue("@OldSalesEmpName", OldSalesEmpName);
+                    oCmd.Parameters.AddWithValue("@CustomerName", CustomerName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -253,7 +306,9 @@ namespace eTactWeb.Data.DAL
                                                             CustomerName = dr["Account_Name"] != DBNull.Value ? Convert.ToString(dr["Account_Name"]) : string.Empty,
                                                             EntryByEmpId = dr["EntryByEmpId"] != DBNull.Value ? Convert.ToInt32(dr["EntryByEmpId"]) : 0,
                                                             UpdatedByEmpId = dr["UpdatedByEmpId"] != DBNull.Value ? Convert.ToInt32(dr["UpdatedByEmpId"]) : 0,
-                                                            //UpdationDate = dr["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(dr["UpdationDate"]) : DateTime.MinValue,
+															//UpdationDate = dr["UpdationDate"] != DBNull.Value ? Convert.ToDateTime(dr["UpdationDate"]) : DateTime.MinValue,
+															EntryBYEmpName = dr["EntryByEmpName"] != DBNull.Value ? Convert.ToString(dr["EntryByEmpName"]) : string.Empty,
+															UpdatedByEmpName = dr["UpdatedByEmpName"] != DBNull.Value ? Convert.ToString(dr["UpdatedByEmpName"]) : string.Empty,
                                                             UpdationDate = dr["UpdationDate"] != DBNull.Value ? Convert.ToString(dr["UpdationDate"]) : string.Empty,
                                                             EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
                                                             CC = dr["CC"] != DBNull.Value ? Convert.ToString(dr["CC"]) : string.Empty,

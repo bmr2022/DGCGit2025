@@ -105,12 +105,25 @@
 												break;
 										}
 										<div id="viewCursorDiv-@Cntr">
-											<a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YearCode="@item.AccYearCode" asp-route-VoucherNo="@item.VoucherNo">
-												<span class="fa-stack">
-													<i class="fa fa-square fa-stack-2x"></i>
-													<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-												</span>
-											</a>
+											@if (item.VoucherType == "PURCHASE-REJECTION")
+											{
+												<a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YC="@item.AccYearCode" asp-route-VoucherNo="@item.VoucherNo" onclick="BackButtonData(event);">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+											}
+											else
+											{
+												<a class="table-link link-success" asp-route-ID="@item.DocEntryId" asp-controller="@ControllerName" asp-action="@ActionName" asp-route-Mode="V" asp-route-YearCode="@item.AccYearCode" asp-route-VoucherNo="@item.VoucherNo" onclick="BackButtonData(event);">
+													<span class="fa-stack">
+														<i class="fa fa-square fa-stack-2x"></i>
+														<i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+													</span>
+												</a>
+												
+											}
 										</div>
 										<div id="editCursorDiv-@Cntr">
 											@if (item.VoucherType == "PURCHASE-REJECTION")
@@ -118,7 +131,7 @@
 												<a class="table-link link-primary" id="editCursor-@Cntr"
 												   asp-action="@ActionName" asp-controller="@ControllerName"
 												   asp-route-Mode="U" asp-route-ID="@item.DocEntryId"
-												   asp-route-YC="@item.AccYearCode" asp-route-VoucherNo="@item.VoucherNo">
+												   asp-route-YC="@item.AccYearCode" asp-route-VoucherNo="@item.VoucherNo" onclick="confirmEdit(event)">
 													<span class="fa-stack">
 														<i class="fa fa-square fa-stack-2x"></i>
 														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -130,7 +143,7 @@
 												<a class="table-link link-primary" id="editCursor-@Cntr"
 												   asp-action="@ActionName" asp-controller="@ControllerName"
 												   asp-route-Mode="U" asp-route-ID="@item.DocEntryId"
-												   asp-route-YearCode="@item.AccYearCode" asp-route-VoucherNo="@item.VoucherNo">
+												   asp-route-YearCode="@item.AccYearCode" asp-route-VoucherNo="@item.VoucherNo" onclick="confirmEdit(event)">
 													<span class="fa-stack">
 														<i class="fa fa-square fa-stack-2x"></i>
 														<i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

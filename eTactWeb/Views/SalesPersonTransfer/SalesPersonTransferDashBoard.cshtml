@@ -26,6 +26,13 @@
                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
                                 <input type="hidden" asp-for="@Model.EntryByEmpId" value="@Model.EntryByEmpId" />
                                 <input type="hidden" asp-for="@Model.seqno" value="@Model.seqno" />
+                                <input type="hidden" asp-for="FromDateBack" id="FromDateBack" />
+                                <input type="hidden" asp-for="ToDateBack" id="ToDateBack" />
+                                <input type="hidden" asp-for="CustomerNameBack" id="CustomerNameBack" />
+                                <input type="hidden" asp-for="OldEmpNameBack" id="OldEmpNameBack" />
+                                <input type="hidden" asp-for="NewEmpNameBack" id="NewEmpNameBack" />
+                                <input type="hidden" asp-for="GlobalSearchBack" id="GlobalSearchBack" />
+
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">From Date</label>
@@ -37,6 +44,19 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="NewSalesEmpName" class="form-label">New Sales EmpName</label>
+                                <input asp-for="NewSalesEmpName" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="OldSalesEmpName" class="form-label">Old Sales EmpName</label>
+                                <input asp-for="OldSalesEmpName" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="CustomerName" class="form-label">Customer Name</label>
+                                <input asp-for="CustomerName" class="form-control" />
+                            </div>
+
                            @*  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                 <label asp-for="ReportType" class="form-label">Report Type</label>
                                 <select asp-for="ReportType" class="form-select">
@@ -53,7 +73,7 @@
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
                             <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
-                                <button class="btn btn-sm btn-outline-info" type="button" onclick="GetDetailData();">
+                                <button class="btn btn-sm btn-outline-info" type="button" id="SearchBtn">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
                                 <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
@@ -82,12 +102,13 @@
             </div>
         </div>
         <div class="card-body">
-            <div class="card overflow-auto">
+            <div class="card" style="overflow-y: auto; max-height: 500px;">
                 <div class="card-body" id="divDashboardGrid">
                     <partial name="_SalesPersonTransferDashBoardGrid" />
                 </div>
             </div>
         </div>
+
     </div>
 </div>
 
@@ -109,18 +130,76 @@
 
 
             $("#search-box").val($('#search-box').val()).trigger('keyup');
+            debugger
+            var restored = false;
 
+            if (sessionStorage.getItem('FromDateBack')) {
+                $('#FromDate').val(sessionStorage.getItem('FromDateBack'));
+                restored = true;
+            }
+            if (sessionStorage.getItem('ToDateBack')) {
+                $('#ToDate').val(sessionStorage.getItem('ToDateBack'));
+                restored = true;
+            }
+            if (sessionStorage.getItem('CustomerNameBack')) {
+                $('#CustomerName').val(sessionStorage.getItem('CustomerNameBack'));
+                restored = true;
+            }
+            if (sessionStorage.getItem('OldEmpNameBack')) {
+                $('#OldSalesEmpName').val(sessionStorage.getItem('OldEmpNameBack'));
+                restored = true;
+            }
+            if (sessionStorage.getItem('NewEmpNameBack')) {
+                $('#NewSalesEmpName').val(sessionStorage.getItem('NewEmpNameBack'));
+                restored = true;
+            }
+            if (sessionStorage.getItem('GlobalSearchBack')) {
+                $('#GlobalSearch').val(sessionStorage.getItem('GlobalSearchBack'));
+                restored = true;
+            }
+
+            
+            if (restored) {
+                GetDetailData();
+            }
+
+            $('#SearchBtn').click(function () {
+                SaveFiltersToSession();
+                GetDetailData();
+            });
+            //sessionStorage.clear();
+        });
+        function SaveFiltersToSession() {
+            // Clear previous session values first
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
-            sessionStorage.removeItem('SlipNoBack');
-            sessionStorage.removeItem('BatchNoBack');
-            sessionStorage.removeItem('PartCodeBack');
-            sessionStorage.removeItem('ItemNameBack');
-            sessionStorage.removeItem('DocTypeBack');
+            sessionStorage.removeItem('CustomerNameBack');
+            sessionStorage.removeItem('OldEmpNameBack');
+            sessionStorage.removeItem('NewEmpNameBack');
             sessionStorage.removeItem('GlobalSearchBack');
-            sessionStorage.removeItem('DashboardTypeBack');
-        });
 
+            // Save only filters that user entered
+            if ($('#FromDate').val()) {
+                sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+            }
+            if ($('#ToDate').val()) {
+                sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+            }
+            if ($('#CustomerName').val()) {
+                sessionStorage.setItem('CustomerNameBack', $('#CustomerName').val());
+            }
+            if ($('#OldSalesEmpName').val()) {
+                sessionStorage.setItem('OldEmpNameBack', $('#OldSalesEmpName').val());
+            }
+            if ($('#NewSalesEmpName').val()) {
+                sessionStorage.setItem('NewEmpNameBack', $('#NewSalesEmpName').val());
+            }
+            if ($('#GlobalSearch').val()) {
+                sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearch').val());
+            }
+        }
+
+        
         function GetFormRights() {
 
             $.ajax({
@@ -190,7 +269,7 @@
                     }
                 },
                 error: function (errMsg) {
-                    $.notify(errMsg, { position: "top center", className: "error" });
+                   console.log(errMsg);
                 }
             });
         }
@@ -200,15 +279,19 @@
 
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
-            var reportType = $('#ReportType').val();
+            var NewSalesEmpName = $('#NewSalesEmpName').val();
+            var OldSalesEmpName = $('#OldSalesEmpName').val();
+            var CustomerName = $('#CustomerName').val();
 
             //var data = $('#SParam').serialize();
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType },
+                data: { FromDate: fromDate, ToDate: toDate,NewSalesEmpName:NewSalesEmpName,
+                            OldSalesEmpName: OldSalesEmpName, CustomerName: CustomerName
+                },
                 async: false,
-                data: $('#SParam').serializeArray(),
+                //data: $('#SParam').serializeArray(),
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
                     var totalRows = $('#divDashboardGrid tr').length;

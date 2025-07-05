@@ -179,11 +179,52 @@
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             $('#Ledger').select2();
             $('#VoucherType').select2();
-
-            GetDayBookDetailsData();
+             
             FillLedgerName();
             FillVoucherName();
+                var FromDateBack= sessionStorage.getItem('FromDateBack')
+                 if (FromDateBack != null  &&  FromDateBack != ''){
+                        $('#FromDate').val(sessionStorage.getItem('FromDateBack'));
+                          $('#ToDate').val(sessionStorage.getItem('ToDateBack'));
+                              $('#VoucherType').val(sessionStorage.getItem('VoucherTypeBack'));
+                              $('#Ledger').val(sessionStorage.getItem('LedgerBack'));
+                              $('#search-box').val(sessionStorage.getItem('GlobalSearchBack'));
+
+                 }
+             GetDayBookDetailsData();
+
+                  sessionStorage.removeItem('FromDateBack');
+                 sessionStorage.removeItem('ToDateBack');
+                  sessionStorage.removeItem('VoucherTypeBack');
+                  sessionStorage.removeItem('LedgerBack');
+                   sessionStorage.removeItem('GlobalSearchBack');
         });
+           function BackButtonData(event) {
+
+             event.preventDefault();
+
+         sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+         sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+          sessionStorage.setItem('VoucherTypeBack', $('#VoucherType').val());
+            sessionStorage.setItem('LedgerBack', $('#Ledger').val());
+         sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+              
+             var urlHref = $(event.currentTarget).attr("href");
+             var linkUrl = urlHref;
+             window.location.href = linkUrl;
+         }
+             function confirmEdit(event) {
+             event.preventDefault();
+             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+          sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+          sessionStorage.setItem('VoucherTypeBack', $('#VoucherType').val());
+            sessionStorage.setItem('LedgerBack', $('#Ledger').val());
+          sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+             var urlHref = $(event.currentTarget).attr("href");
+             var linkUrl = urlHref;
+
+             window.location.href = linkUrl;
+         }
 
         function selection(CurrentRow) {
 
