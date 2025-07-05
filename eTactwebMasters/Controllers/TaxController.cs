@@ -1453,7 +1453,7 @@ public class TaxController : Controller
                 {
                     foreach (var item in ListOfItems)
                     {
-                        if (SN != "CreditNote")
+                        if (SN != "CreditNote" && SN != "PurchaseRejection")
                         {
                             //Basic Total Amount
                             BasicTotal = BasicTotal + (item.Amount == null ? 0 : item.Amount);
@@ -1480,8 +1480,8 @@ public class TaxController : Controller
                             if (item.ItemCode == ToInt32(PC))
                             {
                                 Amt += item.ItemAmount;
-                                BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
                             }
+                            BasicTotal = BasicTotal + (item.ItemAmount == null ? 0 : item.ItemAmount);
                         }
                         else if (SN == "PurchaseBill")
                         {
