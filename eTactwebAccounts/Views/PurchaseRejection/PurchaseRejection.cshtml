@@ -632,8 +632,8 @@
                    $('#btnClose').click(function () {
                                         $('#btngenrateEinvoice').val('false'); // set flag for no printing
                                         $('#EinvoicePopup').modal("hide");
-                                        setTimeout(() => {
-                                           submitForm(false, null); 
+                                      setTimeout(() => {
+                                             submitForm(false, null);
                                         }, 300);
                                     });
         $('#btnEinvoiceOnly').click(function () {
@@ -1390,17 +1390,20 @@
                     if ($('#divTaxGrid tr td').length < 1) {
                         Err = 1;
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                    } else {
-                        if(Err == 1){
-                            $('#EinvoicePopup').modal('show');
-                        }
+                    }
+                    else {
+                      /*   if(Err == 1){
+                           $('#EinvoicePopup').modal('show');
+                        } */
+                          $('#EinvoicePopup').modal('show');
                         /* $("form").submit(); */
                     }
                 }
                 else {
-                    if(Err == 1){
+                  /*   if(Err == 1){
                             $('#EinvoicePopup').modal('show');
-                    }
+                    } */
+                        $('#EinvoicePopup').modal('show');
                     /* $("form").submit(); */
                 }
             }

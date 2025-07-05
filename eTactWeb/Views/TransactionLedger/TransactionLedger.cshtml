@@ -228,6 +228,40 @@
 			 updateGroupLedger();
 			 FillVoucherName();
 			 FillParentLedgerName();
+			 var LedgerNameBack= sessionStorage.getItem('LedgerNameBack')
+			 if (LedgerNameBack != null  &&  LedgerNameBack != ''){
+			  $('#FromDate').val(sessionStorage.getItem('FromDateBack'));
+						 $('#ToDate').val(sessionStorage.getItem('ToDateBack'));
+			$('#ReportType').val(sessionStorage.getItem('ReportTypeBack'));
+			$('#Group_Ledger').val(sessionStorage.getItem('GroupLedgerBack'));
+			$('#ParentLedgerName').val(sessionStorage.getItem('ParentLedgerNameBack'));
+			$('#LedgerName').val(sessionStorage.getItem('LedgerNameBack'));
+			$('#VoucherType').val(sessionStorage.getItem('VoucherTypeBack'));
+			$('#VoucherNo').val(sessionStorage.getItem('VoucherNoBack'));
+			$('#INVNo').val(sessionStorage.getItem('INVNoBack'));
+			$('#Narration').val(sessionStorage.getItem('NarrationBack'));
+			$('#Amount').val(sessionStorage.getItem('AmountBack'));
+			$('#Dr').val(sessionStorage.getItem('DrBack'));
+			$('#Cr').val(sessionStorage.getItem('CrBack'));
+			$('#search-box').val(sessionStorage.getItem('GlobalSearchBack'));
+			$('#AccountCode').val($('#LedgerName').val());
+				GetDetailsData();
+			}
+				sessionStorage.removeItem('FromDateBack');
+				sessionStorage.removeItem('ToDateBack');
+				sessionStorage.removeItem('ReportTypeBack');
+				sessionStorage.removeItem('GroupLedgerBack');
+				sessionStorage.removeItem('ParentLedgerNameBack');
+				sessionStorage.removeItem('LedgerNameBack');
+				sessionStorage.removeItem('VoucherTypeBack');
+				sessionStorage.removeItem('VoucherNoBack');
+				sessionStorage.removeItem('INVNoBack');
+				sessionStorage.removeItem('NarrationBack');
+				sessionStorage.removeItem('AmountBack');
+				sessionStorage.removeItem('DrBack');
+				sessionStorage.removeItem('CrBack');
+				sessionStorage.removeItem('GlobalSearchBack');
+
 			 $('#BackButton').hide();
 				 var dynamicTitle = "Sales Invoice Ledger"; // Example dynamic value
 				$('#ledgerTitle').text(dynamicTitle);
@@ -237,8 +271,52 @@
 			var selectedText = $(this).find("option:selected").text();
 			$('#reportTitle').text(selectedText === "-Select-" ? "Report" : selectedText);
 		});
+		   function BackButtonData(event) {
 
-		   function formatDate(date) {
+			event.preventDefault();
+
+		sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+		sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+		sessionStorage.setItem('ReportTypeBack', $('#ReportType').val());
+		sessionStorage.setItem('GroupLedgerBack', $('#Group_Ledger').val());
+		sessionStorage.setItem('ParentLedgerNameBack', $('#ParentLedgerName').val());
+		sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
+		sessionStorage.setItem('VoucherTypeBack', $('#VoucherType').val());
+		sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+		sessionStorage.setItem('INVNoBack', $('#INVNo').val());
+		sessionStorage.setItem('NarrationBack', $('#Narration').val());
+		sessionStorage.setItem('AmountBack', $('#Amount').val());
+		sessionStorage.setItem('DrBack', $('#Dr').val());
+		sessionStorage.setItem('CrBack', $('#Cr').val());
+		sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+
+			var urlHref = $(event.currentTarget).attr("href");
+			var linkUrl = urlHref;
+			window.location.href = linkUrl;
+		}
+		    function confirmEdit(event) {
+            event.preventDefault();
+			sessionStorage.setItem('FromDateBack', $('#FromDate').val());
+		sessionStorage.setItem('ToDateBack', $('#ToDate').val());
+		sessionStorage.setItem('ReportTypeBack', $('#ReportType').val());
+		sessionStorage.setItem('GroupLedgerBack', $('#Group_Ledger').val());
+		sessionStorage.setItem('ParentLedgerNameBack', $('#ParentLedgerName').val());
+		sessionStorage.setItem('LedgerNameBack', $('#LedgerName').val());
+		sessionStorage.setItem('VoucherTypeBack', $('#VoucherType').val());
+		sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
+		sessionStorage.setItem('INVNoBack', $('#INVNo').val());
+		sessionStorage.setItem('NarrationBack', $('#Narration').val());
+		sessionStorage.setItem('AmountBack', $('#Amount').val());
+		sessionStorage.setItem('DrBack', $('#Dr').val());
+		sessionStorage.setItem('CrBack', $('#Cr').val());
+		sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+         
+            window.location.href = linkUrl;
+        }
+
+		function formatDate(date) {
 				  var day = ("0" + date.getDate()).slice(-2);
 				  var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 				  var month = monthNames[date.getMonth()];
