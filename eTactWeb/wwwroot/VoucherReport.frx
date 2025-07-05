@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/05/2025 15:30:56" ReportInfo.Modified="07/05/2025 15:47:19" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0gtd1l0TTVcz0wGHkY2lJkUIE8BaW4M/NG3pKd3qvpK4DdWqGEyHadQzRHXCkxhoSD47bth543+LgB9s26CRn9XVPJfL+TZm0iZ1auX83gwSzWkAuQz3cdbBgeP1s7vjAWBZc/oTdhvG7BW2flT09LhSyXfzZC3z368dPg0iwD4fAoH8yRlDHnuCl+wjZfUDUg==">
+      <TableDataSource Name="Table" Alias="SPPrintReportVoucher" DataType="System.Int32" Enabled="true" SelectCommand="exec SPPrintReportVoucher @VoucherYearcode = 2025, @VoucherName = N'CONTRA-VOUCHER', @EntryId= 39">
+        <Column Name="LedgerName" DataType="System.String"/>
+        <Column Name="VoucherDocNo" DataType="System.String"/>
+        <Column Name="VoucherDocDate" DataType="System.DateTime"/>
+        <Column Name="BillInvoiceDate" DataType="System.DateTime"/>
+        <Column Name="DrAmt" DataType="System.Double"/>
+        <Column Name="CrAmt" DataType="System.Double"/>
+        <Column Name="ENtryBankCash" DataType="System.String"/>
+        <Column Name="VoucherType" DataType="System.String"/>
+        <Column Name="VoucherNo" DataType="System.String"/>
+        <Column Name="ModeOfAdjustment" DataType="System.String"/>
+        <Column Name="SubVoucherName" DataType="System.String"/>
+        <Column Name="description" DataType="System.String"/>
+        <Column Name="VoucherRemark" DataType="System.String"/>
+        <Column Name="PreparedBy" DataType="System.String"/>
+        <Column Name="AccountCode" DataType="System.Int64"/>
+        <Column Name="AccENtryid" DataType="System.Int64"/>
+        <Column Name="TDSApplicable" DataType="System.String"/>
+        <Column Name="TDSChallanNo" DataType="System.String"/>
+        <Column Name="TDSChallanDate" DataType="System.DateTime"/>
+        <Column Name="currencyId" DataType="System.Int64"/>
+        <Column Name="SONO" DataType="System.Int64"/>
+        <Column Name="CustOrderNo" DataType="System.String"/>
+        <Column Name="SODate" DataType="System.DateTime"/>
+        <Column Name="PONO" DataType="System.String"/>
+        <Column Name="PODate" DataType="System.DateTime"/>
+        <Column Name="ParentAccountName" DataType="System.String"/>
+        <Column Name="main_Group" DataType="System.String"/>
+        <Column Name="UnderGroup" DataType="System.String"/>
+        <Column Name="VoucherAmtInWord" DataType="System.String"/>
+        <Column Name="ToatlDRAmt" DataType="System.Double"/>
+        <Column Name="TotalCrAmt" DataType="System.Double"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+        <Column Name="OfficeAddress" DataType="System.String"/>
+        <Column Name="OfficeAddress2" DataType="System.String"/>
+        <Column Name="PinCode" DataType="System.String"/>
+        <Column Name="Statecode" DataType="System.String"/>
+        <Column Name="PANNO" DataType="System.String"/>
+        <Column Name="GSTNO" DataType="System.String"/>
+        <CommandParameter Name="VoucherYearcode" DataType="22"/>
+        <CommandParameter Name="VoucherName" DataType="22"/>
+        <CommandParameter Name="EntryId" DataType="22"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page1" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle1" Width="718.2" Height="37.8">
+      <TextObject Name="Text2" Left="255.15" Top="9.45" Width="94.5" Height="18.9" Text="VoucherDocNo" Font="Arial, 10pt"/>
+      <TextObject Name="Text1" Left="368.55" Top="9.45" Width="94.5" Height="18.9" Text="[SPPrintReportVoucher.VoucherDocNo]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader1" Top="41" Width="718.2" Height="28.35"/>
+    <DataBand Name="Data1" Top="72.55" Width="718.2" Height="75.6" DataSource="Table"/>
+    <PageFooterBand Name="PageFooter1" Top="151.35" Width="718.2" Height="18.9"/>
+  </ReportPage>
+</Report>
