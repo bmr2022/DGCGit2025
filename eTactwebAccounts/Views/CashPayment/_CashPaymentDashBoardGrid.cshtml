@@ -46,6 +46,14 @@
                             <td>@Cntr</td>
                             <td style="text-align:center;white-space: nowrap;" class="sticky-action">
                                 <div id="container">
+                                    <div id="printData-@Cntr">
+                                        <a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherName="@item.SubVoucherName">
+                                            <span class="fa-stack">
+                                                <i class="fa fa-square fa-stack-2x"></i>
+                                                <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                            </span>
+                                        </a>
+                                    </div>
                                     <div id="viewCursorDiv-@Cntr">
                                         <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="CashPayment" asp-route-Mode="V" onclick="BackButtonData(event);" asp-controller="CashPayment" asp-route-Mode="U" asp-route-ID="@item.AccEntryId" asp-route-YearCode="@item.YearCode" asp-route-VoucherNo="@item.VoucherNo">
                                             <span class="fa-stack">
