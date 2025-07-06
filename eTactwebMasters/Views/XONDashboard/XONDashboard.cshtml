@@ -47,7 +47,7 @@
 		Click here to Get List of Dead item
 	</button>
 
-	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
+	<button type="button" class="btn btn-primary submitBTN" onclick="PendingInventoryTask()">
 		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
 		Click here to get Pending Job List
 	</button>
@@ -69,6 +69,7 @@
 		function RefreshAllData(){
 			FillNoOfItemInStock();
 			StockValuation();
+			PendingInventoryTask();
 		}
 
 		function FillNoOfItemInStock(){
