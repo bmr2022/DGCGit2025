@@ -1346,7 +1346,19 @@
 
                     var RecEmpCode = "@Model.IssByEmpCode";
                     $('#IssByEmpCodeName').val(RecEmpCode).trigger("change");
+                         var EntryDate = parseDateToFormat($('#EntryDate').val());
+                     /*    console.log("EntryDate" + EntryDate); */
+                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                        alert("entrydate2" + $('#EntryDate').val());
+                        $('#ChallanDate ,#EntryDate').on('focus mouseenter', function () 
+                        {
+                            $(this).datepicker({
+                                dateFormat: 'dd/mm/yy',
+                                changeMonth: true,
+                                changeYear: true
 
+                            }).datepicker('show');
+                        });
                 }
                 else
                 {

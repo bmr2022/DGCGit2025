@@ -628,6 +628,8 @@
 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V"||$('#Mode').val() == "C") {
 				// PendingIndentDetail(true);
 				//FillItems();
+				alert("inside edit");
+				alert("entrydate1" + $('#EntryDate').val());
 				$('.DH').fadeIn();
 				$('#PN1').prop("disabled", "false");
 				$('#PN1').prop("checked", "true");
@@ -710,15 +712,19 @@
 					}).datepicker('show');
 				});
 
-				$('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
-				$('#WEF').datepicker("option", "maxDate", parseDateToFormat(finToDate));
+				// $('#WEF,#POCloseDate').datepicker("option", "minDate", parseDateToFormat(finFromDate));
+				// $('#WEF').datepicker("option", "maxDate", parseDateToFormat(finToDate));
 
-				$('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
-				$('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
-
-
+				// $('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
+				// $('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
+						 var EntryDate = parseDateToFormat($('#EntryDate').val());
+					 /*    console.log("EntryDate" + EntryDate); */
+						$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+						alert("entrydate2" + $('#EntryDate').val());
 			}
-			else if ($('#Mode').val() == "POA") {
+			else if ($('#Mode').val() == "POA")
+			{
+				alert("poa");
 				$('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
 				// $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
@@ -739,11 +745,10 @@
 
 					}).datepicker('show');
 				});
-
-
-
 			}
-			else if ($('#Mode').val() != "POA") {
+			else if ($('#Mode').val() != "POA") 
+			{
+				alert("not poa");
 				//$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 				//$("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
 				//    dateFormat: 'dd/mm/yy',
@@ -813,8 +818,6 @@
 					// }).datepicker("setDate", formattedDate11);
 
 			}
-					
-		
 
 
 			$('#POAAmendButton').click(function () {
