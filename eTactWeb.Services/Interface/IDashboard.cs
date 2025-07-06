@@ -19,5 +19,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetTopItemBelowMinLevel();
         Task<ResponseResult> GetTopFastMovingItem();
         Task<ResponseResult> PendingInventoryTask();
+        Task<ResponseResult> FillPurchaseDashboardData();
     }
 }
