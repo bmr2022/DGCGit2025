@@ -737,7 +737,7 @@ public class PurchaseBillDAL
                 };
                 oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                 oCmd.Parameters.AddWithValue("@FlagMRNJWCHALLAN", !string.IsNullOrEmpty(model.MRNType) ? (model.MRNType != "0" ? model.MRNType : string.Empty) : string.Empty);
-                oCmd.Parameters.AddWithValue("@SummDetail", model.DashboardType.ToLower());
+                oCmd.Parameters.AddWithValue("@SummDetail", model.DashboardType?.ToLower() ?? "summary");
                 oCmd.Parameters.AddWithValue("@FromDate", fromDate);
                 oCmd.Parameters.AddWithValue("@ToDate", toDate);
                 oCmd.Parameters.AddWithValue("@PurchVoucherNo", !string.IsNullOrEmpty(model.VoucherNo) ? (model.VoucherNo != "0" ? model.VoucherNo : string.Empty) : string.Empty);
