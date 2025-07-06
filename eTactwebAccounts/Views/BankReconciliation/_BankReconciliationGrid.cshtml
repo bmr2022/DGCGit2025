@@ -41,6 +41,14 @@
 									</span>
 								</a>
 								<input type="checkbox" id="checkUncheck-@Cntr" onchange="toggleDatePicker(this,@Cntr)" />
+								<div id="printData-@Cntr">
+									<a class="table-link link-dark" asp-action="PrintReport" target="_blank" asp-route-EntryId="@item.entryid" asp-route-YearCode="@item.AccYearCode" asp-route-VoucherName="@item.VoucherNo">
+										<span class="fa-stack">
+											<i class="fa fa-square fa-stack-2x"></i>
+											<i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+										</span>
+									</a>
+								</div>
 							</td>
 							<th>@Cntr</th>
 							<td id="VoucherDate-@Cntr">@item.Date</td>
