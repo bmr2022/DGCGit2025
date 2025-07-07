@@ -123,6 +123,75 @@ public static class CommonFunc
             return DateTime.Parse(dateString);
         }
     }
+
+
+
+
+    public static string ParseFormattedDateForView(string dateString)
+    {
+        if (string.IsNullOrWhiteSpace(dateString))
+        {
+            return string.Empty; // Return empty if the input is null or whitespace
+        }
+
+        try
+        {
+            DateTime date;
+            string[] formats =
+            {
+                           "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "dd/MM/yy", "dd-MMM-yyyy",
+    "MM/dd/yyyy", "MM/dd/yy", "dd-MM-yy", "d-M-yy", "MMM dd, yyyy", "dd-MMM-yyyy HH:mm",
+    "dd/MMM/yyyy", "dd/MMM/yyyy HH:mm:ss", "dd/MMM/yyyy hh:mm:ss tt", "yyyy/MM/dd HH:mm:ss",
+    "MM/dd/yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "d-M-yyyy hh:mm:ss tt", "d-M-yyyy",
+    "dd/M/yyyy h:mm:ss tt", "dd/MM/yyyy h:mm:ss tt", "dd-MMM-yyyy hh:mm:ss", "d/M/yyyy h:mm:ss tt",
+    "dd/MM/yyyy HH:mm", "MM-dd-yyyy hh:mm:ss a", "yyyy-MM-ddTHH:mm:ss", "yyyy-MM-ddTHH:mm:ssZ",
+    "yyyy-MM-ddTHH:mm:ss.SSS", "yyyy-MM-ddTHH:mm:ss.SSSZ", "yyyy-MM-ddTHH:mm:ss+HH:mm",
+    "EEEE, MMMM dd, yyyy", "EEE, dd MMM yyyy", "EEEE dd/MM/yyyy", "EEEE dd-MMM-yyyy",
+    "hh:mm:ss a", "dd-MMM-yyyy hh:mm:ss tt", "HH:mm", "hh:mm a", "dd/MMM/yyyy hh:mm:ss",
+    "dd/MM/yyyy hh:mm:ss tt", "dd-MM-yyyy hh:mm:ss", "dd-MM-yyyy HH:mm:ss", "d-M-yy hh:mm:ss",
+    "d-M-yy HH:mm:ss", "dd-M-yy hh:mm:ss", "dd-M-yy HH:mm:ss", "dd/MMM/yyyy HH.mm.ss tt",
+    "dd/MMM/yyyy hh.mm.ss tt", "dd/MMM/yyyy h.mm.ss tt", "MM/dd/yyyy HH:mm:ss tt",
+    "M/dd/yyyy HH:mm:ss", "MM/dd/yyyy hh:mm:ss tt", "M/dd/yyyy hh:mm:ss tt", "M/dd/yyyy",
+     "yyyy/MM/dd",                       // 2025/07/07
+    "yyyy.MM.dd",                       // 2025.07.07
+    "dd.MM.yyyy",                       // 07.07.2025
+    "dd.MM.yyyy HH:mm:ss",             // 07.07.2025 14:00:00
+    "yyyy.MM.dd HH:mm:ss",             // 2025.07.07 14:00:00 
+    "dd-MM-yyyyTHH:mm:ss",             // e.g., 07-07-2025T14:00:00
+    "yyyy/MM/dd hh:mm:ss tt",          // 2025/07/07 03:00:00 PM   
+    "yyyy-MM-dd hh:mm:ss tt",          // 2025-07-07 03:15:00 PM
+    "yyyy-MM-dd hh:mm tt",             // 2025-07-07 03:15 PM
+    "yyyy-MM-dd HH:mm",                // 2025-07-07 15:15
+    "dd-MM-yyyy hh:mm tt",             // 07-07-2025 03:15 PM
+    "dd/MM/yyyy hh:mm tt",             // 07/07/2025 03:15 PM
+    "MM/dd/yy hh.mm.ss tt",
+    "M/d/yy hh:mm:ss tt",
+"M/dd/yyyy hh:mm:ss tt",
+"MM/d/yyyy hh:mm:ss tt"
+        };
+
+            // Try parsing the date string against all the formats
+            if (DateTime.TryParseExact(dateString, formats,
+                                       System.Globalization.CultureInfo.InvariantCulture,
+                                       System.Globalization.DateTimeStyles.None,
+                                       out date))
+            {
+                // Successfully parsed; return the date in "yyyy-MM-dd" format
+                return date.ToString("dd/MM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            }
+        }
+        catch (Exception ex)
+        {
+            // Log the exception if needed (e.g., to a file, database, or logging framework)
+            Console.WriteLine($"Error parsing date: {ex.Message}");
+        }
+
+        // Return empty string if parsing failed
+        return dateString.ToString();
+    }
+
+
+
     public static string ParseFormattedDate(string dateString)
     {
         if (string.IsNullOrWhiteSpace(dateString))
