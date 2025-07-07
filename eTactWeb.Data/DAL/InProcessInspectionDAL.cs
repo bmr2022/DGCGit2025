@@ -152,7 +152,7 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
-		public async Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode)
+		public async Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode, int SampleSize)
 		{
 			DataSet? oDataSet = new DataSet();
 			var model = new InProcessInspectionModel();

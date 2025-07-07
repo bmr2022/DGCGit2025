@@ -97,11 +97,23 @@
 										<label asp-for="InspectionType" class="form-label" style="color:red"> Inspection Type*</label>
 										<select class="form-control"  asp-for="InspectionType">
 											<option value="">-Select-</option>
-											<option value="Incoming" selected>Incoming</option>
+											<option value="Incoming" >Incoming</option>
 											<option value="InProcess">InProcess</option>
-											<option value="OutGoing">OutGoing</option>
+											<option value="OutGoing" selected>OutGoing</option>
 											
 										</select>
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+										<label asp-for="SlipNo" class="form-label">Slip No</label>
+										<input asp-for="SlipNo" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="RevNo" class="form-label">Rev No</label>
+										<input asp-for="RevNo" class="form-control" />
+									</div>
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+										<label asp-for="RevDate" class="form-label">Rev Date</label>
+										<input asp-for="RevDate" class="form-control" />
 									</div>
 									<input type="hidden" asp-for="ItemCode" />
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -146,21 +158,25 @@
 										<input asp-for="ProjectDate" class="form-control" />
 									</div>
 
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
-										<label asp-for="SlipNo" class="form-label">Slip No</label>
-										<input asp-for="SlipNo" class="form-control"  />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:150px;">
 										<label asp-for="InspTimeFrom" class="form-label"> Insp Time From</label>
-										<input asp-for="InspTimeFrom" class="form-control" />
+										<input asp-for="InspTimeFrom" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
 									</div>
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
 										<label asp-for="InspTimeTo" class="form-label">Insp Time To</label>
-										<input asp-for="InspTimeTo" class="form-control" />
+										<input asp-for="InspTimeTo" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
 									</div>
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
 										<label asp-for="SampleSize" class="form-label">Sample Size</label>
-										<input asp-for="SampleSize" class="form-control" />
+										<input asp-for="SampleSize" class="form-control"
+											   id="SampleSize"
+											   type="number"
+											   min="1"
+											   max="10"
+											   step="1"
+											   value="1"
+											   oninput="this.value = this.value.replace(/[^0-9]/g,''); if(this.value < 1) this.value=1; GetInprocessInspectionGridData();" />
 									</div>
 
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -204,17 +220,7 @@
 											}
 										</select>
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-										<label asp-for="WorkCenter" class="form-label"> Shift</label>
-										<input type="hidden" asp-for="WCID" />
-										<select class="form-control" asp-for="WorkCenter">
-											<option value="">-Select-</option>
-											@if (Model.Mode == "U" || Model.Mode == "V")
-											{
-												<option value="@Model.WCID" selected>@Model.WorkCenter</option>
-											}
-										</select>
-									</div>
+								
 
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
 										<label class="form-label">Process Time</label>
@@ -225,83 +231,46 @@
 										<label asp-for="Date" class="form-label">Process Date</label>
 										<input asp-for="Date" class="form-control" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="RevNo" class="form-label">Rev No</label>
-										<input asp-for="RevNo" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="RevDate" class="form-label">Rev Date</label>
-										<input asp-for="RevDate" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="MRNNo" class="form-label">MRN No</label>
-										<input asp-for="MRNNo" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="MRNDate" class="form-label">MRN Date</label>
-										<input asp-for="MRNDate" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="MRNYearCode" class="form-label">MRN YearCode</label>
-										<input asp-for="MRNYearCode" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="ProdSlipNo" class="form-label">ProdSlip No</label>
-										<input asp-for="ProdSlipNo" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="ProdDate" class="form-label">Prod Date</label>
-										<input asp-for="ProdDate" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="ProdYearCode" class="form-label">Prod YearCode</label>
-										<input asp-for="ProdYearCode" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="MRNQty" class="form-label">MRN Qty</label>
-										<input asp-for="MRNQty" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="ProdQty" class="form-label">Prod Qty</label>
-										<input asp-for="ProdQty" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="InspActqty" class="form-label">Insp Act Qty</label>
-										<input asp-for="InspActqty" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="OkQty" class="form-label">Ok Qty</label>
-										<input asp-for="OkQty" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="Rejqty" class="form-label">Rej Qty</label>
-										<input asp-for="Rejqty" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="Weight" class="form-label">Weight</label>
-										<input asp-for="Weight" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="InpectionJudgement" class="form-label">Inpection Judgement</label>
-										<input asp-for="InpectionJudgement" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="InspectedOther1" class="form-label">Inspected Other 1</label>
-										<input asp-for="InspectedOther1" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="InspectedOther2" class="form-label">Inspected Other 2</label>
-										<input asp-for="InspectedOther2" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="InspectedOther3" class="form-label">Inspected Other3</label>
-										<input asp-for="InspectedOther3" class="form-control" />
-									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
-										<label asp-for="Remark" class="form-label">Remark</label>
-										<input asp-for="Remark" class="form-control" />
-									</div>
+								
 
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNNo" class="form-label">MRN No</label>
+											<input asp-for="MRNNo" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNDate" class="form-label">MRN Date</label>
+											<input asp-for="MRNDate" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNYearCode" class="form-label">MRN YearCode</label>
+											<input asp-for="MRNYearCode" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 incomingFields" style="display:none;">
+											<label asp-for="MRNQty" class="form-label">MRN Qty</label>
+											<input asp-for="MRNQty" class="form-control" />
+										</div>
+									
+									
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdSlipNo" class="form-label">ProdSlip No</label>
+											<input asp-for="ProdSlipNo" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdDate" class="form-label">Prod Date</label>
+											<input asp-for="ProdDate" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdYearCode" class="form-label">Prod YearCode</label>
+											<input asp-for="ProdYearCode" class="form-control" />
+										</div>
+										<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12 inprocessFields" style="display:none;">
+											<label asp-for="ProdQty" class="form-label">Prod Qty</label>
+											<input asp-for="ProdQty" class="form-control" />
+										</div>
+									
+									
+									
+									
 									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SelectedInspections" class="control-label">Inspection List</label>
 										<select id="Inspection" class="form-select" multiple="multiple"
@@ -381,7 +350,42 @@
 									<div class="accordion-body">
 
 										<div class="row g-2 gx-3" id="_ItemGrid">
-
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InpectionJudgement" class="form-label">Inpection Judgement</label>
+													<input asp-for="InpectionJudgement" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspectedOther1" class="form-label">Inspected Other 1</label>
+													<input asp-for="InspectedOther1" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspectedOther2" class="form-label">Inspected Other 2</label>
+													<input asp-for="InspectedOther2" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspectedOther3" class="form-label">Inspected Other3</label>
+													<input asp-for="InspectedOther3" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="Remark" class="form-label">Remark</label>
+													<input asp-for="Remark" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="InspActqty" class="form-label">Insp Act Qty</label>
+													<input asp-for="InspActqty" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="OkQty" class="form-label">Ok Qty</label>
+													<input asp-for="OkQty" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="Rejqty" class="form-label">Rej Qty</label>
+													<input asp-for="Rejqty" class="form-control" />
+												</div>
+												<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+													<label asp-for="Weight" class="form-label">Weight</label>
+													<input asp-for="Weight" class="form-control" />
+												</div>
 											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
 												<label asp-for="UId" class="form-label">UID</label>
 												<input asp-for="UId" class="form-control" readonly />
@@ -515,6 +519,8 @@
 			const hours = now.getHours().toString().padStart(2, '0');
 			const minutes = now.getMinutes().toString().padStart(2, '0');
 			document.getElementById("Time").value = `${hours}:${minutes}`;
+			document.getElementById("InspTimeFrom").value = `${hours}:${minutes}`;
+			document.getElementById("InspTimeTo").value = `${hours}:${minutes}`;
 			GetInprocessInspectionGridData();
 
 			//$('#SlipDate').rules("remove", "required");
@@ -528,7 +534,9 @@
 			if (!PartNo || PartNo === '' || PartNo === null) {
 				$.notify('PartNo is mandatory to display the Color & Grid Data!', 'error');
 			}
+			
 
+			toggleFields();
 			$('#InspectionType').select2();
 			$('#PartNo').select2();
 			$('#PartName').select2();
@@ -569,7 +577,11 @@
 					$.notify("Negative values are not allowed!", "error");
 				}
 			});
-			
+			$('#SampleSize').on('keydown', function (e) {
+				if (e.key === '-' || e.keyCode === 189 || e.keyCode === 109) {
+					e.preventDefault();
+				}
+			});
 			$('.submitBTN').click(function (e) {
 
 				console.log("SubmitButton Click");
@@ -593,9 +605,40 @@
 				.val(formattedDate);
 		}
 
+		$('#InspectionType').change(function () {
+			
+			toggleFields();
+			FillPartCode();
+		});
+		// function toggleFields() {
+		// 	debugger
+		// 	var selectedType = $('#InspectionType').val();
+
+		// 	if (selectedType === "Incoming") {
+		// 		$('.incomingFields').show();
+		// 		$('.inprocessFields').hide();
+		// 	} else if (selectedType === "InProcess") {
+		// 		$('.incomingFields').hide();
+		// 		$('.inprocessFields').show();
+		// 	} else {
+		// 		$('.incomingFields, .inprocessFields').hide();
+		// 	}
+		// }
+
+		function toggleFields() {
+			var selectedType = $('#InspectionType').val();
+
+			$('.incomingFields').toggle(selectedType === "Incoming");
+			$('.inprocessFields').toggle(selectedType === "InProcess");
+
+			// If selectedType is neither, hide both
+			if (selectedType !== "Incoming" && selectedType !== "InProcess") {
+				$('.incomingFields, .inprocessFields').hide();
+			}
+		}
 
 		$('#InspectionType').change(function () {
-			FillPartCode();
+			
 		});
 		$('#PartNo').change(function () {
 			FillColor();
@@ -649,7 +692,7 @@
 		function GetInprocessInspectionGridData() {
 			 
 			var ItemCode = $('#ItemCode').val();
-		
+			var sampleSize = $('#SampleSize').val();
 			// if (!ItemCode || ItemCode === '0') 
 			// {
 			// 	$.notify('ItemName is mandatory to display the Grid!', 'error');
@@ -660,11 +703,11 @@
 				type: 'POST',
 				url: '@Url.Action("GetInprocessInspectionGridData", "InProcessInspection")',
 				data: {
-					ItemCode: ItemCode
+					ItemCode: ItemCode,
+					SampleSize: sampleSize
 				},
 				success: function (response) {
 					$('#divinProcessInspectionGrid').html(response);
-
 					var totalRows = $('#divStockRegisterBody tr').length;
 					$('#totalRows').text(totalRows);
 					
