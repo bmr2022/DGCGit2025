@@ -681,32 +681,152 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        //public async Task<CustomerJobWorkIssueModel> GetViewByID(int ID, int YearCode)
+        //{
+        //    var model = new CustomerJobWorkIssueModel();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+
+        //        SqlParams.Add(new SqlParameter("@flag", "ViewById"));
+        //        SqlParams.Add(new SqlParameter("@CustJwIssEntryid", ID));
+        //        SqlParams.Add(new SqlParameter("@CustJwIssYearCode", YearCode));
+        //        var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_CustomerJobworkIssueMainDetail", SqlParams);
+
+        //        if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+        //        {
+        //            PrepareView(_ResponseResult.Result, ref model);
+        //        }
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+
+        //    return model;
+        //}
         public async Task<CustomerJobWorkIssueModel> GetViewByID(int ID, int YearCode)
         {
             var model = new CustomerJobWorkIssueModel();
             try
             {
-                var SqlParams = new List<dynamic>();
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@flag", "ViewById"),
+            new SqlParameter("@CustJwIssEntryid", ID),
+            new SqlParameter("@CustJwIssYearCode", YearCode)
+        };
 
-                SqlParams.Add(new SqlParameter("@flag", "ViewById"));
-                SqlParams.Add(new SqlParameter("@CustJwIssEntryid", ID));
-                SqlParams.Add(new SqlParameter("@CustJwIssYearCode", YearCode));
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_CustomerJobworkIssueMainDetail", SqlParams);
 
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
-                    PrepareView(_ResponseResult.Result, ref model);
+                    var ds = (DataSet)_ResponseResult.Result;
+
+                    if (ds.Tables.Count > 0 && ds.Tables[0].Rows.Count > 0)
+                    {
+                        var row = ds.Tables[0].Rows[0];
+
+                        model.CustJwIssEntryId = Convert.ToInt32(row["CustJwIssEntryid"]);
+                        model.CustJwIssYearCode = Convert.ToInt32(row["CustJwIssYearCode"]);
+                        model.EntryDate = Convert.ToDateTime(row["CustJwIssEntryDate"]).ToString("yyyy-MM-dd");
+                        model.ChallanNo = row["ChallanNo"]?.ToString();
+                        model.ChallanDate = Convert.ToDateTime(row["ChallanDate"]).ToString("yyyy-MM-dd");
+                        model.Account_Code = Convert.ToInt32(row["AccountCode"]);
+                        model.CustomerName = row["CustomerName"]?.ToString();
+                        model.CustomerAddress = row["CustomerAddress"]?.ToString();
+                        model.CustomerState = row["CustState"]?.ToString();
+                        model.StateCode = row["CustStateCode"]?.ToString();
+                        model.GSTType = row["GSTType"]?.ToString();
+                        model.JWType = row["JobWorkType"]?.ToString();
+                        model.DeptFromID = Convert.ToInt32(row["DeptFromID"]);
+                        model.Remark = row["Remark"]?.ToString();
+                        model.CC = row["CC"]?.ToString();
+                        model.UID = Convert.ToInt32(row["UID"]);
+                        model.BillNo = row["BillNo"]?.ToString();
+                        model.BillYearCode = Convert.ToInt32(row["BillyearCode"]);
+                        model.TransporterName = row["transporter"]?.ToString();
+                        model.VehicleNo = row["VehicleNo"]?.ToString();
+                        model.TimeOfRemovel = row["TimeOfRemoval"]?.ToString();
+                        model.DispatchThrough = row["DispatchThrough"]?.ToString();
+                        model.DispatchTo = row["DispatchTo"]?.ToString();
+                        model.ActualEntryDate = Convert.ToDateTime(row["ActualEntryDate"]).ToString("yyyy-MM-dd");
+                        model.UpdatedByEmp = row["UpdatedByEmpName"]?.ToString();
+                        model.LastUpdatedByDate = Convert.ToDateTime(row["UpdatedOn"]).ToString("yyyy-MM-dd");
+                        model.EWayBill = row["EWayBillNo"]?.ToString();
+                        model.TotalAmount = Convert.ToDecimal(row["TotalAmount"]);
+                        model.NetAmount = Convert.ToDecimal(row["NetAmount"]);
+                    }
+
+                    if (ds.Tables.Count > 1 && ds.Tables[1].Rows.Count > 0)
+                    {
+                        model.CustJWIDetailGrid = new List<CustomerJobWorkIssueDetail>();
+
+                        foreach (DataRow dr in ds.Tables[1].Rows)
+                        {
+                            var detail = new CustomerJobWorkIssueDetail
+                            {
+                                SEQNo = Convert.ToInt32(dr["SEQNo"]),
+                                ProduceUnproduce = dr["producedUnproduced"]?.ToString(),
+                                GridSONO = dr["SONO"]?.ToString(),
+                                CustOrderNo = dr["CustOrderNo"]?.ToString(),
+                                SOYear = Convert.ToInt32(dr["SOyearCode"]),
+                                SoDate = dr["SODate"]?.ToString(),
+                                SOAmmNo = dr["SOAmmNo"]?.ToString(),
+                                SOAmmDate = dr["SOAmmDate"]?.ToString(),
+                                SchNo = dr["SchNo"]?.ToString(),
+                                SchYearcode = dr["SchYearcode"] as int?,
+                                SchDate = dr["SchDate"]?.ToString(),
+                                ItemCode = Convert.ToInt32(dr["ItemCode"]),
+                                PartCode = dr["PartCode"]?.ToString(),
+                                ItemName = dr["ItemName"]?.ToString(),
+                                BatchNo = dr["Batchno"]?.ToString(),
+                                UNiqueBatchNo = dr["uniquebatchno"]?.ToString(),
+                                ProcessId = Convert.ToInt32(dr["processid"]),
+                                StoreId = Convert.ToInt32(dr["StoreId"]),
+                                StoreName = dr["StoreName"]?.ToString(),
+                                Qty = Convert.ToDecimal(dr["Qty"]),
+                                Unit = dr["Unit"]?.ToString(),
+                                PendQty = dr["PendQty"] as int?,
+                                ChallanQty = dr["ChallanQty"] as int?,
+                                NoOfCases = Convert.ToInt32(dr["NoofCase"]),
+                                Rate = Convert.ToDecimal(dr["Rate"]),
+                                ItemAmount = Convert.ToInt32(dr["Amount"]),
+                                Discountper = Convert.ToInt32(dr["DiscountPer"]),
+                                DiscountAmt = Convert.ToInt32(dr["DiscountAmt"]),
+                                BatchStock = Convert.ToInt32(dr["BatchStock"]),
+                                TotalStock = Convert.ToInt32(dr["TotalStock"]),
+                                ItemSize = dr["ItemSize"]?.ToString(),
+                                PacketsDetail = dr["PacketsDetail"]?.ToString(),
+                                OtherDetail = dr["OtherDetail"]?.ToString(),
+                                HSNNo = dr["HSNNO"]?.ToString(),
+                                BOMInd = Convert.ToChar(dr["BOMInd"]),
+                                ChallanAdjustRate = Convert.ToInt32(dr["ChallanAdjustedRate"]),
+                                StdPacking = Convert.ToInt32(dr["StdPacking"]),
+                                color = dr["color"]?.ToString(),
+                                BOMNO = Convert.ToInt32(dr["BOMNO"]),
+                                BOMname = dr["BOMname"]?.ToString(),
+                                Bomdate = dr["Bomdate"]?.ToString(),
+                                AltUnit = dr["AltUnit"]?.ToString(),
+                                AltQty = Convert.ToInt32(dr["AltQty"]),
+                            };
+
+                            model.CustJWIDetailGrid.Add(detail);
+                        }
+                    }
                 }
             }
             catch (Exception ex)
             {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
+                // Optional: log or return error
+                Console.WriteLine($"Error in GetViewByID: {ex.Message}");
             }
 
             return model;
         }
+
         private static CustomerJobWorkIssueModel PrepareView(DataSet DS, ref CustomerJobWorkIssueModel? MainModel)
         {
             try

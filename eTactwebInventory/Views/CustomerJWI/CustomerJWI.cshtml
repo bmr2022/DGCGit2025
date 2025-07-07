@@ -336,6 +336,7 @@
                                                     <td><input asp-for="TotalStock" class="form-control prevent-negative" type="number" min="0"  style="width:60px;" data-value="false"></td>@* readonly *@
                                                     <td><input asp-for="PendQty" class="form-control prevent-negative" type="number" min="0"  style="width:60px;" data-value="false"></td>@* readonly *@
                                                     <td><input asp-for="ChallanQty" class="form-control prevent-negative" type="number" min="0" style="width:60px;" data-value="false"></td>
+                                                   
                                                     <td><input asp-for="Rate" class="form-control prevent-negative" type="number" min="0" style="width:60px;" data-value="false"></td>
                                                     <td><input asp-for="ItemAmount" class="form-control prevent-negative" type="number" min="0" readonly style="width:90px;" data-value="false"></td>
                                                     <td><input asp-for="OtherDetail" class="form-control" style="width:90px;"></td>
@@ -602,8 +603,8 @@
 </style>
 @section Scripts {
     <script>
-        $('#submitBTN').click(function (e) {
-
+   //     $('#submitBTN').click(function (e) {
+              $('#submitBTN,#UpdateButton').click(function (e) {
             e.preventDefault();
 
             if (!ValidateSubmit()) {
@@ -611,7 +612,9 @@
                 return;
             }
             else {
-                $('form').submit();
+                      //  $("form").submit();
+                                document.getElementById("SParam").submit();
+               // $('form').submit();
             }
         });
         $(function () {
@@ -2180,7 +2183,7 @@
                             var obj = $.parseJSON(data);
                             DeleteItemRow(SEQNo);
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                                FillSONO();
+                               // FillSONO();
                                 $('#SONO').val(obj[0].SONO);
                                 $('#SOYear').trigger("change");
                                 $('#ItemCode').val(obj[0].ItemCode).trigger("change");
@@ -2204,9 +2207,23 @@
 
                             if (obj != null && obj.length == 1) {
 
-                                $('#PartCode').val(obj[0].ItemCode).change();
-                                $('#ItemCode').val(obj[0].ItemCode).change();
-                                $('#StoreId').val(obj[0].StoreId).change();
+                                // $('#PartCode').val(obj[0].ItemCode).change();
+                                // $('#ItemCode').val(obj[0].ItemCode).change();
+                                // $('#StoreId').val(obj[0].StoreId).change();
+                                if ($('#StoreId option[value="' + obj[0].StoreId + '"]').length === 0) {
+                                    $('#StoreId').append('<option value="' + obj[0].StoreId + '">' + obj[0].StoreName + '</option>');
+                                }
+                                if ($('#PartCode option[value="' + obj[0].ItemCode + '"]').length === 0) {
+                                    $('#PartCode').append('<option value="' + obj[0].ItemCode + '">' + obj[0].PartCode + '</option>');
+                                }
+                                if ($('#ItemCode option[value="' + obj[0].ItemCode + '"]').length === 0) {
+                                    $('#ItemCode').append('<option value="' + obj[0].ItemCode + '">' + obj[0].ItemName + '</option>');
+                                }
+
+                                // Then set the selected values
+                                $('#PartCode').val(obj[0].ItemCode).trigger("change");
+                                $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                                $('#StoreId').val(obj[0].StoreId).trigger("change");
                                 $('#ProduceUnproduce').val(obj[0].ProduceUnproduce).change();
                                 $('#SONO').val(obj[0].SONO).change();
                                 $('#SOYear').val(obj[0].SOYear).change();
