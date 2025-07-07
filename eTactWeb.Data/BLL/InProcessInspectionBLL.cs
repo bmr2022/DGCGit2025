@@ -51,9 +51,9 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _InProcessInspectionDAL.FillEntryID(YearCode);
 		}
-		public async Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode)
+		public async Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode, int SampleSize)
 		{
-			return await _InProcessInspectionDAL.GetInprocessInspectionGridData( ItemCode);
+			return await _InProcessInspectionDAL.GetInprocessInspectionGridData( ItemCode,SampleSize);
 		}
 	}
 }
