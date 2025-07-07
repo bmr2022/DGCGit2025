@@ -1222,39 +1222,66 @@
 
 
 		function PressBack() {
-			// Get FromDate and ToDate values, or set defaults
-			var fromDate = $('#FromDate').val();
-			var toDate = $('#ToDate').val();
-
-			// Month names in short format
 			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun",
 				"Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
 
-			if (!fromDate) {
-				var today = new Date();
-				fromDate = '01/' + monthNames[today.getMonth()] + '/' + today.getFullYear();
-			}
-			if (!toDate) {
-				var today = new Date();
-				toDate = ('0' + today.getDate()).slice(-2) + '/' +
-					monthNames[today.getMonth()] + '/' +
-					today.getFullYear();
+			// Save FromDate only if session already has it
+			if (sessionStorage.getItem('FromDateBack')) {
+				var fromDate = $('#FromDate').val();
+				if (fromDate) { // Only save if value is not undefined or empty
+					sessionStorage.setItem('FromDateBack', fromDate);
+				}
 			}
 
-			sessionStorage.setItem('FromDateBack', fromDate);
-			sessionStorage.setItem('ToDateBack', toDate);
+			// Save ToDate only if session already has it
+			if (sessionStorage.getItem('ToDateBack')) {
+				var toDate = $('#ToDate').val();
+				if (toDate) {
+					sessionStorage.setItem('ToDateBack', toDate);
+				}
+			}
 
-			var newEmpName = $('#NewSalesEmpName option:selected').text().split('--->')[0].trim();
-			var oldEmpName = $('#OldSalesEmpName option:selected').text().split('--->')[0].trim();
+			// Save CustomerName only if session has it and new value exists
+			if (sessionStorage.getItem('CustomerNameBack')) {
+				var customerName = $('#CustomerName').val();
+				if (customerName) {
+					sessionStorage.setItem('CustomerNameBack', customerName);
+				}
+			}
 
+			// Save OldEmpName only if session has it and new value exists
+			if (sessionStorage.getItem('OldEmpNameBack')) {
+				var oldEmpName = $('#OldSalesEmpName option:selected').text().trim();
+				if (oldEmpName.includes('--->')) {
+					oldEmpName = oldEmpName.split('--->')[0].trim();
+				}
+				if (oldEmpName) {
+					sessionStorage.setItem('OldEmpNameBack', oldEmpName);
+				}
+			}
 
-			sessionStorage.setItem('CustomerNameBack', $('#CustomerName').val());
-			sessionStorage.setItem('OldEmpNameBack', oldEmpName);
-			sessionStorage.setItem('NewEmpNameBack', newEmpName);
-			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearch').val());
+			// Save NewEmpName only if session has it and new value exists
+			if (sessionStorage.getItem('NewEmpNameBack')) {
+				 var newEmpName = $('#NewSalesEmpName option:selected').text().trim();
+				if (newEmpName.includes('--->')) {
+					newEmpName = newEmpName.split('--->')[0].trim();
+				}
+				if (newEmpName) {
+					sessionStorage.setItem('NewEmpNameBack', newEmpName);
+				}
+			}
+
+			// Save GlobalSearch only if session has it and new value exists
+			if (sessionStorage.getItem('GlobalSearchBack')) {
+				var globalSearch = $('#GlobalSearch').val();
+				if (globalSearch) {
+					sessionStorage.setItem('GlobalSearchBack', globalSearch);
+				}
+			}
 
 			window.history.back();
 		}
+
 
 
 

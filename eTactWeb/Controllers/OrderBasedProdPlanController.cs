@@ -110,7 +110,7 @@ namespace eTactWeb.Controllers
         }
         [HttpGet]
         public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 20)
-       {
+        {
             OrderBasedProdPlanModel model = new OrderBasedProdPlanModel();
             model.ReportMode = dashboardType;
             if (string.IsNullOrWhiteSpace(searchString))

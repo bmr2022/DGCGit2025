@@ -632,8 +632,8 @@
                    $('#btnClose').click(function () {
                                         $('#btngenrateEinvoice').val('false'); // set flag for no printing
                                         $('#EinvoicePopup').modal("hide");
-                                        setTimeout(() => {
-                                           submitForm(false, null); 
+                                      setTimeout(() => {
+                                             submitForm(false, null);
                                         }, 300);
                                     });
         $('#btnEinvoiceOnly').click(function () {
@@ -1126,6 +1126,7 @@
                         var obj = $.parseJSON(data);
                         if (obj != null) {
                             ClearTax();
+                            btnClearTax();
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
                             EditEachItem = true;
@@ -1256,6 +1257,7 @@
 
                     ClearDRCRGrid();
                     ClearTax();
+                    btnClearTax();
                     ClearAdjustmentGrid();
 
                     var rowCount = $('#divAddPurchaseRejectionList tr td').length;
@@ -1286,9 +1288,9 @@
             var showAllDoc = document.getElementById('DA').checked ? "T" : "F";
             FillDocument(showAllDoc);
         });
-        $('.btnClearTax').click(function () {
+        /* $('.btnClearTax').click(function () {
             btnClearTax();
-        });
+        }); */
         function btnClearTax() {
             $.ajax({
                 type: "POST",
@@ -1359,6 +1361,39 @@
                 $.notify("Please enter payment Credit days..!", "error");
                 return false;
             }
+            let Err = 0;
+            const isGridEmpty = (gridSelector) => {
+                const $rows = $(`${gridSelector} tr`);
+                if ($rows.length === 0) return true;
+                if ($rows.length === 1) {
+                    const $tds = $rows.first().find('td');
+                    const firstText = $tds.first().text().trim().toLowerCase();
+                    const colspan = $tds.first().attr('colspan');
+                    if ($tds.length === 1 && firstText === "no data added" && colspan) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            if (isGridEmpty('#divAddPurchaseRejectionList')) {
+                Err = 1;
+                $.notify('Purchase Rejection Grid should have at least 1 item...!', "error");
+            }
+            if (isGridEmpty('#divAdjItemList')) {
+                Err = 1;
+                $.notify('Adjustment Grid should have at least 1 item...!', "error");
+            }
+            if (isGridEmpty('#divdbCrItemList')) {
+                Err = 1;
+                $.notify('DR/CR Grid should have at least 1 item...!', "error");
+            }
+            if ($('#GSTRegistered').val() === 'Y' && isGridEmpty('#divTaxGrid')) {
+                Err = 1;
+                $.notify('Tax Grid should have at least 1 item...!', "error");
+            }
+            if (Err === 1) {
+                return false;
+            }
             try {
                 await saveagainstbillgrid();
                 return true;
@@ -1370,39 +1405,11 @@
         }
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(async function (e) {
-            e.preventDefault();
-            if (ValidateSubmit()) {
-                saveagainstbillgrid();
-                var Err = 0;
-                if ($('#divAddPurchaseRejectionList tr td').length < 1) {
-                    Err = 1;
-                    $.notify('Purchase Rejection Grid Should Have Atleast 1 Item...!', "error");
-                }
-                else if ($('#divAdjItemList tr td').length < 1) {
-                    Err = 1;
-                    $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
-                }
-                else if ($('#divdbCrItemList tr td').length < 1) {
-                    Err = 1;
-                    $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
-                }
-                else if ($('#GSTRegistered').val() == 'Y') {
-                    if ($('#divTaxGrid tr td').length < 1) {
-                        Err = 1;
-                        $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                    } else {
-                        if(Err == 1){
-                            $('#EinvoicePopup').modal('show');
-                        }
-                        /* $("form").submit(); */
-                    }
-                }
-                else {
-                    if(Err == 1){
-                            $('#EinvoicePopup').modal('show');
-                    }
-                    /* $("form").submit(); */
-                }
+            e.preventDefault
+            const result = await ValidateSubmit();
+            if (result === true) {
+                   saveagainstbillgrid();
+                  $('#EinvoicePopup').modal('show');
             }
         });
 
@@ -1997,6 +2004,22 @@
                         $('#NetTotal').val(txTotal.toFixed(2));
                         $('#AdjPendAmt').val($('#NetTotal').val());
 
+                        $('#divAddPurchaseRejectionList tr').each(function (index) {
+                            i = index + 1;
+                            let gridBatchNo = $("#GridBatchNo-" + i).text().trim();
+                            let gridUniqueBatchNo = $("#GridUniqueBatchNo-" + i).text().trim();
+                            let gridDocAccountCode = $("#DocAccountCode-" + i).val();
+                            if (gridBatchNo || gridUniqueBatchNo || gridDocAccountCode) {
+                                batchDataList.push({
+                                    GridDocAccountCode: gridDocAccountCode,
+                                    GridBatchNo: gridBatchNo,
+                                    GridUniqueBatchNo: gridUniqueBatchNo
+                                });
+                            }
+                        });
+                        FillStore();
+                        FillCurrentBatchINStore();
+                        FillUniqueBatchNo();
                         DueDateCalculation();
                         ClearAdjustmentGrid();
                         // $('#TotalDiscountPercentage').val(0);
@@ -2430,8 +2453,8 @@
             });
         }
 
+        let batchDataList = [];
         function FillCurrentBatchINStore() {
-
             var ItemCode = $('#ItemCode').val();
             var YearCode = $('#PurchaseRejYearCode').val();
             var StoreName = $('#StoreId').find(':selected').text();
@@ -2454,7 +2477,8 @@
 
                             var seenValues = {};
                             $.each(obj.Result, function (index, val) {
-                                if (!seenValues[val.batchno]) {
+                                const isDuplicate = batchDataList.some(item => item.GridBatchNo === val.batchno && item.GridDocAccountCode === $("#DocAccountCode").val());
+                                if (!seenValues[val.batchno] && !isDuplicate) {
                                     seenValues[val.batchno] = true;
                                     $('#Batchno').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
                                 }
@@ -2531,7 +2555,8 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $.each(obj.Result, function (index, val) {
-                                if ($("#Uniquebatchno option[value='" + val.UniqueBatchNo + "']").length == 0) {
+                                const isDuplicate = batchDataList.some(item => item.GridUniqueBatchNo === val.UniqueBatchNo && item.GridDocAccountCode === $("#DocAccountCode").val());
+                                if ($("#Uniquebatchno option[value='" + val.UniqueBatchNo + "']").length == 0 && !isDuplicate) {
                                     $('#Uniquebatchno').append('<option value="' + val.UniqueBatchNo + '" data-stock="' + val.stock + '" selected>' + val.UniqueBatchNo + '</option>');
                                 }
                             });

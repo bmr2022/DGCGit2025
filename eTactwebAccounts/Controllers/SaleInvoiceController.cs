@@ -1433,15 +1433,36 @@ namespace eTactWeb.Controllers
         {
             var Result = await _SaleBill.DeleteByID(ID, YC, entryByMachineName).ConfigureAwait(false);
 
-            if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone || Result.StatusText == "Success")
+            //if (result.statustext == "deleted" || result.statuscode == httpstatuscode.gone || result.statustext == "success")
+            //{
+            //    viewbag.issuccess = true;
+            //    tempdata["410"] = "410";
+
+            //    tempdata["deletemessage"] = result.statustext;
+
+            //}
+            //else
+            //{
+            //    viewbag.issuccess = false;
+            //    tempdata["500"] = "500";
+            //}
+            if (Result.StatusText == "Success"|| Result.StatusText == "deleted"|| Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+                TempData["DeleteMessage"] = Result.StatusText;
+
             }
             else
             {
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
+          
             }
             return RedirectToAction("SBDashboard", new { Flag = "False", ItemName = itemName, PartCode = partCode, saleBillno = saleBillno, customerName = customerName, sono = sono, custOrderNo = custOrderNo, schNo = schNo, performaInvNo = performaInvNo, saleQuoteNo = saleQuoteNo, domensticExportNEPZ = domensticExportNEPZ, fromdate = fromdate, todate = toDate, searchBox = Searchbox });
         }

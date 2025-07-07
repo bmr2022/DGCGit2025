@@ -142,8 +142,8 @@ public class TaxController : Controller
         }
 
         var CgstSgst = ITaxModule.SgstCgst(model.TxAccountCode);
-
-        _MemoryCache.TryGetValue("KeyTaxGrid", out IList<TaxModel> TaxGrid);
+        IList<TaxModel> TaxGrid = new List<TaxModel>();
+        //_MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
         string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
         if (!string.IsNullOrEmpty(modelTxGridJson))
         {
@@ -694,7 +694,8 @@ public class TaxController : Controller
 
             if (ItemDetailGrid != null && TxModel.TxType != "EXPENSES")
             {
-                _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+                IList<TaxModel> TaxGrid = new List<TaxModel>();
+                //_MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
                 string modeltxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
                 List<TaxModel> txgrid = new List<TaxModel>();
                 if (!string.IsNullOrEmpty(modeltxGridJson))
@@ -1512,7 +1513,8 @@ public class TaxController : Controller
             {
                 throw;
             }
-            _MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            IList<TaxModel> TaxGrid = new List<TaxModel>();
+            //_MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
             string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
             if (!string.IsNullOrEmpty(modelTxGridJson))
             {
@@ -1668,8 +1670,14 @@ public class TaxController : Controller
             MainModel = new JobWorkIssueModel();
         }
         //MainModel = SN == "ItemList" ? new SaleOrderModel() : new PurchaseOrderModel();
-
-        if (_MemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid))
+        IList<TaxModel> TaxGrid = new List<TaxModel>();
+        string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+        if (!string.IsNullOrEmpty(modelTxGridJson))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+        }
+        //_MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid)
+        if (TaxGrid != null)
         {
             bool canDelete = true;
 
@@ -2068,7 +2076,13 @@ public class TaxController : Controller
     {
         bool isTax = false;
         bool isExp = false;
-        _MemoryCache.TryGetValue("KeyTaxGrid", out IList<TaxModel> TaxGrid);
+       IList<TaxModel> TaxGrid = new List<TaxModel>();
+        //_MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
+        string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<IList<TaxModel>>(modelJson);
+        }
         if (TaxGrid != null && TaxGrid.Count > 0)
             isTax = true;
         if (isTax)
@@ -2528,7 +2542,7 @@ public class TaxController : Controller
             var HSNTAXParam = new HSNTAX();
             var TaxGrid = new List<TaxModel>();
             var HSNTaxDetail = new HSNTAXInfo();
-            _MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
+            //_MemoryCache.TryGetValue("KeyTaxGrid", out TaxGrid);
             string modelJson = HttpContext.Session.GetString("KeyTaxGrid");
             if (!string.IsNullOrEmpty(modelJson))
             {

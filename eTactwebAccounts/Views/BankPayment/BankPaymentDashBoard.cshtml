@@ -139,7 +139,11 @@
 {
     <script>
         $(document).ready(function () {
+             var deleteMessage = '@TempData["DeleteMessage"]';
 
+            if (deleteMessage) {
+                $.notify(deleteMessage, "error");
+            }
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
             var LedgerNameBack = sessionStorage.getItem('LedgerNameBack');
