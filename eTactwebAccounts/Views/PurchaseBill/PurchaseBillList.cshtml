@@ -55,25 +55,58 @@
             $('#totalRows').text(dashGrid);
             setDefaultData();
             $('#YearCode').val($('#sessionYC').text());
+            GetSearchData();
         });
         function setDefaultData() {
-            var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
-            function formatDate(date) {
-                var day = ("0" + date.getDate()).slice(-2);
-                var month = ("0" + (date.getMonth() + 1)).slice(-2);
-                var year = date.getFullYear();
-                var dateString = day + "/" + month + "/" + year;
-                return dateString;
-            }
-            //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            var FromDate = ($('#FromDate').val() != null && $('#FromDate').val() != undefined) ? $('#FromDate').val().split("-").join("/") : formatDateToDDMMYY(firstDayOfMonth);
-            FromDate = parseDateToFormat(FromDate.split(" ")[0]);
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
+            // var currentDate = new Date();
+            // var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            // function formatDate(date) {
+            //     var day = ("0" + date.getDate()).slice(-2);
+            //     var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            //     var year = date.getFullYear();
+            //     var dateString = day + "/" + month + "/" + year;
+            //     return dateString;
+            // }
+            // //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+            // var FromDate = ($('#FromDate').val() != null && $('#FromDate').val() != undefined) ? $('#FromDate').val().split("-").join("/") : formatDateToDDMMYY(firstDayOfMonth);
+            // FromDate = parseDateToFormat(FromDate.split(" ")[0]);
+            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDate);
 
-            var ToDate = ($('#ToDate').val() != null && $('#ToDate').val() != undefined) ? $('#ToDate').val().split("-").join("/") : formatDateToDDMMYY(currentDate);
-            ToDate = parseDateToFormat(ToDate.split(" ")[0]);
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
+            // var ToDate = ($('#ToDate').val() != null && $('#ToDate').val() != undefined) ? $('#ToDate').val().split("-").join("/") : formatDateToDDMMYY(currentDate);
+            // ToDate = parseDateToFormat(ToDate.split(" ")[0]);
+            // $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDate);
+        var currentDate = new Date();
+        var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+        function formatDate(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var month = ("0" + (date.getMonth() + 1)).slice(-2);
+            var year = date.getFullYear();
+            return day + "/" + month + "/" + year;
+        }
+
+        function parseDateDDMMYYYY(dateStr) {
+            var parts = dateStr.split("/");
+            return new Date(parts[2], parts[1] - 1, parts[0]);
+        }
+
+        // FROM DATE
+        var fromDateVal = $('#FromDate').val();
+        var FromDateStr = (fromDateVal !== null && fromDateVal.trim() !== "")
+            ? fromDateVal.replace(/-/g, "/")
+            : formatDate(firstDayOfMonth);
+
+        var FromDateFormatted = parseDateDDMMYYYY(FromDateStr);
+        $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", FromDateFormatted);
+
+        // TO DATE
+        var toDateVal = $('#ToDate').val();
+        var ToDateStr = (toDateVal !== null && toDateVal.trim() !== "")
+            ? toDateVal.replace(/-/g, "/")
+            : formatDate(currentDate);
+
+        var ToDateFormatted = parseDateDDMMYYYY(ToDateStr);
+        $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ToDateFormatted);
 
             // AutoComplete('VDirectPurchaseBillMain', 'ItemName', 'ItemName', null);
             // AutoComplete('VDirectPurchaseBillMain', 'PurchVouchNo', 'purvoucherno', null);

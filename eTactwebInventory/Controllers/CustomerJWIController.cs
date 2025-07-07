@@ -103,8 +103,9 @@ namespace eTactWeb.Controllers
                 };
                 string serializedKeyGrid = JsonConvert.SerializeObject(MainModel);
                 HttpContext.Session.SetString("KeyCustIssue", serializedKeyGrid);
-                string serializedGrid = JsonConvert.SerializeObject(MainModel);
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.CustJWIDetailGrid);
                 HttpContext.Session.SetString("CustIssue", serializedGrid);
+                HttpContext.Session.SetString("KeyCustJWIGrid", serializedGrid);
             }
             else
             {
@@ -460,7 +461,8 @@ namespace eTactWeb.Controllers
                 string.IsNullOrEmpty(item.UNiqueBatchNo) ? (object)"" : (object)item.UNiqueBatchNo,
                 item.ProcessId == 0 ? (object)0 : (object)item.ProcessId,
                 item.StoreId == 0 ? (object)0 : (object)item.StoreId,
-                item.Qty == 0 ? (object)0 : (object)item.Qty,
+              //  item.Qty == 0 ? (object)0 : (object)item.Qty,
+               item.ChallanQty == 0 ? 0 : item.ChallanQty,
                 string.IsNullOrEmpty(item.Unit) ? (object)"" : (object)item.Unit,
                 item.PendQty == 0 ? (object)0 : (object)item.PendQty,
                 item.NoOfCases == 0 ? (object)0 : (object)item.NoOfCases,

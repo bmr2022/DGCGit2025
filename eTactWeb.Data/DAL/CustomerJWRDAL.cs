@@ -513,7 +513,7 @@ namespace eTactWeb.Data.DAL
                     };
                     oCmd.Parameters.AddWithValue("@Flag", "BindEmpData");
 
-                    await myConnection.OpenAsync();
+                    await myConnection.OpenAsync(); 
 
                     Reader = await oCmd.ExecuteReaderAsync();
 

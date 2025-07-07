@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="07/05/2025 15:30:56" ReportInfo.Modified="07/06/2025 12:07:56" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="07/05/2025 15:30:56" ReportInfo.Modified="07/07/2025 13:16:11" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0gtd1l0TTVcz0wGHkY2lJkUIE8BaW4M/NG3pKd3qvpK4DdWqGEyHadQzRHXCkxhoSD47bth543+LgB9s26CRn9XVPJfL+TZm0iZ1auX83gwSzWkAuQz3cdbBgeP1s7vjAWBZc/oTdhvG7BW2flT09LhSyXfzZC3z368dPg0iwD4fhoJ3NAzAWu6ocWlAZfrFuw==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0gtd1l0TTVcz0wGHkY2lJkUIE8BaW4M/NG3pKd3qvpK4DdWqGEyHadQzRHXCkxhoSD47bth543+LgB9s26CRn9XVPJfL+TZm0iZ1auX83gwSzWkAuQz3cdbBgeP1s7vjAWBZc/oTdhvG7BW2flT09LhSyXfzZC3z368dPg0iwD4fhgbjdrCZkB9eoXlwW+UE1w==">
       <TableDataSource Name="Table" Alias="SPPrintReportVoucher" DataType="System.Int32" Enabled="true" SelectCommand="exec SPPrintReportVoucher @VoucherYearcode = 2025, @VoucherName = N'CONTRA-VOUCHER', @EntryId= 39">
         <Column Name="LedgerName" DataType="System.String"/>
         <Column Name="VoucherDocNo" DataType="System.String"/>

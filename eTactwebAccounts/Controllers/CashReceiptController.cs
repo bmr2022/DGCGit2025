@@ -4,6 +4,8 @@ using eTactWeb.Controllers;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using FastReport.Web;
+using FastReport;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
@@ -24,6 +26,27 @@ namespace eTactwebAccounts.Controllers
             _ICashReceipt = ICashReceipt;
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\VoucherReport.frx");
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("vouchernameparam", VoucherName);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
         }
         [Route("{controller}/Index")]
         [HttpGet]

@@ -14,7 +14,7 @@ public interface IGateInward
     Task<ResponseResult> GetItems(string Flag, int doctype, string Check, int AccountCode);
     Task<ResponseResult> GetPopUpData(string Flag, int AccountCode, string PONO);
     Task<ResponseResult> AltUnitConversion(int ItemCode, int AltQty, int UnitQty);
-    Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo, int docTypeId, string InvoiceDate,string ItemService);
+    Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag, string AccountCode, string YearCode, string poNo, int docTypeId, string InvoiceDate,string ItemService,string EntryDate);
 
     Task<ResponseResult> FillItems(string Flag, string accountCode, string Year, string poNo, string Type, string GateNo = "", string GateYear = "", string Check = "");
 

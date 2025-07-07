@@ -48,6 +48,12 @@
 								BACK
 							</a>
 						</div>
+						<div class="col-auto">
+							<a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="BankReceipt" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-route-VoucherName="@Model.SubVoucherName">
+								<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+								PRINT
+							</a>
+						</div>
 						@if (Model.Mode != "V")
 						{
 							<div class="col-auto">
@@ -333,11 +339,10 @@
 								<strong>Contra Voucher</strong>
 								<span class="d-flex float-end" style="margin-top:-2px;">
 									<div class="col-auto">
-										@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-										<button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+										<a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="BankReceipt" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-route-VoucherName="@Model.SubVoucherName">
 											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 											PRINT
-										</button>
+										</a>
 									</div>
 									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
 									<a asp-controller="ContraVoucher" asp-action="ContraVoucherDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm">
