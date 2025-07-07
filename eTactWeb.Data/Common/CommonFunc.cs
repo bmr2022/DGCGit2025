@@ -160,6 +160,7 @@ public static class CommonFunc
     "yyyy-MM-dd HH:mm",                // 2025-07-07 15:15
     "dd-MM-yyyy hh:mm tt",             // 07-07-2025 03:15 PM
     "dd/MM/yyyy hh:mm tt",             // 07/07/2025 03:15 PM
+    "MM/dd/yy hh.mm.ss tt" 
         };
 
             // Try parsing the date string against all the formats
