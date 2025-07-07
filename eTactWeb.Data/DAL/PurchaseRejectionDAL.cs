@@ -294,6 +294,8 @@ namespace eTactWeb.Data.DAL
                         ItemSize = row["Itemsize"]?.ToString(),
                         Amount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
                         BillAmount = row["PurchaseBillAmt"] != DBNull.Value ? Convert.ToDecimal(row["PurchaseBillAmt"]) : 0,
+                        PaidAmt = row["PaidAmt"] != DBNull.Value ? Convert.ToDecimal(row["PaidAmt"]) : 0,
+                        RemainingAmt = row["RemainingAmt"] != DBNull.Value ? Convert.ToDecimal(row["RemainingAmt"]) : 0,
                         PONO = row["PONO"]?.ToString(),
                         PODate = row["PODate"]?.ToString(),
                         POEntryId = row["POEntryId"] != DBNull.Value ? Convert.ToInt32(row["POEntryId"]) : 0,

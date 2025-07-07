@@ -183,6 +183,10 @@ namespace eTactWeb.DOM.Models
         [Column(TypeName = "decimal(10, 4)")]
         public decimal BillAmount { get; set; }
         [Column(TypeName = "decimal(10, 4)")]
+        public decimal PaidAmt { get; set; }
+        [Column(TypeName = "decimal(10, 4)")]
+        public decimal RemainingAmt { get; set; }
+        [Column(TypeName = "decimal(10, 4)")]
         public decimal ItemNetAmount { get; set; }
 
         [Column(TypeName = "decimal(10, 4)")]

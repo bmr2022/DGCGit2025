@@ -544,6 +544,8 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("BatchNo", typeof(string));
             DTSSGrid.Columns.Add("UniqueBatchNo", typeof(string));
             DTSSGrid.Columns.Add("BillAmount", typeof(float));
+            DTSSGrid.Columns.Add("PaidAmt", typeof(float));
+            DTSSGrid.Columns.Add("RemainingAmt", typeof(float));
 
             foreach (var Item in DetailList)
             {
@@ -580,7 +582,9 @@ namespace eTactWeb.Controllers
                     Item.PoAmmNo ?? string.Empty,
                     Item.BatchNo ?? string.Empty,
                     Item.UniqueBatchNo ?? string.Empty,
-                    Item.BillAmount
+                    Item.BillAmount,
+                    Item.PaidAmt,
+                    Item.RemainingAmt
                     });
             }
             DTSSGrid.Dispose();
@@ -914,6 +918,8 @@ namespace eTactWeb.Controllers
                 table.Columns.Add("BatchNo", typeof(string));
                 table.Columns.Add("UniqueBatchNo", typeof(string));
                 table.Columns.Add("BillAmount", typeof(float));
+                table.Columns.Add("PaidAmt", typeof(float));
+                table.Columns.Add("RemainingAmt", typeof(float));
 
                 foreach (AccPurchaseRejectionAgainstBillDetail Item in List)
                 {
@@ -949,7 +955,9 @@ namespace eTactWeb.Controllers
                    Item.PoAmmNo ?? string.Empty,
                    Item.BatchNo ?? string.Empty,
                    Item.UniqueBatchNo ?? string.Empty,
-                   Item.BillAmount
+                   Item.BillAmount,
+                   Item.PaidAmt,
+                   Item.RemainingAmt
                         });
                 }
 
