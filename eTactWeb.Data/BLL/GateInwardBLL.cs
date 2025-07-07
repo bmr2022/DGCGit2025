@@ -79,9 +79,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _GateInwardDAL.GetPopUpData(Flag, AccountCode,PONO);
         }
-        public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag,string AccountCode, string YearCode, string poNo, int docTypeId, string InvoiceDate, string ItemService)
+        public async Task<ResponseResult> GetScheDuleByYearCodeandAccountCode(string Flag,string AccountCode, string YearCode, string poNo, int docTypeId, string InvoiceDate, string ItemService, string EntryDate)
         {
-            return await _GateInwardDAL.GetScheDuleByYearCodeandAccountCode(Flag,AccountCode,YearCode,poNo, docTypeId,  InvoiceDate, ItemService);
+            return await _GateInwardDAL.GetScheDuleByYearCodeandAccountCode(Flag,AccountCode,YearCode,poNo, docTypeId,  InvoiceDate, ItemService,EntryDate);
         }
 
         public async Task<ResponseResult> FillItems(string Flag, string accountCode, string Year, string poNo,string Type, string scheduleNO = "", string scheduleYear = "",string Check="")

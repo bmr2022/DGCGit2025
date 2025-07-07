@@ -731,7 +731,7 @@ public class PurchaseScheduleDAL
         model.EntryDate = (DS.Tables[0].Rows[0]["EntryDate"].ToString());
         model.PONO = DS.Tables[0].Rows[0]["PONO"].ToString();
         model.POYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["POYearCode"].ToString());
-        model.PODate = (DS.Tables[0].Rows[0]["PODate"].ToString());
+        model.PODate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["PODate"].ToString());
         model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString());
         model.DeliveryAddress = DS.Tables[0].Rows[0]["DeliveryAddress"].ToString();
         model.ScheduleNo = DS.Tables[0].Rows[0]["ScheduleNo"].ToString();

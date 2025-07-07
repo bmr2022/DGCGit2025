@@ -725,7 +725,7 @@
                     </div>
                 </div>
 
-                <div class="accordion-item">
+                <div class="accordion-item" id="scrapAccordion">
                     <h2 class="accordion-header" id="H_Measurements">
                         <button id="H_Measurements" class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements" aria-expanded="true" aria-controls="B_Measurements">
                             <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Scarp Detail</strong>
@@ -805,7 +805,7 @@
                     </div>
                 </div>
 
-                <div class="accordion-item">
+                <div class="accordion-item" id="productionAccordion">
                     <h2 class="accordion-header" id="H_ProductionData">
                         <button id="H_ProductionData" class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Production" aria-expanded="true" aria-controls="B_Production">
                             <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Production Entry By product</strong>
@@ -1831,6 +1831,46 @@
             }
         });
 
+
+        document.getElementById("scrapDetailAlert").addEventListener("click", function () {
+            // 1. Expand the accordion section (if collapsed)
+            const collapseTarget = document.getElementById("B_Measurements");
+
+            // Initialize Bootstrap Collapse (if not already open)
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseTarget);
+            bsCollapse.show(); // Ensures it opens
+
+            // 2. Scroll to the accordion wrapper
+            const accordion = document.getElementById("scrapAccordion");
+            if (accordion) {
+                accordion.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
+        document.getElementById('unTarget').addEventListener('focusout', function () {
+            const value = this.value;
+            document.getElementById('ProdQty').value = value;
+            /* FillScrapData();
+            FillProductDetail(); */
+
+
+        });
+
+
+
+        document.getElementById("productDetailAlert").addEventListener("click", function () {
+            // 1. Expand the accordion section (if collapsed)
+            const collapseTarget = document.getElementById("B_Production");
+
+            // Initialize Bootstrap Collapse (if not already open)
+            const bsCollapse = bootstrap.Collapse.getOrCreateInstance(collapseTarget);
+            bsCollapse.show(); // Ensures it opens
+
+            // 2. Scroll to the accordion wrapper
+            const accordion = document.getElementById("productionAccordion");
+            if (accordion) {
+                accordion.scrollIntoView({ behavior: "smooth", block: "start" });
+            }
+        });
         document.getElementById('unTarget').addEventListener('focusout', function () {
             const value = this.value;
             document.getElementById('ProdQty').value = value;

@@ -1601,10 +1601,11 @@
 
         function EnableandBindSchedule() {
             var ItemService = $("#Types").val();
+            var EntryDate = $("#EntryDate").val();
             $.ajax({
                 url: "@Url.Action("GetScheDuleByYearCodeandAccountCode")",
                 async: false,
-                data: { AccountCode: parseInt($('#AccountCode').val()), PONO: ($('#PONO').val()), Year: $('#PoYear').val(), ItemService: ItemService },
+                data: { AccountCode: parseInt($('#AccountCode').val()), PONO: ($('#PONO').val()), Year: $('#PoYear').val(), ItemService: ItemService, EntryDate:EntryDate },
                 success: function (result, status, xhr) {
 
                     if (result != null) {

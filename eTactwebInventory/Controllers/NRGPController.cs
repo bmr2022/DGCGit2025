@@ -166,7 +166,7 @@ namespace eTactWeb.Controllers
             else
             {
                 model = await BindModel(model);
-                model.ChallanDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
+                //model.ChallanDate = ParseFormattedDate(DateTime.Now.ToString("yyyy-MM-dd"));
                 model.EntryTime = DateTime.Now.ToString("hh:mm:ss tt");
             }
             HttpContext.Session.SetString("IssueNRGP", JsonConvert.SerializeObject(model));
