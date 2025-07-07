@@ -145,6 +145,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "INVENTORY"));
                 SqlParams.Add(new SqlParameter("@FLAG", "NoOfItemInStock"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
