@@ -1588,11 +1588,11 @@
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#Unit').val("");
-                            $('#Unit').val(obj.Result.Table[0]?.Unit);
+                            $('#Unit').val(obj.Result?.Table[0]?.Unit);
                             $('#AltUnit').val("");
-                            $('#AltUnit').val(obj.Result.Table[0]?.AlternateUnit);
+                            $('#AltUnit').val(obj.Result?.Table[0]?.AlternateUnit);
                             $('#HSNNo').val("");
-                            $('#HSNNo').val(obj.Result.Table[0]?.HsnNo);
+                            $('#HSNNo').val(obj.Result?.Table[0]?.HsnNo);
                         }
                     }
                 }

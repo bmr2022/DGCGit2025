@@ -238,6 +238,7 @@ namespace eTactWeb.DOM.Models
         public string? PurchaserejVoucherNo { get; set; }
         public string? VoucherNo { get; set; }
         //public string? VoucherDate { get; set; }
+        public int? AccountCode { get; set; }
         public string? VendorName { get; set; }
         public string? VendoreAddress { get; set; }
         public string? StateName { get; set; }
