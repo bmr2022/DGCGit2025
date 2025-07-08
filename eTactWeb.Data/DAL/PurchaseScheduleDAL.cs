@@ -728,14 +728,14 @@ public class PurchaseScheduleDAL
 
         model.EntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryID"].ToString());
         model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
-        model.EntryDate = (DS.Tables[0].Rows[0]["EntryDate"].ToString());
+        model.EntryDate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["EntryDate"].ToString());
         model.PONO = DS.Tables[0].Rows[0]["PONO"].ToString();
         model.POYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["POYearCode"].ToString());
         model.PODate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["PODate"].ToString());
-        model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString());
+        model.AccountCode =  Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString());
         model.DeliveryAddress = DS.Tables[0].Rows[0]["DeliveryAddress"].ToString();
         model.ScheduleNo = DS.Tables[0].Rows[0]["ScheduleNo"].ToString();
-        model.ScheduleDate = (DS.Tables[0].Rows[0]["ScheduleDate"].ToString());
+        model.ScheduleDate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["ScheduleDate"].ToString());
         model.MRPNO = Convert.ToInt32(DS.Tables[0].Rows[0]["MRPNO"].ToString());
         model.MRPNoYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MRPNoYearCode"].ToString());
         model.MRPentryId = Convert.ToInt32(DS.Tables[0].Rows[0]["MRPentry_Id"].ToString());
@@ -745,21 +745,21 @@ public class PurchaseScheduleDAL
 
             model.SchAmendmentNo = Convert.ToInt32(DS.Tables[0].Rows[0]["SchAmendNo"].ToString()) + 1;
             model.Approved = DS.Tables[0].Rows[0]["SchApproved"].ToString();
-            model.ApprovedDate = DS.Tables[0].Rows[0]["SchApprovalDate"].ToString();
+            model.ApprovedDate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["SchApprovalDate"].ToString());
             model.Approvedby = Convert.ToInt32(DS.Tables[0].Rows[0]["SchAppBy"].ToString());
             model.AmmApproved = DS.Tables[0].Rows[0]["SchAmendApprove"].ToString();
-            model.AmmApprovedDate = DS.Tables[0].Rows[0]["SchAmendApproveDate"].ToString();
+            model.AmmApprovedDate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["SchAmendApproveDate"].ToString());
             model.AmmApprovedby = string.IsNullOrEmpty(DS.Tables[0].Rows[0]["SchAmendApproveBy"].ToString()) ? 0 : Convert.ToInt32(DS.Tables[0].Rows[0]["SchAmendApproveBy"].ToString());
 
         }
         else
             model.SchAmendmentNo = Convert.ToInt32(DS.Tables[0].Rows[0]["SchAmendNo"].ToString());
-        model.SchAmendmentDate =  DS.Tables[0].Rows[0]["SchAmendDate"].ToString();
+        model.SchAmendmentDate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["SchAmendDate"].ToString());
         model.ModeOfTransport = DS.Tables[0].Rows[0]["ModeOfTransport"].ToString();
         model.TentetiveConfirm = DS.Tables[0].Rows[0]["TentetiveConfirm"].ToString();
         model.OrderPriority = DS.Tables[0].Rows[0]["OrderPriority"].ToString();
-        model.SchEffFromDate = (DS.Tables[0].Rows[0]["ScheduleEffectiveFromDate"].ToString());
-        model.SchEffTillDate = (DS.Tables[0].Rows[0]["ScheduleEffectiveTillDate"].ToString());
+        model.SchEffFromDate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["ScheduleEffectiveFromDate"].ToString());
+        model.SchEffTillDate = CommonFunc.ParseFormattedDateForView(DS.Tables[0].Rows[0]["ScheduleEffectiveTillDate"].ToString());
         model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
 
         model.CreatedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["CreatedBy"].ToString());
@@ -802,7 +802,7 @@ public class PurchaseScheduleDAL
                     OtherDetail = row["OtherDetail"].ToString(),
                     Remarks = row["Remarks"].ToString(),
                     schAmendNo = Convert.ToInt16(row["schAmendNo"].ToString()),
-                    schAmendDate = Convert.ToString(row["schAmendDate"].ToString()),
+                    schAmendDate = CommonFunc.ParseFormattedDateForView( Convert.ToString(row["schAmendDate"].ToString())),
                     SchAmendYear = Convert.ToInt16(row["SchAmendYear"].ToString()),
                     TentQtyFor1stMonth = Convert.ToDecimal(row["TentQtyFor1stMonth"].ToString()),
                     TentQtyFor2stMonth = Convert.ToDecimal(row["TentQtyFor2stMonth"].ToString()),
