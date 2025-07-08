@@ -323,8 +323,8 @@ namespace eTactWeb.Data
                 var deacdt = CommonFunc.ParseFormattedDate(model.DeactivateDate);
                 var Actudt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
                 var Worevdt = CommonFunc.ParseFormattedDate(model.WorevDate);
-                var frmonthdt = DateTime.Now.ToString("dd/MM/yyyy");
-                frmonthdt = CommonFunc.ParseFormattedDate(frmonthdt);
+                var frmonthdt = CommonFunc.ParseFormattedDate(model.ForMonth);
+                
 
 
                 SqlParams.Add(new SqlParameter("@EntryId", model.Entryid));

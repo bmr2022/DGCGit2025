@@ -136,8 +136,28 @@
                 }
                 //$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
-                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+                // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
                 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+
+
+            var fromDate;
+            var toDate;
+            var currentDate = new Date();
+
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            var inputFromDateStr = $("#FromDate").val();
+            var parsedFromDate = new Date(inputFromDateStr);
+
+            if (!isNaN(parsedFromDate.getTime())) {
+                var formattedDate = (parsedFromDate.getDate() < 10 ? '0' : '') + parsedFromDate.getDate() + '/' +
+                    ((parsedFromDate.getMonth() + 1) < 10 ? '0' : '') + (parsedFromDate.getMonth() + 1) + '/' +
+                    parsedFromDate.getFullYear();
+                $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate);
+                // $('#IssueDate').datepicker("option", "minDate", formattedDate);
+            }
+
+
 
                 AutoComplete('VPURCHASESCHEDULE', 'VendorName', 'VendorName', null);
                 AutoComplete('VPURCHASESCHEDULE', 'PONo', 'PONO', null);
