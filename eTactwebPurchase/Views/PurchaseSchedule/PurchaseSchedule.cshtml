@@ -678,26 +678,26 @@
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#PODate').val())); */
 
 
-                alert("before parse Entrydate" + $('#EntryDate').val());
+              /*   alert("before parse Entrydate" + $('#EntryDate').val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 var PODate = parseDateToFormat($('#PODate').val().split(" ")[0]);
                 var ScheduleDate = parseDateToFormat($('#ScheduleDate').val().split(" ")[0]);
                 alert("after parse Entrydate" + $('#EntryDate').val());
                 /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
                 var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
-                $('#EntryDate').datepicker("setDate", EntryDate);
-                $('#PODate').datepicker("setDate", PODate);
+              /*   $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#PODate').datepicker("setDate", PODate); */
                 /* $('#ScheduleDate').datepicker("setDate", ScheduleDate); */
-                $('#ScheduleDate').datepicker("setDate", ScheduleDate);
+                /* $('#ScheduleDate').datepicker("setDate", ScheduleDate); */
 
 
 
-                var SchEffFromDate = ($('#SchEffFromDate').val().split(' ')[0]);
+              /*   var SchEffFromDate = ($('#SchEffFromDate').val().split(' ')[0]);
                 var SchEffTillDate = ($('#SchEffTillDate').val().split(' ')[0]);
                 var SchAmendmentDate = ($('#SchAmendmentDate').val().split(' ')[0]);
                 $('#SchEffFromDate').datepicker("setDate", SchEffFromDate);
                 $('#SchEffTillDate').datepicker("setDate", SchEffTillDate);
-                $('#SchAmendmentDate').datepicker("setDate", SchAmendmentDate);
+                $('#SchAmendmentDate').datepicker("setDate", SchAmendmentDate); */ 
 
 
 
@@ -725,6 +725,21 @@
 
                     }).datepicker('show');
                 });
+                alert("entrydate1" + $('#EntryDate').val());
+                var EntryDate = parseDateToFormat($('#EntryDate').val());
+                var PODate = parseDateToFormat($('#PODate').val());
+                var ScheduleDate = parseDateToFormat($('#ScheduleDate').val());
+                var SchEffFromDate = parseDateToFormat($('#SchEffFromDate').val());
+                var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val());
+                var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val());
+                /*    console.log("EntryDate" + EntryDate); */
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDate);
+                $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffFromDate);
+                $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffTillDate);
+                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate);
+                alert("entrydate2" + $('#EntryDate').val());
             }
             else {
 
@@ -771,6 +786,21 @@
                         
                     }).datepicker('show');
                 });
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val());
+                var PODate = parseDateToFormat($('#PODate').val());
+                var ScheduleDate = parseDateToFormat($('#ScheduleDate').val());
+                var SchEffFromDate = parseDateToFormat($('#SchEffFromDate').val());
+                var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val());
+                var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val());
+                /*    console.log("EntryDate" + EntryDate); */
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDate);
+                $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffFromDate);
+                $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffTillDate);
+                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate);
+                
 
             }
             FillMRPNo();
