@@ -652,6 +652,8 @@
             $('#GetSearchData').on('click', function () {
                 //GetSearchData();
                 GetSaleOrderData();
+                 GetBomNo();
+                highlightRowsWithEmptyBom();
             });
 
             
@@ -1237,7 +1239,8 @@
                                     '<td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
                                     '<td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;" class="textbox"></td>' +
                                     '<td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;" class="textbox"></td>' +
-                                    '<td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;" class="textbox"></td>' +
+                                    
+                                    '<td><input id="AltUnit' + i + '" readonly style="width:50px;" value= "' + val.AltUnit + ' " class="textbox"></td>' +
                                     '<td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
                                     '<td><input id="WORevNo' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
                                     '<td><input id="WORevDate' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
@@ -1255,6 +1258,7 @@
                             
                             $('#divSaleOrderGrid').append(html);
                              fillAllStore();
+                         
                             // fillWIPAllStore();
                             var RowCount = $('#divSaleOrderGrid tr').length;
                             for (var i = 1; i <= RowCount; i++) {
@@ -1280,6 +1284,24 @@
                 },
             });
         }
+
+        function highlightRowsWithEmptyBom() {
+           
+
+            var totalrows = $('#divSaleOrderGrid tr').length;
+
+            for (let i = 1; i <= totalrows; i++) {
+                var BomNo = $('#BomNo' + i).val();
+
+
+
+                if (BomNo === '' || BomNo === '0' || BomNo === null ) {
+                    // Change background color of the whole row
+                    $('#BomNo' + i).closest('tr').css('background-color', '#ee6b6e');
+                }
+            }
+        }
+
 
         async function AutoComplete(CtrlID, ColName) {
 
@@ -1951,6 +1973,14 @@
                     else {
                         RemoveErrorCls('WOQty' + i);
                     }
+                    if (parseInt($('#BomNo' + i).val()) <= 0 || $('#BomNo' + i).val() == '') {
+                        $.notify('Please Enter Bom No more than 0.', "error");
+                        AddErrorCls('BomNo' + i);
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('BomNo' + i);
+                    }
                 }
             }
 
@@ -1973,6 +2003,7 @@
 
             $('.divSOTable th').show();
             GetSaleOrderData();
+            GetBomNo();
             GlobalSearch($('#search-box'));
             var CheckArrLength = disabledCheckboxIds.length;
             if (CheckArrLength > 0) {
@@ -2287,6 +2318,7 @@
             //<i class="fa-solid fa-spinner"></i>
             ClearGridAddEditRow = true;
             GetSaleOrderData();
+            GetBomNo();
             if ($('#divWorkOrderGrid tr td').length > 1) {
                 EditRowArr = [];
                 var Row = $('#divWorkOrderGrid tr').length;

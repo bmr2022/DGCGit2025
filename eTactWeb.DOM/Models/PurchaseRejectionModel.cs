@@ -183,6 +183,10 @@ namespace eTactWeb.DOM.Models
         [Column(TypeName = "decimal(10, 4)")]
         public decimal BillAmount { get; set; }
         [Column(TypeName = "decimal(10, 4)")]
+        public decimal PaidAmt { get; set; }
+        [Column(TypeName = "decimal(10, 4)")]
+        public decimal RemainingAmt { get; set; }
+        [Column(TypeName = "decimal(10, 4)")]
         public decimal ItemNetAmount { get; set; }
 
         [Column(TypeName = "decimal(10, 4)")]
@@ -234,6 +238,7 @@ namespace eTactWeb.DOM.Models
         public string? PurchaserejVoucherNo { get; set; }
         public string? VoucherNo { get; set; }
         //public string? VoucherDate { get; set; }
+        public int? AccountCode { get; set; }
         public string? VendorName { get; set; }
         public string? VendoreAddress { get; set; }
         public string? StateName { get; set; }

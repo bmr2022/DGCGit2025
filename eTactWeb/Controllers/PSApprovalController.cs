@@ -24,6 +24,7 @@ namespace eTactWeb.Controllers
         {
             var model = new PSApprovalModel();
             model.CC = HttpContext.Session.GetString("Branch");
+            model.FromDate = HttpContext.Session.GetString("FromDate");
             model.ApprovalType= type;
             return View("PSApproval", model);
         }

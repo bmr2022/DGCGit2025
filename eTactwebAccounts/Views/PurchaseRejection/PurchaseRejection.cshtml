@@ -47,10 +47,12 @@
                         PRINT VOUCHER
                     </a>
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="PurchaseRejection" asp-route-EntryId="@Model.PurchaseRejEntryId" asp-route-YearCode="@Model.PurchaseRejEntryId">
+                       asp-controller="PurchaseRejection" asp-route-EntryId="@Model.PurchaseRejEntryId" asp-route-YearCode="@Model.PurchaseRejYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                        PRINT INVOICE
+                        PRINT 
                     </a>
+                   
+
                     @if (Model.Mode == "U" && Model.Mode != "V")
                     {
                     }
@@ -844,8 +846,8 @@
                         <td id="popUpPartCode-` + j + `">${item.partCode || ''}</td>
                         <td id="popUpINVNetAmt-` + j + `">${item.billAmount || 0}</td>
                         <td id="popUpDueDate-` + j + `">${item.poDate || ''}</td>
-                        <td id="popUpPaidAmt-` + j + `">0</td>
-                        <td id="popUpRemainingAmt-` + j + `">0</td>
+                        <td id="popUpPaidAmt-` + j + `">${item.paidAmt || 0}</td>
+                        <td id="popUpRemainingAmt-` + j + `">${item.remainingAmt || 0}</td>
                         <td id="popUpBillQty-` + j + `">${item.billQty || 0}</td>
                         <td id="popUpBillRate-` + j + `">${item.billRate || 0}</td>
                         <td id="popUpItemAmount-` + j + `">${item.amount || 0}</td>
@@ -1132,6 +1134,24 @@
                             EditEachItem = true;
                             purchaseRejectionPopupGrid = obj.PurchaseRejectionPopupGrid;
                             obj = obj.PurchaseRejectionGrid;
+
+                            batchDataList = [];
+                            $('#divAddPurchaseRejectionList tr').each(function (index) {
+                                i = index + 1;
+                                let gridBatchNo = $("#GridBatchNo-" + i).text().trim();
+                                let gridUniqueBatchNo = $("#GridUniqueBatchNo-" + i).text().trim();
+                                let gridDocAccountCode = $("#DocAccountCode-" + i).val();
+                                if (gridBatchNo || gridUniqueBatchNo || gridDocAccountCode) {
+                                    if ($('#Batchno').val() != gridBatchNo && $('#Uniquebatchno').val() != gridUniqueBatchNo) {
+                                        batchDataList.push({
+                                            GridDocAccountCode: gridDocAccountCode,
+                                            GridBatchNo: gridBatchNo,
+                                            GridUniqueBatchNo: gridUniqueBatchNo
+                                        });
+                                    }
+                                }
+                            });
+
                             $('#PartCode').val(obj[0].ItemCode).trigger("change")
                             $('#ItemCode').val(obj[0].ItemCode).trigger("change")
                             $('#AltQty').val(obj[0].AltQty);
@@ -1172,8 +1192,11 @@
                             $('#InprocessYearCode').val(obj[0].InprocessYearCode);
                             $('#InprocessDate').val(obj[0].InprocessDate);
                             FillUniqueBatchNo();
-                            $('#Uniquebatchno').val(obj[0].Uniquebatchno);
-
+                            //$('#Uniquebatchno').val(obj[0].Uniquebatchno);
+                             if (obj[0].Uniquebatchno != '0' && obj[0].Uniquebatchno != null && obj[0].Uniquebatchno != 0) {
+                               $('#Uniquebatchno').append('<option value="' + obj[0].Uniquebatchno + '" selected>' + obj[0].Uniquebatchno + '</option>');
+                            }
+                            FillLotStock();
                             var rowCount = $('#divStockGrid tr').length;
                             for (var i = 1; i <= rowCount + 1; i++) {
                                 $('#editItemGrid-' + i).css("pointer-events", "none");
@@ -1256,7 +1279,7 @@
                     $('#divAddPurchaseRejectionList').html(data);
 
                     ClearDRCRGrid();
-                    ClearTax();
+                    //ClearTax();
                     btnClearTax();
                     ClearAdjustmentGrid();
 
@@ -1280,6 +1303,7 @@
                 }
             }).done(function () {
                 GetTaxPartItem();
+                btnClearTax();
                 GetDbCrDetail();
             });
         }
@@ -1564,11 +1588,11 @@
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#Unit').val("");
-                            $('#Unit').val(obj.Result.Table[0]?.Unit);
+                            $('#Unit').val(obj.Result?.Table[0]?.Unit);
                             $('#AltUnit').val("");
-                            $('#AltUnit').val(obj.Result.Table[0]?.AlternateUnit);
+                            $('#AltUnit').val(obj.Result?.Table[0]?.AlternateUnit);
                             $('#HSNNo').val("");
-                            $('#HSNNo').val(obj.Result.Table[0]?.HsnNo);
+                            $('#HSNNo').val(obj.Result?.Table[0]?.HsnNo);
                         }
                     }
                 }
@@ -1610,6 +1634,8 @@
                         "Unit": $('#Unit').val() || "",
                         "BillRate": row.find('#BillRate-' + i).text() || "",
                         "BillAmount": row.find('#INVNetAmt-' + i).text() || "",
+                        "PaidAmt": row.find('#PaidAmt-' + i).text() || "",
+                        "RemainingAmt": row.find('#RemainingAmt-' + i).text() || "",
                         "DiscountPer": row.find('#disPer-' + i).text() || "",
                         "DiscountAmt": row.find('#DisAmt-' + i).text() || "",
                         "ItemSize": $('#ItemSize').val() || "",
@@ -2114,6 +2140,8 @@
                     PurchBillItemCode: $('#popupPurchBillItemCode-' + i).val() || '',
                     Amount: parseFloat($('#popUpItemAmount-' + i).text()) > 0 ? parseFloat($('#popUpItemAmount-' + i).text()) : 0,
                     BillAmount: parseFloat($('#popUpINVNetAmt-' + i).text()) > 0 ? parseFloat($('#popUpINVNetAmt-' + i).text()) : 0,
+                    PaidAmt: parseFloat($('#popUpPaidAmt-' + i).text()) > 0 ? parseFloat($('#popUpPaidAmt-' + i).text()) : 0,
+                    RemainingAmt: parseFloat($('#popUpRemainingAmt-' + i).text()) > 0 ? parseFloat($('#popUpRemainingAmt-' + i).text()) : 0,
                     //ItemNetAmount: parseFloat($('#popUpItemNetAmount-' + i).text()) > 0 ? parseFloat($('#popUpItemNetAmount-' + i).text()) : 0,
                     BatchNo: rowNo ? $('#GridBatchNo-' + rowNo).text().trim() || '' : '',
                     UniqueBatchNo: rowNo ? $('#GridUniqueBatchNo-' + rowNo).text().trim() || '' : '',

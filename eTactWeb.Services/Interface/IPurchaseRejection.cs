@@ -25,5 +25,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> CheckLockYear(int YearCode);
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string VoucherNo, string CC, int AccountCode, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate);
+        Task<ResponseResult> GetReportName();
     }
 }

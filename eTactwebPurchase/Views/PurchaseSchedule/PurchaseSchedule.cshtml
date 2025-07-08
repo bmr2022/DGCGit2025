@@ -213,15 +213,16 @@
                     <div id="B_Panel2" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_Panel2">
                         <div class="accordion-body">
                             <div class="row g-2 gx-3">
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label">Part Code</label>
-                                    <select class="form-select" asp-for="PartCode">
+                                    <select class="form-select" asp-for="PartCode" style="width:200px;">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-3 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ItemCode" class="form-label">Item Name</label>
-                                    <select class="form-select" asp-for="ItemCode">
+                                    <select class="form-select" asp-for="ItemCode" style="width:200px;">
                                         <option value="0">-Select-</option>
                                     </select>
                                 </div>
@@ -425,6 +426,9 @@
 {
     <script>
         $(function () {
+
+            $('#PartCode').select2();
+            $('#ItemCode').select2();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "PSA" && $('#Mode').val() != "PSU") {
                 FillEntry();
             }
@@ -673,25 +677,28 @@
                /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#PODate').val())); */
 
+
+              /*   alert("before parse Entrydate" + $('#EntryDate').val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 var PODate = parseDateToFormat($('#PODate').val().split(" ")[0]);
                 var ScheduleDate = parseDateToFormat($('#ScheduleDate').val().split(" ")[0]);
-
+                alert("after parse Entrydate" + $('#EntryDate').val());
                 /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
                 var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
-                $('#EntryDate').datepicker("setDate", EntryDate);
-                $('#PODate').datepicker("setDate", PODate);
+              /*   $('#EntryDate').datepicker("setDate", EntryDate);
+                $('#PODate').datepicker("setDate", PODate); */
                 /* $('#ScheduleDate').datepicker("setDate", ScheduleDate); */
-                $('#ScheduleDate').datepicker("setDate", ScheduleDate);
+                /* $('#ScheduleDate').datepicker("setDate", ScheduleDate); */
 
 
 
-                var SchEffFromDate = ($('#SchEffFromDate').val().split(' ')[0]);
+              /*   var SchEffFromDate = ($('#SchEffFromDate').val().split(' ')[0]);
                 var SchEffTillDate = ($('#SchEffTillDate').val().split(' ')[0]);
                 var SchAmendmentDate = ($('#SchAmendmentDate').val().split(' ')[0]);
                 $('#SchEffFromDate').datepicker("setDate", SchEffFromDate);
                 $('#SchEffTillDate').datepicker("setDate", SchEffTillDate);
-                $('#SchAmendmentDate').datepicker("setDate", SchAmendmentDate);
+                $('#SchAmendmentDate').datepicker("setDate", SchAmendmentDate); */ 
+
 
 
                /*  $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SchEffFromDate').val()));
@@ -710,6 +717,29 @@
                 var effToDate = $('#SchEffTillDate').datepicker('getDate');
                 $('#DeliveryDate').datepicker("option", "minDate", effFromDate);
                 $('#DeliveryDate').datepicker("option", "maxDate", effToDate);
+                $('#EntryDate ,#PODate,#ScheduleDate,#SchEffFromDate,#SchEffTillDate,#SchAmendmentDate').on('focus mouseenter', function () {
+                    $(this).datepicker({
+                        dateFormat: 'dd/mm/yy',
+                        changeMonth: true,
+                        changeYear: true
+
+                    }).datepicker('show');
+                });
+                alert("entrydate1" + $('#EntryDate').val());
+                var EntryDate = parseDateToFormat($('#EntryDate').val());
+                var PODate = parseDateToFormat($('#PODate').val());
+                var ScheduleDate = parseDateToFormat($('#ScheduleDate').val());
+                var SchEffFromDate = parseDateToFormat($('#SchEffFromDate').val());
+                var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val());
+                var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val());
+                /*    console.log("EntryDate" + EntryDate); */
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDate);
+                $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffFromDate);
+                $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffTillDate);
+                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate);
+                alert("entrydate2" + $('#EntryDate').val());
             }
             else {
 
@@ -756,6 +786,21 @@
                         
                     }).datepicker('show');
                 });
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val());
+                var PODate = parseDateToFormat($('#PODate').val());
+                var ScheduleDate = parseDateToFormat($('#ScheduleDate').val());
+                var SchEffFromDate = parseDateToFormat($('#SchEffFromDate').val());
+                var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val());
+                var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val());
+                /*    console.log("EntryDate" + EntryDate); */
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDate);
+                $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffFromDate);
+                $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffTillDate);
+                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate);
+                
 
             }
             FillMRPNo();
@@ -1336,7 +1381,7 @@
                         if (result != null) {
                             var obj = $.parseJSON(result);
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#Unit').val(obj.Result[0].Unit), $('#Rate').val(obj.Result[0].Rate.toFixed(2));
+                                $('#Unit').val(obj.Result[0].Unit), $('#Rate').val(obj.Result[0].Rate.toFixed(6));
                                 obj.Result[0].AltUnit == null ? ($('#AltUnit').prop('disabled', true), $('#AltSchQty').prop('disabled', true)) : ($('#AltUnit').val(obj.Result[0].AltUnit), $('#AltSchQty').val('0.00'));
                             }
                             else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
@@ -1372,7 +1417,49 @@
                 }
             });
         });
-        $('#PartCode').change(function () {
+
+        $(document).on('select2:select', '#ItemCode,#PartCode', function (e) {
+
+            var cntId = e.target.id;
+            if (cntId == 'ItemCode') {
+                ItemNameChange(cntId);
+            }
+            else {
+                PartCodeChange(cntId);
+            }
+            $('#ItemCode').val($('#ItemCode').val());
+            $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+
+            
+        });
+
+        function ItemNameChange(ID) {
+            SetPartCodeItemName(ID);
+            $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
+        }
+
+        function PartCodeChange(ID) {
+
+            $.when(SetPartCodeItemName(ID)).done(function () {
+            });
+        }
+
+        function SetPartCodeItemName(ID) {
+            if (!ID) return;
+            else {
+                var v = $('#' + ID).select2('val');
+                if (ID == "PartCode") {
+                    $("#ItemCode").val(v).trigger("change");
+                }
+
+                if (ID == "ItemCode") {
+                    $("#PartCode").val(v).trigger("change");
+                }
+            }
+        }
+
+
+       /*  $('#PartCode').change(function () {
             SetPartCodeItemName('PartCode');
             $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
         });
@@ -1380,7 +1467,7 @@
         $('#ItemCode').change(function () {
             SetPartCodeItemName('ItemCode');
             $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
-        });
+        }); */
 
         $('#SchQty').keyup(function () {
             $(this).val().trim() == "" ? ($('#PendQty').val(0), $(this).val(0)) : $('#PendQty').val($(this).val());
@@ -1498,6 +1585,10 @@
                 success: function (result, status, xhr) {
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divPurchaseScheduleGrid').html(result);
+                        $('#PartCode').prop('selectedIndex', 0).trigger("change"),
+                            $('#ItemCode').prop('selectedIndex', 0).trigger("change"),
+                        $('#SchQty,#PendQty,#AltSchQty,#AltPendQty,#Rate').val('0');
+                        $('#AltUnit,#PendQty').val('0');
                     }
                 },
                 error: function (result, status, xhr) {

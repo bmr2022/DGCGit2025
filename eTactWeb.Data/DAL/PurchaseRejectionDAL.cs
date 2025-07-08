@@ -26,6 +26,25 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetReportName"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPPurchaseRejectionMainDetail", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
 
         public async Task<AccPurchaseRejectionModel> GetViewByID(int ID, int YearCode, string mode)
         {
@@ -294,6 +313,8 @@ namespace eTactWeb.Data.DAL
                         ItemSize = row["Itemsize"]?.ToString(),
                         Amount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
                         BillAmount = row["PurchaseBillAmt"] != DBNull.Value ? Convert.ToDecimal(row["PurchaseBillAmt"]) : 0,
+                        PaidAmt = row["PaidAmt"] != DBNull.Value ? Convert.ToDecimal(row["PaidAmt"]) : 0,
+                        RemainingAmt = row["RemainingAmt"] != DBNull.Value ? Convert.ToDecimal(row["RemainingAmt"]) : 0,
                         PONO = row["PONO"]?.ToString(),
                         PODate = row["PODate"]?.ToString(),
                         POEntryId = row["POEntryId"] != DBNull.Value ? Convert.ToInt32(row["POEntryId"]) : 0,
@@ -844,11 +865,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@fromBilldate", fromDate);
                     oCmd.Parameters.AddWithValue("@ToBilldate", toDate);
-                    //oCmd.Parameters.AddWithValue("@PurchVoucherNo", !string.IsNullOrEmpty(model.PurchaseRejectionVoucherNo) ? (model.PurchaseRejectionVoucherNo != "0" ? model.PurchaseRejectionVoucherNo : string.Empty) : string.Empty);
-                    //oCmd.Parameters.AddWithValue("@InvNo", !string.IsNullOrEmpty(model.InvoiceNo) ? (model.InvoiceNo != "0" ? model.InvoiceNo : string.Empty) : string.Empty);
-                    //oCmd.Parameters.AddWithValue("@partcode", !string.IsNullOrEmpty(model.PartCode) ? (model.PartCode != "0" ? model.PartCode : string.Empty) : string.Empty);
-                    //oCmd.Parameters.AddWithValue("@Vendorname", !string.IsNullOrEmpty(model.VendorName) ? (model.VendorName != "0" ? model.VendorName : string.Empty) : string.Empty);
-                    //oCmd.Parameters.AddWithValue("@DocumentType", string.Empty);
+                    oCmd.Parameters.AddWithValue("@PurchaserejVoucherNo", !string.IsNullOrEmpty(model.PurchaseRejectionVoucherNo) ? (model.PurchaseRejectionVoucherNo != "0" ? model.PurchaseRejectionVoucherNo : string.Empty) : string.Empty);
+                    oCmd.Parameters.AddWithValue("@InvoiceNo", !string.IsNullOrEmpty(model.InvoiceNo) ? (model.InvoiceNo != "0" ? model.InvoiceNo : string.Empty) : string.Empty);
+                    oCmd.Parameters.AddWithValue("@Itemcode", !string.IsNullOrEmpty(model.ItemCode.ToString()) ? (model.ItemCode.ToString() != "0" ? Convert.ToInt32(model.ItemCode) : string.Empty) : string.Empty);
+                    //oCmd.Parameters.AddWithValue("@accountcode", !string.IsNullOrEmpty(model.AccountCode.ToString()) ? (model.AccountCode.ToString() != "0" ? Convert.ToInt32(model.AccountCode) : string.Empty) : string.Empty);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                     {

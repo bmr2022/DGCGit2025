@@ -229,7 +229,13 @@ public static class CommonFunc
     "yyyy-MM-dd HH:mm",                // 2025-07-07 15:15
     "dd-MM-yyyy hh:mm tt",             // 07-07-2025 03:15 PM
     "dd/MM/yyyy hh:mm tt",             // 07/07/2025 03:15 PM
-    "MM/dd/yy hh.mm.ss tt" 
+    "MM/dd/yy hh.mm.ss tt" ,
+    "M/d/yyyy h:mm:ss tt",     // for "7/1/2025 12:00:00 AM"
+"M/d/yy h:mm:ss tt",       // for "7/1/25 12:00:00 AM"
+"MM/dd/yyyy h:mm tt",      // for "07/01/2025 12:00 AM"
+"M/d/yyyy h:mm tt",        // for "7/1/2025 12:00 AM"
+"M/d/yy h:mm tt",          // for "7/1/25 12:00 AM"
+"yyyy-MM-dd HH:mm:ss.fff"
         };
 
             // Try parsing the date string against all the formats
@@ -272,7 +278,8 @@ public static class CommonFunc
         "dd MMM yyyy", "d MMM yyyy",
         "dd MMMM yyyy", "d MMMM yyyy",
         "dd/MMM/yyyy", "d/MMM/yyyy",         // Added format: 08/Apr/2025
-        "dd-MMM-yyyy", "d-MMM-yyyy"          // Also allow: 08-Apr-2025
+        "dd-MMM-yyyy", "d-MMM-yyyy"  ,        // Also allow: 08-Apr-2025
+
     };
 
         // Try parsing with specific formats
