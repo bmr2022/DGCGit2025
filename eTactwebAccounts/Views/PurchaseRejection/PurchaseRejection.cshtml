@@ -47,10 +47,12 @@
                         PRINT VOUCHER
                     </a>
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="PurchaseRejection" asp-route-EntryId="@Model.PurchaseRejEntryId" asp-route-YearCode="@Model.PurchaseRejEntryId">
+                       asp-controller="PurchaseRejection" asp-route-EntryId="@Model.PurchaseRejEntryId" asp-route-YearCode="@Model.PurchaseRejYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                        PRINT INVOICE
+                        PRINT 
                     </a>
+                   
+
                     @if (Model.Mode == "U" && Model.Mode != "V")
                     {
                     }

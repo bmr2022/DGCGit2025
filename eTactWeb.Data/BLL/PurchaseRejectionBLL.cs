@@ -17,6 +17,10 @@ namespace eTactWeb.Data.BLL
             _iDtaLogic = iDtaLogic;
             _purchRejDAL = new PurchaseRejectionDAL(configuration, iDtaLogic, connectionStringService);
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _purchRejDAL.GetReportName();
+        }
         public async Task<ResponseResult> GetCostCenter()
         {
             return await _purchRejDAL.GetCostCenter();

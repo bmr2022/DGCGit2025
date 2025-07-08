@@ -14,6 +14,9 @@ using System.Runtime.Caching;
 using System.Reflection;
 using Newtonsoft.Json.Linq;
 using System.Diagnostics;
+using FastReport.Web;
+using FastReport;
+using Microsoft.Extensions.Configuration;
 
 namespace eTactWeb.Controllers
 {
@@ -24,9 +27,10 @@ namespace eTactWeb.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IMemoryCache _MemoryCache;
         public readonly IEinvoiceService _IEinvoiceService;
+        private readonly IConfiguration iconfiguration;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
 
-        public PurchaseRejectionController(IPurchaseRejection purchRej, IDataLogic iDataLogic, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger, IMemoryCache memoryCache, IEinvoiceService IEinvoiceService)
+        public PurchaseRejectionController(IPurchaseRejection purchRej, IDataLogic iDataLogic, IWebHostEnvironment IWebHostEnvironment, ILogger<PurchaseRejectionController> logger, IMemoryCache memoryCache, IEinvoiceService IEinvoiceService, IConfiguration iconfiguration)
         {
             _purchRej = purchRej;
             _IDataLogic = iDataLogic;
@@ -34,8 +38,35 @@ namespace eTactWeb.Controllers
             _logger = logger;
             _MemoryCache = memoryCache;
             _IEinvoiceService = IEinvoiceService;
+            this.iconfiguration = iconfiguration;
         }
-
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            var ReportName = _purchRej.GetReportName();
+            if (!string.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\PurchaseRejectionReport.frx");
+            }
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
         [HttpGet]
         [Route("{controller}/Index")]
         public async Task<IActionResult> PurchaseRejection(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "")
