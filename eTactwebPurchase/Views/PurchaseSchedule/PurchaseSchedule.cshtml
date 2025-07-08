@@ -677,10 +677,12 @@
                /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val()));
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#PODate').val())); */
 
+
+                alert("before parse Entrydate" + $('#EntryDate').val());
                 var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
                 var PODate = parseDateToFormat($('#PODate').val().split(" ")[0]);
                 var ScheduleDate = parseDateToFormat($('#ScheduleDate').val().split(" ")[0]);
-
+                alert("after parse Entrydate" + $('#EntryDate').val());
                 /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
                 var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
                 $('#EntryDate').datepicker("setDate", EntryDate);
