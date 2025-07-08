@@ -235,6 +235,7 @@ public static class CommonFunc
 "MM/dd/yyyy h:mm tt",      // for "07/01/2025 12:00 AM"
 "M/d/yyyy h:mm tt",        // for "7/1/2025 12:00 AM"
 "M/d/yy h:mm tt",          // for "7/1/25 12:00 AM"
+"yyyy-MM-dd HH:mm:ss.fff"
         };
 
             // Try parsing the date string against all the formats

@@ -1336,7 +1336,7 @@
                         if (result != null) {
                             var obj = $.parseJSON(result);
                             if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                $('#Unit').val(obj.Result[0].Unit), $('#Rate').val(obj.Result[0].Rate.toFixed(2));
+                                $('#Unit').val(obj.Result[0].Unit), $('#Rate').val(obj.Result[0].Rate.toFixed(6));
                                 obj.Result[0].AltUnit == null ? ($('#AltUnit').prop('disabled', true), $('#AltSchQty').prop('disabled', true)) : ($('#AltUnit').val(obj.Result[0].AltUnit), $('#AltSchQty').val('0.00'));
                             }
                             else if (obj.StatusCode == 500 && obj.StatusText == 'Error') {
