@@ -1952,6 +1952,14 @@
                     else {
                         RemoveErrorCls('WOQty' + i);
                     }
+                    if (parseInt($('#BomNo' + i).val()) <= 0 || $('#BomNo' + i).val() == '') {
+                        $.notify('Please Enter Bom No more than 0.', "error");
+                        AddErrorCls('BomNo' + i);
+                        Err = 1;
+                    }
+                    else {
+                        RemoveErrorCls('BomNo' + i);
+                    }
                 }
             }
 
