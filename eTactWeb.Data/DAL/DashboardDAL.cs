@@ -219,5 +219,24 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillPurchaseDashboardTop10ItemData()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "Top 10 Item"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }
