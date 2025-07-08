@@ -313,7 +313,7 @@ namespace eTactWeb.Controllers
                     Item.Unit ?? "",
                     Item.AltUnit ?? "",
                     Item.AltOrderQty,
-                    Item.SOCloseDate ?? "",
+                    Item.SOCloseDate == null ? string.Empty : CommonFunc.ParseFormattedDate(Item.SOCloseDate),
                     Item.SchEffTillDate == null ? string.Empty : CommonFunc.ParseFormattedDate(Item.SchEffTillDate),
                     Item.StoreStock,
                     Item.AltQty,

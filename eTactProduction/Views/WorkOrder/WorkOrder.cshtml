@@ -652,7 +652,7 @@
             $('#GetSearchData').on('click', function () {
                 //GetSearchData();
                 GetSaleOrderData();
-                GetBomNo();
+                 GetBomNo();
             });
 
             
@@ -1238,7 +1238,8 @@
                                     '<td><input id="AmmEffDate' + i + '" value=' + val.AmmEffDate.split("T")[0] + ' readonly style="width:90px;" class="textbox"></td>' +
                                     '<td><input id="unit' + i + '" value=' + val.unit + ' readonly style="width:40px;" class="textbox"></td>' +
                                     '<td><input id="AltQty' + i + '" value=' + val.AltQty + ' readonly style="width:30px;" class="textbox"></td>' +
-                                    '<td><input id="AltUnit' + i + '" value=' + val.AltUnit + ' readonly style="width:50px;" class="textbox"></td>' +
+                                    
+                                    '<td><input id="AltUnit' + i + '" readonly style="width:50px;" value= "' + val.AltUnit + ' " class="textbox"></td>' +
                                     '<td><input id="Color' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
                                     '<td><input id="WORevNo' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
                                     '<td><input id="WORevDate' + i + '" readonly style="width:70px;" value= "' + val.Color + ' " class="textbox"></td>' +
