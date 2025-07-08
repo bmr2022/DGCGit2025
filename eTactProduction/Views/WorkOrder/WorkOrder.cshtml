@@ -652,6 +652,7 @@
             $('#GetSearchData').on('click', function () {
                 //GetSearchData();
                 GetSaleOrderData();
+                GetBomNo();
             });
 
             
@@ -1973,6 +1974,7 @@
 
             $('.divSOTable th').show();
             GetSaleOrderData();
+            GetBomNo();
             GlobalSearch($('#search-box'));
             var CheckArrLength = disabledCheckboxIds.length;
             if (CheckArrLength > 0) {
@@ -2287,6 +2289,7 @@
             //<i class="fa-solid fa-spinner"></i>
             ClearGridAddEditRow = true;
             GetSaleOrderData();
+            GetBomNo();
             if ($('#divWorkOrderGrid tr td').length > 1) {
                 EditRowArr = [];
                 var Row = $('#divWorkOrderGrid tr').length;
