@@ -89,7 +89,7 @@ namespace eTactWeb.DOM.Models
         public string Remark { get; set; }
         public int WCId { get; set; }
         public string WorkCenter { get; set; }
-        public int AltItemCode { get; set; }
+        public int? AltItemCode { get; set; }
         public string? AltItemName {  get; set; }
         public string? AltPartCode {  get; set; }
 
