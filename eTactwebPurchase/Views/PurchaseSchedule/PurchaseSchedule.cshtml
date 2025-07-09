@@ -1750,7 +1750,8 @@
                     var obj = $.parseJSON(data);
                     if (obj != null && obj.length == 1) {
                          
-                        $('#PartCode').val(obj[0].ItemCode).change();
+                         $('#PartCode').val(obj[0].ItemCode).trigger("change");
+                            $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                         $('#Unit').val(obj[0].Unit);
                         $('#SchQty').val(obj[0].SchQty);
                         $('#PendQty').val(obj[0].PendQty);
@@ -1767,6 +1768,8 @@
                         $('#SeqNo').val(obj[0].SeqNo);
 
                         DeleteItemRow(SeqNo);
+
+                        $('#PartCode').prop('selectedIndex') != 0 ? $('.ItemBtn').fadeIn() : $('.ItemBtn').fadeOut();
                         /*  //if ($('#divPurchaseScheduleGrid').children().length == 0) {
                          //    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                          //    $('#divPurchaseScheduleGrid').html(NoData);
