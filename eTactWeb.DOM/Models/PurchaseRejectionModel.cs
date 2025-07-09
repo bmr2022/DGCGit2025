@@ -89,9 +89,11 @@ namespace eTactWeb.DOM.Models
         public string FromDateBack { get; set; }
         public string ToDateBack { get; set; }
         public string VendorNameBack { get; set; }
+        public string AccountCodeBack { get; set; }
         public string VoucherNoBack { get; set; }
         public string InvoiceNoBack { get; set; }
         public string PartCodeBack { get; set; }
+        public string ItemCodeBack { get; set; }
         public string GlobalSearchBack { get; set; }
         public List<AccPurchaseRejectionDetail> AccPurchaseRejectionDetails { get; set; }
         public List<AccPurchaseRejectionAgainstBillDetail> AccPurchaseRejectionAgainstBillDetails { get; set; }

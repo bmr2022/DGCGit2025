@@ -102,20 +102,20 @@
 
             var FromDateBack = sessionStorage.getItem('FromDateBack');
             var ToDateBack = sessionStorage.getItem('ToDateBack');
-            var VendorNameBack = sessionStorage.getItem('VendorNameBack');
+            var AccountCodeBack = sessionStorage.getItem('AccountCodeBack');
             var VoucherNoBack = sessionStorage.getItem('VoucherNoBack');
             var InvoiceNoBack = sessionStorage.getItem('InvoiceNoBack');
-            var PartCodeBack = sessionStorage.getItem('PartCodeBack');
+            var ItemCodeBack = sessionStorage.getItem('ItemCodeBack');
             var GlobalSearchBack = sessionStorage.getItem('GlobalSearchBack');
             
             if (FromDateBack != null && FromDateBack != '') {
 
                 $('#FromDate').val(FromDateBack).trigger('change');
                 $('#ToDate').val(ToDateBack).trigger('change');
-                $('#VendorName').val(VendorNameBack).trigger('change');
+                $('#VendorName').val(AccountCodeBack).trigger('change');
                 $('#VoucherNo').val(VoucherNoBack).trigger('change');
                 $('#InvoiceNo').val(InvoiceNoBack).trigger('change');
-                $('#PartCode').val(PartCodeBack).trigger('change');
+                $('#PartCode').val(ItemCodeBack).trigger('change');
                 $('#search-box').val(GlobalSearchBack);
             }
             GetSearchData();
@@ -127,10 +127,10 @@
 
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
-            sessionStorage.removeItem('VendorNameBack');
+            sessionStorage.removeItem('AccountCodeBack');
             sessionStorage.removeItem('VoucherNoBack');
             sessionStorage.removeItem('InvoiceNoBack');
-            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemCodeBack');
             sessionStorage.removeItem('GlobalSearchBack');
         });
 
@@ -138,7 +138,7 @@
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
             var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&VendorName=" + $('#VendorName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&Searchbox=" + $('#search-box').val();
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&AccountCode=" + $('#VendorName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&ItemCode=" + $('#PartCode').val() + "&Searchbox=" + $('#search-box').val();
             window.location.href = linkUrl;
         }
 
@@ -442,10 +442,10 @@
         function deleteItem(entryID, yearCode, VouchNo, CC, AccountCode, EnteredBy, invNo, isDetail, cnt) {
             sessionStorage.setItem('FromDateBack', $('#FromDate').val());
             sessionStorage.setItem('ToDateBack', $('#ToDate').val());
-            sessionStorage.setItem('VendorNameBack', $('#VendorName').val());
+            sessionStorage.setItem('AccountCodeBack', $('#VendorName').val());
             sessionStorage.setItem('VoucherNoBack', $('#VoucherNo').val());
             sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNo').val());
-            sessionStorage.setItem('PartCodeBack', $('#PartCode').val());
+            sessionStorage.setItem('ItemCodeBack', $('#PartCode').val());
             sessionStorage.setItem('GlobalSearchBack', $('#search-box').val());
 
             $.ajax({

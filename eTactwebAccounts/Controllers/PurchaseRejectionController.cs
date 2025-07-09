@@ -69,7 +69,7 @@ namespace eTactWeb.Controllers
         }
         [HttpGet]
         [Route("{controller}/Index")]
-        public async Task<IActionResult> PurchaseRejection(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "")
+        public async Task<IActionResult> PurchaseRejection(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string AccountCode = "", string VoucherNo = "", string InvoiceNo = "", string ItemCode = "", string Searchbox = "")
         {
             AccPurchaseRejectionModel model = new AccPurchaseRejectionModel();
             ViewData["Title"] = "Purchase Rejection Details";
@@ -130,10 +130,10 @@ namespace eTactWeb.Controllers
 
             model.FromDateBack = FromDate;
             model.ToDateBack = ToDate;
-            model.VendorNameBack = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "0";
+            model.AccountCodeBack = AccountCode != null && AccountCode != "0" && AccountCode != "undefined" ? AccountCode : "0";
             model.VoucherNoBack = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "0";
             model.InvoiceNoBack = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "0";
-            model.PartCodeBack = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "0";
+            model.ItemCodeBack = ItemCode != null && ItemCode != "0" && ItemCode != "undefined" ? ItemCode : "0";
             model.GlobalSearchBack = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
 
             HttpContext.Session.SetString("PurchaseRejection", JsonConvert.SerializeObject(model));
@@ -802,7 +802,7 @@ namespace eTactWeb.Controllers
             MainModel.PartCodeList = new List<TextValue>();
             var vendornameparams = new Dictionary<string, object>() { { "@Flag", "FILLVENDORNAMEASHBOARD" } };
             vendornameparams.AddRange(commonparams);
-            MainModel.VendorNameList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vendornameparams, true);
+            MainModel.VendorNameList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", vendornameparams, false, true);
 
             var vouchnoparams = new Dictionary<string, object>() { { "@Flag", "FILLVOUCHERDASHBOARD" } };
             vouchnoparams.AddRange(commonparams);
@@ -815,7 +815,7 @@ namespace eTactWeb.Controllers
             var partcodeparams = new Dictionary<string, object>() { { "@Flag", "FILLPartCodeDASHBOARD" } };
             partcodeparams.AddRange(commonparams);
             //MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, false, false);
-            MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, true);
+            MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, false, true);
             return MainModel;
         }
         public async Task<JsonResult> NewEntryId(int YearCode)

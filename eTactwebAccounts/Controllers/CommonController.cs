@@ -667,7 +667,7 @@ namespace eTactWeb.Controllers
                     Math.Round(Item.PRRate, 2, MidpointRounding.AwayFromZero), // PurchaseRejection rate
                     Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
                     Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
-                    Math.Round(Item.Amount ?? 0, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.ItemAmount, 2, MidpointRounding.AwayFromZero),
                     "CR",
                             });
                     }
