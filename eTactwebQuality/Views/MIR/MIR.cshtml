@@ -40,6 +40,13 @@
                                     BACK
                                 </a>
                             </div>
+                            <div class="col-auto">
+                                <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="MaterialReceipt" asp-route-EntryId="@Model.EntryId" asp-route-YearCode="@Model.YearCode" asp-route-MrnNo="@Model.MRNNo">
+                                    <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                    PRINT
+                                </a>
+
+                            </div>
                             @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
                             {
                                 <div class="col-auto">

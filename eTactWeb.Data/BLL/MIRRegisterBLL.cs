@@ -65,7 +65,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _MIRRegisterDAL.FillVendor(FromDate, ToDate);
         }
-         
+       
         public async Task<MIRRegisterModel> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno, string MRNno, string MIRNo, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)
         {
             return await _MIRRegisterDAL.GetRegisterData(MRNType,ReportType, FromDate, ToDate, gateno, MRNno, MIRNo, PONo, Schno, PartCode, ItemName, invoiceNo, VendorName);

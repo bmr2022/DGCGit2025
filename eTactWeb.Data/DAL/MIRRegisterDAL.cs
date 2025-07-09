@@ -28,7 +28,8 @@ namespace eTactWeb.Data.DAL
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
             _httpContextAccessor = httpContextAccessor;
-        } 
+        }
+       
         public async Task<MIRRegisterModel> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string MIRNo, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)
         {
             DataSet? oDataSet = new DataSet();
