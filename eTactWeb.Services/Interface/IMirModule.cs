@@ -35,5 +35,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetOkRecStore(int ItemCode,string ShowAllStore);
         Task<ResponseResult> DeleteByID(int ID, int YC);
+        Task<ResponseResult> GetReportName();
     }
 }

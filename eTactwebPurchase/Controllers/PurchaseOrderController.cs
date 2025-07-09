@@ -253,7 +253,7 @@ public class PurchaseOrderController : Controller
         }
         //IMemoryCache.Remove("KeyPendingIndentDetail");
         mainModel.PendingIndentDetailGrid = model;
-        IMemoryCache.Set("KeyPendingIndentDetail", mainModel, DateTimeOffset.Now.AddMinutes(60));
+        //IMemoryCache.Set("KeyPendingIndentDetail", mainModel, DateTimeOffset.Now.AddMinutes(60));
         HttpContext.Session.SetString("KeyPendingIndentDetail", JsonConvert.SerializeObject(mainModel));
         return Json("OK");
     }
@@ -297,8 +297,9 @@ public class PurchaseOrderController : Controller
         else
         {
             model = BindItem4Grid(model);
-            IMemoryCache.Remove("PurchaseOrder");
-            IMemoryCache.Set("PurchaseOrder", model, DateTimeOffset.Now.AddMinutes(60));
+            //Monika
+            //IMemoryCache.Remove("PurchaseOrder");
+            //IMemoryCache.Set("PurchaseOrder", model, DateTimeOffset.Now.AddMinutes(60));
             HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(model));
         }
 
@@ -363,7 +364,18 @@ public class PurchaseOrderController : Controller
     {
         //var MainModel = new PurchaseOrderModel();
         var ScheduleList = new List<DeliverySchedule>();
-        IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+        //monika
+        //IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+
+        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+        PurchaseOrderModel MainModel = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+        }
+
+
+
         //var ItemDetailList = MainModel.ItemDetailGrid;
 
         foreach (POItemDetail item in MainModel.ItemDetailGrid)
@@ -387,7 +399,8 @@ public class PurchaseOrderController : Controller
                     item.DeliveryScheduleList = ScheduleList;
                     MainModel.DPartCode = model.DPartCode;
                     //MainModel.ItemDetailGrid = ItemDetailList;
-                    IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+                    //monika
+                    //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
                     HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
                 }
                 else
@@ -406,8 +419,10 @@ public class PurchaseOrderController : Controller
                         });
                     MainModel.DPartCode = model.DPartCode;
                     //MainModel.ItemDetailGrid = ItemDetailList;
-                    IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
-                    //HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+
+                    //monika
+                    //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+                    HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
                 }
             }
         }
@@ -492,9 +507,9 @@ public class PurchaseOrderController : Controller
     public async Task<IActionResult> DashBoard()
     {
         HttpContext.Session.Remove("PurchaseOrder");
-        IMemoryCache.Remove("PurchaseOrder");
+        //IMemoryCache.Remove("PurchaseOrder");
         HttpContext.Session.Remove("TaxGrid");
-        IMemoryCache.Remove("KeyTaxGrid");
+        //IMemoryCache.Remove("KeyTaxGrid");
 
         var _List = new List<TextValue>();
 
@@ -581,7 +596,16 @@ public class PurchaseOrderController : Controller
     public PartialViewResult DeleteDeliveryRow(string SRNo, string DPC)
     {
         PurchaseOrderModel MainModel = new();
-        IMemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+
+        //monika
+        //IMemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+         MainModel = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+        }
+
 
         int Indx = Convert.ToInt32(SRNo) - 1;
         int PCode = Convert.ToInt32(DPC);
@@ -616,7 +640,7 @@ public class PurchaseOrderController : Controller
             }
         }
 
-        IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+        //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
         HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
 
         return PartialView("_PODeliveryGrid", MainModel);
@@ -627,8 +651,25 @@ public class PurchaseOrderController : Controller
         bool exists = false;
 
         //IMemoryCache.TryGetValue("KeyPOTaxGrid", out List<TaxModel> TaxGrid);
-        IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
-        IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+
+        //monika
+        //IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+        //IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+
+        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+        PurchaseOrderModel MainModel = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+        }
+
+        string modelJson2 = HttpContext.Session.GetString("KeyTaxGrid");
+        List<TaxModel> TaxGrid = new List<TaxModel>();
+        if (!string.IsNullOrEmpty(modelJson2))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson2);
+        }
+
 
         int Indx = Convert.ToInt32(SeqNo) - 1;
 
@@ -668,7 +709,7 @@ public class PurchaseOrderController : Controller
             //    IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
             //}
 
-            IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+            //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
             HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
         }
         return PartialView("_POItemGrid", MainModel);
@@ -676,7 +717,13 @@ public class PurchaseOrderController : Controller
 
     public IActionResult EditItemRow(PurchaseOrderModel model)
     {
-        IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+        //IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+        PurchaseOrderModel MainModel = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+        }
         var SSGrid = MainModel.ItemDetailGrid.Where(x => x.SeqNo == model.SeqNo);
         string JsonString = JsonConvert.SerializeObject(SSGrid);
         return Json(JsonString);
@@ -718,7 +765,8 @@ public class PurchaseOrderController : Controller
     }
     public async Task<JsonResult> ClearTaxGrid(int YearCode)
     {
-        IMemoryCache.Remove("KeyTaxGrid");
+        //IMemoryCache.Remove("KeyTaxGrid");
+        HttpContext.Session.Remove("KeyTaxGrid");
         var JSON = await IPurchaseOrder.FillEntryandPONumber(YearCode);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
@@ -797,7 +845,9 @@ public class PurchaseOrderController : Controller
             MainModel.Mode = Mode;
             MainModel.EntryID = ID;
             MainModel.EID = EncryptDecrypt.Encrypt(ID.ToString(CI));
-            IMemoryCache.Set("KeyPendingIndentDetail", MainModel.PendingIndentDetailGrid, DateTimeOffset.Now.AddMinutes(60));
+
+            //monika
+            //IMemoryCache.Set("KeyPendingIndentDetail", MainModel.PendingIndentDetailGrid, DateTimeOffset.Now.AddMinutes(60));
             HttpContext.Session.SetString("KeyPendingIndentDetail", JsonConvert.SerializeObject(MainModel.PendingIndentDetailGrid));
         }
         else
@@ -821,9 +871,11 @@ public class PurchaseOrderController : Controller
         MainModel.Branch = HttpContext.Session.GetString("Branch");
         //var txGrid = MainModel.TaxDetailGridd == null ? new TaxModel() : MainModel.TaxDetailGridd
 
-        IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
-        IMemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
-        IMemoryCache.Set("KeyPendingIndentDetail", MainModel.PendingIndentDetailGrid);
+
+        //monika
+        //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+        //IMemoryCache.Set("KeyTaxGrid", MainModel.TaxDetailGridd == null ? new List<TaxModel>() : MainModel.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
+        //IMemoryCache.Set("KeyPendingIndentDetail", MainModel.PendingIndentDetailGrid);
 
         HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
         HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(MainModel.TaxDetailGridd ?? new List<TaxModel>()));
@@ -849,13 +901,17 @@ public class PurchaseOrderController : Controller
     {
         var MainModel = new PurchaseOrderModel();
         Dictionary<string, string> SchVal = new();
-        IMemoryCache.TryGetValue("PurchaseOrder", out MainModel);
 
-        string modelJson = HttpContext.Session.GetString("PurchaseOrder");
-        List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
-        if (!string.IsNullOrEmpty(modelJson))
+        //monika
+        //IMemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+
+
+
+        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+         MainModel = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson1))
         {
-            PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
         }
 
         if (MainModel.ItemDetailGrid != null && MainModel.ItemDetailGrid.Count > 0)
@@ -889,8 +945,15 @@ public class PurchaseOrderController : Controller
     public JsonResult ResetGridItems()
     {
         HttpContext.Session.Remove("POItemList");
-        IMemoryCache.Remove("PurchaseOrder");
-        IMemoryCache.Remove("KeyTaxGrid");
+        //IMemoryCache.Remove("POItemList");
+        //monika
+
+        HttpContext.Session.Remove("PurchaseOrder");
+        HttpContext.Session.Remove("KeyTaxGrid");
+       
+
+        //IMemoryCache.Remove("PurchaseOrder");
+        //IMemoryCache.Remove("KeyTaxGrid");
 
         var MainModel = new PurchaseOrderModel();
         List<TaxModel> taxList = new List<TaxModel>();
@@ -902,14 +965,28 @@ public class PurchaseOrderController : Controller
         MainModel.PreparedByName = HttpContext.Session.GetString("EmpName");
         MainModel.Branch = HttpContext.Session.GetString("Branch");
 
-        IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
-        IMemoryCache.Set("KeyTaxGrid", taxList, DateTimeOffset.Now.AddMinutes(60));
+        //IMemoryCache.Set("PurchaseOrder", MainModel, DateTimeOffset.Now.AddMinutes(60));
+        //IMemoryCache.Set("KeyTaxGrid", taxList, DateTimeOffset.Now.AddMinutes(60));
 
         HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel));
         HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(taxList));
 
-        IMemoryCache.TryGetValue("PurchaseOrder", out MainModel);
-        IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+        //IMemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+        //IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+
+        string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+         MainModel = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson1))
+        {
+            MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+        }
+
+        string modelJson2 = HttpContext.Session.GetString("KeyTaxGrid");
+         List<TaxModel> TaxGrid = new List<TaxModel>();
+        if (!string.IsNullOrEmpty(modelJson2))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelJson2);
+        }
 
         string modelJson = HttpContext.Session.GetString("PurchaseOrder");
         List<ProductionScheduleDetail> PSDetail = new List<ProductionScheduleDetail>();
@@ -947,41 +1024,47 @@ public class PurchaseOrderController : Controller
             string modePOA = "data";
             var stat = new MemoryCacheStatistics();
 
-            IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
-            IMemoryCache.TryGetValue("KeyPendingIndentDetail", out PurchaseOrderModel PendingModel);
 
-            IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
+            //monika
+            //IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+            //IMemoryCache.TryGetValue("KeyPendingIndentDetail", out PurchaseOrderModel PendingModel);
+
+            //IMemoryCache.TryGetValue("KeyTaxGrid", out List<TaxModel> TaxGrid);
 
             string modelJson = HttpContext.Session.GetString("PurchaseOrder");
             //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
+            PurchaseOrderModel MainModel= new PurchaseOrderModel();
             if (!string.IsNullOrEmpty(modelJson))
             {
                  //PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
 
-                PurchaseOrderModel PSDetail = string.IsNullOrEmpty(modelJson)
+                 MainModel = string.IsNullOrEmpty(modelJson)
         ? new PurchaseOrderModel()
         : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
             }
 
-            string modelPendingIndentJson = HttpContext.Session.GetString("KeyPendingIndentDetail");
+            string PendingModeljson = HttpContext.Session.GetString("KeyPendingIndentDetail");
+
             //List<PurchaseOrderModel> PendingIndentDetail = new List<PurchaseOrderModel>();
-            if (!string.IsNullOrEmpty(modelPendingIndentJson))
+            PurchaseOrderModel PendingModel = new PurchaseOrderModel();
+            if (!string.IsNullOrEmpty(PendingModeljson))
             {
                 //PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelPendingIndentJson);
 
-                PurchaseOrderModel PendingIndentDetail = string.IsNullOrEmpty(modelPendingIndentJson)
+                 PendingModel = string.IsNullOrEmpty(PendingModeljson)
        ? new PurchaseOrderModel()
-       : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelPendingIndentJson);
+       : JsonConvert.DeserializeObject<PurchaseOrderModel>(PendingModeljson);
             }
             
-            string modelTaxJson = HttpContext.Session.GetString("KeyPendingIndentDetail");
+            string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
             //List<TaxModel> TaxDetail = new List<TaxModel>();
+            List<TaxModel> TaxGrid = new List<TaxModel>();
             if (!string.IsNullOrEmpty(modelTaxJson))
             {
                 //TaxDetail = JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
-                TaxModel TaxDetail = string.IsNullOrEmpty(modelTaxJson)
-      ? new PurchaseOrderModel()
-      : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelTaxJson);
+                TaxGrid = string.IsNullOrEmpty(modelTaxJson)
+      ? new List<TaxModel>()
+      : JsonConvert.DeserializeObject<List<TaxModel>>(modelTaxJson);
 
             }
 
@@ -1138,8 +1221,9 @@ public class PurchaseOrderController : Controller
                         MainModel1.PreparedByName = HttpContext.Session.GetString("EmpName");
                         MainModel1.Branch = HttpContext.Session.GetString("Branch");
 
-                        IMemoryCache.Set("PurchaseOrder", MainModel1, DateTimeOffset.Now.AddMinutes(60));
-                        IMemoryCache.Set("KeyTaxGrid", MainModel1.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
+                        //monika
+                        //IMemoryCache.Set("PurchaseOrder", MainModel1, DateTimeOffset.Now.AddMinutes(60));
+                        //IMemoryCache.Set("KeyTaxGrid", MainModel1.TaxDetailGridd, DateTimeOffset.Now.AddMinutes(60));
                         HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(MainModel1));
                         HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(MainModel1.TaxDetailGridd));
 
@@ -1432,13 +1516,18 @@ public class PurchaseOrderController : Controller
     {
         var _List = new List<POItemDetail>();
 
-        IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+        //IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+
+        //monika
+        
+
 
         string modelJson = HttpContext.Session.GetString("PurchaseOrder");
         //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
+        PurchaseOrderModel MainModel = new PurchaseOrderModel();
         if (!string.IsNullOrEmpty(modelJson))
         {
-            PurchaseOrderModel PSDetail = string.IsNullOrEmpty(modelJson)
+            MainModel = string.IsNullOrEmpty(modelJson)
         ? new PurchaseOrderModel()
         : JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
         }
@@ -1508,9 +1597,14 @@ public class PurchaseOrderController : Controller
     [HttpGet]
     public async Task<IActionResult> POAmendmentList()
     {
-        IMemoryCache.Remove("POTaxGrid");
-        IMemoryCache.Remove("KeyTaxGrid");
-        IMemoryCache.Remove("PurchaseOrder");
+        //monika
+        //IMemoryCache.Remove("POTaxGrid");
+        //IMemoryCache.Remove("KeyTaxGrid");
+        //IMemoryCache.Remove("PurchaseOrder");
+
+        HttpContext.Session.Remove("POTaxGrid");
+        HttpContext.Session.Remove("KeyTaxGrid");
+        HttpContext.Session.Remove("PurchaseOrder");
         var _List = new List<TextValue>();
 
         var model = await IPurchaseOrder.GetAmmDashboardData().ConfigureAwait(true);
@@ -1534,9 +1628,13 @@ public class PurchaseOrderController : Controller
     [HttpGet]
     public async Task<IActionResult> POAmmCompleted()
     {
-        IMemoryCache.Remove("POTaxGrid");
-        IMemoryCache.Remove("KeyTaxGrid");
-        IMemoryCache.Remove("PurchaseOrder");
+        //monika
+        //IMemoryCache.Remove("POTaxGrid");
+        //IMemoryCache.Remove("KeyTaxGrid");
+        //IMemoryCache.Remove("PurchaseOrder");
+        HttpContext.Session.Remove("POTaxGrid");
+          HttpContext.Session.Remove("KeyTaxGrid");
+        HttpContext.Session.Remove("PurchaseOrder");
         var _List = new List<TextValue>();
         var summaryDetail = "Summary";
         var model = await IPurchaseOrder.GetAmmCompletedData(summaryDetail).ConfigureAwait(true);
@@ -1565,23 +1663,28 @@ public class PurchaseOrderController : Controller
 
             if (model.ItemDetailGrid?.Count != 0 && model.ItemDetailGrid != null)
             {
-                IMemoryCache.Set("PurchaseOrder", model.ItemDetailGrid, cacheEntryOptions);
+                //monika
+                //IMemoryCache.Set("PurchaseOrder", model.ItemDetailGrid, cacheEntryOptions);
                 HttpContext.Session.SetString("PurchaseOrder", JsonConvert.SerializeObject(model.ItemDetailGrid));
 
             }
 
             if (model.TaxDetailGridd != null)
             {
-                IMemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd, cacheEntryOptions);
+                //monika
+                //IMemoryCache.Set("KeyTaxGrid", model.TaxDetailGridd, cacheEntryOptions);
                 HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd));
             }
         }
         else
         {
             model = await BindModels(null);
-            IMemoryCache.Remove("POTaxGrid");
-            IMemoryCache.Remove("KeyTaxGrid");
-            IMemoryCache.Remove("PurchaseOrder");
+            //IMemoryCache.Remove("POTaxGrid");
+            //IMemoryCache.Remove("KeyTaxGrid");
+            //IMemoryCache.Remove("PurchaseOrder");
+            HttpContext.Session.Remove("POTaxGrid");
+                HttpContext.Session.Remove("KeyTaxGrid");
+            HttpContext.Session.Remove("PurchaseOrder");
         }
 
 
@@ -1640,7 +1743,7 @@ public class PurchaseOrderController : Controller
         using (var package = new ExcelPackage(stream))
         {
             var worksheet = package.Workbook.Worksheets[0];
-            int cnt = 1;
+            int cnt = 0;
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 //var itemCatCode = IStockAdjust.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
@@ -1779,6 +1882,7 @@ public class PurchaseOrderController : Controller
         };
         var seqNo = 0;
         IMemoryCache.Remove("PurchaseOrder");
+        HttpContext.Session.Remove("PurchaseOrder");
 
         foreach (var item in data)
         {
@@ -1786,12 +1890,12 @@ public class PurchaseOrderController : Controller
             {
                 IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel Model);
 
-                //string modelJson = HttpContext.Session.GetString("PurchaseOrder");
-                //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
-                //if (!string.IsNullOrEmpty(modelJson))
-                //{
-                //    PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
-                //}
+                string modelJson1 = HttpContext.Session.GetString("PurchaseOrder");
+                //PurchaseOrderModel Model = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(modelJson1))
+                {
+                    Model = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson1);
+                }
 
                 if (Model == null)
                 {
@@ -1822,14 +1926,14 @@ public class PurchaseOrderController : Controller
 
             }
         }
-        IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel1);
+        //IMemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel1);
 
-        //string modelJson = HttpContext.Session.GetString("PurchaseOrder");
-        //List<PurchaseOrderModel> PSDetail = new List<PurchaseOrderModel>();
-        //if (!string.IsNullOrEmpty(modelJson))
-        //{
-        //    PSDetail = JsonConvert.DeserializeObject<List<PurchaseOrderModel>>(modelJson);
-        //}
+        string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+        PurchaseOrderModel MainModel1 = new PurchaseOrderModel();
+        if (!string.IsNullOrEmpty(modelJson))
+        {
+            MainModel1 = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+        }
 
         return PartialView("_POItemGrid", MainModel);
     }
