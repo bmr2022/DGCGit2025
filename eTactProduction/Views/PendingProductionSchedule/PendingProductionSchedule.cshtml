@@ -644,12 +644,13 @@
                                     '<td id="ProdSchEntryId' + i + '">' + val.ProdSchEntryId + '</td>' +
                                     '</tr>'
                                 $('#divPendMRNGrid').append(html);
-                                var count = $('#divPendMRNGrid tr').length;
-                                $('#totalRows').text(count);
-                                ColorCodingStockandIssue();
-                                TransferToIssueProduction(i);
+                          
                                 i++;
                             });
+                           var count = $('#divPendMRNGrid tr').length;
+                        $('#totalRows').text(count);
+                        ColorCodingStockandIssue();
+                        TransferToIssueProduction(i);
                         }
                         else {
                             $('#divPendMRNGrid').empty();

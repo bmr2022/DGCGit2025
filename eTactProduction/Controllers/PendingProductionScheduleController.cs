@@ -91,15 +91,18 @@ namespace eTactWeb.Controllers
 
                 var MainModel = new IssueAgainstProdSchedule();
                 var IssueWithoutBomGrid = new List<IssueAgainstProdScheduleDetail>();
-                var IssueGrid = new List<IssueAgainstProdScheduleDetail>();
+               var IssueGrid = new List<IssueAgainstProdScheduleDetail>();
                 var SSGrid = new List<IssueAgainstProdScheduleDetail>();
-                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                {
-                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-                    SlidingExpiration = TimeSpan.FromMinutes(55),
-                    Size = 1024,
-                };
-                var seqNo = 0;
+               // var IssueGrid = IssueAgainstProdScheduleDetail ?? new List<IssueAgainstProdScheduleDetail>();
+               // int seqNo = IssueGrid.Count;
+
+                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                //{
+                //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                //    SlidingExpiration = TimeSpan.FromMinutes(55),
+                //    Size = 1024,
+                //};
+               var seqNo = 0;
                 if (model != null)
                 {
                     foreach (var item in model)
@@ -121,17 +124,21 @@ namespace eTactWeb.Controllers
                                 else
                                 {
                                     item.seqno = IssueAgainstProdScheduleDetail.Count + 1;
-                                    IssueGrid = IssueAgainstProdScheduleDetail.Where(x => x != null).ToList();
+                                    //   IssueGrid = IssueAgainstProdScheduleDetail.Where(x => x != null).ToList();
                                     SSGrid.AddRange(IssueGrid);
                                     IssueGrid.Add(item);
                                 }
                             }
-
                             MainModel.ItemDetailGrid = IssueGrid;
-                            var jsonData = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                            HttpContext.Session.SetString("KeyPendingProductionSchedule", jsonData);
+
+                            HttpContext.Session.SetString("KeyPendingProductionSchedule", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+
                         }
+                      
                     }
+                    //MainModel.ItemDetailGrid = IssueGrid;
+                    //var jsonData = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    //HttpContext.Session.SetString("KeyPendingProductionSchedule", jsonData);
                 }
                 var sessionGridData = HttpContext.Session.GetString("KeyPendingProductionSchedule");
                 var grid = string.IsNullOrEmpty(sessionGridData)
