@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Remove="Views\MIRRegister\PrintReport.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="FastReport.OpenSource" Version="2023.2.25" />
     <PackageReference Include="FastReport.OpenSource.Data.MsSql" Version="2021.4.0" />
     <PackageReference Include="FastReport.OpenSource.Web" Version="2023.2.25" />
@@ -16,6 +20,18 @@
     <ProjectReference Include="..\eTactWeb.Data\eTactWeb.Data.csproj" />
     <ProjectReference Include="..\eTactWeb.DOM\eTactWeb.DOM.csproj" />
     <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\MIRRegister\PrintReport.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Views\MIRRegister\PrintReport.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\MIRRegister\PrintReport.cshtml" />
   </ItemGroup>
 
 </Project>

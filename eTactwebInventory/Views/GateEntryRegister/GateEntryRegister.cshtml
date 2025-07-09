@@ -566,7 +566,7 @@
             return firstDayOfMonth;
         }
 
-        $('#sendToExcel').click(function () {
+      /*   $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
             console.log(table);
             TableToExcel.convert(table[0], {
@@ -575,7 +575,12 @@
                     name: 'ReportTable'
                 }
             });
+        }); */
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportType').val();
+            window.location.href = '/GateEntryRegister/ExportGateEntryRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
         });
+
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -607,8 +612,59 @@
                 }
             });
         }
-      
-        
+
+        var isGlobalSearch = false;
+        var globalSearchString = "";
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
+            var dashboardType = $('#ReportType').val();
+            $.ajax({
+                url: "/GateEntryRegister/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                success: function (data) {
+
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(data);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        function loadPage(pageNumber) {
+
+            var url = '';
+            var ReportType = $('#ReportType').val();
+            var formData = $('#SParam').serializeArray();
+            if (isGlobalSearch) {
+                url = '/GateEntryRegister/GlobalSearch';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            }
+            else {
+                url = '@Url.Action("GetGateRegisterData", "GateEntryRegister")';
+            }
+
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                  
+                }
+            });
+        }
         function FillGateNo() {
             var FromDate = $('#FromDate').val();
             var FromParts = FromDate.split("/");

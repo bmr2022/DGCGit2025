@@ -123,5 +123,11 @@ namespace eTactWeb.Data.BLL
             return await _MIRDal.GetViewByID(ID, YearCode);
 
         }
+        public async Task<ResponseResult> GetReportName()
+        {
+            return await _MIRDal.GetReportName();
+
+        }
+
     }
 }

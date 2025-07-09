@@ -12,6 +12,8 @@ using static eTactWeb.DOM.Models.MirModel;
 using System.Net;
 using System.Data;
 using System.Globalization;
+using FastReport.Web;
+using FastReport;
 
 namespace eTactWeb.Controllers
 {
@@ -22,14 +24,45 @@ namespace eTactWeb.Controllers
         private readonly ILogger<MIRController> _logger;
         private readonly IMemoryCache _MemoryCache;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
+        private readonly IConfiguration _iconfiguration;
         public List<string> ImageArray = new List<string>();
-        public MIRController(ILogger<MIRController> logger, IDataLogic iDataLogic, IMirModule IMirModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment)
+        public MIRController(ILogger<MIRController> logger, IDataLogic iDataLogic, IMirModule IMirModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IMirModule = IMirModule;
             _MemoryCache = iMemoryCache;
             _IWebHostEnvironment = iWebHostEnvironment;
+            this._iconfiguration = iconfiguration;
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string MrnNo = "")
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+            var ReportName = _IMirModule.GetReportName();
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+            if (!String.Equals(ReportName.Result.Result.Rows[0].ItemArray[0], System.DBNull.Value))
+            {
+                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0].ToString() + ".frx");
+            }
+            else
+            {
+                webReport.Report.Load(webRootPath + "\\MRN.frx"); // default report
+            }
+            
+
+            my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MrnNoparam", MrnNo);
+            webReport.Report.SetParameterValue("MrnYearcodeparam", YearCode);
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
         }
         [Route("{controller}/Index")]
         public async Task<IActionResult> MIR()

@@ -20,6 +20,8 @@
         <tbody id="divStockRegisterBody">
             @{
                 var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
                 if (Model.GateEntryRegisterDetail == null)
                 {
                             <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -39,7 +41,7 @@
                                     </span>
                                 </a>
                                     </td>
-                                        <th>@Cntr</th>
+                            <th>@srNo</th>
                             <td style="background-color: #e09ef0;">@item.VendorName</td>
                                         <td>@item.PartCode</td>
                                         <td>@item.ItemName</td>
@@ -52,6 +54,7 @@
                             <td>@item.CompanyAddress</td>
 
                         </tr>
+                        srNo++;
                     }
                 }
             }
@@ -59,6 +62,15 @@
         </tbody>
     </table>
 </div>
+@{
+
+
+    int displayedRows = Model.PageNumber * Model.PageSize;
+    if (displayedRows > Model.TotalRecords)
+    {
+        displayedRows = Model.TotalRecords;
+    }
+}
 
 <style>
 
