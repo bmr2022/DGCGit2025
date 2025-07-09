@@ -85,9 +85,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _WorkOrderDAL.GetDashboardData(SummaryDetail, WONO, CC, SONO, SchNo, AccountName, PartCode, ItemName, FromDate, ToDate);
         }
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC, int ActualEntryBy, string MachineName)
         {
-            return await _WorkOrderDAL.DeleteByID(ID, YC);
+            return await _WorkOrderDAL.DeleteByID(ID, YC, ActualEntryBy, MachineName);
         }
         public async Task<WorkOrderModel> GetViewByID(int ID, int YC, string Mode)
         {

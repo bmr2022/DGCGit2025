@@ -135,8 +135,8 @@ namespace eTactWeb.Controllers
                 }
                 var sessionGridData = HttpContext.Session.GetString("KeyPendingProductionSchedule");
                 var grid = string.IsNullOrEmpty(sessionGridData)
-    ? new List<IssueThrBomDetail>()
-    : JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(sessionGridData);
+    ? new List<IssueAgainstProdScheduleDetail>()
+    : JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(sessionGridData);
                 var issueDataJson = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                 HttpContext.Session.SetString("KeyIssAgainstProduction", issueDataJson);
 

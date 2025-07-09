@@ -653,6 +653,7 @@
                 //GetSearchData();
                 GetSaleOrderData();
                  GetBomNo();
+                highlightRowsWithEmptyBom();
             });
 
             
@@ -1257,6 +1258,7 @@
                             
                             $('#divSaleOrderGrid').append(html);
                              fillAllStore();
+                         
                             // fillWIPAllStore();
                             var RowCount = $('#divSaleOrderGrid tr').length;
                             for (var i = 1; i <= RowCount; i++) {
@@ -1282,6 +1284,24 @@
                 },
             });
         }
+
+        function highlightRowsWithEmptyBom() {
+           
+
+            var totalrows = $('#divSaleOrderGrid tr').length;
+
+            for (let i = 1; i <= totalrows; i++) {
+                var BomNo = $('#BomNo' + i).val();
+
+
+
+                if (BomNo === '' || BomNo === '0' || BomNo === null ) {
+                    // Change background color of the whole row
+                    $('#BomNo' + i).closest('tr').css('background-color', '#ee6b6e');
+                }
+            }
+        }
+
 
         async function AutoComplete(CtrlID, ColName) {
 

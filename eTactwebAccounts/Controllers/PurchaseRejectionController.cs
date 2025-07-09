@@ -660,7 +660,7 @@ namespace eTactWeb.Controllers
             return Table;
         }
         [Route("{controller}/Dashboard")]
-        public async Task<IActionResult> PRDashBoard(string FromDate = "", string ToDate = "", string VendorName = "", string VoucherNo = "", string InvoiceNo = "", string PartCode = "", string Searchbox = "", string Flag = "True")
+        public async Task<IActionResult> PRDashBoard(string FromDate = "", string ToDate = "", int? AccountCode = 0, string VoucherNo = "", string InvoiceNo = "", int? ItemCode = 0, string Searchbox = "", string Flag = "True")
         {
             HttpContext.Session.Remove("PurchaseBill");
             HttpContext.Session.Remove("TaxGrid");
@@ -685,10 +685,10 @@ namespace eTactWeb.Controllers
             {
                 MainModel.FromDate = FromDate;
                 MainModel.ToDate = ToDate;
-                MainModel.VendorName = VendorName != null && VendorName != "0" && VendorName != "undefined" ? VendorName : "0";
+                MainModel.AccountCode = AccountCode != null && AccountCode != 0 ? Convert.ToInt32(AccountCode) : 0;
                 MainModel.VoucherNo = VoucherNo != null && VoucherNo != "0" && VoucherNo != "undefined" ? VoucherNo : "0";
                 MainModel.InvoiceNo = InvoiceNo != null && InvoiceNo != "0" && InvoiceNo != "undefined" ? InvoiceNo : "0";
-                MainModel.PartCode = PartCode != null && PartCode != "0" && PartCode != "undefined" ? PartCode : "0";
+                MainModel.ItemCode = ItemCode != null && ItemCode != 0 ? Convert.ToInt32(ItemCode) : 0;
                 MainModel.Searchbox = Searchbox != null && Searchbox != "0" && Searchbox != "undefined" ? Searchbox : "";
             }
             return View(MainModel);

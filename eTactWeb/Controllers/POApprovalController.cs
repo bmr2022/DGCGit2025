@@ -30,6 +30,7 @@ namespace eTactWeb.Controllers
         {
             var model = new POApprovalModel();
             model.CC = HttpContext.Session.GetString("Branch");
+            model.FromDate = HttpContext.Session.GetString("FromDate");
 
             return View("POApproval", model);
         }
@@ -141,11 +142,13 @@ namespace eTactWeb.Controllers
                     {
                         TempData["302"] = message;
                     }
-                    return View("POApproval", model1);
+                    //return View("POApproval", model1);
+                    return RedirectToAction("POApproval");
                 }
             }
             var model = new POApprovalModel();
-            return View("POApproval", model);
+            //return View("POApproval", model);
+          return RedirectToAction("POApproval");
         }
 
     }

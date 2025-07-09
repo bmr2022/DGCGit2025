@@ -1034,7 +1034,9 @@ namespace eTactWeb.Controllers
         }
         public async Task<IActionResult> DeleteByID(int ID, int YC,string CC,string FromDate,string ToDate,string WONO, string SONO,string SchNo,string AccountName,string PartCode,string ItemName,string SummaryDetail)
         {
-            var Result = await _IworkOrder.DeleteByID(ID, YC);
+            var ActualEntryBy= Convert.ToInt32(HttpContext.Session.GetString("UID"));
+            var MachineName =Environment.MachineName;
+            var Result = await _IworkOrder.DeleteByID(ID, YC, ActualEntryBy, MachineName);
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
