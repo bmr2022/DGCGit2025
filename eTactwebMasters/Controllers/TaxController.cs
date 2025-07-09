@@ -159,6 +159,11 @@ public class TaxController : Controller
             else if (model.TxPageName == "PurchaseOrder")
             {
                 _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+                }
                 //MainModel.ItemDetailGrid = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(model.TxPageName));
             }
             else if (model.TxPageName == "DirectPurchaseBill")
@@ -519,7 +524,12 @@ public class TaxController : Controller
             }
             else if (TxModel.TxPageName == "PurchaseOrder")
             {
-                _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                //_MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+                }
                 ItemDetailGrid = MainModel.ItemDetailGrid;
             }
             else if (TxModel.TxPageName == "SaleInvoice")
@@ -1338,7 +1348,14 @@ public class TaxController : Controller
             else if (SN == "PurchaseOrder")
             {
                 //MainModel = JsonConvert.DeserializeObject<List<POItemDetail>>(HttpContext.Session.GetString(SN) ?? string.Empty);
-                _MemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+                //monika
+                //_MemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+                PurchaseOrderModel MainModel = new();
+                string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+                }
                 ListOfItems = MainModel.ItemDetailGrid;
             }
             else if (SN == "DirectPurchaseBill")
@@ -2323,7 +2340,14 @@ public class TaxController : Controller
             }
             if (SessionName == "PurchaseOrder")
             {
-                _MemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+                //_MemoryCache.TryGetValue("PurchaseOrder", out PurchaseOrderModel MainModel);
+
+                string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                PurchaseOrderModel MainModel = new PurchaseOrderModel();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+                }
                 ItemModel = MainModel.ItemDetailGrid;
                 if (ItemModel != null && ItemModel?.Count > 0)
                 {
