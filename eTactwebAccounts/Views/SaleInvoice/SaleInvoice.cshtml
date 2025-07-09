@@ -2782,7 +2782,32 @@
                     }
                 })
                 var itemsStockableAndCustJw = [];
+                        function ValidateBomItemsInCustGrid() {
+            var custItemCodes = new Set();
+            var isValid = true;
 
+            // Collect all item codes from Customer grid
+            $('#divCustJobWorkISsueSummary tr').each(function (index) {
+                var itemCode = $('#fgItemCodeGrid-' + (index + 1)).val();
+                if (itemCode && itemCode !== "0") {
+                    custItemCodes.add(itemCode);
+                }
+            });
+
+            // Validate each BOM item exists in Customer grid
+            $('#divBomCustJobWorkISsueSummary tr').each(function (index) {
+                var itemCode = $('#fgBomItemCodeGrid-' + (index + 1)).val();
+                if (itemCode && itemCode !== "0") {
+                    if (!custItemCodes.has(itemCode)) {
+                        $.notify('Item "' + itemCode + '" in BOM Customer JobWork must also exist in Customer JobWork grid.', "error");
+                        isValid = false;
+                        return false;
+                    }
+                }
+            });
+
+            return isValid;
+        }
 
                 function ValidateAdjChallanGrid(gridSelector, itemSelector) {
                     var rowCount = $(gridSelector + ' tr').length;
@@ -2820,6 +2845,7 @@
                     else if ($('#StateCode').val() == 0) {
                         $.notify('StateCode is mandatory...!', "error");
                     }
+                
                     else if ($('#divAdjItemList tr td').length > 1) {
                         var hasCR = false;
                         $('tr.adjGridRow').each(function () {
@@ -2838,49 +2864,80 @@
                         if (hasCR) {
                             $.notify('AdjGrid should not have CR value...!', "error");
                         } else {
+                          if ($('#SaleBillJobwork').val() == 'J') {
+                               var rowCount = $('#divSaleBillList tr').length;
+                            for (var i = 1; i <= rowCount; i++) {
+                                var stockable = $('#stockableItems-' + i).text() === 'Y';
+                                var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
+                                if (stockable || custJWAdj) {
+                                    itemsStockableAndCustJw.push($('#GridIC-' + i).val());
+                                }
+                            }
+
+                            // Validate jobwork grids
+                            var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
+                            var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
+                            var isBomItemsValidInCust = ValidateBomItemsInCustGrid();
+
+                            // Validate PendToAdj
+                            var isPentoAdj = true;
+                            $('.bomCustRowJW').find('#pendToAdj').each(function () {
+                                if (parseFloat($(this).text()) > 0) {
+                                    isPentoAdj = false;
+                                    $.notify('PendToAdj qty must be adjusted.', "error");
+                                    return false;
+                                }
+                            });
+
+                            // Final Jobwork validation block
+                            if (isCustJWValid && isBomCustJWValid && isBomItemsValidInCust && isPentoAdj) {
+                                if (confirm("Are you sure you want to save this entry?")) {
+                                   $('#EinvoicePopup').modal('show');
+                                }
+                            }
+
+                        // var rowCount = $('#divSaleBillList tr').length;
+                        // for (var i = 1; i <= rowCount; i++) {
+                        //     var stockable = $('#stockableItems-' + i).text() === 'Y';
+                        //     var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
+                        //     if (stockable || custJWAdj) {
+                        //         itemsStockableAndCustJw.push($('#GridIC-' + i).val());
+                        //     }
+                        // }
+
+                        // var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
+                        // var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
+                        // var isPentoAdj = true;
+                        // if ($('.bomCustRowJW').find('#pendToAdj').filter(function () {
+                        //     return parseFloat($(this).text()) > 0;
+                        // }).length > 0) {
+                        //     isPentoAdj = false;
+                        //     $.notify('PendToAdj qty must be adjusted...!', "error");
+                        // }
+
+                        // if (isCustJWValid && isBomCustJWValid && isPentoAdj) {
+                        //     if (confirm("are you sure you want to save this entry?")) {
+                        //          $('#EinvoicePopup').modal('show');
+                        //        // $("form").submit();
+                        //     }
+                        // }
+                    }
+                    else
+                    {
                             if (confirm("are you sure you want to save this entry?")) {
                                 $('#EinvoicePopup').modal('show');
                               //  $("form").submit();
                             }
+
+                    }
                         }
                     }
-                    else if ($('#SaleBillJobwork').val() == 'J') {
-
-                        var rowCount = $('#divSaleBillList tr').length;
-                        for (var i = 1; i <= rowCount; i++) {
-                            var stockable = $('#stockableItems-' + i).text() === 'Y';
-                            var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
-                            if (stockable || custJWAdj) {
-                                itemsStockableAndCustJw.push($('#GridIC-' + i).val());
-                            }
-                        }
-
-                        var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
-                        var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
-                        var isPentoAdj = true;
-                        if ($('.bomCustRowJW').find('#pendToAdj').filter(function () {
-                            return parseFloat($(this).text()) > 0;
-                        }).length > 0) {
-                            isPentoAdj = false;
-                            $.notify('PendToAdj qty must be adjusted...!', "error");
-                        }
-
-                        if (isCustJWValid && isBomCustJWValid && isPentoAdj) {
-                            if (confirm("are you sure you want to save this entry?")) {
-                                $("form").submit();
-                            }
-                        }
-                    }
-                    else if ($('#GSTRegistered').val() == 'Y') {
+                     else if ($('#GSTRegistered').val() == 'Y') {
                         if ($('#divTaxGrid tr td').length <= 1) {
                             $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                        } else {
-                            // $('#exampleModal').modal('show')
-                            if (confirm("are you sure you want to save this entry?")) {
-                                $("form").submit();
-                            }
                         }
                     }
+            
                     else {
                         // $('#exampleModal').modal('show');
                         if (confirm("are you sure you want to save this entry?")) {
