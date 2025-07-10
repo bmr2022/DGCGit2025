@@ -375,7 +375,7 @@ namespace eTactWeb.Data
             }
             return _ResponseResult;
         }
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEntryBy,string MachineName)
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEntryBy,string MachineName,string WONO,string EntryDate)
         {
             var _ResponseResult = new ResponseResult();
 
@@ -388,6 +388,8 @@ namespace eTactWeb.Data
                 SqlParams.Add(new SqlParameter("@Yearcode", YC));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 SqlParams.Add(new SqlParameter("@MachineName", MachineName));
+                SqlParams.Add(new SqlParameter("@WONO", WONO));
+                SqlParams.Add(new SqlParameter("@EntryDate", EntryDate));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_WorkOrder", SqlParams);
             }

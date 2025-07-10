@@ -84,7 +84,7 @@
                                             </a>
                                         </div>
                                         <div id="deleteCursorDiv-@Cntr">
-                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.Entryid" asp-route-YC="@item.YearCode" onclick="confirmdelete(event)">
+                                            <a class="table-link link-danger" asp-action="DeleteByID" asp-route-ID="@item.Entryid" asp-route-EntryDate="@item.EntryDate" asp-route-YC="@item.YearCode" asp-route-WONO="@item.WONO" onclick="confirmdelete(event)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>

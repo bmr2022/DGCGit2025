@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿
+using eTactWeb.Data.Common;
 using eTactWeb.Services.Interface;
 using FastReport.Export.Html;
 using FastReport.Export.Image;
@@ -1032,11 +1033,11 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> DeleteByID(int ID, int YC,string CC,string FromDate,string ToDate,string WONO, string SONO,string SchNo,string AccountName,string PartCode,string ItemName,string SummaryDetail)
+        public async Task<IActionResult> DeleteByID(int ID, int YC,string CC,string FromDate,string ToDate,string WONO, string SONO,string SchNo,string AccountName,string PartCode,string ItemName,string SummaryDetail,string EntryDate)
         {
             var ActualEntryBy= Convert.ToInt32(HttpContext.Session.GetString("UID"));
             var MachineName =Environment.MachineName;
-            var Result = await _IworkOrder.DeleteByID(ID, YC, ActualEntryBy, MachineName);
+            var Result = await _IworkOrder.DeleteByID(ID, YC, ActualEntryBy, MachineName,WONO,EntryDate);
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;

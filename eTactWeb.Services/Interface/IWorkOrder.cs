@@ -22,7 +22,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetMachineName(int MachGroupId);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> FillWorkCenter();
-        Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEntryBy,string MachineName);
+        Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEntryBy,string MachineName,string WONO,string EntryDate);
         Task<WorkOrderModel> GetViewByID(int ID, int YC, string Mode);
         Task<ResponseResult> SaveWorkOrder(WorkOrderModel model, DataTable WOGrid);
         Task<ResponseResult> GetDashboardData(string FromDate, string ToDate);
