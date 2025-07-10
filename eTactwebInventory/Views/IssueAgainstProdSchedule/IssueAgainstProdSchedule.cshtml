@@ -165,6 +165,13 @@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:150px;margin-top:30px;">
                                     <label class="color-box" style="background-color: #bf4545;"></label><label style="margin-left:5px;margin-top:-5px;">Total Stock <= 0</label>
                                 </div>
+
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
+                                    <button type="button" id="deleteZeroStockRows" onclick="RemoveRowsWithZeroStockAndShowPartCodes()" class="btn btn-danger">Delete Zer0 Stock</button>
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
+                                    <label id="lblDeletedPartCodes" style="color: red;"></label>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -1124,6 +1131,33 @@
                     $.notify(response.responseText, "error");
                 }
             });
+        }
+           function RemoveRowsWithZeroStockAndShowPartCodes() {
+            let deletedCodes = [];
+
+            $('#divIssueAgainstProduction tr').each(function () {
+                var row = $(this);
+                var stockInput = row.find('input[id^="ToatlStock-"]');
+                var rmPartInput = row.find('input[id^="RMPartCode-"]');
+
+                if (stockInput.length > 0) {
+                    var totalStock = parseInt(stockInput.val());
+
+                    if (!isNaN(totalStock) && totalStock <= 0) {
+                        var rmPartCode = rmPartInput.length > 0 ? rmPartInput.val().trim() : 'Unknown';
+                        deletedCodes.push(rmPartCode);
+
+                        row.remove(); // Delete the row
+                    }
+                }
+            });
+
+            // Show deleted RMPartCodes in label
+            if (deletedCodes.length > 0) {
+                $('#lblDeletedPartCodes').text('Deleted RMPartCodes: ' + deletedCodes.join(', '));
+            } else {
+                $('#lblDeletedPartCodes').text('');
+            }
         }
 
         function validateGridInsert(i) {
