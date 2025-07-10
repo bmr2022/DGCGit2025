@@ -654,7 +654,7 @@
                     <a href="#" class="btn btn-primary" id="btnPrint">
                         <i class="fa fa-print"></i> Save & Print
                     </a>
-                    <a href="#" class="btn btn-primary" id="btnPrintEmail">
+                    <a href="#" class="btn btn-primary" id="btnPrintEmail" style="display:none">
                         <i class="fa fa-print"></i> Save & Print & Email
                     </a>
                     <button type="button" class="btn btn-danger" id="btnClose">Save Only</button>
@@ -745,6 +745,16 @@
                 }
                 else {
                 $('#PasswordAllowPopup').modal("show");
+                    var rawcount = $('#divMRNGridAdd').length;
+                    for (var i = 0;i<=rawcount;i++)
+                    {
+                    if (parseFloat($('#ShortExcessQty-'+i).text())) {
+        $('#btnPrintEmail').show();
+    }
+    else {
+                $('#btnPrintEmail').hide();
+    }
+                    }
                 }
             });
 

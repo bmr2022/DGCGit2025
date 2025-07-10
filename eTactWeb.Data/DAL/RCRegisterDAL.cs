@@ -51,7 +51,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@Todate", toDt);
                     oCmd.Parameters.AddWithValue("@accountname", Partyname == null ? string.Empty : Partyname);
-                    oCmd.Parameters.AddWithValue("@IssueChallanNo", IssueChallanNo == null ? "" : RecChallanNo);
+                    oCmd.Parameters.AddWithValue("@IssueChallanNo", IssueChallanNo == null ? "" : IssueChallanNo);
                     oCmd.Parameters.AddWithValue("@recChallanno", RecChallanNo == null ? "" : RecChallanNo);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode == null ? "" : PartCode);
                     oCmd.Parameters.AddWithValue("@Itemname", ItemName == null ? "" : ItemName);

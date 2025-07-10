@@ -514,6 +514,7 @@
                     </div>
                 `;
 
+
         // ReportMode change event handler
         $('#ReportMode').change(function () {
             const selected = $(this).val();
@@ -540,6 +541,10 @@
                 $('#TotalActualpendqtyForReco').closest('.col-xxl-2').remove();
             }
         });
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportMode').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/VendJWRegister/ExportVendJWRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
+        })
         function loadPage(pageNumber) {
              
             var ReportType = $('#ReportMode').val();
@@ -1219,16 +1224,16 @@
             });
         }
 
-        $('#sendToExcel').click(function () {
-            let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
-            });
-        });
+        // $('#sendToExcel').click(function () {
+        //     let table = $("#ReportTable");
+        //     console.log(table);
+        //     TableToExcel.convert(table[0], {
+        //         name: `ReportTable.xlsx`,
+        //         sheet: {
+        //             name: 'ReportTable'
+        //         }
+        //     });
+        // });
 
         // function GetServerDate() {
         //     $.ajax({

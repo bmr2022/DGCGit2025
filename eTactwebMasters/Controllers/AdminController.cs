@@ -429,11 +429,11 @@ public class AdminController : Controller, IAsyncDisposable
                             newUserRightModel.Delete = model.Delete;
                             newUserRightModel.View = model.View;
 
-                            if (item.Text == "SALES & MKT")
-                            {
-                                item.Text = "Sales";
-                            }
-                            else if (item.Text == "PROCURMENT MGMT")
+                            //if (item.Text == "SALES & MKT")
+                            //{
+                            //    item.Text = "Sales";
+                            //}
+                             if (item.Text == "PROCURMENT MGMT")
                             {
                                 item.Text = "Procurment";
                             }
