@@ -59,7 +59,7 @@
 		<div style="width: 100%; background-color: #c5d6ee; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 10px 10px 0 0;">
 			<h3 style="margin: 0;font-size:20px;">Inventory</h3>
 			<div class="icon-container bg-icon" onclick="RefreshAllData()">
-				<i class="fa fa-boxes" style="font-size: 24px; cursor:pointer;"></i>
+				<i id="refreshIcon" class="fa fa-boxes" style="font-size: 24px; cursor: pointer;"></i>
 			</div>
 		</div>
 
@@ -84,42 +84,62 @@
 					<li>Get list of dead items</li>
 					<li>Check pending inventory tasks</li>
 					<li>Find items below minimum stock level</li>
+					<li>Get Fast Vs Slow Moving Items</li>
+					<li>Find items for Fast Moving ItemsList</li>
 				</ul>
 			</div>
 
 			<!-- Action Buttons (Initially hidden) -->
 			<div id="inventoryActions" style="display: none; margin-top: 10px;">
 				<div class="d-flex flex-wrap gap-3">
-					<!-- Light Blue -->
-					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2" style="background-color: #d0ebff;" onclick="FillNoOfItemInStock()">
-						<i class="fa fa-box-open fa-fw text-primary"></i>
+					<!-- Refresh Stock -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #d0ebff;" onclick="FillNoOfItemInStock()">
+						<i class="fas fa-sync-alt fa-fw text-primary"></i>
 						Refresh Stock
 					</button>
 
-					<!-- Light Green -->
-					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2" style="background-color: #d3f9d8;" onclick="StockValuation()">
-						<i class="fa fa-calculator fa-fw text-success"></i>
+					<!-- Stock Valuation -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #d3f9d8;" onclick="StockValuation()">
+						<i class="fas fa-chart-line fa-fw text-success"></i>
 						Stock Valuation
 					</button>
 
-					<!-- Light Orange -->
-					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2" style="background-color: #ffe8cc;" onclick="FillNoOfItemInStock()">
-						<i class="fa fa-skull-crossbones fa-fw text-warning"></i>
+					<!-- Dead Items -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #fff3bf;" onclick="DeadStockInventoryTask()">
+						<i class="fas fa-skull-crossbones fa-fw text-warning"></i>
 						Dead Items
 					</button>
 
-					<!-- Light Pink -->
-					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2" style="background-color: #f8d7da;" onclick="PendingInventoryTask()">
-						<i class="fa fa-tasks fa-fw text-danger"></i>
+					<!-- Pending Jobs -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #f8d7da;" onclick="PendingInventoryTask()">
+						<i class="fas fa-tasks fa-fw text-danger"></i>
 						Pending Jobs
 					</button>
 
-					<!-- Light Teal (Updated Color) -->
-					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2" style="background-color: #d0f0f4;" onclick="FillNoOfItemInStock()">
-						<i class="fa fa-exclamation-triangle fa-fw text-info"></i>
+					<!-- Below Min Level -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #d0f0f4;" onclick="StockValuation()">
+						<i class="fas fa-level-down-alt fa-fw text-info"></i>
 						Below Min Level
 					</button>
 
+					<!-- Fast Vs Slow Item -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #edb98e;" onclick="FastVsSlowMovingTask()">
+						<i class="fas fa-bolt fa-fw" style="color:#cc760d"></i>
+						Fast Vs Slow Item
+					</button>
+
+					<!-- Fast Moving Item List -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #e0c3fc;" onclick="FastMovingItemsListTask()">
+						<i class="fas fa-list-alt fa-fw" style="color:#ac56ac;"></i>
+						Fast Moving Item List
+					</button>
 				</div>
 			</div>
 		</div>
@@ -212,22 +232,40 @@
 			}
 		}
 
-		function RefreshAllData(){
-			$('#RefreshAllData').val(true);
-			FillNoOfItemInStock();
-			StockValuation();
-			PendingInventoryTask();
+		function RefreshAllData() {
+			var icon = $('#refreshIcon');
+			var btn = $('#refreshBtn');
 
-			if ($('#RefreshAllData').val() == "true") {
+			// Change icon to spinner
+			icon.removeClass('fa-boxes').addClass('fa-spinner fa-spin');
+
+			// Disable click interaction
+			icon.css('pointer-events', 'none'); // Disable pointer
+			icon.css('opacity', '0.6');         // Optional: show visually it's disabled
+
+			// Let the browser render the spinner first
+			setTimeout(function () {
+				$('#RefreshAllData').val(true);
+
+				// Call your inventory functions
+				FillNoOfItemInStock();
+				StockValuation();
+				DeadStockInventoryTask();
+				PendingInventoryTask();
+				FastVsSlowMovingTask();
+				FastMovingItemsListTask();
+
 				$.notify('Successfully refreshed all Inventory Data...!', {
 					position: "top center",
 					className: "success"
 				});
 
+				// Reload the page
 				setTimeout(function () {
-					location.reload(); // Refresh after 2 seconds
+					location.reload();
 				}, 1000);
-			}
+
+			}, 10);
 		}
 
 		function FillNoOfItemInStock(){
@@ -290,6 +328,78 @@
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
 								if($('#RefreshAllData').val() == "false"){
 									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function DeadStockInventoryTask(){
+			$.ajax({
+						url: '@Url.Action("DeadStockInventoryTask", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshAllData').val() == "false"){
+									$.notify('Successfully Refresh Dead item In Stock...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function FastMovingItemsListTask(){
+			$.ajax({
+						url: '@Url.Action("FastMovingItemsListTask", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshAllData').val() == "false"){
+									$.notify('Successfully Refresh FastMoving ItemList...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function FastVsSlowMovingTask(){
+			$.ajax({
+						url: '@Url.Action("FastVsSlowMovingTask", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshAllData').val() == "false"){
+									$.notify('Successfully Refresh Fast Vs Slow Moving Task...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
 									}, 1000);

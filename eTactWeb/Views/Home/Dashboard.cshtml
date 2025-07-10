@@ -265,13 +265,113 @@
 			color: #333;
 		}
 
+		.card-header {
+			padding: 16px 20px;
+			display: flex;
+			align-items: center;
+			background-color: var(--primary-color);
+			color: white;
+		}
+
+		.card-icon {
+			font-size: 24px;
+			margin-right: 12px;
+			width: 40px;
+			height: 40px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			border-radius: 8px;
+			background-color: rgba(255, 255, 255, 0.2);
+		}
+
+		.card-title {
+			font-size: 16px;
+			font-weight: 600;
+			margin: 0;
+		}
+
+		.card-body {
+			padding: 20px;
+		}
+
+		.metrics-container {
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.metric {
+			flex: 1;
+			padding: 12px;
+			border-radius: 8px;
+			position: relative;
+		}
+
+			.metric:first-child {
+				margin-right: 10px;
+				background-color: rgba(16, 185, 129, 0.1);
+			}
+
+			.metric:last-child {
+				background-color: rgba(79, 70, 229, 0.1);
+			}
+
+		.metric-period {
+			font-size: 12px;
+			font-weight: 500;
+			margin-bottom: 6px;
+			display: flex;
+			align-items: center;
+			color: var(--text-light);
+		}
+
+		.metric-value {
+			font-size: 20px;
+			font-weight: 700;
+			margin: 8px 0 4px;
+			color: var(--text-dark);
+		}
+
+		.metric-change {
+			font-size: 12px;
+			display: flex;
+			align-items: center;
+		}
+
+		.positive-change {
+			color: var(--secondary-color);
+		}
+
+		.negative-change {
+			color: #ef4444;
+		}
+
+		.metric-icon {
+			margin-right: 6px;
+		}
+
+		.purchase-card {
+			background: white;
+			border-radius: 12px;
+			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+			overflow: hidden;
+			width: 100%;
+			max-width: 320px;
+			transition: transform 0.3s ease, box-shadow 0.3s ease;
+		}
+
+			.purchase-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+			}
+
 	</style>
 </head>
 <body>
 	<div class="tab-nav">
 		<button class="tab-link active" data-target="#inventoryTab">
-			<div class="tab-icon-container bg-icon" onclick="RefreshAllInventory()">
-				<i class="fas fa-boxes"></i>
+			<div class="tab-icon-container bg-icon" onclick="RefreshAllData()">
+				<i class="fa fa-boxes refreshIcon" style="font-size: 24px; cursor: pointer;"></i>
 			</div>
 			<div class="tab-text">
 				Inventory Dashboard
@@ -325,7 +425,7 @@
 				</div>
 			</div>
 			<div class="dashboard-card red">
-				<div class="icon-box">
+				<div class="icon-box" onclick="DeadStockInventoryTask()">
 					<i class="fas fa-triangle-exclamation"></i>
 				</div>
 				<div class="card-content">
@@ -334,7 +434,7 @@
 				</div>
 			</div>
 			<div class="dashboard-card red">
-				<div class="icon-box">
+				<div class="icon-box" onclick="DeadStockInventoryTask()">
 					<i class="fas fa-circle-exclamation"></i>
 				</div>
 				<div class="card-content">
@@ -371,7 +471,7 @@
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
 					<h3 style="margin: 0;">Fast vs Slow Moving Items</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="FastVsSlowMovingTask()"></i>
 					</div>
 				</div>
 				<div class="card-body">
@@ -390,31 +490,31 @@
 						<thead><tr><th>Form</th><th>Qty</th></tr></thead>
 						<tbody>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingRequisitionToIssue" asp-controller="PendingRequisitionToIssue" id="MaterialtoIssueWOBOM">Req Without BOM</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingRequisitionToIssue" asp-controller="PendingRequisitionToIssue" id="MaterialtoIssueWOBOM" target="_blank">Req Without BOM</a></td>
 								<td><span id="PendRequisitionWithoutBOM">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingMaterialToIssueThrBOM" asp-controller="PendingMaterialToIssueThrBOM" id="MaterialtoIssueThrBOM">Req Against BOM</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingMaterialToIssueThrBOM" asp-controller="PendingMaterialToIssueThrBOM" id="MaterialtoIssueThrBOM" target="_blank">Req Against BOM</a></td>
 								<td><span id="PendingReqAgainstBOM">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">Against Plan</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule" target="_blank">Against Plan</a></td>
 								<td><span id="PendingAgainstPlan">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="MaterialReceipt" asp-controller="MaterialReceipt" id="MaterialReceiptNote">Gate Entry For MRN</a></td>
+								<td><a class="table-link link-primary" asp-action="MaterialReceipt" asp-controller="MaterialReceipt" id="MaterialReceiptNote" target="_blank">Gate Entry For MRN</a></td>
 								<td><span id="PendingGateEntryForMRN">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" id="MRIR">MRN For Qc</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingMRNtoQc" asp-controller="PendingMRNtoQc" id="MRIR" target="_blank">MRN For Qc</a></td>
 								<td><span id="PendingMRNForQc">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="JobWorkReceive" asp-controller="JobWorkReceive" id="JobWorkReceive">Gate Entry For JW MRN</a></td>
+								<td><a class="table-link link-primary" asp-action="JobWorkReceive" asp-controller="JobWorkReceive" id="JobWorkReceive" target="_blank">Gate Entry For JW MRN</a></td>
 								<td><span id="PendingGateEntryForJWMrn">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingToReceiveItem" asp-controller="PendingToReceiveItem" id="ReceiveItemInStore">ReceiveItem In Store</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingToReceiveItem" asp-controller="PendingToReceiveItem" id="ReceiveItemInStore" target="_blank">ReceiveItem In Store</a></td>
 								<td><span id="PendingToReceiveItemInStore">0</span></td>
 							</tr>
 						</tbody>
@@ -469,7 +569,7 @@
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
 					<h3>Top Fast Moving Item</h3>
-					<div class="tab-icon-container bg-icon">
+					<div class="tab-icon-container bg-icon" onclick="FastMovingItemsListTask()">
 						<i class="fas fa-chart-line" style="font-size: 24px;"></i>
 					</div>
 				</div>
@@ -525,234 +625,260 @@
 		</div>
 	</div>
 	<div id="purchaseTab" class="tab-content">
-		<div class="card-container">
-			<div class="dashboard-card">
-				<div class="icon-box">
-					<i class="fas fa-coins"></i>
+		<div class="purchase-card">
+			<div class="card-header">
+				<div class="card-icon">
+					<i class="fas fa-shopping-cart"></i>
 				</div>
-				<div class="card-content">
-					<h3>Total Procurement</h3>
-					<div class="value TotalStockValue" id="TotalStockValue"></div>
-					<h3>M T D</h3>
+				<h3 class="card-title">Purchase Overview</h3>
+			</div>
+			<div class="card-body">
+				<div class="metrics-container">
+					<div class="metric">
+						<div class="metric-period">
+							<i class="fas fa-calendar-alt metric-icon"></i>
+							Annual
+						</div>
+						<div class="metric-value">1,248</div>
+						<div class="metric-change positive-change">
+							<i class="fas fa-arrow-up metric-icon"></i>
+							+8.7% from last year
+						</div>
+						<div class="metric-footer">Total Orders 2023</div>
+					</div>
+
+					<div class="metric">
+						<div class="metric-period">
+							<i class="fas fa-calendar-week metric-icon"></i>
+							Monthly
+						</div>
+						<div class="metric-value">102</div>
+						<div class="metric-change positive-change">
+							<i class="fas fa-arrow-up metric-icon"></i>
+							+5.1% from last month
+						</div>
+						<div class="metric-footer">October 2023</div>
+					</div>
 				</div>
 			</div>
-			<div class="dashboard-card">
-				<div class="icon-box" onclick="FillNoOfItemInStock()">
-					<i class="fas fa-coins"></i>
-				</div>
-				<div class="card-content">
-					<h3>Annual PO</h3>
-					<div class="value TotalStockValue" id="TotalStockValue"></div>
-				</div>
-				@* <div class="card-content">
+		</div>
+		<div class="dashboard-card">
+			<div class="icon-box" onclick="FillNoOfItemInStock()">
+				<i class="fas fa-coins"></i>
+			</div>
+			<div class="card-content">
+				<h3>Annual PO</h3>
+				<div class="value TotalStockValue" id="TotalStockValue"></div>
+			</div>
+			@* <div class="card-content">
 					<h3>PO Raised This Month</h3>
 					<div class="value TotalStockValue" id="TotalStockValue"></div>
 				</div> *@
+		</div>
+		<div class="dashboard-card">
+			<div class="icon-box" onclick="FillNoOfItemInStock()">
+				<i class="fas fa-coins"></i>
 			</div>
-			<div class="dashboard-card">
-				<div class="icon-box" onclick="FillNoOfItemInStock()">
-					<i class="fas fa-coins"></i>
-				</div>
-				<div class="card-content">
-					<h3>Complete PO</h3>
-					<div class="value TotalStockValue" id="TotalStockValue"></div>
-					@* <h3>Pending PO</h3>
+			<div class="card-content">
+				<h3>Complete PO</h3>
+				<div class="value TotalStockValue" id="TotalStockValue"></div>
+				@* <h3>Pending PO</h3>
 					<div class="value TotalStockValue" id="TotalStockValue"></div>
 					<h3>Our Delay PO</h3>
 					<div class="value TotalStockValue" id="TotalStockValue"></div> *@
-				</div>
 			</div>
 		</div>
-		<div class="dashboard">
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">PO Value by Category</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="inventoryByCategoryChart"></canvas>
+	</div>
+	<div class="dashboard">
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3 style="margin: 0;">PO Value by Category</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
 				</div>
 			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">Top 10 Items by Value</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="poTopItemByValueChart"></canvas>
-				</div>
-			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Pending</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-hourglass-half" style="font-size: 24px;cursor:pointer;" onclick="PendingInventoryTask()"></i>
-					</div>
-				</div>
-				<div class="table-container" style="max-height:300px;overflow-y: auto;">
-					<table class="pending-table">
-						<thead>
-							<tr>
-								<th>Form</th>
-								<th>Qty</th>
-							</tr>
-						</thead>
-						<tbody>
-							<tr>
-								<td><a class="table-link link-primary" asp-controller="Indent" asp-action="Indent" id="Indent">Indent For PO</a></td>
-								<td><span id="PendingIndentForPO">0</span></td>
-							</tr>
-							<tr>
-								<td><a class="table-link link-primary" asp-action="POApproval" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">PO Approval For First Approvak</a></td>
-								<td><span id="PendingPOApprovalForFirstApproval">0</span></td>
-							</tr>
-							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingPOApprovalForMgmtApproval" asp-controller="PendingPOApprovalForMgmtApproval" id="POApprovalForMgmtApproval">PO Approval For Mgmt Approval</a></td>
-								<td><span id="PendingPOApprovalForMgmtApproval">0</span></td>
-							</tr>
-							<tr>
-								<td><a class="table-link link-primary" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0" id="PSApproval">Amendment PO For Approval</a></td>
-								<td><span id="PendingAmendmentPOForApproval">0</span></td>
-							</tr>
-							<tr>
-								<td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" asp-route-ID="0" id="SOApproval">Schedule For Approval</a></td>
-								<td><span id="PendingScheduleForApproval">0</span></td>
-							</tr>
-							<tr>
-								<td><a class="table-link link-primary" asp-action="SSApproval" asp-controller="SSApproval" id="SSApproval">Amendment Schedule For Approval</a></td>
-								<td><span id="PendingAmendmentScheduleForApproval">0</span></td>
-							</tr>
-							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingMRP" asp-controller="PendingMRP" id="PendingMRP">SO For MRP</a></td>
-								<td><span id="PendingSOForMRP">0</span></td>
-							</tr>
-							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingMRPForPO" asp-controller="PendingMRPForPO" id="MRPForPO">MRP For PO</a></td>
-								<td><span id="PendingMRPForPO">0</span></td>
-							</tr>
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">PO Generated</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="fastSlowChart"></canvas>
-				</div>
-			</div>		
-		</div>
-		<div class="dashboard">			
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">Top 10 Items by Value</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="poTopItemByValueChart"></canvas>
-				</div>
-			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">Top 10 Vendors Value</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="inventoryByCategoryChart"></canvas>
-				</div>
-			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Top 10 Best Vendors</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="table-container" style="max-height:350px;">
-					<table class="custom-table custom-table-scroll" style="width: 100%;">
-						<thead style="background-color:#7493c3">
-							<tr>
-								<th>PartCode</th>
-								<th>ItemName</th>
-								<th>Stock</th>
-								<th>Value</th>
-							</tr>
-						</thead>
-						<tbody id="TopItemByStockValue">
-						</tbody>
-					</table>
-				</div>
+			<div class="card-body">
+				<canvas id="inventoryByCategoryChart"></canvas>
 			</div>
 		</div>
-		<div class="dashboard">
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Top 10 Best Vendors</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="table-container" style="max-height:350px;">
-					<table class="custom-table custom-table-scroll" style="width: 100%;">
-						<thead style="background-color:#7493c3">
-							<tr>
-								<th>PartCode</th>
-								<th>ItemName</th>
-								<th>Stock</th>
-								<th>Value</th>
-							</tr>
-						</thead>
-						<tbody id="TopItemByStockValue">
-						</tbody>
-					</table>
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3 style="margin: 0;">Top 10 Items by Value</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
 				</div>
 			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Top 10 Best Vendors</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="table-container" style="max-height:350px;">
-					<table class="custom-table custom-table-scroll" style="width: 100%;">
-						<thead style="background-color:#7493c3">
-							<tr>
-								<th>PartCode</th>
-								<th>ItemName</th>
-								<th>Stock</th>
-								<th>Value</th>
-							</tr>
-						</thead>
-						<tbody id="TopItemByStockValue">
-						</tbody>
-					</table>
-				</div>
-			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">Top 10 Vendors Value</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="inventoryByCategoryChart"></canvas>
-				</div>
+			<div class="card-body">
+				<canvas id="poTopItemByValueChart"></canvas>
 			</div>
 		</div>
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3>Pending</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fas fa-hourglass-half" style="font-size: 24px;cursor:pointer;" onclick="PendingInventoryTask()"></i>
+				</div>
+			</div>
+			<div class="table-container" style="max-height:300px;overflow-y: auto;">
+				<table class="pending-table">
+					<thead>
+						<tr>
+							<th>Form</th>
+							<th>Qty</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td><a class="table-link link-primary" asp-controller="Indent" asp-action="Indent" id="Indent">Indent For PO</a></td>
+							<td><span id="PendingIndentForPO">0</span></td>
+						</tr>
+						<tr>
+							<td><a class="table-link link-primary" asp-action="POApproval" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">PO Approval For First Approvak</a></td>
+							<td><span id="PendingPOApprovalForFirstApproval">0</span></td>
+						</tr>
+						<tr>
+							<td><a class="table-link link-primary" asp-action="PendingPOApprovalForMgmtApproval" asp-controller="PendingPOApprovalForMgmtApproval" id="POApprovalForMgmtApproval">PO Approval For Mgmt Approval</a></td>
+							<td><span id="PendingPOApprovalForMgmtApproval">0</span></td>
+						</tr>
+						<tr>
+							<td><a class="table-link link-primary" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0" id="PSApproval">Amendment PO For Approval</a></td>
+							<td><span id="PendingAmendmentPOForApproval">0</span></td>
+						</tr>
+						<tr>
+							<td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" asp-route-ID="0" id="SOApproval">Schedule For Approval</a></td>
+							<td><span id="PendingScheduleForApproval">0</span></td>
+						</tr>
+						<tr>
+							<td><a class="table-link link-primary" asp-action="SSApproval" asp-controller="SSApproval" id="SSApproval">Amendment Schedule For Approval</a></td>
+							<td><span id="PendingAmendmentScheduleForApproval">0</span></td>
+						</tr>
+						<tr>
+							<td><a class="table-link link-primary" asp-action="PendingMRP" asp-controller="PendingMRP" id="PendingMRP">SO For MRP</a></td>
+							<td><span id="PendingSOForMRP">0</span></td>
+						</tr>
+						<tr>
+							<td><a class="table-link link-primary" asp-action="PendingMRPForPO" asp-controller="PendingMRPForPO" id="MRPForPO">MRP For PO</a></td>
+							<td><span id="PendingMRPForPO">0</span></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3 style="margin: 0;">PO Generated</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+				</div>
+			</div>
+			<div class="card-body">
+				<canvas id="fastSlowChart"></canvas>
+			</div>
+		</div>
+	</div>
+	<div class="dashboard">
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3 style="margin: 0;">Top 10 Items by Value</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+				</div>
+			</div>
+			<div class="card-body">
+				<canvas id="poTopItemByValueChart"></canvas>
+			</div>
+		</div>
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3 style="margin: 0;">Top 10 Vendors Value</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+				</div>
+			</div>
+			<div class="card-body">
+				<canvas id="inventoryByCategoryChart"></canvas>
+			</div>
+		</div>
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3>Top 10 Best Vendors</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+				</div>
+			</div>
+			<div class="table-container" style="max-height:350px;">
+				<table class="custom-table custom-table-scroll" style="width: 100%;">
+					<thead style="background-color:#7493c3">
+						<tr>
+							<th>PartCode</th>
+							<th>ItemName</th>
+							<th>Stock</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody id="TopItemByStockValue">
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+	<div class="dashboard">
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3>Top 10 Best Vendors</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+				</div>
+			</div>
+			<div class="table-container" style="max-height:350px;">
+				<table class="custom-table custom-table-scroll" style="width: 100%;">
+					<thead style="background-color:#7493c3">
+						<tr>
+							<th>PartCode</th>
+							<th>ItemName</th>
+							<th>Stock</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody id="TopItemByStockValue">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3>Top 10 Best Vendors</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+				</div>
+			</div>
+			<div class="table-container" style="max-height:350px;">
+				<table class="custom-table custom-table-scroll" style="width: 100%;">
+					<thead style="background-color:#7493c3">
+						<tr>
+							<th>PartCode</th>
+							<th>ItemName</th>
+							<th>Stock</th>
+							<th>Value</th>
+						</tr>
+					</thead>
+					<tbody id="TopItemByStockValue">
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="card">
+			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+				<h3 style="margin: 0;">Top 10 Vendors Value</h3>
+				<div class="tab-icon-container bg-icon">
+					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+				</div>
+			</div>
+			<div class="card-body">
+				<canvas id="inventoryByCategoryChart"></canvas>
+			</div>
+		</div>
+	</div>
 	</div>
 </body>
 </html>
@@ -828,8 +954,7 @@
 								};
 
 								var xValues = Object.entries(dataMap).map(([key, val]) => {
-								  var percent = ((val / TotalStock) * 100).toFixed(0);  // Round to whole number
-								  return `${key} - ${percent}%`;
+									return `${key} - ${val}`;
 								});
 								var yValues = Object.values(dataMap);
 								var barColors = [
@@ -1131,23 +1256,39 @@
 		  options: { scales: { y: { beginAtZero: true } } }
 		});
 
-		function RefreshAllInventory() {
-			debugger;
-			$('#RefreshAllData').val(true);
-			FillNoOfItemInStock();
-			StockValuation();
-			PendingInventoryTask();
+		function RefreshAllData() {
+			var icon = $('.refreshIcon');
 
-			if ($('#RefreshAllData').val() == "true") {
+			// Change icon to spinner
+			icon.removeClass('fa-boxes').addClass('fa-spinner fa-spin');
+
+			// Disable click interaction
+			icon.css('pointer-events', 'none'); // Disable pointer
+			icon.css('opacity', '0.6');         // Optional: show visually it's disabled
+
+			// Let the browser render the spinner first
+			setTimeout(function () {
+				$('#RefreshAllData').val(true);
+
+				// Call your inventory functions
+				FillNoOfItemInStock();
+				StockValuation();
+				DeadStockInventoryTask();
+				PendingInventoryTask();
+				FastVsSlowMovingTask();
+				FastMovingItemsListTask();
+
 				$.notify('Successfully refreshed all Inventory Data...!', {
 					position: "top center",
 					className: "success"
 				});
 
+				// Reload the page
 				setTimeout(function () {
-					location.reload(); // Refresh after 2 seconds
+					location.reload();
 				}, 1000);
-			}
+
+			}, 10);
 		}
 
 		function FillNoOfItemInStock(){
@@ -1210,7 +1351,79 @@
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
 								if($('#RefreshAllData').val() == "false"){
-									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
+									$.notify('Successfully Refresh Pending Item Job List...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function DeadStockInventoryTask(){
+			$.ajax({
+						url: '@Url.Action("DeadStockInventoryTask", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshAllData').val() == "false"){
+									$.notify('Successfully Refresh Dead item In Stock...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function FastMovingItemsListTask(){
+			$.ajax({
+						url: '@Url.Action("FastMovingItemsListTask", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshAllData').val() == "false"){
+									$.notify('Successfully Refresh FastMoving ItemList...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function FastVsSlowMovingTask(){
+			$.ajax({
+						url: '@Url.Action("FastVsSlowMovingTask", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshAllData').val() == "false"){
+									$.notify('Successfully Refresh Fast Vs Slow Moving Task...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
 									}, 1000);
