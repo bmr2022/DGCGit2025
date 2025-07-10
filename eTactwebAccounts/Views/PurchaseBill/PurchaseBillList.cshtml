@@ -47,7 +47,38 @@
 @section Scripts
 {
     <script>
+            const formFields = [
+            'FromDate', 'ToDate', 'DashboardType', 'MRNType',
+            'PartyName', 'MRNNo', 'PONO', 'InvoiceNo',
+            'GateNo', 'DocumentName', 'ItemName', 'PartCode',
+            'search-box'
+        ];
+
+          function saveFormStateToSession() {
+            formFields.forEach(field => {
+                const element = document.getElementById(field);
+                if (element) {
+                    const value = element.value;
+                    sessionStorage.setItem(`${field}Back`, value);
+                }
+            });
+        }
+                   // FromDate
+
+        function clearFormStateFromSession() {
+            formFields.forEach(field => {
+                sessionStorage.removeItem(`${field}Back`);
+            });
+        }
+
+
         $(function () {
+                  // Fields to handle
+
+
+        // Save all form field values into sessionStorage
+
+
             GetFormRights();
             LockedFinancialYear();
             CheckApprovedOrNot();
@@ -55,7 +86,47 @@
             $('#totalRows').text(dashGrid);
             setDefaultData();
             $('#YearCode').val($('#sessionYC').text());
+                      $(document).on('change', '#FromDate', function () {
+            GetPBListDropdownData();
+        });
+             $(document).on('change', '#ToDate', function () {
+            GetPBListDropdownData();
+        });
+                var FromDateBack = sessionStorage.getItem('FromDateBack');
+        if (FromDateBack) {
+            $('#FromDate').val(FromDateBack);
+            if ($('#FromDate').hasClass('hasDatepicker')) {
+                $('#FromDate').datepicker('setDate', FromDateBack);
+            }
+        }
+
+        // ToDate
+        var ToDateBack = sessionStorage.getItem('ToDateBack');
+        if (ToDateBack) {
+            $('#ToDate').val(ToDateBack);
+            if ($('#ToDate').hasClass('hasDatepicker')) {
+                $('#ToDate').datepicker('setDate', ToDateBack);
+            }
+        }
+
+        // DashboardType
+        var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
+        if (DashboardTypeBack) {
+            $('#DashboardType').val(DashboardTypeBack).trigger('change'); // select2
+        }
+
+        // MRNType
+        var MRNTypeBack = sessionStorage.getItem('MRNTypeBack');
+        if (MRNTypeBack) {
+            $('#MRNType').val(MRNTypeBack).trigger('change'); // select2
+        }
+
+
+                 GetPBListDropdownData();
+      
+
             GetSearchData();
+            clearFormStateFromSession()
         });
         function setDefaultData() {
             // var currentDate = new Date();
@@ -110,6 +181,7 @@
 
             // AutoComplete('VDirectPurchaseBillMain', 'ItemName', 'ItemName', null);
             // AutoComplete('VDirectPurchaseBillMain', 'PurchVouchNo', 'purvoucherno', null);
+
             $('#DashboardType').select2();
             $('#MRNType').select2();
             $('#PartyName').select2();
@@ -120,6 +192,42 @@
             $('#DocumentName').select2();
             $('#ItemName').select2();
             $('#PartCode').select2();
+               const selectIds = [
+          'PartyName',
+            'MRNNo', 'PONO', 'InvoiceNo', 'GateNo',
+            'DocumentName', 'ItemName', 'PartCode'
+        ];
+
+        selectIds.forEach(function (id) {
+            $('#' + id).select2();
+        });
+
+        // Restore previous selections from sessionStorage
+        selectIds.forEach(function (id) {
+            const storedText = sessionStorage.getItem(id + 'Back');
+            if (storedText) {
+                let matched = false;
+
+                $('#' + id + ' option').each(function () {
+                    if ($(this).text().trim() === storedText.trim()) {
+                        $('#' + id).val($(this).val()).trigger('change');
+                        matched = true;
+                        return false;
+                    }
+                });
+
+                if (!matched) {
+                    const newOption = new Option(storedText, storedText, true, true);
+                    $('#' + id).append(newOption).trigger('change');
+                }
+            }
+
+            // Save on change
+            $('#' + id).on('change', function () {
+                const selectedText = $('#' + id + ' option:selected').text();
+                sessionStorage.setItem(id + 'Back', selectedText);
+            });
+        });
         }
         function CheckApprovedOrNot() {
 
@@ -262,7 +370,7 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#PBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
-                    GetPBListDropdownData();
+                   // GetPBListDropdownData();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -282,6 +390,7 @@
                     LockedFinancialYear();
                     $('#SParam').empty().append(data);
                     setDefaultData();
+
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -414,7 +523,8 @@
             });
         }
         function transferDataToEdit(cntr) {
-            showToTransfer(cntr)
+        saveFormStateToSession()
+              showToTransfer(cntr)
         }
         function showToTransfer(i) {
 
