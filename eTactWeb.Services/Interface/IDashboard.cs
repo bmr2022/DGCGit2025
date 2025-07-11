@@ -24,5 +24,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> DeadStockInventoryTask();
         Task<ResponseResult> FastMovingItemsListTask();
         Task<ResponseResult> FastVsSlowMovingTask();
+        Task<ResponseResult> SaveNoOfPOItemsAndPending();
+        Task<ResponseResult> SaveTop10ItemForPO();
     }
 }

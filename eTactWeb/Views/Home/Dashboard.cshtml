@@ -265,12 +265,19 @@
 			color: #333;
 		}
 
+		.card-row {
+			display: flex;
+			gap: 20px; /* space between cards */
+			flex-wrap: wrap; /* for responsiveness on smaller screens */
+			margin: 10px;
+		}
+
 		.card-header {
 			padding: 16px 20px;
 			display: flex;
 			align-items: center;
-			background-color: var(--primary-color);
-			color: white;
+			background-color: #99b1d6;
+			color: #333;
 		}
 
 		.card-icon {
@@ -292,7 +299,7 @@
 		}
 
 		.card-body {
-			padding: 20px;
+			padding: 8px;
 		}
 
 		.metrics-container {
@@ -312,12 +319,18 @@
 				background-color: rgba(16, 185, 129, 0.1);
 			}
 
+			.metric:nth-child(2) {
+				margin: 0 10px;
+				background-color: rgba(234, 179, 8, 0.1); /* yellowish for completed */
+			}
+
 			.metric:last-child {
+				margin: 0 10px;
 				background-color: rgba(79, 70, 229, 0.1);
 			}
 
 		.metric-period {
-			font-size: 12px;
+			font-size: 15px;
 			font-weight: 500;
 			margin-bottom: 6px;
 			display: flex;
@@ -326,7 +339,7 @@
 		}
 
 		.metric-value {
-			font-size: 20px;
+			font-size: 18px;
 			font-weight: 700;
 			margin: 8px 0 4px;
 			color: var(--text-dark);
@@ -356,7 +369,7 @@
 			box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
 			overflow: hidden;
 			width: 100%;
-			max-width: 320px;
+			max-width: 450px;
 			transition: transform 0.3s ease, box-shadow 0.3s ease;
 		}
 
@@ -370,7 +383,7 @@
 <body>
 	<div class="tab-nav">
 		<button class="tab-link active" data-target="#inventoryTab">
-			<div class="tab-icon-container bg-icon" onclick="RefreshAllData()">
+			<div class="tab-icon-container bg-icon" onclick="RefreshInventoryAllData()">
 				<i class="fa fa-boxes refreshIcon" style="font-size: 24px; cursor: pointer;"></i>
 			</div>
 			<div class="tab-text">
@@ -405,7 +418,7 @@
 			<input type="hidden" id="TotalOthersValue" />
 			<input type="hidden" id="TotalItemQtyOfDeadStock" />
 			<input type="hidden" id="TotalItemQtyOfFastMovingStock" />
-			<input type="hidden" id="RefreshAllData" />
+			<input type="hidden" id="RefreshInventoryAllData" />
 			<div class="dashboard-card">
 				<div class="icon-box" onclick="FillNoOfItemInStock()" title="Refresh No Of Item In Stock">
 					<i class="fas fa-coins"></i>
@@ -625,260 +638,332 @@
 		</div>
 	</div>
 	<div id="purchaseTab" class="tab-content">
-		<div class="purchase-card">
-			<div class="card-header">
-				<div class="card-icon">
-					<i class="fas fa-shopping-cart"></i>
-				</div>
-				<h3 class="card-title">Purchase Overview</h3>
-			</div>
-			<div class="card-body">
-				<div class="metrics-container">
-					<div class="metric">
-						<div class="metric-period">
-							<i class="fas fa-calendar-alt metric-icon"></i>
-							Annual
-						</div>
-						<div class="metric-value">1,248</div>
-						<div class="metric-change positive-change">
-							<i class="fas fa-arrow-up metric-icon"></i>
-							+8.7% from last year
-						</div>
-						<div class="metric-footer">Total Orders 2023</div>
+		<input type="hidden" id="RefreshPOAllData" />
+		<div class="card-row">
+			<div class="purchase-card">
+				<div class="card-header">
+					<div class="card-icon" onclick="SaveNoOfPOItemsAndPending()" style="cursor:pointer">
+						<i class="fas fa-money-bill-wave"></i>
 					</div>
+					<h3 class="card-title">Purchase Order Value</h3>
+				</div>
+				<div class="card-body">
+					<div class="metrics-container">
+						<div class="metric">
+							<div class="metric-period">
+								<i class="fas fa-calendar-alt metric-icon"></i>
+								Annual
+							</div>
+							<div class="metric-value" id="TotalNoofAnualPONetValue">0</div>
+							<div class="metric-change positive-change">
+								<i class="fas fa-arrow-up metric-icon"></i>
+								+8.7% from last year
+							</div>
+							<div class="metric-footer">Total Orders 2023</div>
+						</div>
 
-					<div class="metric">
-						<div class="metric-period">
-							<i class="fas fa-calendar-week metric-icon"></i>
-							Monthly
+						<div class="metric">
+							<div class="metric-period">
+								<i class="fas fa-calendar-week metric-icon"></i>
+								Monthly
+							</div>
+							<div class="metric-value" id="ToatalNoOfMonthlyPONetValue">0</div>
+							<div class="metric-change positive-change">
+								<i class="fas fa-arrow-up metric-icon"></i>
+								+5.1% from last month
+							</div>
+							<div class="metric-footer">October 2023</div>
 						</div>
-						<div class="metric-value">102</div>
-						<div class="metric-change positive-change">
-							<i class="fas fa-arrow-up metric-icon"></i>
-							+5.1% from last month
+					</div>
+				</div>
+			</div>
+			<div class="purchase-card">
+				<div class="card-header">
+					<div class="card-icon" onclick="SaveNoOfPOItemsAndPending()" style="cursor:pointer">
+						<i class="fas fa-shopping-cart"></i>
+					</div>
+					<h3 class="card-title">Purchase Order Qty</h3>
+				</div>
+				<div class="card-body">
+					<div class="metrics-container">
+						<div class="metric">
+							<div class="metric-period">
+								<i class="fas fa-calendar-alt metric-icon"></i>
+								Annual
+							</div>
+							<div class="metric-value" id="TotalNoOfAnualPOQty">0</div>
+							<div class="metric-change positive-change">
+								<i class="fas fa-arrow-up metric-icon"></i>
+								+8.7% from last year
+							</div>
+							<div class="metric-footer">Total Orders 2023</div>
 						</div>
-						<div class="metric-footer">October 2023</div>
+
+						<div class="metric">
+							<div class="metric-period">
+								<i class="fas fa-calendar-week metric-icon"></i>
+								Monthly
+							</div>
+							<div class="metric-value" id="ToatalNoOfMonthlyPOQty">0</div>
+							<div class="metric-change positive-change">
+								<i class="fas fa-arrow-up metric-icon"></i>
+								+5.1% from last month
+							</div>
+							<div class="metric-footer">October 2023</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="purchase-card">
+				<div class="card-header">
+					<div class="card-icon" onclick="SaveNoOfPOItemsAndPending()" style="cursor:pointer">
+						<i class="fas fa-tasks"></i>
+					</div>
+					<h3 class="card-title">Purchase Order Status</h3>
+				</div>
+				<div class="card-body">
+					<div class="metrics-container">
+						<div class="metric">
+							<div class="metric-period">
+								<i class="fas fa-list-alt metric-icon"></i>
+								Total
+							</div>
+							<div class="metric-value" id="TotalPOPendingAndComplted">0</div>
+							<div class="metric-change positive-change">
+								<i class="fas fa-arrow-up metric-icon"></i>
+								+8.7% from last year
+							</div>
+							<div class="metric-footer">Total Orders 2023</div>
+						</div>
+						<div class="metric">
+							<div class="metric-period">
+								<i class="fas fa-check-circle metric-icon"></i>
+								Completed
+							</div>
+							<div class="metric-value" id="CompletedPOAndSchedule">0</div>
+							<div class="metric-change positive-change">
+								<i class="fas fa-arrow-up metric-icon"></i>
+								+5.1% from last month
+							</div>
+							<div class="metric-footer">October 2023</div>
+						</div>
+						<div class="metric">
+							<div class="metric-period">
+								<i class="fas fa-hourglass-half metric-icon"></i>
+								Pending
+							</div>
+							<div class="metric-value" id="PendingPOAndSchedule">0</div>
+							<div class="metric-change positive-change">
+								<i class="fas fa-arrow-up metric-icon"></i>
+								+5.1% from last month
+							</div>
+							<div class="metric-footer">October 2023</div>
+						</div>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="dashboard-card">
-			<div class="icon-box" onclick="FillNoOfItemInStock()">
-				<i class="fas fa-coins"></i>
-			</div>
-			<div class="card-content">
-				<h3>Annual PO</h3>
-				<div class="value TotalStockValue" id="TotalStockValue"></div>
-			</div>
-			@* <div class="card-content">
-					<h3>PO Raised This Month</h3>
-					<div class="value TotalStockValue" id="TotalStockValue"></div>
-				</div> *@
-		</div>
-		<div class="dashboard-card">
-			<div class="icon-box" onclick="FillNoOfItemInStock()">
-				<i class="fas fa-coins"></i>
-			</div>
-			<div class="card-content">
-				<h3>Complete PO</h3>
-				<div class="value TotalStockValue" id="TotalStockValue"></div>
-				@* <h3>Pending PO</h3>
-					<div class="value TotalStockValue" id="TotalStockValue"></div>
-					<h3>Our Delay PO</h3>
-					<div class="value TotalStockValue" id="TotalStockValue"></div> *@
-			</div>
-		</div>
-	</div>
-	<div class="dashboard">
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3 style="margin: 0;">PO Value by Category</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+		<div class="dashboard">
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3 style="margin: 0;">PO Value by Category</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="card-body">
+					<canvas id="inventoryByCategoryChart"></canvas>
 				</div>
 			</div>
-			<div class="card-body">
-				<canvas id="inventoryByCategoryChart"></canvas>
-			</div>
-		</div>
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3 style="margin: 0;">Top 10 Items by Value</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3>Top Items by Stock Value</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="SaveTop10ItemForPO()"></i>
+					</div>
+				</div>
+				<div class="table-container" style="max-height:300px;">
+					<table class="custom-table custom-table-scroll" style="width: 100%;">
+						<thead style="background-color:#7493c3">
+							<tr>
+								<th>PartCode</th>
+								<th>ItemName</th>
+								<th>Qty</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody id="TopItemByStockValueForPO">
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="card-body">
-				<canvas id="poTopItemByValueChart"></canvas>
-			</div>
-		</div>
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3>Pending</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fas fa-hourglass-half" style="font-size: 24px;cursor:pointer;" onclick="PendingInventoryTask()"></i>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3>Pending</h3>
+					<div class="tab-icon-container bg-icon" onclick="SaveNoOfPOItemsAndPending()" style="cursor:pointer">
+						<i class="fas fa-hourglass-half" style="font-size: 24px;cursor:pointer;" onclick="PendingInventoryTask()"></i>
+					</div>
+				</div>
+				<div class="table-container" style="max-height:300px;overflow-y: auto;">
+					<table class="pending-table">
+						<thead>
+							<tr>
+								<th>Form</th>
+								<th>Qty</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr>
+								<td><a class="table-link link-primary" asp-controller="Indent" asp-action="Indent" id="Indent">Indent For PO</a></td>
+								<td><span id="PendingIndentForPO">0</span></td>
+							</tr>
+							<tr>
+								<td><a class="table-link link-primary" asp-action="POApproval" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">PO Approval For First Approvak</a></td>
+								<td><span id="PendingPOApprovalForFirstApproval">0</span></td>
+							</tr>
+							<tr>
+								<td><a class="table-link link-primary" asp-action="PendingPOApprovalForMgmtApproval" asp-controller="PendingPOApprovalForMgmtApproval" id="POApprovalForMgmtApproval">PO Approval For Mgmt Approval</a></td>
+								<td><span id="PendingPOApprovalForMgmtApproval">0</span></td>
+							</tr>
+							<tr>
+								<td><a class="table-link link-primary" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0" id="PSApproval">Amendment PO For Approval</a></td>
+								<td><span id="PendingAmendmentPOForApproval">0</span></td>
+							</tr>
+							<tr>
+								<td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" asp-route-ID="0" id="SOApproval">Schedule For Approval</a></td>
+								<td><span id="PendingScheduleForApproval">0</span></td>
+							</tr>
+							<tr>
+								<td><a class="table-link link-primary" asp-action="SSApproval" asp-controller="SSApproval" id="SSApproval">Amendment Schedule For Approval</a></td>
+								<td><span id="PendingAmendmentScheduleForApproval">0</span></td>
+							</tr>
+							<tr>
+								<td><a class="table-link link-primary" asp-action="PendingMRP" asp-controller="PendingMRP" id="PendingMRP">SO For MRP</a></td>
+								<td><span id="PendingSOForMRP">0</span></td>
+							</tr>
+							<tr>
+								<td><a class="table-link link-primary" asp-action="PendingMRPForPO" asp-controller="PendingMRPForPO" id="MRPForPO">MRP For PO</a></td>
+								<td><span id="PendingMRPForPO">0</span></td>
+							</tr>
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="table-container" style="max-height:300px;overflow-y: auto;">
-				<table class="pending-table">
-					<thead>
-						<tr>
-							<th>Form</th>
-							<th>Qty</th>
-						</tr>
-					</thead>
-					<tbody>
-						<tr>
-							<td><a class="table-link link-primary" asp-controller="Indent" asp-action="Indent" id="Indent">Indent For PO</a></td>
-							<td><span id="PendingIndentForPO">0</span></td>
-						</tr>
-						<tr>
-							<td><a class="table-link link-primary" asp-action="POApproval" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">PO Approval For First Approvak</a></td>
-							<td><span id="PendingPOApprovalForFirstApproval">0</span></td>
-						</tr>
-						<tr>
-							<td><a class="table-link link-primary" asp-action="PendingPOApprovalForMgmtApproval" asp-controller="PendingPOApprovalForMgmtApproval" id="POApprovalForMgmtApproval">PO Approval For Mgmt Approval</a></td>
-							<td><span id="PendingPOApprovalForMgmtApproval">0</span></td>
-						</tr>
-						<tr>
-							<td><a class="table-link link-primary" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0" id="PSApproval">Amendment PO For Approval</a></td>
-							<td><span id="PendingAmendmentPOForApproval">0</span></td>
-						</tr>
-						<tr>
-							<td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" asp-route-ID="0" id="SOApproval">Schedule For Approval</a></td>
-							<td><span id="PendingScheduleForApproval">0</span></td>
-						</tr>
-						<tr>
-							<td><a class="table-link link-primary" asp-action="SSApproval" asp-controller="SSApproval" id="SSApproval">Amendment Schedule For Approval</a></td>
-							<td><span id="PendingAmendmentScheduleForApproval">0</span></td>
-						</tr>
-						<tr>
-							<td><a class="table-link link-primary" asp-action="PendingMRP" asp-controller="PendingMRP" id="PendingMRP">SO For MRP</a></td>
-							<td><span id="PendingSOForMRP">0</span></td>
-						</tr>
-						<tr>
-							<td><a class="table-link link-primary" asp-action="PendingMRPForPO" asp-controller="PendingMRPForPO" id="MRPForPO">MRP For PO</a></td>
-							<td><span id="PendingMRPForPO">0</span></td>
-						</tr>
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3 style="margin: 0;">PO Generated</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3 style="margin: 0;">PO Generated</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="card-body">
+					<canvas id="fastSlowChart"></canvas>
 				</div>
 			</div>
-			<div class="card-body">
-				<canvas id="fastSlowChart"></canvas>
-			</div>
 		</div>
-	</div>
-	<div class="dashboard">
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3 style="margin: 0;">Top 10 Items by Value</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+		<div class="dashboard">
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3 style="margin: 0;">Top 10 Items by Value</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="card-body">
+					<canvas id="poTopItemByValueChart"></canvas>
 				</div>
 			</div>
-			<div class="card-body">
-				<canvas id="poTopItemByValueChart"></canvas>
-			</div>
-		</div>
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3 style="margin: 0;">Top 10 Vendors Value</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3 style="margin: 0;">Top 10 Vendors Value</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="card-body">
+					<canvas id="inventoryByCategoryChart"></canvas>
 				</div>
 			</div>
-			<div class="card-body">
-				<canvas id="inventoryByCategoryChart"></canvas>
-			</div>
-		</div>
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3>Top 10 Best Vendors</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3>Top 10 Best Vendors</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="table-container" style="max-height:350px;">
+					<table class="custom-table custom-table-scroll" style="width: 100%;">
+						<thead style="background-color:#7493c3">
+							<tr>
+								<th>PartCode</th>
+								<th>ItemName</th>
+								<th>Stock</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody id="TopItemByStockValue">
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="table-container" style="max-height:350px;">
-				<table class="custom-table custom-table-scroll" style="width: 100%;">
-					<thead style="background-color:#7493c3">
-						<tr>
-							<th>PartCode</th>
-							<th>ItemName</th>
-							<th>Stock</th>
-							<th>Value</th>
-						</tr>
-					</thead>
-					<tbody id="TopItemByStockValue">
-					</tbody>
-				</table>
-			</div>
 		</div>
-	</div>
-	<div class="dashboard">
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3>Top 10 Best Vendors</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+		<div class="dashboard">
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3>Top 10 Best Vendors</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="table-container" style="max-height:350px;">
+					<table class="custom-table custom-table-scroll" style="width: 100%;">
+						<thead style="background-color:#7493c3">
+							<tr>
+								<th>PartCode</th>
+								<th>ItemName</th>
+								<th>Stock</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody id="TopItemByStockValue">
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="table-container" style="max-height:350px;">
-				<table class="custom-table custom-table-scroll" style="width: 100%;">
-					<thead style="background-color:#7493c3">
-						<tr>
-							<th>PartCode</th>
-							<th>ItemName</th>
-							<th>Stock</th>
-							<th>Value</th>
-						</tr>
-					</thead>
-					<tbody id="TopItemByStockValue">
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3>Top 10 Best Vendors</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3>Top 10 Best Vendors</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="table-container" style="max-height:350px;">
+					<table class="custom-table custom-table-scroll" style="width: 100%;">
+						<thead style="background-color:#7493c3">
+							<tr>
+								<th>PartCode</th>
+								<th>ItemName</th>
+								<th>Stock</th>
+								<th>Value</th>
+							</tr>
+						</thead>
+						<tbody id="TopItemByStockValue">
+						</tbody>
+					</table>
 				</div>
 			</div>
-			<div class="table-container" style="max-height:350px;">
-				<table class="custom-table custom-table-scroll" style="width: 100%;">
-					<thead style="background-color:#7493c3">
-						<tr>
-							<th>PartCode</th>
-							<th>ItemName</th>
-							<th>Stock</th>
-							<th>Value</th>
-						</tr>
-					</thead>
-					<tbody id="TopItemByStockValue">
-					</tbody>
-				</table>
-			</div>
-		</div>
-		<div class="card">
-			<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-				<h3 style="margin: 0;">Top 10 Vendors Value</h3>
-				<div class="tab-icon-container bg-icon">
-					<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3 style="margin: 0;">Top 10 Vendors Value</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+					</div>
+				</div>
+				<div class="card-body">
+					<canvas id="inventoryByCategoryChart"></canvas>
 				</div>
 			</div>
-			<div class="card-body">
-				<canvas id="inventoryByCategoryChart"></canvas>
-			</div>
 		</div>
-	</div>
 	</div>
 </body>
 </html>
@@ -907,7 +992,7 @@
 		});
 
 		$(document).ready(function () {
-			$('#RefreshAllData').val(false);
+			$('#RefreshInventoryAllData').val(false);
 			FillInventoryDashboardData();
 			FillInventoryDashboardForPendingData();
 			FillInventoryByCategory();
@@ -917,6 +1002,7 @@
 		});
 
 		$(document).on('click', '.tab-link[data-target="#purchaseTab"]', function () {
+			$('#RefreshPOAllData').val(false);
 			FillPurchaseDashboardData();
 			FillPurchaseDashboardTop10ItemData();
 		});
@@ -1256,7 +1342,7 @@
 		  options: { scales: { y: { beginAtZero: true } } }
 		});
 
-		function RefreshAllData() {
+		function RefreshInventoryAllData() {
 			var icon = $('.refreshIcon');
 
 			// Change icon to spinner
@@ -1268,7 +1354,7 @@
 
 			// Let the browser render the spinner first
 			setTimeout(function () {
-				$('#RefreshAllData').val(true);
+				$('#RefreshInventoryAllData').val(true);
 
 				// Call your inventory functions
 				FillNoOfItemInStock();
@@ -1302,7 +1388,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -1326,7 +1412,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -1350,7 +1436,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh Pending Item Job List...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -1374,7 +1460,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh Dead item In Stock...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -1398,7 +1484,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh FastMoving ItemList...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -1422,7 +1508,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh Fast Vs Slow Moving Task...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -1448,6 +1534,14 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								$('#TotalNoofAnualPONetValue').text(obj.Result[0].TotalNoofAnualPONetValue);
+								$('#TotalNoOfAnualPOQty').text(obj.Result[0].TotalNoOfAnualPOQty);
+								$('#ToatalNoOfMonthlyPONetValue').text(obj.Result[0].ToatalNoOfMonthlyPONetValue);
+								$('#ToatalNoOfMonthlyPOQty').text(obj.Result[0].ToatalNoOfMonthlyPOQty);
+								$('#TotalClosePOCompleted').text(obj.Result[0].TotalClosePOCompleted);
+								$('#TotalClosePOPending').text(obj.Result[0].TotalClosePOPending);
+								$('#TotalScheduleCompleted').text(obj.Result[0].TotalScheduleCompleted);
+								$('#TotalSchedulePending').text(obj.Result[0].TotalSchedulePending);
 								$('#PendingIndentForPO').text(obj.Result[0].PendingIndentForPO);
 								$('#PendingPOApprovalForFirstApproval').text(obj.Result[0].PendingPOApprovalForFirstApproval);
 								$('#PendingPOApprovalForMgmtApproval').text(obj.Result[0].PendingPOApprovalForMgmtApproval);
@@ -1456,6 +1550,15 @@
 								$('#PendingAmendmentScheduleForApproval').text(obj.Result[0].PendingAmendmentScheduleForApproval);
 								$('#PendingSOForMRP').text(obj.Result[0].PendingSOForMRP);
 								$('#PendingMRPForPO').text(obj.Result[0].PendingMRPForPO);
+
+								var TotalPOPendingAndComplted = obj.Result[0].TotalClosePOCompleted + obj.Result[0].TotalClosePOPending + obj.Result[0].TotalScheduleCompleted + obj.Result[0].TotalSchedulePending;
+								$('#TotalPOPendingAndComplted').text(TotalPOPendingAndComplted);
+
+								var CompletedPOAndSchedule = obj.Result[0].TotalClosePOCompleted + obj.Result[0].TotalScheduleCompleted;
+								$('#CompletedPOAndSchedule').text(CompletedPOAndSchedule);
+
+								var PendingPOAndSchedule = obj.Result[0].TotalClosePOPending + obj.Result[0].TotalSchedulePending;
+								$('#PendingPOAndSchedule').text(PendingPOAndSchedule);
 							}
 						},
 						error: function (xhr, status, error) {
@@ -1463,6 +1566,48 @@
 						}
 					});
 		}
+
+		// function FillPurchaseDashboardTop10ItemData(){
+
+		// 	$.ajax({
+		// 				url: '@Url.Action("FillPurchaseDashboardTop10ItemData", "Home")',
+		// 				type: 'POST',
+		// 				async: false,
+		// 				success: function (data, status, error) {
+		// 					var obj = $.parseJSON(data);
+		// 					var parsed = JSON.parse(data);
+		// 					var xValues = parsed.Result.map(item => item.ItemName);
+		// 					var yValues = parsed.Result.map(item => item.POQTY);
+
+		// 					var	 barColors = [
+		// 						"#b91d47", "#00aba9", "#2b5797",
+		// 						"#e8c3b9", "#1e7145", "#ff9f40",
+		// 						"#8e5ea2", "#3cba9f", "#c45850", "#36a2eb"
+		// 					];
+
+		// 						new Chart("poTopItemByValueChart", {
+		// 						type: "doughnut",
+		// 						data: {
+		// 							labels: xValues,
+		// 							datasets: [{
+		// 								backgroundColor: barColors.slice(0, xValues.length),
+		// 								data: yValues
+		// 							}]
+		// 						},
+		// 						options: {
+		// 							plugins: {
+		// 								title: {
+		// 									display: true
+		// 								}
+		// 							}
+		// 						}
+		// 					});
+		// 				},
+		// 				error: function (xhr, status, error) {
+		// 					alert('Failed to load ledger names.');
+		// 				}
+		// 			});
+		// }
 
 		function FillPurchaseDashboardTop10ItemData(){
 
@@ -1472,36 +1617,67 @@
 						async: false,
 						success: function (data, status, error) {
 							var obj = $.parseJSON(data);
-							var parsed = JSON.parse(data);
-							var xValues = parsed.Result.map(item => item.ItemName);
-							var yValues = parsed.Result.map(item => item.POQTY);
-
-							var	 barColors = [
-								"#b91d47", "#00aba9", "#2b5797",
-								"#e8c3b9", "#1e7145", "#ff9f40",
-								"#8e5ea2", "#3cba9f", "#c45850", "#36a2eb"
-							];
-
-								new Chart("poTopItemByValueChart", {
-								type: "doughnut",
-								data: {
-									labels: xValues,
-									datasets: [{
-										backgroundColor: barColors.slice(0, xValues.length),
-										data: yValues
-									}]
-								},
-								options: {
-									plugins: {
-										title: {
-											display: true
-										}
-									}
-								}
+							var html = '';
+							$.each(obj.Result, function (i, item) {
+								html += '<tr onclick="handleRowClick(\'' + item.itemcode + '\')" style="cursor:pointer;">';
+								html += '<td><input type="hidden" value="' + item.itemcode +'">' + item.Partcode + '</td>';
+								html += '<td>' + item.ItemName + '</td>';
+								html += '<td>' + item.POQTY + '</td>';
+								html += '<td>' + item.POAmount + '</td>';
+								html += '</tr>';
 							});
+							$('#TopItemByStockValueForPO').empty().append(html);
 						},
 						error: function (xhr, status, error) {
 							alert('Failed to load ledger names.');
+						}
+					});
+		}
+
+		function SaveNoOfPOItemsAndPending(){
+			$.ajax({
+						url: '@Url.Action("SaveNoOfPOItemsAndPending", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshPOAllData').val() == "false"){
+									$.notify('Successfully Refresh Total PO and Pending PO...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function SaveTop10ItemForPO(){
+			$.ajax({
+						url: '@Url.Action("SaveTop10ItemForPO", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshPOAllData').val() == "false"){
+									$.notify('Successfully Refresh Top 10 Items For PO...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
 						}
 					});
 		}

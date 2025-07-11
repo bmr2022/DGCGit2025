@@ -78,5 +78,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.FillPurchaseDashboardTop10ItemData();
         }
+        public async Task<ResponseResult> SaveNoOfPOItemsAndPending()
+        {
+            return await _DashboardDAL.SaveNoOfPOItemsAndPending();
+        }
+        public async Task<ResponseResult> SaveTop10ItemForPO()
+        {
+            return await _DashboardDAL.SaveTop10ItemForPO();
+        }
     }
 }
