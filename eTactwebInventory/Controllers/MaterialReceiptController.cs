@@ -178,7 +178,7 @@ namespace eTactWeb.Controllers
                     {
                         _emailService.SendEmailAsync(
                             recipient,
-                            "Soft Copy Of MRN No: " + MRNNo + " From AutoComponent",
+                            "Soft Copy Of Short & Excess Of MRN No: " + MRNNo + " From AutoComponent",
                             CC1,
                             CC2,
                             CC3,

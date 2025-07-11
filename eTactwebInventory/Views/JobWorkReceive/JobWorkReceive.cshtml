@@ -915,6 +915,7 @@
                 var rowCount = $('#divJobWorkReceiveGrid tr').length;
                 for (var i = 1; i <= rowCount; i++) {
                     var PartCode = $('#PartCode' + i).val();
+                    if(parseFloat($('#RecQty'+i))>0)
                     Adjustchallan.push(
                         PartCode
                     );
