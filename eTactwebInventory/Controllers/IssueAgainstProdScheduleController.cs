@@ -8,6 +8,7 @@ using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
+using PdfSharp.Drawing.BarCodes;
 
 namespace eTactWeb.Controllers
 {
@@ -488,40 +489,95 @@ namespace eTactWeb.Controllers
 
             return PartialView("_IssueAgainstProductionScheduleGrid", MainModel);
         }
-        public IActionResult DeleteFromMemoryGrid(int SeqNo)
+        [HttpPost]
+        public IActionResult DeleteFromMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)
         {
             var MainModel = new IssueAgainstProdSchedule();
             string modelJson = HttpContext.Session.GetString("KeyIssAgainstProduction");
-            List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+            List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new();
+
             if (!string.IsNullOrEmpty(modelJson))
             {
                 IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
             }
-            int Indx = Convert.ToInt32(SeqNo) - 1;
 
-            if (IssueAgainstProdScheduleDetail != null && IssueAgainstProdScheduleDetail.Count > 0)
+            if (deleteZeroStockOnly)
             {
-                IssueAgainstProdScheduleDetail.RemoveAt(Convert.ToInt32(Indx));
-
-                Indx = 0;
-
-                foreach (var item in IssueAgainstProdScheduleDetail)
+                var deletedPartCodes = new List<string>();
+                IssueAgainstProdScheduleDetail.RemoveAll(x =>
                 {
-                    Indx++;
-                    item.seqno = Indx;
-                }
-                MainModel.ItemDetailGrid = IssueAgainstProdScheduleDetail;
+                    bool toDelete = x.ToatlStock == 0 || x.ToatlStock == null;
+                    if (toDelete)
+                        deletedPartCodes.Add(x.RMPartCode);
+                    return toDelete;
+                });
 
-                if (IssueAgainstProdScheduleDetail.Count == 0)
-                {
-                    HttpContext.Session.Remove("KeyIssAgainstProduction");
-                }
-
-                string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyIssAgainstProduction", serializedGrid);
+                ViewBag.DeletedPartCodes = string.Join(", ", deletedPartCodes);
             }
+            else if (seqNo != null)
+            {
+                var itemToRemove = IssueAgainstProdScheduleDetail.FirstOrDefault(x => x.seqno == seqNo);
+                if (itemToRemove != null)
+                {
+                    IssueAgainstProdScheduleDetail.Remove(itemToRemove);
+                }
+            }
+
+            int newSeq = 1;
+            foreach (var item in IssueAgainstProdScheduleDetail)
+            {
+                item.seqno = newSeq++;
+            }
+
+            MainModel.ItemDetailGrid = IssueAgainstProdScheduleDetail;
+
+            if (IssueAgainstProdScheduleDetail.Count == 0)
+            {
+                HttpContext.Session.Remove("KeyIssAgainstProduction");
+            }
+            else
+            {
+                string updatedJson = JsonConvert.SerializeObject(IssueAgainstProdScheduleDetail);
+                HttpContext.Session.SetString("KeyIssAgainstProduction", updatedJson);
+            }
+
             return PartialView("_IssueAgainstProductionSchedule", MainModel);
         }
+
+        //public IActionResult DeleteFromMemoryGrid(int SeqNo)
+        //{
+        //    var MainModel = new IssueAgainstProdSchedule();
+        //    string modelJson = HttpContext.Session.GetString("KeyIssAgainstProduction");
+        //    List<IssueAgainstProdScheduleDetail> IssueAgainstProdScheduleDetail = new List<IssueAgainstProdScheduleDetail>();
+        //    if (!string.IsNullOrEmpty(modelJson))
+        //    {
+        //        IssueAgainstProdScheduleDetail = JsonConvert.DeserializeObject<List<IssueAgainstProdScheduleDetail>>(modelJson);
+        //    }
+        //    int Indx = Convert.ToInt32(SeqNo) - 1;
+
+        //    if (IssueAgainstProdScheduleDetail != null && IssueAgainstProdScheduleDetail.Count > 0)
+        //    {
+        //        IssueAgainstProdScheduleDetail.RemoveAt(Convert.ToInt32(Indx));
+
+        //        Indx = 0;
+
+        //        foreach (var item in IssueAgainstProdScheduleDetail)
+        //        {
+        //            Indx++;
+        //            item.seqno = Indx;
+        //        }
+        //        MainModel.ItemDetailGrid = IssueAgainstProdScheduleDetail;
+
+        //        if (IssueAgainstProdScheduleDetail.Count == 0)
+        //        {
+        //            HttpContext.Session.Remove("KeyIssAgainstProduction");
+        //        }
+
+        //        string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+        //        HttpContext.Session.SetString("KeyIssAgainstProduction", serializedGrid);
+        //    }
+        //    return PartialView("_IssueAgainstProductionSchedule", MainModel);
+        //}
         public async Task<JsonResult> DisplayBomDetail(int ItemCode, float WOQty,int BomNo=1)
         {
             var JSON = await _IIssueAgainstProdSchedule.DisplayBomDetail(ItemCode, WOQty,BomNo);
