@@ -24,7 +24,7 @@ namespace eTactWeb.DOM.Models
         public string? EntryDate { get; set; }
        
         public decimal BomQty { get; set; }
-        public string? DashboardType { get; set; } = "Summary";
+        public string? DashboardType { get; set; }
         public string? EffectiveDate { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
