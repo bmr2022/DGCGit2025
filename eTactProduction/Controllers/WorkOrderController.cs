@@ -1054,7 +1054,7 @@ namespace eTactWeb.Controllers
                 TempData["500"] = "500";
             }
 
-            return RedirectToAction("WorkOrderDashboard", new { CC=CC,FromDate = FromDate, ToDatee = ToDate,WONO = WONO,SONO=SONO,SchNo,AccountName = AccountName,PartCode = PartCode,ItemName = ItemName,SummaryDetail = SummaryDetail,Flag = "false" });
+            return RedirectToAction("WorkOrderDashboard", new { CC="",FromDate = "", ToDatee = "",WONO = "",SONO="",SchNo,AccountName = " ",PartCode = "",ItemName = "",SummaryDetail = SummaryDetail,Flag = "false" });
         }
 
         public async Task<ActionResult> WorkOrderEdit(int ID, string Mode, int YC)//, ILogger logger)
