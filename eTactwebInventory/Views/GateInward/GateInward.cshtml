@@ -875,7 +875,7 @@
                 console.log("before parse InvoiceDate" + $("#InvoiceDate").val());
 
 
-                if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
+                if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 ) {
                     $(".ChallanElements").show();
                 } else {
                     $(".ChallanElements").css("display", "none");
@@ -2197,21 +2197,21 @@
                     Err = 1;
                 
             }
-            if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
+            if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11) {
                 if ($('#AgainstChallanNo').prop('selectedIndex') == 0) {
                     AddErrorCls('AgainstChallanNo');
                     $.notify("Against Challan No is Required", "error");
                     Err = 1;
                 }
             }
-            if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
+            if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 ) {
                 if ($('#AgainstChallanYearcode').prop('selectedIndex') == 0) {
                     AddErrorCls('AgainstChallanYearcode');
                     $.notify("Against Challan Year is Required", "error");
                     Err = 1;
                 }
             }
-            if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 5) {
+            if (parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 11 ) {
                 if ($('#ChallanQty').prop('selectedIndex') == 0) {
                     AddErrorCls('ChallanQty');
                     $.notify("Challan Qty is Required", "error");
@@ -2261,7 +2261,7 @@
                 $.notify("ItemName is Required", "error");
                 Err = 1;
             }
-            if (parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 4 || parseInt($('#docTypeId').val()) == 5) {
+            if (parseInt($('#docTypeId').val()) == 11 || parseInt($('#docTypeId').val()) == 4 ) {
 
                 if ($('#ChallanQty').val() != null || $('#ChallanQty').val() != "" || $('#ChallanQty').val() != 0) {
                     if (parseFloat($('#Qty').val()) > parseFloat($('#ChallanQty').val())) {
