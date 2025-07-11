@@ -173,7 +173,7 @@
 											   id="SampleSize"
 											   type="number"
 											   min="1"
-											   max="10"
+											   max="25"
 											   step="1"
 											   value="1"
 											   oninput="this.value = this.value.replace(/[^0-9]/g,''); if(this.value < 1) this.value=1; GetInprocessInspectionGridData();" />
@@ -582,6 +582,14 @@
 					e.preventDefault();
 				}
 			});
+			$('#SampleSize').on('blur', function () {
+				let sampleSize = parseInt($(this).val(), 10);
+
+				if (sampleSize > 25) {
+					$(this).val(25);
+					$.notify("⚠️ Sample Size cannot be more than 25", "error");
+				}
+			});
 			$('.submitBTN').click(function (e) {
 
 				console.log("SubmitButton Click");
@@ -591,6 +599,36 @@
 			});
 			
 		});
+		$(document).on('blur', '.sample-input', function () {
+			let $input = $(this);
+			let from = parseFloat($input.data('from'));
+			let to = parseFloat($input.data('to'));
+			let value = $input.val().trim();
+
+		
+			if (value === "") {
+				$input.val("Ok").css("color", "");
+				return; 
+			}
+
+		
+			if (!isNaN(from) && !isNaN(to)) {
+				if (!$.isNumeric(value) && value !== "Ok") {
+					$input.css("color", "red");
+				} else {
+					let numericValue = parseFloat(value);
+					if (numericValue < from || numericValue > to) {
+						$input.css("color", "red");
+					} else {
+						$input.css("color", "");
+					}
+				}
+			} else {
+				
+				$input.css("color", "");
+			}
+		});
+
 		function setFormattedDate() {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
@@ -717,27 +755,39 @@
 				}
 			});
 		}
-		function DeleteRow(i) {
+		
+		function updateSrNos() {
+			$('#divinProcessInspectionGrid tbody tr').each(function (index) {
+				let newSr = index + 1;
 
-			var indexToRemove = i - 1;
-			$('#SAGridRow-' + i).remove();
-			$('#ReportTable tbody tr').each(function (index) {
-				$(this).attr('id', 'SAGridRow-' + (index + 1));
+				$(this).find('th').first().text(newSr);
 
-
-				$(this).find('td:first-child a:first-child').each(function (tdIndex) {
-					$(this).attr('id', (index + 1));
-				});
-
-				$(this).find('td[id^="amount-"]').each(function (tdIndex) {
-					$(this).attr('id', 'amount-' + (index + 1));
-				});
+				$(this).attr('id', 'SAGridRow-' + newSr);
 
 			});
-
-			$('#totalRows').text($('#divStockRegisterBody tr').length);
-			$.notify("Row deleted successfully.", "success");
+			$('#totalRows').text($('#divinProcessInspectionGrid tbody tr').length);
 		}
+
+
+		function CopyRow(btn) {
+			let $currentRow = $(btn).closest('tr');
+			let $newRow = $currentRow.clone();
+			$newRow.find('input').val('');
+			let newIndex = $('#divinProcessInspectionGrid tbody tr').length + 1;
+			$newRow.attr('id', 'SAGridRow-' + newIndex);
+			$('#divinProcessInspectionGrid tbody').append($newRow);
+			updateSrNos();
+
+			$.notify('Row copied successfully', 'success');
+		}
+
+
+		function DeleteRow(element) {
+			let $row = $(element).closest('tr');
+			$row.remove();
+			$.notify('Row deleted successfully', 'success');
+		}
+
 		function FillEntryID() {
 
 			var YearCode = $('#YearCode').val();

@@ -6,50 +6,32 @@
             <tr>
                 <th>Action</th>
                 <th>Sr#</th>
-                <th data-columnno="1" data-sortorder="asc" class="sortCol" style="max-width: 50px; white-space: normal; word-wrap: break-word;">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol" style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">
+                  
                     Characteristic
                 </th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol" style="max-width: 100px; white-space: normal; word-wrap: break-word;">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol" style="max-width: 100px; white-space: normal; word-wrap: break-word;font-size:10px;">
+                    
                     Ev Meas Tech
                 </th>
 
-                <th data-columnno="3" data-sortorder="asc" class="sortCol" style="max-width: 100px; white-space: normal; word-wrap: break-word;">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol" style="max-width: 100px; white-space: normal; word-wrap: break-word;font-size:10px;">
+                  
                     Control Method
                 </th>
-                <th data-columnno="4" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>
+                <th data-columnno="4" data-sortorder="asc" class="sortCol" style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">
                     From
                 </th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa" aria-hidden="true"></i>
-                    </span>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol" style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">
                      To
                 </th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa " aria-hidden="true"></i>
-                    </span>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol" style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">
                     Rej Plan
                 </th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon">
-                        <i class="fa " aria-hidden="true"></i>
-                    </span>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol" style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">
                     Freq of Testing
                 </th>
-                @for (int i = 1; i <= ViewBag.SampleSize; i++)
+                @for (int i = 1; i <= (ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize); i++)
                 {
                     <th style="width:120px;">
                         <span style="padding:5px;margin:5px" class="sort-icon">
@@ -84,7 +66,7 @@
                                         <i class="fa-solid fa-copy fa-stack-1x fa-inverse"></i>
                                     </span>
                                 </a>
-                                <a class="table-link link-danger" onclick="DeleteRow(this.id)" id="@Cntr">
+                                <a class="table-link link-danger" onclick="DeleteRow(this)" >
                                     <span class="fa-stack">
                                         <i class="fa fa-square fa-stack-2x"></i>
                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -92,21 +74,24 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td>@item.Characteristic</td>
-                            <td>@item.EvalutionMeasurmentTechnique</td>
-                            <td>@item.ControlMethod</td>
-                            <td>@item.SpecificationFrom</td>
-                            <td>@item.SpecificationTo</td>
-                            <td>@item.RejectionPlan</td>
-                            <td>@item.FrequencyofTesting</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.Characteristic</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.EvalutionMeasurmentTechnique</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.ControlMethod</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.SpecificationFrom</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.SpecificationTo</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.RejectionPlan</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.FrequencyofTesting</td>
 
-                            @for (int i = 1; i <= ViewBag.SampleSize; i++)
+                            @for (int i = 1; i <= (ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize); i++)
                             {
-                                <th>
-
-                                    <input type="text" name="SampleHeader_@i" class="form-control" />
-                                
-                                </th>
+                                <td>
+                                    <input type="text"
+                                           name="SampleHeader_@i"
+                                           class="form-control sample-input"
+                                           data-from="@item.SpecificationFrom"
+                                           data-to="@item.SpecificationTo" />
+                                </td>
+                               
                             }
                         </tr>
                        
