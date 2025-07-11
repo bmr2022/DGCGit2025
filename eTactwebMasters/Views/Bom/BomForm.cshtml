@@ -188,7 +188,7 @@
             $("#EntryDate").attr('style', 'pointer-events:none;');
             $("#EntryDate").datepicker({ minDate: 0 });
             $("#EffectiveDate").datepicker({ minDate: 0 });
-            if($('#Mode').val() == "U"){
+            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                  $("#optionalParameterSection").slideDown();
                 FGItemcode = $('#hiddenFGItemCode').val();
                 Itemcode = $('#hiddenItemCode').val();
