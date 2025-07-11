@@ -499,7 +499,7 @@ namespace eTactWeb.Controllers
             }
             int Indx = Convert.ToInt32(SeqNo) - 1;
 
-            if (IssueAgainstProdScheduleDetail != null && IssueAgainstProdScheduleDetail.Count > 0)
+            if (IssueAgainstProdScheduleDetail != null && Indx >= 0 && Indx < IssueAgainstProdScheduleDetail.Count)
             {
                 IssueAgainstProdScheduleDetail.RemoveAt(Convert.ToInt32(Indx));
 

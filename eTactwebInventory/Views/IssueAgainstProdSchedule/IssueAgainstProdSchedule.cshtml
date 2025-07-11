@@ -166,9 +166,7 @@
                                     <label class="color-box" style="background-color: #bf4545;"></label><label style="margin-left:5px;margin-top:-5px;">Total Stock <= 0</label>
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
-                                    <button type="button" id="deleteZeroStockRows" onclick="RemoveRowsWithZeroStockAndShowPartCodes()" class="btn btn-danger">Delete Zer0 Stock</button>
-                                </div>
+                              
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                     <label  style="color: red;"> Deleted PartCode: <span id="lblDeletedPartCodes" title=""></span></label>
                                 </div>
@@ -180,9 +178,10 @@
                 <partial name="_DisplayRoutingDetail" />
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
+                        <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 78%;">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Against Production Schedule Detail</strong>
                         </button>
+                        <button type="button" id="deleteZeroStockRows" onclick="RemoveRowsWithZeroStockAndShowPartCodes()" class="btn btn-sm btn-outline-danger">Delete Zero Stock</button>
                         <button class="btn btn-sm btn-outline-danger" style="width:150px;" type="button" onclick="GridButton()">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                         </button>
@@ -1151,12 +1150,14 @@
                      var PartCode = $('#RMPartCode-' + i).val() ;
 
                     if (i && PartCode) {
-                    DeleteFromMemoryGrid(i, PartCode.trim());
+                         deletedPartCodes.push({ seqNo: i, partCode: PartCode.trim() });
                 }
                 }
             }
         });
-
+             deletedPartCodes.forEach(function (item) {
+            DeleteFromMemoryGrid(item.seqNo, item.partCode);
+        });
        
         }
 
