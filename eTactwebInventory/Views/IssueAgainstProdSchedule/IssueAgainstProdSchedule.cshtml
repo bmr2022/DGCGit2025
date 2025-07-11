@@ -169,9 +169,9 @@
                               @*   <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                     <button type="button" id="deleteZeroStockRows" onclick="RemoveRowsWithZeroStockAndShowPartCodes()" class="btn btn-danger">Delete Zer0 Stock</button>
                                 </div> *@
-                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
+                              @*   <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="">
                                     <label  style="color: red;"> Deleted PartCode: <span id="lblDeletedPartCodes" title=""></span></label>
-                                </div>
+                                </div> *@
                             </div>
                         </div>
                     </div>
@@ -180,7 +180,7 @@
                 <partial name="_DisplayRoutingDetail" />
                 <div class="accordion-item">
                     <h2 class="accordion-header">
-                        <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
+                        <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 78%;">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Against Production Schedule Detail</strong>
                         </button>
                          <button type="button" id="deleteZeroStockRows" onclick="RemoveRowsWithZeroStockAndShowPartCodes()" class="btn btn-sm btn-outline-danger">Delete Zer0 Stock</button>
@@ -537,6 +537,11 @@
                 $('#StoreId').val(StoreId);
                 $('#StoreName').append('<option selected value="' + StoreName + '">' + StoreName + '</option>');
             }
+            var deletedParts = '@ViewBag.DeletedPartCodes';
+             if (deletedParts) {
+           // $('#lblDeletedPartCodes').text(deletedParts);
+        //    $.notify("Deleted PartCodes: " + deletedParts, "info");
+        }
         })
 
         function Validate_IssueAgainstSubmit() {
@@ -1098,21 +1103,23 @@
                 }
             });
         }
-
-        function DeleteFromMemoryGrid(SeqNo,PartCode) {
+         function RemoveRowsWithZeroStockAndShowPartCodes() {
+             DeleteFromMemoryGrid(true);
+         }
+        function DeleteFromMemoryGrid(deleteZeroStockOnly, SeqNo = null, PartCode = '') {
 
             $.ajax({
                 url: '@Url.Action("DeleteFromMemoryGrid")',
                 type: "POST",
-                data: { "SeqNo": SeqNo },
+                data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo },
                 async: false,
                 success: function (data, status, xhr) {
 
                     $('#divIssueAgainstProduction').html(data);
                     $.notify("Item deleted from Grid", "info");
-                    var existingText = $('#lblDeletedPartCodes').text();
-                    var combined = existingText ? existingText + ", " + PartCode : PartCode;
-                    $('#lblDeletedPartCodes').text(combined);
+                    // var existingText = $('#lblDeletedPartCodes').text();
+                    // var combined = existingText ? existingText + ", " + PartCode : PartCode;
+                    // $('#lblDeletedPartCodes').text(combined);
                     var rowCounter = $('#divIssueAgainstProduction tr').length;
                     for (var i = 1; i <= rowCounter; i++) {
                         //FillBatchNo(i);
@@ -1135,32 +1142,7 @@
                 }
             });
         }
-                function RemoveRowsWithZeroStockAndShowPartCodes() {
-            var deletedPartCodes = [];
-
-        $('#divIssueAgainstProduction tr').each(function () {
-            var row = $(this);
-            var rowId = row.attr('id'); // Expecting id="itemGrid-1" etc.
-
-            if (rowId && rowId.startsWith("itemGrid-")) {
-                var i = rowId.split('-')[1]; // Extract index number
-                var totalStockVal = $('#ToatlStock-' + i).val();
-                var TotalStock = parseInt(totalStockVal);
-
-                if (!isNaN(TotalStock) && TotalStock <= 0) {
-                    var SeqNo = row.data("seqno"); // Get SeqNo from data attribute
-                     var PartCode = $('#RMPartCode-' + i).val() ;
-
-                    if (i && PartCode) {
-                    DeleteFromMemoryGrid(i, PartCode.trim());
-                }
-                }
-            }
-        });
-
-       
-        }
-
+             
     
         function validateGridInsert(i) {
              
