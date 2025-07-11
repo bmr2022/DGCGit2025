@@ -861,7 +861,7 @@
                 fillPONumber();
    /*              alert("before parse EntryDate1 " + $("#EntryDate").val()); */
               
-                      var EntryDate = parseDateToFormat($('#EntryDate').val());
+                      var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
              
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
             

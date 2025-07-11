@@ -745,16 +745,26 @@
                 }
                 else {
                 $('#PasswordAllowPopup').modal("show");
-                    var rawcount = $('#divMRNGridAdd').length;
-                    for (var i = 0;i<=rawcount;i++)
-                    {
-                    if (parseFloat($('#ShortExcessQty-'+i).text())) {
-        $('#btnPrintEmail').show();
-    }
-    else {
-                $('#btnPrintEmail').hide();
-    }
+                var showButton = false;
+
+                for (var i = 0; i < rowCount; i++) {
+                    var $el = $('#ShortExcessQty-' + (i + 1));
+
+                    // Use .val() if input, else .text()
+                    var qtyText = $el.is('input') ? $el.val() : $el.text();
+                    var qty = parseFloat(qtyText);
+
+                    if (!isNaN(qty) && qty > 0) {
+                        showButton = true;
+                        break; // No need to check further
                     }
+                }
+
+                if (showButton) {
+                    $('#btnPrintEmail').show();
+                } else {
+                    $('#btnPrintEmail').hide();
+                }
                 }
             });
 
