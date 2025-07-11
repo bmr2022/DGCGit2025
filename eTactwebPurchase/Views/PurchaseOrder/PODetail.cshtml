@@ -628,8 +628,8 @@
 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V"||$('#Mode').val() == "C") {
 				// PendingIndentDetail(true);
 				//FillItems();
-				alert("inside edit");
-				alert("entrydate1" + $('#EntryDate').val());
+				// alert("inside edit");
+				// alert("entrydate1" + $('#EntryDate').val());
 				$('.DH').fadeIn();
 				$('#PN1').prop("disabled", "false");
 				$('#PN1').prop("checked", "true");
@@ -720,11 +720,11 @@
 						 var EntryDate = parseDateToFormat($('#EntryDate').val());
 					 /*    console.log("EntryDate" + EntryDate); */
 						$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-						alert("entrydate2" + $('#EntryDate').val());
+						// alert("entrydate2" + $('#EntryDate').val());
 			}
 			else if ($('#Mode').val() == "POA")
 			{
-				alert("poa");
+				// alert("poa");
 				$('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
 				// $('#POCloseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#POCloseDate').val()));
@@ -748,7 +748,7 @@
 			}
 			else if ($('#Mode').val() != "POA") 
 			{
-				alert("not poa");
+				//alert("not poa");
 				//$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 				//$("#PODate,#POCloseDate,#AmmDate,#AmendmentDate").datepicker({
 				//    dateFormat: 'dd/mm/yy',
@@ -1427,7 +1427,7 @@
 					$("#PartCodeText").val(ui.item.value);
 					return false;
 				},
-				minLength: 1
+				minLength:2
 			});
 
 			// Autocomplete for ItemNameText
@@ -1445,7 +1445,7 @@
 					$("#ItemNameText").val(ui.item.itemName);
 					return false;
 				},
-				minLength: 1
+				minLength:2
 			});
 		}
 
@@ -2840,11 +2840,11 @@
 			const DP = $('#DiscPer') === "0" || $('#DiscPer').val() === "" ? 0 : parseFloat($('#DiscPer').val());
 
 			if (UnitRate === "Unit") {
-				const POQty = $('#POQty').val() == "0" || $('#POQty').val() === "" ? 0 : parseInt($('#POQty').val());
+				const POQty = $('#POQty').val() == "0" || $('#POQty').val() === "" ? 0 : parseFloat($('#POQty').val());
 				Amount = OC === 'Close' ? POQty * Rate : Amount;
 			}
 			if (UnitRate == "AltUnit") {
-				const AltQty = $('#AltQty').val() == "0" || $('#AltQty').val() === "" ? 0 : parseInt($('#AltQty').val());
+						const AltQty = $('#AltQty').val() == "0" || $('#AltQty').val() === "" ? 0 : parseFloat($('#AltQty').val());
 				Amount = OC === 'Close' ? AltQty * Rate : Amount;
 			}
 
