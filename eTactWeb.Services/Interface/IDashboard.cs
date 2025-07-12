@@ -19,12 +19,15 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetTopItemBelowMinLevel();
         Task<ResponseResult> GetTopFastMovingItem();
         Task<ResponseResult> PendingInventoryTask();
-        Task<ResponseResult> FillPurchaseDashboardData();
-        Task<ResponseResult> FillPurchaseDashboardTop10ItemData();
         Task<ResponseResult> DeadStockInventoryTask();
         Task<ResponseResult> FastMovingItemsListTask();
         Task<ResponseResult> FastVsSlowMovingTask();
+        Task<ResponseResult> FillPurchaseDashboardData();
+        Task<ResponseResult> FillPurchaseDashboardDataByCategoryValue();
+        Task<ResponseResult> FillPurchaseDashboardTop10ItemData();
+        Task<ResponseResult> FillPurchaseDashboardTop10VendorData();
         Task<ResponseResult> SaveNoOfPOItemsAndPending();
         Task<ResponseResult> SaveTop10ItemForPO();
+        Task<ResponseResult> SaveTop10VendorForPO();
     }
 }

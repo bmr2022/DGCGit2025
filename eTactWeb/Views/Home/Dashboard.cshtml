@@ -378,6 +378,67 @@
 				box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
 			}
 
+		.app-version-card {
+			width: 300px;
+			background: #fff;
+			border: 1px solid #ddd;
+			border-radius: 6px;
+			padding: 16px;
+			font-family: Arial, sans-serif;
+			box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+		}
+
+			.app-version-card .header {
+				display: flex;
+				justify-content: space-between;
+				align-items: center;
+			}
+
+			.app-version-card h3 {
+				margin: 0;
+				font-size: 16px;
+				color: #333;
+			}
+
+		.sub-header {
+			margin: 10px 0;
+			font-size: 13px;
+			color: #666;
+		}
+
+		.version-bar {
+			display: flex;
+			align-items: center;
+			margin: 6px 0;
+		}
+
+			.version-bar .label {
+				width: 60px;
+				font-size: 12px;
+				color: #333;
+			}
+
+		.bar-container {
+			flex: 1;
+			height: 10px;
+			background: #eee;
+			border-radius: 2px;
+			overflow: hidden;
+		}
+
+		.bar {
+			height: 100%;
+			background: #4a6fa5;
+			border-radius: 2px;
+		}
+
+		.version-bar .value {
+			width: 40px;
+			font-size: 12px;
+			text-align: right;
+			color: #333;
+		}
+
 	</style>
 </head>
 <body>
@@ -425,7 +486,7 @@
 				</div>
 				<div class="card-content">
 					<h3>Total Stock Value (₹)</h3>
-					<div class="value TotalStockValue" id="TotalStockValue"></div>
+					<div class="value TotalStockValue" id="TotalStockValue">0</div>
 				</div>
 			</div>
 			<div class="dashboard-card">
@@ -772,29 +833,18 @@
 					</div>
 				</div>
 				<div class="card-body">
-					<canvas id="inventoryByCategoryChart"></canvas>
+					<canvas id="poTopItemByValueChart"></canvas>
 				</div>
 			</div>
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Top Items by Stock Value</h3>
+					<h3 style="margin: 0;">PO Generated</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="SaveTop10ItemForPO()"></i>
+						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
 					</div>
 				</div>
-				<div class="table-container" style="max-height:300px;">
-					<table class="custom-table custom-table-scroll" style="width: 100%;">
-						<thead style="background-color:#7493c3">
-							<tr>
-								<th>PartCode</th>
-								<th>ItemName</th>
-								<th>Qty</th>
-								<th>Amount</th>
-							</tr>
-						</thead>
-						<tbody id="TopItemByStockValueForPO">
-						</tbody>
-					</table>
+				<div class="card-body">
+					<canvas id="fastSlowChart"></canvas>
 				</div>
 			</div>
 			<div class="card">
@@ -848,34 +898,137 @@
 						</tbody>
 					</table>
 				</div>
+			</div>		
+		</div>
+		<div class="dashboard">
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3>Top 10 Items Value</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="SaveTop10ItemForPO()"></i>
+					</div>
+				</div>
+				<div class="table-container" style="max-height:300px;">
+					<table class="custom-table custom-table-scroll" style="width: 100%;">
+						<thead style="background-color:#7493c3">
+							<tr>
+								<th>PartCode</th>
+								<th>ItemName</th>
+								<th>Qty</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody id="TopItemByStockValueForPO">
+						</tbody>
+					</table>
+				</div>
 			</div>
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">PO Generated</h3>
+					<h3>Top Vendors Value</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="FillPurchaseDashboardTop10VendorData()"></i>
+					</div>
+				</div>
+				<div class="table-container" style="max-height:350px;">
+					<table class="custom-table custom-table-scroll" style="width: 100%;">
+						<thead style="background-color:#7493c3">
+							<tr>
+								<th>AccountName</th>
+								<th>Qty</th>
+								<th>Amount</th>
+							</tr>
+						</thead>
+						<tbody id="Top10VendorByValue">
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="card">
+				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
+					<h3 style="margin: 0;">Top 10 Best Vendors</h3>
+					<div class="tab-icon-container bg-icon">
+						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
 					</div>
 				</div>
 				<div class="card-body">
-					<canvas id="fastSlowChart"></canvas>
+					<div class="version-bar">
+						<span class="label">0.1.5.2</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 80%;"></div>
+						</div>
+						<span class="value">123k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.3</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 70%;"></div>
+						</div>
+						<span class="value">53k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.4</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 65%;"></div>
+						</div>
+						<span class="value">23k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.5</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 50%;"></div>
+						</div>
+						<span class="value">3k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.6</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 40%;"></div>
+						</div>
+						<span class="value">1k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.2</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 35%;"></div>
+						</div>
+						<span class="value">123k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.3</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 30%;"></div>
+						</div>
+						<span class="value">53k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.4</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 20%;"></div>
+						</div>
+						<span class="value">23k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.5</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 10%;"></div>
+						</div>
+						<span class="value">3k</span>
+					</div>
+					<div class="version-bar">
+						<span class="label">0.1.5.6</span>
+						<div class="bar-container">
+							<div class="bar" style="width: 5%;"></div>
+						</div>
+						<span class="value">1k</span>
+					</div>
 				</div>
 			</div>
 		</div>
 		<div class="dashboard">
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">Top 10 Items by Value</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="poTopItemByValueChart"></canvas>
-				</div>
-			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">Top 10 Vendors Value</h3>
+					<h3 style="margin: 0;">Worst Vendors</h3>
 					<div class="tab-icon-container bg-icon">
 						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
 					</div>
@@ -886,31 +1039,7 @@
 			</div>
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Top 10 Best Vendors</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="table-container" style="max-height:350px;">
-					<table class="custom-table custom-table-scroll" style="width: 100%;">
-						<thead style="background-color:#7493c3">
-							<tr>
-								<th>PartCode</th>
-								<th>ItemName</th>
-								<th>Stock</th>
-								<th>Value</th>
-							</tr>
-						</thead>
-						<tbody id="TopItemByStockValue">
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-		<div class="dashboard">
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Top 10 Best Vendors</h3>
+					<h3>New Vendor In this Month</h3>
 					<div class="tab-icon-container bg-icon">
 						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
 					</div>
@@ -932,7 +1061,7 @@
 			</div>
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3>Top 10 Best Vendors</h3>
+					<h3>PO vs Consumption</h3>
 					<div class="tab-icon-container bg-icon">
 						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
 					</div>
@@ -950,17 +1079,6 @@
 						<tbody id="TopItemByStockValue">
 						</tbody>
 					</table>
-				</div>
-			</div>
-			<div class="card">
-				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">Top 10 Vendors Value</h3>
-					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-					</div>
-				</div>
-				<div class="card-body">
-					<canvas id="inventoryByCategoryChart"></canvas>
 				</div>
 			</div>
 		</div>
@@ -974,37 +1092,56 @@
 	<script>
 
 		document.addEventListener("DOMContentLoaded", function () {
-		  const tabLinks = document.querySelectorAll(".tab-link");
-		  const tabContents = document.querySelectorAll(".tab-content");
+			const tabLinks = document.querySelectorAll(".tab-link");
+			const tabContents = document.querySelectorAll(".tab-content");
 
-		  tabLinks.forEach(link => {
-			link.addEventListener("click", () => {
-			  // Remove "active" class from all tabs and contents
-			  tabLinks.forEach(l => l.classList.remove("active"));
-			  tabContents.forEach(c => c.classList.remove("active"));
+			function activateTab(tabId) {
+				// Remove "active" from all links and contents
+				tabLinks.forEach(link => link.classList.remove("active"));
+				tabContents.forEach(content => {
+					content.style.display = "none";
+					content.classList.remove("active");
+				});
 
-			  // Activate the clicked tab and corresponding content
-			  link.classList.add("active");
-			  const target = document.querySelector(link.dataset.target);
-			  if (target) target.classList.add("active");
+				// Activate selected tab
+				const activeLink = [...tabLinks].find(link => link.dataset.target === `#${tabId}`);
+				const activeContent = document.getElementById(tabId);
+				if (activeLink) activeLink.classList.add("active");
+				if (activeContent) {
+					activeContent.style.display = "block";
+					activeContent.classList.add("active");
+				}
+
+				// Load tab-specific data
+				if (tabId === "purchaseTab") {
+					$('#RefreshPOAllData').val(false);
+					FillPurchaseDashboardData();
+					FillPurchaseDashboardTop10ItemData();
+					FillPurchaseDashboardTop10VendorData();
+					FillPurchaseDashboardDataByCategoryValue();
+				} else if (tabId === "inventoryTab") {
+					$('#RefreshInventoryAllData').val(false);
+					FillInventoryDashboardData();
+					FillInventoryDashboardForPendingData();
+					FillInventoryByCategory();
+					GetTopItemByStockValue();
+					GetTopItemBelowMinLevel();
+					GetTopFastMovingItem();
+				}
+			}
+
+			// On initial load
+			const hash = window.location.hash || "#inventoryTab";
+			activateTab(hash.substring(1));
+
+			// On tab click
+			tabLinks.forEach(link => {
+				link.addEventListener("click", function () {
+					const targetId = link.dataset.target.substring(1);
+					activateTab(targetId);
+					history.replaceState(null, null, '#' + targetId);
+				});
 			});
-		  });
-		});
-
-		$(document).ready(function () {
-			$('#RefreshInventoryAllData').val(false);
-			FillInventoryDashboardData();
-			FillInventoryDashboardForPendingData();
-			FillInventoryByCategory();
-			GetTopItemByStockValue();
-			GetTopItemBelowMinLevel();
-			GetTopFastMovingItem();
-		});
-
-		$(document).on('click', '.tab-link[data-target="#purchaseTab"]', function () {
-			$('#RefreshPOAllData').val(false);
-			FillPurchaseDashboardData();
-			FillPurchaseDashboardTop10ItemData();
 		});
 
 		function FillInventoryDashboardData(){
@@ -1567,47 +1704,100 @@
 					});
 		}
 
-		// function FillPurchaseDashboardTop10ItemData(){
+										function FillPurchaseDashboardDataByCategoryValue() {
+			debugger;
+			$.ajax({
+				url: '@Url.Action("FillPurchaseDashboardDataByCategoryValue", "Home")',
+				type: 'POST',
+				async: false,
+				success: function (data) {
+					var parsed = JSON.parse(data);
 
-		// 	$.ajax({
-		// 				url: '@Url.Action("FillPurchaseDashboardTop10ItemData", "Home")',
-		// 				type: 'POST',
-		// 				async: false,
-		// 				success: function (data, status, error) {
-		// 					var obj = $.parseJSON(data);
-		// 					var parsed = JSON.parse(data);
-		// 					var xValues = parsed.Result.map(item => item.ItemName);
-		// 					var yValues = parsed.Result.map(item => item.POQTY);
+					var xValues = parsed.Result.map(item => item.ItemCategory);
+					var yValues = parsed.Result.map(item => item.POQty);
+					var poAmounts = parsed.Result.map(item => item.POAmount);
 
-		// 					var	 barColors = [
-		// 						"#b91d47", "#00aba9", "#2b5797",
-		// 						"#e8c3b9", "#1e7145", "#ff9f40",
-		// 						"#8e5ea2", "#3cba9f", "#c45850", "#36a2eb"
-		// 					];
+					var barColors = [
+						"#ffb3b3", "#66d9e8", "#7da6e5", "#f2d6cc", "#66cc99",
+						"#ffc285", "#bfa5d8", "#7ddad2", "#e08e8e", "#79c7f2"
+					];
 
-		// 						new Chart("poTopItemByValueChart", {
-		// 						type: "doughnut",
-		// 						data: {
-		// 							labels: xValues,
-		// 							datasets: [{
-		// 								backgroundColor: barColors.slice(0, xValues.length),
-		// 								data: yValues
-		// 							}]
-		// 						},
-		// 						options: {
-		// 							plugins: {
-		// 								title: {
-		// 									display: true
-		// 								}
-		// 							}
-		// 						}
-		// 					});
-		// 				},
-		// 				error: function (xhr, status, error) {
-		// 					alert('Failed to load ledger names.');
-		// 				}
-		// 			});
-		// }
+					setTimeout(function () {
+						const canvas = document.getElementById("poTopItemByValueChart");
+						if (!canvas) {
+							console.warn("Canvas with id 'poTopItemByValueChart' not found.");
+							return;
+						}
+
+						const ctx = canvas.getContext("2d");
+
+						if (window.poTopItemByValueChart instanceof Chart) {
+							window.poTopItemByValueChart.destroy();
+						}
+
+						window.poTopItemByValueChart = new Chart(ctx, {
+							type: "doughnut",
+							data: {
+								labels: xValues,
+								datasets: [{
+									data: yValues,
+									backgroundColor: barColors.slice(0, xValues.length),
+									poAmounts: poAmounts // custom array for tooltip and labels
+								}]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								hover: {
+									mode: null // ❌ disables hover interaction
+								},
+								elements: {
+									arc: {
+										hoverOffset: 0 // ❌ disables arc grow-on-hover
+									}
+								},
+								plugins: {
+									legend: {
+										display: true,
+										position: 'right'
+									},
+									title: {
+										display: true,
+										text: 'Top PO Items by Category'
+									},
+									tooltip: {
+										callbacks: {
+											label: function (context) {
+												const qty = context.dataset.data[context.dataIndex];
+												const amt = context.dataset.poAmounts[context.dataIndex];
+												return `${context.label}: Qty ${qty}, Amt ₹${amt.toLocaleString()}`;
+											}
+										}
+									},
+									datalabels: {
+										color: '#000',
+										formatter: function (value, context) {
+											const category = context.chart.data.labels[context.dataIndex];
+											const amount = context.dataset.poAmounts[context.dataIndex];
+											return `${category}\nQty: ${value}\nAmt: ₹${amount}`;
+										},
+										anchor: 'end',
+										align: 'start',
+										font: {
+											size: 10,
+											weight: 'bold'
+										}
+									}
+								}
+							}
+						});
+					}, 100);
+				},
+				error: function () {
+					alert('Failed to load PO Category chart data.');
+				}
+			});
+		}
 
 		function FillPurchaseDashboardTop10ItemData(){
 
@@ -1627,6 +1817,30 @@
 								html += '</tr>';
 							});
 							$('#TopItemByStockValueForPO').empty().append(html);
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to load ledger names.');
+						}
+					});
+		}
+
+		function FillPurchaseDashboardTop10VendorData(){
+
+			$.ajax({
+						url: '@Url.Action("FillPurchaseDashboardTop10VendorData", "Home")',
+						type: 'POST',
+						async: false,
+						success: function (data, status, error) {
+							var obj = $.parseJSON(data);
+							var html = '';
+							$.each(obj.Result, function (i, item) {
+								html += '<tr onclick="handleRowClick(\'' + item.AccountCode + '\')" style="cursor:pointer;">';
+								html += '<td><input type="hidden" value="' + item.AccountCode +'">' + item.AccountName + '</td>';
+								html += '<td>' + item.POQTY + '</td>';
+								html += '<td>' + item.POAmount + '</td>';
+								html += '</tr>';
+							});
+							$('#Top10VendorByValue').empty().append(html);
 						},
 						error: function (xhr, status, error) {
 							alert('Failed to load ledger names.');
@@ -1670,6 +1884,30 @@
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
 								if($('#RefreshPOAllData').val() == "false"){
 									$.notify('Successfully Refresh Top 10 Items For PO...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function SaveTop10VendorForPO(){
+			$.ajax({
+						url: '@Url.Action("SaveTop10VendorForPO", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshPOAllData').val() == "false"){
+									$.notify('Successfully Refresh Top 10 Vendors For PO...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
 									}, 1000);

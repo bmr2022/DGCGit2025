@@ -74,9 +74,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.FillPurchaseDashboardData();
         }
+        public async Task<ResponseResult> FillPurchaseDashboardDataByCategoryValue()
+        {
+            return await _DashboardDAL.FillPurchaseDashboardDataByCategoryValue();
+        }
         public async Task<ResponseResult> FillPurchaseDashboardTop10ItemData()
         {
             return await _DashboardDAL.FillPurchaseDashboardTop10ItemData();
+        }
+        public async Task<ResponseResult> FillPurchaseDashboardTop10VendorData()
+        {
+            return await _DashboardDAL.FillPurchaseDashboardTop10VendorData();
         }
         public async Task<ResponseResult> SaveNoOfPOItemsAndPending()
         {
@@ -85,6 +93,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> SaveTop10ItemForPO()
         {
             return await _DashboardDAL.SaveTop10ItemForPO();
+        }
+        public async Task<ResponseResult> SaveTop10VendorForPO()
+        {
+            return await _DashboardDAL.SaveTop10VendorForPO();
         }
     }
 }

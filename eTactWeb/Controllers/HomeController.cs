@@ -900,9 +900,21 @@ public class HomeController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+    public async Task<JsonResult> FillPurchaseDashboardDataByCategoryValue()
+    {
+        var JSON = await _IDashboard.FillPurchaseDashboardDataByCategoryValue();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     public async Task<JsonResult> FillPurchaseDashboardTop10ItemData()
     {
         var JSON = await _IDashboard.FillPurchaseDashboardTop10ItemData();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillPurchaseDashboardTop10VendorData()
+    {
+        var JSON = await _IDashboard.FillPurchaseDashboardTop10VendorData();
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
