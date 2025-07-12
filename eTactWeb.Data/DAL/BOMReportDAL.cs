@@ -78,7 +78,44 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
-        } 
+        }
+        //public async Task<ResponseResult> FillFinishPartCode()
+        //{
+        //    var _ResponseResult = new ResponseResult();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("@Flag", "FILLFINISHPARTCODE"));
+        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+
+        //    return _ResponseResult;
+        //}
+        //public async Task<ResponseResult> FillFinishItemName()
+        //{
+        //    var _ResponseResult = new ResponseResult();
+        //    try
+        //    {
+        //        var SqlParams = new List<dynamic>();
+        //        SqlParams.Add(new SqlParameter("@Flag", "FILLFINISHITEMNAME"));
+        //        _ResponseResult = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        dynamic Error = new ExpandoObject();
+        //        Error.Message = ex.Message;
+        //        Error.Source = ex.Source;
+        //    }
+
+        //    return _ResponseResult;
+        //}
+
         public async Task<ResponseResult> FillFinishPartCode()
         {
             var _ResponseResult = new ResponseResult();
@@ -86,7 +123,23 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FILLFINISHPARTCODE"));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+
+                // Call SP
+                var result = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+
+                // Convert DataTable to List<Dictionary<string, object>>
+                if (result.Result is DataTable dt)
+                {
+                    var rows = dt.AsEnumerable()
+                                 .Select(row => dt.Columns.Cast<DataColumn>()
+                                     .ToDictionary(col => col.ColumnName, col => row[col]))
+                                 .ToList();
+
+                    // Replace DataTable with List in Result
+                    result.Result = new { Table = rows };
+                }
+
+                _ResponseResult = result;
             }
             catch (Exception ex)
             {
@@ -104,7 +157,23 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FILLFINISHITEMNAME"));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+
+                // Call SP
+                var result = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+
+                // Convert DataTable to List<Dictionary<string, object>>
+                if (result.Result is DataTable dt)
+                {
+                    var rows = dt.AsEnumerable()
+                                 .Select(row => dt.Columns.Cast<DataColumn>()
+                                     .ToDictionary(col => col.ColumnName, col => row[col]))
+                                 .ToList();
+
+                    // Replace DataTable with List in Result
+                    result.Result = new { Table = rows };
+                }
+
+                _ResponseResult = result;
             }
             catch (Exception ex)
             {
@@ -115,6 +184,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
         public async Task<ResponseResult> FillRMItemName()
         {
             var _ResponseResult = new ResponseResult();
@@ -122,25 +192,23 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FILLRMTEMNAME"));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
 
-            return _ResponseResult;
-        } 
-        public async Task<ResponseResult> FillRMPartCode()
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "FILLRMPARTCODE"));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+                // Call SP
+                var result = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+
+                // Convert DataTable to List<Dictionary<string, object>>
+                if (result.Result is DataTable dt)
+                {
+                    var rows = dt.AsEnumerable()
+                                 .Select(row => dt.Columns.Cast<DataColumn>()
+                                     .ToDictionary(col => col.ColumnName, col => row[col]))
+                                 .ToList();
+
+                    // Replace DataTable with List in Result
+                    result.Result = new { Table = rows };
+                }
+
+                _ResponseResult = result;
             }
             catch (Exception ex)
             {
@@ -151,6 +219,42 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<ResponseResult> FillRMPartCode()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FILLRMPARTCODE"));
+
+                // Call SP
+                var result = await _IDataLogic.ExecuteDataTable("SPBOMReport", SqlParams);
+
+                // Convert DataTable to List<Dictionary<string, object>>
+                if (result.Result is DataTable dt)
+                {
+                    var rows = dt.AsEnumerable()
+                                 .Select(row => dt.Columns.Cast<DataColumn>()
+                                     .ToDictionary(col => col.ColumnName, col => row[col]))
+                                 .ToList();
+
+                    // Replace DataTable with List in Result
+                    result.Result = new { Table = rows };
+                }
+
+                _ResponseResult = result;
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> FillWorkCenterName()
         {
             var _ResponseResult = new ResponseResult();

@@ -71,7 +71,7 @@
                                     </select>
                                 </div>
                               
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                               @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="FGPartCode"  class="form-label">FG Part Code</label>
                                     <select  asp-for="FGPartCode" class="form-select">
                                         <option value="@Model.PartCode">-Select-</option>
@@ -82,6 +82,20 @@
                                     <select  asp-for="FGItemName" class="form-select">
                                         <option value="@Model.PartCode">-Select-</option>
                                     </select>
+                                </div>*@
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PartCodeDiv">
+                                    <label asp-for="FGPartCode" class="form-label" >FG Part Code</label>
+                                    <div class="">
+                                        <input type="text" id="FgPartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                        <input type="hidden" asp-for="FGPartCode" id="FGPartCode"  />
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6">
+                                    <label asp-for="FGItemName" class="form-label">Fg Item Name</label>
+                                    <div class="">
+                                        <input type="text" id="FgItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                        <input type="hidden" asp-for="ItemCode" id="ItemCode" />
+                                    </div>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="BomRevNo" class="form-label">Bom Rev No</label>
@@ -89,18 +103,21 @@
                                         <option value="">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="RMPartCode" class="form-label">RM Part Code</label>
-                                    <select asp-for="RMPartCode" class="form-select">
-                                        <option value="@Model.PartCode">-Select-</option>
-                                    </select>
-                                </div>
+                          
 
-                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="RMItemName" class="form-label">RM Item Name</label>
-                                    <select asp-for="RMItemName" class="form-select">
-                                        <option value="@Model.PartCode">-Select-</option>
-                                    </select>
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-6" id="PartCodeDiv2">
+                                    <label asp-for="RMPartCode" class="form-label">RM Part Code</label>
+                                    <div class="">
+                                        <input type="text" id="RmPartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                        <input type="hidden" asp-for="RMPartCode" id="RMPartCode" />
+                                    </div>
+                                </div>
+                                <div class="col-xl-3 col-lg-4 col-md-6 col-sm-6 col-xs-6">
+                                    <label asp-for="RMItemName" class="form-label" >RM Item Name</label>
+                                    <div class="">
+                                        <input type="text" id="RmItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                        <input type="hidden" asp-for="ItemCode" id="ItemCode" />
+                                    </div>
                                 </div>
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="display:none" id="BomStokeStoreName">
                                     <label asp-for="StoreName" class="form-label" >Store Name</label>
@@ -267,21 +284,17 @@
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#FGPartCode').select2();
-            $('#FGItemName').select2();
-            $('#RMItemName').select2();
-            $('#RMPartCode').select2();
+            
             $('#StoreName').select2();
             $('#WorkCenterName').select2();
             $('#ReportType').select2();
             $('#BomRevNo').select2();
 
             //GetBOMTree();
-           
-            FillFinishItemName();
-            FillFinishPartCode();
-            FillRMPartCode();
-            FillRMItemName();
+
+            FillFGItems();
+            FillRMItems();
+
             FillWorkCenterName();
             FillStoreName();
             // var ReportType = $('#ReportType').val();
@@ -322,17 +335,17 @@
         });
 
         $('#ReportType').change(function () {
-            handleReportType(); // Reuse the function to handle report type changes
+            handleReportType(); 
         });
         $('#divStockRegisterBody tr').each(function () {
             let $row = $(this);
-            let $cell = $row.find('td[id^="ShortExcess-"]'); // find the TD by ID
+            let $cell = $row.find('td[id^="ShortExcess-"]'); 
 
             if ($cell.length > 0) {
                 let val = parseFloat($cell.text().trim());
 
                 if (!isNaN(val) && val <= 0) {
-                    $row.css('color', 'red'); // ✅ apply red text to the full row
+                    $row.css('color', 'red');
                 }
             }
         });
@@ -426,9 +439,16 @@
 
             let currentY = 75;
             const headerFields = [
-                { label: 'FG Item Name', value: fgItemNameText },
-                { label: 'FG Part Code', value: fgPartCodeText }
+                {
+                    label: 'FG Item Name',
+                    value: (fgItemNameText === "-Select-") ? " " : fgItemNameText
+                },
+                {
+                    label: 'FG Part Code',
+                    value: (fgPartCodeText === "-Select-") ? " " : fgPartCodeText
+                }
             ];
+
 
             // Filter out any fields with empty values
             const filled = headerFields.filter(field => field.value);
@@ -611,8 +631,8 @@
                     ]];
                     columnStyles = {
                         0: { cellWidth: 20 },  // #Sr
-                        1: { cellWidth: 70 },  // RM Part Code
-                        2: { cellWidth: 90 },  // RM Item Name
+                        1: { cellWidth: 130 },  // RM Part Code
+                        2: { cellWidth: 200 },  // RM Item Name
                         3: { cellWidth: 60 },  // Net Req Qty
                         4: { cellWidth: 60 },  // Store Stock
                         5: { cellWidth: 50 }  // RM Qty
@@ -646,7 +666,7 @@
                     fillColor: [41, 128, 185],
                     textColor: 255,
                     fontStyle: 'bold'
-                },
+                },                                         
                 bodyStyles: {       
                     textColor: [0, 0, 0]
                 },
@@ -656,15 +676,265 @@
             });
 
             // Save the PDF
-            doc.save(`BOM_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
-
+            //doc.save(`BOM_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
+            doc.save(`BOM.pdf`);
         });
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
-        function FillFinishItemName() {
+
+        function FillFGItems() {
+            debugger
+            // Autocomplete for PartCodeText
+            $("#FgPartCodeText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillFinishPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.PartCode.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.PartCode,
+                                        value: item.PartCode,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#FgPartCodeText").val(ui.item.value);
+                    $('#FgPartCode').val(ui.item.value);
+                    $('#ItemCode').val(ui.item.itemCode);
+
+                    // Now fetch ItemName for selected PartCode
+                    $.ajax({
+                        url: '@Url.Action("FillFinishItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#FgItemNameText").val(match.ItemName);
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#FgPartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // Autocomplete for ItemNameText
+            $("#FgItemNameText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillFinishItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.ItemName.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.ItemName,
+                                        value: item.ItemName,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#FgItemNameText").val(ui.item.value);
+                    $('#ItemCode').val(ui.item.itemCode);
+
+                    // Now fetch PartCode for selected ItemName
+                    $.ajax({
+                        url: '@Url.Action("FillFinishPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result; 
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#FgPartCodeText").val(match.PartCode);
+                                    $('#FgPartCode').val(match.PartCode);
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#FgItemNameText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+         function FillRMItems() {
+            debugger
+            // Autocomplete for PartCodeText
+            $("#RmPartCodeText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillRMPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.PartCode.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.PartCode,
+                                        value: item.PartCode,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#RmPartCodeText").val(ui.item.value);
+                    $('#RMPartCode').val(ui.item.value);
+                    $('#ItemCode').val(ui.item.itemCode);
+
+                    // Now fetch ItemName for selected PartCode
+                    $.ajax({
+                        url: '@Url.Action("FillRMItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#RmItemNameText").val(match.ItemName);
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#FgPartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // Autocomplete for ItemNameText
+            $("#RmItemNameText").autocomplete({
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("FillRMItemName", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result;
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let filtered = obj.result.table.filter(function (item) {
+                                    return item.ItemName.toLowerCase().includes(request.term.toLowerCase());
+                                });
+
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.ItemName,
+                                        value: item.ItemName,
+                                        itemCode: item.Item_Code
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        }
+                    });
+                },
+                select: function (event, ui) {
+                    $("#RmItemNameText").val(ui.item.value);
+                    $('#ItemCode').val(ui.item.itemCode);
+
+                    // Now fetch PartCode for selected ItemName
+                    $.ajax({
+                        url: '@Url.Action("FillRMPartCode", "BOMReport")',
+                        type: 'POST',
+                        success: function (result) {
+                            //let obj = typeof result === "string" ? JSON.parse(result) : result;
+                            let obj = result; 
+
+                            console.log(obj);
+                            if (obj.statusCode === 200 && obj.statusText === 'Success' && Array.isArray(obj.result.table)) {
+                                let match = obj.result.table.find(x => x.Item_Code === ui.item.itemCode);
+                                if (match) {
+                                    $("#RmPartCodeText").val(match.PartCode);
+                                    $('#RMPartCode').val(match.PartCode); 
+                                }
+                            }
+                        }
+                    });
+
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#RmItemNameText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+        }
+
+     /*    function FillFinishItemName() {
             $.ajax({
                 url: '@Url.Action("FillFinishItemName", "BOMReport")', // Action that returns FillGroup data
                 type: 'GET',
@@ -679,7 +949,7 @@
 
                         ledgerDropdown.append('<option value="' + ledger.Item_Code + '">' + ledger.ItemName + '</option>');
                     });
-                   
+
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load groups.');
@@ -742,7 +1012,7 @@
                     $("#FGPartCode").val(v).trigger("change");
                 }
             }
-        }
+        } */
         
         function FillRMItemName() {
             $.ajax({
