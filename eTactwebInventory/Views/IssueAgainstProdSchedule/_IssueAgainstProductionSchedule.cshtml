@@ -24,7 +24,7 @@ else
                 </div>
             </td>
             <td><input readonly value="@Cntr" style="width:30px" /></td>
-            <td><input readonly id="RMPartCode-@Cntr" type="text" style="width:80px" value="@item.RMPartCode" /></td>
+            <td><input readonly id="RMPartCode-@Cntr" type="text"style=" width:150px; max-width:150px; white-space:nowrap;" value="@item.RMPartCode" /></td>
             <td><input onmouseover="ShowToolTip(this)" onmouseout="hideTooltip()" readonly id="RMItemName-@Cntr" type="text" style="width:125px" value="@item.RMItemName" /><input type="hidden" id="IssueItemCode-@Cntr" value="@item.IssueItemCode" />
             </td>
             <td><input readonly id="PendQty-@Cntr" type="number" value="@Math.Round(item.PendQty, 2)" style="width:80px" /></td>
