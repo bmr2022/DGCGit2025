@@ -506,7 +506,8 @@ namespace eTactWeb.Controllers
                 var deletedPartCodes = new List<string>();
                 IssueAgainstProdScheduleDetail.RemoveAll(x =>
                 {
-                    bool toDelete = x.ToatlStock == 0 || x.ToatlStock == null;
+                    bool toDelete = (x.ToatlStock <= 0); 
+
                     if (toDelete)
                         deletedPartCodes.Add(x.RMPartCode);
                     return toDelete;
