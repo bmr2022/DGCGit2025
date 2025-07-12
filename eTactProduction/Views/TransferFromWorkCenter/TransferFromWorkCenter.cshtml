@@ -1289,8 +1289,8 @@
             return true;
         }
         var itemBatchArray = [];
+        var batchList = []; // Global list to track all batch options
         $('.ItemBtn').click(function (e) {
-
             e.preventDefault();
             if (!Validate_TransferGrid()) return;
 
@@ -1323,10 +1323,8 @@
                 "ProcessName": $('#ProcessName').find(":selected").text() == '-Select-' ? "" : $('#ProcessName').find(":selected").text(),
                 "ProcessId": $('#ProcessName').val(),
                 "TotalStock": parseFloat($('#TotalStock').val()),
-               /*  "BatchNo": $('#BatchNo').val(),
-                "UniqueBatchNo": $('#UniqueBatchNo').val(), */
-                BatchNo: $('#BatchNo').find(':selected').text().trim(),
-                UniqueBatchNo: $('#UniqueBatchNo').find(':selected').text().trim(),
+                "BatchNo": $('#BatchNo').find(':selected').text().trim(),
+                "UniqueBatchNo": $('#UniqueBatchNo').find(':selected').text().trim(),
                 "BatchStock": parseFloat($('#BatchStock').val()),
                 "ReceivedByStoreQty": parseFloat($('#ReceivedByStoreQty').val()),
                 "ReceivedCompleted": $('#ReceivedCompleted').val(),
@@ -1334,57 +1332,67 @@
                 "Rate": parseFloat($('#Rate').val()),
                 "ItemWeight": parseFloat($('#ItemWeight').val()),
                 "ItemCode": parseFloat($('#ItemName').val())
-            }
+            };
 
             $.ajax({
-                url: "@Url.Action("AddTransferFromWorkCenter")",
+                url: '@Url.Action("AddTransferFromWorkCenter")',
                 type: "POST",
                 data: ItemData,
-                beforeSend: function (xhr) {
-                    console.log(1);
+                beforeSend: function () {
+                    console.log('Sending item...');
                 },
                 success: function (data, status, xhr) {
-                    
+
+                    // ✅ Store used batch
                     itemBatchArray.push({
                         "itemcode": parseInt($('#ItemCode').val()),
                         "batchno": $('#BatchNo').val(),
                         "uniqueBatchNo": $('#UniqueBatchNo').val()
                     });
+
+                    // ✅ Disable current used batch
+                    const usedBatchNo = $('#BatchNo').val();
+                    $('#BatchNo option[value="' + usedBatchNo + '"]').prop('disabled', true);
+
+                    // ✅ Enable next unused batch from batchList
+                    for (var i = 0; i < batchList.length; i++) {
+                        var nextBatch = batchList[i];
+                        var isUsed = itemBatchArray.some(function (item) {
+                            return item.batchno === nextBatch;
+                        });
+                        if (!isUsed) {
+                            $('#BatchNo option[value="' + nextBatch + '"]').prop('disabled', false).prop('selected', true);
+                            $('#BatchNo').trigger('change'); // optional
+                            break;
+                        }
+                    }
+
                     if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
-                    }
-                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                    } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
                         $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
-                    }
-                    else {
+                    } else {
                         $('#divTransferGrid').html(data);
                         $.notify('Item Added To Grid.', "success");
                     }
+
                     editingNow = false;
                     ClearGrid();
-                    $('#BatchNo').empty();
-                    $('#BatchNo').append('<option selected>-Select-</option>');
-                    $('#UniqueBatchNo').empty();
-                    $('#UniqueBatchNo').append('<option selected>-Select-</option>');
+                    $('#BatchNo').val('0');
+                    $('#UniqueBatchNo').val('0');
+
                 },
-                error: function (result, status, xhr) {
+                error: function (result) {
                     $.notify(result.responseText, "error");
                 },
-                failure: function (result, status, xhr) {
-                    alert(response.responseText);
+                failure: function (result) {
+                    alert(result.responseText);
                 },
                 complete: function () {
-                    console.log(5);
+                    console.log('Done');
                     $('.Schedule').fadeIn();
-                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
-            }).done(function () {
-                console.log(3);
-            }).fail(function () {
-                alert("error");;
-            }).always(function () {
-                console.log(4);
             });
         });
 
@@ -1558,65 +1566,67 @@
         /* var itemBatchArray = [];//for deleting and adding batchnos in batchlist if its performed
         var BatchUniqueUpd = [];//for deleting batches in sequence */
         var SeqForBatch = 1;
-        function GetBatchNo() {
 
+
+        function GetBatchNo() {
             var dateValue = $('#TransferMatEntrydate').val();
-            /* var [day, month, year] = dateValue.split('/');
-            day = day.padStart(2, '0'); // Ensure day has two digits
-            month = month.padStart(2, '0'); // Ensure month has two digits
-            var formattedDate = `${day}/${month}/${year}`; */
+            var itemCode = $('#ItemName').val();
+
             $.ajax({
                 type: "POST",
                 url: '@Url.Action("GetBatchNumber")',
-                data: { ItemCode: $('#ItemName').val(), YearCode: $('#TransferMatYearCode').val(), WcId: $('#IssueFromWc').val(), TransDate: dateValue, BatchNo: $('#BatchNo').val() },
+                data: {
+                    ItemCode: itemCode,
+                    YearCode: $('#TransferMatYearCode').val(),
+                    WcId: $('#IssueFromWc').val(),
+                    TransDate: dateValue,
+                    BatchNo: $('#BatchNo').val()
+                },
                 dataType: "json",
                 async: false,
-                success: function (result, status, error) {
-
+                success: function (result) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#BatchNo').empty();
-                            $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
-                            //$('#uniquebatchno').empty();
-                            //$('#uniquebatchno').append('<option value="" disabled selected>-Select-</option>');
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success') {
+                            $('#BatchNo').empty().append('<option value="0" disabled selected>-Select-</option>');
 
+                            batchList = [];
                             var seenValues = {};
-                            $.each(obj.Result, function (index, val) {
 
+                            // Step 1: Add all fetched batches as disabled by default
+                            $.each(obj.Result, function (index, val) {
                                 if (!seenValues[val.batchno]) {
                                     seenValues[val.batchno] = true;
-                                    $('#BatchNo').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                    batchList.push(val.batchno);
+                                    $('#BatchNo').append('<option value="' + val.batchno + '" disabled>' + val.batchno + '</option>');
                                 }
-                                //$('#RmUniqueBatchNo').append('<option value="' + val.UniqueBatchNo + '">' + val.UniqueBatchNo + '</option>');
                             });
 
-                            var itemArrayLength = itemBatchArray.length;
-                            if (itemArrayLength > 0) {
-                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
-                                    return item.itemcode === parseInt(ItemCode);
-                                });
-                                $('#BatchNo option').each(function () {
-                                    var optionValue = $(this).val();
-                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-                                        return item.batchno === optionValue;
-                                    });
-                                    if (existsInItemsWithCode16) {
-                                        $(this).remove();
-                                    }
-                                });
-                            }
-                        } else {
-                            $('#BatchNo').empty();
-                            $('#BatchNo').append('<option value="0" disabled selected>-Select-</option>');
-                            $('#UniqueBatchNo').empty();
-                            $('#UniqueBatchNo').append('<option value="0" disabled selected>-Select-</option>');
-                        }
+                            // Step 2: Remove already-used batch numbers
+                            var itemsWithSameCode = itemBatchArray.filter(function (item) {
+                                return item.itemcode === parseInt(itemCode);
+                            });
 
+                            $('#BatchNo option').each(function () {
+                                var optionValue = $(this).val();
+                                var exists = itemsWithSameCode.some(function (item) {
+                                    return item.batchno === optionValue;
+                                });
+                                if (exists) {
+                                    $(this).remove(); // remove used
+                                }
+                            });
+
+                            // Step 3: Enable only the first remaining (unused) batchno
+                            $('#BatchNo option:disabled').not('[value="0"]').first().prop('disabled', false);
+                        } else {
+                            $('#BatchNo').empty().append('<option value="0" disabled selected>-Select-</option>');
+                            $('#UniqueBatchNo').empty().append('<option value="0" disabled selected>-Select-</option>');
+                        }
                     }
                 },
                 error: function (req, status, error) {
-                    alert(error);
+                    alert("Error fetching batch numbers: " + error);
                 }
             });
         }
