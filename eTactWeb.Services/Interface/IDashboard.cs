@@ -29,5 +29,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveNoOfPOItemsAndPending();
         Task<ResponseResult> SaveTop10ItemForPO();
         Task<ResponseResult> SaveTop10VendorForPO();
+        Task<ResponseResult> FillPurchaseDashboardDataMonthlyTrend();
     }
 }

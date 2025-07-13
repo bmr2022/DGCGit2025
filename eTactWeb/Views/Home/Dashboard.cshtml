@@ -864,35 +864,35 @@
 						</thead>
 						<tbody>
 							<tr>
-								<td><a class="table-link link-primary" asp-controller="Indent" asp-action="Indent" id="Indent">Indent For PO</a></td>
+								<td><a class="table-link link-primary" asp-controller="Indent" target="_blank" asp-action="Indent" id="Indent">Indent For PO</a></td>
 								<td><span id="PendingIndentForPO">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="POApproval" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">PO Approval For First Approvak</a></td>
+								<td><a class="table-link link-primary" asp-action="POApproval" target="_blank" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">PO Approval For First Approvak</a></td>
 								<td><span id="PendingPOApprovalForFirstApproval">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingPOApprovalForMgmtApproval" asp-controller="PendingPOApprovalForMgmtApproval" id="POApprovalForMgmtApproval">PO Approval For Mgmt Approval</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingPOApprovalForMgmtApproval" target="_blank" asp-controller="PendingPOApprovalForMgmtApproval" id="POApprovalForMgmtApproval">PO Approval For Mgmt Approval</a></td>
 								<td><span id="PendingPOApprovalForMgmtApproval">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PSApproval" asp-controller="PSApproval" asp-route-ID="0" id="PSApproval">Amendment PO For Approval</a></td>
+								<td><a class="table-link link-primary" asp-action="PSApproval" asp-controller="PSApproval" target="_blank" asp-route-ID="0" id="PSApproval">Amendment PO For Approval</a></td>
 								<td><span id="PendingAmendmentPOForApproval">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" asp-route-ID="0" id="SOApproval">Schedule For Approval</a></td>
+								<td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" target="_blank" asp-route-ID="0" id="SOApproval">Schedule For Approval</a></td>
 								<td><span id="PendingScheduleForApproval">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="SSApproval" asp-controller="SSApproval" id="SSApproval">Amendment Schedule For Approval</a></td>
+								<td><a class="table-link link-primary" asp-action="SSApproval" asp-controller="SSApproval" target="_blank" id="SSApproval">Amendment Schedule For Approval</a></td>
 								<td><span id="PendingAmendmentScheduleForApproval">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingMRP" asp-controller="PendingMRP" id="PendingMRP">SO For MRP</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingMRP" asp-controller="PendingMRP" target="_blank" id="PendingMRP">SO For MRP</a></td>
 								<td><span id="PendingSOForMRP">0</span></td>
 							</tr>
 							<tr>
-								<td><a class="table-link link-primary" asp-action="PendingMRPForPO" asp-controller="PendingMRPForPO" id="MRPForPO">MRP For PO</a></td>
+								<td><a class="table-link link-primary" asp-action="PendingMRPForPO" asp-controller="PendingMRPForPO" target="_blank" id="MRPForPO">MRP For PO</a></td>
 								<td><span id="PendingMRPForPO">0</span></td>
 							</tr>
 						</tbody>
@@ -1705,99 +1705,93 @@
 		}
 
 										function FillPurchaseDashboardDataByCategoryValue() {
-			debugger;
-			$.ajax({
-				url: '@Url.Action("FillPurchaseDashboardDataByCategoryValue", "Home")',
-				type: 'POST',
-				async: false,
-				success: function (data) {
-					var parsed = JSON.parse(data);
+	debugger;
+	$.ajax({
+		url: '@Url.Action("FillPurchaseDashboardDataByCategoryValue", "Home")',
+		type: 'POST',
+		async: false,
+		success: function (data) {
+			var parsed = JSON.parse(data);
 
-					var xValues = parsed.Result.map(item => item.ItemCategory);
-					var yValues = parsed.Result.map(item => item.POQty);
-					var poAmounts = parsed.Result.map(item => item.POAmount);
+			var xValues = parsed.Result.map(item => item.ItemCategory);
+			var yValues = parsed.Result.map(item => item.POQty);
+			var poAmounts = parsed.Result.map(item => item.POAmount);
 
-					var barColors = [
-						"#ffb3b3", "#66d9e8", "#7da6e5", "#f2d6cc", "#66cc99",
-						"#ffc285", "#bfa5d8", "#7ddad2", "#e08e8e", "#79c7f2"
-					];
+			var barColors = [
+				"#ffb3b3", "#66d9e8", "#7da6e5", "#f2d6cc", "#66cc99",
+				"#ffc285", "#bfa5d8", "#7ddad2", "#e08e8e", "#79c7f2"
+			];
 
-					setTimeout(function () {
-						const canvas = document.getElementById("poTopItemByValueChart");
-						if (!canvas) {
-							console.warn("Canvas with id 'poTopItemByValueChart' not found.");
-							return;
-						}
+			setTimeout(function () {
+				const canvas = document.getElementById("poTopItemByValueChart");
+				if (!canvas) {
+					console.warn("Canvas with id 'poTopItemByValueChart' not found.");
+					return;
+				}
 
-						const ctx = canvas.getContext("2d");
+				const ctx = canvas.getContext("2d");
 
-						if (window.poTopItemByValueChart instanceof Chart) {
-							window.poTopItemByValueChart.destroy();
-						}
+				if (window.poTopItemByValueChart instanceof Chart) {
+					window.poTopItemByValueChart.destroy();
+				}
 
-						window.poTopItemByValueChart = new Chart(ctx, {
-							type: "doughnut",
-							data: {
-								labels: xValues,
-								datasets: [{
-									data: yValues,
-									backgroundColor: barColors.slice(0, xValues.length),
-									poAmounts: poAmounts // custom array for tooltip and labels
-								}]
+				window.poTopItemByValueChart = new Chart(ctx, {
+					type: "bar", // Changed to bar
+					data: {
+						labels: xValues,
+						datasets: [{
+							label: "PO Qty",
+							data: yValues,
+							backgroundColor: barColors.slice(0, xValues.length),
+							poAmounts: poAmounts // for tooltip
+						}]
+					},
+					options: {
+						responsive: true,
+						maintainAspectRatio: false,
+						scales: {
+							x: {
+								title: {
+									display: true,
+									text: "Item Category"
+								}
 							},
-							options: {
-								responsive: true,
-								maintainAspectRatio: false,
-								hover: {
-									mode: null // ❌ disables hover interaction
-								},
-								elements: {
-									arc: {
-										hoverOffset: 0 // ❌ disables arc grow-on-hover
-									}
-								},
-								plugins: {
-									legend: {
-										display: true,
-										position: 'right'
-									},
-									title: {
-										display: true,
-										text: 'Top PO Items by Category'
-									},
-									tooltip: {
-										callbacks: {
-											label: function (context) {
-												const qty = context.dataset.data[context.dataIndex];
-												const amt = context.dataset.poAmounts[context.dataIndex];
-												return `${context.label}: Qty ${qty}, Amt ₹${amt.toLocaleString()}`;
-											}
-										}
-									},
-									datalabels: {
-										color: '#000',
-										formatter: function (value, context) {
-											const category = context.chart.data.labels[context.dataIndex];
-											const amount = context.dataset.poAmounts[context.dataIndex];
-											return `${category}\nQty: ${value}\nAmt: ₹${amount}`;
-										},
-										anchor: 'end',
-										align: 'start',
-										font: {
-											size: 10,
-											weight: 'bold'
-										}
+							y: {
+								beginAtZero: true,
+								title: {
+									display: true,
+									text: "PO Quantity"
+								}
+							}
+						},
+						plugins: {
+							legend: {
+								display: false
+							},
+							title: {
+								display: true,
+								text: 'Top PO Items by Category'
+							},
+							tooltip: {
+								callbacks: {
+									label: function (context) {
+										const qty = context.raw;
+										const amt = context.dataset.poAmounts[context.dataIndex];
+										return `Qty: ${qty}, Amt: ₹${amt.toLocaleString()}`;
 									}
 								}
 							}
-						});
-					}, 100);
-				},
-				error: function () {
-					alert('Failed to load PO Category chart data.');
-				}
-			});
+						}
+					}
+				});
+			}, 100);
+		},
+		error: function () {
+			alert('Failed to load PO Category chart data.');
 		}
+	});
+}
+
 
 		function FillPurchaseDashboardTop10ItemData(){
 

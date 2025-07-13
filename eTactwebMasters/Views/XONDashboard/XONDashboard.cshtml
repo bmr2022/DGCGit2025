@@ -53,12 +53,12 @@
 </style>
 
 <div class="dashboard">
-	<input type="hidden" id="RefreshAllData" />
+	<input type="hidden" id="RefreshInventoryAllData" />
 	<div class="card" style="border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
 		<!-- Header -->
 		<div style="width: 100%; background-color: #c5d6ee; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 10px 10px 0 0;">
 			<h3 style="margin: 0;font-size:20px;">Inventory</h3>
-			<div class="icon-container bg-icon" onclick="RefreshAllData()">
+			<div class="icon-container bg-icon" onclick="RefreshInventoryAllData()">
 				<i id="refreshIcon" class="fa fa-boxes" style="font-size: 24px; cursor: pointer;"></i>
 			</div>
 		</div>
@@ -161,15 +161,99 @@
 			<canvas id="inventoryByCategoryChart"></canvas>
 		</div>
 	</div>
+	<input type="hidden" id="RefreshPOAllData" />
 	<div class="card">
-		<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-			<h3 style="margin: 0;">Purchase Order</h3>
-			<div class="icon-container bg-icon">
-				<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+		<!-- Header -->
+		<div style="width: 100%; background-color: #c5d6ee; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 10px 10px 0 0;">
+			<h3 style="margin: 0;font-size:20px;">Purchase Order</h3>
+			<div class="icon-container bg-icon" onclick="RefreshAllPOData()">
+				<i id="refreshIcon" class="fa fa-boxes" style="font-size: 24px; cursor: pointer;"></i>
 			</div>
 		</div>
-		<div class="card-body">
-			<canvas id="inventoryByCategoryChart"></canvas>
+
+		<!-- Body -->
+		<div class="card-body" id="POButtons" style="padding: 16px;">
+			<!-- Placeholder (Shown when collapsed) -->
+			<div id="POPlaceholder" style="
+			background-color: #f9f9f9;
+			border-left: 4px solid #007bff;
+			padding: 12px 16px;
+			border-radius: 4px;
+			color: #333;
+			font-size: 14px;
+			line-height: 1.6;
+		">
+				<p style="margin: 0 0 8px 0; font-weight: 500;">
+					<i class="fa fa-info-circle text-primary"></i> This section includes the following Purchase Order operations:
+				</p>
+				<ul style="margin: 0; padding-left: 20px;">
+					<li>Refresh total PO items and pending PO status</li>
+					<li>Update Top 10 PO items by quantity/value</li>
+					<li>Update Top 10 vendors by PO count/value</li>
+				</ul>
+			</div>
+
+			<!-- Action Buttons (Initially hidden) -->
+			<div id="POActions" style="display: none; margin-top: 10px;">
+				<div class="d-flex flex-wrap gap-3">
+					<!-- Refresh PO & Pending -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #d0ebff;" onclick="SaveNoOfPOItemsAndPending()">
+						<i class="fas fa-sync-alt fa-fw text-primary"></i>
+						Refresh PO & Pending
+					</button>
+
+					<!-- Top 10 PO Items -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #ffd8a8;" onclick="SaveTop10ItemForPO()">
+						<i class="fas fa-boxes fa-fw text-warning"></i>
+						Top 10 PO Items
+					</button>
+
+					<!-- Top 10 PO Vendors -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #eebefa;" onclick="SaveTop10VendorForPO()">
+						<i class="fas fa-user-tie fa-fw text-danger"></i>
+						Top 10 Vendors
+					</button>
+
+					@* <!-- Pending Jobs -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #f8d7da;" onclick="PendingInventoryTask()">
+						<i class="fas fa-tasks fa-fw text-danger"></i>
+						Pending Jobs
+					</button>
+
+					<!-- Below Min Level -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #d0f0f4;" onclick="StockValuation()">
+						<i class="fas fa-level-down-alt fa-fw text-info"></i>
+						Below Min Level
+					</button>
+
+					<!-- Fast Vs Slow Item -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #edb98e;" onclick="FastVsSlowMovingTask()">
+						<i class="fas fa-bolt fa-fw" style="color:#cc760d"></i>
+						Fast Vs Slow Item
+					</button>
+
+					<!-- Fast Moving Item List -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #e0c3fc;" onclick="FastMovingItemsListTask()">
+						<i class="fas fa-list-alt fa-fw" style="color:#ac56ac;"></i>
+						Fast Moving Item List
+					</button> *@
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer Toggle -->
+		<div class="card-footer"
+			 style="cursor: pointer; background-color: #c5d6ee; padding: 12px 16px;"
+			 onclick="togglePOSection()">
+			<span style="font-weight: 600; font-size: 15px;">Click here to refresh PO</span>
+			<i id="poArrowIcon" class="fa fa-chevron-down float-end" style="float: right;"></i>
 		</div>
 	</div>
 </div>
@@ -201,7 +285,7 @@
 		Click here to get Item Below Min Level
 	</button>
 
-	<button type="button" class="btn btn-success submitBTN" onclick="RefreshAllData()">
+	<button type="button" class="btn btn-success submitBTN" onclick="RefreshInventoryAllData()">
 		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
 		Click To refresh All
 	</button>
@@ -211,7 +295,8 @@
 	<script>
 
 		$(document).ready(function () {
-			$('#RefreshAllData').val(false);
+			$('#RefreshInventoryAllData').val(false);
+			$('#RefreshPOAllData').val(false);
 		});
 
 		function toggleInventory() {
@@ -232,7 +317,25 @@
 			}
 		}
 
-		function RefreshAllData() {
+		function togglePOSection() {
+			const placeholder = document.getElementById("POPlaceholder");
+			const actions = document.getElementById("POActions");
+			const icon = document.getElementById("poArrowIcon");
+
+			if (actions.style.display === "none" || actions.style.display === "") {
+				actions.style.display = "block";
+				placeholder.style.display = "none";
+				icon.classList.remove("fa-chevron-down");
+				icon.classList.add("fa-chevron-up");
+			} else {
+				actions.style.display = "none";
+				placeholder.style.display = "block";
+				icon.classList.remove("fa-chevron-up");
+				icon.classList.add("fa-chevron-down");
+			}
+		}
+
+		function RefreshInventoryAllData() {
 			var icon = $('#refreshIcon');
 			var btn = $('#refreshBtn');
 
@@ -245,7 +348,7 @@
 
 			// Let the browser render the spinner first
 			setTimeout(function () {
-				$('#RefreshAllData').val(true);
+				$('#RefreshInventoryAllData').val(true);
 
 				// Call your inventory functions
 				FillNoOfItemInStock();
@@ -268,6 +371,38 @@
 			}, 10);
 		}
 
+		function RefreshAllPOData() {
+			var icon = $('#PORefreshIcon'); // PO-specific icon
+
+			// Switch icon to spinner
+			icon.removeClass('fa-boxes').addClass('fa-spinner fa-spin');
+
+			// Disable clicking and dim the icon
+			icon.css('pointer-events', 'none');
+			icon.css('opacity', '0.6');
+
+			setTimeout(function () {
+				$('#RefreshPOAllData').val(true);
+
+				// Call PO-related functions
+				SaveNoOfPOItemsAndPending();
+				SaveTop10ItemForPO();
+				SaveTop10VendorForPO();
+
+				// Notify success
+				$.notify('Successfully refreshed all PO Data...!', {
+					position: "top center",
+					className: "success"
+				});
+
+				// Reload after short delay
+				setTimeout(function () {
+					location.reload();
+				}, 1000);
+			}, 50);
+		}
+
+
 		function FillNoOfItemInStock(){
 			$.ajax({
 						url: '@Url.Action("NoOfItemInStock", "XONDashboard")',
@@ -278,7 +413,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -302,7 +437,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -326,7 +461,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -350,7 +485,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh Dead item In Stock...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -374,7 +509,7 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh FastMoving ItemList...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
@@ -398,8 +533,80 @@
 
 							var obj = $.parseJSON(response);
 							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshAllData').val() == "false"){
+								if($('#RefreshInventoryAllData').val() == "false"){
 									$.notify('Successfully Refresh Fast Vs Slow Moving Task...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function SaveNoOfPOItemsAndPending(){
+			$.ajax({
+						url: '@Url.Action("SaveNoOfPOItemsAndPending", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshPOAllData').val() == "false"){
+									$.notify('Successfully Refresh Total PO and Pending PO...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function SaveTop10ItemForPO(){
+			$.ajax({
+						url: '@Url.Action("SaveTop10ItemForPO", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshPOAllData').val() == "false"){
+									$.notify('Successfully Refresh Top 10 Items For PO...!', { position: "top center", className: "success" });
+									setTimeout(function () {
+										location.reload(); // Refresh after 2 seconds
+									}, 1000);
+								}
+							}
+						},
+						error: function (xhr, status, error) {
+							alert('Failed to save data.');
+						}
+					});
+		}
+
+		function SaveTop10VendorForPO(){
+			$.ajax({
+						url: '@Url.Action("SaveTop10VendorForPO", "XONDashboard")',
+						type: 'POST',
+						async: false,
+						data: {},
+						success: function (response, status, error) {
+
+							var obj = $.parseJSON(response);
+							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+								if($('#RefreshPOAllData').val() == "false"){
+									$.notify('Successfully Refresh Top 10 Vendors For PO...!', { position: "top center", className: "success" });
 									setTimeout(function () {
 										location.reload(); // Refresh after 2 seconds
 									}, 1000);
