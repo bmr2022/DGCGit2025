@@ -42,6 +42,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetFormRightsAmm(int uId);
         Task<ResponseResult> GetPendQty(string PONo, int POYearCode, int ItemCode, int AccountCode, string SchNo, int SchYearCode, string Flag);
+        Task<ResponseResult> getOldRate(int EntryId, int YearCode, int ItemCode);
         Task<ResponseResult> FillIndentDetail(string itemName, string partCode, int itemCode);
         Task<ResponseResult> SavePurchaseOrder(DataTable itemDetailDt, DataTable delieveryScheduleDt, DataTable taxDetailDt, DataTable IndentDetailDT, PurchaseOrderModel model);
     }

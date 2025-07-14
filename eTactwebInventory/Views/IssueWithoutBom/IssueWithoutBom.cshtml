@@ -79,7 +79,7 @@
                             {
                                 <div class="col-auto">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
                                         <i class="fa-solid fa-chevron-circle-right"></i>
                                         SUBMIT
                                     </button>
@@ -425,7 +425,7 @@
                                         {
                                             <div class="col-auto">
                                                 @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                                <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN" >
                                                     <i class="fa-solid fa-chevron-circle-right"></i>
                                                     SUBMIT
                                                 </button>
@@ -486,7 +486,7 @@
     <script>
         var ICName = []; // for checkstockbeforesaving function
         var ICName2 = []; // for checkrequisitionbeforesaving function
-        $('#submitBTN').click(function (e) {
+        $('.submitBTN').click(function (e) {
 
             e.preventDefault();
             if ($('#divIssueWOBOMGridAdd tr td').length <= 1) {
@@ -529,10 +529,11 @@
 
                     $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
                 }
-                else {
-                    $('#PasswordAllowPopup').modal("show");
-                }
+               
+                  
+                
             }
+              $('#PasswordAllowPopup').modal("show");
         });
 
         // When user clicks "Print"

@@ -700,7 +700,7 @@ namespace eTactWeb.Controllers
                         }
                         else
                         {
-                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo))
+                            if (model.docTypeId == 3 ? GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.SaleBillNo == model.SaleBillNo && x.SaleBillYearCode == model.SaleBillYearCode) : GateInwardItemDetail.Any(x => x.PartCode == model.PartCode && x.AgainstChallanNo == model.AgainstChallanNo && x.PoNo == model.PoNo))
                             {
                                 return StatusCode(207, "Duplicate");
                             }

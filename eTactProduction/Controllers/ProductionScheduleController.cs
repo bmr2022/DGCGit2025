@@ -142,15 +142,23 @@ namespace eTactWeb.Controllers
         {
             var Result = await _IProductionSchedule.DeleteByID(ID, YC, createdBy, entryByMachineName, ActualEntryBy, EntryDate).ConfigureAwait(false);
 
-            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            if (Result.StatusText == "Success" || Result.StatusText == "deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+              //  TempData["423"] = "423";
+                TempData["DeleteMessage"] = Result.StatusText;
+
             }
             else
             {
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
+
             }
 
             return RedirectToAction("PSDashboard",new {flag= "False",fromDate =  FromDate,toDate =  ToDate,partCode = PartCode,itemName =  ItemName,accountName =  AccountName,prodSchNo = ProdSchNo,wono = WONo,summaryDetail =  SummaryDetail,searchBox = SearchBox });

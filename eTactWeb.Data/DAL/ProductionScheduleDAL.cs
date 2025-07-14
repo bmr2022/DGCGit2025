@@ -81,15 +81,16 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                var entryDate = ParseFormattedDate(EntryDate);
                 var now = DateTime.Now;
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@EntryID", ID));
                 SqlParams.Add(new SqlParameter("@yearcode", YC));
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", entryByMachineName));
                 SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
-                SqlParams.Add(new SqlParameter("@EntryDate", EntryDate.Split(" ")[0]));
+                SqlParams.Add(new SqlParameter("@EntryDate", entryDate));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ProductionSchedule", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionSchedule", SqlParams);
 
             }
             catch (Exception ex)

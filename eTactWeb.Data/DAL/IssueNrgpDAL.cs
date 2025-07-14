@@ -862,7 +862,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ITEM_CODE", ItemCode));
                 SqlParams.Add(new SqlParameter("@STORE_ID", StoreId));
                 //SqlParams.Add(new SqlParameter("@TILL_DATE", tilldt.ToString("yyyy/MM/dd")));
-                SqlParams.Add(new SqlParameter("@TILL_DATE", ParseFormattedDate( TillDate)));
+                SqlParams.Add(new SqlParameter("@TILL_DATE", ParseFormattedDate(TillDate)));
                 SqlParams.Add(new SqlParameter("@BATCHNO", BatchNo));
                 SqlParams.Add(new SqlParameter("@Uniquebatchno", UniqueBatchNo));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable(Flag, SqlParams);
