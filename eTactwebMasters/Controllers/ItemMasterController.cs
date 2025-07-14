@@ -646,6 +646,7 @@ public class ItemMasterController : Controller
         using (var package = new ExcelPackage(stream))
         {
             var worksheet = package.Workbook.Worksheets[0];
+             var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString());
@@ -656,7 +657,7 @@ public class ItemMasterController : Controller
                 var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                 var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
 
-                var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
+               
 
                 ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
