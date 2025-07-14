@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="04/27/2025 14:06:17" ReportInfo.Modified="04/28/2025 15:40:55" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="04/27/2025 14:06:17" ReportInfo.Modified="07/14/2025 13:15:16" ReportInfo.CreatorVersion="2023.2.0.0">
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSSfT2dwApnec39YXD6LZfQA==">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqGVEBw+bD1302HhodPOki0mybnpuZKVLkWXI4YSXvoVCXDdUbv1TZOS4Qk6JbQnwOqsV1FfDeqhde6q/moiAFtdCf8tzhZYxmHtVjeNEX2LyPiNI0VAF4oQi2Zi6puF/41rfxFvqIp/AKhkw/W7cl2AGXGqjboO+eOOHOuopFwq3VLXkj6Ev8T82/8Qsdc+RSZYp/ZdNiO9LcyaMnJlSZJg==">
       <TableDataSource Name="Table" Alias="SPReportMRNShortExcessForMRNNdJWMRN" DataType="System.Int32" Enabled="true" SelectCommand="exec SPReportMRNShortExcessForMRNNdJWMRN  @MRNTYpe=N'MRN', @MRNEntryid= @entryidparam,@MrnYearCode=@MrnYearcodeparam,@AccountCode= @accountcodeparam">
         <Column Name="MRNNo" DataType="System.String"/>
         <Column Name="MRNEntryDate" DataType="System.DateTime"/>
@@ -50,7 +50,7 @@
       <TextObject Name="Text13" Left="113.4" Top="94.5" Width="255.15" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportMRNShortExcessForMRNNdJWMRN.MRNTypes]" Font="Arial, 10pt"/>
       <LineObject Name="Line54" Left="18.9" Top="122.85" Width="680.4"/>
     </ReportTitleBand>
-    <PageHeaderBand Name="PageHeader1" Top="125.52" Width="718.2" Height="37.8" CanGrow="true">
+    <PageHeaderBand Name="PageHeader1" Top="126.05" Width="718.2" Height="37.8" CanGrow="true">
       <LineObject Name="Line4" Left="18.9" Top="37.8" Width="680.4"/>
       <LineObject Name="Line5" Left="18.9" Height="37.8"/>
       <LineObject Name="Line6" Left="699.3" Top="37.8" Height="-37.8"/>
@@ -76,7 +76,7 @@
       <LineObject Name="Line52" Left="633.15" Height="37.8"/>
       <LineObject Name="Line53" Left="670.95" Height="37.8"/>
     </PageHeaderBand>
-    <GroupHeaderBand Name="GroupHeader1" Top="165.98" Width="718.2" Height="66.15" Condition="[SPReportMRNShortExcessForMRNNdJWMRN.VendoreName]">
+    <GroupHeaderBand Name="GroupHeader1" Top="167.05" Width="718.2" Height="66.15" Condition="[SPReportMRNShortExcessForMRNNdJWMRN.VendoreName]">
       <LineObject Name="Line7" Left="18.9" Top="66.15" Width="680.4"/>
       <LineObject Name="Line9" Left="699.3" Top="66.15" Height="-66.15"/>
       <LineObject Name="Line8" Left="18.9" Height="66.15"/>
@@ -101,10 +101,10 @@
       <TextObject Name="Text39" Left="633.15" Width="37.8" Height="66.15" CanGrow="true" CanBreak="false" Text="[SPReportMRNShortExcessForMRNNdJWMRN.schno]" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text40" Left="670.95" Width="28.35" Height="66.15" CanGrow="true" CanBreak="false" Text="[SPReportMRNShortExcessForMRNNdJWMRN.pono]" HorzAlign="Center" Font="Arial, 6pt"/>
       <TextObject Name="Text30" Left="18.9" Width="28.35" Height="66.15" CanGrow="true" CanBreak="false" Text="[Row#]" HorzAlign="Center" Font="Arial, 8pt"/>
-      <DataBand Name="Data1" Top="234.8" Width="718.2" DataSource="Table"/>
-      <GroupFooterBand Name="GroupFooter1" Top="237.47" Width="718.2"/>
+      <DataBand Name="Data1" Top="236.4" Width="718.2" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter1" Top="239.6" Width="718.2"/>
     </GroupHeaderBand>
-    <ReportSummaryBand Name="ReportSummary1" Top="280.6" Width="718.2" Height="85.05">
+    <ReportSummaryBand Name="ReportSummary1" Top="283.8" Width="718.2" Height="85.05">
       <LineObject Name="Line33" Left="18.9" Top="28.35" Width="680.4"/>
       <LineObject Name="Line34" Left="18.9" Top="66.15" Width="680.4"/>
       <LineObject Name="Line35" Left="18.9" Height="66.15"/>
@@ -122,7 +122,7 @@
       <TextObject Name="Text29" Left="585.9" Width="47.25" Height="28.35" CanGrow="true" CanBreak="false" Text="[TotalAmt]" HorzAlign="Center" Font="Arial, 8pt, style=Bold"/>
       <TextObject Name="Text41" Left="321.3" Top="66.15" Width="94.5" Height="18.9" Text="[Page]" HorzAlign="Center" Font="Arial, 8pt"/>
       <TextObject Name="Text42" Left="37.8" Top="37.8" Width="94.5" Height="18.9" Text="Prepared By:" HorzAlign="Center" Font="Arial, 8pt"/>
-      <ChildBand Name="Child1" Top="240.13" Width="718.2" Height="37.8" FillUnusedSpace="true">
+      <ChildBand Name="Child1" Top="242.8" Width="718.2" Height="37.8" FillUnusedSpace="true">
         <LineObject Name="Line21" Left="699.3" Top="37.8" Height="-37.8"/>
         <LineObject Name="Line20" Left="18.9" Top="37.8" Width="680.4"/>
         <LineObject Name="Line22" Left="18.9" Height="37.8"/>

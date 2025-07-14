@@ -289,41 +289,7 @@
 										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>InProcess Inspection Grid</strong>
 									</button>
 								</h2>
-								@* <div class="card">
-									<div class="card-body overflow-auto pb-0">
-										<table class="table table-hover table-bordered table-striped" id="GateMainTable">
-											<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
-												<tr>
-													<th>Action</th>
-													<th>Sr No</th>
-													<th>Characteristic</th>
-													<th>Evalution Measurment Technique</th>
-													<th>Control Method</th>
-													<th>Specification From</th>
-													<th>Specification To</th>
-													<th>Rejection Plan</th>
-													<th>Frequency of Testing</th>
-													<th>Due Date</th>
-													
-												</tr>
-											</thead>
-											<tbody id="divinProcessInspectionGrid">
-												<partial name="_InprocessInspectionGrid" />
-											</tbody>
-										</table>
-										
-									</div>
-								</div>
-								<div class="row g-2 gx-3">
-									<div class="col-12 text-center">
-										<strong>Total No Of Items : <span id="lblTotalNoOfBelowItems"></span></strong>
-									</div>
-								</div>
-
-								<div class="progress my-3 mb-3" style="height: 4px;">
-									<div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-								</div>
-							</div> *@
+								
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="card-body" id="divPendingMRP">
@@ -340,6 +306,96 @@
 
 									</div>
 							    </div>
+								<div class="d-flex">
+									<div class="col-md-10">
+										<button type="button" id="GridButton" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
+											<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+										</button>
+									</div>
+									<div class="col-md-2 mt-1 mb-1">
+										<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+									</div>
+								</div>
+								<div class="card">
+									<div class="card-body overflow-auto pb-0">
+										<table class="table table-hover table-bordered table-striped IssueNRGPTb">
+											<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+												<tr>
+													<th>Action</th>
+													<th>SR#</th>
+
+													<th data-columnno="2" data-sortorder="asc" class="sortCol">
+														<span style="padding:5px;margin:5px" class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Characteristic
+													</th>
+													<th data-columnno="2" data-sortorder="asc" class="sortCol">
+														<span style="padding:5px;margin:5px" class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Eve Meas Tec
+													</th>
+
+
+													<th data-columnno="8" data-sortorder="asc" class="sortCol">
+														<span style="padding:5px;margin:5px" class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Cintrol Method
+													</th>
+													<th data-columnno="10" data-sortorder="asc" class="sortCol">
+														<span style="padding:5px;margin:5px" class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>From
+													</th>
+													<th data-columnno="12" data-sortorder="asc" class="sortCol">
+														<span style="padding:5px;margin:5px" class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>To
+													</th>
+													<th data-columnno="13" data-sortorder="asc" class="sortCol">
+														<span style="padding:5px;margin:5px" class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Rej Plan
+													</th>
+
+
+													<th data-columnno="14" data-sortorder="asc" class="sortCol">
+														<span style="padding:5px;margin:5px" class="sort-icon">
+															<i class="fa" aria-hidden="true"></i>
+														</span>Freq Of Testing
+													</th>
+													@for (int i = 1; i <= (ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize); i++)
+													{
+														<th style="width:120px;">
+															<span style="padding:5px;margin:5px" class="sort-icon">
+																<i class="fa " aria-hidden="true"></i>
+															</span>
+															@i
+														</th>
+													}
+													
+
+													
+												</tr>
+											</thead>
+											<tbody id="divStockGrid">
+												<partial name="_InProcessInspectionAddtoGrid" />
+											</tbody>
+										</table>
+									</div>
+								</div>
+							</div>
+							<div class="row g-2 gx-3">
+								<div class="col-12 text-center">
+
+									<strong>TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+								</div>
+							</div>
+						</div>
+
+					</div>
+
+
+				</div>
 							<div class="accordion-item">
 								<h2 class="accordion-header" id="OtherGrid">
 										<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
@@ -436,9 +492,9 @@
 
 								</div>
 							</div>
-						</div>
-					</div>
-				</div>
+						
+			</div>
+		
 
 
 				<div class="card-footer p-3">
@@ -498,7 +554,7 @@
 						</div>
 					</div>
 				</div>
-			</div>
+	      </div>
 	</form>
 </div>
 
@@ -628,6 +684,29 @@
 				$input.css("color", "");
 			}
 		});
+		var sampleSize = @(ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize)
+		function addRowToGrid() {
+			let newRow = '<tr>';
+
+			// Add Frequency of Testing column
+			newRow += `<td style="max-width:70px; white-space:normal; word-wrap:break-word; font-size:10px;">Freq</td>`;
+
+			// Add dynamic input columns
+			for (let i = 1; i <= sampleSize; i++) {
+				newRow += `
+					<td>
+						<input type="text"
+							   name="SampleHeader_${i}"
+							   class="form-control sample-input"
+							   data-from=""
+							   data-to="" />
+					</td>`;
+			}
+
+			newRow += '</tr>';
+
+			$('#yourGridTable tbody').append(newRow);
+		}
 
 		function setFormattedDate() {
 			var today = new Date();
@@ -1071,116 +1150,91 @@
 
 		var UniqueBatchNo = [];
 		
+		// $('#GridButton').click(function (e) {
+		// 	e.preventDefault();
+		// 	debugger
+		// 	var missingFields = [];
+
+		// 	var Characteristic = $('#Characteristic').val();
+		// 	var EvalutionMeasurmentTechnique = $('#EvalutionMeasurmentTechnique').val();
+		// 	var ControlMethod = $('#ControlMethod').val();
+		// 	var SpecificationFrom = $('#SpecificationFrom').val();
+		// 	var SpecificationTo = $('#SpecificationTo').val();
+		// 	var RejectionPlan = $('#RejectionPlan').val();
+		// 	var FrequencyofTesting = $('#FrequencyofTesting').val();
+			
+		// 	var SchData = {
+		// 		Characteristic: $('#Characteristic').val(),
+		// 		EvalutionMeasurmentTechnique: $('#EvalutionMeasurmentTechnique').val(),
+		// 		ControlMethod: $('#ControlMethod').val(),
+		// 		SpecificationFrom: $('#SpecificationFrom').val() || '',
+		// 		SpecificationTo: $('#SpecificationTo').val(),
+		// 		RejectionPlan: $('#RejectionPlan').val() || '',
+		// 		FrequencyofTesting: $('#FrequencyofTesting').val()
+		// 	};
+		// 	console.log(SchData);
+		// 	$.ajax({
+		// 		type: "POST",
+		// 		url: '@Url.Action("AddToGridData", "InProcessInspection")',
+		// 		data: { model: SchData },
+		// 		success: function (result, status, xhr) {
+		// 			if (xhr.status == 200 && xhr.responseText == result) {
+
+		// 				$('#divStockGrid').html(result);
+		// 				TotalNoOfRows();
+		// 				ClearItems();
+		// 			} else if (xhr.status == 207) {
+		// 				$.notify('Duplicate Item...!', "info");
+		// 			}
+		// 		},
+		// 		error: function () {
+		// 			$.notify('Something Went Wrong, Please Try Again.', "error");
+		// 		}
+		// 	});
+		// });
+
 		$('#GridButton').click(function (e) {
 			e.preventDefault();
+			debugger
+			var gridData = [];
 
-			var missingFields = [];
+			$('#divinProcessInspectionGrid tbody tr').each(function () {
+				var $cells = $(this).find('td');
+				var $row = $(this);
+				var rowData = {
+					SeqNo: $cells.eq(0).text().trim(),
+					Characteristic: $cells.eq(1).text().trim(),
+					EvalutionMeasurmentTechnique: $cells.eq(2).text().trim(),
+					ControlMethod: $cells.eq(3).text().trim(),
+					SpecificationFrom: $cells.eq(4).text().trim(),
+					SpecificationTo: $cells.eq(5).text().trim(),
+					RejectionPlan: $cells.eq(6).text().trim(),
+					FrequencyofTesting: $cells.eq(7).text().trim(),
+					// Add more fields if needed
+							  Samples: [] // <-- add dynamic sample values here
+				};
+				$row.find('input.sample-input').each(function (index) {
+					rowData.Samples.push($(this).val().trim());
+				});
+				gridData.push(rowData);
+			});
 
-			var issueToStoreWC = $('#IssueToStoreWC').val();
-			var originalPartCode = $('#OriginalPartCode').val();
-			var originalItemName = $('#OriginalItemName').val();
-			var originalItemCode = $('#OriginalItemCode').val();
-			var altItemName = $('#AltItemName').val();
-			var altPartCode = $('#AltPartCode').val();
-			var AltItemCode = $('#AltItemCode').val();
-			var StoreName = $('#StoreName').val();
-			var AltStoreName = $('#AltStoreName').val();
-			//var altUnit = $('#AltUnit').val().trim();
-			var unit = $('#Unit').val();
-			var originalQty = $('#OriginalQty').val();
+			console.log(gridData); // See what you are sending
 
-			if (!originalPartCode) missingFields.push("Original Part Code");
-			if (!originalItemName) missingFields.push("Original Item Name");
-			if (!originalItemCode) missingFields.push("Original Item Code");
-			if (!altItemName) missingFields.push("Alt Item Name");
-			if (!altPartCode) missingFields.push("Alt Part Code");
-			if (!AltItemCode) missingFields.push("Alt Item Code");
-			//if (!altUnit) missingFields.push("Alt Unit");
-			if (!unit) missingFields.push("Unit");
-			if (!originalQty) missingFields.push("Original Quantity");
-			//if (!StoreName) missingFields.push("StoreName");
-			//if (!AltStoreName) missingFields.push("AltStoreName");
-
-			if (!issueToStoreWC) {
-				$.notify("Please select Store/WC before adding to the grid!", "error");
-				return;
-			}
-			// if (!originalPartCode || !originalItemName || !originalItemCode ||
-			//     !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
-			//     $.notify("All fields are required to add data to the grid!", "error");
-			//     return;
-			// }
-			if (missingFields.length > 0) {
-				var message = "The following fields are required:\n" + missingFields.join(", ");
-				$.notify(message, "error");
-				return;
-			}
-			var SchData = {
-				OriginalPartCode: $('#OriginalPartCode').val(),
-				OriginalItemName: $('#OriginalItemName').val(),
-				OriginalItemCode: $('#OriginalItemCode').val(),
-				StoreName: $('#StoreName').val() || '',
-				StoreId: $('#StoreId').val(),
-				WorkCenterName: $('#WorkCenterName').val() || '',
-				WcId: $('#WcId').val(),
-				Unit: $('#Unit').val(),
-				OriginalQty: $('#OriginalQty').val(),
-				AltItemName: $('#AltItemName').val(),
-				AltPartCode: $('#AltPartCode').val(),
-				AltItemCode: $('#AltItemCode').val(),
-				AltUnit: $('#AltUnit').val(),
-				AltOriginalQty: $('#AltOriginalQty').val(),
-				OriginalStoreId: $('#OriginalStoreId').val(),
-
-				AltStoreId: $('#AltStoreId').val(),
-				AltStoreName: $('#AltStoreName').val(),
-				// OrginalWCID: $('#OrginalWCID').val(),
-				AltWCID: $('#AltWCID').val(),
-				AltWorkCenterName: $('#AltWorkCenterName').val(),
-				BatchNo: $('#BatchNo').val(),
-				UniqueBatchNo: $('#UniqueBatchNo').val(),
-				BatchStock: $('#BatchStock').val(),
-				TotalStock: $('#TotalStock').val(),
-				AltStock: $('#AltStock').val(),
-				PlanNo: $('#PlanNo').val(),
-				PlanYearCode: $('#PlanYearCode').val(),
-				PlanDate: $('#PlanDate').val(),
-				ProdSchNo: $('#ProdSchNo').val(),
-				ProdSchYearCode: $('#ProdSchYearCode').val(),
-				ProdSchDatetime: $('#ProdSchDatetime').val(),
-				OrigItemRate: $('#OrigItemRate').val(),
-				Remark: $('#Remark').val(),
-				OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
-				OriginalItemName: $('#OriginalItemName').find(":selected").text(),
-				AltItemName: $('#AltItemName').find(":selected").text(),
-				AltPartCode: $('#AltPartCode').find(":selected").text(),
-				WorkCenterName: $('#WorkCenterName').find(":selected").text(),
-				StoreName: $('#StoreName').find(":selected").text(),
-				AltStoreName: $('#AltStoreName').find(":selected").text(),
-				AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
-				//OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
-			};
-			console.log(SchData);
 			$.ajax({
 				type: "POST",
-				url: '@Url.Action("AddToGridData", "MaterialConversion")',
-				data: { model: SchData },
-				success: function (result, status, xhr) {
-					if (xhr.status == 200 && xhr.responseText == result) {
-
-						$('#divStockGrid').html(result);
-						TotalNoOfRows();
-						ClearItems();
-					} else if (xhr.status == 207) {
-						$.notify('Duplicate Item...!', "info");
-					}
+				url: '@Url.Action("AddToGridData", "InProcessInspection")',
+				data: { modelList: gridData },
+				success: function (result) {
+					$('#divStockGrid').html(result);
+					TotalNoOfRows();
+					ClearItems();
 				},
 				error: function () {
 					$.notify('Something Went Wrong, Please Try Again.', "error");
 				}
 			});
 		});
-
 
 		function TotalNoOfRows() {
 			var Row = $('#divStockGrid tr').length;

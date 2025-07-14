@@ -1,0 +1,70 @@
+﻿@model eTactWeb.DOM.Models.InProcessInspectionModel;
+@if (Model.DTSSGrid == null)
+{
+    <tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    var @Cntr = 0;
+    foreach (var item in Model.DTSSGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small " style="white-space:nowrap" id="divMtrGrid">
+            <td style="white-space:nowrap;">
+                @if (Model.EntryId > 0)
+                {
+                    <a class="table-link link-primary noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger noCursor" disabled>
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+                else
+                {
+                    <a class="table-link link-primary" onclick="EditItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                        <span class="fa-stack">
+                            <i class="fa fa-square fa-stack-2x"></i>
+                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                        </span>
+                    </a>
+                }
+            </td>
+            <td>@item.SeqNo</td>
+            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.Characteristic</td>
+            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.EvalutionMeasurmentTechnique</td>
+            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.ControlMethod</td>
+            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.SpecificationFrom</td>
+            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.SpecificationTo</td>
+            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.RejectionPlan</td>
+            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.FrequencyofTesting</td>
+
+            @for (int i = 1; i <= (ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize); i++)
+            {
+                <td>
+                    <input type="text"
+                           name="SampleHeader_@i"
+                           class="form-control sample-input"
+                           data-from="@item.SpecificationFrom"
+                           data-to="@item.SpecificationTo" />
+                </td>
+
+            }
+        </tr>
+
+    }
+}
