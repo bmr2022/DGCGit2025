@@ -22,6 +22,7 @@ namespace eTactWeb.Services.Interface
         public Task<MRPMain> GetMRPFGRMDetailData(PendingMRP model);
         Task<ResponseResult> SaveMRPDetail(MRPMain model, DataTable MRPGrid, DataTable MRPSOGrid, DataTable MRPFGGrid);
         Task<MRPMain> GetViewByID(int ID, string Mode, int YC);
+		Task<ResponseResult> GetBomMultiLevelGrid();
 
-    }
+	}
 }
