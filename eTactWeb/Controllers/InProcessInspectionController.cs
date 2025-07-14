@@ -2,6 +2,7 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
 
 namespace eTactWeb.Controllers
@@ -109,5 +110,116 @@ namespace eTactWeb.Controllers
 			
 
 		}
+		//public IActionResult AddToGridData(InProcessInspectionDetailModel model)
+		//{
+		//	try
+		//	{
+		//		string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+		//		List<InProcessInspectionDetailModel> MaterialConversionGrid = new List<InProcessInspectionDetailModel>();
+		//		if (!string.IsNullOrEmpty(modelJson))
+		//		{
+		//			MaterialConversionGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+		//		}
+
+		//		var MainModel = new InProcessInspectionModel();
+		//		var WorkOrderPGrid = new List<InProcessInspectionModel>();
+		//		var OrderGrid = new List<InProcessInspectionDetailModel>();
+		//		var ssGrid = new List<InProcessInspectionDetailModel>();
+
+		//		if (model != null)
+		//		{
+		//			if (MaterialConversionGrid == null)
+		//			{
+		//				model.SeqNo = 1;
+		//				OrderGrid.Add(model);
+		//			}
+		//			else
+		//			{
+		//				if (MaterialConversionGrid.Any(x => (x.PartCode == model.PartCode)))
+		//				{
+		//					return StatusCode(207, "Duplicate");
+		//				}
+		//				else
+		//				{
+		//					//count = WorkOrderProcessGrid.Count();
+		//					model.SeqNo = MaterialConversionGrid.Count + 1;
+		//					OrderGrid = MaterialConversionGrid.Where(x => x != null).ToList();
+		//					ssGrid.AddRange(OrderGrid);
+		//					OrderGrid.Add(model);
+
+		//				}
+
+		//			}
+
+		//			MainModel.DTSSGrid = OrderGrid;
+
+		//			MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+		//			{
+		//				AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+		//				SlidingExpiration = TimeSpan.FromMinutes(55),
+		//				Size = 1024,
+		//			};
+
+		//			string serializedGrid = JsonConvert.SerializeObject(MainModel.DTSSGrid);
+		//			HttpContext.Session.SetString("KeyInProcessInspectionGrid", serializedGrid);
+		//		}
+		//		else
+		//		{
+		//			ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
+		//		}
+		//		return PartialView("_InProcessInspectionAddtoGrid", MainModel);
+
+		//	}
+		//	catch (Exception ex)
+		//	{
+		//		throw ex;
+		//	}
+		//}
+		[HttpPost]
+		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList)
+		{
+			try
+			{
+				if (modelList == null || !modelList.Any())
+				{
+					ModelState.TryAddModelError("Error", "List cannot be empty.");
+					return BadRequest("No data received.");
+				}
+
+				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+				List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
+
+				if (!string.IsNullOrEmpty(modelJson))
+				{
+					existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+				}
+
+				foreach (var model in modelList)
+				{
+					if (existingGrid.Any(x => x.Characteristic == model.Characteristic))
+					{
+						// skip duplicates
+						continue;
+					}
+
+					model.SeqNo = existingGrid.Count + 1;
+					existingGrid.Add(model);
+				}
+
+				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
+
+				var MainModel = new InProcessInspectionModel
+				{
+					DTSSGrid = existingGrid
+				};
+
+				return PartialView("_InProcessInspectionAddtoGrid", MainModel);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, "Internal server error: " + ex.Message);
+			}
+		}
+
 	}
 }
