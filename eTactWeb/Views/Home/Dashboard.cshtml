@@ -439,6 +439,89 @@
 			color: #333;
 		}
 
+		.vendors-container {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			gap: 12px;
+			width: 100%;
+		}
+
+		.vendor-card {
+			background: white;
+			border-radius: 8px;
+			box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+			padding: 12px;
+			transition: transform 0.2s ease;
+			overflow-wrap: break-word; /* Wrap long words */
+			word-break: break-word; /* Break long PONOs or names */
+			display: flex;
+			flex-direction: column;
+		}
+
+			.vendor-card:hover {
+				transform: translateY(-5px);
+				box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+			}
+
+		.vendor-header {
+			display: flex;
+			align-items: center;
+			gap: 8px;
+			position: relative;
+			flex-wrap: wrap; /* Allows long names to wrap below the badge */
+		}
+
+		.vendor-logo {
+			width: 40px;
+			height: 40px;
+			border-radius: 50%;
+			background: #e0e7ff;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			font-weight: bold;
+			color: #4a6bff;
+			font-size: 0.9rem;
+			flex-shrink: 0;
+		}
+
+		.vendor-header h3 {
+			margin: 0;
+			font-size: 12px;
+			white-space: normal;
+			overflow-wrap: break-word;
+			flex: 1;
+		}
+
+		.new-badge {
+			position: absolute;
+			top: -20px;
+			right: 0;
+			background: #acc3e6;
+			color: #020202;
+			padding: 0px 8px;
+			border-radius: 7px;
+			font-size: 0.7rem;
+			white-space: nowrap;
+		}
+
+		.vendor-details {
+			display: grid;
+			gap: 6px;
+			font-size: 10px;
+		}
+
+		.detail-item {
+			display: flex;
+			justify-content: space-between;
+			word-break: break-word; /* Prevent overflow */
+		}
+
+			.detail-item span {
+				color: #666;
+				margin-right: 5px;
+			}
+
 	</style>
 </head>
 <body>
@@ -718,7 +801,7 @@
 							<div class="metric-value" id="TotalNoofAnualPONetValue">0</div>
 							<div class="metric-change positive-change">
 								<i class="fas fa-arrow-up metric-icon"></i>
-								+8.7% from last year
+								+<span id="">0</span>% from last year
 							</div>
 							<div class="metric-footer">Total Orders 2023</div>
 						</div>
@@ -829,7 +912,7 @@
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
 					<h3 style="margin: 0;">PO Value by Category</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+						<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="SavePOCategoryWise()"></i>
 					</div>
 				</div>
 				<div class="card-body">
@@ -838,13 +921,13 @@
 			</div>
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-					<h3 style="margin: 0;">PO Generated</h3>
+					<h3 style="margin: 0;">PO Trend</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+						<i class="fas fa-clock" style="font-size: 24px;cursor:pointer;" onclick="SavePOMonthlyTrend()"></i>
 					</div>
 				</div>
 				<div class="card-body">
-					<canvas id="fastSlowChart"></canvas>
+					<canvas id="purchaseTrendChart"></canvas>
 				</div>
 			</div>
 			<div class="card">
@@ -898,7 +981,7 @@
 						</tbody>
 					</table>
 				</div>
-			</div>		
+			</div>
 		</div>
 		<div class="dashboard">
 			<div class="card">
@@ -927,7 +1010,7 @@
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
 					<h3>Top Vendors Value</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="FillPurchaseDashboardTop10VendorData()"></i>
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="SaveTop10VendorForPO()"></i>
 					</div>
 				</div>
 				<div class="table-container" style="max-height:350px;">
@@ -1041,42 +1124,31 @@
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
 					<h3>New Vendor In this Month</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="SaveNewVendorOfTheMonth()"></i>
 					</div>
 				</div>
-				<div class="table-container" style="max-height:350px;">
-					<table class="custom-table custom-table-scroll" style="width: 100%;">
-						<thead style="background-color:#7493c3">
-							<tr>
-								<th>PartCode</th>
-								<th>ItemName</th>
-								<th>Stock</th>
-								<th>Value</th>
-							</tr>
-						</thead>
-						<tbody id="TopItemByStockValue">
-						</tbody>
-					</table>
+
+				<div class="vendors-container" style="max-height:300px;overflow-y: auto;padding:15px;">					
 				</div>
 			</div>
 			<div class="card">
 				<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
 					<h3>PO vs Consumption</h3>
 					<div class="tab-icon-container bg-icon">
-						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="StockValuation()"></i>
+						<i class="fas fa-sort-amount-up-alt" style="font-size: 24px;cursor:pointer" onclick="SavePOVsConsumption()"></i>
 					</div>
 				</div>
-				<div class="table-container" style="max-height:350px;">
+				<div class="table-container" style="max-height:350px;overflow-y:auto;">
 					<table class="custom-table custom-table-scroll" style="width: 100%;">
 						<thead style="background-color:#7493c3">
 							<tr>
 								<th>PartCode</th>
 								<th>ItemName</th>
-								<th>Stock</th>
-								<th>Value</th>
+								<th>PO Qty</th>
+								<th>Cons Qty</th>
 							</tr>
 						</thead>
-						<tbody id="TopItemByStockValue">
+						<tbody id="PoVsConsumption">
 						</tbody>
 					</table>
 				</div>
@@ -1091,828 +1163,1102 @@
 	<!-- Chart JS Scripts -->
 	<script>
 
-		document.addEventListener("DOMContentLoaded", function () {
-			const tabLinks = document.querySelectorAll(".tab-link");
-			const tabContents = document.querySelectorAll(".tab-content");
+				document.addEventListener("DOMContentLoaded", function () {
+					const tabLinks = document.querySelectorAll(".tab-link");
+					const tabContents = document.querySelectorAll(".tab-content");
 
-			function activateTab(tabId) {
-				// Remove "active" from all links and contents
-				tabLinks.forEach(link => link.classList.remove("active"));
-				tabContents.forEach(content => {
-					content.style.display = "none";
-					content.classList.remove("active");
-				});
+					function activateTab(tabId) {
+						// Remove "active" from all links and contents
+						tabLinks.forEach(link => link.classList.remove("active"));
+						tabContents.forEach(content => {
+							content.style.display = "none";
+							content.classList.remove("active");
+						});
 
-				// Activate selected tab
-				const activeLink = [...tabLinks].find(link => link.dataset.target === `#${tabId}`);
-				const activeContent = document.getElementById(tabId);
-				if (activeLink) activeLink.classList.add("active");
-				if (activeContent) {
-					activeContent.style.display = "block";
-					activeContent.classList.add("active");
-				}
-
-				// Load tab-specific data
-				if (tabId === "purchaseTab") {
-					$('#RefreshPOAllData').val(false);
-					FillPurchaseDashboardData();
-					FillPurchaseDashboardTop10ItemData();
-					FillPurchaseDashboardTop10VendorData();
-					FillPurchaseDashboardDataByCategoryValue();
-				} else if (tabId === "inventoryTab") {
-					$('#RefreshInventoryAllData').val(false);
-					FillInventoryDashboardData();
-					FillInventoryDashboardForPendingData();
-					FillInventoryByCategory();
-					GetTopItemByStockValue();
-					GetTopItemBelowMinLevel();
-					GetTopFastMovingItem();
-				}
-			}
-
-			// On initial load
-			const hash = window.location.hash || "#inventoryTab";
-			activateTab(hash.substring(1));
-
-			// On tab click
-			tabLinks.forEach(link => {
-				link.addEventListener("click", function () {
-					const targetId = link.dataset.target.substring(1);
-					activateTab(targetId);
-					history.replaceState(null, null, '#' + targetId);
-				});
-			});
-		});
-
-		function FillInventoryDashboardData(){
-			$.ajax({
-						url: '@Url.Action("FillInventoryDashboardData", "Home")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								$('.TotalStockValue').text(obj.Result[0].TotalStockValue);
-								$('#TotalNoofItemInStock').text(obj.Result[0].TotalNoofItemInStock);
-								$('#TotalNoOfDeadStockItems').text(obj.Result[0].TotalNoOfDeadStockItems);
-								$('#TotalValueOfDeadStock').text(obj.Result[0].TotalValueOfDeadStock);
-								$('#TotalRMValue').val(obj.Result[0].TotalRMValue);
-								$('#TotalFGValue').val(obj.Result[0].TotalFGValue);
-								$('#TotalConsValue').val(obj.Result[0].TotalConsValue);
-								$('#TotalToolsValue').val(obj.Result[0].TotalToolsValue);
-								$('#TotalOthersValue').val(obj.Result[0].TotalOthersValue);
-								$('#TotalItemQtyOfDeadStock').val(obj.Result[0].TotalItemQtyOfDeadStock);
-								$('#TotalItemQtyOfFastMovingStock').val(obj.Result[0].TotalItemQtyOfFastMovingStock);
-
-								var TotalStock = parseInt($('.TotalStockValue').text());
-
-								var dataMap = {
-								  RM: $('#TotalRMValue').val(),
-								  FG: $('#TotalFGValue').val(),
-								  Cons: $('#TotalConsValue').val(),
-								  Tools: $('#TotalToolsValue').val(),
-								  Others: $('#TotalOthersValue').val()
-								};
-
-								var xValues = Object.entries(dataMap).map(([key, val]) => {
-									return `${key} - ${val}`;
-								});
-								var yValues = Object.values(dataMap);
-								var barColors = [
-									"#f28ea3",
-									"#6a92cc",
-									"#f3ddd8",
-									"#4da97b",
-									"#ffbb4d"
-								];
-
-								new Chart("valuationByCategoryChart", {
-								  type: "pie",
-								  data: {
-									labels: xValues,
-									datasets: [{
-									  backgroundColor: barColors,
-									  hoverBackgroundColor: barColors,
-									  data: yValues
-									}]
-								  },
-								  options: {
-									title: {
-									  display: true,
-									  text: "Valuation by Category"
-									}
-								  }
-								});
-							}
-
-							// Get dynamic values from your input fields
-							let slowMovingQty = parseInt($('#TotalItemQtyOfDeadStock').val()) || 0;
-							let fastMovingQty = parseInt($('#TotalItemQtyOfFastMovingStock').val()) || 0;
-
-							// Create the doughnut chart with dynamic data
-							new Chart("fastSlowChart", {
-							  type: "doughnut",
-							  data: {
-								labels: ["Fast Movers", "Slow Movers"],
-								datasets: [{
-								  backgroundColor: ["#1abc9c", "#e67e22"],
-								  data: [fastMovingQty, slowMovingQty]
-								}]
-							  }
-							});
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
+						// Activate selected tab
+						const activeLink = [...tabLinks].find(link => link.dataset.target === `#${tabId}`);
+						const activeContent = document.getElementById(tabId);
+						if (activeLink) activeLink.classList.add("active");
+						if (activeContent) {
+							activeContent.style.display = "block";
+							activeContent.classList.add("active");
 						}
 
-					});
-		}
-
-		function FillInventoryDashboardForPendingData(){
-			$.ajax({
-						url: '@Url.Action("FillInventoryDashboardForPendingData", "Home")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								$('#PendRequisitionWithoutBOM').text(obj.Result[0].PendRequisitionWithoutBOM);
-								$('#PendingReqAgainstBOM').text(obj.Result[0].PendingReqAgainstBOM);
-								$('#PendingAgainstPlan').text(obj.Result[0].PendingAgainstPlan);
-								$('#PendingGateEntryForMRN').text(obj.Result[0].PendingGateEntryForMRN);
-								$('#PendingMRNForQc').text(obj.Result[0].PendingMRNForQc);
-								$('#PendingGateEntryForJWMrn').text(obj.Result[0].PendingGateEntryForJWMrn);
-								$('#PendingToReceiveItemInStore').text(obj.Result[0].PendingToReceiveItemInStore);
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
-
-		function FillInventoryByCategory(){
-			$.ajax({
-						url: '@Url.Action("FillInventoryByCategory", "Home")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								var result = obj.Result;
-								var xValues = result.map(x => x.ItemCategory);
-								var yValues = result.map(x => x.CategoryStock);
-
-								var barColors = ["#f28ea3", "#66d9d0", "#7fa6d9", "#f4dcd6", "#6fcf97", "#fbd490"];
-
-								new Chart("inventoryByCategoryChart", {
-										type: "bar",
-										data: {
-											labels: xValues,
-											datasets: [{
-												backgroundColor: barColors,
-												hoverBackgroundColor: barColors,
-												data: yValues,
-												barThickness: 25, // Force specific bar width (px)
-											}]
-										},
-										options: {
-											maintainAspectRatio: false, // Allow custom height/width
-											plugins: {
-												legend: {
-													display: false
-												},
-												title: {
-													display: true,
-													text: "Inventory By Category"
-												}
-											},
-											scales: {
-												x: {
-													categoryPercentage: 0.5, // Reduce spacing between bars
-													barPercentage: 1.0,      // Use full width inside category
-													ticks: {
-														autoSkip: false,
-														maxRotation: 30,
-														minRotation: 30
-													}
-												},
-												y: {
-													beginAtZero: true
-												}
-											}
-										}
-									});
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
-
-		function GetTopItemByStockValue(){
-
-			$.ajax({
-						url: '@Url.Action("GetTopItemByStockValue", "Home")',
-						type: 'POST',
-						async: false,
-						success: function (data, status, error) {
-							var obj = $.parseJSON(data);
-							var html = '';
-							$.each(obj.Result, function (i, item) {
-								html += '<tr onclick="handleRowClick(\'' + item.Itemcode + '\')" style="cursor:pointer;">';
-								html += '<td><input type="hidden" value="' + item.Itemcode +'">' + item.PartCode + '</td>';
-								html += '<td>' + item.ItemName + '</td>';
-								html += '<td>' + item.Stock + '</td>';
-								html += '<td>' + item.StockValue + '</td>';
-								html += '</tr>';
-							});
-							$('#TopItemByStockValue').empty().append(html);
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
-
-		function GetTopItemBelowMinLevel(){
-
-			$.ajax({
-						url: '@Url.Action("GetTopItemBelowMinLevel", "Home")',
-						type: 'POST',
-						async: false,
-						success: function (data, status, error) {
-							var obj = $.parseJSON(data);
-							var html = '';
-							$.each(obj.Result, function (i, item) {
-								html += '<tr onclick="handleRowClickMinValue(\'' + item.PartCode + '\')" style="cursor:pointer;">';
-								html += '<td><input type="hidden" value="' + item.Itemcode +'">' + item.PartCode + '</td>';
-								html += '<td>' + item.ItemName + '</td>';
-								html += '<td>' + item.Stock + '</td>';
-								html += '</tr>';
-							});
-							$('#TopItemBelowMinLevel').empty().append(html);
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
-
-		function GetTopFastMovingItem(){
-
-			$.ajax({
-						url: '@Url.Action("GetTopFastMovingItem", "Home")',
-						type: 'POST',
-						async: false,
-						success: function (data, status, error) {
-							var obj = $.parseJSON(data);
-							var html = '';
-							$.each(obj.Result, function (i, item) {
-								html += '<tr onclick="handleRowClickMinValue(\'' + item.PartCode + '\')" style="cursor:pointer;">';
-								html += '<td><input type="hidden" value="' + item.Itemcode +'">' + item.PartCode + '</td>';
-								html += '<td>' + item.ItemName + '</td>';
-								html += '<td>' + item.IssQty + '</td>';
-								html += '<td>' + item.NoOfTransaction + '</td>';
-								html += '</tr>';
-							});
-							$('#TopFastMovingItem').empty().append(html);
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
-
-		function handleRowClick(ItemCode){
-			localStorage.setItem('SelectedItemCode', ItemCode);
-			var url = '/StockValuation/Index';
-			window.location.href = url;
-		}
-
-		function handleRowClickMinValue(PartCode){
-			localStorage.setItem('SelectedMinItemCode', PartCode);
-			var url = '/MinimumMaximaumLevel/Index';
-			window.location.href = url;
-		}
-		// Inventory Dashboard Charts
-
-
-		// new Chart("movementChart", {
-		//   type: "line",
-		//   data: {
-		// 	labels: ["Day 1", "Day 5", "Day 10", "Day 15", "Day 20", "Day 25", "Day 30"],
-		// 	datasets: [
-		// 	  { label: "Raw Materials", borderColor: "#3498db", fill: false, data: [100, 120, 140, 160, 180, 200, 220] },
-		// 	  { label: "Finished Goods", borderColor: "#2ecc71", fill: false, data: [80, 100, 110, 130, 160, 180, 210] }
-		// 	]
-		//   },
-		//   options: { legend: { display: true }, scales: { y: { beginAtZero: true } } }
-		// });
-
-		// Supply Chain Dashboard Charts
-		new Chart("perfectOrdersChart", {
-		  type: "doughnut",
-		  data: {
-			labels: ["Perfect", "Others"],
-			datasets: [{
-			  data: [90.1, 9.9],
-			  backgroundColor: ["#2ecc71", "#ecf0f1"]
-			}]
-		  },
-		  options: {
-			cutout: '70%',
-			plugins: { legend: { display: false } }
-		  }
-		});
-
-		new Chart("warehouseBarChart", {
-		  type: "bar",
-		  data: {
-			labels: ["California", "Texas", "Kansas", "New Jersey"],
-			datasets: [{
-			  label: "Perfect Orders",
-			  data: [30, 25, 15, 10],
-			  backgroundColor: "#3498db"
-			}]
-		  },
-		  options: { scales: { y: { beginAtZero: true } } }
-		});
-
-		new Chart("returnByProdChart", {
-		  type: "bar",
-		  data: {
-			labels: ["Type A", "Type B", "Type C", "Type D"],
-			datasets: [
-			  { label: "US", data: [10, 14, 8, 6], backgroundColor: "#e74c3c" },
-			  { label: "Canada", data: [6, 9, 5, 4], backgroundColor: "#2ecc71" },
-			  { label: "Germany", data: [4, 7, 3, 2], backgroundColor: "#f1c40f" }
-			]
-		  },
-		  options: {
-			plugins: { legend: { position: 'bottom' } },
-			scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
-		  }
-		});
-
-		new Chart("returnTrendChart", {
-		  type: "line",
-		  data: {
-			labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-			datasets: [
-			  {
-				label: "Return Volume",
-				data: [20000, 25000, 30000, 28000, 31000, 34000],
-				borderColor: "#e67e22",
-				fill: false,
-				tension: 0.3
-			  }
-			]
-		  },
-		  options: { scales: { y: { beginAtZero: true } } }
-		});
-
-		function RefreshInventoryAllData() {
-			var icon = $('.refreshIcon');
-
-			// Change icon to spinner
-			icon.removeClass('fa-boxes').addClass('fa-spinner fa-spin');
-
-			// Disable click interaction
-			icon.css('pointer-events', 'none'); // Disable pointer
-			icon.css('opacity', '0.6');         // Optional: show visually it's disabled
-
-			// Let the browser render the spinner first
-			setTimeout(function () {
-				$('#RefreshInventoryAllData').val(true);
-
-				// Call your inventory functions
-				FillNoOfItemInStock();
-				StockValuation();
-				DeadStockInventoryTask();
-				PendingInventoryTask();
-				FastVsSlowMovingTask();
-				FastMovingItemsListTask();
-
-				$.notify('Successfully refreshed all Inventory Data...!', {
-					position: "top center",
-					className: "success"
-				});
-
-				// Reload the page
-				setTimeout(function () {
-					location.reload();
-				}, 1000);
-
-			}, 10);
-		}
-
-		function FillNoOfItemInStock(){
-			debugger
-			$.ajax({
-						url: '@Url.Action("NoOfItemInStock", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshInventoryAllData').val() == "false"){
-									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
-		}
-
-		function StockValuation(){
-			$.ajax({
-						url: '@Url.Action("StockValuation", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshInventoryAllData').val() == "false"){
-									$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
-		}
-
-		function PendingInventoryTask(){
-			$.ajax({
-						url: '@Url.Action("PendingInventoryTask", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshInventoryAllData').val() == "false"){
-									$.notify('Successfully Refresh Pending Item Job List...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
-		}
-
-		function DeadStockInventoryTask(){
-			$.ajax({
-						url: '@Url.Action("DeadStockInventoryTask", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshInventoryAllData').val() == "false"){
-									$.notify('Successfully Refresh Dead item In Stock...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
-		}
-
-		function FastMovingItemsListTask(){
-			$.ajax({
-						url: '@Url.Action("FastMovingItemsListTask", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshInventoryAllData').val() == "false"){
-									$.notify('Successfully Refresh FastMoving ItemList...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
-		}
-
-		function FastVsSlowMovingTask(){
-			$.ajax({
-						url: '@Url.Action("FastVsSlowMovingTask", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshInventoryAllData').val() == "false"){
-									$.notify('Successfully Refresh Fast Vs Slow Moving Task...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
-		}
-
-		//Purchase Order Dashboard//
-
-		function FillPurchaseDashboardData(){
-			$.ajax({
-						url: '@Url.Action("FillPurchaseDashboardData", "Home")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
-
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								$('#TotalNoofAnualPONetValue').text(obj.Result[0].TotalNoofAnualPONetValue);
-								$('#TotalNoOfAnualPOQty').text(obj.Result[0].TotalNoOfAnualPOQty);
-								$('#ToatalNoOfMonthlyPONetValue').text(obj.Result[0].ToatalNoOfMonthlyPONetValue);
-								$('#ToatalNoOfMonthlyPOQty').text(obj.Result[0].ToatalNoOfMonthlyPOQty);
-								$('#TotalClosePOCompleted').text(obj.Result[0].TotalClosePOCompleted);
-								$('#TotalClosePOPending').text(obj.Result[0].TotalClosePOPending);
-								$('#TotalScheduleCompleted').text(obj.Result[0].TotalScheduleCompleted);
-								$('#TotalSchedulePending').text(obj.Result[0].TotalSchedulePending);
-								$('#PendingIndentForPO').text(obj.Result[0].PendingIndentForPO);
-								$('#PendingPOApprovalForFirstApproval').text(obj.Result[0].PendingPOApprovalForFirstApproval);
-								$('#PendingPOApprovalForMgmtApproval').text(obj.Result[0].PendingPOApprovalForMgmtApproval);
-								$('#PendingAmendmentPOForApproval').text(obj.Result[0].PendingAmendmentPOForApproval);
-								$('#PendingScheduleForApproval').text(obj.Result[0].PendingScheduleForApproval);
-								$('#PendingAmendmentScheduleForApproval').text(obj.Result[0].PendingAmendmentScheduleForApproval);
-								$('#PendingSOForMRP').text(obj.Result[0].PendingSOForMRP);
-								$('#PendingMRPForPO').text(obj.Result[0].PendingMRPForPO);
-
-								var TotalPOPendingAndComplted = obj.Result[0].TotalClosePOCompleted + obj.Result[0].TotalClosePOPending + obj.Result[0].TotalScheduleCompleted + obj.Result[0].TotalSchedulePending;
-								$('#TotalPOPendingAndComplted').text(TotalPOPendingAndComplted);
-
-								var CompletedPOAndSchedule = obj.Result[0].TotalClosePOCompleted + obj.Result[0].TotalScheduleCompleted;
-								$('#CompletedPOAndSchedule').text(CompletedPOAndSchedule);
-
-								var PendingPOAndSchedule = obj.Result[0].TotalClosePOPending + obj.Result[0].TotalSchedulePending;
-								$('#PendingPOAndSchedule').text(PendingPOAndSchedule);
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
-
-										function FillPurchaseDashboardDataByCategoryValue() {
-	debugger;
-	$.ajax({
-		url: '@Url.Action("FillPurchaseDashboardDataByCategoryValue", "Home")',
-		type: 'POST',
-		async: false,
-		success: function (data) {
-			var parsed = JSON.parse(data);
-
-			var xValues = parsed.Result.map(item => item.ItemCategory);
-			var yValues = parsed.Result.map(item => item.POQty);
-			var poAmounts = parsed.Result.map(item => item.POAmount);
-
-			var barColors = [
-				"#ffb3b3", "#66d9e8", "#7da6e5", "#f2d6cc", "#66cc99",
-				"#ffc285", "#bfa5d8", "#7ddad2", "#e08e8e", "#79c7f2"
-			];
-
-			setTimeout(function () {
-				const canvas = document.getElementById("poTopItemByValueChart");
-				if (!canvas) {
-					console.warn("Canvas with id 'poTopItemByValueChart' not found.");
-					return;
-				}
-
-				const ctx = canvas.getContext("2d");
-
-				if (window.poTopItemByValueChart instanceof Chart) {
-					window.poTopItemByValueChart.destroy();
-				}
-
-				window.poTopItemByValueChart = new Chart(ctx, {
-					type: "bar", // Changed to bar
-					data: {
-						labels: xValues,
-						datasets: [{
-							label: "PO Qty",
-							data: yValues,
-							backgroundColor: barColors.slice(0, xValues.length),
-							poAmounts: poAmounts // for tooltip
-						}]
-					},
-					options: {
-						responsive: true,
-						maintainAspectRatio: false,
-						scales: {
-							x: {
-								title: {
-									display: true,
-									text: "Item Category"
-								}
-							},
-							y: {
-								beginAtZero: true,
-								title: {
-									display: true,
-									text: "PO Quantity"
-								}
-							}
-						},
-						plugins: {
-							legend: {
-								display: false
-							},
-							title: {
-								display: true,
-								text: 'Top PO Items by Category'
-							},
-							tooltip: {
-								callbacks: {
-									label: function (context) {
-										const qty = context.raw;
-										const amt = context.dataset.poAmounts[context.dataIndex];
-										return `Qty: ${qty}, Amt: ₹${amt.toLocaleString()}`;
-									}
-								}
-							}
+						// Load tab-specific data
+						if (tabId === "purchaseTab") {
+							$('#RefreshPOAllData').val(false);
+							FillPurchaseDashboardData();
+							FillPurchaseDashboardTop10ItemData();
+							FillPurchaseDashboardTop10VendorData();
+							FillPurchaseDashboardDataMonthlyTrend();
+							FillPurchaseDashboardDataByCategoryValue();
+							FillPurchaseDashboardNewVendorInThisMonthData();
+							FillPurchaseVsConsumptionDashboardData();
+						} else if (tabId === "inventoryTab") {
+							$('#RefreshInventoryAllData').val(false);
+							FillInventoryDashboardData();
+							FillInventoryDashboardForPendingData();
+							FillInventoryByCategory();
+							GetTopItemByStockValue();
+							GetTopItemBelowMinLevel();
+							GetTopFastMovingItem();
 						}
 					}
+
+					// On initial load
+					const hash = window.location.hash || "#inventoryTab";
+					activateTab(hash.substring(1));
+
+					// On tab click
+					tabLinks.forEach(link => {
+						link.addEventListener("click", function () {
+							const targetId = link.dataset.target.substring(1);
+							activateTab(targetId);
+							history.replaceState(null, null, '#' + targetId);
+						});
+					});
 				});
-			}, 100);
-		},
-		error: function () {
-			alert('Failed to load PO Category chart data.');
-		}
-	});
-}
 
+				function FillInventoryDashboardData(){
+					$.ajax({
+								url: '@Url.Action("FillInventoryDashboardData", "Home")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
 
-		function FillPurchaseDashboardTop10ItemData(){
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										$('.TotalStockValue').text(obj.Result[0].TotalStockValue);
+										$('#TotalNoofItemInStock').text(obj.Result[0].TotalNoofItemInStock);
+										$('#TotalNoOfDeadStockItems').text(obj.Result[0].TotalNoOfDeadStockItems);
+										$('#TotalValueOfDeadStock').text(obj.Result[0].TotalValueOfDeadStock);
+										$('#TotalRMValue').val(obj.Result[0].TotalRMValue);
+										$('#TotalFGValue').val(obj.Result[0].TotalFGValue);
+										$('#TotalConsValue').val(obj.Result[0].TotalConsValue);
+										$('#TotalToolsValue').val(obj.Result[0].TotalToolsValue);
+										$('#TotalOthersValue').val(obj.Result[0].TotalOthersValue);
+										$('#TotalItemQtyOfDeadStock').val(obj.Result[0].TotalItemQtyOfDeadStock);
+										$('#TotalItemQtyOfFastMovingStock').val(obj.Result[0].TotalItemQtyOfFastMovingStock);
 
-			$.ajax({
-						url: '@Url.Action("FillPurchaseDashboardTop10ItemData", "Home")',
-						type: 'POST',
-						async: false,
-						success: function (data, status, error) {
-							var obj = $.parseJSON(data);
-							var html = '';
-							$.each(obj.Result, function (i, item) {
-								html += '<tr onclick="handleRowClick(\'' + item.itemcode + '\')" style="cursor:pointer;">';
-								html += '<td><input type="hidden" value="' + item.itemcode +'">' + item.Partcode + '</td>';
-								html += '<td>' + item.ItemName + '</td>';
-								html += '<td>' + item.POQTY + '</td>';
-								html += '<td>' + item.POAmount + '</td>';
-								html += '</tr>';
+										var TotalStock = parseInt($('.TotalStockValue').text());
+
+										var dataMap = {
+										  RM: $('#TotalRMValue').val(),
+										  FG: $('#TotalFGValue').val(),
+										  Cons: $('#TotalConsValue').val(),
+										  Tools: $('#TotalToolsValue').val(),
+										  Others: $('#TotalOthersValue').val()
+										};
+
+										var xValues = Object.entries(dataMap).map(([key, val]) => {
+											return `${key} - ${val}`;
+										});
+										var yValues = Object.values(dataMap);
+										var barColors = [
+											"#f28ea3",
+											"#6a92cc",
+											"#f3ddd8",
+											"#4da97b",
+											"#ffbb4d"
+										];
+
+										new Chart("valuationByCategoryChart", {
+										  type: "pie",
+										  data: {
+											labels: xValues,
+											datasets: [{
+											  backgroundColor: barColors,
+											  hoverBackgroundColor: barColors,
+											  data: yValues
+											}]
+										  },
+										  options: {
+											title: {
+											  display: true,
+											  text: "Valuation by Category"
+											}
+										  }
+										});
+									}
+
+									// Get dynamic values from your input fields
+									let slowMovingQty = parseInt($('#TotalItemQtyOfDeadStock').val()) || 0;
+									let fastMovingQty = parseInt($('#TotalItemQtyOfFastMovingStock').val()) || 0;
+
+									// Create the doughnut chart with dynamic data
+									new Chart("fastSlowChart", {
+									  type: "doughnut",
+									  data: {
+										labels: ["Fast Movers", "Slow Movers"],
+										datasets: [{
+										  backgroundColor: ["#1abc9c", "#e67e22"],
+										  data: [fastMovingQty, slowMovingQty]
+										}]
+									  }
+									});
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+
 							});
-							$('#TopItemByStockValueForPO').empty().append(html);
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
+				}
 
-		function FillPurchaseDashboardTop10VendorData(){
+				function FillInventoryDashboardForPendingData(){
+					$.ajax({
+								url: '@Url.Action("FillInventoryDashboardForPendingData", "Home")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
 
-			$.ajax({
-						url: '@Url.Action("FillPurchaseDashboardTop10VendorData", "Home")',
-						type: 'POST',
-						async: false,
-						success: function (data, status, error) {
-							var obj = $.parseJSON(data);
-							var html = '';
-							$.each(obj.Result, function (i, item) {
-								html += '<tr onclick="handleRowClick(\'' + item.AccountCode + '\')" style="cursor:pointer;">';
-								html += '<td><input type="hidden" value="' + item.AccountCode +'">' + item.AccountName + '</td>';
-								html += '<td>' + item.POQTY + '</td>';
-								html += '<td>' + item.POAmount + '</td>';
-								html += '</tr>';
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										$('#PendRequisitionWithoutBOM').text(obj.Result[0].PendRequisitionWithoutBOM);
+										$('#PendingReqAgainstBOM').text(obj.Result[0].PendingReqAgainstBOM);
+										$('#PendingAgainstPlan').text(obj.Result[0].PendingAgainstPlan);
+										$('#PendingGateEntryForMRN').text(obj.Result[0].PendingGateEntryForMRN);
+										$('#PendingMRNForQc').text(obj.Result[0].PendingMRNForQc);
+										$('#PendingGateEntryForJWMrn').text(obj.Result[0].PendingGateEntryForJWMrn);
+										$('#PendingToReceiveItemInStore').text(obj.Result[0].PendingToReceiveItemInStore);
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
 							});
-							$('#Top10VendorByValue').empty().append(html);
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to load ledger names.');
-						}
-					});
-		}
+				}
 
-		function SaveNoOfPOItemsAndPending(){
+				function FillInventoryByCategory(){
+					$.ajax({
+								url: '@Url.Action("FillInventoryByCategory", "Home")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										var result = obj.Result;
+										var xValues = result.map(x => x.ItemCategory);
+										var yValues = result.map(x => x.CategoryStock);
+
+										var barColors = ["#f28ea3", "#66d9d0", "#7fa6d9", "#f4dcd6", "#6fcf97", "#fbd490"];
+
+										new Chart("inventoryByCategoryChart", {
+												type: "bar",
+												data: {
+													labels: xValues,
+													datasets: [{
+														backgroundColor: barColors,
+														hoverBackgroundColor: barColors,
+														data: yValues,
+														barThickness: 25, // Force specific bar width (px)
+													}]
+												},
+												options: {
+													maintainAspectRatio: false, // Allow custom height/width
+													plugins: {
+														legend: {
+															display: false
+														},
+														title: {
+															display: true,
+															text: "Inventory By Category"
+														}
+													},
+													scales: {
+														x: {
+															categoryPercentage: 0.5, // Reduce spacing between bars
+															barPercentage: 1.0,      // Use full width inside category
+															ticks: {
+																autoSkip: false,
+																maxRotation: 30,
+																minRotation: 30
+															}
+														},
+														y: {
+															beginAtZero: true
+														}
+													}
+												}
+											});
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+							});
+				}
+
+				function GetTopItemByStockValue(){
+
+					$.ajax({
+								url: '@Url.Action("GetTopItemByStockValue", "Home")',
+								type: 'POST',
+								async: false,
+								success: function (data, status, error) {
+									var obj = $.parseJSON(data);
+									var html = '';
+									$.each(obj.Result, function (i, item) {
+										html += '<tr onclick="handleRowClick(\'' + item.Itemcode + '\')" style="cursor:pointer;">';
+										html += '<td><input type="hidden" value="' + item.Itemcode +'">' + item.PartCode + '</td>';
+										html += '<td>' + item.ItemName + '</td>';
+										html += '<td>' + item.Stock + '</td>';
+										html += '<td>' + item.StockValue + '</td>';
+										html += '</tr>';
+									});
+									$('#TopItemByStockValue').empty().append(html);
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+							});
+				}
+
+				function GetTopItemBelowMinLevel(){
+
+					$.ajax({
+								url: '@Url.Action("GetTopItemBelowMinLevel", "Home")',
+								type: 'POST',
+								async: false,
+								success: function (data, status, error) {
+									var obj = $.parseJSON(data);
+									var html = '';
+									$.each(obj.Result, function (i, item) {
+										html += '<tr onclick="handleRowClickMinValue(\'' + item.PartCode + '\')" style="cursor:pointer;">';
+										html += '<td><input type="hidden" value="' + item.Itemcode +'">' + item.PartCode + '</td>';
+										html += '<td>' + item.ItemName + '</td>';
+										html += '<td>' + item.Stock + '</td>';
+										html += '</tr>';
+									});
+									$('#TopItemBelowMinLevel').empty().append(html);
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+							});
+				}
+
+				function GetTopFastMovingItem(){
+
+					$.ajax({
+								url: '@Url.Action("GetTopFastMovingItem", "Home")',
+								type: 'POST',
+								async: false,
+								success: function (data, status, error) {
+									var obj = $.parseJSON(data);
+									var html = '';
+									$.each(obj.Result, function (i, item) {
+										html += '<tr onclick="handleRowClickMinValue(\'' + item.PartCode + '\')" style="cursor:pointer;">';
+										html += '<td><input type="hidden" value="' + item.Itemcode +'">' + item.PartCode + '</td>';
+										html += '<td>' + item.ItemName + '</td>';
+										html += '<td>' + item.IssQty + '</td>';
+										html += '<td>' + item.NoOfTransaction + '</td>';
+										html += '</tr>';
+									});
+									$('#TopFastMovingItem').empty().append(html);
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+							});
+				}
+
+				function handleRowClick(ItemCode){
+					localStorage.setItem('SelectedItemCode', ItemCode);
+					var url = '/StockValuation/Index';
+					window.location.href = url;
+				}
+
+				function handleRowClickMinValue(PartCode){
+					localStorage.setItem('SelectedMinItemCode', PartCode);
+					var url = '/MinimumMaximaumLevel/Index';
+					window.location.href = url;
+				}
+				// Inventory Dashboard Charts
+
+
+				// new Chart("movementChart", {
+				//   type: "line",
+				//   data: {
+				// 	labels: ["Day 1", "Day 5", "Day 10", "Day 15", "Day 20", "Day 25", "Day 30"],
+				// 	datasets: [
+				// 	  { label: "Raw Materials", borderColor: "#3498db", fill: false, data: [100, 120, 140, 160, 180, 200, 220] },
+				// 	  { label: "Finished Goods", borderColor: "#2ecc71", fill: false, data: [80, 100, 110, 130, 160, 180, 210] }
+				// 	]
+				//   },
+				//   options: { legend: { display: true }, scales: { y: { beginAtZero: true } } }
+				// });
+
+				// Supply Chain Dashboard Charts
+				new Chart("perfectOrdersChart", {
+				  type: "doughnut",
+				  data: {
+					labels: ["Perfect", "Others"],
+					datasets: [{
+					  data: [90.1, 9.9],
+					  backgroundColor: ["#2ecc71", "#ecf0f1"]
+					}]
+				  },
+				  options: {
+					cutout: '70%',
+					plugins: { legend: { display: false } }
+				  }
+				});
+
+				new Chart("warehouseBarChart", {
+				  type: "bar",
+				  data: {
+					labels: ["California", "Texas", "Kansas", "New Jersey"],
+					datasets: [{
+					  label: "Perfect Orders",
+					  data: [30, 25, 15, 10],
+					  backgroundColor: "#3498db"
+					}]
+				  },
+				  options: { scales: { y: { beginAtZero: true } } }
+				});
+
+				new Chart("returnByProdChart", {
+				  type: "bar",
+				  data: {
+					labels: ["Type A", "Type B", "Type C", "Type D"],
+					datasets: [
+					  { label: "US", data: [10, 14, 8, 6], backgroundColor: "#e74c3c" },
+					  { label: "Canada", data: [6, 9, 5, 4], backgroundColor: "#2ecc71" },
+					  { label: "Germany", data: [4, 7, 3, 2], backgroundColor: "#f1c40f" }
+					]
+				  },
+				  options: {
+					plugins: { legend: { position: 'bottom' } },
+					scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+				  }
+				});
+
+				new Chart("returnTrendChart", {
+				  type: "line",
+				  data: {
+					labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+					datasets: [
+					  {
+						label: "Return Volume",
+						data: [20000, 25000, 30000, 28000, 31000, 34000],
+						borderColor: "#e67e22",
+						fill: false,
+						tension: 0.3
+					  }
+					]
+				  },
+				  options: { scales: { y: { beginAtZero: true } } }
+				});
+
+				function RefreshInventoryAllData() {
+					var icon = $('.refreshIcon');
+
+					// Change icon to spinner
+					icon.removeClass('fa-boxes').addClass('fa-spinner fa-spin');
+
+					// Disable click interaction
+					icon.css('pointer-events', 'none'); // Disable pointer
+					icon.css('opacity', '0.6');         // Optional: show visually it's disabled
+
+					// Let the browser render the spinner first
+					setTimeout(function () {
+						$('#RefreshInventoryAllData').val(true);
+
+						// Call your inventory functions
+						FillNoOfItemInStock();
+						StockValuation();
+						DeadStockInventoryTask();
+						PendingInventoryTask();
+						FastVsSlowMovingTask();
+						FastMovingItemsListTask();
+
+						$.notify('Successfully refreshed all Inventory Data...!', {
+							position: "top center",
+							className: "success"
+						});
+
+						// Reload the page
+						setTimeout(function () {
+							location.reload();
+						}, 1000);
+
+					}, 10);
+				}
+
+				function FillNoOfItemInStock(){
+					debugger
+					$.ajax({
+								url: '@Url.Action("NoOfItemInStock", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshInventoryAllData').val() == "false"){
+											$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function StockValuation(){
+					$.ajax({
+								url: '@Url.Action("StockValuation", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshInventoryAllData').val() == "false"){
+											$.notify('Successfully Refresh No Of item In Stock...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function PendingInventoryTask(){
+					$.ajax({
+								url: '@Url.Action("PendingInventoryTask", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshInventoryAllData').val() == "false"){
+											$.notify('Successfully Refresh Pending Item Job List...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function DeadStockInventoryTask(){
+					$.ajax({
+								url: '@Url.Action("DeadStockInventoryTask", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshInventoryAllData').val() == "false"){
+											$.notify('Successfully Refresh Dead item In Stock...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function FastMovingItemsListTask(){
+					$.ajax({
+								url: '@Url.Action("FastMovingItemsListTask", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshInventoryAllData').val() == "false"){
+											$.notify('Successfully Refresh FastMoving ItemList...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function FastVsSlowMovingTask(){
+					$.ajax({
+								url: '@Url.Action("FastVsSlowMovingTask", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshInventoryAllData').val() == "false"){
+											$.notify('Successfully Refresh Fast Vs Slow Moving Task...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				//Purchase Order Dashboard//
+
+				function FillPurchaseDashboardData(){
+					$.ajax({
+								url: '@Url.Action("FillPurchaseDashboardData", "Home")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										$('#TotalNoofAnualPONetValue').text(obj.Result[0].TotalNoofAnualPONetValue);
+										$('#TotalNoOfAnualPOQty').text(obj.Result[0].TotalNoOfAnualPOQty);
+										$('#ToatalNoOfMonthlyPONetValue').text(obj.Result[0].ToatalNoOfMonthlyPONetValue);
+										$('#ToatalNoOfMonthlyPOQty').text(obj.Result[0].ToatalNoOfMonthlyPOQty);
+										$('#TotalClosePOCompleted').text(obj.Result[0].TotalClosePOCompleted);
+										$('#TotalClosePOPending').text(obj.Result[0].TotalClosePOPending);
+										$('#TotalScheduleCompleted').text(obj.Result[0].TotalScheduleCompleted);
+										$('#TotalSchedulePending').text(obj.Result[0].TotalSchedulePending);
+										$('#PendingIndentForPO').text(obj.Result[0].PendingIndentForPO);
+										$('#PendingPOApprovalForFirstApproval').text(obj.Result[0].PendingPOApprovalForFirstApproval);
+										$('#PendingPOApprovalForMgmtApproval').text(obj.Result[0].PendingPOApprovalForMgmtApproval);
+										$('#PendingAmendmentPOForApproval').text(obj.Result[0].PendingAmendmentPOForApproval);
+										$('#PendingScheduleForApproval').text(obj.Result[0].PendingScheduleForApproval);
+										$('#PendingAmendmentScheduleForApproval').text(obj.Result[0].PendingAmendmentScheduleForApproval);
+										$('#PendingSOForMRP').text(obj.Result[0].PendingSOForMRP);
+										$('#PendingMRPForPO').text(obj.Result[0].PendingMRPForPO);
+
+										var TotalPOPendingAndComplted = obj.Result[0].TotalClosePOCompleted + obj.Result[0].TotalClosePOPending + obj.Result[0].TotalScheduleCompleted + obj.Result[0].TotalSchedulePending;
+										$('#TotalPOPendingAndComplted').text(TotalPOPendingAndComplted);
+
+										var CompletedPOAndSchedule = obj.Result[0].TotalClosePOCompleted + obj.Result[0].TotalScheduleCompleted;
+										$('#CompletedPOAndSchedule').text(CompletedPOAndSchedule);
+
+										var PendingPOAndSchedule = obj.Result[0].TotalClosePOPending + obj.Result[0].TotalSchedulePending;
+										$('#PendingPOAndSchedule').text(PendingPOAndSchedule);
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+							});
+				}
+
+												function FillPurchaseDashboardDataByCategoryValue() {
+			debugger;
 			$.ajax({
-						url: '@Url.Action("SaveNoOfPOItemsAndPending", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
+				url: '@Url.Action("FillPurchaseDashboardDataByCategoryValue", "Home")',
+				type: 'POST',
+				async: false,
+				success: function (data) {
+					var parsed = JSON.parse(data);
 
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshPOAllData').val() == "false"){
-									$.notify('Successfully Refresh Total PO and Pending PO...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
+					var xValues = parsed.Result.map(item => item.ItemCategory);
+					var yValues = parsed.Result.map(item => item.POQty);
+					var poAmounts = parsed.Result.map(item => item.POAmount);
+
+					var barColors = [
+						"#ffb3b3", "#66d9e8", "#7da6e5", "#f2d6cc", "#66cc99",
+						"#ffc285", "#bfa5d8", "#7ddad2", "#e08e8e", "#79c7f2"
+					];
+
+					setTimeout(function () {
+						const canvas = document.getElementById("poTopItemByValueChart");
+						if (!canvas) {
+							console.warn("Canvas with id 'poTopItemByValueChart' not found.");
+							return;
+						}
+
+						const ctx = canvas.getContext("2d");
+
+						if (window.poTopItemByValueChart instanceof Chart) {
+							window.poTopItemByValueChart.destroy();
+						}
+
+						window.poTopItemByValueChart = new Chart(ctx, {
+							type: "bar", // Changed to bar
+							data: {
+								labels: xValues,
+								datasets: [{
+									label: "PO Qty",
+									data: yValues,
+									backgroundColor: barColors.slice(0, xValues.length),
+									poAmounts: poAmounts // for tooltip
+								}]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								scales: {
+									x: {
+										title: {
+											display: true,
+											text: "Item Category"
+										}
+									},
+									y: {
+										beginAtZero: true,
+										title: {
+											display: true,
+											text: "PO Quantity"
+										}
+									}
+								},
+								plugins: {
+									legend: {
+										display: false
+									},
+									title: {
+										display: true,
+										text: 'Top PO Items by Category'
+									},
+									tooltip: {
+										callbacks: {
+											label: function (context) {
+												const qty = context.raw;
+												const amt = context.dataset.poAmounts[context.dataIndex];
+												return `Qty: ${qty}, Amt: ₹${amt.toLocaleString()}`;
+											}
+										}
+									}
 								}
 							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
+						});
+					}, 100);
+				},
+				error: function () {
+					alert('Failed to load PO Category chart data.');
+				}
+			});
 		}
 
-		function SaveTop10ItemForPO(){
-			$.ajax({
-						url: '@Url.Action("SaveTop10ItemForPO", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
 
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshPOAllData').val() == "false"){
-									$.notify('Successfully Refresh Top 10 Items For PO...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
+				function FillPurchaseDashboardTop10ItemData(){
+
+					$.ajax({
+								url: '@Url.Action("FillPurchaseDashboardTop10ItemData", "Home")',
+								type: 'POST',
+								async: false,
+								success: function (data, status, error) {
+									var obj = $.parseJSON(data);
+									var html = '';
+									$.each(obj.Result, function (i, item) {
+										html += '<tr onclick="handleRowClick(\'' + item.itemcode + '\')" style="cursor:pointer;">';
+										html += '<td><input type="hidden" value="' + item.itemcode +'">' + item.Partcode + '</td>';
+										html += '<td>' + item.ItemName + '</td>';
+										html += '<td>' + item.POQTY + '</td>';
+										html += '<td>' + item.POAmount + '</td>';
+										html += '</tr>';
+									});
+									$('#TopItemByStockValueForPO').empty().append(html);
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+							});
+				}
+
+				function FillPurchaseDashboardTop10VendorData(){
+
+					$.ajax({
+								url: '@Url.Action("FillPurchaseDashboardTop10VendorData", "Home")',
+								type: 'POST',
+								async: false,
+								success: function (data, status, error) {
+									var obj = $.parseJSON(data);
+									var html = '';
+									$.each(obj.Result, function (i, item) {
+										html += '<tr onclick="handleRowClick(\'' + item.AccountCode + '\')" style="cursor:pointer;">';
+										html += '<td><input type="hidden" value="' + item.AccountCode +'">' + item.AccountName + '</td>';
+										html += '<td>' + item.POQTY + '</td>';
+										html += '<td>' + item.POAmount + '</td>';
+										html += '</tr>';
+									});
+									$('#Top10VendorByValue').empty().append(html);
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to load ledger names.');
+								}
+							});
+				}
+
+								function FillPurchaseDashboardDataMonthlyTrend() {
+			$.ajax({
+				url: '@Url.Action("FillPurchaseDashboardDataMonthlyTrend", "Home")',
+				type: 'POST',
+				success: function (data) {
+					var parsed = JSON.parse(data);
+
+					var xValues = parsed.Result.map(item => item.MonthCompName);
+					var poQtyValues = parsed.Result.map(item => item.POQty);
+					var poAmountValues = parsed.Result.map(item => item.POAmount);
+
+					var lineColors = [
+						"rgba(54, 162, 235, 0.8)", // Blue
+						"rgba(75, 192, 192, 0.8)", // Teal
+						"rgba(255, 99, 132, 0.8)", // Red
+						"rgba(255, 206, 86, 0.8)", // Yellow
+						"rgba(153, 102, 255, 0.8)" // Purple
+					];
+
+					setTimeout(function () {
+						const canvas = document.getElementById("purchaseTrendChart");
+						if (!canvas) {
+							console.warn("Canvas with id 'purchaseTrendChart' not found.");
+							return;
+						}
+
+						const ctx = canvas.getContext("2d");
+
+						if (window.purchaseTrendChart instanceof Chart) {
+							window.purchaseTrendChart.destroy();
+						}
+
+						window.purchaseTrendChart = new Chart(ctx, {
+							type: "line",
+							data: {
+								labels: xValues,
+								datasets: [
+									{
+										label: "PO Qty",
+										data: poQtyValues,
+										borderColor: lineColors[0],
+										backgroundColor: lineColors[0],
+										fill: false,
+										tension: 0.3,
+										poAmounts: poAmountValues // custom for tooltip
+									}
+								]
+							},
+							options: {
+								responsive: true,
+								maintainAspectRatio: false,
+								scales: {
+									x: {
+										title: {
+											display: true,
+											text: "Month"
+										}
+									},
+									y: {
+										beginAtZero: true,
+										title: {
+											display: true,
+											text: "PO Quantity"
+										}
+									}
+								},
+								plugins: {
+									legend: {
+										display: false
+									},
+									title: {
+										display: true,
+										text: 'Monthly PO Trend'
+									},
+									tooltip: {
+										callbacks: {
+											label: function (context) {
+												const qty = context.raw;
+												const amt = context.dataset.poAmounts[context.dataIndex];
+												return `Qty: ${qty}, Amt: ₹${amt.toLocaleString()}`;
+											}
+										}
+									}
 								}
 							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
-						}
-					});
+						});
+					}, 100);
+				},
+				error: function () {
+					alert('Failed to load Monthly PO Trend data.');
+				}
+			});
 		}
 
-		function SaveTop10VendorForPO(){
+		function FillPurchaseDashboardNewVendorInThisMonthData() {
 			$.ajax({
-						url: '@Url.Action("SaveTop10VendorForPO", "XONDashboard")',
-						type: 'POST',
-						async: false,
-						data: {},
-						success: function (response, status, error) {
+				url: '@Url.Action("FillPurchaseDashboardNewVendorInThisMonthData", "Home")',
+				type: 'POST',
+				async: false,
+				success: function (data, status, error) {
+					var obj = $.parseJSON(data);
+					var html = '';
 
-							var obj = $.parseJSON(response);
-							if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
-								if($('#RefreshPOAllData').val() == "false"){
-									$.notify('Successfully Refresh Top 10 Vendors For PO...!', { position: "top center", className: "success" });
-									setTimeout(function () {
-										location.reload(); // Refresh after 2 seconds
-									}, 1000);
-								}
-							}
-						},
-						error: function (xhr, status, error) {
-							alert('Failed to save data.');
+					const currentDate = new Date();
+
+					$.each(obj.Result, function (i, item) {
+						// Generate initials from name
+						let initials = '';
+						if (item.AccountName) {
+							initials = item.AccountName
+								.split(' ')
+								.map(word => word.charAt(0))
+								.join('')
+								.toUpperCase();
 						}
+
+						// Calculate date difference in days
+						let badgeHtml = '';
+						if (item.CreatedByDate) {
+							const createdDate = new Date(item.CreatedByDate);
+							const timeDiff = currentDate - createdDate; // in ms
+							const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+							if (dayDiff >= 0) {
+								badgeHtml = `<span class="new-badge">${dayDiff} day${dayDiff === 1 ? '' : 's'} ago</span>`;
+							}
+						}
+
+						html += `
+							<div class="vendor-card">
+								<div class="vendor-header">
+									<div class="vendor-logo">${initials}</div>
+									<h3>${item.AccountName}</h3>
+									${badgeHtml}
+								</div>
+								<div class="vendor-details">
+									<div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
+									<div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
+									<div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
+								</div>
+							</div>`;
 					});
+
+					$('.vendors-container').empty().append(html);
+				},
+				error: function () {
+					alert('Failed to load vendor cards.');
+				}
+			});
 		}
 
+				function FillPurchaseVsConsumptionDashboardData(){
+
+							$.ajax({
+												url: '@Url.Action("FillPurchaseVsConsumptionDashboardData", "Home")',
+										type: 'POST',
+										async: false,
+										success: function (data, status, error) {
+											var obj = $.parseJSON(data);
+											var html = '';
+											$.each(obj.Result, function (i, item) {
+												html += '<tr>';
+												html += '<td>' + item.PartCode + '</td>';
+												html += '<td>' + item.ItemName + '</td>';
+												html += '<td>' + item.POQty + '</td>';
+												html += '<td>' + item.ConsumptionQty + '</td>';
+												html += '</tr>';
+											});
+											$('#PoVsConsumption').empty().append(html);
+										},
+										error: function (xhr, status, error) {
+											alert('Failed to load ledger names.');
+										}
+									});
+				}
+
+				function SaveNoOfPOItemsAndPending(){
+					$.ajax({
+								url: '@Url.Action("SaveNoOfPOItemsAndPending", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshPOAllData').val() == "false"){
+											$.notify('Successfully Refresh Total PO and Pending PO...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function SaveTop10ItemForPO(){
+					$.ajax({
+								url: '@Url.Action("SaveTop10ItemForPO", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshPOAllData').val() == "false"){
+											$.notify('Successfully Refresh Top 10 Items For PO...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function SaveTop10VendorForPO(){
+					$.ajax({
+								url: '@Url.Action("SaveTop10VendorForPO", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshPOAllData').val() == "false"){
+											$.notify('Successfully Refresh Top 10 Vendors For PO...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function SavePOMonthlyTrend(){
+					$.ajax({
+								url: '@Url.Action("SavePOMonthlyTrend", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshPOAllData').val() == "false"){
+											$.notify('Successfully Refresh PO Monthly Trend...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function SavePOCategoryWise(){
+					$.ajax({
+								url: '@Url.Action("SavePOCategoryWise", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshPOAllData').val() == "false"){
+											$.notify('Successfully Refresh PO Category...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function SavePOVsConsumption(){
+					$.ajax({
+								url: '@Url.Action("SavePOVsConsumption", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshPOAllData').val() == "false"){
+											$.notify('Successfully Refresh PO Vs Consumption...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
+
+				function SaveNewVendorOfTheMonth(){
+					$.ajax({
+								url: '@Url.Action("SaveNewVendorOfTheMonth", "XONDashboard")',
+								type: 'POST',
+								async: false,
+								data: {},
+								success: function (response, status, error) {
+
+									var obj = $.parseJSON(response);
+									if (obj.StatusCode == 200 && obj.StatusText === 'Success'){
+										if($('#RefreshPOAllData').val() == "false"){
+											$.notify('Successfully Refresh New Vendor Of The Month...!', { position: "top center", className: "success" });
+											setTimeout(function () {
+												location.reload(); // Refresh after 2 seconds
+											}, 1000);
+										}
+									}
+								},
+								error: function (xhr, status, error) {
+									alert('Failed to save data.');
+								}
+							});
+				}
 	</script>
 }

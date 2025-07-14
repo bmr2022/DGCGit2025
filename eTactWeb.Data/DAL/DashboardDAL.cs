@@ -360,6 +360,44 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillPurchaseDashboardNewVendorInThisMonthData()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "NEW VENDORE OF THE MONTH"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillPurchaseVsConsumptionDashboardData()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "PO vs Consumption"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> SaveNoOfPOItemsAndPending()
         {
             var _ResponseResult = new ResponseResult();
@@ -410,6 +448,90 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
                 SqlParams.Add(new SqlParameter("@FLAG", "Top 10 Supplier"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SavePOMonthlyTrend()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "PO Monthly Trend"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SavePOCategoryWise()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "PO Category Wise"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SavePOVsConsumption()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "PO vs Consumption"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveNewVendorOfTheMonth()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "NEW VENDORE OF THE MONTH"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
