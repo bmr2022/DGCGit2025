@@ -1769,7 +1769,7 @@ public class PurchaseOrderController : Controller
                 if (partcode == 0)
                 {
                     errors.Add($"Invalid PartCode at row {row}");
-                    continue;
+                    break;
                 }
 
                 var OldRate = IPurchaseOrder.getOldRate(EntryId,poYearcode,itemCodeValue);
@@ -1788,15 +1788,17 @@ public class PurchaseOrderController : Controller
 
                 // for pending qty validation -- still need to change
                 var POQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
-                
-                //if(Mode=="POA")
-                //{
-                //    if(worksheet.Cells[row, 9].Value.ToString()=="" || string.IsNullOrEmpty(worksheet.Cells[row, 9].Value.ToString()) || worksheet.Cells[row, 9].Value.ToString().Trim() == string.Empty)
-                //    {
-                //        errors.Add($"AmendReason Required for partcode : {partcode}.");
-                //        continue;
-                //    }
-                //}
+
+                if (Mode == "POA")
+                {
+                    var amendReasonCell = worksheet.Cells[row, 9].Value?.ToString().Trim();
+
+                    if (string.IsNullOrEmpty(amendReasonCell))
+                    {
+                        errors.Add($"AmendReason Required for partcode : {partcode}.");
+                        break;
+                    }
+                }
 
 
                 string poType = Request.Form["POType"];
@@ -1811,7 +1813,7 @@ public class PurchaseOrderController : Controller
                 if (isPOTypeClose && qty <= 0)
                 {
                     errors.Add($"Qty is less then 0 at row: {row}");
-                    continue;
+                    break;
                 }
                 else if (!isPOTypeClose)
                 {
