@@ -70,5 +70,11 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> SaveTop10VendorForPO()
+        {
+            var JSON = await _IDashboard.SaveTop10VendorForPO();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

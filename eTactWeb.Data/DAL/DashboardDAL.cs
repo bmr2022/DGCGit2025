@@ -166,6 +166,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "INVENTORY"));
                 SqlParams.Add(new SqlParameter("@FLAG", "StockValuation"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
@@ -186,6 +187,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "INVENTORY"));
                 SqlParams.Add(new SqlParameter("@FLAG", "PendingInventoryTask"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
@@ -206,6 +208,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "INVENTORY"));
                 SqlParams.Add(new SqlParameter("@FLAG", "DeadStockInventory"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
@@ -226,6 +229,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "INVENTORY"));
                 SqlParams.Add(new SqlParameter("@FLAG", "FastMovingItemsList"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
@@ -246,6 +250,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "INVENTORY"));
                 SqlParams.Add(new SqlParameter("@FLAG", "Fast Vs Slow Moving"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
@@ -279,6 +284,44 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillPurchaseDashboardDataByCategoryValue()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "PO Category Wise"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillPurchaseDashboardDataMonthlyTrend()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "PO Monthly Trend"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> FillPurchaseDashboardTop10ItemData()
         {
             var _ResponseResult = new ResponseResult();
@@ -287,6 +330,25 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
                 SqlParams.Add(new SqlParameter("@FLAG", "Top 10 Item"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillPurchaseDashboardTop10VendorData()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "Top 10 Supplier"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
             }
             catch (Exception ex)
@@ -327,6 +389,27 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
                 SqlParams.Add(new SqlParameter("@FLAG", "Top 10 Item"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveTop10VendorForPO()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "Top 10 Supplier"));
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
