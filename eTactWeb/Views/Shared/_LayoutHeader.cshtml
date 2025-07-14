@@ -1370,21 +1370,9 @@
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
                                     <input class="userRightsPermission" type="hidden" value="Work Order" />
-                                <li>
-                                    <a class="dropdown-item" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">
-                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
-                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
-                                        Pending Production Schedule
-                                    </a>
+                               
+                         
                                 </li>
-                                <li>
-                                    <a class="dropdown-item IssueAgainstProdSchedule" asp-action="IssueAgainstProdScheduleDashboard" asp-controller="IssueAgainstProdSchedule" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
-                                        <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
-                                    </a>
-                                    <input class="userRightsPermission" type="hidden" value="IssueAgainstProdSchedule" />
-
-                                </li>
-                                <li>
                             </ul>
                         </li>
                         <li><hr class="dropdown-divider"></li>
