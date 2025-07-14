@@ -90,6 +90,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.FillPurchaseDashboardDataMonthlyTrend();
         }
+        public async Task<ResponseResult> FillPurchaseDashboardNewVendorInThisMonthData()
+        {
+            return await _DashboardDAL.FillPurchaseDashboardNewVendorInThisMonthData();
+        }
+        public async Task<ResponseResult> FillPurchaseVsConsumptionDashboardData()
+        {
+            return await _DashboardDAL.FillPurchaseVsConsumptionDashboardData();
+        }
         public async Task<ResponseResult> SaveNoOfPOItemsAndPending()
         {
             return await _DashboardDAL.SaveNoOfPOItemsAndPending();
@@ -101,6 +109,22 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> SaveTop10VendorForPO()
         {
             return await _DashboardDAL.SaveTop10VendorForPO();
+        }
+        public async Task<ResponseResult> SavePOMonthlyTrend()
+        {
+            return await _DashboardDAL.SavePOMonthlyTrend();
+        }
+        public async Task<ResponseResult> SavePOCategoryWise()
+        {
+            return await _DashboardDAL.SavePOCategoryWise();
+        }
+        public async Task<ResponseResult> SavePOVsConsumption()
+        {
+            return await _DashboardDAL.SavePOVsConsumption();
+        }
+        public async Task<ResponseResult> SaveNewVendorOfTheMonth()
+        {
+            return await _DashboardDAL.SaveNewVendorOfTheMonth();
         }
     }
 }

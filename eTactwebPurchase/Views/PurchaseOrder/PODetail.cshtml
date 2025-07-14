@@ -29,7 +29,7 @@
 							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 							EXPORT
 						</a>
-						<a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
+						<a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"  target="_blank" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
 							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 							PRINT
 						</a>
@@ -74,11 +74,7 @@
 							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 							PRINT
 						</a> *@
-						<a id="printButton" type="button" class="btn btn-sm btn-outline-light bg-gradient">
-							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-							PRINT
-						</a>
-
+						
 					}
 
 
@@ -1038,8 +1034,15 @@
 			$('#divPOItemList').empty();
 			var wb = XLSX.utils.book_new();
 
-			var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "HSNNO", "Rate", "Qty", "Unit", "Dis%", "DisAmt", "description"] });
+			if($('#Mode').val()=='POA')
+			{
+				var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "HSNNO", "Rate", "Qty", "Unit", "Dis%", "DisAmt", "description","AmendmentReason"] });
+			}
+			else
+			{
 
+			var ws = XLSX.utils.json_to_sheet([], { header: ["Part Code", "HSNNO", "Rate", "Qty", "Unit", "Dis%", "DisAmt", "description"] });
+			}
 			//ws['!ref'] = 'A1:I1';
 
 			XLSX.utils.book_append_sheet(wb, ws, "Sheet 1");
@@ -1052,6 +1055,8 @@
 			var file = fileInput.prop("files")[0];
 
 			var formData = new FormData();
+formData.append("EntryId", $('#EntryID').val());
+formData.append("Mode", $('#Mode').val());
 			formData.append("PoNo", $('#PONo').val());
 			formData.append("POYearcode", $('#YearCode').val());
 			formData.append("AccountCode", $('#AccountCode').val());
@@ -1340,7 +1345,7 @@
 			});
 		}
 		var isItemSelected = false;
-				function FillItems() {
+		function FillItems() {
 			// Source for PartCodeText
 			const partCodeSource = function (request, response) {
 				$.ajax({

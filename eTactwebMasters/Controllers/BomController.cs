@@ -319,7 +319,12 @@ public class BomController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-
+    public async Task<JsonResult> GetBomMultiLevelGrid()
+    {
+        var JSON = await _IBom.GetBomMultiLevelGrid();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     public IActionResult BomGrid(BomModel model)
     {
         List<BomModel> _List = new List<BomModel>();

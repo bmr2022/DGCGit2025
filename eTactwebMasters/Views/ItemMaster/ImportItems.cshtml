@@ -300,7 +300,7 @@
                     });
                 }
             }
-             
+              // alert('Model'+ItemData);
             $.ajax({
                 url: "@Url.Action("AddItemListdata")",
                 type: "POST",
@@ -308,6 +308,7 @@
                 beforeSend: function (xhr) {
 
                 },
+               
                 success: function (data, status, xhr) {
                     console.log("success");
 

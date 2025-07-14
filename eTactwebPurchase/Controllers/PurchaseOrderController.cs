@@ -1727,12 +1727,14 @@ public class PurchaseOrderController : Controller
     {
         var excelFile = Request.Form.Files[0];
         string pono = Request.Form.Where(x => x.Key == "PoNo").FirstOrDefault().Value;
+        int EntryId = Convert.ToInt32(Request.Form.Where(x => x.Key == "EntryId").FirstOrDefault().Value);
         int poYearcode = Convert.ToInt32(Request.Form.Where(x => x.Key == "POYearcode").FirstOrDefault().Value);
         int AccountCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "AccountCode").FirstOrDefault().Value);
         string SchNo = Request.Form.Where(x => x.Key == "SchNo").FirstOrDefault().Value;
         var SchYearCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "SchYearCode").FirstOrDefault().Value);
         string Currency = Request.Form.Where(x => x.Key == "Currency").FirstOrDefault().Value;
         string Flag = Request.Form.Where(x => x.Key == "Flag").FirstOrDefault().Value;
+        string Mode = Request.Form.Where(x => x.Key == "Mode").FirstOrDefault().Value;
 
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -1767,11 +1769,36 @@ public class PurchaseOrderController : Controller
                 if (partcode == 0)
                 {
                     errors.Add($"Invalid PartCode at row {row}");
-                    continue;
+                    break;
                 }
+
+                var OldRate = IPurchaseOrder.getOldRate(EntryId,poYearcode,itemCodeValue);
+                decimal OldRateValue = 0;
+
+                if (OldRate?.Result?.Result != null &&
+                    OldRate.Result.Result.Tables.Count > 0 &&
+                    OldRate.Result.Result.Tables[0].Rows.Count > 0)
+                {
+                    OldRateValue = Convert.ToDecimal(OldRate.Result.Result.Tables[0].Rows[0]["rate"]);
+                }
+                else
+                {
+                    OldRateValue = 0;
+                }
+
                 // for pending qty validation -- still need to change
                 var POQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
 
+                if (Mode == "POA")
+                {
+                    var amendReasonCell = worksheet.Cells[row, 9].Value?.ToString().Trim();
+
+                    if (string.IsNullOrEmpty(amendReasonCell))
+                    {
+                        errors.Add($"AmendReason Required for partcode : {partcode}.");
+                        break;
+                    }
+                }
 
 
                 string poType = Request.Form["POType"];
@@ -1786,7 +1813,7 @@ public class PurchaseOrderController : Controller
                 if (isPOTypeClose && qty <= 0)
                 {
                     errors.Add($"Qty is less then 0 at row: {row}");
-                    continue;
+                    break;
                 }
                 else if (!isPOTypeClose)
                 {
@@ -1840,7 +1867,7 @@ public class PurchaseOrderController : Controller
                     PkgStd = Convert.ToDecimal(worksheet.Cells[row, 12].Value?.ToString() ?? "0"),
                     Process = Convert.ToInt32(worksheet.Cells[row, 13].Value?.ToString() ?? "0"),
                     Rate = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
-                    OldRate = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
+                    OldRate = OldRateValue,
                     OtherRateCurr = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
                     UnitRate = worksheet.Cells[row, 17].Value?.ToString() ?? string.Empty,
                     DiscPer = Convert.ToDecimal(worksheet.Cells[row, 6].Value?.ToString() ?? "0"),
@@ -1850,7 +1877,7 @@ public class PurchaseOrderController : Controller
                     TolLimitPercent = Convert.ToDecimal(worksheet.Cells[row, 22].Value?.ToString() ?? "0"),
                     SizeDetail = worksheet.Cells[row, 23].Value?.ToString() ?? string.Empty,
                     TxRemark = worksheet.Cells[row, 24].Value?.ToString() ?? string.Empty,
-                    Description = worksheet.Cells[row, 25].Value?.ToString() ?? string.Empty,
+                    Description = worksheet.Cells[row, 8].Value?.ToString() ?? string.Empty,
                     AdditionalRate = Convert.ToDecimal(worksheet.Cells[row, 26].Value?.ToString() ?? "0"),
                     Color = worksheet.Cells[row, 27].Value?.ToString() ?? string.Empty,
                     CostCenter = Convert.ToInt32(worksheet.Cells[row, 28].Value?.ToString() ?? "0"),
@@ -1858,7 +1885,7 @@ public class PurchaseOrderController : Controller
                     SecMonthTentQty = Convert.ToDecimal(worksheet.Cells[row, 30].Value?.ToString() ?? "0"),
                     AmendmentNo = Convert.ToInt32(worksheet.Cells[row, 31].Value?.ToString() ?? "0"),
                     AmendmentDate = worksheet.Cells[row, 32].Value?.ToString() ?? string.Empty,
-                    AmendmentReason = worksheet.Cells[row, 33].Value?.ToString() ?? string.Empty,
+                    AmendmentReason = worksheet.Cells[row, 9].Value?.ToString() ?? string.Empty,
                 });
             }
 

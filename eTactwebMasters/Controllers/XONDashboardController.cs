@@ -76,5 +76,29 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> SavePOMonthlyTrend()
+        {
+            var JSON = await _IDashboard.SavePOMonthlyTrend();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SavePOCategoryWise()
+        {
+            var JSON = await _IDashboard.SavePOCategoryWise();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SavePOVsConsumption()
+        {
+            var JSON = await _IDashboard.SavePOVsConsumption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SaveNewVendorOfTheMonth()
+        {
+            var JSON = await _IDashboard.SaveNewVendorOfTheMonth();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

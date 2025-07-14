@@ -158,8 +158,8 @@ namespace eTactWeb.DOM.Models
         public int EngApprovedBy { get; set; }
         public int ApprovedBy { get; set; }
 
-
-        public int UId { get; set; }
+		public List<string> Samples { get; set; }
+		public int UId { get; set; }
         public string EntryByMachine { get; set; } = "";
         public int ActualEntryBy { get; set; }
         public string ActualEntryByName { get; set; }

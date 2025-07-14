@@ -57,10 +57,10 @@
                         </a>
                     </span>
                     <div class="col-auto">
-                        <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                        <a asp-action="PrintReport" asp-controller="IssueAgainstProdSchedule" target="_blank" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton" asp-route-EntryId="@Model.IssAgtProdSchEntryId" asp-route-YearCode="@Model.IssAgtProdSchYearCode">
                             <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                             PRINT
-                        </button>
+                        </a>
                     </div>
                     <a asp-action="IssueAgainstProdScheduleDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm" asp-controller="IssueAgainstProdSchedule">
                         <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
@@ -403,10 +403,10 @@
                                     </a>
                                 </span>
                                 <div class="col-auto">
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton">
+                                    <a asp-action="PrintReport"  target="_blank" asp-controller="IssueAgainstProdSchedule" class="btn btn-sm btn-outline-light bg-gradient" id="PrintButton" asp-route-EntryId="@Model.IssAgtProdSchEntryId" asp-route-YearCode="@Model.IssAgtProdSchYearCode">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         PRINT
-                                    </button>
+                                    </a>
                                 </div>
                                 <a asp-action="InProcessQcDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm">
                                     <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>

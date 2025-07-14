@@ -9,6 +9,8 @@ using eTactWeb.DOM.Models;
 using System.Net;
 using System.Data;
 using PdfSharp.Drawing.BarCodes;
+using FastReport.Web;
+using Microsoft.Extensions.Configuration;
 
 namespace eTactWeb.Controllers
 {
@@ -18,12 +20,30 @@ namespace eTactWeb.Controllers
         private readonly IIssueAgainstProdSchedule _IIssueAgainstProdSchedule;
         private readonly ILogger<IssueAgainstProdScheduleController> _logger;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        public IssueAgainstProdScheduleController(ILogger<IssueAgainstProdScheduleController> logger, IDataLogic iDataLogic, IIssueAgainstProdSchedule IIssueAgainstProdSchedule, IWebHostEnvironment iWebHostEnvironment)
+        private readonly IConfiguration iconfiguration;
+        public IssueAgainstProdScheduleController(ILogger<IssueAgainstProdScheduleController> logger, IDataLogic iDataLogic, IIssueAgainstProdSchedule IIssueAgainstProdSchedule, IWebHostEnvironment iWebHostEnvironment, IConfiguration iconfiguration)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
             _IIssueAgainstProdSchedule = IIssueAgainstProdSchedule;
             _IWebHostEnvironment = iWebHostEnvironment;
+            this.iconfiguration = iconfiguration;
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0)
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+
+            webReport.Report.Load(webRootPath + "\\IssueagainstProdSchedule.frx"); 
+            webReport.Report.SetParameterValue("entryidparam", EntryId);
+            webReport.Report.SetParameterValue("yearcodeparam", YearCode);
+
+
+            my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            return View(webReport);
         }
         [Route("{controller}/Index")]
         public IActionResult IssueAgainstProdSchedule()

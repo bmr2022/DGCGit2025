@@ -228,8 +228,8 @@ namespace eTactWeb.Controllers
         private void EXPORT_GateEntryDetailGrid(IXLWorksheet sheet, IList<GateEntryRegisterDetail> list)
         {
             string[] headers = {
-                "#Sr","Gate No", "Gate Date", "Entry Date", "Store Name", "Invoice No", "Invoice Date", "Document No",
-                "Type Item", "Part Code", "Item Name", "PO No", "Schedule No", "Total Stock", "Unit", "Rate",
+                "#Sr","Gate No", "Gate Date", "Entry Date", "vendor Name","Part Code", "Item Name"," Qty", "Invoice No", "Invoice Date", "DocumentName",
+                "Type Item",  "PO No", "Schedule No",  "Unit", "Rate",
                 "Total Amount", "Alt Qty", "Alt Unit", "Pending PO Qty", "Sale Bill No", "Sale Bill Qty",
                 "Against Challan No", "Against Challan Qty", "PO Type", "Shelf Life", "Remark",
                 "Prepared By", "Actual Entry By", "Updated By", "Last Updated Date", "Entry By Machine",
@@ -249,15 +249,18 @@ namespace eTactWeb.Controllers
                 sheet.Cell(row, 3).Value = item.GDate;
                 sheet.Cell(row, 4).Value = item.EntryDate;
                 sheet.Cell(row, 5).Value = item.VendorName;
-                sheet.Cell(row, 6).Value = item.InvoiceNo;
-                sheet.Cell(row, 7).Value = item.InvoiceDate;
-                sheet.Cell(row, 8).Value = item.DocNo;
-                sheet.Cell(row, 9).Value = item.POTypeServiceItem;
-                sheet.Cell(row, 10).Value = item.PartCode;
-                sheet.Cell(row, 11).Value = item.ItemName;
-                sheet.Cell(row, 12).Value = item.PONo;
-                sheet.Cell(row, 13).Value = item.SchNo;
-                sheet.Cell(row, 14).Value = item.Qty;
+                sheet.Cell(row, 6).Value = item.PartCode;
+                sheet.Cell(row, 7).Value = item.ItemName;
+                sheet.Cell(row, 8).Value = item.Qty;
+                
+                sheet.Cell(row, 9).Value = item.InvoiceNo;
+                sheet.Cell(row, 10).Value = item.InvoiceDate;
+                sheet.Cell(row, 11).Value = item.DocNo;
+                sheet.Cell(row, 12).Value = item.POTypeServiceItem;
+               
+                sheet.Cell(row, 13).Value = item.PONo;
+                sheet.Cell(row, 14).Value = item.SchNo;
+                
                 sheet.Cell(row, 15).Value = item.Unit;
                 sheet.Cell(row, 16).Value = item.Rate;
                 sheet.Cell(row, 17).Value = item.Amount;
