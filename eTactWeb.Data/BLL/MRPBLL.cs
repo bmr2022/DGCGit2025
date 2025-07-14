@@ -21,7 +21,11 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _MRPDAL = new MRPDAL(configuration, iDataLogic, connectionStringService);
         }
-        public async Task<ResponseResult> PendingMRPData(PendingMRP model)
+		public async Task<ResponseResult> GetBomMultiLevelGrid()
+		{
+			return await _MRPDAL.GetBomMultiLevelGrid();
+		}
+		public async Task<ResponseResult> PendingMRPData(PendingMRP model)
         {
             return await _MRPDAL.PendingMRPData(model);
         }

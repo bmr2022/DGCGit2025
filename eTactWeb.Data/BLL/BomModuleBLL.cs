@@ -106,4 +106,8 @@ public class BomModuleBLL : IBomModule
     {
         return await _BomModuleDAL.GetByProdItemName(MainItemcode);
     }
+    public async Task<ResponseResult> GetBomMultiLevelGrid()
+    {
+        return await _BomModuleDAL.GetBomMultiLevelGrid();
+    }
 }

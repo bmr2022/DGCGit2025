@@ -101,8 +101,13 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-
-        public async Task<JsonResult> GetServerDate()
+		public async Task<JsonResult> GetBomMultiLevelGrid()
+		{
+			var JSON = await IMRP.GetBomMultiLevelGrid();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+		public async Task<JsonResult> GetServerDate()
         {
             try
             {

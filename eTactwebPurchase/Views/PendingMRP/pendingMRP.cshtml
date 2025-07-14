@@ -97,6 +97,10 @@
 												</button>
 
 												<div class="ms-auto">
+
+													<button type="button" class="RefreshBom btn btn-sm btn-outline-danger" id="ImportExcel">
+														<i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Refresh Bom
+													</button>
 													<button class="btn btn-sm btn-outline-success me-3" type="button" id="SendToExcel">
 														<i class="fa-solid fa-upload fa-fw fa-lg "></i>Send To Excel
 													</button>
@@ -195,7 +199,23 @@
 
 			GetFilteredData();
 		});
+		$('.RefreshBom').click(function () {
 
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("GetBomMultiLevelGrid")",
+				success: function (response) {
+					if ($.parseJSON(response).Result.length > 0) {
+						$.notify('Bom refresh successfully.', 'success');
+					} else {
+						$.notify('Bom not refresh properly.', 'error');
+					}
+				},
+				error: function (xhr, status, error) {
+					console.error("An error occurred: " + error);
+				}
+			});
+		});
 		function GetServerDate() {
 
 			$.ajax({

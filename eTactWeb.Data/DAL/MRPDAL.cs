@@ -29,7 +29,24 @@ namespace eTactWeb.Data.DAL
            
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
-        public async Task<ResponseResult> PendingMRPData(PendingMRP model)
+		public async Task<ResponseResult> GetBomMultiLevelGrid()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("GETBOMMULTILEVELITEMS", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> PendingMRPData(PendingMRP model)
         {
             var _ResponseResult = new ResponseResult();
             try

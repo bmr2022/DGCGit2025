@@ -90,25 +90,29 @@ namespace eTactWeb.Controllers
         {
             var JSON = await _IBOMReport.FillFinishPartCode();
             string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            //return Json(JsonString);
+            return Json(JSON);
         }
         public async Task<JsonResult> FillFinishItemName()
         {
             var JSON = await _IBOMReport.FillFinishItemName();
             string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            //return Json(JsonString);
+            return Json(JSON);
         }
         public async Task<JsonResult> FillRMItemName()
         {
             var JSON = await _IBOMReport.FillRMItemName();
             string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            //return Json(JsonString);
+            return Json(JSON);
         } 
         public async Task<JsonResult> FillRMPartCode()
         {
             var JSON = await _IBOMReport.FillRMPartCode();
             string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
+            //return Json(JsonString);
+            return Json(JSON);
         }
         public async Task<JsonResult> FillStoreName()
         {

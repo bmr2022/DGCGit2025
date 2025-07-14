@@ -315,7 +315,23 @@
             GetByProdItemName2();
 
         })
+        $('.RefreshBom').click(function () {
 
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetBomMultiLevelGrid")",
+                success: function (response) {
+                    if ($.parseJSON(response).Result.length > 0) {
+                        $.notify('Bom refresh successfully.', 'success');
+                    } else {
+                        $.notify('Bom not refresh properly.', 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
         function GetByProdPartCode() {
              
             var MainItemcode = $('#FinishedItemName').val();
