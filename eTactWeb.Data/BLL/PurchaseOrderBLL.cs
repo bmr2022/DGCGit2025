@@ -105,6 +105,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _PurchaseOrderDAL.FillPONumber(YearCode, OrderType, PODate);
         }
+
+        public async Task<ResponseResult> getOldRate(int EntryId, int YearCode, int ItemCode)
+        {
+            return await _PurchaseOrderDAL.getOldRate( EntryId,  YearCode,  ItemCode);
+        }
         public async Task<ResponseResult> AltUnitConversion(int ItemCode, decimal AltQty, decimal UnitQty)
         {
             return await _PurchaseOrderDAL.AltUnitConversion(ItemCode, AltQty, UnitQty);
@@ -154,6 +159,8 @@ namespace eTactWeb.Data.BLL
         {
             return await _PurchaseOrderDAL.GetViewByID(ID, YC, Flag);
         }
+
+
 
         public async Task<ResponseResult> SavePurchaseOrder(DataTable ItemDetailDT, DataTable DelieveryScheduleDT, DataTable TaxDetailDT,DataTable IndentDetailDT, PurchaseOrderModel model)
         {

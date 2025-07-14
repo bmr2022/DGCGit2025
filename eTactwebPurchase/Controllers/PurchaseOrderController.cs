@@ -1727,6 +1727,7 @@ public class PurchaseOrderController : Controller
     {
         var excelFile = Request.Form.Files[0];
         string pono = Request.Form.Where(x => x.Key == "PoNo").FirstOrDefault().Value;
+        int EntryId = Convert.ToInt32(Request.Form.Where(x => x.Key == "EntryId").FirstOrDefault().Value);
         int poYearcode = Convert.ToInt32(Request.Form.Where(x => x.Key == "POYearcode").FirstOrDefault().Value);
         int AccountCode = Convert.ToInt32(Request.Form.Where(x => x.Key == "AccountCode").FirstOrDefault().Value);
         string SchNo = Request.Form.Where(x => x.Key == "SchNo").FirstOrDefault().Value;
@@ -1769,8 +1770,21 @@ public class PurchaseOrderController : Controller
                     errors.Add($"Invalid PartCode at row {row}");
                     continue;
                 }
-                // for pending qty validation -- still need to change
-                var POQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
+
+                var OldRate = IPurchaseOrder.getOldRate(EntryId,poYearcode,itemCodeValue);
+                var OldRateValue = 0;
+                if (OldRate.Result.Result != null && OldRate.Result.Result.Rows.Count > 0)
+                {
+
+                    OldRateValue = Convert.ToDecimal(OldRate.Result.Result.Rows[0].ItemArray[0]);
+                }
+                else
+                {
+                    OldRateValue = 0;
+                }
+
+                    // for pending qty validation -- still need to change
+                    var POQty = Convert.ToDecimal(worksheet.Cells[row, 4].Value.ToString());
 
 
 
@@ -1840,7 +1854,7 @@ public class PurchaseOrderController : Controller
                     PkgStd = Convert.ToDecimal(worksheet.Cells[row, 12].Value?.ToString() ?? "0"),
                     Process = Convert.ToInt32(worksheet.Cells[row, 13].Value?.ToString() ?? "0"),
                     Rate = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
-                    OldRate = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
+                    OldRate = OldRateValue,
                     OtherRateCurr = Convert.ToDecimal(worksheet.Cells[row, 3].Value?.ToString() ?? "0"),
                     UnitRate = worksheet.Cells[row, 17].Value?.ToString() ?? string.Empty,
                     DiscPer = Convert.ToDecimal(worksheet.Cells[row, 6].Value?.ToString() ?? "0"),
