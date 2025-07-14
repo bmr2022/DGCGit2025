@@ -110,6 +110,11 @@
 
     <script>
         $(document).ready(function () {
+               var deleteMessage = '@TempData["DeleteMessage"]';
+
+            if (deleteMessage) {
+                $.notify(deleteMessage, "error");
+            }
             GetFormRights();
             var fromDateBack = sessionStorage.getItem('FromDateBack');
             var toDateBack = sessionStorage.getItem('ToDateBack');
