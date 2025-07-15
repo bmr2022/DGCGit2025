@@ -429,7 +429,7 @@
 		$(function () {
 			$('#EntryByMachineName').val($('#machineName').text());
 			$('.DH').fadeOut();
-			if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0 &&'@Model.Mode' != 'C') {
+			if ('@Model.Mode' != 'U' && parseInt('@Model.ID') != 0 &&'@Model.Mode' != 'C') {
 				GetTaxPartItem();
 				// FillItems();
 				$('#lblItemNetAmount').text($('#ItemNetAmount').val());
@@ -3264,6 +3264,7 @@ formData.append("Mode", $('#Mode').val());
 				}
 			}
 		});
+		
 
 
 		$('.ItemBtn').click(function () {
@@ -3547,9 +3548,19 @@ formData.append("Mode", $('#Mode').val());
 			});
 		}
 
-		$('.btnClearTax').click(function () {
+		$('#AccountCode').change(function () {
 
 			btnClearTax();
+			GetTaxPartItem();
+
+
+		});
+
+		$('.btnClearTax').click(function () {
+
+			// btnClearTax();
+			var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+			$('#divTaxGrid').html(NoData);
 
 		});
 		function btnClearTax() {
