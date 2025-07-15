@@ -179,6 +179,7 @@
 													<th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Old Rate</th>
 													<th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate In Oth Curr.</th>
 													<th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate/Unit</th>
+													<th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DeliveryDate</th>
 													<th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc %</th>
 													<th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Disc Rs.</th>
 													<th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
@@ -699,7 +700,7 @@
 
 
 
-				$('#POCloseDate ,#WEF,#PODate,#EntryDate, #AmmDate, #AmendmentDate').on('focus mouseenter', function () {
+				$('#POCloseDate ,#WEF,#PODate,#EntryDate, #AmmDate, #AmendmentDate,#DeliveryDate').on('focus mouseenter', function () {
 					$(this).datepicker({
 						dateFormat: 'dd/mm/yy',
 						changeMonth: true,
@@ -733,7 +734,7 @@
 
 
 
-				$('#POCloseDate ,#WEF,#PODate,#EntryDate').on('focus mouseenter', function () {
+				$('#POCloseDate ,#WEF,#PODate,#EntryDate,#DeliveryDate').on('focus mouseenter', function () {
 					$(this).datepicker({
 						dateFormat: 'dd/mm/yy',
 						changeMonth: true,
@@ -765,6 +766,7 @@
 					$('#WEF').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 					$('#RefDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 					$('#AmmDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+					$('#DeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
 					$('#EntryDate').datepicker("option", "minDate", parseDateToFormat(formattedDate1));
 					$('#EntryDate').datepicker("option", "maxDate", parseDateToFormat(formattedDate2));
@@ -3385,7 +3387,8 @@ formData.append("Mode", $('#Mode').val());
 					'UnitRate': $('#UnitRate').val(),
 					'Mode': $('#Mode').val() == "U" ? "U" : "INSERT",
 					'AmendmentNo': $('#AmmNo').val(),
-					'AmendmentDate': $('#AmmDate').val()
+					'AmendmentDate': $('#AmmDate').val(),
+					'DeliveryDate': $('#DeliveryDate').val()
 				}
 
 				$.ajax({
@@ -3527,6 +3530,7 @@ formData.append("Mode", $('#Mode').val());
 								$('#TolLimitQty').val(obj[0].TolLimitQty);
 								$('#Unit').val(obj[0].Unit);
 								$('#UnitRate').val(obj[0].UnitRate);
+								$('#DeliveryDate').val(obj[0].DeliveryDate);
 								if ($('#Mode').val() == "POA") {
 									actualRate = $('#Rate').val();
 								}
