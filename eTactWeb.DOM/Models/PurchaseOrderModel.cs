@@ -133,6 +133,7 @@ public class POItemDetail : TaxModel
 
     [Column(TypeName = "decimal(10, 4)")]
     public decimal Amount { get; set; }
+    public string? DeliveryDate { get; set; }
 
     public string? Color { get; set; }
     public int CostCenter { get; set; }
@@ -286,6 +287,7 @@ public class PurchaseOrderModel : POItemDetail
     public string? DDate { get; set; }
     public int DDays { get; set; }
     public string? DeliverySch { get; set; }
+    //public string? DeliveryDate { get; set; }
     public string? DeliveryTerms { get; set; }
     public IList<TextValue>? DepartmentList { get; set; }
 
