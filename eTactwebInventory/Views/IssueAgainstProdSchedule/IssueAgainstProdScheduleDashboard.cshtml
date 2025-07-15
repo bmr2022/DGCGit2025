@@ -105,7 +105,11 @@
 {
     <script>
         $(function () {
+            var deleteMessage = '@TempData["DeleteMessage"]';
 
+            if (deleteMessage) {
+                $.notify(deleteMessage, "error");
+            }
             var currentDate = new Date();
 
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);

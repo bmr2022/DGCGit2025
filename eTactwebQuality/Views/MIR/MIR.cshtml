@@ -183,17 +183,19 @@
                                     {
                                         <label class="form-label">MRN NO</label>
                                         <input asp-for="MRNNo" class="form-control" value="@Model.MRNNo" readonly />
+                                        <input asp-for="MRNEntryId" class="form-control" type="hidden" value="@Model.MRNEntryId" readonly />
                                     }
                                     else
                                     {
                                         @if (Model.Mode == "U" || Model.Mode == "V")
                                         {
-                                            <label class="form-label">MRN NO</label>
+                                            <label class="form-label" onclick="redirectToMRNEdit()">MRN NO</label>
                                             <input asp-for="MRNNo" class="form-control" value="@Model.MRNNo" readonly />
+                                            <input asp-for="MRNEntryId" class="form-control" type="hidden" value="@Model.MRNEntryId" readonly />
                                         }
                                         else
                                         {
-                                            <label asp-for="MRNNo" class="form-label">MRN No</label>
+                                            <label asp-for="MRNNo" class="form-label" onclick="redirectToMRNEdit()">MRN No</label>
                                             <select class="form-select" asp-for="MRNNo">
                                                 <option value="" disabled selected>-Select-</option>
                                             </select>
@@ -229,8 +231,9 @@
                                     <input asp-for="MRNDate " class="form-control" readonly />
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                    <label asp-for="GateNo" class="form-label">Gate Entry No</label>
+                                    <label asp-for="GateNo" class="form-label" onclick="redirectToGateEdit()">Gate Entry No</label>
                                     <input asp-for="GateNo " class="form-control" readonly />
+                                    <input value="@Model.GateEntryId" id="GateEntryId" type="hidden" class="form-control" readonly />
                                     <input id="GateEntry" type="hidden" />
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
@@ -548,11 +551,54 @@
 
 @section Scripts {
     <script>
+            var formRights = {
+              gateoptView: false,
+              gateoptUpdate: false
+            };
+                    var mrnFormRights = {
+          mrnoptView: false,
+          mrnoptUpdate: false
+        };
+                 function GetGateNoFormRights() {
+                $.ajax({
+                            url: "@Url.Action("GetFormRights", "GateInward")",
+                    type: "POST",
+                    success: function (data) {
+                                if (!data) return;
+                  var obj = $.parseJSON(data);
+                  var r = obj.Result.Table[0];
+                          formRights.gateoptView   = r.OptView;
+                  formRights.gateoptUpdate = r.OptUpdate;
+
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
+                 function MRNNoFormRights() {
+                $.ajax({
+                            url: "@Url.Action("GetFormRights", "MaterialReceipt")",
+                    type: "POST",
+                    success: function (data) {
+                                if (!data) return;
+                  var obj = $.parseJSON(data);
+                  var r = obj.Result.Table[0];
+                          mrnFormRights.mrnoptView   = r.OptView;
+                  mrnFormRights.mrnoptUpdate = r.OptUpdate;
+
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
         $(document).ready(function () {
             $('#loader').hide();
             $('#loader-container').hide();
             AddPassWord();
-
+            GetGateNoFormRights();
+           MRNNoFormRights();
             //$('#loader').show();
             // for arrow on next row
             var $rows = $('#divMIRGrid tr');
@@ -698,7 +744,42 @@
             }
         });
 
+           function redirectToGateEdit() {
+                             
+                            var gateNo = $('#GateNo').val();
+                                    var yearCode = $('#GateYearCode').val();
+                                    var entryId = $('#GateEntryId').val();
+                                              if (!formRights.gateoptView) {
+                                                            return alert("You do not have rights to view this record.");
+                                                          }
+                                                                  var mode = formRights.gateoptUpdate ? "U" : "V";
 
+                            if (gateNo && yearCode && entryId) {
+                                         var url = '/GateInward/GateInward?Mode=' + mode +
+                                                                            '&ID=' + entryId +
+                                                                            '&YC=' + yearCode;
+                                                                  window.open(url, '_blank');
+                            }
+                            
+                }
+                  function redirectToMRNEdit() {
+
+                            var MRNNo = $('#MRNNo').val();
+                                    var yearCode = $('#MRNYearCode').val();
+                                    var entryId = $('#MRNEntryId').val();
+                                              if (!mrnFormRights.mrnoptView) {
+                                                            return alert("You do not have rights to view this record.");
+                                                          }
+                                                                  var mode = mrnFormRights.mrnoptUpdate ? "U" : "V";
+
+                            if (MRNNo && yearCode && entryId) {
+                                         var url = '/MaterialReceipt/MaterialReceipt?Mode=' + mode +
+                                                                            '&ID=' + entryId +
+                                                                            '&YC=' + yearCode;
+                                                                  window.open(url, '_blank');
+                            }
+
+                }
         $('.BtnPassword').click(function () {
             // if(isAllowTaxPass == "Y"){
             $('#PasswordAllowPopup').modal("show");

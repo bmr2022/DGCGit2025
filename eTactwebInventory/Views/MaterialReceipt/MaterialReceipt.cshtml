@@ -175,15 +175,15 @@
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     @if (Model.Mode == "U" || Model.Mode == "V")
                                     {
-                                            <label asp-for="GateNo" class="form-label">Gate Entry No</label>
+                                        <label asp-for="GateNo" class="form-label" onclick="redirectToGateEdit()">Gate Entry No</label>
 
-                                            <input asp-for="GateNo" value="@Model.GateNo" class="form-control" readonly />
-
+                                        <input asp-for="GateNo" value="@Model.GateNo" class="form-control"readonly />
+                                        <input value="@Model.GateEntryId" id="GateEntryId" type="hidden" class="form-control" readonly />
                                             <input type="hidden" id="GateEntry" />
                                     }
                                     else
                                     {
-                                            <label asp-for="GateNo" class="form-label">Gate Entry No</label>
+                                        <label asp-for="GateNo" class="form-label" onclick="redirectToGateEdit()">Gate Entry No</label>
                                             <select class="form-select" asp-for="GateNo">
                                                 <option value="" disabled selected>-Select-</option>
                                             </select>
@@ -667,6 +667,10 @@
 @section Scripts 
 {
         <script>
+           var formRights = {
+              gateoptView: false,
+              gateoptUpdate: false
+            };
                     function updateRowCount() {
                         var rowCount = $('#divMRNGrid tr').length;
                 $('#totalRows').text(rowCount);
@@ -956,13 +960,100 @@ $('#btnClose').click(function () {
                         alert(error);
                     }
                 });
-            }
 
+            }
+                //      function CheckEditOrDelete(urlHref, GateNo, YearCode) {
+
+                //     event.preventDefault();
+                //     $.ajax({
+                //         url: '/GateInward/CheckEditOrDelete',
+                //         type: "POST",
+                //                 data: { "GateNo": $('#GateNo').val(), "YearCode":  $('#GateYearCode').val() },
+                //         async: false,
+                //         success: function (data) {
+
+                //             var obj = $.parseJSON(data);
+                //             if (obj.Result[0].MRNNO === '' && obj.Result[0].MRNTYPE === '') {
+                //                 var linkUrl = urlHref;
+                //                 linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&VendorName=" + $('#VendorName').val() + "&GateNo=" + $('#Gateno').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&DocName=" + $('#DocName').val() + "&PONO=" + $('#PONO').val() + "&ScheduleNo=" + $('#ScheduleNo').val() + "&Searchbox=" + $('#search-box').val() + "&DashboardType=" + $('#DashboardType').val();
+                //                 window.location.href = linkUrl;
+                //             }
+                //             else {
+
+                //                 var MrnNo = obj.Result[0].MRNNO;
+                //                 if (obj.Result[0].MRNTYPE === 'MRN') {
+                //                     $.notify("Cannot edit/delete this item as MRN: " + MrnNo + " already exists", "error");
+                //                     return false;
+                //                 } else if (obj.Result[0].MRNTYPE === 'CUSTOMER JobWork') {
+                //                     $.notify("Cannot edit/delete this item as Customer JobWork:" + MrnNo + " already exists", "error");
+                //                     return false;
+                //                 } else if (obj.Result[0].MRNTYPE === 'JobWork') {
+                //                     $.notify("Cannot edit/delete this item as JobWork:" + MrnNo + " already exists", "error");
+                //                     return false;
+                //                 }
+                //                 else if (obj.Result[0].MRNTYPE === 'CHALLAN') {
+
+                //                     $.notify("Cannot edit/delete this item as Challan:" + MrnNo + " already exists", "error");
+                //                     return false;
+                //                 }
+                //             }
+                //         },
+                //         error: function (response) {
+                //             alert(response.responseText);
+                //         },
+                //         failure: function (response) {
+                //             alert(response.responseText);
+                //         }
+                //     });
+                // }
+
+                    function redirectToGateEdit() {
+                               if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                                            var selectedOption = $('#GateNo option:selected');
+                                            var gateNo = selectedOption.val();
+                                            var yearCode = $('#GateYearCode').val();
+                                            var entryId = selectedOption.data('gate-entry');
+                                                    if (!formRights.gateoptView) {
+                                                    return alert("You do not have rights to view this record.");
+                                                  }
+
+                                                  // if you have Update rights, open in Edit mode; otherwise View mode
+                                                  var mode = formRights.gateoptUpdate ? "U" : "V";
+
+                                                  
+                                           if (gateNo && yearCode && entryId) {
+                                             var url = '/GateInward/GateInward?Mode=' + mode +
+                                                                    '&ID=' + entryId +
+                                                                    '&YC=' + yearCode;
+                                                          window.open(url, '_blank');
+                                    }
+                                    else{
+                                                 alert("Please select a valid Gate No.");
+                                    }
+                               }
+                               else{
+                            var gateNo = $('#GateNo').val();
+                                    var yearCode = $('#GateYearCode').val();
+                                    var entryId = $('#GateEntryId').val();
+                                              if (!formRights.gateoptView) {
+                                                            return alert("You do not have rights to view this record.");
+                                                          }
+                                                                  var mode = formRights.gateoptUpdate ? "U" : "V";
+
+                            if (gateNo && yearCode && entryId) {
+                                         var url = '/GateInward/GateInward?Mode=' + mode +
+                                                                            '&ID=' + entryId +
+                                                                            '&YC=' + yearCode;
+                                                                  window.open(url, '_blank');
+                            }
+                            }
+                }
 
             $(document).ready(function () 
             {
                
                 GetFormRights();
+                GetGateNoFormRights();
 
                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") 
                 {
@@ -1151,6 +1242,7 @@ $('#btnClose').click(function () {
                     $('#ShortExcessQty').attr("value", Math.abs(billQty - recQty));
                 });
                 FillGateNo();
+                  
 
                 if ('@Model.IsError' == "true") {
                     var fromDt = $('#FromDate').val();
@@ -1753,6 +1845,23 @@ $('#btnClose').click(function () {
                             }
                             }
                         }
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
+                    function GetGateNoFormRights() {
+                $.ajax({
+                            url: "@Url.Action("GetFormRights", "GateInward")",
+                    type: "POST",
+                    success: function (data) {
+                                if (!data) return;
+                  var obj = $.parseJSON(data);
+                  var r = obj.Result.Table[0];
+                          formRights.gateoptView   = r.OptView;
+                  formRights.gateoptUpdate = r.OptUpdate;
+
                     },
                     error: function (errMsg) {
                         $.notify(errMsg, { position: "top center", className: "error" });
