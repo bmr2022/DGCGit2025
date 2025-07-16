@@ -317,9 +317,14 @@
 									</div>
 								</div>
 								<div class="card">
-									<div class="card-body overflow-auto pb-0">
+									<div class="card-body" id="divPendingMRP">
+										<div class="col-md-12 divStockRegister" id="divStockGrid">
+											<partial name="_InProcessInspectionAddtoGrid" />
+										</div>
+									</div>
+									@* <div class="card-body overflow-auto pb-0">
 										<table class="table table-hover table-bordered table-striped IssueNRGPTb">
-											<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+											<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" >
 												<tr>
 													<th>Action</th>
 													<th>SR#</th>
@@ -363,25 +368,25 @@
 															<i class="fa" aria-hidden="true"></i>
 														</span>Freq Of Testing
 													</th>
-													@for (int i = 1; i <= (ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize); i++)
+													<p>SampleSize from Model: @Model.SampleSize</p>
+													<p>ViewBag.SampleSize value: @ViewBag.SampleSize</p>
+
+													@* @for (int i = 1; i <= (Model.SampleSize > 25 ? 25 : Model.SampleSize); i++)
 													{
 														<th style="width:120px;">
 															<span style="padding:5px;margin:5px" class="sort-icon">
-																<i class="fa " aria-hidden="true"></i>
+																<i class="fa" aria-hidden="true"></i>
 															</span>
 															@i
 														</th>
-													}
-													
-
-													
+													} 
 												</tr>
 											</thead>
 											<tbody id="divStockGrid">
 												<partial name="_InProcessInspectionAddtoGrid" />
 											</tbody>
 										</table>
-									</div>
+									</div> *@
 								</div>
 							</div>
 							<div class="row g-2 gx-3">
@@ -653,6 +658,7 @@
 				//$(this).off('click');
 				$('form').submit();
 			});
+
 			
 		});
 		$(document).on('blur', '.sample-input', function () {
@@ -684,30 +690,9 @@
 				$input.css("color", "");
 			}
 		});
-		var sampleSize = @(ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize)
-		function addRowToGrid() {
-			let newRow = '<tr>';
+		
 
-			// Add Frequency of Testing column
-			newRow += `<td style="max-width:70px; white-space:normal; word-wrap:break-word; font-size:10px;">Freq</td>`;
-
-			// Add dynamic input columns
-			for (let i = 1; i <= sampleSize; i++) {
-				newRow += `
-					<td>
-						<input type="text"
-							   name="SampleHeader_${i}"
-							   class="form-control sample-input"
-							   data-from=""
-							   data-to="" />
-					</td>`;
-			}
-
-			newRow += '</tr>';
-
-			$('#yourGridTable tbody').append(newRow);
-		}
-
+		
 		function setFormattedDate() {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
@@ -810,11 +795,6 @@
 			 
 			var ItemCode = $('#ItemCode').val();
 			var sampleSize = $('#SampleSize').val();
-			// if (!ItemCode || ItemCode === '0') 
-			// {
-			// 	$.notify('ItemName is mandatory to display the Grid!', 'error');
-			// 	return false; 
-			// }
 			
 			$.ajax({
 				type: 'POST',
@@ -1150,54 +1130,11 @@
 
 		var UniqueBatchNo = [];
 		
-		// $('#GridButton').click(function (e) {
-		// 	e.preventDefault();
-		// 	debugger
-		// 	var missingFields = [];
-
-		// 	var Characteristic = $('#Characteristic').val();
-		// 	var EvalutionMeasurmentTechnique = $('#EvalutionMeasurmentTechnique').val();
-		// 	var ControlMethod = $('#ControlMethod').val();
-		// 	var SpecificationFrom = $('#SpecificationFrom').val();
-		// 	var SpecificationTo = $('#SpecificationTo').val();
-		// 	var RejectionPlan = $('#RejectionPlan').val();
-		// 	var FrequencyofTesting = $('#FrequencyofTesting').val();
-			
-		// 	var SchData = {
-		// 		Characteristic: $('#Characteristic').val(),
-		// 		EvalutionMeasurmentTechnique: $('#EvalutionMeasurmentTechnique').val(),
-		// 		ControlMethod: $('#ControlMethod').val(),
-		// 		SpecificationFrom: $('#SpecificationFrom').val() || '',
-		// 		SpecificationTo: $('#SpecificationTo').val(),
-		// 		RejectionPlan: $('#RejectionPlan').val() || '',
-		// 		FrequencyofTesting: $('#FrequencyofTesting').val()
-		// 	};
-		// 	console.log(SchData);
-		// 	$.ajax({
-		// 		type: "POST",
-		// 		url: '@Url.Action("AddToGridData", "InProcessInspection")',
-		// 		data: { model: SchData },
-		// 		success: function (result, status, xhr) {
-		// 			if (xhr.status == 200 && xhr.responseText == result) {
-
-		// 				$('#divStockGrid').html(result);
-		// 				TotalNoOfRows();
-		// 				ClearItems();
-		// 			} else if (xhr.status == 207) {
-		// 				$.notify('Duplicate Item...!', "info");
-		// 			}
-		// 		},
-		// 		error: function () {
-		// 			$.notify('Something Went Wrong, Please Try Again.', "error");
-		// 		}
-		// 	});
-		// });
-
 		$('#GridButton').click(function (e) {
 			e.preventDefault();
 			debugger
 			var gridData = [];
-
+			var sampleSize = parseInt($('#SampleSize').val()) || 1;
 			$('#divinProcessInspectionGrid tbody tr').each(function () {
 				var $cells = $(this).find('td');
 				var $row = $(this);
@@ -1224,11 +1161,24 @@
 			$.ajax({
 				type: "POST",
 				url: '@Url.Action("AddToGridData", "InProcessInspection")',
-				data: { modelList: gridData },
+				data: { modelList: gridData, sampleSize: sampleSize },
 				success: function (result) {
+				// 	var headerHtml = '';
+				// 	for (var i = 1; i <= sampleSize; i++) {
+				// 		headerHtml += `
+				// 	<th style="width:120px;">
+				// 		<span style="padding:5px;margin:5px" class="sort-icon">
+				// 			<i class="fa" aria-hidden="true"></i>
+				// 		</span>
+				// 		${i}
+				// 	</th>
+				// `;
+				// 	}
+				// 	$('#GridHeader').html(headerHtml);
 					$('#divStockGrid').html(result);
 					TotalNoOfRows();
 					ClearItems();
+					addRowToGrid();
 				},
 				error: function () {
 					$.notify('Something Went Wrong, Please Try Again.', "error");
@@ -1275,96 +1225,58 @@
 			});
 		}
 
-		var EditEachItem = false;
-
-		function EditItemRow(SrNO) {
-
-			if (EditEachItem) {
-				$.notify('Cannot edit item while another item is being added to the grid!', "error");
-				return;
-			}
-
+		function EditItemRow(seqNo) {
 			$.ajax({
-				url: '@Url.Action("EditItemRow")',
-				type: "POST",
-				data: { SrNO: SrNO, Mode: "U" },
+				url: '/InProcessInspection/EditItemRow', // Adjust controller/action route as needed
+				data: { SeqNo: seqNo },
+				type: 'GET',
 				success: function (data) {
+					if (data) {
+						// Assuming you have form inputs with these IDs in your edit form/modal
+						$('#Characteristic').val(data.Characteristic);
+						$('#EvalutionMeasurmentTechnique').val(data.EvalutionMeasurmentTechnique);
+						$('#ControlMethod').val(data.ControlMethod);
+						$('#SpecificationFrom').val(data.SpecificationFrom);
+						$('#SpecificationTo').val(data.SpecificationTo);
+						$('#RejectionPlan').val(data.RejectionPlan);
+						$('#FrequencyofTesting').val(data.FrequencyofTesting);
 
-					var obj = $.parseJSON(data);
-					if (obj != null) {
+						
+						$('.sample-input').each(function (index) {
+							$(this).val(data.Samples[index] || '');
+						});
 
-						EditEachItem = true;
-
-						$('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
-						$('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
-						$('#OriginalItemCode').val(obj[0].OriginalItemCode);
-						$('#Unit').val(obj[0].Unit);
-						$('#OriginalQty').val(obj[0].OriginalQty);
-						$('#AltItemName').val(obj[0].AltItemCode).trigger("change");
-						$('#AltPartCode').val(obj[0].AltItemCode).trigger("change");
-						$('#AltItemCode').val(obj[0].AltItemCode);
-						$('#AltUnit').val(obj[0].AltUnit);
-						$('#AltOriginalQty').val(obj[0].AltOriginalQty);
-						$('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
-						$('#StoreName').val(obj[0].StoreId).trigger("change");
-						$('#AltStoreName').val(obj[0].AltStoreId).trigger("change");
-						$('#WorkCenterName').val(obj[0].WcId).trigger("change");
-						$('#AltWorkCenterName').val(obj[0].AltWCID).trigger("change");
-						$('#BatchNo').val(obj[0].BatchNo).trigger("change");
-						$('#UniqueBatchNo').val(obj[0].UniqueBatchNo).trigger("change");
-						$('#BatchStock').val(obj[0].BatchStock).trigger("change");
-						$('#TotalStock').val(obj[0].TotalStock).trigger("change");
-						$('#AltStock').val(obj[0].AltStock).trigger("change");
-						$('#PlanNo').val(obj[0].PlanNo).trigger("change");
-						$('#PlanYearCode').val(obj[0].PlanYearCode).trigger("change");
-						$('#PlanDate').val(obj[0].PlanDate).trigger("change");
-						$('#ProdSchNo').val(obj[0].ProdSchNo).trigger("change");
-						$('#ProdSchYearCode').val(obj[0].ProdSchYearCode).trigger("change");
-						$('#ProdSchDatetime').val(obj[0].ProdSchDatetime).trigger("change");
-						$('#OrigItemRate').val(obj[0].OrigItemRate).trigger("change");
-						$('#Remark').val(obj[0].Remark).trigger("change");
-
-						// var newSrNo = obj[0].SrNO;
-						// if (currentSrNo !== newSrNo) {
-						//     $('#SrNO').val(newSrNo).trigger("change");
-						// }
-						var rowCount = $('#divStockGrid tr').length;
-						for (var i = 1; i <= rowCount + 1; i++) {
-							$('#editItemGrid-' + i).css("pointer-events", "none");
-							$('#editItemGrid-' + i).css("cursor", "not-allowed");
-						}
-
-						DeleteItemRow(SrNO);
+					
+						$('#SeqNoHidden').val(data.SeqNo);
+						DeleteItemRow(seqNo);
 					}
 				},
-				error: function (response) {
-					$.notify(response.responseText, "error");
+				error: function () {
+					alert('Error fetching data for edit.');
 				}
 			});
 		}
-		function DeleteItemRow(SrNO) {
 
+		function DeleteItemRow(seqNo) {
 			$.ajax({
-				url: '@Url.Action("DeleteItemRow")',
-				type: "POST",
-				data: { SrNO: SrNO, Mode: "U" },
-				success: function (data, status, xhr) {
-					$('#divStockGrid').html(data);
-					$.notify("Process deleted from Grid", "info");
-					EditEachItem = false;
-
+				url: '/InProcessInspection/DeleteItemRow', // Adjust route if needed
+				data: { SeqNo: seqNo },
+				type: 'GET', // or 'POST' if you prefer, just match controller
+				success: function(result) {
+					// Replace your grid container with updated HTML partial
+					$('#divStockGrid').html(result);
+							$.notify("Process deleted from Grid", "info");
+          
+					TotalNoOfRows();
+					ClearItems();
+					addRowToGrid();
 				},
-				error: function (response, status, xhr) {
-
-					$.notify("Cannot delete item that exists in Other Grid!!!", "error");
-				},
-				failure: function (response, status, xhr) {
-					alert(response.responseText);
-					$.notify(response.responseText, "error");
+				error: function() {
+					alert('Error deleting the row.');
 				}
 			});
 		}
-
+ 
 
 		function PressBack() {
 			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());

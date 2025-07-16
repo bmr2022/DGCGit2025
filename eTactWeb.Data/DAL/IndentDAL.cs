@@ -581,6 +581,7 @@ namespace eTactWeb.Data.DAL
                         ReqQty = Convert.ToInt32(row["ReqQty"]),
                         Approvalue = Convert.ToInt32(row["Approvalue"]),
                         ItemDescription = row["ItemDescription"].ToString(),
+                        Rate = Convert.ToInt32(row["rate"]),
                     });
                 }
                 model.IndentDetails = ItemList;
