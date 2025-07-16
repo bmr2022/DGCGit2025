@@ -1344,6 +1344,7 @@ public class PurchaseOrderController : Controller
         Table.Columns.Add("SizeDetail", typeof(string));
         Table.Columns.Add("Color", typeof(string));
         Table.Columns.Add("CostCenter", typeof(int));
+        Table.Columns.Add("DeliveryDate", typeof(string));
 
         DataTable TblSch = new();
 
@@ -1389,8 +1390,9 @@ public class PurchaseOrderController : Controller
                     Item.SecMonthTentQty,
                     Item.SizeDetail,
                     Item.Color,
-                    Item.CostCenter
-                });
+                    Item.CostCenter,
+                    Item.DeliveryDate == null ? string.Empty : ParseFormattedDate(Item.DeliveryDate.Split(" ")[0]),
+				});
 
             if (Item.DeliveryScheduleList != null && Item.DeliveryScheduleList.Count > 0)
             {
@@ -1575,6 +1577,7 @@ public class PurchaseOrderController : Controller
                 TolLimitQty = model.TolLimitQty,
                 Unit = model.Unit,
                 UnitRate = model.UnitRate,
+                DeliveryDate=model.DeliveryDate,
             });
 
         if (MainModel.ItemDetailGrid == null)

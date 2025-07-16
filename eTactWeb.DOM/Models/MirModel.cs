@@ -195,9 +195,12 @@ public class MirModel : MirDetail
     public string? ToDate { get; set; } 
 
     public int MRNYearCode { get; set; }
+    public int MRNEntryId { get; set; }
     public string MRNNo { get; set; }
     public string MRNDate { get; set; }
     public string GateNo { get; set; }
+    public int GateEntryId { get; set; }
+
     public int GateYearCode { get; set; }
     public bool AC1 { get; set; }
     public int AccountCode { get; set; }

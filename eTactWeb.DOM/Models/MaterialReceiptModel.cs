@@ -170,6 +170,7 @@ public class MaterialReceiptModel : MaterialReceiptDetail
     public int YearCode { get; set; }
     public string MRNNo { get; set; }
     public string GateNo { get; set; }
+    public int GateEntryId { get; set; }
     public string GateDate { get; set; }
     public int GateYearCode { get; set; }
     public string InvoiceNo { get; set; }
