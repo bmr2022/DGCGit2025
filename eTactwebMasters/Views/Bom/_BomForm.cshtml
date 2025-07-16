@@ -76,84 +76,86 @@
                 </div>
                 <div class="col-lg-6">
                     <div class="row g-2 gx-3">
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="AltQty1" class="form-label">Alt Qty1</label>
                             <input asp-for="AltQty1" class="form-control" type="text" min="0" />
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                             <label asp-for="UsedStageId" class="form-label">Used In Stage</label>
                             <select class="form-select" asp-for="UsedStageId" asp-items="@(new SelectList(Model.UsedStageList,"Value","Text"))">
                                 <option value="">-Select-</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                            <label asp-for="IssueToJOBwork" class="form-label">Issue To Job Work</label>
+                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                            <label asp-for="IssueToJOBwork" class="form-label">IssTo JW</label>
                             <select class="form-select" asp-for="IssueToJOBwork" asp-items="Model.YesNo">
                                 <option value="">-Select-</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                             <label asp-for="DirectProcess" class="form-label">Direct/Process</label>
                             <select class="form-select" asp-for="DirectProcess" asp-items="Model.DirectProcessList">
                                 <option value="">-Select-</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="AltQty2" class="form-label">Alt Qty2</label>
                             <input asp-for="AltQty2" class="form-control" type="text" min="0" />
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="RecFrmCustJobwork" class="form-label">Cust Job Work</label>
                             <select class="form-select" asp-for="RecFrmCustJobwork" asp-items="Model.YesNo">
                                 <option value="">-Select-</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="PkgItem" class="form-label">Pkg Item</label>
                             <select asp-for="PkgItem" class="form-select" asp-items="Model.YesNo">
                                 <option value="">-Select-</option>
                             </select>
                         </div>
-                        <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                        <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
                             <label asp-for="RunnerQty" class="form-label">Runner Qty</label>
                             <input asp-for="RunnerQty" class="form-control" type="text" min="0" />
                         </div>
                        
-
+                        <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+                        <label class="form-label">Remark</label>
+                        <input asp-for="Remark" class="form-control" />
+                        </div>
+                        <div class="col-lg-1 col-md-4 col-sm-12 col-xs-12" style="width:160px;">
+                        <label asp-for="CustJwAdjustmentMandatory" class="form-label">Cust Jw Adj Mandatory</label>
+                        <select asp-for="CustJwAdjustmentMandatory" class="form-control">
+                            <option value="">-Select-</option>
+                            <option value="Y">Yes</option>
+                            <option value="N">No</option>
+                        </select>
+                        </div>
                     </div>
                 </div>
 
-                <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
-                    <label class="form-label">Remark</label>
-                    <input asp-for="Remark" class="form-control" />
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12" style="width:100px;">
-                    <label asp-for="CustJwAdjustmentMandatory" class="form-label">Cust Jw Adj Mandatory</label>
-                    <select asp-for="CustJwAdjustmentMandatory" class="form-control">
-                        <option value="">-Select-</option>
-                        <option value="Y">Yes</option>
-                        <option value="N">No</option>
-                    </select>
-                </div>
-                <div class="col-lg-3 col-md-4 col-sm-12 col-xs-12">
+                
+                
+               
+                <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
                     <label asp-for="RunnerItemCode" class="form-label">Runner Item</label>
                     <select asp-for="RunnerItemCode" class="form-select" asp-items="@(new SelectList(Model.NameList,"Text","Value"))">
                         <option value="">-Select-</option>
                     </select>
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="GrossWt" class="form-label">Gross Weight</label>
                     <input asp-for="GrossWt" class="form-control" type="text" min="0" />
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="NetWt" class="form-label">Net Weight</label>
                     <input asp-for="NetWt" class="form-control" type="text" min="0" />
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="Scrap" class="form-label">Scrap</label>
                     <input asp-for="Scrap" class="form-control" type="text" min="0" />
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="BurnQty" class="form-label">Burn Qty</label>
                     <input asp-for="BurnQty" class="form-control" type="text" min="0" />
                 </div>
@@ -161,11 +163,11 @@
                     <label asp-for="Location" class="form-label">Location</label>
                     <input asp-for="Location" class="form-control" />
                 </div>
-                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="MPNNo" class="form-label">MPN No</label>
                     <input asp-for="MPNNo" class="form-control" />
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
                     <label asp-for="Byprodpartcode1" class="form-label">By prod PartCode 1</label>
 
                   @*   <input type="hidden" asp-for="ByprodItemCode1" /> *@
@@ -178,7 +180,7 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
                     <label asp-for="ByprodItemCode1" class="form-label">By prod ItemName 1</label>
                     <select class="form-select" asp-for="ByprodItemCode1" id="ByprodItemCode1" style="width:190px;">
                         <option value="">--Select--</option>
@@ -190,11 +192,11 @@
                 </div>
 
         
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
                     <label asp-for="ByProdQty1" class="form-label">By ProdQty1</label>
                     <input asp-for="ByProdQty1" class="form-control" type="text" min="0" />
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
                     <label asp-for="Byprodpartcode2" class="form-label">By prod PartCode 2</label>
 
                    @*  <input type="hidden" asp-for="ByprodItemCode2" /> *@
@@ -206,7 +208,7 @@
                         }
                     </select>
                 </div>
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
+                <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12" style="width:210px;">
                     <label asp-for="ByprodItemCode2" class="form-label">By prod ItemName 2</label>
                     <select class="form-select" asp-for="ByprodItemCode2" id="ByprodItemCode2" style="width:190px;">
                         <option value="">--Select--</option>
@@ -218,10 +220,31 @@
                 </div>
 
                 
-                <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                    <label asp-for="ByProdQty2" class="form-label">By ProdQty 2 </label>
-                    <input asp-for="ByProdQty2" class="form-control" type="text" min="0" />
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="Dia" class="form-label">Dia </label>
+                    <input asp-for="Dia" class="form-control" type="text" />
                 </div>
+
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="grade" class="form-label">grade</label>
+                    <input asp-for="grade" class="form-control" type="text"  />
+                </div>
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="thickness" class="form-label">thickness</label>
+                    <input asp-for="thickness" class="form-control" type="text" min="0" />
+                </div>
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="width" class="form-label">width</label>
+                    <input asp-for="width" class="form-control" type="text" min="0" />
+                </div>
+                <div class="col-lg-1 col-md-4 col-sm-6 col-xs-12">
+                    <label asp-for="length" class="form-label">length</label>
+                    <input asp-for="length" class="form-control" type="text" min="0" />
+                </div>
+               
+
+
+
 
                 <div class="col-lg-6">
                     <div class="row g-2 gx-3">
@@ -275,6 +298,11 @@
                         <th>By prod ItemName 2</th>
                         <th>By ProdQty 1</th>
                         <th>By ProdQty 2</th>
+                        <th>Dia</th>
+                        <th>grade</th>
+                        <th>thickness</th>
+                        <th>width</th>
+                        <th>length</th>
                     </tr>
                 </thead>
                 <tbody id="divBomGrid">

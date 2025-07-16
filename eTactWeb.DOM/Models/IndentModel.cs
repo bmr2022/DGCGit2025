@@ -81,6 +81,7 @@ namespace eTactWeb.DOM.Models
         public float Qty { get; set; }
         public float PendQtyForPO { get; set; }
         public string Unit { get; set; }
+        public float Rate { get; set; }
         public float AltQty { get; set; }
         public string AltUnit { get; set; }
         public int StoreID { get; set; }
