@@ -670,6 +670,7 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("ReqQty", typeof(float));
             DTSSGrid.Columns.Add("Approvalue", typeof(float));
             DTSSGrid.Columns.Add("ItemDescription", typeof(string));
+            DTSSGrid.Columns.Add("Rate", typeof(float));
             //DateTime DeliveryDt = new DateTime();
             DateTime ReqDt = new DateTime();
 
@@ -705,6 +706,7 @@ namespace eTactWeb.Controllers
                     Item.ReqQty ,
                     Item.Approvalue,
                     Item.ItemDescription ?? string.Empty,
+                    Item.Rate ,
                     });
             }
             DTSSGrid.Dispose();

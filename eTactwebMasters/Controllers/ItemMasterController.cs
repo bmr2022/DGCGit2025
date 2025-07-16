@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.Drawing.Printing;
 using ClosedXML.Excel;
+using DinkToPdf;
+using System.Data;
+using System.Linq;
 
 namespace eTactWeb.Controllers;
 
@@ -647,9 +650,14 @@ public class ItemMasterController : Controller
         {
             var worksheet = package.Workbook.Worksheets[0];
              var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
+            var UnitList= _IItemMaster.GetUnitList();
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
-                var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString());
+				var cellValue = worksheet.Cells[row, 1].Value;
+
+				if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
+					break; // Stop when column 1 is empty
+				var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString());
                 var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
                 var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
                 var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
@@ -657,9 +665,27 @@ public class ItemMasterController : Controller
                 var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                 var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
 
-               
+				var unit = worksheet.Cells[row, 3].Value?.ToString()?.Trim() ?? "";
 
-                ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
+                var unitdataset = UnitList.Result.Result;
+			   var unitTable = unitdataset.Tables[0];
+
+				bool unitExists = false;
+				foreach (DataRow rows in unitTable.Rows)
+				{
+					if (rows["Unit_name"].ToString().Trim().Equals(unit, StringComparison.OrdinalIgnoreCase))
+					{
+						unitExists = true;
+						break;
+					}
+				}
+				if (!unitExists)
+				{
+                    return StatusCode(207, "Invalid Unit"+ unit);
+                }
+
+
+				ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
                 int itemGCode = 1;
                 int itemCCode = 1;
@@ -674,15 +700,19 @@ public class ItemMasterController : Controller
 
                 }
 
-                data.Add(new ItemViewModel()
+               
+				
+				data.Add(new ItemViewModel()
                 {
                     PartCode = worksheet.Cells[row, 1].Value.ToString(),
                     PartCodeExists = PartCodeExists,
                     ItemNameExists = ItemNameExists,
                     ItemName = worksheet.Cells[row, 2].Value.ToString(),
                     Unit = worksheet.Cells[row, 3].Value.ToString(),
-                    HSNNo = Convert.ToInt32(worksheet.Cells[row, 4].Value.ToString()),
-                    ItemGroup = worksheet.Cells[row, 5].Value.ToString(),
+                    HSNNo = (worksheet.Cells[row, 4].Value == null || string.IsNullOrWhiteSpace(worksheet.Cells[row, 4].Value.ToString()))
+		? 0
+		: Convert.ToInt32(worksheet.Cells[row, 4].Value.ToString()),
+					ItemGroup = worksheet.Cells[row, 5].Value.ToString(),
                     ItemCategory = worksheet.Cells[row, 6].Value.ToString(),
                     MinLevel = Convert.ToInt32(worksheet.Cells[row, 7].Value.ToString()),
                     MaxLevel = Convert.ToInt32(worksheet.Cells[row, 8].Value.ToString()),

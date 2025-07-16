@@ -164,7 +164,7 @@
                                         <i class="fa-solid fa-rotate fa-fw fa-lg me-2"></i>RESET
                                     </a>
 
-                                    <a href="#" target="_blank" id="printBtn"
+                                    <a href="#"  id="printBtn"
                                        class="btn btn-sm btn-dark bg-gradient d-flex align-items-center justify-content-center"
                                        style="padding: 3px 10px; height: 36px; width: 120px;">
                                         <i class="fa fa-pencil-square fa-fw fa-lg me-2" aria-hidden="true"></i>PRINT
@@ -314,12 +314,13 @@
             $('#WCID').val($('#WorkCenterName').val());
             
          });
-        document.getElementById('printBtn').addEventListener('click', function () {
-             
-            var FGPartCode = document.querySelector('[name="FGPartCode"]').value;
-            var FGName = document.querySelector('[name="FGItemName"]').value;
-            var RMPartCode = document.querySelector('[name="RMPartCode"]').value;
-            var RMName = document.querySelector('[name="RMItemName"]').value;
+        document.getElementById('printBtn').addEventListener('click', function (e) {
+            e.preventDefault(); // <- IMPORTANT
+
+            var FGPartCode = $('#ItemCode').val();
+            var FGName = $('#FgItemNameText').val();
+            var RMPartCode = $('#RmPartCodeText').val();
+            var RMName = $('#RmItemNameText').val();
             var Storeid = document.querySelector('[name="Storeid"]').value;
             var WCID = document.querySelector('[name="WCID"]').value;
            // var WCID = document.getElementById('WCID').value;
@@ -329,7 +330,7 @@
             //var FGItemName = document.querySelector('[name="FGItemName"]').value;
 
             var url = `/BOMReport/PrintReport?FGPartCode=${encodeURIComponent(FGPartCode)}&FGName=${encodeURIComponent(FGName)}&RMPartCode=${encodeURIComponent(RMPartCode)}&RMName=${encodeURIComponent(RMName)}&Storeid=${encodeURIComponent(Storeid)}&WCID=${encodeURIComponent(WCID)}&CurrentDate=${encodeURIComponent(toDate)}&YearCode=@Model.YearCode&CalForQty=${encodeURIComponent(CalForQty)}`;
-
+            console.log("Opening report URL:", url); // Debug
            //window.location.href = url;
             window.open(url, '_blank');
         });
@@ -686,7 +687,7 @@
         }
 
         function FillFGItems() {
-            debugger
+           
             // Autocomplete for PartCodeText
             $("#FgPartCodeText").autocomplete({
                 source: function (request, response) {
@@ -810,7 +811,7 @@
             });
         }
          function FillRMItems() {
-            debugger
+            
             // Autocomplete for PartCodeText
             $("#RmPartCodeText").autocomplete({
                 source: function (request, response) {
@@ -1149,7 +1150,7 @@
             var reportType = $('#ReportType').val(); // Get ReportType from a dropdown or input element
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
-            var FGItemCode = $('#FGPartCode').val();
+            var FGItemCode = $('#ItemCode').val();
             //var FGItemName = $('#FGItemName').val();
             var RMPartCode = $('#RMPartCode').val();
             var Yearcode = $('#YearCode').val();

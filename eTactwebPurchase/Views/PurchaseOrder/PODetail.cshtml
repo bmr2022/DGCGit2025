@@ -29,10 +29,7 @@
 							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 							EXPORT
 						</a>
-						<a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"  target="_blank" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
-							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-							PRINT
-						</a>
+						
 
 						<div class="col-auto">
 							<button type="button" class="PartialSave btn btn-secondary btn-sm mr-2" style="color:white!important;margin-right:5px;">
@@ -49,6 +46,10 @@
 								COPY
 							</a>
 						</div>
+						<a type="button" class="btn btn-sm btn-outline-light bg-gradient" id="printButton" asp-action="PrintReport" target="_blank" asp-controller="PurchaseOrder" asp-route-EntryId="@Model.EntryID" asp-route-YearCode="@Model.YearCode" asp-route-PONO="@Model.PONo" asp-route-ShowOnlyAmendItem="@Model.ShowOnlyAmendItem">
+							<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+							PRINT
+						</a>
 					}
 					@if (Model.Mode == "POC")
 					{

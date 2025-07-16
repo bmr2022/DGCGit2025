@@ -76,6 +76,12 @@ namespace eTactWeb.DOM.Models
         public string? ByprodItemName2 { get; set; }
         public decimal? ByProdQty2 { get; set; }
         public int? ByprodItemCode2 { get; set; }
+        public string? Dia { get; set; }
+        public string? grade { get; set; }
+        public decimal? thickness { get; set; }
+        public decimal? width { get; set; }
+        public decimal? length { get; set; }
+
 
         [Required]
         public decimal BomQty { get; set; }

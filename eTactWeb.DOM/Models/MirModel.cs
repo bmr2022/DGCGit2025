@@ -310,6 +310,7 @@ public class MirModel : MirDetail
         public string MRNNo { get; set; }
         public string MRNJW { get; set; }
         public int MRNYear { get; set; }
+        public int MRNEntryId { get; set; }
         public string FromDate { get; set; }
         public string ToDate { get; set; }
         public string GateNo { get; set; }

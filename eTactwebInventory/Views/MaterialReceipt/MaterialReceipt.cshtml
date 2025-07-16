@@ -1006,48 +1006,95 @@ $('#btnClose').click(function () {
                 //         }
                 //     });
                 // }
+                           function redirectToGateEdit() {
+            var gateNo, yearCode, entryId;
 
-                    function redirectToGateEdit() {
-                               if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                                            var selectedOption = $('#GateNo option:selected');
-                                            var gateNo = selectedOption.val();
-                                            var yearCode = $('#GateYearCode').val();
-                                            var entryId = selectedOption.data('gate-entry');
-                                                    if (!formRights.gateoptView) {
-                                                    return alert("You do not have rights to view this record.");
-                                                  }
+            if ($('#Mode').val() !== "U" && $('#Mode').val() !== "V") {
+                var selectedOption = $('#GateNo option:selected');
+                gateNo = selectedOption.val();
+                entryId = selectedOption.data('gate-entry');
+                yearCode = $('#GateYearCode').val();
+            } else {
+                gateNo = $('#GateNo').val();
+                yearCode = $('#GateYearCode').val();
+                entryId = $('#GateEntryId').val();
+            }
 
-                                                  // if you have Update rights, open in Edit mode; otherwise View mode
-                                                  var mode = formRights.gateoptUpdate ? "U" : "V";
+            if (!formRights.gateoptView) {
+                return alert("You do not have rights to view this record.");
+            }
+
+            if (!gateNo || !yearCode || !entryId) return;
+
+            $.ajax({
+                url: '/GateInward/CheckEditOrDelete',
+                type: "POST",
+                data: {
+                    "GateNo": gateNo,
+                    "YearCode": yearCode
+                },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    var mode = "V"; // Default mode
+
+                    if (obj.Result.length > 0 && obj.Result[0].MRNNO === '' && obj.Result[0].MRNTYPE === '') {
+                        mode = formRights.gateoptUpdate ? "U" : "V";
+                    }
+
+                    var url = '/GateInward/GateInward?Mode=' + mode +
+                              '&ID=' + entryId +
+                              '&YC=' + yearCode;
+
+                    window.open(url, '_blank');
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+
+                //     function redirectToGateEdit() {
+                //                if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                //                             var selectedOption = $('#GateNo option:selected');
+                //                             var gateNo = selectedOption.val();
+                //                             var yearCode = $('#GateYearCode').val();
+                //                             var entryId = selectedOption.data('gate-entry');
+                //                                     if (!formRights.gateoptView) {
+                //                                     return alert("You do not have rights to view this record.");
+                //                                   }
+
+                //                                   // if you have Update rights, open in Edit mode; otherwise View mode
+                //                                   var mode = formRights.gateoptUpdate ? "U" : "V";
 
                                                   
-                                           if (gateNo && yearCode && entryId) {
-                                             var url = '/GateInward/GateInward?Mode=' + mode +
-                                                                    '&ID=' + entryId +
-                                                                    '&YC=' + yearCode;
-                                                          window.open(url, '_blank');
-                                    }
-                                    else{
-                                                 alert("Please select a valid Gate No.");
-                                    }
-                               }
-                               else{
-                            var gateNo = $('#GateNo').val();
-                                    var yearCode = $('#GateYearCode').val();
-                                    var entryId = $('#GateEntryId').val();
-                                              if (!formRights.gateoptView) {
-                                                            return alert("You do not have rights to view this record.");
-                                                          }
-                                                                  var mode = formRights.gateoptUpdate ? "U" : "V";
+                //                            if (gateNo && yearCode && entryId) {
+                //                              var url = '/GateInward/GateInward?Mode=' + mode +
+                //                                                     '&ID=' + entryId +
+                //                                                     '&YC=' + yearCode;
+                //                                           window.open(url, '_blank');
+                //                     }
+                //                     else{
+                //                                  alert("Please select a valid Gate No.");
+                //                     }
+                //                }
+                //                else{
+                //             var gateNo = $('#GateNo').val();
+                //                     var yearCode = $('#GateYearCode').val();
+                //                     var entryId = $('#GateEntryId').val();
+                //                               if (!formRights.gateoptView) {
+                //                                             return alert("You do not have rights to view this record.");
+                //                                           }
+                //                                                   var mode = formRights.gateoptUpdate ? "U" : "V";
 
-                            if (gateNo && yearCode && entryId) {
-                                         var url = '/GateInward/GateInward?Mode=' + mode +
-                                                                            '&ID=' + entryId +
-                                                                            '&YC=' + yearCode;
-                                                                  window.open(url, '_blank');
-                            }
-                            }
-                }
+                //             if (gateNo && yearCode && entryId) {
+                //                          var url = '/GateInward/GateInward?Mode=' + mode +
+                //                                                             '&ID=' + entryId +
+                //                                                             '&YC=' + yearCode;
+                //                                                   window.open(url, '_blank');
+                //             }
+                //             }
+                // }
 
             $(document).ready(function () 
             {

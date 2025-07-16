@@ -231,6 +231,11 @@ public class BomController : Controller
                 _Table.Columns.Add("ByprodItemcode2", typeof(int));
                 _Table.Columns.Add("ByprodItemcQty1", typeof(decimal));
                 _Table.Columns.Add("ByprodItemcQty2", typeof(decimal));
+                _Table.Columns.Add("Dia", typeof(string));
+                _Table.Columns.Add("grade", typeof(string));
+                _Table.Columns.Add("thickness", typeof(decimal));
+                _Table.Columns.Add("width", typeof(decimal));
+                _Table.Columns.Add("length", typeof(decimal));
 
                 //_Table = Repository.Common.ToDataTable(BomList);
 
@@ -264,7 +269,12 @@ public class BomController : Controller
                     _Item.ByprodItemCode1,
                     _Item.ByprodItemCode2,
                     _Item.ByProdQty1,
-                    _Item.ByProdQty2
+                    _Item.ByProdQty2,
+                    _Item.Dia ?? "",
+                    _Item.grade ?? "",
+                    _Item.thickness ?? 0,
+                    _Item.width ?? 0,
+                    _Item.length ?? 0,
                     });
                 }
 
@@ -342,6 +352,11 @@ public class BomController : Controller
                 ByprodItemName2 = model.ByprodItemName2,
                 ByProdQty1 = model.ByProdQty1,
                 ByProdQty2 = model.ByProdQty2,
+                Dia = model.Dia,
+                grade = model.grade,
+                thickness = model.thickness,
+                width = model.width,
+                length = model.length,
 
                 BOMName = model.BOMName,
                 BomNo = model.BomNo,
@@ -400,6 +415,11 @@ public class BomController : Controller
                     ByprodItemName2 = model.ByprodItemName2,
                     ByProdQty1 = model.ByProdQty1,
                     ByProdQty2 = model.ByProdQty2,
+                    Dia = model.Dia,
+                    grade = model.grade,
+                    thickness = model.thickness,
+                    width = model.width,
+                    length = model.length,
 
                     BOMName = model.BOMName,
                     BomNo = model.BomNo,
@@ -932,6 +952,7 @@ public class BomController : Controller
             var worksheet = package.Workbook.Worksheets[0];
             List<ImportBomData> importDataList = new();
             var BomData = _IBom.CheckDupeConstraint();
+
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var cellValue = worksheet.Cells[row, 1].Value;
@@ -1006,8 +1027,17 @@ public class BomController : Controller
                     }
                 }
 
-                
-                var BomRevNo = _IBom.GetBomNo(FGItemCode, "GetBomNo");
+                if (FGItemCode == 0 )
+				{
+					return StatusCode(207, "Invalid FGPartCode   " + FGPartCode);
+				}
+				if (RmItemCode == 0)
+				{
+					return StatusCode(207, "Invalid  RMPartCode  " + RMPartCode);
+				}
+
+
+				var BomRevNo = _IBom.GetBomNo(FGItemCode, "GetBomNo");
                 //var BomRevNoChck = _IBom.GetBomNo(FGItemCode, "GetCheckBomNo");
 
                 var duplicateBom = "";
@@ -1080,27 +1110,27 @@ public class BomController : Controller
 
             // Get Bom Detail
             var bomDataTable = GetBomDetailTable(importDataList);
-            var isValidPartCodes = _IBom.VerifyPartCode(bomDataTable);
-            var extractedData = JsonConvert.DeserializeObject<List<dynamic>>(isValidPartCodes.Result);
+            //var isValidPartCodes = _IBom.VerifyPartCode(bomDataTable);
+            //var extractedData = JsonConvert.DeserializeObject<List<dynamic>>(isValidPartCodes.Result);
 
-            var simplifiedResponse = extractedData.Select(x => new
-            {
-                FGPartCode = x.FGPartCode,
-                RMPartCode = x.RMPartCode
-            }).ToList();
+            //var simplifiedResponse = extractedData.Select(x => new
+            //{
+            //    FGPartCode = x.FGPartCode,
+            //    RMPartCode = x.RMPartCode
+            //}).ToList();
 
-            var response = new
-            {
-                Message = "Some part codes are invalid. Please check the details.",
-                InvalidPartCodes = simplifiedResponse
-            };
+            //var response = new
+            //{
+            //    Message = "Some part codes are invalid. Please check the details.",
+            //    InvalidPartCodes = simplifiedResponse
+            //};
 
-            string jsonResponse = JsonConvert.SerializeObject(response);
+            //string jsonResponse = JsonConvert.SerializeObject(response);
 
-            if (simplifiedResponse.Count > 0)
-            {
-                return StatusCode(207, jsonResponse);
-            }
+            //if (simplifiedResponse.Count > 0)
+            //{
+            //    return StatusCode(207, jsonResponse);
+            //}
         }
 
         var model = new BomModel();
