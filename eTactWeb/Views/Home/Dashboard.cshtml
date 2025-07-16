@@ -525,6 +525,141 @@
                 margin-right: 5px;
             }
 
+        .dashboard-wrapper {
+            padding: 30px;
+            max-width: 1200px;
+            margin: auto;
+        }
+
+        .dashboard-title {
+            font-size: 26px;
+            margin-bottom: 5px;
+        }
+
+        .sales-section,
+        .performance-section,
+        .invoice-section,
+        .trend-section,
+        .customer-order-section {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+
+        .sales-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            min-width: 250px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .sales-card-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .sales-card-value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .sales-card-badge {
+            background-color: #e0f7e9;
+            color: #34a853;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 10px;
+        }
+
+        .sales-card-badge-red {
+            background-color: #fdecea;
+            color: #e63946;
+            font-size: 12px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            margin-left: 10px;
+        }
+
+        .sales-card-subtitle {
+            font-size: 14px;
+            color: #777;
+        }
+
+        .sales-card-icon {
+            margin-right: 5px;
+            color: #888;
+        }
+
+        .sales-card-bar {
+            height: 6px;
+            background: #eee;
+            border-radius: 5px;
+            margin-top: 10px;
+            overflow: hidden;
+        }
+
+        .sales-card-bar-inner {
+            height: 6px;
+            border-radius: 5px;
+        }
+
+        .bar-blue {
+            background: #3b82f6;
+        }
+
+        .bar-green {
+            background: #10b981;
+        }
+
+        .bar-purple {
+            background: #8b5cf6;
+        }
+
+        .bar-yellow {
+            background: #facc15;
+        }
+
+        .bar-red {
+            background: #e63946;
+        }
+
+        .dashboard-header-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .dashboard-select-refresh {
+            display: flex;
+            gap: 10px;
+        }
+
+        .dashboard-select, .dashboard-refresh-btn {
+            padding: 6px 10px;
+            font-size: 14px;
+        }
+
+        .card-lightblue {
+            background-color: #e0edff;
+        }
+
+        .card-lightgreen {
+            background-color: #e0f7e9;
+        }
+
+        .card-lightyellow {
+            background-color: #fff7e0;
+        }
+
+        .card-lightred {
+            background-color: #fdecea;
+        }
+
     </style>
 </head>
 <body>
@@ -537,14 +672,6 @@
                 Inventory Dashboard
             </div>
         </button>
-        <button class="tab-link" data-target="#supplyChainTab">
-            <div class="tab-icon-container bg-icon">
-                <i class="fas fa-truck"></i>
-            </div>
-            <div class="tab-text">
-                Supply Chain Dashboard
-            </div>
-        </button>
         <button class="tab-link" data-target="#purchaseTab">
             <div class="tab-icon-container bg-icon">
                 <i class="fas fa-file-invoice"></i>
@@ -553,8 +680,19 @@
                 Purchase Dashboard
             </div>
         </button>
+        <button class="tab-link" data-target="#salesTab">
+            <div class="tab-icon-container bg-icon">
+                <i class="fas fa-file-invoice-dollar"></i>
+            </div>
+            <div class="tab-text">
+                Sales Dashboard
+            </div>
+        </button>
     </div>
     <div id="inventoryTab" class="tab-content active">
+        <button onclick="exportDashboardToForInventoryPdf()" class="btn btn-danger mb-3">
+            <i class="fas fa-file-pdf"></i> Export to PDF
+        </button>
         <!-- Inventory Dashboard -->
         <div class="card-container">
             <input type="hidden" id="TotalRMValue" />
@@ -750,45 +888,10 @@
             </div>
         </div>
     </div>
-    <div id="supplyChainTab" class="tab-content">
-        <!-- Supply Chain Dashboard -->
-        <button onclick="exportDashboardToServerPdf()" class="btn btn-danger mb-3">
+    <div id="purchaseTab" class="tab-content">
+        <button onclick="exportDashboardToForPurchaseOrderPdf()" class="btn btn-danger mb-3">
             <i class="fas fa-file-pdf"></i> Export to PDF
         </button>
-
-        <div class="dashboard" id="supplyChainDashboard">
-            <div class="card">
-                <h3>Perfect Orders</h3>
-                <canvas id="perfectOrdersChart"></canvas>
-                <p>In Time, Meet Quality/Quantity, Correct Invoice</p>
-            </div>
-            <div class="card">
-                <h3>Total Shipping Cost</h3>
-                <div class="value">770.7K</div>
-            </div>
-            <div class="card">
-                <h3>Total Quantity Shipped</h3>
-                <div class="value">1.52M</div>
-            </div>
-            <div class="card">
-                <h3>Total International Shipment</h3>
-                <div class="value">1.07M</div>
-            </div>
-            <div class="card">
-                <h3>Perfect Orders by Warehouse</h3>
-                <canvas id="warehouseBarChart"></canvas>
-            </div>
-            <div class="card">
-                <h3>Return by Product Type</h3>
-                <canvas id="returnByProdChart"></canvas>
-            </div>
-            <div class="card">
-                <h3>Total Return & Trend</h3>
-                <canvas id="returnTrendChart"></canvas>
-            </div>
-        </div>
-    </div>
-    <div id="purchaseTab" class="tab-content">
         <input type="hidden" id="RefreshPOAllData" />
         <div class="card-row">
             <div class="purchase-card">
@@ -1036,7 +1139,7 @@
                 <div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
                     <h3 style="margin: 0;">Top 10 Best Vendors</h3>
                     <div class="tab-icon-container bg-icon">
-                        <i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+                        <i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="SaveBestAndWorstSupplier()"></i>
                     </div>
                 </div>
                 <div class="card-body">
@@ -1160,6 +1263,81 @@
             </div>
         </div>
     </div>
+    <div id="salesTab" class="tab-content">
+        <!-- Supply Chain Dashboard -->
+        <button onclick="exportDashboardToPdf()" class="btn btn-danger mb-3">
+            <i class="fas fa-file-pdf"></i> Export to PDF
+        </button>
+        <div class="dashboard-wrapper">
+            <!-- Existing sections remain unchanged above -->
+            <!-- Monthly Sales Trend -->
+            <div class="trend-section">
+                <div class="sales-card" style="width: 100%; height: 200px;">
+                    <div class="sales-card-title">
+                        Monthly Sales Trend
+                        <select style="float:right">
+                            <option>This Year</option>
+                            <option>Last Year</option>
+                        </select>
+                    </div>
+                    <img src="https://via.placeholder.com/500x120?text=Sales+Trend+Graph" alt="Trend Graph" style="width: 100%; height: 120px; object-fit: contain;">
+                </div>
+            </div>
+
+            <!-- Customers & Orders and Returns -->
+            <div class="customer-order-section">
+                <div class="sales-card" style="flex: 2;">
+                    <div class="sales-card-title">Customers & Orders</div>
+                    <div class="sales-section">
+                        <div class="sales-card card-lightblue">
+                            <div class="sales-card-title">New Customers <span class="sales-card-badge">This Year</span></div>
+                            <div class="sales-card-value">56</div>
+                            <div class="sales-card-subtitle">↑ 12% increase from last year</div>
+                        </div>
+                        <div class="sales-card card-lightgreen">
+                            <div class="sales-card-title">New Customers <span class="sales-card-badge">This Month</span></div>
+                            <div class="sales-card-value">12</div>
+                            <div class="sales-card-subtitle">↑ 20% increase from last month</div>
+                        </div>
+                    </div>
+                    <div class="sales-section">
+                        <div class="sales-card">
+                            <div class="sales-card-title">Total Orders</div>
+                            <div class="sales-card-value">148</div>
+                        </div>
+                        <div class="sales-card card-lightyellow">
+                            <div class="sales-card-title">Pending Orders</div>
+                            <div class="sales-card-value">28</div>
+                        </div>
+                        <div class="sales-card card-lightgreen">
+                            <div class="sales-card-title">Completed Orders</div>
+                            <div class="sales-card-value">120</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sales-card" style="flex: 1;">
+                    <div class="sales-card-title">Returns Summary</div>
+                    <div class="sales-card-subtitle">Return Value (Month) <span class="sales-card-badge-red">Issues</span></div>
+                    <div class="sales-card-value" style="color: #e63946;">$2,450</div>
+                    <div class="sales-card-subtitle">↑ 5% increase from last month</div>
+
+                    <div class="sales-card-subtitle" style="margin-top: 20px;">Return Value (Year) <span class="sales-card-badge-red">Issues</span></div>
+                    <div class="sales-card-value" style="color: #e63946;">$18,760</div>
+                    <div class="sales-card-subtitle">↓ 8% decrease from last year</div>
+
+                    <div class="sales-card-subtitle" style="margin-top: 20px;">
+                        Return Trend
+                        <select style="float:right">
+                            <option>This Year</option>
+                            <option>Last Year</option>
+                        </select>
+                    </div>
+                    <img src="https://via.placeholder.com/300x100?text=Return+Trend+Chart" alt="Return Trend Graph" style="width: 100%; height: 100px; object-fit: contain;">
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>
 
@@ -1168,37 +1346,125 @@
     <!-- Chart JS Scripts -->
     <script>
 
-        function exportDashboardToServerPdf() {
-            const dashboardHtml = document.getElementById("supplyChainDashboard")?.outerHTML;
-            if (!dashboardHtml) {
-                alert("Dashboard content not found.");
-                return;
-            }
+        function exportDashboardToPdf() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById("supplyChainDashboard");
 
-            fetch('/api/SupplyChain/ExportDashboardToPdf', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(dashboardHtml)
-            })
-                .then(response => {
-                    if (!response.ok) throw new Error("Failed to generate PDF.");
-                    return response.blob();
-                })
-                .then(blob => {
-                    const url = window.URL.createObjectURL(blob);
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = "SupplyChainDashboard.pdf";
-                    document.body.appendChild(a);
-                    a.click();
-                    a.remove();
-                })
-                .catch(err => {
-                    console.error(err);
-                    alert("Error generating PDF.");
-                });
+            window.scrollTo(0, 0); // ensure it's in view
+
+            html2canvas(element, {
+                scale: 2,
+                useCORS: true,
+                backgroundColor: "#ffffff"
+            }).then(function (canvas) {
+                const imgData = canvas.toDataURL("image/png");
+                const pdf = new jsPDF("p", "mm", "a4");
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                const imgProps = pdf.getImageProperties(imgData);
+                const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 30) / imgProps.height);
+
+                const imgWidth = imgProps.width * ratio;
+                const imgHeight = imgProps.height * ratio;
+
+                // Add Header
+                pdf.setFontSize(16);
+                pdf.text("Supply Chain Dashboard", 10, 15);
+                pdf.setFontSize(10);
+                pdf.text("Date: " + new Date().toLocaleString(), 10, 25);
+
+                // Add dashboard image below header
+                pdf.addImage(imgData, "PNG", 10, 30, imgWidth, imgHeight);
+                pdf.save("dashboard.pdf");
+            });
+        }
+
+        function exportDashboardToForInventoryPdf() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById("inventoryTab");
+
+            window.scrollTo(0, 0); // Ensure element is in view
+
+            html2canvas(element, {
+                scale: 3,
+                useCORS: true,
+                backgroundColor: "#ffffff"
+            }).then(function (canvas) {
+                const imgData = canvas.toDataURL("image/png");
+                const pdf = new jsPDF("landscape", "mm", "a4"); // Landscape mode
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();
+                const pdfHeight = pdf.internal.pageSize.getHeight();
+
+                const imgProps = pdf.getImageProperties(imgData);
+                const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 30) / imgProps.height);
+
+                const imgWidth = imgProps.width * ratio;
+                const imgHeight = imgProps.height * ratio;
+
+                // Add Header
+                pdf.setFontSize(16);
+                pdf.text("Inventory Dashboard", 10, 15);
+                pdf.setFontSize(10);
+                pdf.text("Date: " + new Date().toLocaleString(), 10, 22);
+
+                // Add dashboard image below header
+                pdf.addImage(imgData, "PNG", 10, 30, imgWidth, imgHeight);
+                pdf.save("Inventory Dashboard.pdf");
+            });
+        }
+
+        function exportDashboardToForPurchaseOrderPdf() {
+            const { jsPDF } = window.jspdf;
+            const element = document.getElementById("purchaseTab");
+
+            // Ensure the content is fully visible
+            window.scrollTo(0, 0);
+
+            // Use html2canvas to capture the dashboard
+            html2canvas(element, {
+                scale: 2.5,                // Adjust the scale for better clarity
+                useCORS: true,
+                backgroundColor: "#ffffff"
+            }).then(function (canvas) {
+                const imgData = canvas.toDataURL("image/png");
+                const pdf = new jsPDF("landscape", "mm", "a4"); // A4 landscape format
+
+                const pdfWidth = pdf.internal.pageSize.getWidth();    // A4 width
+                const pdfHeight = pdf.internal.pageSize.getHeight();  // A4 height
+
+                const imgProps = pdf.getImageProperties(imgData);
+                const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 40) / imgProps.height); // Leave room for header
+
+                const imgWidth = imgProps.width * ratio;
+                const imgHeight = imgProps.height * ratio;
+
+                const xCentered = (pdfWidth - imgWidth) / 2; // Center the image on the page
+                const yStart = 30; // Start position for image
+
+                // Header styling
+                pdf.setFontSize(20);
+                pdf.setTextColor(33, 37, 41); // Dark grey color for text
+                pdf.text("Purchase Order Dashboard", 10, 15);
+
+                pdf.setFontSize(12);
+                pdf.setTextColor(100); // Lighter grey for date
+                pdf.text("Date: " + new Date().toLocaleString(), 10, 25);
+
+                // Add the dashboard image
+                pdf.addImage(imgData, "PNG", xCentered, yStart, imgWidth, imgHeight);
+
+                // Adjust PDF height if content exceeds one page
+                const totalHeight = yStart + imgHeight + 10; // Account for additional space
+                if (totalHeight > pdfHeight) {
+                    pdf.addPage(); // Create a new page if content exceeds the page height
+                }
+
+                // Save the PDF
+                pdf.save("Purchase_Order_Dashboard.pdf");
+            });
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -1232,6 +1498,7 @@
                     FillPurchaseDashboardDataByCategoryValue();
                     FillPurchaseDashboardNewVendorInThisMonthData();
                     FillPurchaseVsConsumptionDashboardData();
+                    FillBestAndWorstSupplier();
                 } else if (tabId === "inventoryTab") {
                     $('#RefreshInventoryAllData').val(false);
                     FillInventoryDashboardData();
@@ -2254,18 +2521,18 @@
                         }
 
                         html += `
-                                    <div class="vendor-card">
-                                        <div class="vendor-header">
-                                            <div class="vendor-logo">${initials}</div>
-                                            <h3>${item.AccountName}</h3>
-                                            ${badgeHtml}
-                                        </div>
-                                        <div class="vendor-details">
-                                            <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
-                                            <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
-                                            <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
-                                        </div>
-                                    </div>`;
+                                                            <div class="vendor-card">
+                                                                <div class="vendor-header">
+                                                                    <div class="vendor-logo">${initials}</div>
+                                                                    <h3>${item.AccountName}</h3>
+                                                                    ${badgeHtml}
+                                                                </div>
+                                                                <div class="vendor-details">
+                                                                    <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
+                                                                    <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
+                                                                    <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
+                                                                </div>
+                                                            </div>`;
                     });
 
                     $('.vendors-container').empty().append(html);
@@ -2280,6 +2547,31 @@
 
             $.ajax({
                 url: '@Url.Action("FillPurchaseVsConsumptionDashboardData", "Home")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, error) {
+                    var obj = $.parseJSON(data);
+                    var html = '';
+                    $.each(obj.Result, function (i, item) {
+                        html += '<tr>';
+                        html += '<td>' + item.PartCode + '</td>';
+                        html += '<td>' + item.ItemName + '</td>';
+                        html += '<td>' + item.POQty + '</td>';
+                        html += '<td>' + item.ConsumptionQty + '</td>';
+                        html += '</tr>';
+                    });
+                    $('#PoVsConsumption').empty().append(html);
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillBestAndWorstSupplier() {
+
+            $.ajax({
+                url: '@Url.Action("FillBestAndWorstSupplier", "Home")',
                 type: 'POST',
                 async: false,
                 success: function (data, status, error) {
@@ -2448,6 +2740,30 @@
         function SaveNewVendorOfTheMonth() {
             $.ajax({
                 url: '@Url.Action("SaveNewVendorOfTheMonth", "XONDashboard")',
+                type: 'POST',
+                async: false,
+                data: {},
+                success: function (response, status, error) {
+
+                    var obj = $.parseJSON(response);
+                    if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+                        if ($('#RefreshPOAllData').val() == "false") {
+                            $.notify('Successfully Refresh New Vendor Of The Month...!', { position: "top center", className: "success" });
+                            setTimeout(function () {
+                                location.reload(); // Refresh after 2 seconds
+                            }, 1000);
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to save data.');
+                }
+            });
+        }
+
+        function SaveBestAndWorstSupplier() {
+            $.ajax({
+                url: '@Url.Action("SaveBestAndWorstSupplier", "XONDashboard")',
                 type: 'POST',
                 async: false,
                 data: {},
