@@ -181,7 +181,7 @@
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     @if (Model.FromPend == "Y")
                                     {
-                                        <label class="form-label">MRN NO</label>
+                                        <label class="form-label" onclick="redirectToMRNEdit()">MRN NO</label>
                                         <input asp-for="MRNNo" class="form-control" value="@Model.MRNNo" readonly />
                                         <input asp-for="MRNEntryId" class="form-control" type="hidden" value="@Model.MRNEntryId" readonly />
                                     }
@@ -762,24 +762,48 @@
                             }
                             
                 }
-                  function redirectToMRNEdit() {
+                       function redirectToMRNEdit() {
+            var MRNNo = $('#MRNNo').val();
+            var yearCode = $('#MRNYearCode').val();
+            var entryId = $('#MRNEntryId').val();
+            var isCustomerJW = $("#MRNJWCustJW").val() === "CUSTOMER JOBWORK";
 
-                            var MRNNo = $('#MRNNo').val();
-                                    var yearCode = $('#MRNYearCode').val();
-                                    var entryId = $('#MRNEntryId').val();
-                                              if (!mrnFormRights.mrnoptView) {
-                                                            return alert("You do not have rights to view this record.");
-                                                          }
-                                                                  var mode = mrnFormRights.mrnoptUpdate ? "U" : "V";
+            if (!mrnFormRights.mrnoptView) {
+                return alert("You do not have rights to view this record.");
+            }
 
-                            if (MRNNo && yearCode && entryId) {
-                                         var url = '/MaterialReceipt/MaterialReceipt?Mode=' + mode +
-                                                                            '&ID=' + entryId +
-                                                                            '&YC=' + yearCode;
-                                                                  window.open(url, '_blank');
-                            }
+            if (!MRNNo || !yearCode || !entryId) return;
 
+            var checkUrl = isCustomerJW ? '/CustomerJWR/CheckEditOrDelete' : '/MaterialReceipt/CheckEditOrDelete';
+            var redirectUrl = isCustomerJW ? '/CustomerJWR/Index' : '/MaterialReceipt/MaterialReceipt';
+
+            $.ajax({
+                url: checkUrl,
+                type: "POST",
+                data: {
+                    "MRNNo": MRNNo,
+                    "YearCode": yearCode
+                },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    var mode = "V";
+
+                    if (obj.Result.length > 0 && obj.Result[0].MIRNO === '') {
+                        mode = mrnFormRights.mrnoptUpdate ? "U" : "V";
+                    }
+
+                    var url = redirectUrl + '?Mode=' + mode +
+                              '&ID=' + entryId +
+                              '&YC=' + yearCode;
+
+                    window.open(url, '_blank');
+                },
+                error: function (response) {
+                    alert(response.responseText);
                 }
+            });
+        }
+
         $('.BtnPassword').click(function () {
             // if(isAllowTaxPass == "Y"){
             $('#PasswordAllowPopup').modal("show");
@@ -1026,6 +1050,8 @@
                             $.each(obj.Result, function (index, val) {
                                 $('#MRNDate').val(formatInvDate(val.EntryDate));
                                 $('#GateNo').val(val.GateNo);
+                                 $("#GateEntryId").val(val.GateEntryId);
+                                $("#MRNEntryId").val(val.MRNEntryId);
                                 $('#GateYearCode').val(val.YEARCODE);
                                 dataParams = {
                                     "MRNNo": $('#MRNNo').val(),
