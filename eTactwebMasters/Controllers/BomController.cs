@@ -231,6 +231,11 @@ public class BomController : Controller
                 _Table.Columns.Add("ByprodItemcode2", typeof(int));
                 _Table.Columns.Add("ByprodItemcQty1", typeof(decimal));
                 _Table.Columns.Add("ByprodItemcQty2", typeof(decimal));
+                _Table.Columns.Add("Dia", typeof(string));
+                _Table.Columns.Add("grade", typeof(string));
+                _Table.Columns.Add("thickness", typeof(decimal));
+                _Table.Columns.Add("width", typeof(decimal));
+                _Table.Columns.Add("length", typeof(decimal));
 
                 //_Table = Repository.Common.ToDataTable(BomList);
 
@@ -264,7 +269,12 @@ public class BomController : Controller
                     _Item.ByprodItemCode1,
                     _Item.ByprodItemCode2,
                     _Item.ByProdQty1,
-                    _Item.ByProdQty2
+                    _Item.ByProdQty2,
+                    _Item.Dia ?? "",
+                    _Item.grade ?? "",
+                    _Item.thickness ?? 0,
+                    _Item.width ?? 0,
+                    _Item.length ?? 0,
                     });
                 }
 
@@ -342,6 +352,11 @@ public class BomController : Controller
                 ByprodItemName2 = model.ByprodItemName2,
                 ByProdQty1 = model.ByProdQty1,
                 ByProdQty2 = model.ByProdQty2,
+                Dia = model.Dia,
+                grade = model.grade,
+                thickness = model.thickness,
+                width = model.width,
+                length = model.length,
 
                 BOMName = model.BOMName,
                 BomNo = model.BomNo,
@@ -400,6 +415,11 @@ public class BomController : Controller
                     ByprodItemName2 = model.ByprodItemName2,
                     ByProdQty1 = model.ByProdQty1,
                     ByProdQty2 = model.ByProdQty2,
+                    Dia = model.Dia,
+                    grade = model.grade,
+                    thickness = model.thickness,
+                    width = model.width,
+                    length = model.length,
 
                     BOMName = model.BOMName,
                     BomNo = model.BomNo,

@@ -272,6 +272,11 @@
             $('#ByprodItemCode2').rules("remove", "required");
             $('#ByProdQty1').rules("remove", "required");
             $('#ByProdQty2').rules("remove", "required");
+            $('#Dia').rules("remove", "required");
+            $('#grade').rules("remove", "required");
+            $('#thickness').rules("remove", "required");
+            $('#width').rules("remove", "required");
+            $('#length').rules("remove", "required");
             $('#Mode').rules("remove", "required");
             //$('#element').keyup(myFunction).keypress(myFunction).blur(myFunction).change(myFunction)
         });
@@ -304,6 +309,31 @@
             if (!/^\d*\.?\d*$/.test(value)) {
                 $(this).val('');
                
+            }
+        });
+
+        $('#thickness').on('input', function () {
+            let value = $(this).val();
+
+            if (!/^\d*\.?\d*$/.test(value)) {
+                $(this).val('');
+               
+            }
+        });
+        $('#width').on('input', function () {
+            let value = $(this).val();
+
+            if (!/^\d*\.?\d*$/.test(value)) {
+                $(this).val('');
+               
+            }
+        });
+        $('#length').on('input', function () {
+            let value = $(this).val();
+
+            if (!/^\d*\.?\d*$/.test(value)) {
+                $(this).val('');
+
             }
         });
 
@@ -1041,6 +1071,11 @@
                 
                 "ByProdQty1": $('#ByProdQty1').val(),
                 "ByProdQty2": $('#ByProdQty2').val(),
+                "Dia": $('#Dia').val(),
+                "grade": $('#grade').val(),
+                "thickness": $('#thickness').val(),
+                "width": $('#width').val(),
+                "length": $('#length').val(),
 
                 "AltItemCode2": $('#AltItemCode2 option:selected').val(),
                 "AICName2": $('#AltItemCode2 option:selected').text(),
@@ -1249,6 +1284,11 @@
 
                         $('#ByProdQty1').val(obj[0].ByProdQty1);
                         $('#ByProdQty2').val(obj[0].ByProdQty2);
+                        $('#Dia').val(obj[0].Dia);
+                        $('#grade').val(obj[0].grade);
+                        $('#thickness').val(obj[0].thickness);
+                        $('#width').val(obj[0].width);
+                        $('#length').val(obj[0].length);
                         
                         $('#AltQty1').val(obj[0].AltQty1);
                         $('#AltQty2').val(obj[0].AltQty2);
