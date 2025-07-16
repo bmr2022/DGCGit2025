@@ -528,12 +528,60 @@
                               "DEEMED EXPORT",
                               "BUSINESS TO BUSINESS"
                           ];
+                            var formRights = {
+              sooptView: false,
+             sooptUpdate: false
+            };
+              function GetSONoFormRights() {
+                $.ajax({
+                            url: "@Url.Action("GetFormRights", "SaleOrder")",
+                    type: "POST",
+                    success: function (data) {
+                                if (!data) return;
+                  var obj = $.parseJSON(data);
+                  var r = obj.Result.Table[0];
+                          formRights.sooptView   = r.OptView;
+                  formRights.sooptUpdate = r.OptUpdate;
+
+                    },
+                    error: function (errMsg) {
+                        $.notify(errMsg, { position: "top center", className: "error" });
+                    }
+                });
+            }
+                            function redirectToSOEdit() {
+
+                            var SONo =$('#SONO option:selected').val();
+                                    var yearCode = $('#SOYearCode option:selected').val();
+                                  var  soApproved=$('#SONO').find(':selected').data('soapproved');
+                                  //  var entryId = $('#GateEntryId').val();
+                                              if (!formRights.sooptView) {
+                                                            return alert("You do not have rights to view this record.");
+                                                          }
+
+                                                          var mode = (soApproved === 'Y') ? "V" : (formRights.sooptUpdate ? "U" : "V");
+
+                                                             //     var mode = formRights.sooptUpdate ? "U" : "V";
+
+                            if (yearCode !== "0" && SONo) {
+                                         var url = '/SaleOrder/Index?Mode=' + mode +
+                                                                            '&ID=' + SONo +
+                                                                            '&YC=' + yearCode;
+                                                                  window.open(url, '_blank');
+                            }
+                            else{
+                                 alert("Please select a valid year code.");
+                                 return;
+                            }
+
+                }
+                          
                 $(document).ready(function () {
                             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
 
                    const domesticExport = $('#DomesticExportNEPZ').val();
                    const $supplyType = $('#SupplyType');
-
+                   GetSONoFormRights();
                    // Only for Update/View mode
                    if (mode === "U" || mode === "V") {
                        if (domesticExport === "EXPORT") {
@@ -3446,7 +3494,7 @@
                                 $('#SONO').append('<option value="0">-Select-</option>');
                                 if (obj.StatusCode != 500) {
                                     $.each(obj.Result, function (index, val) {
-                                        $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType + ">" + val.SONo + "</option>");
+                                        $('#SONO').append("<option value=" + val.SONo + " data-sotype=" + val.SOType +  " data-soApproved=" + val.Approved + ">" + val.SONo + "</option>");
                                     });
 
                                     $('#SOType').val($('#SONO').find(':selected').data('sotype'));

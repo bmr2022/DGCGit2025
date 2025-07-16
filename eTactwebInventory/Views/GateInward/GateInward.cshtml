@@ -215,7 +215,7 @@
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="PoNo" class="form-label">PO NO</label>
+                                    <label asp-for="PoNo" class="form-label" onclick="redirectToPoSelectEdit()">PO NO</label>
                                     @*  <input asp-for="NeedPo" type="hidden"/> *@
                                     <select class="form-select" data-abcd="7" asp-for="PoNo" id="PONO">
                                         <option value="" disabled>-Select-</option>
@@ -694,10 +694,73 @@
         });
         $('#confirmSave').click(function () {
             checkDuplicateEntry();
-        });
+                }); 
+                var formRights = {
+                     pooptView: false,
+                     pooptUpdate: false
+                    };
+                   function PoNoFormRights() {
+                        $.ajax({
+                                            url: "@Url.Action("GetFormRights", "PurchaseOrder")",
+                            type: "POST",
+                            success: function (data) {
+                                        if (!data) return;
+                          var obj = $.parseJSON(data);
+                          var r = obj.Result.Table[0];
+                                          formRights.pooptView   = r.OptView;
+                                          formRights.pooptUpdate = r.OptUpdate;
 
+                            },
+                            error: function (errMsg) {
+                                $.notify(errMsg, { position: "top center", className: "error" });
+                            }
+                        });
+                    }
+                    function redirectToPoSelectEdit(){
+
+                                         var selectedOption = $('#PONO option:selected');
+                                                            var yearCode = $('#PoYear').val();
+                                                            var entryId = selectedOption.data('entryid');
+                                    if (!formRights.pooptView) {
+                                                                            return alert("You do not have rights to view this record.");
+                                                                          }
+                                                                                          var mode = formRights.pooptUpdate  ? "U" : "V";
+
+                                            if (yearCode && entryId) {
+
+                                                             var url = '/PurchaseOrder/Index?Mode=' + mode +
+                                                                                            '&ID=' + entryId +
+                                                                                            '&YC=' + yearCode;
+                                                                                  window.open(url, '_blank');
+
+
+                                            }
+                                            else{
+                                                          alert("Please select a valid PO No and ensure PO Year is filled in.");
+                                            }
+                    }
+
+                                                    function redirectToPOEdit(yearCode, entryId) {
+
+                                 
+                                                              if (!formRights.pooptView) {
+                                                                    return alert("You do not have rights to view this record.");
+                                                                  }
+                                                                                  var mode = formRights.pooptUpdate  ? "U" : "V";
+
+                                    if (yearCode && entryId) {
+
+                                                     var url = '/PurchaseOrder/Index?Mode=' + mode +
+                                                                                    '&ID=' + entryId +
+                                                                                    '&YC=' + yearCode;
+                                                                          window.open(url, '_blank');
+
+                                      
+                                    }
+
+                        }
         $(document).ready(function () {
-
+            PoNoFormRights();
             $('#UpdateButton').click(function (e) {
                 e.preventDefault();
                 var Entrydate = $('#EntryDate').val();
@@ -1328,10 +1391,18 @@
                         $('#PONO').empty();
                         $('#PONO').append('<option disabled selected> -Select - </option>');
                         var i = 0;
-                        $.each(obj.Result.Table, function (index, val) {
-                            $('#PONO').append('<option value = "' + obj.Result.Table[i].PONO + '"> ' + obj.Result.Table[i].PONO + ' </option>');
+                     /*    $.each(obj.Result.Table, function (index, val) {
+                                                    $('#PONO').append('<option value = "' + obj.Result.Table[i].PONO +  '" data-EntryId="' + val.EntryId+'"> ' + obj.Result.Table[i].PONO + ' </option>');
                             i++;
-                        });
+                        }); */
+                       $.each(obj.Result.Table, function (index, val) {
+                    $('#PONO').append(
+                                        '<option value="' + obj.Result.Table[i].PONO + '" data-EntryId="' + obj.Result.Table[i].EntryId + '">' +
+                               obj.Result.Table[i].PONO +
+                        '</option>'
+                    );
+                });
+
                     }
                 },
                 error: function (e) {

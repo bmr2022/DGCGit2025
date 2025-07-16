@@ -554,10 +554,12 @@ public class PurchaseBillModel : PBItemDetail
     #region req param purchbill
     public string? MRNNo { get; set; }
     public int? MRNYearCode { get; set; }
+    public int? MRNEntryId { get; set; }
     public DateTime? MRNEntryDate { get; set; }
     public string? StrMRNEntryDate { get; set; }
     public string? GateNo { get; set; }
     public int? GateYearCode { get; set; }
+    public int? GateEntryId { get; set; }
     public DateTime? GateDate { get; set; }
     public string? StrGateDate { get; set; }
     public string? InvNo { get; set; }

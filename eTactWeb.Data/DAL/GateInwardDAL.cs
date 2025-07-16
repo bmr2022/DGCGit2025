@@ -867,6 +867,7 @@ public class GateInwardDAL
                     SeqNo = cnt++,
                     PoNo = (row["PONo"].ToString()),
                     PoYear = Convert.ToInt32(row["POYearCode"].ToString()),
+                    PoEntryId = Convert.ToInt32(row["PoEntryId"].ToString()),
                     POType = row["POTYpe"].ToString(),
                     SchNo = row["SchNo"].ToString(),
                     SchYearCode = Convert.ToInt32(row["SchYearCode"].ToString()),
