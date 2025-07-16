@@ -366,24 +366,44 @@
                        }
                    });
                }
-           function redirectToGateEdit() {
+                 function redirectToGateEdit() {
+            var gateNo = $('#GateNo').val();
+            var yearCode = $('#GateYearCode').val();
+            var entryId = $('#GateEntryId').val();
 
-                               var gateNo = $('#GateNo').val();
-                                       var yearCode = $('#GateYearCode').val();
-                                       var entryId = $('#GateEntryId').val();
-                                                 if (!formRights.gateoptView) {
-                                                               return alert("You do not have rights to view this record.");
-                                                             }
-                                                                     var mode = formRights.gateoptUpdate ? "U" : "V";
+            if (!formRights.gateoptView) {
+                return alert("You do not have rights to view this record.");
+            }
 
-                               if (gateNo && yearCode && entryId) {
-                                            var url = '/GateInward/GateInward?Mode=' + mode +
-                                                                               '&ID=' + entryId +
-                                                                               '&YC=' + yearCode;
-                                                                     window.open(url, '_blank');
-                               }
+            if (!gateNo || !yearCode || !entryId) return;
 
-                   }
+            $.ajax({
+                url: '/GateInward/CheckEditOrDelete',
+                type: "POST",
+                data: {
+                    "GateNo": gateNo,
+                    "YearCode": yearCode
+                },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    var mode = "V"; // default to View
+
+                    if (obj.Result.length > 0 && obj.Result[0].MRNNO === '' && obj.Result[0].MRNTYPE === '') {
+                        mode = formRights.gateoptUpdate ? "U" : "V";
+                    }
+
+                    var url = '/GateInward/GateInward?Mode=' + mode +
+                              '&ID=' + entryId +
+                              '&YC=' + yearCode;
+
+                    window.open(url, '_blank');
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
                      function redirectToMRNEdit() {
             var MRNNo = $('#MRNNo').val();
             var yearCode = $('#MRNYearCode').val();
