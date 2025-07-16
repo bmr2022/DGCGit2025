@@ -176,7 +176,7 @@ namespace eTactWeb.Controllers
 		//	}
 		//}
 		[HttpPost]
-		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList)
+		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize)
 		{
 			try
 			{
@@ -207,10 +207,11 @@ namespace eTactWeb.Controllers
 				}
 
 				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
-
+				ViewBag.SampleSize = sampleSize;
 				var MainModel = new InProcessInspectionModel
 				{
-					DTSSGrid = existingGrid
+					DTSSGrid = existingGrid,
+                    SampleSize = sampleSize
 				};
 
 				return PartialView("_InProcessInspectionAddtoGrid", MainModel);
@@ -220,6 +221,97 @@ namespace eTactWeb.Controllers
 				return StatusCode(500, "Internal server error: " + ex.Message);
 			}
 		}
+		
+			// GET: Fetch item by SeqNo to edit
+			public IActionResult EditItemRow(int SeqNo)
+			{
+				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+				List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
+
+				if (!string.IsNullOrEmpty(modelJson))
+				{
+					existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+				}
+
+				var itemToEdit = existingGrid.FirstOrDefault(x => x.SeqNo == SeqNo);
+
+				if (itemToEdit == null)
+				{
+					return NotFound("Item not found.");
+				}
+
+				return Json(itemToEdit);
+			}
+
+			// POST: Update edited item back to session grid
+			[HttpPost]
+			public IActionResult UpdateItemRow([FromBody] InProcessInspectionDetailModel updatedItem)
+			{
+				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+				List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
+
+				if (!string.IsNullOrEmpty(modelJson))
+				{
+					existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+				}
+
+				var index = existingGrid.FindIndex(x => x.SeqNo == updatedItem.SeqNo);
+
+				if (index == -1)
+				{
+					return NotFound("Item not found.");
+				}
+
+				// Replace old item with updated one
+				existingGrid[index] = updatedItem;
+
+				// Save updated list back to session
+				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
+
+				// Return updated partial view to refresh grid UI
+				var model = new InProcessInspectionModel
+				{
+					DTSSGrid = existingGrid,
+					SampleSize = updatedItem.Samples?.Count ?? 1
+				};
+
+				return PartialView("_InProcessInspectionAddtoGrid", model);
+			}
+
+			// GET or POST: Delete item by SeqNo and update session grid
+			public IActionResult DeleteItemRow(int SeqNo)
+			{
+				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+				List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
+
+				if (!string.IsNullOrEmpty(modelJson))
+				{
+					existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+				}
+
+				var itemToRemove = existingGrid.FirstOrDefault(x => x.SeqNo == SeqNo);
+				if (itemToRemove != null)
+				{
+					existingGrid.Remove(itemToRemove);
+
+					// Reassign SeqNo for remaining items
+					for (int i = 0; i < existingGrid.Count; i++)
+					{
+						existingGrid[i].SeqNo = i + 1;
+					}
+
+					HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
+				}
+
+				var model = new InProcessInspectionModel
+				{
+					DTSSGrid = existingGrid,
+					SampleSize = existingGrid.FirstOrDefault()?.Samples?.Count ?? 1
+				};
+
+				return PartialView("_InProcessInspectionAddtoGrid", model);
+			}
+		
 
 	}
 }

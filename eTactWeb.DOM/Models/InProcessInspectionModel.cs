@@ -27,7 +27,7 @@ namespace eTactWeb.DOM.Models
         public string SlipNo { get; set; }
         public string InspTimeFrom { get; set; }
         public string InspTimeTo { get; set; }
-        public string SampleSize { get; set; }
+        public int SampleSize { get; set; }
         public string ProjectDate { get; set; }
         public int MachineId { get; set; }
         public string MRNNo { get; set; }
