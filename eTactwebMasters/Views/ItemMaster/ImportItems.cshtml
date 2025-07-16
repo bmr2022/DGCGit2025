@@ -213,7 +213,9 @@
                 processData: false,
                 contentType: false,
                 success: function (result) {
-                     
+                    if (result.startsWith("Invalid Unit")) {
+                        $.notify(result, "error");
+                    }
                     $('#divItemList').html(result);
                     //CheckBeforeSubmit();
                 }

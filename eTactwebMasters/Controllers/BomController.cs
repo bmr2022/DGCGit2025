@@ -952,6 +952,7 @@ public class BomController : Controller
             var worksheet = package.Workbook.Worksheets[0];
             List<ImportBomData> importDataList = new();
             var BomData = _IBom.CheckDupeConstraint();
+
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var cellValue = worksheet.Cells[row, 1].Value;
@@ -1026,8 +1027,17 @@ public class BomController : Controller
                     }
                 }
 
-                
-                var BomRevNo = _IBom.GetBomNo(FGItemCode, "GetBomNo");
+                if (FGItemCode == 0 )
+				{
+					return StatusCode(207, "Invalid FGPartCode   " + FGPartCode);
+				}
+				if (RmItemCode == 0)
+				{
+					return StatusCode(207, "Invalid  RMPartCode  " + RMPartCode);
+				}
+
+
+				var BomRevNo = _IBom.GetBomNo(FGItemCode, "GetBomNo");
                 //var BomRevNoChck = _IBom.GetBomNo(FGItemCode, "GetCheckBomNo");
 
                 var duplicateBom = "";
@@ -1100,27 +1110,27 @@ public class BomController : Controller
 
             // Get Bom Detail
             var bomDataTable = GetBomDetailTable(importDataList);
-            var isValidPartCodes = _IBom.VerifyPartCode(bomDataTable);
-            var extractedData = JsonConvert.DeserializeObject<List<dynamic>>(isValidPartCodes.Result);
+            //var isValidPartCodes = _IBom.VerifyPartCode(bomDataTable);
+            //var extractedData = JsonConvert.DeserializeObject<List<dynamic>>(isValidPartCodes.Result);
 
-            var simplifiedResponse = extractedData.Select(x => new
-            {
-                FGPartCode = x.FGPartCode,
-                RMPartCode = x.RMPartCode
-            }).ToList();
+            //var simplifiedResponse = extractedData.Select(x => new
+            //{
+            //    FGPartCode = x.FGPartCode,
+            //    RMPartCode = x.RMPartCode
+            //}).ToList();
 
-            var response = new
-            {
-                Message = "Some part codes are invalid. Please check the details.",
-                InvalidPartCodes = simplifiedResponse
-            };
+            //var response = new
+            //{
+            //    Message = "Some part codes are invalid. Please check the details.",
+            //    InvalidPartCodes = simplifiedResponse
+            //};
 
-            string jsonResponse = JsonConvert.SerializeObject(response);
+            //string jsonResponse = JsonConvert.SerializeObject(response);
 
-            if (simplifiedResponse.Count > 0)
-            {
-                return StatusCode(207, jsonResponse);
-            }
+            //if (simplifiedResponse.Count > 0)
+            //{
+            //    return StatusCode(207, jsonResponse);
+            //}
         }
 
         var model = new BomModel();
