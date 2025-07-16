@@ -609,7 +609,7 @@ namespace eTactWeb.Controllers
         {
             var Result = await _IIssueAgainstProdSchedule.DeleteByID(ID, YC, ProdSchSlipNo);
 
-            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            if (Result.StatusText == "Success" || Result.StatusText == "deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
@@ -617,7 +617,9 @@ namespace eTactWeb.Controllers
             else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
             {
                 ViewBag.isSuccess = true;
-                TempData["423"] = "423";
+                // TempData["423"] = "423";
+                TempData["DeleteMessage"] = Result.StatusText;
+
             }
             else
             {

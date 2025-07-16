@@ -224,6 +224,7 @@
                                                     <th>Req Date</th>
                                                     <th style="color:  yellow;">QTY*</th>
                                                     <th style="color:  yellow;">Unit*</th>
+                                                    <th style="">Rate</th>
                                                     <th style="color:lavenderblush;">Store Name</th>
                                                     <th>Total Stk</th>
                                                     <th>AltQty</th>
@@ -273,6 +274,10 @@
                                                     <td>
                                                         <input asp-for="Unit" style="width:50px;" class="form-control" readonly />
                                                     </td>
+                                                     <td>
+                                                        <input asp-for="Rate" style="width:50px;" class="form-control"  />
+                                                    </td>
+
                                                     <td>
                                                         <select class="form-select" asp-for="StoreID" onchange="FillTotalStock();">
                                                             <option value="" disabled selected>-Select-</option>
@@ -367,6 +372,7 @@
                                                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Req Date</th>
                                                 <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Indent Qty</th>
                                                 <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
                                                 <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Store Name</th>
                                                 <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
                                                 <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AltQty</th>
@@ -1361,6 +1367,7 @@
                 "PendAltQtyForPO": $('#PendAltQtyForPO').val(),
                 "Color": $('#Color').val(),
                 "Approvalue": $('#Approvalue').val(),
+                "Rate": $('#Rate').val(),
             }
 
             $.ajax({
@@ -1380,7 +1387,7 @@
                         $('#PartCode,#ItemCode').val("0").trigger("change")
                         $('#PendReqNo,#Unit,#AltUnit,#Model,#Size,#ItemDescription,#Specification,#Color,#Approvalue').val("");
                         $('#StoreID,#AccountCode1,#AccountCode2').val("");
-                        $('#Qty,#AltQty,#TotalStock').val(0);
+                        $('#Qty,#AltQty,#TotalStock,#Rate').val(0);
                     }
                 },
                 error: function (result, status, xhr) {
@@ -1430,6 +1437,7 @@
                             $('#PendAltQtyGorPO').val(obj[0].PendAltQtyForPO);
                             $('#Color').val(obj[0].Color);
                             $('#Approvalue').val(obj[0].Approvalue);
+                            $('#Rate').val(obj[0].Rate);
                             $('#divIndentGrid tr#' + SeqNo).remove();
 
                             var rowCount = $('#divIndentGrid tr').length;

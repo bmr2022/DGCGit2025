@@ -351,6 +351,7 @@ namespace eTactWeb.Data.DAL
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["MIRYearCode"].ToString());
             model.EntryDate = DS.Tables[0].Rows[0]["MIREntryDate"].ToString();
             model.MIRNo = DS.Tables[0].Rows[0]["MIRNo"].ToString();
+            model.MRNEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["MRNEntryId"].ToString());
             model.CC = DS.Tables[0].Rows[0]["CC"].ToString().Trim();
             model.MRNNo = DS.Tables[0].Rows[0]["MRNNO"].ToString().Trim();
             model.MRNJWCustJW = DS.Tables[0].Rows[0]["MRNJWCustJW"].ToString().Trim();
@@ -366,6 +367,7 @@ namespace eTactWeb.Data.DAL
                 model.MRNDate = DS.Tables[0].Rows[0]["MRNDate"].ToString().Trim();
             }
             model.GateNo = DS.Tables[0].Rows[0]["GateNo"].ToString().Trim();
+            model.GateEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["GateEntryId"].ToString());
             model.GateYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["GateYearCode"].ToString().Trim());
             model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"].ToString().Trim());
             model.AccountName = DS.Tables[0].Rows[0]["Account_Name"].ToString().Trim();

@@ -930,6 +930,7 @@ public class PurchaseOrderDAL
                             Unit = row["Unit"].ToString(),
                             UnitRate = row["UnitRate"].ToString(),
                             PIRemark = row["Remark"].ToString(),
+                            DeliveryDate= string.IsNullOrEmpty(row["DeliveryDate"].ToString()) ? "" : row["DeliveryDate"].ToString(),
                             DeliveryScheduleList = listObject.Where(x => x.DPartCode == Convert.ToInt32(row["ItemCode"])).ToList(),
                         });
                     }

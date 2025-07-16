@@ -267,10 +267,12 @@ namespace eTactWeb.Data.DAL
             DS.Tables[2].TableName = "BatchDetail";
             int cnt = 1;
             model.EntryID = Convert.ToInt32(DS.Tables[0].Rows[0]["EntryID"].ToString());
+            
             model.YearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["YearCode"].ToString());
             model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
             //            EntryId,YearCode,,gm.MRNNo ,EntryDate, 
             model.GateNo = DS.Tables[0].Rows[0]["GateNo"].ToString().Trim();
+            model.GateEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["GateEntryId"].ToString());
             model.MRNNo = DS.Tables[0].Rows[0]["mrnno"].ToString().Trim();
 
             //model.GateNolst.Add(new MaterialReceiptModel { DS.Tables[0].Rows[0]["GateNo"].ToString() });

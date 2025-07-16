@@ -190,6 +190,10 @@
 					<li>Refresh total PO items and pending PO status</li>
 					<li>Update Top 10 PO items by quantity/value</li>
 					<li>Update Top 10 vendors by PO count/value</li>
+					<li>Refresh PO Monthly Trend</li>
+					<li>Refresh PO Category</li>
+					<li>Refresh PO Vs Consumption</li>
+					<li>Refresh New Vendor Of The Month</li>
 				</ul>
 			</div>
 
@@ -205,45 +209,45 @@
 
 					<!-- Top 10 PO Items -->
 					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
-							style="background-color: #ffd8a8;" onclick="SaveTop10ItemForPO()">
+							style="background-color: #fff3bf;" onclick="SaveTop10ItemForPO()">
 						<i class="fas fa-boxes fa-fw text-warning"></i>
 						Top 10 PO Items
 					</button>
 
 					<!-- Top 10 PO Vendors -->
 					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
-							style="background-color: #eebefa;" onclick="SaveTop10VendorForPO()">
+							style="background-color: #ffe0e0;" onclick="SaveTop10VendorForPO()">
 						<i class="fas fa-user-tie fa-fw text-danger"></i>
 						Top 10 Vendors
 					</button>
 
-					@* <!-- Pending Jobs -->
+					<!-- PO Monthly Trend -->
 					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
-							style="background-color: #f8d7da;" onclick="PendingInventoryTask()">
-						<i class="fas fa-tasks fa-fw text-danger"></i>
-						Pending Jobs
+							style="background-color: #d3f9d8;" onclick="SavePOMonthlyTrend()">
+						<i class="fas fa-chart-line fa-fw text-success"></i>
+						PO Monthly Trend
 					</button>
 
-					<!-- Below Min Level -->
+					<!-- PO Category Wise -->
 					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
-							style="background-color: #d0f0f4;" onclick="StockValuation()">
-						<i class="fas fa-level-down-alt fa-fw text-info"></i>
-						Below Min Level
+							style="background-color: #e5dbff;" onclick="SavePOCategoryWise()">
+						<i class="fas fa-chart-bar fa-fw text-indigo"></i>
+						PO Category Wise
 					</button>
 
-					<!-- Fast Vs Slow Item -->
+					<!-- PO Vs Consumption -->
 					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
-							style="background-color: #edb98e;" onclick="FastVsSlowMovingTask()">
-						<i class="fas fa-bolt fa-fw" style="color:#cc760d"></i>
-						Fast Vs Slow Item
+							style="background-color: #ffd8a8;" onclick="SavePOVsConsumption()">
+						<i class="fas fa-exchange-alt fa-fw text-orange"></i>
+						PO Vs Consumption
 					</button>
 
-					<!-- Fast Moving Item List -->
+					<!-- New Vendor Of This Month -->
 					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
-							style="background-color: #e0c3fc;" onclick="FastMovingItemsListTask()">
-						<i class="fas fa-list-alt fa-fw" style="color:#ac56ac;"></i>
-						Fast Moving Item List
-					</button> *@
+							style="background-color: #c5f6fa;" onclick="SaveNewVendorOfTheMonth()">
+						<i class="fas fa-user-plus fa-fw text-info"></i>
+						New Vendor Of This Month
+					</button>
 				</div>
 			</div>
 		</div>
@@ -617,6 +621,102 @@
 							alert('Failed to save data.');
 						}
 					});
+		}
+
+		function SavePOMonthlyTrend() {
+			$.ajax({
+				url: '@Url.Action("SavePOMonthlyTrend", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshPOAllData').val() == "false") {
+							$.notify('Successfully Refresh PO Monthly Trend...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SavePOCategoryWise() {
+			$.ajax({
+				url: '@Url.Action("SavePOCategoryWise", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshPOAllData').val() == "false") {
+							$.notify('Successfully Refresh PO Category...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SavePOVsConsumption() {
+			$.ajax({
+				url: '@Url.Action("SavePOVsConsumption", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshPOAllData').val() == "false") {
+							$.notify('Successfully Refresh PO Vs Consumption...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveNewVendorOfTheMonth() {
+			$.ajax({
+				url: '@Url.Action("SaveNewVendorOfTheMonth", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshPOAllData').val() == "false") {
+							$.notify('Successfully Refresh New Vendor Of The Month...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
 		}
 
 	</script>
