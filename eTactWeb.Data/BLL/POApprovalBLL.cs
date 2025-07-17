@@ -37,9 +37,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _POAppDAL.SaveApproval(EntryId, YC, PONO, type, EmpID);
         }
-        public async Task<List<POApprovalDetail>> ShowPODetail(int ID, int YC, string PoNo, string TypeOfApproval)
+        public async Task<List<POApprovalDetail>> ShowPODetail(int ID, int YC, string PoNo, string TypeOfApproval,string showonlyamenditem)
         {
-            return await _POAppDAL.ShowPODetail(ID, YC,PoNo,TypeOfApproval);
+            return await _POAppDAL.ShowPODetail(ID, YC,PoNo,TypeOfApproval, showonlyamenditem);
         }
     }
 }

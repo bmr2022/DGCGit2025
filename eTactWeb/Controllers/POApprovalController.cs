@@ -100,11 +100,11 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ShowPODetail(int ID, int YC, string PONo, string TypeOfApproval)
+        public async Task<IActionResult> ShowPODetail(int ID, int YC, string PONo, string TypeOfApproval,string showonlyamenditem)
         {
             HttpContext.Session.Remove("KeyPoApprovalDetail");
             var MainModel = new List<POApprovalDetail>();
-            MainModel = await _IPOApproval.ShowPODetail(ID, YC, PONo, TypeOfApproval).ConfigureAwait(true);
+            MainModel = await _IPOApproval.ShowPODetail(ID, YC, PONo, TypeOfApproval, showonlyamenditem).ConfigureAwait(true);
             //string JsonString = JsonConvert.SerializeObject(JSON);
             return View(MainModel);
         }

@@ -167,7 +167,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<List<POApprovalDetail>> ShowPODetail(int ID, int YC, string PONo, string TypeOfApproval)
+        public async Task<List<POApprovalDetail>> ShowPODetail(int ID, int YC, string PONo, string TypeOfApproval,string showonlyamenditem)
         {
             var oDataSet = new DataSet();
             var SqlParams = new List<dynamic>();
@@ -181,6 +181,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@POEntryId", ID));
                 SqlParams.Add(new SqlParameter("@Poyearcode", YC));
                 SqlParams.Add(new SqlParameter("@PoNo", PONo));
+                SqlParams.Add(new SqlParameter("@showonlyamenditem", showonlyamenditem));
 
                 var ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ApproveUnapprovePurchaseOrder", SqlParams);
 
