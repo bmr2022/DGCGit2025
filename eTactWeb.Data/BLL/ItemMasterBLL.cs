@@ -43,7 +43,11 @@ public class ItemMasterBLL : IItemMaster
     {
         return await _ItemMasterDAL.GetItemGroup(ItemServAssets);
     }
-    public async Task<ResponseResult> GetProdInWorkcenter()
+	public async Task<ResponseResult> GetUnitList()
+	{
+		return await _ItemMasterDAL.GetUnitList();
+	}
+	public async Task<ResponseResult> GetProdInWorkcenter()
     {
         return await _ItemMasterDAL.GetProdInWorkcenter();
     }

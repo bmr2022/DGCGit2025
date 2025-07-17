@@ -964,9 +964,11 @@ public class PurchaseBillDAL
                     MainModel.VendorName = oDataSet.Tables[0].Rows[0]["VendorName"].ToString();
                     MainModel.MRNNo = oDataSet.Tables[0].Rows[0]["MRNNo"].ToString();
                     MainModel.MRNYearCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["MRNYearCode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRNYearCode"]); 
+                    MainModel.MRNEntryId = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["MRNEntryId"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["MRNEntryId"]); 
                     MainModel.StrMRNEntryDate = oDataSet.Tables[0].Rows[0]["MRNDate"].ToString();
                     MainModel.GateNo = oDataSet.Tables[0].Rows[0]["GateNo"].ToString();
                     MainModel.GateYearCode = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateYearcode"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateYearcode"]); 
+                    MainModel.GateEntryId = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["GateEntryId"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["GateEntryId"]); 
                     MainModel.StrGateDate = oDataSet.Tables[0].Rows[0]["GateDate"].ToString();
                     MainModel.GSTNO = oDataSet.Tables[0].Rows[0]["GSTNO"].ToString();
                     MainModel.GSTRegistered = oDataSet.Tables[0].Rows[0]["GSTRegistered"].ToString();
@@ -1526,10 +1528,12 @@ public class PurchaseBillDAL
                         SeqNo = seq++,
                         MRNNo = dr["MRNNo"].ToString(),
                         MRNYearCode = string.IsNullOrEmpty(dr["MRNYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["MRNYearCode"]),
+                        MRNEntryId = string.IsNullOrEmpty(dr["MRNEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["MRNEntryId"]),
                         MRNEntryDate = string.IsNullOrEmpty(dr["MRNEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["MRNEntryDate"]),
                         StrMRNEntryDate = string.IsNullOrEmpty(dr["MRNEntryDate"].ToString()) ? string.Empty : dr["MRNEntryDate"].ToString(),
                         GateNo = dr["GateNo"].ToString(),
                         GateYearCode = string.IsNullOrEmpty(dr["GateYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["GateYearCode"]),
+                        GateEntryId = string.IsNullOrEmpty(dr["GateEntryId"].ToString()) ? 0 : Convert.ToInt32(dr["GateEntryId"]),
                         GateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["GateDate"]),
                         StrGateDate = string.IsNullOrEmpty(dr["GateDate"].ToString()) ? string.Empty : dr["GateDate"].ToString(),
                         InvNo = dr["InvNo"].ToString(),

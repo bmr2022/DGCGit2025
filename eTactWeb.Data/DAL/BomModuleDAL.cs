@@ -275,6 +275,13 @@ namespace eTactWeb.Data.DAL
                                                  ByprodItemName2 = dr["ByProdItem2"] != DBNull.Value ? dr["ByProdItem2"].ToString() : string.Empty,
                                                  Byprodpartcode1 = dr["ByprodPartCode1"] != DBNull.Value ? dr["ByprodPartCode1"].ToString() : string.Empty,
                                                  Byprodpartcode2 = dr["ByprodPartCode2"] != DBNull.Value ? dr["ByprodPartCode2"].ToString() : string.Empty,
+                                                 Dia = dr["Dia"] != DBNull.Value ? dr["Dia"].ToString() : string.Empty,
+                                                 grade = dr["grade"] != DBNull.Value ? dr["grade"].ToString() : string.Empty,
+                                                 thickness = dr["thickness"] != DBNull.Value ? Convert.ToDecimal(dr["thickness"]) : 0,
+                                                 width = dr["width"] != DBNull.Value ? Convert.ToDecimal(dr["width"]) : 0,
+
+                                                 length = dr["length"] != DBNull.Value ? Convert.ToDecimal(dr["length"]) : 0,
+
 
 
                                              }).ToList();
