@@ -4,6 +4,8 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -30,10 +32,18 @@ namespace eTactWeb.Controllers
             var MainModel = new InProcessInspectionModel();
             MainModel.DTSSGrid = new List<InProcessInspectionDetailModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
-            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate"); 
+				 MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
 			MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-			//MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-			MainModel.InspectionOptions = new List<InspectionOption>
+            MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+            MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
+            MainModel.InspectedByEmpName = HttpContext.Session.GetString("EmpName");
+            MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.InspectedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            MainModel.CC = HttpContext.Session.GetString("Branch");
+            //MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            MainModel.InspectionOptions = new List<InspectionOption>
 			{
 				new InspectionOption { Key = "BegingOfProduction", Text = "Beginning of Production" },
 				new InspectionOption { Key = "AfterMouldCorrection", Text = "After Mould Correction" },
@@ -44,6 +54,138 @@ namespace eTactWeb.Controllers
 			};
 			return View(MainModel); // Pass the model with old data to the view
         }
+		[Route("{controller}/Index")]
+		[HttpPost]
+
+		public async Task<IActionResult> InProcessInspection(InProcessInspectionModel model)
+		{
+			try
+			{
+				// Get session-stored detail grid
+				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+				List<InProcessInspectionDetailModel> InProcessInspectionDetail = new List<InProcessInspectionDetailModel>();
+				if (!string.IsNullOrEmpty(modelJson))
+				{
+					InProcessInspectionDetail = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+				}
+				
+				// Store updated detail back in session
+				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(InProcessInspectionDetail));
+
+				var GIGrid = GetDetailTable(InProcessInspectionDetail);
+
+				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+				model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
+				var Result = await _IInProcessInspection.SaveInprocessInspection(model, GIGrid);
+
+				if (Result != null)
+				{
+					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+					{
+						ViewBag.isSuccess = true;
+						TempData["200"] = "200";
+						HttpContext.Session.Remove("KeyInProcessInspectionGrid");
+					}
+					else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+					{
+						ViewBag.isSuccess = true;
+						TempData["202"] = "202";
+					}
+					else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+					{
+						ViewBag.isSuccess = false;
+						TempData["500"] = "500";
+						_logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+						return View("Error", Result);
+					}
+				}
+
+				return RedirectToAction(nameof(InProcessInspection));
+			}
+			catch (Exception ex)
+			{
+				LogException<InProcessInspectionController>.WriteException(_logger, ex);
+				var ResponseResult = new ResponseResult
+				{
+					StatusCode = HttpStatusCode.InternalServerError,
+					StatusText = "Error",
+					Result = ex
+				};
+				return View("Error", ResponseResult);
+			}
+		}
+		private static DataTable GetDetailTable(IList<InProcessInspectionDetailModel> DetailList)
+		{
+			try
+			{
+				var GIGrid = new DataTable();
+				GIGrid.Columns.Add("InspEntryId", typeof(long));
+				GIGrid.Columns.Add("InspYearCode", typeof(int));
+				GIGrid.Columns.Add("SeqNo", typeof(int));
+				GIGrid.Columns.Add("Characteristic", typeof(string));
+				GIGrid.Columns.Add("EvalutionMeasurmentTechnique", typeof(string));
+				GIGrid.Columns.Add("SpecificationFrom", typeof(string));
+				GIGrid.Columns.Add("Operator", typeof(string));
+				GIGrid.Columns.Add("SpecificationTo", typeof(string));
+				GIGrid.Columns.Add("FrequencyofTesting", typeof(string));
+				GIGrid.Columns.Add("InspectionBy", typeof(string));
+				GIGrid.Columns.Add("ControlMethod", typeof(string));
+				GIGrid.Columns.Add("RejectionPlan", typeof(string));
+				GIGrid.Columns.Add("Remarks", typeof(string));
+				for (int i = 1; i <= 25; i++)
+				{
+					GIGrid.Columns.Add($"InspValue{i}", typeof(decimal));
+				}
+
+				foreach (var Item in DetailList)
+				{
+					// Build row values
+					var rowValues = new List<object>
+			{
+				Item.InspEntryId ?? 0,
+				Item.InspYearCode ?? 0,
+				Item.SeqNo ?? 0,
+				Item.Characteristic ?? "",
+				Item.EvalutionMeasurmentTechnique ?? "",
+				Item.SpecificationFrom ?? "",
+				Item.Operator ?? "",
+				Item.SpecificationTo ?? "",
+				Item.FrequencyofTesting ?? "",
+				Item.InspectionBy ?? "",
+				Item.ControlMethod ?? "",
+				Item.RejectionPlan ?? "",
+				Item.Remarks ?? ""
+			};
+
+					// Add InspValue1 to InspValue25
+					for (int i = 1; i <= 25; i++)
+					{
+						var propertyName = $"InspValue{i}";
+						var prop = Item.GetType().GetProperty(propertyName);
+						decimal value = 0;
+
+						if (prop != null)
+						{
+							var propValue = prop.GetValue(Item);
+							value = propValue != null ? Convert.ToDecimal(propValue) : 0;
+						}
+
+						rowValues.Add(value);
+					}
+
+					
+					GIGrid.Rows.Add(rowValues.ToArray());
+				}
+
+				return GIGrid;
+			}
+			catch (Exception ex)
+			{
+				throw;
+			}
+		}
+
 		public InProcessInspectionDetailModel ConvertToDetail(IList<string> selected)
 		{
 			return new InProcessInspectionDetailModel
@@ -294,13 +436,13 @@ namespace eTactWeb.Controllers
 				{
 					existingGrid.Remove(itemToRemove);
 
-					// Reassign SeqNo for remaining items
+				
 					for (int i = 0; i < existingGrid.Count; i++)
 					{
 						existingGrid[i].SeqNo = i + 1;
 					}
 
-					HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
+				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
 				}
 
 				var model = new InProcessInspectionModel
@@ -308,8 +450,8 @@ namespace eTactWeb.Controllers
 					DTSSGrid = existingGrid,
 					SampleSize = existingGrid.FirstOrDefault()?.Samples?.Count ?? 1
 				};
-
-				return PartialView("_InProcessInspectionAddtoGrid", model);
+				ViewBag.SampleSize = model.SampleSize;
+			return PartialView("_InProcessInspectionAddtoGrid", model);
 			}
 		
 

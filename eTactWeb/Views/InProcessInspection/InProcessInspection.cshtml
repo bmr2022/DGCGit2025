@@ -595,7 +595,57 @@
 			if (!PartNo || PartNo === '' || PartNo === null) {
 				$.notify('PartNo is mandatory to display the Color & Grid Data!', 'error');
 			}
-			
+			$('#InpectionJudgement').rules("remove", "required");
+			$('#InspectedOther1').rules("remove", "required");
+			$('#InspectedOther2').rules("remove", "required");
+			$('#InspectedOther3').rules("remove", "required");
+			$('#Remark').rules("remove", "required");
+			$('#InspActqty').rules("remove", "required");
+			$('#OkQty').rules("remove", "required");
+			$('#Rejqty').rules("remove", "required");
+			$('#Weight').rules("remove", "required");
+			$('#UId').rules("remove", "required");
+			$('#ApprovedBy').rules("remove", "required");
+			$('#InspectedBy').rules("remove", "required");
+			$('#CC').rules("remove", "required");
+			$('#ActualEntryBy').rules("remove", "required");
+			$('#ActualEntryDate').rules("remove", "required");
+			$('#LastUpdatedBy').rules("remove", "required");
+			$('#LastUpdationDate').rules("remove", "required");
+			$('#EntryByMachine').rules("remove", "required");
+			$('#EntryId').rules("remove", "required");
+			$('#YearCode').rules("remove", "required");
+			$('#TestingDate').rules("remove", "required");
+			$('#InspectionType').rules("remove", "required");
+			$('#SlipNo').rules("remove", "required");
+			$('#RevNo').rules("remove", "required");
+			$('#RevDate').rules("remove", "required");
+			$('#PartNo').rules("remove", "required");
+			$('#PartName').rules("remove", "required");
+			$('#CustomerName').rules("remove", "required");
+			$('#ProjectNo').rules("remove", "required");
+			$('#ProjectDate').rules("remove", "required");
+			$('#InspTimeFrom').rules("remove", "required");
+			$('#InspTimeTo').rules("remove", "required");
+			$('#SampleSize').rules("remove", "required");
+			$('#Color').rules("remove", "required");
+			$('#Material').rules("remove", "required");
+			$('#NoOfCavity').rules("remove", "required");
+			$('#MachineNo').rules("remove", "required");
+			$('#LotNo').rules("remove", "required");
+			$('#Shift').rules("remove", "required");
+			$('#Time').rules("remove", "required");
+			$('#Date').rules("remove", "required");
+			$('#MRNNo').rules("remove", "required");
+			$('#MRNDate').rules("remove", "required");
+			$('#MRNYearCode').rules("remove", "required");
+			$('#MRNQty').rules("remove", "required");
+			$('#ProdSlipNo').rules("remove", "required");
+			$('#ProdDate').rules("remove", "required");
+			$('#ProdYearCode').rules("remove", "required");
+			$('#ProdQty').rules("remove", "required");
+			$('#Inspection').rules("remove", "required");
+
 
 			toggleFields();
 			$('#InspectionType').select2();
@@ -1129,17 +1179,142 @@
 		}
 
 		var UniqueBatchNo = [];
-		
+		var usedSeqNos = $('#divinProcessInspectionGrid tbody tr').map(function () {
+			return parseInt($(this).find('td:first').text().trim());
+		}).get();
+
+		usedSeqNos.sort(function (a, b) { return a - b; });
+
+		var nextSeqNo = 1;
+		for (var i = 0; i < usedSeqNos.length; i++) {
+			if (usedSeqNos[i] === nextSeqNo) {
+				nextSeqNo++;
+			} else {
+				break;
+			}
+		}
+		// $('#GridButton').click(function (e) {
+		// 	e.preventDefault();
+		// 	debugger
+		// 	var gridData = [];
+		// 	var sampleSize = parseInt($('#SampleSize').val()) || 1;
+
+		// 	// Collect used SeqNos from <th> in tbody rows
+		// 	var usedSeqNos = $('#divinProcessInspectionGrid tbody tr').map(function () {
+		// 		var seqText = $(this).find('th').text().trim(); // Make sure your Sr# is in <th>
+		// 		var seqNo = parseInt(seqText, 10);
+		// 		return isNaN(seqNo) ? null : seqNo;
+		// 	}).get().filter(function (n) {
+		// 		return n !== null;
+		// 	});
+
+		// 	usedSeqNos.sort(function (a, b) { return a - b; });
+
+		// 	// Find the smallest missing SeqNo starting from 1
+		// 	var nextSeqNo = 1;
+		// 	for (var i = 0; i < usedSeqNos.length; i++) {
+		// 		if (usedSeqNos[i] === nextSeqNo) {
+		// 			nextSeqNo++;
+		// 		} else {
+		// 			break;
+		// 		}
+		// 	}
+
+		// 	// Add existing rows data with their own SeqNo
+		// 	$('#divinProcessInspectionGrid tbody tr').each(function () {
+		// 		var $cells = $(this).find('td');
+		// 		var seqText = $(this).find('th').text().trim(); // or find in td if Sr# in td
+		// 		var seqNo = parseInt(seqText, 10);
+
+		// 		var rowData = {
+		// 			SeqNo: seqNo,  // keep original SeqNo for existing rows
+		// 			Characteristic: $cells.eq(1).text().trim(),
+		// 			EvalutionMeasurmentTechnique: $cells.eq(2).text().trim(),
+		// 			ControlMethod: $cells.eq(3).text().trim(),
+		// 			SpecificationFrom: $cells.eq(4).text().trim(),
+		// 			SpecificationTo: $cells.eq(5).text().trim(),
+		// 			RejectionPlan: $cells.eq(6).text().trim(),
+		// 			FrequencyofTesting: $cells.eq(7).text().trim(),
+		// 			Samples: []
+		// 		};
+		// 		$cells.find('input.sample-input').each(function () {
+		// 			rowData.Samples.push($(this).val().trim());
+		// 		});
+		// 		gridData.push(rowData);
+		// 	});
+
+		// 	// Add new row data with the nextSeqNo
+		// 	var newRowData = {
+		// 		SeqNo: nextSeqNo,
+		// 		Characteristic: $('#CharacteristicInput').val() || '',  // assuming you have inputs for new row
+		// 		EvalutionMeasurmentTechnique: $('#EvaluationInput').val() || '',
+		// 		ControlMethod: $('#ControlMethodInput').val() || '',
+		// 		SpecificationFrom: $('#SpecificationFromInput').val() || '',
+		// 		SpecificationTo: $('#SpecificationToInput').val() || '',
+		// 		RejectionPlan: $('#RejectionPlanInput').val() || '',
+		// 		FrequencyofTesting: $('#FrequencyInput').val() || '',
+		// 		Samples: []
+		// 	};
+		// 	// Populate Samples array for new row if applicable
+		// 	$('.sample-input-newRow').each(function () {
+		// 		newRowData.Samples.push($(this).val().trim());
+		// 	});
+
+		// 	gridData.push(newRowData); // push the new row at the end
+
+		// 	console.log("Grid Data to send:", gridData);
+
+		// 	$.ajax({
+		// 		type: "POST",
+		// 		url: '@Url.Action("AddToGridData", "InProcessInspection")',
+		// 		data: { modelList: gridData, sampleSize: sampleSize },
+		// 		success: function (result) {
+		// 			$('#divStockGrid').html(result);
+		// 			TotalNoOfRows();
+		// 			ClearItems();
+		// 			addRowToGrid();
+		// 		},
+		// 		error: function () {
+		// 			$.notify('Something Went Wrong, Please Try Again.', "error");
+		// 		}
+		// 	});
+		// });
+
 		$('#GridButton').click(function (e) {
 			e.preventDefault();
 			debugger
 			var gridData = [];
 			var sampleSize = parseInt($('#SampleSize').val()) || 1;
+
+			// var usedSeqNos = $('#divinProcessInspectionGrid tbody tr').map(function () {
+			// 	var seqText = $(this).find('th').text().trim(); 
+			// 	console.log("SeqText:", seqText); 
+			// 	var seqNo = parseInt(seqText, 10);
+			// 	return isNaN(seqNo) ? null : seqNo;
+			// }).get().filter(function (n) {
+			// 	return n !== null;
+			// });
+
+			// console.log("Used SeqNos:", usedSeqNos); 
+
+
+
+			// usedSeqNos.sort(function (a, b) { return a - b; });
+
+			// var nextSeqNo = 1;
+			// for (var i = 0; i < usedSeqNos.length; i++) {
+			// 	if (usedSeqNos[i] === nextSeqNo) {
+			// 		nextSeqNo++;
+			// 	} else {
+			// 		break;
+			// 	}
+			// }
 			$('#divinProcessInspectionGrid tbody tr').each(function () {
 				var $cells = $(this).find('td');
 				var $row = $(this);
 				var rowData = {
 					SeqNo: $cells.eq(0).text().trim(),
+					//SeqNo: nextSeqNo,
 					Characteristic: $cells.eq(1).text().trim(),
 					EvalutionMeasurmentTechnique: $cells.eq(2).text().trim(),
 					ControlMethod: $cells.eq(3).text().trim(),
@@ -1147,17 +1322,27 @@
 					SpecificationTo: $cells.eq(5).text().trim(),
 					RejectionPlan: $cells.eq(6).text().trim(),
 					FrequencyofTesting: $cells.eq(7).text().trim(),
-					// Add more fields if needed
-							  Samples: [] // <-- add dynamic sample values here
+					Samples: [] 
 				};
-				$row.find('input.sample-input').each(function (index) {
-					rowData.Samples.push($(this).val().trim());
+				// $row.find('input.sample-input').each(function (index) {
+				// 	rowData.Samples.push($(this).val().trim());
+				
+				// });
+				$row.find('input.sample-input').each(function (index, element) {
+					var sampleValue = $(this).val().trim() || "0";
+
+					// ✅ Add to Samples array
+					rowData.Samples.push(sampleValue);
+
+					// ✅ Also add as InspValue1, InspValue2, ...
+					rowData["InspValue" + (index + 1)] = sampleValue;
 				});
+
 				gridData.push(rowData);
 			});
 
-			console.log(gridData); // See what you are sending
-
+			console.log(gridData); 
+			
 			$.ajax({
 				type: "POST",
 				url: '@Url.Action("AddToGridData", "InProcessInspection")',
@@ -1185,6 +1370,25 @@
 				}
 			});
 		});
+		function DeleteItemRow(seqNo) {
+			$.ajax({
+				url: '/InProcessInspection/DeleteItemRow', // Adjust route if needed
+				data: { SeqNo: seqNo },
+				type: 'GET', // or 'POST' if you prefer, just match controller
+				success: function (result) {
+					// Replace your grid container with updated HTML partial
+					$('#divStockGrid').html(result);
+					$.notify("Process deleted from Grid", "info");
+
+					TotalNoOfRows();
+					ClearItems();
+					addRowToGrid();
+				},
+				error: function () {
+					alert('Error deleting the row.');
+				}
+			});
+		}
 
 		function TotalNoOfRows() {
 			var Row = $('#divStockGrid tr').length;
@@ -1257,26 +1461,7 @@
 			});
 		}
 
-		function DeleteItemRow(seqNo) {
-			$.ajax({
-				url: '/InProcessInspection/DeleteItemRow', // Adjust route if needed
-				data: { SeqNo: seqNo },
-				type: 'GET', // or 'POST' if you prefer, just match controller
-				success: function(result) {
-					// Replace your grid container with updated HTML partial
-					$('#divStockGrid').html(result);
-							$.notify("Process deleted from Grid", "info");
-          
-					TotalNoOfRows();
-					ClearItems();
-					addRowToGrid();
-				},
-				error: function() {
-					alert('Error deleting the row.');
-				}
-			});
-		}
- 
+		
 
 		function PressBack() {
 			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());

@@ -11,7 +11,7 @@ namespace eTactWeb.DOM.Models
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }
-        public int Yearcode { get; set; }
+        public int YearCode { get; set; }
         public string CC { get; set; }
         public string Mode { get; set; }
         public string Entry_Date { get; set; }
@@ -21,17 +21,16 @@ namespace eTactWeb.DOM.Models
         public string? EntryDate { get; set; }
         public string? EffectiveDate { get; set; }
         public string? TestingDate { get; set; }
-        public int YearCode { get; set; }
-
         public string RevNo { get; set; }
         public string SlipNo { get; set; }
         public string InspTimeFrom { get; set; }
         public string InspTimeTo { get; set; }
         public int SampleSize { get; set; }
         public string ProjectDate { get; set; }
+        public string ProjectYearCode { get; set; }
         public int MachineId { get; set; }
         public string MRNNo { get; set; }
-        public string MRNDate { get; set; }
+        public string? MRNDate { get; set; }
         public int MRNYearCode { get; set; }
         public string ProdDate { get; set; }
         public int ProdYearCode { get; set; }
@@ -109,7 +108,17 @@ namespace eTactWeb.DOM.Models
 		public string Time { get; set; }
 		public string Date { get; set; }
 		public string RevDate { get; set; }
+		public int ProcessId { get; set; }
+		public string InspectedBeginingOfProd { get; set; }
+		public string InspectedAfterMoldCorrection { get; set; }
+		public string InspectedAfterLotChange { get; set; }
+		public string InspectedAfterMachinIdel { get; set; }
+		public string InspectedEndOfProd { get; set; }
+		public int TotalRows { get; set; }
+		public string Attachment1 { get; set; }
+		public string Attachment2 { get; set; }
 		public IList<string>? Inspection { get; set; }
+		
 		
 		
 		public IList<string>? SelectedInspections { get; set; } 
@@ -129,7 +138,7 @@ namespace eTactWeb.DOM.Models
 
     public class InProcessInspectionDetailModel
     {
-        public int SeqNo { get; set; }
+        public int? SeqNo { get; set; }
         public string Mode { get; set; }
         public string? CntPlanEntryDate { get; set; }
         public int CntPlanEntryId { get; set; }
@@ -174,6 +183,33 @@ namespace eTactWeb.DOM.Models
         public bool? AfterMaterialLotChange { get; set; }
         public bool? AfterMachineIdel { get; set; }
         public bool? EndOfProduction { get; set; }
+        public int? InspEntryId { get; set; }
+        public int? InspYearCode { get; set; }
+		public decimal? InspValue1 { get; set; } 
+		public decimal? InspValue2 { get; set; } 
+		public decimal? InspValue3 { get; set; }
+		public decimal? InspValue4 { get; set; } 
+		public decimal? InspValue5 { get; set; } 
+		public decimal? InspValue6 { get; set; } 
+		public decimal? InspValue7 { get; set; } 
+		public decimal? InspValue8 { get; set; } 
+		public decimal? InspValue9 { get; set; } 
+		public decimal? InspValue10 { get; set; } 
+		public decimal? InspValue11 { get; set; } 
+		public decimal? InspValue12 { get; set; } 
+		public decimal? InspValue13 { get; set; } 
+		public decimal? InspValue14 { get; set; } 
+		public decimal? InspValue15 { get; set; } 
+		public decimal? InspValue16 { get; set; } 
+		public decimal? InspValue17 { get; set; } 
+		public decimal? InspValue18 { get; set; } 
+		public decimal? InspValue19 { get; set; } 
+		public decimal? InspValue20 { get; set; } 
+		public decimal? InspValue21 { get; set; }
+		public decimal? InspValue22 { get; set; } 
+		public decimal? InspValue23 { get; set; } 
+		public decimal? InspValue24 { get; set; } 
+		public decimal? InspValue25 { get; set; } 
 
-    }
+	}
 }
