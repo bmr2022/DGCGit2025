@@ -67,7 +67,7 @@
                             <div id="showonlyamenddiv" style="display:none">
                             <div>show only Ammend Item</div>
                             <input type="checkbox" id="ShowOnlyAmendItemcheck" />
-                                <input type="hidden" asp-for="ShowOnlyAmendItem" value="@Model.ShowOnlyAmendItem" id="ShowOnlyAmendItem" />
+                                <input type="hidden"  id="ShowOnlyAmendItem" />
                         </div>
 
                         </div>
@@ -106,13 +106,29 @@
         <script>
             $(document).ready(function(){
                  
-                $(document).on("click", ".redirectToApproval", function (e) {
+                // $(document).on("click", ".redirectToApproval", function (e) {
                      
-                    e.preventDefault();
-                    var newUrl = this.href;
-                    newUrl = newUrl + "&TypeOfApproval=" + $('#ApprovalType').val();
-                    window.location.href = newUrl;
-                });
+                //     e.preventDefault();
+                //     var newUrl = this.href;
+                //     newUrl = newUrl + "&TypeOfApproval=" + $('#ApprovalType').val();
+                //     window.location.href = newUrl;
+                // });
+
+            $(document).on("click", ".redirectToApproval", function (e) {
+                e.preventDefault();
+
+                var baseUrl = this.href;
+                var approvalType = $('#ApprovalType').val();
+                 var showOnlyAmendItem = $('#ShowOnlyAmendItem').val();
+                var showonlyamenditem = $('#ShowOnlyAmendItemcheck').is(':checked') ? 'Y' : 'N';
+
+
+                let finalUrl = baseUrl + (baseUrl.includes('?') ? '&' : '?');
+                 finalUrl += 'TypeOfApproval=' + encodeURIComponent(approvalType);
+                finalUrl += '&ShowOnlyAmendItem=' + encodeURIComponent(showonlyamenditem);
+
+                window.location.href = finalUrl;
+            });
 
             if ($('#selectedApprovalType').val()=='Approval'){
                 $('#ApprovalType').val('listofUnApp').change();
@@ -182,9 +198,25 @@
             }
         });
         document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
-            const value = this.checked ? 'Yes' : 'No';
+            const value = this.checked ? 'Y' : 'N';
             document.getElementById('ShowOnlyAmendItem').value = value;
             console.log(value);
+        });
+
+        $(document).on("click", ".redirectToApproval", function (e) {
+            e.preventDefault();
+
+            var baseUrl = this.href;
+            var approvalType = $('#ApprovalType').val();
+            // var showOnlyAmendItem = $('#ShowOnlyAmendItem').val();
+            var showonlyamenditem = $('#ShowOnlyAmendItemcheck').is(':checked') ? 'Y' : 'N';
+
+
+            let finalUrl = baseUrl + (baseUrl.includes('?') ? '&' : '?');
+            // finalUrl += 'TypeOfApproval=' + encodeURIComponent(approvalType);
+            finalUrl += '&ShowOnlyAmendItem=' + encodeURIComponent(showonlyamenditem);
+
+            window.location.href = finalUrl;
         });
 
             //function GetAllowedAction() {
