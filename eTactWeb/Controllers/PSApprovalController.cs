@@ -58,11 +58,11 @@ namespace eTactWeb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ShowPSDetail(int ID, int YC, string SchNo,string TypeOfApproval)
+        public async Task<IActionResult> ShowPSDetail(int ID, int YC, string SchNo,string TypeOfApproval,string ShowOnlyAmendItem)
         {
             HttpContext.Session.Remove("KeyPSApprovalDetail");
             var MainModel = new List<PSApprovalDetail>();
-            MainModel = await _IPSApproval.ShowPSDetail(ID, YC, SchNo).ConfigureAwait(true);
+            MainModel = await _IPSApproval.ShowPSDetail(ID, YC, SchNo, ShowOnlyAmendItem).ConfigureAwait(true);
             return View(MainModel);
         }
 

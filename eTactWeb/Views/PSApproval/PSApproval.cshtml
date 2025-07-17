@@ -64,6 +64,11 @@
                                 <label asp-for="CC" class="form-label">Branch</label>
                                 <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
                             </div>
+                            <div id="showonlyamenddiv" style="display:none">
+                            <div>show only Ammend Item</div>
+                            <input type="checkbox" id="ShowOnlyAmendItemcheck" />
+                                <input type="hidden" asp-for="ShowOnlyAmendItem" value="@Model.ShowOnlyAmendItem" id="ShowOnlyAmendItem" />
+                        </div>
 
                         </div>
                         <div class=" d-flex justify-content-center mt-3" width="inherit">
@@ -167,6 +172,20 @@
                 GetListOfApprovedPS();
                 //GetAllowedAction();
             });
+        
+        $('#ApprovalType').change(function () {
+            if ($(this).val() == 'listofUnAppAmd') {
+                $('#showonlyamenddiv').show();
+            }
+            else {
+                $('#showonlyamenddiv').hide();
+            }
+        });
+        document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+            const value = this.checked ? 'Yes' : 'No';
+            document.getElementById('ShowOnlyAmendItem').value = value;
+            console.log(value);
+        });
 
             //function GetAllowedAction() {
             //    $.ajax({

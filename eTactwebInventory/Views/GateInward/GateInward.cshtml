@@ -270,15 +270,15 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:180px">
                                     <label class="form-label" asp-for="ItemName" style="color: red;">Item Name*</label>
-                                    <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    
                                         <select class="form-select" data-abcd="14" style="width:180px;" asp-for="ItemName">
                                             <option value="">-Select-</option>
                                         </select>
-                                    </div>
+                                    
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:70px">
                                     <label asp-for="Unit" class="form-label" style="color: red;">Unit*</label>
                                     <input asp-for="Unit" data-abcd="15" class="form-control" />
                                 </div>
@@ -290,7 +290,7 @@
                                     <label asp-for="Rate" class="form-label">Rate</label>
                                     <input asp-for="Rate" data-abcd="17" class="form-control" type="number" min="0" />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:70px">
                                     <label asp-for="AltUnit" class="form-label">Alt Unit</label>
                                     <input asp-for="AltUnit" data-abcd="18" class="form-control" readonly />
                                 </div>
@@ -317,6 +317,14 @@
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Remarks" class="form-label">Remarks</label>
                                     <input asp-for="Remarks" data-abcd="23" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="SupplierBatchNo" class="form-label">Supply batch no</label>
+                                    <input asp-for="SupplierBatchNo" data-abcd="32" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ShelfLife" class="form-label">Shelf Life(Months)</label>
+                                    <input asp-for="ShelfLife" data-abcd="33" type="number" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="SaleBillNumber">
                                     @if (Model.Mode == "U" || Model.Mode == "V")
@@ -354,6 +362,7 @@
                                     <label asp-for="ChallanQty" class="form-label ChallanElements"></label>
                                     <input asp-for="ChallanQty" class="form-control ChallanElements" readonly />
                                 </div>
+                                
                                 <div class="d-flex align-items-center gap-3">
                                     <!-- Show/Hide Fields -->
                                     <div class="form-check form-switch">
@@ -375,14 +384,7 @@
                                         <label asp-for="ItemColor" class="form-label">Item Color</label>
                                         <input asp-for="ItemColor" data-abcd="31" class="form-control" />
                                     </div>
-                                    <div class="AF col-sm-auto col-xl-1 col-md-2 col-sm-3 col-xs-12">
-                                        <label asp-for="SupplierBatchNo" class="form-label">Supply batch no</label>
-                                        <input asp-for="SupplierBatchNo" data-abcd="32" class="form-control" />
-                                    </div>
-                                    <div class="AF col-sm-auto">
-                                        <label asp-for="ShelfLife" class="form-label">Shelf Life</label>
-                                        <input asp-for="ShelfLife" data-abcd="33" type="number" class="form-control" />
-                                    </div>
+                                   
                                     <div class="AF col-sm-auto">
                                         <label asp-for="ProcessId" class="form-label">Process Name</label>
                                         <select class="form-select" data-abcd="34" asp-for="ProcessId" asp-items="@(new SelectList(Model.ProcessList,"Value","Text"))">
