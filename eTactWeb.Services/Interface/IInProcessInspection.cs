@@ -18,5 +18,6 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillColor(string PartNo);
 		Task<ResponseResult> FillEntryID(int YearCode);
 		Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode, int SampleSize);
+		Task<ResponseResult> SaveInprocessInspection(InProcessInspectionModel model, DataTable GIGrid);
 	}
 }

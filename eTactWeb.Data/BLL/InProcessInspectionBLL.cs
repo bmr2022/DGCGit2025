@@ -55,5 +55,9 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _InProcessInspectionDAL.GetInprocessInspectionGridData( ItemCode,SampleSize);
 		}
-	}
+        public async Task<ResponseResult> SaveInprocessInspection(InProcessInspectionModel model, DataTable GIGrid)
+        {
+            return await _InProcessInspectionDAL.SaveInprocessInspection(model, GIGrid);
+        }
+    }
 }
