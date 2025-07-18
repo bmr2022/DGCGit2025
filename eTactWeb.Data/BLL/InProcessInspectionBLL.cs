@@ -59,5 +59,21 @@ namespace eTactWeb.Data.BLL
         {
             return await _InProcessInspectionDAL.SaveInprocessInspection(model, GIGrid);
         }
+        public async Task<ResponseResult> GetDashboardData(InProcessInspectionModel model)
+        {
+            return await _InProcessInspectionDAL.GetDashboardData(model);
+        }
+        public async Task<InProcessInspectionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _InProcessInspectionDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+        }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            return await _InProcessInspectionDAL.DeleteByID(EntryId, YearCode, EntryDate, EntryByempId);
+        }
+        public async Task<InProcessInspectionModel> GetViewByID(int ID, int YC, string FromDate, string ToDate)
+        {
+            return await _InProcessInspectionDAL.GetViewByID(ID, YC, FromDate, ToDate);
+        }
     }
 }

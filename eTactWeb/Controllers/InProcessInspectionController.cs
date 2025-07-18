@@ -1,11 +1,14 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using PdfSharp.Drawing.BarCodes;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace eTactWeb.Controllers
 {
@@ -27,13 +30,13 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> InProcessInspection()
+        public async Task<ActionResult> InProcessInspection(int ID, string Mode, int YC, string FromDate, string ToDate,string EntryDate)
         {
             var MainModel = new InProcessInspectionModel();
             MainModel.DTSSGrid = new List<InProcessInspectionDetailModel>();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate"); 
-				 MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
+			MainModel.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
 			MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
@@ -51,8 +54,34 @@ namespace eTactWeb.Controllers
 				new InspectionOption { Key = "AfterMaterialLotChange", Text = "After Material Lot Change" },
 				new InspectionOption { Key = "AfterMachineIdel", Text = "After Machine Idle" },
 				new InspectionOption { Key = "EndOfProduction", Text = "End of Production" }
-			};
-			return View(MainModel); // Pass the model with old data to the view
+            };
+
+            HttpContext.Session.Remove("KeyInProcessInspectionGrid");
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+            {
+
+
+                MainModel.Mode = Mode;
+                MainModel = await _IInProcessInspection.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
+                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.EntryId = ID;
+                MainModel.YearCode = YC;
+                MainModel.Entry_Date = EntryDate;
+
+                string serializedGrid = JsonConvert.SerializeObject(MainModel.DTSSGrid);
+                HttpContext.Session.SetString("KeyControlPlanGrid", serializedGrid);
+
+
+                if (Mode == "U")
+                {
+                    MainModel.LastUpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
+                    MainModel.LastUpdationDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
+                }
+            }
+
+
+            return View(MainModel); // Pass the model with old data to the view
         }
 		[Route("{controller}/Index")]
 		[HttpPost]
@@ -76,6 +105,12 @@ namespace eTactWeb.Controllers
 
 				model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 				model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+				var selectedKeys = model.SelectedInspections ?? new List<string>();
+				model.InspectedBeginingOfProd = selectedKeys.Contains("BegingOfProduction");
+				model.InspectedAfterMoldCorrection = selectedKeys.Contains("AfterMouldCorrection");
+				model.InspectedAfterLotChange = selectedKeys.Contains("AfterMaterialLotChange");
+				model.InspectedAfterMachinIdel = selectedKeys.Contains("AfterMachineIdel");
+				model.InspectedEndOfProd = selectedKeys.Contains("EndOfProduction");
 
 				var Result = await _IInProcessInspection.SaveInprocessInspection(model, GIGrid);
 
@@ -101,7 +136,7 @@ namespace eTactWeb.Controllers
 					}
 				}
 
-				return RedirectToAction(nameof(InProcessInspection));
+				return RedirectToAction(nameof(InProcessInspectionDashBoard));
 			}
 			catch (Exception ex)
 			{
@@ -252,71 +287,7 @@ namespace eTactWeb.Controllers
 			
 
 		}
-		//public IActionResult AddToGridData(InProcessInspectionDetailModel model)
-		//{
-		//	try
-		//	{
-		//		string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
-		//		List<InProcessInspectionDetailModel> MaterialConversionGrid = new List<InProcessInspectionDetailModel>();
-		//		if (!string.IsNullOrEmpty(modelJson))
-		//		{
-		//			MaterialConversionGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
-		//		}
 
-		//		var MainModel = new InProcessInspectionModel();
-		//		var WorkOrderPGrid = new List<InProcessInspectionModel>();
-		//		var OrderGrid = new List<InProcessInspectionDetailModel>();
-		//		var ssGrid = new List<InProcessInspectionDetailModel>();
-
-		//		if (model != null)
-		//		{
-		//			if (MaterialConversionGrid == null)
-		//			{
-		//				model.SeqNo = 1;
-		//				OrderGrid.Add(model);
-		//			}
-		//			else
-		//			{
-		//				if (MaterialConversionGrid.Any(x => (x.PartCode == model.PartCode)))
-		//				{
-		//					return StatusCode(207, "Duplicate");
-		//				}
-		//				else
-		//				{
-		//					//count = WorkOrderProcessGrid.Count();
-		//					model.SeqNo = MaterialConversionGrid.Count + 1;
-		//					OrderGrid = MaterialConversionGrid.Where(x => x != null).ToList();
-		//					ssGrid.AddRange(OrderGrid);
-		//					OrderGrid.Add(model);
-
-		//				}
-
-		//			}
-
-		//			MainModel.DTSSGrid = OrderGrid;
-
-		//			MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-		//			{
-		//				AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-		//				SlidingExpiration = TimeSpan.FromMinutes(55),
-		//				Size = 1024,
-		//			};
-
-		//			string serializedGrid = JsonConvert.SerializeObject(MainModel.DTSSGrid);
-		//			HttpContext.Session.SetString("KeyInProcessInspectionGrid", serializedGrid);
-		//		}
-		//		else
-		//		{
-		//			ModelState.TryAddModelError("Error", " List Cannot Be Empty...!");
-		//		}
-		//		return PartialView("_InProcessInspectionAddtoGrid", MainModel);
-
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		throw ex;
-		//	}
-		//}
 		[HttpPost]
 		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize)
 		{
@@ -453,7 +424,67 @@ namespace eTactWeb.Controllers
 				ViewBag.SampleSize = model.SampleSize;
 			return PartialView("_InProcessInspectionAddtoGrid", model);
 			}
-		
+        public async Task<IActionResult> InProcessInspectionDashBoard(string ReportType, string FromDate, string ToDate)
+        {
+            var model = new InProcessInspectionModel();
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            DateTime now = DateTime.Now;
+			DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+			Dictionary<int, string> monthNames = new Dictionary<int, string>
+			{
+				{1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+				{7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+			};
 
-	}
+			model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+			model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+
+			model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            model.ReportType = "SUMMARY";
+            var Result = await _IInProcessInspection.GetDashboardData(model);
+
+            if (Result.Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null && DS.Tables.Count > 0)
+                {
+                    var dt = DS.Tables[0];
+                    //model.DTSSGrid = CommonFunc.DataTableToList<InProcessInspectionDetailModel>(dt, "InProcessInspectionDashBoard");
+                }
+
+            }
+
+            return View(model);
+        }
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            var model = new InProcessInspectionModel();
+            model = await _IInProcessInspection.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            return PartialView("_InProcessInspectionDashBoardGrid", model);
+        }
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
+        {
+            var Result = await _IInProcessInspection.DeleteByID(EntryId, YearCode, EntryDate, EntryByempId);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("InProcessInspectionDashBoard");
+
+        }
+    }
 }
