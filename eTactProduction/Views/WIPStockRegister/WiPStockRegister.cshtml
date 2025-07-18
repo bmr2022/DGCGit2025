@@ -70,12 +70,18 @@
 												</select>
 											</div>
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="PartCode" class="form-label">PartCode</label>
-												<input asp-for="PartCode" class="form-control" />
+												
+												<input type="text" id="PartCodeText" class="form-control" placeholder="Type Part Code..." />
+												<input type="hidden" asp-for="PartCode" id="PartCode" />
 											</div>
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ItemName" class="form-label">Item Name</label>
-												<input asp-for="ItemName" class="form-control" />
+												
+													<input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+												<input type="hidden" asp-for="ItemName" id="ItemName" />
+													@*   <select class="form-select" asp-for="ItemCode" style="heigt:190px;width:300px;">
+													<option value="0">-Select-</option>
+													</select> *@
+												
 											</div>
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 												<label asp-for="ItemGroup" class="form-label">Item Group</label>
@@ -197,23 +203,135 @@
 			  FillWorkCenter();
 			  $('#WCID').select2();
 			  $('#ReportType').select2();
+			FillItems();
+			if ($('#ItemNameText').val() == '') {
+				$('#ItemName').val('');
+			}
 			  /* GetWIPRegisterData(); */
 			  AutoComplete('Item_Master_Type', 'ItemType', 'Type_Item', null);
 			  AutoComplete('VItemGroupMaster', 'ItemGroup', 'Group_name', null);
-			  AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
-			  AutoComplete('VItemMaster', 'PartCode', 'PartCode', null);
+			   /* AutoComplete('VItemMaster', 'ItemName', 'Item_Name', null);
+			  AutoComplete(' VItemMaster', 'PartCode', 'PartCode', null); */
 
 			  AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'BatchNo', 'BatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
 			  AutoCompleteRawMaterial('Raw_Material_Stock_Ledger', 'UniqueBatchNo', 'UniqueBatchNo', null, $('#FromDate').val(), $('#ToDate').val(), 0, $('#StoreId').val());
 			  $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
 		  });
 
+		function FillItems() {
+			// Source for PartCodeText
+			const partCodeSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("FillItems")',
+					type: 'POST',
+					data: {
+						
+						SearchItemCode: '',
+						SearchPartCode: request.term
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+							let filtered = obj.Result.Table.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.PartCode.toLowerCase().includes(term);
+							});
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.PartCode,
+									value: item.PartCode,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+			};
+
+			// Source for ItemNameText
+			const itemNameSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("FillItems")',
+					type: 'POST',
+					data: {
+					
+						SearchItemCode: request.term,
+						SearchPartCode: ''
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+							let filtered = obj.Result.Table.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.ItemName.toLowerCase().includes(term);
+							});
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.ItemName,
+									value: item.Item_Code,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code,
+									partCode: item.PartCode
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+			};
+
+			// Autocomplete for PartCodeText
+			$("#PartCodeText").autocomplete({
+				source: partCodeSource,
+				select: function (event, ui) {
+					$("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+					$("#ItemNameText").val(ui.item.itemName);
+					$('#ItemName').val(ui.item.itemName);
+					$('#PartCode').val(ui.item.partCode);
+					/* GetItemPartCode("PartCode"); */
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#PartCodeText").val(ui.item.value);
+					return false;
+				},
+				minLength: 2
+			});
+
+			// Autocomplete for ItemNameText
+			$("#ItemNameText").autocomplete({
+				source: itemNameSource,
+				select: function (event, ui) {
+					$("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+					$("#PartCodeText").val(ui.item.partCode);
+					$('#ItemName').val(ui.item.itemName);
+					$('#PartCode').val(ui.item.partCode);
+					
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#ItemNameText").val(ui.item.itemName);
+					return false;
+				},
+				minLength: 2
+			});
+		}
+		
+
 		  function loadPage(pageNumber) {
 
 			  const data = {
 				  FromDate: $('#FromDate').val(),
 				  ToDate: $('#ToDate').val(),
-				  PartCode: $('#PartCode').val(),
+				PartCode: $('#PartCodeText').val(),
 				  ItemName: $('#ItemName').val(),
 				  ItemGroup: $('#ItemGroupName').val(),
 				  ItemType: $('#ItemType').val(),
@@ -245,7 +363,7 @@
 				  type: "POST",
 				  url: "@Url.Action("GetWIPRegisterData")",
 				  async: false,
-				  data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "PartCode": $('#PartCode').val(), "ItemName": $('#ItemName').val(), "ItemGroup": $('#ItemGroup').val(), "ItemType": $('#ItemType').val(), "WCID": $('#WCID').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
+				data: { "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "PartCode": $('#PartCodeText').val(), "ItemName": $('#ItemName').val(), "ItemGroup": $('#ItemGroup').val(), "ItemType": $('#ItemType').val(), "WCID": $('#WCID').val(), "ReportType": $('#ReportType').val(), "BatchNo": $('#BatchNo').val(), "UniqueBatchNo": $('#UniqueBatchNo').val() },
 				  success: function (result, status, error) {
 
 					  $('#divStockMainRegister').empty();

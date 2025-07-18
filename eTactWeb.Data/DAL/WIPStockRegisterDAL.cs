@@ -30,6 +30,26 @@ namespace eTactWeb.Data.DAL
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
+        public async Task<ResponseResult> FillItems( string SearchItemCode, string SearchPartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "fillitem"));
+               
+                SqlParams.Add(new SqlParameter("@ItemName", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@PartCode", SearchPartCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SPReportWIPstockRegister", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<WIPStockRegisterModel> GetStockRegisterData(string FromDate, string ToDate, string PartCode, string ItemName, string ItemGroup, string ItemType, int WCID, string ReportType, string BatchNo, string UniqueBatchNo, string WorkCenter)
         {
             DataSet? oDataSet = new DataSet();
@@ -65,7 +85,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
                     oCmd.Parameters.AddWithValue("@PartCode", string.IsNullOrEmpty(PartCode) ? DBNull.Value : (object)PartCode);
-                    oCmd.Parameters.AddWithValue("@ItemName", string.IsNullOrEmpty(ItemName) ? DBNull.Value : (object)ItemName);
+                    oCmd.Parameters.AddWithValue("@ItemName","");
                     oCmd.Parameters.AddWithValue("@GroupName", string.IsNullOrEmpty(ItemGroup) ? DBNull.Value : (object)ItemGroup);
                     oCmd.Parameters.AddWithValue("@CatName", string.IsNullOrEmpty(ItemType) ? DBNull.Value : (object)ItemType);
                     oCmd.Parameters.AddWithValue("@WCId", WCID); // int — 0 is fine
