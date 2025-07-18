@@ -80,6 +80,12 @@ namespace eTactWeb.Controllers
 			);
 		}
 
+        public async Task<JsonResult> FillItems( string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IWIPStockRegister.FillItems(SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         private void ExportWIPSTOCKDETAIL(IXLWorksheet sheet, IList<WIPStockRegisterDetail> list)
         {
             string[] headers = {

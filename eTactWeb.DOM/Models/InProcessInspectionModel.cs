@@ -11,7 +11,7 @@ namespace eTactWeb.DOM.Models
     {
         public string FromDate { get; set; }
         public string ToDate { get; set; }
-        public int Yearcode { get; set; }
+        public int YearCode { get; set; }
         public string CC { get; set; }
         public string Mode { get; set; }
         public string Entry_Date { get; set; }
@@ -21,17 +21,17 @@ namespace eTactWeb.DOM.Models
         public string? EntryDate { get; set; }
         public string? EffectiveDate { get; set; }
         public string? TestingDate { get; set; }
-        public int YearCode { get; set; }
-
         public string RevNo { get; set; }
         public string SlipNo { get; set; }
         public string InspTimeFrom { get; set; }
         public string InspTimeTo { get; set; }
         public int SampleSize { get; set; }
         public string ProjectDate { get; set; }
+        public int ProjectYearCode { get; set; }
         public int MachineId { get; set; }
+        public string MachineName { get; set; }
         public string MRNNo { get; set; }
-        public string MRNDate { get; set; }
+        public string? MRNDate { get; set; }
         public int MRNYearCode { get; set; }
         public string ProdDate { get; set; }
         public int ProdYearCode { get; set; }
@@ -82,14 +82,7 @@ namespace eTactWeb.DOM.Models
         public string ControlMethod { get; set; }
         public string RejectionPlan { get; set; }
 
-        public string ItemimagePath { get; set; }
-        public bool CopyControlPlan { get; set; }
-        public string DrawingNo { get; set; }
-        public string DrawingNoImagePath { get; set; }
-        public string ImageURL { get; set; }
-        public IFormFile? UploadImage { get; set; }
-        public IFormFile? ItemImage { get; set; }
-        public string? ItemImageURL { get; set; }
+        
         public int CreatedBy { get; set; }
         public int seqNo { get; set; }
         public string ReportType { get; set; }
@@ -101,7 +94,7 @@ namespace eTactWeb.DOM.Models
 		public string ProjectNo { get; set; }
 		public string Color { get; set; }
 		public string Material { get; set; }
-		public string NoOfCavity { get; set; }
+		public int NoOfCavity { get; set; }
 		public string MachineNo { get; set; }
 		public string LotNo { get; set; }
 		public string Shift { get; set; }
@@ -109,7 +102,18 @@ namespace eTactWeb.DOM.Models
 		public string Time { get; set; }
 		public string Date { get; set; }
 		public string RevDate { get; set; }
+		public int ProcessId { get; set; }
+		public bool InspectedBeginingOfProd { get; set; }
+		public bool InspectedAfterMoldCorrection { get; set; }
+		public bool InspectedAfterLotChange { get; set; }
+		public bool InspectedAfterMachinIdel { get; set; }
+		public bool InspectedEndOfProd { get; set; }
+
+		public int TotalRows { get; set; }
+		public string Attachment1 { get; set; }
+		public string Attachment2 { get; set; }
 		public IList<string>? Inspection { get; set; }
+		
 		
 		
 		public IList<string>? SelectedInspections { get; set; } 
@@ -129,26 +133,9 @@ namespace eTactWeb.DOM.Models
 
     public class InProcessInspectionDetailModel
     {
-        public int SeqNo { get; set; }
+        public int? SeqNo { get; set; }
         public string Mode { get; set; }
-        public string? CntPlanEntryDate { get; set; }
-        public int CntPlanEntryId { get; set; }
-        public int CntPlanYearCode { get; set; }
-        public string Characteristic { get; set; }
-        public string EvalutionMeasurmentTechnique { get; set; }
-        public string SpecificationFrom { get; set; }
-        public string Operator { get; set; }
-        public string SpecificationTo { get; set; }
-        public string FrequencyofTesting { get; set; }
-        public string InspectionBy { get; set; }
-        public string ControlMethod { get; set; }
-        public string RejectionPlan { get; set; }
         public string Remarks { get; set; }
-        public string ItemimagePath { get; set; }
-        public string DrawingNo { get; set; }
-        public string DrawingNoImagePath { get; set; }
-        public string ImageURL { get; set; }
-        public string Control_PlanNo { get; set; }
         public string RevNo { get; set; }
         public string ForInOutInprocess { get; set; }
         public int ItemCode { get; set; }
@@ -157,6 +144,7 @@ namespace eTactWeb.DOM.Models
         public int AccountCode { get; set; }
         public int EngApprovedBy { get; set; }
         public int ApprovedBy { get; set; }
+        public string ApprovedByName { get; set; }
 
 		public List<string> Samples { get; set; }
 		public int UId { get; set; }
@@ -174,6 +162,71 @@ namespace eTactWeb.DOM.Models
         public bool? AfterMaterialLotChange { get; set; }
         public bool? AfterMachineIdel { get; set; }
         public bool? EndOfProduction { get; set; }
-
+        public int? InspEntryId { get; set; }
+        public int? InspYearCode { get; set; }
+		public decimal? InspValue1 { get; set; } 
+		public decimal? InspValue2 { get; set; } 
+		public decimal? InspValue3 { get; set; }
+		public decimal? InspValue4 { get; set; } 
+		public decimal? InspValue5 { get; set; } 
+		public decimal? InspValue6 { get; set; } 
+		public decimal? InspValue7 { get; set; } 
+		public decimal? InspValue8 { get; set; } 
+		public decimal? InspValue9 { get; set; } 
+		public decimal? InspValue10 { get; set; } 
+		public decimal? InspValue11 { get; set; } 
+		public decimal? InspValue12 { get; set; } 
+		public decimal? InspValue13 { get; set; } 
+		public decimal? InspValue14 { get; set; } 
+		public decimal? InspValue15 { get; set; } 
+		public decimal? InspValue16 { get; set; } 
+		public decimal? InspValue17 { get; set; } 
+		public decimal? InspValue18 { get; set; } 
+		public decimal? InspValue19 { get; set; } 
+		public decimal? InspValue20 { get; set; } 
+		public decimal? InspValue21 { get; set; }
+		public decimal? InspValue22 { get; set; } 
+		public decimal? InspValue23 { get; set; } 
+		public decimal? InspValue24 { get; set; } 
+		public decimal? InspValue25 { get; set; }
+        public string Entry_Date { get; set; }
+        public string? TestingDate { get; set; }
+        public string SlipNo { get; set; }
+        public string InspTimeFrom { get; set; }
+        public string InspTimeTo { get; set; }
+        public int SampleSize { get; set; }
+        public string ProjectDate { get; set; }
+        public int ProjectYearCode { get; set; }
+        public int MachineId { get; set; }
+        public string MRNNo { get; set; }
+        public string? MRNDate { get; set; }
+        public int MRNYearCode { get; set; }
+        public string ProdDate { get; set; }
+        public int ProdYearCode { get; set; }
+        public decimal MRNQty { get; set; }
+        public decimal ProdQty { get; set; }
+        public decimal InspActqty { get; set; }
+        public decimal OkQty { get; set; }
+        public decimal Rejqty { get; set; }
+        public decimal Weight { get; set; }
+        public string LotNo { get; set; }
+        public string ProdSlipNo { get; set; }
+        public int NoOfCavity { get; set; }
+        public string AccountName { get; set; }
+        public string MachineName { get; set; }
+        public string Color { get; set; }
+        public string ProjectNo { get; set; }
+        public string ShiftName { get; set; }
+        public string IncomInprocessOutgoing { get; set; }
+        public string Characteristic { get; set; }
+        public string EvalutionMeasurmentTechnique { get; set; }
+        public string SpecificationFrom { get; set; }
+        public string Operator { get; set; }
+        public string SpecificationTo { get; set; }
+        public string FrequencyofTesting { get; set; }
+        public string InspectionBy { get; set; }
+        public string ControlMethod { get; set; }
+        public string RejectionPlan { get; set; }
+        public string InspectionType { get; set; }
     }
 }

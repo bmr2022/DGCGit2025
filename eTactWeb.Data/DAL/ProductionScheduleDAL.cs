@@ -326,7 +326,7 @@ namespace eTactWeb.Data.DAL
                         FGItemCode = row["FGItemCode"] != DBNull.Value ? Convert.ToInt32(row["FGItemCode"]) : 0,
                         FGPartCode = row["FGPartCode"]?.ToString(),
                         FGItemName = row["FgItemName"]?.ToString(),
-                        FGQty = row["FGQty"] != DBNull.Value ? Convert.ToInt32(row["FGQty"]) : 0,
+                        FGQty = row["FGQty"] != DBNull.Value ? Convert.ToSingle(row["FGQty"]) : 0,
                         RMItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                         RMItemName = row["RMItemName"]?.ToString(),
                         RMPartCode = row["RMPartCode"]?.ToString(),
@@ -350,10 +350,10 @@ namespace eTactWeb.Data.DAL
                         RMPartCode = row["RMPartCode"]?.ToString(),
                         Unit = row["Unit"]?.ToString(),
                         TotalReqQty = row["TotalReqQty"] == DBNull.Value ? 0 : Convert.ToSingle(row["TotalReqQty"]),
-                        PendQty = row["PendQty"] != DBNull.Value ? Convert.ToInt32(row["PendQty"]) : 0,
-                        MainStoreStock = row["MainStoreStock"] != DBNull.Value ? Convert.ToInt32(row["MainStoreStock"]) : 0,
-                        QcStoreStock = row["QcStoreStock"] != DBNull.Value ? Convert.ToInt32(row["QcStoreStock"]) : 0,
-                        WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToInt32(row["WIPStock"]) : 0
+                        PendQty = row["PendQty"] != DBNull.Value ? Convert.ToSingle(row["PendQty"]) : 0,
+                        MainStoreStock = row["MainStoreStock"] != DBNull.Value ? Convert.ToSingle(row["MainStoreStock"]) : 0,
+                        QcStoreStock = row["QcStoreStock"] != DBNull.Value ? Convert.ToSingle(row["QcStoreStock"]) : 0,
+                        WIPStock = row["WIPStock"] != DBNull.Value ? Convert.ToSingle(row["WIPStock"]) : 0
 
                     });
                 }

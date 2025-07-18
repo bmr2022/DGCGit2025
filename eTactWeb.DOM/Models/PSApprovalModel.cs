@@ -21,6 +21,7 @@ namespace eTactWeb.DOM.Models
     }
     public class PSApprovalDetail 
     {
+        //public string? ShowOnlyAmendItem { get; set; }
         public string? SchNo { get; set; }
         public DateTime? Schdate { get; set; }
         public string? PONO { get; set; }

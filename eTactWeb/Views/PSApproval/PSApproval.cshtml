@@ -64,6 +64,11 @@
                                 <label asp-for="CC" class="form-label">Branch</label>
                                 <input asp-for="CC" class="form-control" value="@Model.CC" readonly />
                             </div>
+                            <div id="showonlyamenddiv" style="display:none">
+                            <div>show only Ammend Item</div>
+                            <input type="checkbox" id="ShowOnlyAmendItemcheck" />
+                                <input type="hidden"  id="ShowOnlyAmendItem" />
+                        </div>
 
                         </div>
                         <div class=" d-flex justify-content-center mt-3" width="inherit">
@@ -101,13 +106,29 @@
         <script>
             $(document).ready(function(){
                  
-                $(document).on("click", ".redirectToApproval", function (e) {
+                // $(document).on("click", ".redirectToApproval", function (e) {
                      
-                    e.preventDefault();
-                    var newUrl = this.href;
-                    newUrl = newUrl + "&TypeOfApproval=" + $('#ApprovalType').val();
-                    window.location.href = newUrl;
-                });
+                //     e.preventDefault();
+                //     var newUrl = this.href;
+                //     newUrl = newUrl + "&TypeOfApproval=" + $('#ApprovalType').val();
+                //     window.location.href = newUrl;
+                // });
+
+            $(document).on("click", ".redirectToApproval", function (e) {
+                e.preventDefault();
+
+                var baseUrl = this.href;
+                var approvalType = $('#ApprovalType').val();
+                 var showOnlyAmendItem = $('#ShowOnlyAmendItem').val();
+                var showonlyamenditem = $('#ShowOnlyAmendItemcheck').is(':checked') ? 'Y' : 'N';
+
+
+                let finalUrl = baseUrl + (baseUrl.includes('?') ? '&' : '?');
+                 finalUrl += 'TypeOfApproval=' + encodeURIComponent(approvalType);
+                finalUrl += '&ShowOnlyAmendItem=' + encodeURIComponent(showonlyamenditem);
+
+                window.location.href = finalUrl;
+            });
 
             if ($('#selectedApprovalType').val()=='Approval'){
                 $('#ApprovalType').val('listofUnApp').change();
@@ -167,6 +188,36 @@
                 GetListOfApprovedPS();
                 //GetAllowedAction();
             });
+        
+        $('#ApprovalType').change(function () {
+            if ($(this).val() == 'listofUnAppAmd') {
+                $('#showonlyamenddiv').show();
+            }
+            else {
+                $('#showonlyamenddiv').hide();
+            }
+        });
+        document.getElementById('ShowOnlyAmendItemcheck').addEventListener('change', function () {
+            const value = this.checked ? 'Y' : 'N';
+            document.getElementById('ShowOnlyAmendItem').value = value;
+            console.log(value);
+        });
+
+        $(document).on("click", ".redirectToApproval", function (e) {
+            e.preventDefault();
+
+            var baseUrl = this.href;
+            var approvalType = $('#ApprovalType').val();
+            // var showOnlyAmendItem = $('#ShowOnlyAmendItem').val();
+            var showonlyamenditem = $('#ShowOnlyAmendItemcheck').is(':checked') ? 'Y' : 'N';
+
+
+            let finalUrl = baseUrl + (baseUrl.includes('?') ? '&' : '?');
+            // finalUrl += 'TypeOfApproval=' + encodeURIComponent(approvalType);
+            finalUrl += '&ShowOnlyAmendItem=' + encodeURIComponent(showonlyamenditem);
+
+            window.location.href = finalUrl;
+        });
 
             //function GetAllowedAction() {
             //    $.ajax({

@@ -660,6 +660,111 @@
             background-color: #fdecea;
         }
 
+        .tab-icon-container {
+            background-color: rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+            .tab-icon-container:hover {
+                background-color: rgba(255, 255, 255, 0.3);
+            }
+
+        .card-body {
+            padding: 20px;
+        }
+
+        .vendor-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .vendor-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px;
+            background-color: rgba(245, 247, 250, 0.5);
+            border-radius: 8px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+            .vendor-item:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+                border-left-color: #2575fc;
+                background-color: #fff;
+            }
+
+        .vendor-info {
+            flex: 1;
+        }
+
+        .vendor-name {
+            font-weight: 600;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .vendor-code {
+            font-size: 0.85rem;
+            color: #7f8c8d;
+        }
+
+        .vendor-ratings {
+            display: flex;
+            gap: 16px;
+            text-align: center;
+        }
+
+        .rating-box {
+            padding: 8px 12px;
+            border-radius: 6px;
+            min-width: 80px;
+        }
+
+        .price-rating {
+            background-color: rgba(46, 204, 113, 0.1);
+            color: #2ecc71;
+        }
+
+        .delivery-rating {
+            background-color: rgba(52, 152, 219, 0.1);
+            color: #3498db;
+        }
+
+        .quality-rating {
+            background-color: rgba(155, 89, 182, 0.1);
+            color: #9b59b6;
+        }
+
+        .final-rating {
+            background-color: rgba(241, 196, 15, 0.1);
+            color: #f1c40f;
+            font-weight: 700;
+        }
+
+        .rating-label {
+            font-size: 0.75rem;
+            margin-bottom: 2px;
+        }
+
+        .rating-value {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .no-vendors {
+            text-align: center;
+            color: #7f8c8d;
+            padding: 20px;
+            font-style: italic;
+        }
+        
     </style>
 </head>
 <body>
@@ -1143,76 +1248,9 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <div class="version-bar">
-                        <span class="label">0.1.5.2</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 80%;"></div>
-                        </div>
-                        <span class="value">123k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.3</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 70%;"></div>
-                        </div>
-                        <span class="value">53k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.4</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 65%;"></div>
-                        </div>
-                        <span class="value">23k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.5</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 50%;"></div>
-                        </div>
-                        <span class="value">3k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.6</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 40%;"></div>
-                        </div>
-                        <span class="value">1k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.2</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 35%;"></div>
-                        </div>
-                        <span class="value">123k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.3</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 30%;"></div>
-                        </div>
-                        <span class="value">53k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.4</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 20%;"></div>
-                        </div>
-                        <span class="value">23k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.5</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 10%;"></div>
-                        </div>
-                        <span class="value">3k</span>
-                    </div>
-                    <div class="version-bar">
-                        <span class="label">0.1.5.6</span>
-                        <div class="bar-container">
-                            <div class="bar" style="width: 5%;"></div>
-                        </div>
-                        <span class="value">1k</span>
-                    </div>
+                    <div class="vendor-list" id="vendor-list">
+                <!-- Vendors will be dynamically inserted here -->
+                     </div>
                 </div>
             </div>
         </div>
@@ -1225,7 +1263,7 @@
                     </div>
                 </div>
                 <div class="card-body">
-                    <canvas id="inventoryByCategoryChart"></canvas>
+                    <div id="worstSupplierContainer" class="vendor-section"></div>
                 </div>
             </div>
             <div class="card">
@@ -1280,10 +1318,8 @@
                             <option>Last Year</option>
                         </select>
                     </div>
-                    <img src="https://via.placeholder.com/500x120?text=Sales+Trend+Graph" alt="Trend Graph" style="width: 100%; height: 120px; object-fit: contain;">
                 </div>
             </div>
-
             <!-- Customers & Orders and Returns -->
             <div class="customer-order-section">
                 <div class="sales-card" style="flex: 2;">
@@ -1333,7 +1369,6 @@
                             <option>Last Year</option>
                         </select>
                     </div>
-                    <img src="https://via.placeholder.com/300x100?text=Return+Trend+Chart" alt="Return Trend Graph" style="width: 100%; height: 100px; object-fit: contain;">
                 </div>
             </div>
         </div>
@@ -1346,40 +1381,40 @@
     <!-- Chart JS Scripts -->
     <script>
 
-        function exportDashboardToPdf() {
-            const { jsPDF } = window.jspdf;
-            const element = document.getElementById("supplyChainDashboard");
+        // function exportDashboardToPdf() {
+        //     const { jsPDF } = window.jspdf;
+        //     const element = document.getElementById("supplyChainDashboard");
 
-            window.scrollTo(0, 0); // ensure it's in view
+        //     window.scrollTo(0, 0); // ensure it's in view
 
-            html2canvas(element, {
-                scale: 2,
-                useCORS: true,
-                backgroundColor: "#ffffff"
-            }).then(function (canvas) {
-                const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF("p", "mm", "a4");
+        //     html2canvas(element, {
+        //         scale: 2,
+        //         useCORS: true,
+        //         backgroundColor: "#ffffff"
+        //     }).then(function (canvas) {
+        //         const imgData = canvas.toDataURL("image/png");
+        //         const pdf = new jsPDF("p", "mm", "a4");
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
+        //         const pdfWidth = pdf.internal.pageSize.getWidth();
+        //         const pdfHeight = pdf.internal.pageSize.getHeight();
 
-                const imgProps = pdf.getImageProperties(imgData);
-                const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 30) / imgProps.height);
+        //         const imgProps = pdf.getImageProperties(imgData);
+        //         const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 30) / imgProps.height);
 
-                const imgWidth = imgProps.width * ratio;
-                const imgHeight = imgProps.height * ratio;
+        //         const imgWidth = imgProps.width * ratio;
+        //         const imgHeight = imgProps.height * ratio;
 
-                // Add Header
-                pdf.setFontSize(16);
-                pdf.text("Supply Chain Dashboard", 10, 15);
-                pdf.setFontSize(10);
-                pdf.text("Date: " + new Date().toLocaleString(), 10, 25);
+        //         // Add Header
+        //         pdf.setFontSize(16);
+        //         pdf.text("Supply Chain Dashboard", 10, 15);
+        //         pdf.setFontSize(10);
+        //         pdf.text("Date: " + new Date().toLocaleString(), 10, 25);
 
-                // Add dashboard image below header
-                pdf.addImage(imgData, "PNG", 10, 30, imgWidth, imgHeight);
-                pdf.save("dashboard.pdf");
-            });
-        }
+        //         // Add dashboard image below header
+        //         pdf.addImage(imgData, "PNG", 10, 30, imgWidth, imgHeight);
+        //         pdf.save("dashboard.pdf");
+        //     });
+        // }
 
         function exportDashboardToForInventoryPdf() {
             const { jsPDF } = window.jspdf;
@@ -1498,7 +1533,8 @@
                     FillPurchaseDashboardDataByCategoryValue();
                     FillPurchaseDashboardNewVendorInThisMonthData();
                     FillPurchaseVsConsumptionDashboardData();
-                    FillBestAndWorstSupplier();
+                    FillBestSupplier();
+                    FillWorstSupplier();
                 } else if (tabId === "inventoryTab") {
                     $('#RefreshInventoryAllData').val(false);
                     FillInventoryDashboardData();
@@ -1798,66 +1834,66 @@
         // });
 
         // Supply Chain Dashboard Charts
-        new Chart("perfectOrdersChart", {
-            type: "doughnut",
-            data: {
-                labels: ["Perfect", "Others"],
-                datasets: [{
-                    data: [90.1, 9.9],
-                    backgroundColor: ["#2ecc71", "#ecf0f1"]
-                }]
-            },
-            options: {
-                cutout: '70%',
-                plugins: { legend: { display: false } }
-            }
-        });
+        // new Chart("perfectOrdersChart", {
+        //     type: "doughnut",
+        //     data: {
+        //         labels: ["Perfect", "Others"],
+        //         datasets: [{
+        //             data: [90.1, 9.9],
+        //             backgroundColor: ["#2ecc71", "#ecf0f1"]
+        //         }]
+        //     },
+        //     options: {
+        //         cutout: '70%',
+        //         plugins: { legend: { display: false } }
+        //     }
+        // });
 
-        new Chart("warehouseBarChart", {
-            type: "bar",
-            data: {
-                labels: ["California", "Texas", "Kansas", "New Jersey"],
-                datasets: [{
-                    label: "Perfect Orders",
-                    data: [30, 25, 15, 10],
-                    backgroundColor: "#3498db"
-                }]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
+        // new Chart("warehouseBarChart", {
+        //     type: "bar",
+        //     data: {
+        //         labels: ["California", "Texas", "Kansas", "New Jersey"],
+        //         datasets: [{
+        //             label: "Perfect Orders",
+        //             data: [30, 25, 15, 10],
+        //             backgroundColor: "#3498db"
+        //         }]
+        //     },
+        //     options: { scales: { y: { beginAtZero: true } } }
+        // });
 
-        new Chart("returnByProdChart", {
-            type: "bar",
-            data: {
-                labels: ["Type A", "Type B", "Type C", "Type D"],
-                datasets: [
-                    { label: "US", data: [10, 14, 8, 6], backgroundColor: "#e74c3c" },
-                    { label: "Canada", data: [6, 9, 5, 4], backgroundColor: "#2ecc71" },
-                    { label: "Germany", data: [4, 7, 3, 2], backgroundColor: "#f1c40f" }
-                ]
-            },
-            options: {
-                plugins: { legend: { position: 'bottom' } },
-                scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
-            }
-        });
+        // new Chart("returnByProdChart", {
+        //     type: "bar",
+        //     data: {
+        //         labels: ["Type A", "Type B", "Type C", "Type D"],
+        //         datasets: [
+        //             { label: "US", data: [10, 14, 8, 6], backgroundColor: "#e74c3c" },
+        //             { label: "Canada", data: [6, 9, 5, 4], backgroundColor: "#2ecc71" },
+        //             { label: "Germany", data: [4, 7, 3, 2], backgroundColor: "#f1c40f" }
+        //         ]
+        //     },
+        //     options: {
+        //         plugins: { legend: { position: 'bottom' } },
+        //         scales: { x: { stacked: true }, y: { stacked: true, beginAtZero: true } }
+        //     }
+        // });
 
-        new Chart("returnTrendChart", {
-            type: "line",
-            data: {
-                labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-                datasets: [
-                    {
-                        label: "Return Volume",
-                        data: [20000, 25000, 30000, 28000, 31000, 34000],
-                        borderColor: "#e67e22",
-                        fill: false,
-                        tension: 0.3
-                    }
-                ]
-            },
-            options: { scales: { y: { beginAtZero: true } } }
-        });
+        // new Chart("returnTrendChart", {
+        //     type: "line",
+        //     data: {
+        //         labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
+        //         datasets: [
+        //             {
+        //                 label: "Return Volume",
+        //                 data: [20000, 25000, 30000, 28000, 31000, 34000],
+        //                 borderColor: "#e67e22",
+        //                 fill: false,
+        //                 tension: 0.3
+        //             }
+        //         ]
+        //     },
+        //     options: { scales: { y: { beginAtZero: true } } }
+        // });
 
         function RefreshInventoryAllData() {
             var icon = $('.refreshIcon');
@@ -2521,18 +2557,18 @@
                         }
 
                         html += `
-                                                            <div class="vendor-card">
-                                                                <div class="vendor-header">
-                                                                    <div class="vendor-logo">${initials}</div>
-                                                                    <h3>${item.AccountName}</h3>
-                                                                    ${badgeHtml}
-                                                                </div>
-                                                                <div class="vendor-details">
-                                                                    <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
-                                                                    <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
-                                                                    <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
-                                                                </div>
-                                                            </div>`;
+                                                                            <div class="vendor-card">
+                                                                                <div class="vendor-header">
+                                                                                    <div class="vendor-logo">${initials}</div>
+                                                                                    <h3>${item.AccountName}</h3>
+                                                                                    ${badgeHtml}
+                                                                                </div>
+                                                                                <div class="vendor-details">
+                                                                                    <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
+                                                                                    <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
+                                                                                    <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
+                                                                                </div>
+                                                                            </div>`;
                     });
 
                     $('.vendors-container').empty().append(html);
@@ -2568,27 +2604,79 @@
             });
         }
 
-        function FillBestAndWorstSupplier() {
-
+        function FillBestSupplier() {
             $.ajax({
-                url: '@Url.Action("FillBestAndWorstSupplier", "Home")',
+                url: '@Url.Action("FillBestSupplier", "Home")',
                 type: 'POST',
-                async: false,
-                success: function (data, status, error) {
+                success: function (data) {
                     var obj = $.parseJSON(data);
-                    var html = '';
-                    $.each(obj.Result, function (i, item) {
-                        html += '<tr>';
-                        html += '<td>' + item.PartCode + '</td>';
-                        html += '<td>' + item.ItemName + '</td>';
-                        html += '<td>' + item.POQty + '</td>';
-                        html += '<td>' + item.ConsumptionQty + '</td>';
-                        html += '</tr>';
+                    var best = obj.Result || [];
+                    var vendorList = $('#vendor-list');
+                    vendorList.empty();
+
+                    best.forEach(vendor => {
+                        vendorList.append(`
+                                    <div class="vendor-item">
+                                        <div class="vendor-info">
+                                            <div class="vendor-name">${vendor.AccountName}</div>
+                                            <div class="vendor-code">${vendor.AccountCode}</div>
+                                        </div>
+                                        <div class="vendor-ratings">
+                                            <div class="rating-box price-rating">
+                                                <div class="rating-label">Price</div>
+                                                <div class="rating-value">${vendor.VendorPriceRating.toFixed(1)}</div>
+                                            </div>
+                                            <div class="rating-box delivery-rating">
+                                                <div class="rating-label">Delivery</div>
+                                                <div class="rating-value">${vendor.VendorDeliveryRating.toFixed(1)}</div>
+                                            </div>
+                                            <div class="rating-box quality-rating">
+                                                <div class="rating-label">Quality</div>
+                                                <div class="rating-value">${vendor.VendorQualityRating.toFixed(1)}</div>
+                                            </div>
+                                            <div class="rating-box final-rating">
+                                                <div class="rating-label">Overall</div>
+                                                <div class="rating-value">${vendor.VendorFinalRating.toFixed(1)}</div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `);
                     });
-                    $('#PoVsConsumption').empty().append(html);
                 },
-                error: function (xhr, status, error) {
-                    alert('Failed to load ledger names.');
+                error: function () {
+                    $('#vendor-list').html('<div class="no-vendors">Failed to load vendor data</div>');
+                }
+            });
+        }
+
+        function FillWorstSupplier() {
+            $.ajax({
+                url: '@Url.Action("FillWorstSupplier", "Home")',
+                type: 'POST',
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    var worst = obj.Result || [];
+
+                    // Clear containers
+                    $('#worstSupplierContainer').empty();
+
+                    // Worst Supplier Cards
+                    worst.forEach(function (item) {
+                        var card = `
+                                    <div class="vendor-card worst">
+                                        <div class="vendor-title">${item.AccountCode} - ${item.AccountName}</div>
+                                        <div class="vendor-sub">Lowest Rated Supplier</div>
+                                        <div class="rating"><span>Price:</span> ${item.VendorPriceRating}</div>
+                                        <div class="rating"><span>Delivery:</span> ${item.VendorDeliveryRating}</div>
+                                        <div class="rating"><span>Quality:</span> ${item.VendorQualityRating}</div>
+                                        <div class="rating"><span>Final:</span> ${item.VendorFinalRating}</div>
+                                    </div>
+                                `;
+                        $('#worstSupplierContainer').append(card);
+                    });
+                },
+                error: function () {
+                    alert('Failed to load supplier data.');
                 }
             });
         }
