@@ -29,7 +29,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillPurchaseDashboardDataMonthlyTrend();
         Task<ResponseResult> FillPurchaseDashboardNewVendorInThisMonthData();
         Task<ResponseResult> FillPurchaseVsConsumptionDashboardData();
-        Task<ResponseResult> FillBestAndWorstSupplier();
+        Task<ResponseResult> FillBestSupplier();
+        Task<ResponseResult> FillWorstSupplier();
         Task<ResponseResult> SaveNoOfPOItemsAndPending();
         Task<ResponseResult> SaveTop10ItemForPO();
         Task<ResponseResult> SaveTop10VendorForPO();

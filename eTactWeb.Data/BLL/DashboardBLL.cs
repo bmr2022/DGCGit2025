@@ -98,9 +98,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.FillPurchaseVsConsumptionDashboardData();
         }
-        public async Task<ResponseResult> FillBestAndWorstSupplier()
+        public async Task<ResponseResult> FillBestSupplier()
         {
-            return await _DashboardDAL.FillBestAndWorstSupplier();
+            return await _DashboardDAL.FillBestSupplier();
+        }
+        public async Task<ResponseResult> FillWorstSupplier()
+        {
+            return await _DashboardDAL.FillWorstSupplier();
         }
         public async Task<ResponseResult> SaveNoOfPOItemsAndPending()
         {
