@@ -181,6 +181,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetWorkCenterId"));
+                SqlParams.Add(new SqlParameter("@WorkCenterDescription", WorkCenterDescription));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> DeleteItemByID(int ID)
         {
             var _ResponseResult = new ResponseResult();
@@ -748,6 +768,25 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "INSERTMULTIPLE"));   
                 SqlParams.Add(new SqlParameter("@DTSSGrid", ItemDetailGrid));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult>UpdateMultipleItemData(DataTable ItemDetailGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "UPDATEMULTIPLE"));   
+                SqlParams.Add(new SqlParameter("@DTSIMGrid", ItemDetailGrid));
 
                 _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
             }
