@@ -20,6 +20,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItemGroup(string ItemServAssets);
 		Task<ResponseResult> GetUnitList();
 		Task<ResponseResult> GetProdInWorkcenter();
+		Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription);
         Task<ResponseResult> GetItemGroupCode(string GroupCode);
         Task<ResponseResult> GetItemCatCode(string CatCode);
         //Task<ResponseResult> GetDupItemNameFeatureOpt();
@@ -27,6 +28,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> SaveData(ItemMasterModel model);
         Task<ResponseResult> SaveMultipleItemData(DataTable ItemDetailGrid);
+        Task<ResponseResult> UpdateMultipleItemData(DataTable ItemDetailGrid);
 
     }
 }

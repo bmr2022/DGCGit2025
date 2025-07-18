@@ -212,8 +212,42 @@ namespace eTactWeb.DOM.Models
             set => _YesNo = value;
         }
         public List<ItemViewModel>? ExcelDataList { get; set; }
+        public List<ImportItemViewModel>? ImportExcelDataList { get; set; }
     }
+    public class ImportItemViewModel // Excel data
+    {
+        public int Item_Code { get; set; }
+        public string PartCode { get; set; }
+        public string Item_Name { get; set; }
+        public string ItemGroup { get; set; }
+        public string TypeName { get; set; }
+        public string Unit { get; set; }
+        public string AlternateUnit { get; set; }
+        public int HSNNO { get; set; }
+        public decimal MinimumLevel { get; set; }
+        public decimal MaximumLevel { get; set; }
+        public int StdPacking { get; set; }
+        public int ProdInWorkcenter { get; set; }
+        public string ProdInhouseJW { get; set; }
+        public string WorkCenter { get; set; }
+        public string BatchNO { get; set; }
+        public string EntryDate { get; set; }
+        public string CreatedBy { get; set; }
+        public DateTime? CreatedOn { get; set; }
+        public string UpdatedBy { get; set; }
+        public DateTime? UpdatedOn { get; set; }
+        public string OldPartCode { get; set; }
+        public string VoltageVlue { get; set; }
+        public string SerialNo { get; set; }
+        public string Package { get; set; }
+        public string ItemServAssets { get; set; }
+        public int ItemGroupCode { get; set; }
+        public int ItemCategoryCode { get; set; }
+        public string PartCodeExists { get; set; }
+        public string ItemNameExists { get; set; }
+        public int SeqNo { get; set; }
 
+    }
     public class ItemViewModel // Excel data
     {
         public string? PartCode { get; set; }

@@ -679,7 +679,7 @@ namespace eTactWeb.Data.DAL
                             WOEntryId = row["PLanEntryId"] != null ? Convert.ToInt32(row["PLanEntryId"]) : 0,
                             WOYearCode = row["PlanYearCode"] != null ? Convert.ToInt32(row["PlanYearCode"]) : 0,
                             ItemCode = row["itemCode"] != DBNull.Value ? Convert.ToInt32(row["itemCode"]) : 0,
-                            //ProdInWC = row["Workcenter"] != DBNull.Value ? Convert.ToInt32(row["Workcenter"]) : 0
+                            ProdInWC = row["Workcenter"] != DBNull.Value ? Convert.ToInt32(row["Workcenter"]) : 0
 
                         });
                     }

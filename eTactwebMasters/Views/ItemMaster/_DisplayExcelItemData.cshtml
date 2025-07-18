@@ -1,0 +1,45 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+
+@{
+    var Cntr = 0;
+    var ErrorCntr = 0;
+}
+
+@if (Model.ImportExcelDataList == null)
+{
+    <tr class="text-center">
+        <td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    @foreach (var item in Model.ImportExcelDataList)
+    {
+        Cntr = Cntr + 1;
+        <tr>
+            <td id="Sr-@Cntr">@Cntr</td>
+            <td id="Item_Code-@Cntr">@item.Item_Code</td>
+            <td id="PartCode-@Cntr">@item.PartCode</td>
+            <td id="Item_Name-@Cntr">@item.Item_Name</td>
+            <td id="ItemGroup-@Cntr">@item.ItemGroup</td>
+            <td id="ItemGroupCode-@Cntr">@item.ItemGroupCode</td>
+            <td id="TypeName-@Cntr">@item.TypeName</td>
+            <td id="ItemCategoryCode-@Cntr">@item.ItemCategoryCode</td>
+            <td id="Unit-@Cntr">@item.Unit</td>
+            <td id="AlternateUnit-@Cntr">@item.AlternateUnit</td>
+            <td id="HSNNO-@Cntr">@item.HSNNO</td>
+            <td id="MinimumLevel-@Cntr">@item.MinimumLevel</td>
+            <td id="MaximumLevel-@Cntr">@item.MaximumLevel</td>
+            <td id="StdPacking-@Cntr">@item.StdPacking</td>
+            <td id="ProdInWorkcenter-@Cntr">@item.ProdInWorkcenter</td>
+            <td id="WorkCenter-@Cntr">@item.WorkCenter</td>
+            <td id="ProdInhouseJW-@Cntr">@item.ProdInhouseJW</td>
+            <td id="BatchNO-@Cntr">@item.BatchNO</td>
+            <td id="OldPartCode-@Cntr">@item.OldPartCode</td>
+            <td id="VoltageVlue-@Cntr">@item.VoltageVlue</td>
+            <td id="SerialNo-@Cntr">@item.SerialNo</td>
+            <td id="Package-@Cntr">@item.Package</td>
+
+        </tr>
+    }
+}
