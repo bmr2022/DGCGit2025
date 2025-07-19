@@ -14,7 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetSearchData(string FromDate, string ToDate, string ApprovalType, string PONO, string VendorName,int EmpId, string UID);
         Task<ResponseResult> GetAllowedAction(string Flag, int EmpId);
         Task<ResponseResult> SaveApproval(int EntryId, int YC, string PONO, string type,int EmpID);
-        Task<List<POApprovalDetail>> ShowPODetail(int ID, int YearCode, string PoNo, string TypeOfApproval);
+        Task<List<POApprovalDetail>> ShowPODetail(int ID, int YearCode, string PoNo, string TypeOfApproval,string showonlyamenditem);
 
     }
 }

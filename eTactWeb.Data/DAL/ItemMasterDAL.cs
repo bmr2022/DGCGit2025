@@ -105,8 +105,28 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
-        } 
-        public async Task<ResponseResult> GetProdInWorkcenter()
+        }
+
+		public async Task<ResponseResult> GetUnitList()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "GetUnitList"));
+				
+
+				_ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+			return _ResponseResult;
+		}
+		public async Task<ResponseResult> GetProdInWorkcenter()
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -149,6 +169,26 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetCategoryCode"));
                 SqlParams.Add(new SqlParameter("@TypeName", CName));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetWorkCenterId"));
+                SqlParams.Add(new SqlParameter("@WorkCenterDescription", WorkCenterDescription));
 
                 _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
 
@@ -728,6 +768,25 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "INSERTMULTIPLE"));   
                 SqlParams.Add(new SqlParameter("@DTSSGrid", ItemDetailGrid));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult>UpdateMultipleItemData(DataTable ItemDetailGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "UPDATEMULTIPLE"));   
+                SqlParams.Add(new SqlParameter("@DTSIMGrid", ItemDetailGrid));
 
                 _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
             }

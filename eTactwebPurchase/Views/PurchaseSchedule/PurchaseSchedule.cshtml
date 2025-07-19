@@ -734,12 +734,20 @@
                 var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val());
                 var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val());
                 /*    console.log("EntryDate" + EntryDate); */
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+               /*  $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
                 $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDate);
                 $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffFromDate);
                 $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchEffTillDate);
-                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate);
+                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SchAmendmentDate); */
+
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDateObj(parseDateToFormat($('#EntryDate').val())));
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDateObj(parseDateToFormat($('#PODate').val())));
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDateObj(parseDateToFormat($('#ScheduleDate').val())));
+                $('#SchEffFromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDateObj(parseDateToFormat($('#SchEffFromDate').val())));
+                $('#SchEffTillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDateObj(parseDateToFormat($('#SchEffTillDate').val())));
+                $('#SchAmendmentDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", toDateObj(parseDateToFormat($('#SchAmendmentDate').val())));
+
                 alert("entrydate2" + $('#EntryDate').val());
             }
             else {

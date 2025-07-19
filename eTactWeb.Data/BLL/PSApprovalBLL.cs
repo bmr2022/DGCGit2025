@@ -25,9 +25,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _PSAppDAL.GetPSData(Flag,FromDate, ToDate, ApprovalType, PONO,SchNo, VendorName, Eid, uid);
         }
-        public async Task<List<PSApprovalDetail>> ShowPSDetail(int ID, int YC, string SchNo)
+        public async Task<List<PSApprovalDetail>> ShowPSDetail(int ID, int YC, string SchNo,string ShowOnlyAmendItem)
         {
-            return await _PSAppDAL.ShowPSDetail(ID, YC, SchNo);
+            return await _PSAppDAL.ShowPSDetail(ID, YC, SchNo, ShowOnlyAmendItem);
         }
         public async Task<ResponseResult> SaveApproval(int EntryId, int YC, string SchNo, string type, int EmpID)
         {

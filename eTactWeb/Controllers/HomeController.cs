@@ -936,4 +936,16 @@ public class HomeController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+    public async Task<JsonResult> FillBestSupplier()
+    {
+        var JSON = await _IDashboard.FillBestSupplier();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> FillWorstSupplier()
+    {
+        var JSON = await _IDashboard.FillWorstSupplier();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 }

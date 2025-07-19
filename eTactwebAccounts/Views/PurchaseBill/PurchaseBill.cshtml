@@ -324,7 +324,148 @@
 {
     <script>
         var actualRate = 0;
+              var formRights = {
+                 gateoptView: false,
+                 gateoptUpdate: false
+               };
+                       var mrnFormRights = {
+             mrnoptView: false,
+             mrnoptUpdate: false
+           };
+            function GetGateNoFormRights() {
+                   $.ajax({
+                               url: "@Url.Action("GetFormRights", "GateInward")",
+                       type: "POST",
+                       success: function (data) {
+                                   if (!data) return;
+                     var obj = $.parseJSON(data);
+                     var r = obj.Result.Table[0];
+                             formRights.gateoptView   = r.OptView;
+                     formRights.gateoptUpdate = r.OptUpdate;
 
+                       },
+                       error: function (errMsg) {
+                           $.notify(errMsg, { position: "top center", className: "error" });
+                       }
+                   });
+               }
+            function MRNNoFormRights() {
+                   $.ajax({
+                               url: "@Url.Action("GetFormRights", "MaterialReceipt")",
+                       type: "POST",
+                       success: function (data) {
+                                   if (!data) return;
+                     var obj = $.parseJSON(data);
+                     var r = obj.Result.Table[0];
+                             mrnFormRights.mrnoptView   = r.OptView;
+                     mrnFormRights.mrnoptUpdate = r.OptUpdate;
+
+                       },
+                       error: function (errMsg) {
+                           $.notify(errMsg, { position: "top center", className: "error" });
+                       }
+                   });
+               }
+                 function redirectToGateEdit() {
+            var gateNo = $('#GateNo').val();
+            var yearCode = $('#GateYearCode').val();
+            var entryId = $('#GateEntryId').val();
+
+            if (!formRights.gateoptView) {
+                return alert("You do not have rights to view this record.");
+            }
+
+            if (!gateNo || !yearCode || !entryId) return;
+
+            $.ajax({
+                url: '/GateInward/CheckEditOrDelete',
+                type: "POST",
+                data: {
+                    "GateNo": gateNo,
+                    "YearCode": yearCode
+                },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    var mode = "V"; // default to View
+
+                    if (obj.Result.length > 0 && obj.Result[0].MRNNO === '' && obj.Result[0].MRNTYPE === '') {
+                        mode = formRights.gateoptUpdate ? "U" : "V";
+                    }
+
+                    var url = '/GateInward/GateInward?Mode=' + mode +
+                              '&ID=' + entryId +
+                              '&YC=' + yearCode;
+
+                    window.open(url, '_blank');
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+                     function redirectToMRNEdit() {
+            var MRNNo = $('#MRNNo').val();
+            var yearCode = $('#MRNYearCode').val();
+            var entryId = $('#MRNEntryId').val();
+
+            if (!MRNNo || !yearCode || !entryId) {
+                return;
+            }
+
+            if (!mrnFormRights.mrnoptView) {
+                return alert("You do not have rights to view this record.");
+            }
+
+            // AJAX call to check if MIRNO exists
+            $.ajax({
+                url: '/MaterialReceipt/CheckEditOrDelete',
+                type: "POST",
+                data: {
+                    "MRNNo": MRNNo,
+                    "YearCode": yearCode
+                },
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+                    var mode = "V"; // Default to view mode
+
+                    if (obj.Result.length > 0 && obj.Result[0].MIRNO == '') {
+                        // QC not done, allow update if rights exist
+                        mode = mrnFormRights.mrnoptUpdate ? "U" : "V";
+                    }
+
+                    var url = '/MaterialReceipt/MaterialReceipt?Mode=' + mode +
+                              '&ID=' + entryId +
+                              '&YC=' + yearCode;
+
+                    window.open(url, '_blank');
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+              /*      function redirectToMRNEdit() {
+
+                               var MRNNo = $('#MRNNo').val();
+                                       var yearCode = $('#MRNYearCode').val();
+                                       var entryId = $('#MRNEntryId').val();
+                                                 if (!mrnFormRights.mrnoptView) {
+                                                               return alert("You do not have rights to view this record.");
+                                                             }
+                                                                     var mode = mrnFormRights.mrnoptUpdate ? "U" : "V";
+
+                               if (MRNNo && yearCode && entryId) {
+                                 
+                                           var url = '/MaterialReceipt/MaterialReceipt?Mode=' + mode +
+                                                                               '&ID=' + entryId +
+                                                                               '&YC=' + yearCode;
+                                                                     window.open(url, '_blank');
+                                   
+                               }
+
+                   } */
         $(function () {
             $('#EntryByMachineName').val($('#machineName').text());
             $('.DH').fadeOut();
@@ -399,6 +540,8 @@
             GetExchnageRate();
             FillTDSTaxType();
             FillCurrency();
+            GetGateNoFormRights();
+            MRNNoFormRights();
             var rowCounter = $('#PBPendingItemDetail tr').length;
             for (var i = 1; i <= rowCounter; i++) {
                 BillRateChange(i);

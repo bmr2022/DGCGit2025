@@ -25,6 +25,10 @@ namespace eTactWeb.Data.BLL
             _WIPStockRegisterDAL = new WIPStockRegisterDAL(configuration, iDataLogic, _httpContextAccessor,connectionStringService);
         }
 
+        public async Task<ResponseResult> FillItems( string SearchItemCode, string SearchPartCode)
+        {
+            return await _WIPStockRegisterDAL.FillItems( SearchItemCode, SearchPartCode);
+        }
         public async Task<ResponseResult> GetAllWorkCenter()
         {
             return await _WIPStockRegisterDAL.GetAllWorkCenter();

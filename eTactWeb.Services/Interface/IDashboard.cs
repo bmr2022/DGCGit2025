@@ -29,6 +29,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillPurchaseDashboardDataMonthlyTrend();
         Task<ResponseResult> FillPurchaseDashboardNewVendorInThisMonthData();
         Task<ResponseResult> FillPurchaseVsConsumptionDashboardData();
+        Task<ResponseResult> FillBestSupplier();
+        Task<ResponseResult> FillWorstSupplier();
         Task<ResponseResult> SaveNoOfPOItemsAndPending();
         Task<ResponseResult> SaveTop10ItemForPO();
         Task<ResponseResult> SaveTop10VendorForPO();
@@ -36,5 +38,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SavePOCategoryWise();
         Task<ResponseResult> SavePOVsConsumption();
         Task<ResponseResult> SaveNewVendorOfTheMonth();
+        Task<ResponseResult> SaveBestAndWorstSupplier();
     }
 }

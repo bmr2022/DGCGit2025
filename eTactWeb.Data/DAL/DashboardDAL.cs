@@ -398,6 +398,44 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> FillBestSupplier()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "BEST SUPPLIER"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillWorstSupplier()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType", "PURCHASE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "WORST SUPPLIER"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPXONDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> SaveNoOfPOItemsAndPending()
         {
             var _ResponseResult = new ResponseResult();
@@ -535,6 +573,27 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
                 SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveBestAndWorstSupplier()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@ReportType ", "PURCHASE DASHBOARD VENDOR RATING"));
+                SqlParams.Add(new SqlParameter("@FLAG", ""));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPReportVendoreRatingAnalysisAndVendoreReport", SqlParams);
             }
             catch (Exception ex)
             {

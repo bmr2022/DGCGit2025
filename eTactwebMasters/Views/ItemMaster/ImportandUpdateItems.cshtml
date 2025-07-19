@@ -31,10 +31,10 @@
                         <div class="col-auto">
                             @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
                             <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
-                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                            <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                            IMPORT
-                                        </a>
+                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                IMPORT
+                            </a>
                         </div>
                         <div class="row justify-content-between g-2">
                             <div class="col-auto">
@@ -87,27 +87,32 @@
                                             <table class="table table-hover table-bordered table-striped" id="itemtable">
                                                 <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
                                                     <tr id="headerRow">
-                                                        <th>Action</th>
-                                                        <th>Part Code</th>
-                                                        <th>Item Name</th>
+                                                        <th>Sr</th>
+                                                        <th>Item_Code</th>
+                                                        <th>PartCode</th>
+                                                        <th>Item_Name</th>
+                                                        <th>ItemGroup</th>
+                                                        <th>ItemGroupCode</th>
+                                                        <th>ItemCategory</th>
+                                                        <th>ItemCategoryCode</th>
                                                         <th>Unit</th>
-                                                        <th>HSN No</th>
-                                                        <th>Item Group</th>
-                                                        <th>Group Code</th>
-                                                        <th>Item Category</th>
-                                                        <th>Category Code</th>
-                                                        <th>Min Level</th>
-                                                        <th>Max Level</th>
-                                                        <th>Stockable</th>
-                                                        <th>WIP stockable</th>
-                                                        <th>Need PO</th>
-                                                        <th>QC Req</th>
-                                                        <th>Std Pkg</th>
-                                                        <th>ItemServAssets</th>
+                                                        <th>AlternateUnit</th>
+                                                        <th>HSNNO</th>
+                                                        <th>MinimumLevel</th>
+                                                        <th>MaximumLevel</th>
+                                                        <th>StdPacking</th>
+                                                        <th>ProdWorkCenterDescription</th>
+                                                        <th>ProdWorkCenterId</th>
+                                                        <th>ProdInhouseJW</th>
+                                                        <th>BatchNO</th>
+                                                        <th>OldPartCode</th>
+                                                        <th>VoltageValue</th>
+                                                        <th>SerialNo</th>
+                                                        <th>Package</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="divItemList">
-                                                    <partial name="_DisplayExcelData" />
+                                                    <partial name="_DisplayExcelItemData" />
                                                 </tbody>
                                             </table>
                                         </div>
@@ -194,20 +199,21 @@
 </div>
 
 @section Scripts
-    {
+{
     <script>
          $(document).ready(function () {
             GetFormRights();
          });
+        
         function UploadButton() {
             var fileInput = $('#ExcelFile');
             var file = fileInput.prop("files")[0];
 
             var formData = new FormData();
             formData.append("excelFile", file);
-             
+
             $.ajax({
-                url: "/ItemMaster/UploadExcel",
+                url: "/ItemMaster/UpdateUploadExcel",
                 type: "POST",
                 data: formData,
                 processData: false,
@@ -259,7 +265,7 @@
             //    processData: false,
             //    contentType: false,
             //    success: function (result) {
-            //         
+            //
             //        $('#divItemList').html(result);
             //        CheckBeforeSubmit();
             //    }
@@ -271,16 +277,16 @@
         }
 
         function SubmitData(e) {
-               
+
             var RowCount = $('#divItemList tr').length;
             var errorCount = parseInt($('#ErrorCntr-' + RowCount).val());
 
-            if (errorCount != 0) {
-                e.preventDefault();
-                $.notify("Error in data can't submit", "error");
-                return false;
-            }
-            else {
+            // if (errorCount != 0) {
+            //     e.preventDefault();
+            //     $.notify("Error in data can't submit", "error");
+            //     return false;
+            // }
+            // else {
                 var ItemData = [];
                 for (let i = 1; i <= RowCount; i++) {
 
@@ -288,29 +294,28 @@
                         "PartCode": $('#PartCode-' + i).text(),
                         "ItemName": $('#ItemName-' + i).text(),
                         "Unit": $('#Unit-' + i).text(),
-                        "HSNNo": parseInt($('#HsnNo-' + i).text()),
-                        "ItemGroupCode": parseInt($('#ItemgroupCode-' + i).text()),
-                        "ItemCategoryCode": parseInt($('#ItemCatCode-' + i).text()),
-                        "MinLevel": parseInt($('#MinLevel-' + i).text()),
-                        "MaxLevel": parseInt($('#MaxLevel-' + i).text()),
-                        "Stockable": $('#Stockable-' + i).text(),
-                        "WIPStockable": $('#WIPStock-' + i).text(),
-                        "NeedPO": $('#NeedPo-' + i).text(),
-                        "QcReq": $('#QCReq-' + i).text(),
-                        "StdPkg": parseInt($('#StdPkg-' + i).text()),
-                        "ItemServAssets": $('#ItemServAssets-' + i).text()
+                        "HSNNo": parseInt($('#HSNNO-' + i).text()),
+                        "ItemGroupCode": parseInt($('#ItemGroupCode-' + i).text()),
+                        "ItemCategoryCode": parseInt($('#ItemCategoryCode-' + i).text()),
+                        "MinLevel": parseInt($('#MinimumLevel-' + i).text()),
+                        "MaxLevel": parseInt($('#MaximumLevel-' + i).text()),
+                        "ProdInWorkcenter": $('#ProdInWorkcenter-' + i).text(),
+                        "ProdInhouseJW": $('#ProdInhouseJW-' + i).text(),
+                        "BatchNO": $('#BatchNO-' + i).text(),
+                        "VoltageVlue": $('#VoltageVlue-' + i).text(),
+                        "Package": parseInt($('#Package-' + i).text())
                     });
                 }
-            }
+          //  }
               // alert('Model'+ItemData);
             $.ajax({
-                url: "@Url.Action("AddItemListdata")",
+                url: "@Url.Action("UpdateItemListdata")",
                 type: "POST",
                 data: { model: ItemData },
                 beforeSend: function (xhr) {
 
                 },
-               
+
                 success: function (data, status, xhr) {
                     console.log("success");
 
@@ -335,7 +340,7 @@
                 //        processData:false,
                 //        contentType:false,
                 //        success:function(result){
-                //             
+                //
                 //            $('#divItemList').html(result);
                 //        }
                 //    });
@@ -360,7 +365,7 @@
                     name: 'ImportItemsFile'
                 }
             });
-             
+
             var groupTh=$("<th>Group Code</th>");
             var catTh=$("<th>Category Code</th>");
             $("#headerRow").prepend(newTh);

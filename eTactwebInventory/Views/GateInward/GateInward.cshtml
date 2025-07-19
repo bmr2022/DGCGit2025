@@ -215,7 +215,7 @@
                         <div class="accordion-body">
                             <div class="row g-2 gx-3" id="_ItemGrid">
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                                    <label asp-for="PoNo" class="form-label">PO NO</label>
+                                    <label asp-for="PoNo" class="form-label" onclick="redirectToPoSelectEdit()">PO NO</label>
                                     @*  <input asp-for="NeedPo" type="hidden"/> *@
                                     <select class="form-select" data-abcd="7" asp-for="PoNo" id="PONO">
                                         <option value="" disabled>-Select-</option>
@@ -270,15 +270,15 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:180px">
                                     <label class="form-label" asp-for="ItemName" style="color: red;">Item Name*</label>
-                                    <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    
                                         <select class="form-select" data-abcd="14" style="width:180px;" asp-for="ItemName">
                                             <option value="">-Select-</option>
                                         </select>
-                                    </div>
+                                    
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:70px">
                                     <label asp-for="Unit" class="form-label" style="color: red;">Unit*</label>
                                     <input asp-for="Unit" data-abcd="15" class="form-control" />
                                 </div>
@@ -290,7 +290,7 @@
                                     <label asp-for="Rate" class="form-label">Rate</label>
                                     <input asp-for="Rate" data-abcd="17" class="form-control" type="number" min="0" />
                                 </div>
-                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:70px">
                                     <label asp-for="AltUnit" class="form-label">Alt Unit</label>
                                     <input asp-for="AltUnit" data-abcd="18" class="form-control" readonly />
                                 </div>
@@ -317,6 +317,14 @@
                                 <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="Remarks" class="form-label">Remarks</label>
                                     <input asp-for="Remarks" data-abcd="23" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="SupplierBatchNo" class="form-label">Supply batch no</label>
+                                    <input asp-for="SupplierBatchNo" data-abcd="32" class="form-control" />
+                                </div>
+                                <div class="col-xl-1 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ShelfLife" class="form-label">Shelf Life(Months)</label>
+                                    <input asp-for="ShelfLife" data-abcd="33" type="number" class="form-control" />
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" id="SaleBillNumber">
                                     @if (Model.Mode == "U" || Model.Mode == "V")
@@ -354,6 +362,7 @@
                                     <label asp-for="ChallanQty" class="form-label ChallanElements"></label>
                                     <input asp-for="ChallanQty" class="form-control ChallanElements" readonly />
                                 </div>
+                                
                                 <div class="d-flex align-items-center gap-3">
                                     <!-- Show/Hide Fields -->
                                     <div class="form-check form-switch">
@@ -375,14 +384,7 @@
                                         <label asp-for="ItemColor" class="form-label">Item Color</label>
                                         <input asp-for="ItemColor" data-abcd="31" class="form-control" />
                                     </div>
-                                    <div class="AF col-sm-auto col-xl-1 col-md-2 col-sm-3 col-xs-12">
-                                        <label asp-for="SupplierBatchNo" class="form-label">Supply batch no</label>
-                                        <input asp-for="SupplierBatchNo" data-abcd="32" class="form-control" />
-                                    </div>
-                                    <div class="AF col-sm-auto">
-                                        <label asp-for="ShelfLife" class="form-label">Shelf Life</label>
-                                        <input asp-for="ShelfLife" data-abcd="33" type="number" class="form-control" />
-                                    </div>
+                                   
                                     <div class="AF col-sm-auto">
                                         <label asp-for="ProcessId" class="form-label">Process Name</label>
                                         <select class="form-select" data-abcd="34" asp-for="ProcessId" asp-items="@(new SelectList(Model.ProcessList,"Value","Text"))">
@@ -694,10 +696,73 @@
         });
         $('#confirmSave').click(function () {
             checkDuplicateEntry();
-        });
+                }); 
+                var formRights = {
+                     pooptView: false,
+                     pooptUpdate: false
+                    };
+                   function PoNoFormRights() {
+                        $.ajax({
+                                            url: "@Url.Action("GetFormRights", "PurchaseOrder")",
+                            type: "POST",
+                            success: function (data) {
+                                        if (!data) return;
+                          var obj = $.parseJSON(data);
+                          var r = obj.Result.Table[0];
+                                          formRights.pooptView   = r.OptView;
+                                          formRights.pooptUpdate = r.OptUpdate;
 
+                            },
+                            error: function (errMsg) {
+                                $.notify(errMsg, { position: "top center", className: "error" });
+                            }
+                        });
+                    }
+                    function redirectToPoSelectEdit(){
+
+                                         var selectedOption = $('#PONO option:selected');
+                                                            var yearCode = $('#PoYear').val();
+                                                            var entryId = selectedOption.data('entryid');
+                                    if (!formRights.pooptView) {
+                                                                            return alert("You do not have rights to view this record.");
+                                                                          }
+                                                                                          /* var mode = formRights.pooptUpdate  ? "U" : "V"; Comment by mayuri*/
+                                                                                                     var mode ="V";
+                                            if (yearCode && entryId) {
+
+                                                             var url = '/PurchaseOrder/Index?Mode=' + mode +
+                                                                                            '&ID=' + entryId +
+                                                                                            '&YC=' + yearCode;
+                                                                                  window.open(url, '_blank');
+
+
+                                            }
+                                            else{
+                                                          alert("Please select a valid PO No and ensure PO Year is filled in.");
+                                            }
+                    }
+
+                                                    function redirectToPOEdit(yearCode, entryId) {
+
+                                 
+                                                              if (!formRights.pooptView) {
+                                                                    return alert("You do not have rights to view this record.");
+                                                                  }
+                                                                                  var mode ="V";
+
+                                    if (yearCode && entryId) {
+
+                                                     var url = '/PurchaseOrder/Index?Mode=' + mode +
+                                                                                    '&ID=' + entryId +
+                                                                                    '&YC=' + yearCode;
+                                                                          window.open(url, '_blank');
+
+                                      
+                                    }
+
+                        }
         $(document).ready(function () {
-
+            PoNoFormRights();
             $('#UpdateButton').click(function (e) {
                 e.preventDefault();
                 var Entrydate = $('#EntryDate').val();
@@ -1328,10 +1393,19 @@
                         $('#PONO').empty();
                         $('#PONO').append('<option disabled selected> -Select - </option>');
                         var i = 0;
-                        $.each(obj.Result.Table, function (index, val) {
-                            $('#PONO').append('<option value = "' + obj.Result.Table[i].PONO + '"> ' + obj.Result.Table[i].PONO + ' </option>');
+                     /*    $.each(obj.Result.Table, function (index, val) {
+                                                    $('#PONO').append('<option value = "' + obj.Result.Table[i].PONO +  '" data-EntryId="' + val.EntryId+'"> ' + obj.Result.Table[i].PONO + ' </option>');
                             i++;
-                        });
+                        }); */
+                       $.each(obj.Result.Table, function (index, val) {
+                    $('#PONO').append(
+                                        '<option value="' + obj.Result.Table[i].PONO + '" data-EntryId="' + obj.Result.Table[i].EntryId + '">' +
+                               obj.Result.Table[i].PONO +
+                        '</option>'
+                    );
+                            i++;
+                });
+
                     }
                 },
                 error: function (e) {

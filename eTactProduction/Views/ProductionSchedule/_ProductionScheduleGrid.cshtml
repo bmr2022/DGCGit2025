@@ -33,7 +33,7 @@ else
             <td class="ProdPendQty">@item.ProdPendQty</td>
             <td class="OriginalQty d-none">@item.Originalqty</td>
             <td class="TotalWOQty">@item.TotalWOQty</td>
-            <td class="WorkCenter"><select id="WorkCenter-@Cntr" style="background-color:#a2e8f6" onchange="workCenterChange(@Cntr)"></select></td>
+            <td class="WorkCenter"><select id="WorkCenter-@Cntr" data-selected="@item.ProdInWC" style="background-color:#a2e8f6" onchange="workCenterChange(@Cntr)"></select></td>
             <td id="GridAcName-@Cntr" class="d-none">@item.AccountName</td>
             <td class="Machine1"><select id="Machine1-@Cntr"></select></td>
             <td class="Machine2"><select id="Machine2-@Cntr"></select></td>

@@ -16,6 +16,9 @@ using Microsoft.AspNetCore.Authorization;
 using System.Net;
 using System.Drawing.Printing;
 using ClosedXML.Excel;
+using DinkToPdf;
+using System.Data;
+using System.Linq;
 
 namespace eTactWeb.Controllers;
 
@@ -636,6 +639,123 @@ public class ItemMasterController : Controller
 
         return View(model);
     }
+    public ActionResult ImportandUpdateItems()
+    {
+        ItemMasterModel model = new ItemMasterModel();
+        model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+        return View(model);
+    }
+    [HttpPost]
+    public IActionResult UpdateUploadExcel(IFormFile excelFile)
+    {
+        try
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            List<ImportItemViewModel> data = new List<ImportItemViewModel>();
+
+            using (var stream = excelFile.OpenReadStream())
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
+                var UnitList = _IItemMaster.GetUnitList();
+
+                for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+                {
+                    var cellValue = worksheet.Cells[row, 2].Value;
+                    if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
+                        break;
+
+                    var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value?.ToString());
+                    var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value?.ToString());
+                    var WorkCenterId = _IItemMaster.GetWorkCenterId(worksheet.Cells[row, 13].Value?.ToString());
+
+                    var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 3].Value?.ToString(), "PartCode", "Item_Master");
+                    var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 4].Value?.ToString(), "Item_Name", "Item_Master");
+
+                    var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
+                    var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
+
+                    var unit = worksheet.Cells[row, 7].Value?.ToString()?.Trim() ?? "";
+                    var unitdataset = UnitList.Result.Result;
+                    var unitTable = unitdataset.Tables[0];
+
+                    bool unitExists = false;
+                    foreach (DataRow rows in unitTable.Rows)
+                    {
+                        if (rows["Unit_name"].ToString().Trim().Equals(unit, StringComparison.OrdinalIgnoreCase))
+                        {
+                            unitExists = true;
+                            break;
+                        }
+                    }
+                    if (!unitExists)
+                    {
+                        return StatusCode(207, "Invalid Unit: " + unit);
+                    }
+
+                    ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
+
+                    int itemGCode = 1;
+                    int itemCCode = 1;
+                    int itemWorkCenterId = 0;
+
+                    if (itemGroupCode.Result.Result != null && itemGroupCode.Result.Result.Rows.Count > 0)
+                    {
+                        itemGCode = (int)itemGroupCode.Result.Result.Rows[0].ItemArray[0];
+                    }
+
+                    if (itemCatCode.Result.Result != null && itemCatCode.Result.Result.Rows.Count > 0)
+                    {
+                        itemCCode = (int)itemCatCode.Result.Result.Rows[0].ItemArray[0];
+                    }
+
+                    if (WorkCenterId.Result.Result != null && WorkCenterId.Result.Result.Rows.Count > 0)
+                    {
+                        itemWorkCenterId = (int)WorkCenterId.Result.Result.Rows[0].ItemArray[0];
+                    }
+
+                    data.Add(new ImportItemViewModel
+                    {
+                        Item_Code = Convert.ToInt32(worksheet.Cells[row, 2].Value?.ToString()),
+                        PartCode = worksheet.Cells[row, 3].Value?.ToString(),
+                        Item_Name = worksheet.Cells[row, 4].Value?.ToString(),
+                        ItemGroup = worksheet.Cells[row, 5].Value?.ToString(),
+                        ItemGroupCode = itemGCode,
+                        ItemCategoryCode = itemCCode,
+                        TypeName = worksheet.Cells[row, 6].Value?.ToString(),
+                        Unit = unit,
+                        AlternateUnit = worksheet.Cells[row, 8].Value?.ToString(),
+                        HSNNO = Convert.ToInt32(worksheet.Cells[row, 9].Value),
+                        MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 10].Value?.ToString()),
+                        MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 11].Value?.ToString()),
+                        StdPacking = Convert.ToInt32(worksheet.Cells[row, 12].Value?.ToString()),
+                        ProdInWorkcenter = itemWorkCenterId,
+                        WorkCenter = worksheet.Cells[row, 13].Value?.ToString(),
+                        ProdInhouseJW = worksheet.Cells[row, 14].Value?.ToString(),
+                        BatchNO = worksheet.Cells[row, 15].Value?.ToString(),
+                        OldPartCode = worksheet.Cells[row, 21].Value?.ToString(),
+                        VoltageVlue = worksheet.Cells[row, 22].Value?.ToString(),
+                        SerialNo = worksheet.Cells[row, 23].Value?.ToString(),
+                        Package = worksheet.Cells[row, 24].Value?.ToString(),
+                        ItemServAssets = worksheet.Cells[row, 25]?.Value?.ToString() ?? ""
+                    });
+                }
+            }
+
+            var model = new ItemMasterModel
+            {
+                ImportExcelDataList = data
+            };
+            return PartialView("_DisplayExcelItemData", model);
+        }
+        catch (Exception ex)
+        {
+            return StatusCode(500, "Excel processing error: " + ex.Message);
+        }
+    }
+
     [HttpPost]
     public IActionResult UploadExcel(IFormFile excelFile)
     {
@@ -647,9 +767,14 @@ public class ItemMasterController : Controller
         {
             var worksheet = package.Workbook.Worksheets[0];
              var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
+            var UnitList= _IItemMaster.GetUnitList();
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
-                var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString());
+				var cellValue = worksheet.Cells[row, 1].Value;
+
+				if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
+					break; // Stop when column 1 is empty
+				var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString());
                 var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
                 var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
                 var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
@@ -657,9 +782,27 @@ public class ItemMasterController : Controller
                 var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                 var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
 
-               
+				var unit = worksheet.Cells[row, 3].Value?.ToString()?.Trim() ?? "";
 
-                ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
+                var unitdataset = UnitList.Result.Result;
+			   var unitTable = unitdataset.Tables[0];
+
+				bool unitExists = false;
+				foreach (DataRow rows in unitTable.Rows)
+				{
+					if (rows["Unit_name"].ToString().Trim().Equals(unit, StringComparison.OrdinalIgnoreCase))
+					{
+						unitExists = true;
+						break;
+					}
+				}
+				if (!unitExists)
+				{
+                    return StatusCode(207, "Invalid Unit"+ unit);
+                }
+
+
+				ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
                 int itemGCode = 1;
                 int itemCCode = 1;
@@ -674,15 +817,19 @@ public class ItemMasterController : Controller
 
                 }
 
-                data.Add(new ItemViewModel()
+               
+				
+				data.Add(new ItemViewModel()
                 {
                     PartCode = worksheet.Cells[row, 1].Value.ToString(),
                     PartCodeExists = PartCodeExists,
                     ItemNameExists = ItemNameExists,
                     ItemName = worksheet.Cells[row, 2].Value.ToString(),
                     Unit = worksheet.Cells[row, 3].Value.ToString(),
-                    HSNNo = Convert.ToInt32(worksheet.Cells[row, 4].Value.ToString()),
-                    ItemGroup = worksheet.Cells[row, 5].Value.ToString(),
+                    HSNNo = (worksheet.Cells[row, 4].Value == null || string.IsNullOrWhiteSpace(worksheet.Cells[row, 4].Value.ToString()))
+		? 0
+		: Convert.ToInt32(worksheet.Cells[row, 4].Value.ToString()),
+					ItemGroup = worksheet.Cells[row, 5].Value.ToString(),
                     ItemCategory = worksheet.Cells[row, 6].Value.ToString(),
                     MinLevel = Convert.ToInt32(worksheet.Cells[row, 7].Value.ToString()),
                     MaxLevel = Convert.ToInt32(worksheet.Cells[row, 8].Value.ToString()),
@@ -762,6 +909,106 @@ public class ItemMasterController : Controller
             ItemGridList = GetDetailTable(ItemListt, CC, EmpID);
 
             var Result = await _IItemMaster.SaveMultipleItemData(ItemGridList);
+
+            if (Result != null)
+            {
+                if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                {
+                    ViewBag.isSuccess = true;
+                    TempData["200"] = "200";
+                }
+                if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                {
+                    ViewBag.isSuccess = true;
+                    TempData["202"] = "202";
+                }
+                if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    ViewBag.isSuccess = false;
+                    TempData["500"] = "500";
+                    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                    return View("Error", Result);
+                }
+            }
+
+
+            return RedirectToAction(nameof(ImportItems));
+        }
+        catch (Exception ex)
+        {
+            LogException<ItemMasterController>.WriteException(_logger, ex);
+
+            var ResponseResult = new ResponseResult()
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                StatusText = "Error",
+                Result = ex
+            };
+
+            return View("Error", ResponseResult);
+        }
+    }
+    public async Task<IActionResult>UpdateItemListdata(List<ImportItemViewModel> model)
+    {
+        try
+        {
+            HttpContext.Session.Remove("KeyImportItemList");
+
+            string ItemList = HttpContext.Session.GetString("KeyImportItemList");
+            IList<ImportItemViewModel> ItemViewModel = new List<ImportItemViewModel>();
+            if(!string.IsNullOrEmpty(ItemList))
+            {
+                ItemViewModel = JsonConvert.DeserializeObject<IList<ImportItemViewModel>>(ItemList);
+            }
+
+            var MainModel = new ItemMasterModel();
+            var ItemDetailGrid = new List<ImportItemViewModel>();
+            var ItemGrid = new List<ImportItemViewModel>();
+            var SSGrid = new List<ImportItemViewModel>();
+           
+            var seqNo = 0;
+            foreach (var item in model)
+            {
+                if (item != null)
+                {
+                    if (ItemViewModel == null)
+                    {
+                        item.SeqNo += seqNo + 1;
+                        ItemGrid.Add(item);
+                        seqNo++;
+                    }
+                    else
+                    {
+                        if (ItemViewModel.Where(x => x.PartCode == item.PartCode).Any())
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+                            item.SeqNo = ItemViewModel.Count + 1;
+                            //ItemGrid = ItemViewModel.Where(x => x != null).ToList();
+                            //SSGrid.AddRange(ItemGrid);
+                            ItemGrid.Add(item);
+                        }
+                    }
+                    MainModel.ImportExcelDataList = ItemGrid;
+
+                    HttpContext.Session.SetString("KeyImportItemList", JsonConvert.SerializeObject(MainModel.ImportExcelDataList));
+                }
+            }
+
+            string modelData = HttpContext.Session.GetString("KeyImportItemList");
+            IList<ImportItemViewModel> ItemListt = new List<ImportItemViewModel>();
+            if (!string.IsNullOrEmpty(modelData))
+            {
+                ItemListt = JsonConvert.DeserializeObject<IList<ImportItemViewModel>>(modelData);
+            }
+            var CC = HttpContext.Session.GetString("Branch");
+            var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var ItemGridList = new DataTable();
+            ItemGridList = GetItemDetailTable(ItemListt, CC, EmpID);
+
+            var Result = await _IItemMaster.UpdateMultipleItemData(ItemGridList);
 
             if (Result != null)
             {
@@ -935,4 +1182,139 @@ public class ItemMasterController : Controller
         MRGrid.Dispose();
         return MRGrid;
     }
+    private static DataTable GetItemDetailTable(IList<ImportItemViewModel> DetailList, string CC, int Empid)
+    {
+        var MRGrid = new DataTable();
+
+        // Define all columns based on your provided Column_name list
+        MRGrid.Columns.Add("Item_Code", typeof(int));
+        MRGrid.Columns.Add("PartCode", typeof(string));
+        MRGrid.Columns.Add("Item_Name", typeof(string));
+        MRGrid.Columns.Add("ParentCode", typeof(int));
+        MRGrid.Columns.Add("EntryDate", typeof(string));
+        MRGrid.Columns.Add("LastUpdatedDate", typeof(string));
+        MRGrid.Columns.Add("LeadTime", typeof(int));
+        MRGrid.Columns.Add("CC", typeof(string));
+        MRGrid.Columns.Add("Unit", typeof(string));
+        MRGrid.Columns.Add("SalePrice", typeof(float));
+        MRGrid.Columns.Add("PurchasePrice", typeof(float));
+        MRGrid.Columns.Add("CostPrice", typeof(float));
+        MRGrid.Columns.Add("WastagePercent", typeof(float));
+        MRGrid.Columns.Add("WtSingleItem", typeof(float));
+        MRGrid.Columns.Add("NoOfPcs", typeof(float));
+        MRGrid.Columns.Add("QcReq", typeof(string));
+        MRGrid.Columns.Add("ItemType", typeof(int));
+        MRGrid.Columns.Add("UploadItemImage", typeof(string));
+        MRGrid.Columns.Add("UploadImage", typeof(string));
+        MRGrid.Columns.Add("UID", typeof(int));
+        MRGrid.Columns.Add("DrawingNo", typeof(string));
+        MRGrid.Columns.Add("MinimumLevel", typeof(float));
+        MRGrid.Columns.Add("MaximumLevel", typeof(float));
+        MRGrid.Columns.Add("ReorderLevel", typeof(float));
+        MRGrid.Columns.Add("YearCode", typeof(float));
+        MRGrid.Columns.Add("AlternateUnit", typeof(string));
+        MRGrid.Columns.Add("RackID", typeof(string));
+        MRGrid.Columns.Add("BinNo", typeof(string));
+        MRGrid.Columns.Add("ItemSize", typeof(string));
+        MRGrid.Columns.Add("Colour", typeof(string));
+        MRGrid.Columns.Add("NeedPO", typeof(string));
+        MRGrid.Columns.Add("StdPacking", typeof(float));
+        MRGrid.Columns.Add("PackingType", typeof(string));
+        MRGrid.Columns.Add("ModelNo", typeof(string));
+        MRGrid.Columns.Add("YearlyConsumedQty", typeof(float));
+        MRGrid.Columns.Add("DispItemName", typeof(string));
+        MRGrid.Columns.Add("PurchaseAccountcode", typeof(int));
+        MRGrid.Columns.Add("SaleAccountcode", typeof(int));
+        MRGrid.Columns.Add("MinLevelDays", typeof(int));
+        MRGrid.Columns.Add("MaxLevelDays", typeof(int));
+        MRGrid.Columns.Add("EmpName", typeof(string));
+        MRGrid.Columns.Add("DailyRequirment", typeof(float));
+        MRGrid.Columns.Add("Stockable", typeof(string));
+        MRGrid.Columns.Add("WipStockable", typeof(string));
+        MRGrid.Columns.Add("Store", typeof(string));
+        MRGrid.Columns.Add("ProductLifeInus", typeof(float));
+        MRGrid.Columns.Add("ItemDesc", typeof(string));
+        MRGrid.Columns.Add("MaxWipStock", typeof(float));
+        MRGrid.Columns.Add("NeedSo", typeof(string));
+        MRGrid.Columns.Add("BomRequired", typeof(string));
+        MRGrid.Columns.Add("JobWorkItem", typeof(string));
+        MRGrid.Columns.Add("HsnNo", typeof(string));
+        MRGrid.Columns.Add("CreatedBy", typeof(int));
+        MRGrid.Columns.Add("CreatedOn", typeof(string));
+        MRGrid.Columns.Add("UpdatedBy", typeof(int));
+        MRGrid.Columns.Add("UpdatedOn", typeof(string));
+        MRGrid.Columns.Add("Active", typeof(string));
+        MRGrid.Columns.Add("ItemServAssets", typeof(string));
+        MRGrid.Columns.Add("VendorBatchcodeMand", typeof(string));
+        MRGrid.Columns.Add("EntryByMachineName", typeof(string));
+        MRGrid.Columns.Add("UniversalPartCode", typeof(string));
+        MRGrid.Columns.Add("UniversalDescription", typeof(string));
+        MRGrid.Columns.Add("ProdInWorkcenter", typeof(int));
+        MRGrid.Columns.Add("ProdInhouseJW", typeof(string));
+        MRGrid.Columns.Add("BatchNO", typeof(string));
+        MRGrid.Columns.Add("VoltageValue", typeof(string));
+        MRGrid.Columns.Add("SerialNo", typeof(string));
+        MRGrid.Columns.Add("OldPartCode", typeof(string));
+        MRGrid.Columns.Add("package", typeof(string));
+        MRGrid.Columns.Add("IsCustJWAdjMandatory", typeof(string));
+
+        // Loop and populate
+        foreach (var item in DetailList)
+        {
+            var today = DateTime.Today.ToString("yyyy-MM-dd");
+
+            MRGrid.Rows.Add(
+                0,                      // Item_Code
+                item.PartCode ?? "",   // PartCode
+                item.Item_Name ?? "",  // Item_Name
+                item.ItemGroupCode,    // ParentCode
+                today,                 // EntryDate
+                today,                 // LastUpdatedDate
+                0,                     // LeadTime
+                CC,                    // CC
+                item.Unit ?? "",       // Unit
+                0f, 0f, 0f, 0f, 0f, 0f, // SalePrice, PurchasePrice, CostPrice, WastagePercent, WtSingleItem, NoOfPcs
+                "Y",                   // QcReq
+                item.ItemCategoryCode, // ItemType
+                "", "",                // UploadItemImage, UploadImage
+                Empid,                 // UID
+                "",                    // DrawingNo
+                item.MinimumLevel,     // MinimumLevel
+                item.MaximumLevel,     // MaximumLevel
+                0f,                    // ReorderLevel
+                2025f,                 // YearCode
+                item.AlternateUnit ?? "", "", "", "", "", // AltUnit, RackID, BinNo, Size, Colour
+                "N",                   // NeedPO
+                item.StdPacking,       // StdPacking
+                "", "",                // PackingType, ModelNo
+                0f, "",                // YearlyQty, DispItemName
+                0, 0,                  // PurchaseAccountcode, SaleAccountcode
+                0, 0,                  // MinLevelDays, MaxLevelDays
+                "", 0f,                // EmpName, DailyRequirment
+                "Y", "Y",              // Stockable, WipStockable
+                "", 0f, "", 0f,        // Store, ProductLifeInus, ItemDesc, MaxWipStock
+                "", "", "",            // NeedSo, BomRequired, JobWorkItem
+                item.HSNNO ,      // HsnNo
+                Empid,                 // CreatedBy
+                today,                 // CreatedOn
+                Empid,                 // UpdatedBy
+                today,                 // UpdatedOn
+                "Y",                   // Active
+                item.ItemServAssets ?? "", // ItemServAssets
+                "", "",                // VendorBatchcodeMand, EntryByMachineName
+                "", "",                // UniversalPartCode, UniversalDescription
+                item.ProdInWorkcenter, // ProdInWorkcenter
+                item.ProdInhouseJW ?? "", // ProdInhouseJW
+                item.BatchNO ?? "",    // BatchNO
+                item.VoltageVlue ?? "",// VoltageValue
+                item.SerialNo ?? "",   // SerialNo
+                item.OldPartCode ?? "",// OldPartCode
+                item.Package ?? "",    // Package
+                "N"                    // IsCustJWAdjMandatory
+            );
+        }
+
+        return MRGrid;
+    }
+
 }

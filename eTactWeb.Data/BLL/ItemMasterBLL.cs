@@ -43,11 +43,18 @@ public class ItemMasterBLL : IItemMaster
     {
         return await _ItemMasterDAL.GetItemGroup(ItemServAssets);
     }
-    public async Task<ResponseResult> GetProdInWorkcenter()
+	public async Task<ResponseResult> GetUnitList()
+	{
+		return await _ItemMasterDAL.GetUnitList();
+	}
+	public async Task<ResponseResult> GetProdInWorkcenter()
     {
         return await _ItemMasterDAL.GetProdInWorkcenter();
+    }public async Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription)
+    {
+        return await _ItemMasterDAL.GetWorkCenterId(WorkCenterDescription);
     }
-
+  
     public async Task<IList<ItemMasterModel>> GetAllItemMaster(string Flag)
     {
         return await _ItemMasterDAL.GetAllItemMaster(Flag);
@@ -80,6 +87,10 @@ public class ItemMasterBLL : IItemMaster
     public async Task<ResponseResult> SaveMultipleItemData(DataTable ItemDetailGrid)
     {
         return await _ItemMasterDAL.SaveMultipleItemData(ItemDetailGrid);
+    }
+    public async Task<ResponseResult> UpdateMultipleItemData(DataTable ItemDetailGrid)
+    {
+        return await _ItemMasterDAL.UpdateMultipleItemData(ItemDetailGrid);
     }
 
     public Task<ResponseResult> GetItemGroupCode(string GroupCode)
