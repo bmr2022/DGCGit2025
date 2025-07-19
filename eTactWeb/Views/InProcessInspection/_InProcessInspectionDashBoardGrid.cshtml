@@ -43,6 +43,10 @@
             <th data-columnno="13" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Item Name
             </th>
+             <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code
+            </th>
+
             <th data-columnno="14" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sample Size
             </th>
@@ -161,7 +165,58 @@
                                 </div>
                                 <div id="editCursorDiv-@Cntr">
 
-                                    <a class="table-link link-primary" asp-action="InProcessInspection" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.InspEntryId" asp-route-YC="@item.InspYearCode">
+                                    <a class="table-link link-primary" asp-action="InProcessInspection" onclick="confirmEdit(event)" asp-route-Mode="U"
+                                    asp-route-ID="@item.InspEntryId"
+                                    asp-route-YC="@item.InspYearCode"
+                                       asp-route-EntryDate="@item.Entry_Date"
+                                       asp-route-TestingDate="@item.TestingDate"
+                                       asp-route-InspectionType="@item.IncomInprocessOutgoing"
+                                       asp-route-SlipNo="@item.SlipNo"
+                                       asp-route-ShiftID="@item.ShiftId"
+                                       asp-route-Shift="@item.ShiftName"
+                                       asp-route-InspTimeFrom="@item.InspTimeFrom"
+                                       asp-route-InspTimeTo="@item.InspTimeTo"
+                                       asp-route-ItemCode="@item.ItemCode"
+                                       asp-route-PartName="@item.ItemName"
+                                       asp-route-PartCode="@item.PartCode"
+                                       asp-route-SampleSize="@item.SampleSize"
+                                       asp-route-ProjectNo="@item.ProjectNo"
+                                       asp-route-ProjectDate="@item.ProjectDate"
+                                       asp-route-ProjectYearCode="@item.ProjectYearCode"
+                                       asp-route-Color="@item.Color"
+                                       asp-route-MachineId="@item.MachineId"
+                                       asp-route-MachineNo="@item.MachineName"
+                                       asp-route-AccountCode="@item.AccountCode"
+                                       asp-route-CustomerName="@item.AccountName"
+                                       asp-route-NoOfCavity="@item.NoOfCavity"
+                                       asp-route-MRNNo="@item.MRNNo"
+                                       asp-route-MRNYearCode="@item.MRNYearCode"
+                                       asp-route-MRNDate="@item.MRNDate"
+                                       asp-route-ProdSlipNo="@item.ProdSlipNo"
+                                       asp-route-ProdYearCode="@item.ProdYearCode"
+                                       asp-route-ProdDate="@item.ProdDate"
+                                       asp-route-MRNQty="@item.MRNQty"
+                                       asp-route-ProdQty="@item.ProdQty"
+                                       asp-route-InspActqty="@item.InspActqty"
+                                       asp-route-OkQty="@item.OkQty"
+                                       asp-route-Rejqty="@item.Rejqty"
+                                       asp-route-LotNo="@item.LotNo"
+                                       asp-route-Weight="@item.Weight"
+                                       asp-route-InspectionType="@item.InspectionType"
+                                       asp-route-Remark="@item.Remarks"
+                                       asp-route-CC="@item.CC"
+                                       asp-route-ActualEntryDate="@item.ActualEntryDate"
+                                       asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                       asp-route-ActualEntryByName="@item.ActualEntryByName"
+                                       asp-route-EntryByMachine="@item.MachineName"
+                                       asp-route-LastUpdatedBy="@item.LastUpdatedBy"
+                                       asp-route-LastUpdationDate="@item.LastUpdationDate"
+                                       asp-route-LastUpdatedByName="@item.LastUpdatedByName"
+                                       asp-route-ApprovedBy="@item.ApprovedBy"
+                                       asp-route-InspectedBy="@item.InspectionBy"
+                                       asp-route-Color="@item.Color"
+                                       asp-route-Attachment1="@item.Attachment1"
+                                       asp-route-Attachment2="@item.Attachment2">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -191,6 +246,7 @@
                         <td>@item.InspTimeFrom?.Split(' ')[1]</td>
                         <td>@item.InspTimeTo?.Split(' ')[1]</td>
                         <td>@item.ItemName</td>
+                        <td>@item.PartCode</td>
                         <td>@item.SampleSize</td>
                         <td>@item.ProjectNo</td>
                         <td>@item.ProjectDate?.Split(' ')[0]</td>
