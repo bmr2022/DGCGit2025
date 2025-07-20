@@ -1,4 +1,11 @@
+using System.Globalization;
+
 var builder = WebApplication.CreateBuilder(args);
+var cultureInfo = new CultureInfo("en-GB");
+cultureInfo.DateTimeFormat.ShortDatePattern = "dd-MMM-yyyy";
+cultureInfo.DateTimeFormat.LongDatePattern = "dd-MMM-yyyy";
+CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();

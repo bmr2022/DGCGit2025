@@ -9,6 +9,8 @@ using eTactWeb.Services.Interface;
 using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace eTactWeb
 {
@@ -127,7 +129,7 @@ namespace eTactWeb
             }
 
             loggerFactory.AddFile("Logs/eTactWeb-.log");
-
+            app.UseRequestLocalization();
             // --- Middleware Pipeline ---
             app.UseHttpsRedirection();       // Redirect HTTP → HTTPS (early)
             app.UseHttpLogging();            // Log HTTP requests (after HTTPS redirection)
@@ -155,6 +157,17 @@ namespace eTactWeb
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var cultureInfo = new CultureInfo("en-GB");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { cultureInfo };
+                options.DefaultRequestCulture = new RequestCulture(cultureInfo);
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddLogging();
