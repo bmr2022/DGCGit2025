@@ -63,9 +63,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _InProcessInspectionDAL.GetDashboardData(model);
         }
-        public async Task<InProcessInspectionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<InProcessInspectionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, string ItemName, string PartCode, string SlipNo, string MachinNo)
         {
-            return await _InProcessInspectionDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            return await _InProcessInspectionDAL.GetDashboardDetailData(FromDate, ToDate, ReportType, ItemName, PartCode, SlipNo, MachinNo);
         }
         public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId)
         {

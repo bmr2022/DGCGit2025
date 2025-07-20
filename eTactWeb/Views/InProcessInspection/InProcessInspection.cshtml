@@ -300,6 +300,15 @@
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="card-body" id="divPendingMRP">
+											<div class="col-md-2 mt-1 mb-1">
+												<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
+											</div>
+											<div class="col-md-10">
+												<button type="button" id="GridButton" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
+													<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+												</button>
+											</div>
+
 											<div class="col-md-12 divStockRegister" id="divinProcessInspectionGrid">
 												<partial name="_InprocessInspectionGrid" />
 											</div>
@@ -313,87 +322,16 @@
 
 									</div>
 							    </div>
-								<div class="d-flex">
-									<div class="col-md-10">
-										<button type="button" id="GridButton" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
-											<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
-										</button>
-									</div>
-									<div class="col-md-2 mt-1 mb-1">
-										<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
-									</div>
-								</div>
+								@* <div class="d-flex">
+									
+								</div> *@
 								<div class="card">
 									<div class="card-body" id="divPendingMRP">
 										<div class="col-md-12 divStockRegister" id="divStockGrid">
 											<partial name="_InProcessInspectionAddtoGrid" />
 										</div>
 									</div>
-									@* <div class="card-body overflow-auto pb-0">
-										<table class="table table-hover table-bordered table-striped IssueNRGPTb">
-											<thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" >
-												<tr>
-													<th>Action</th>
-													<th>SR#</th>
-
-													<th data-columnno="2" data-sortorder="asc" class="sortCol">
-														<span style="padding:5px;margin:5px" class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Characteristic
-													</th>
-													<th data-columnno="2" data-sortorder="asc" class="sortCol">
-														<span style="padding:5px;margin:5px" class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Eve Meas Tec
-													</th>
-
-
-													<th data-columnno="8" data-sortorder="asc" class="sortCol">
-														<span style="padding:5px;margin:5px" class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Cintrol Method
-													</th>
-													<th data-columnno="10" data-sortorder="asc" class="sortCol">
-														<span style="padding:5px;margin:5px" class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>From
-													</th>
-													<th data-columnno="12" data-sortorder="asc" class="sortCol">
-														<span style="padding:5px;margin:5px" class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>To
-													</th>
-													<th data-columnno="13" data-sortorder="asc" class="sortCol">
-														<span style="padding:5px;margin:5px" class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Rej Plan
-													</th>
-
-
-													<th data-columnno="14" data-sortorder="asc" class="sortCol">
-														<span style="padding:5px;margin:5px" class="sort-icon">
-															<i class="fa" aria-hidden="true"></i>
-														</span>Freq Of Testing
-													</th>
-													<p>SampleSize from Model: @Model.SampleSize</p>
-													<p>ViewBag.SampleSize value: @ViewBag.SampleSize</p>
-
-													@* @for (int i = 1; i <= (Model.SampleSize > 25 ? 25 : Model.SampleSize); i++)
-													{
-														<th style="width:120px;">
-															<span style="padding:5px;margin:5px" class="sort-icon">
-																<i class="fa" aria-hidden="true"></i>
-															</span>
-															@i
-														</th>
-													} 
-												</tr>
-											</thead>
-											<tbody id="divStockGrid">
-												<partial name="_InProcessInspectionAddtoGrid" />
-											</tbody>
-										</table>
-									</div> *@
+									
 								</div>
 							</div>
 							<div class="row g-2 gx-3">
@@ -580,9 +518,10 @@
 			if ($('#Mode').val() !== "U") {
 
 				FillEntryID();
-				TotalNoOfRows();
+				
 				
 			}
+			TotalNoOfRows();
 			const now = new Date();
 			const hours = now.getHours().toString().padStart(2, '0');
 			const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -737,7 +676,17 @@
 		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
 			$('#AccountCode').val($('#CustomerName').val());
 		}
-
+		$("#search-box").on("keyup", function () {
+			var value = $(this).val().toLowerCase();
+			$("#divinProcessInspectionGrid tbody tr").filter(function () {
+				if (currentSearchColumn !== null) {
+					var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+					$(this).toggle(columnText.indexOf(value) > -1);
+				} else {
+					$(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+				}
+			});
+		});
 		$(document).on('blur', '.sample-input', function () {
 			let $input = $(this);
 			let from = parseFloat($input.data('from'));
@@ -1322,30 +1271,6 @@
 			debugger
 			var gridData = [];
 			var sampleSize = parseInt($('#SampleSize').val()) || 1;
-
-			// var usedSeqNos = $('#divinProcessInspectionGrid tbody tr').map(function () {
-			// 	var seqText = $(this).find('th').text().trim(); 
-			// 	console.log("SeqText:", seqText); 
-			// 	var seqNo = parseInt(seqText, 10);
-			// 	return isNaN(seqNo) ? null : seqNo;
-			// }).get().filter(function (n) {
-			// 	return n !== null;
-			// });
-
-			// console.log("Used SeqNos:", usedSeqNos); 
-
-
-
-			// usedSeqNos.sort(function (a, b) { return a - b; });
-
-			// var nextSeqNo = 1;
-			// for (var i = 0; i < usedSeqNos.length; i++) {
-			// 	if (usedSeqNos[i] === nextSeqNo) {
-			// 		nextSeqNo++;
-			// 	} else {
-			// 		break;
-			// 	}
-			// }
 			$('#divinProcessInspectionGrid tbody tr').each(function () {
 				var $cells = $(this).find('td');
 				var $row = $(this);
@@ -1361,17 +1286,9 @@
 					FrequencyofTesting: $cells.eq(7).text().trim(),
 					Samples: [] 
 				};
-				// $row.find('input.sample-input').each(function (index) {
-				// 	rowData.Samples.push($(this).val().trim());
-				
-				// });
 				$row.find('input.sample-input').each(function (index, element) {
 					var sampleValue = $(this).val().trim() || "0";
-
-					// ✅ Add to Samples array
 					rowData.Samples.push(sampleValue);
-
-					// ✅ Also add as InspValue1, InspValue2, ...
 					rowData["InspValue" + (index + 1)] = sampleValue;
 				});
 
@@ -1385,18 +1302,6 @@
 				url: '@Url.Action("AddToGridData", "InProcessInspection")',
 				data: { modelList: gridData, sampleSize: sampleSize },
 				success: function (result) {
-				// 	var headerHtml = '';
-				// 	for (var i = 1; i <= sampleSize; i++) {
-				// 		headerHtml += `
-				// 	<th style="width:120px;">
-				// 		<span style="padding:5px;margin:5px" class="sort-icon">
-				// 			<i class="fa" aria-hidden="true"></i>
-				// 		</span>
-				// 		${i}
-				// 	</th>
-				// `;
-				// 	}
-				// 	$('#GridHeader').html(headerHtml);
 					$('#divStockGrid').html(result);
 					TotalNoOfRows();
 					ClearItems();
@@ -1407,10 +1312,10 @@
 				}
 			});
 		});
-		function DeleteItemRow(seqNo) {
+		function DeleteItemRow(seqNo, sampleSize) {
 			$.ajax({
 				url: '/InProcessInspection/DeleteItemRow', // Adjust route if needed
-				data: { SeqNo: seqNo },
+				data: { SeqNo: seqNo, SampleSize: sampleSize },
 				type: 'GET', // or 'POST' if you prefer, just match controller
 				success: function (result) {
 					// Replace your grid container with updated HTML partial
