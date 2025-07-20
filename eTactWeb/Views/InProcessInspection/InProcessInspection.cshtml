@@ -145,7 +145,7 @@
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
 											{
-												<option value="@Model.CustomerName" selected>@Model.CustomerName</option>
+												<option value="@Model.AccountCode" selected>@Model.CustomerName</option>
 											}
 										</select>
 									</div>
@@ -272,14 +272,20 @@
 									
 									
 									
-									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									@* <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SelectedInspections" class="control-label">Inspection List</label>
 										<select id="Inspection" class="form-select" multiple="multiple"
 												asp-for="SelectedInspections"
 												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text"))">
 										</select>
+									</div> *@
+									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<select id="Inspection" class="form-select" multiple
+												asp-for="SelectedInspections"
+												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text", Model.SelectedInspections))">
+										</select>
+
 									</div>
-									
 
 								</div>
 								<div class="progress my-2 mb-3" style="height: 4px;">
@@ -719,6 +725,19 @@
 
 			
 		});
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#ItemCode').val($('#PartNo').val());
+		}
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#ItemCode').val($('#PartName').val());
+		}
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#MachineId').val($('#MachineNo').val());
+		}
+		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+			$('#AccountCode').val($('#CustomerName').val());
+		}
+
 		$(document).on('blur', '.sample-input', function () {
 			let $input = $(this);
 			let from = parseFloat($input.data('from'));
@@ -803,7 +822,9 @@
 		$('#PartNo').change(function () {
 			FillColor();
 		});
-
+		if ($('#PartNo').val() !== '') {
+			FillColor();
+		}
 		$('#PartNo').change(function () {
 			$('#ItemCode').val($('#PartNo').val());
 		});
@@ -942,10 +963,12 @@
 
 						Dropdown.append('<option value="' + value.MachineId + '">' + value.MachineName + '</option>');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var MachineNo = '@Model.MachineNo';
-						$('#MachineNo').val(MachineNo);
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var MachineId = '@Model.MachineId';
+						$('#MachineNo').val(MachineId);
+						$('#MachineId').val(MachineId);
 					}
+
 				},
 				error: function (xhr, status, error) {
 					alert('Failed to load groups.');
@@ -969,10 +992,11 @@
 
 						Dropdown.append('<option value="' + value.ShiftId + '">' + value.ShiftName + '</option>');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var Shift = '@Model.Shift';
-						$('#Shift').val(Shift);
-					}
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                var ShiftId = '@Model.ShiftID';
+                $('#Shift').val(ShiftId);
+                $('#ShiftID').val(ShiftId);
+            }
 				},
 				error: function (xhr, status, error) {
 					alert('Failed to load groups.');
@@ -996,10 +1020,12 @@
 
 						Dropdown.append('<option value="' + value.Account_Code + '">' + value.Account_name + '</option>');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var CustomerName = '@Model.CustomerName';
-						$('#CustomerName').val(CustomerName);
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var AccountCode = '@Model.AccountCode';
+						$('#CustomerName').val(AccountCode);
+						$('#AccountCode').val(AccountCode);
 					}
+
 				},
 				error: function (xhr, status, error) {
 					alert('Failed to load groups.');
@@ -1022,9 +1048,9 @@
 
 						Dropdown.append('<option value="' + value.Colour + '">' + value.Colour + '</option>');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var Color = '@Model.Color';
-						$('#Color').val(Color);
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var selectedColor = '@Model.Color';
+						Dropdown.val(selectedColor);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -1049,9 +1075,10 @@
 
 						PartCodeDropdown.append('<option value="' + PartCode.ItemCode + '">' + PartCode.PartCode + '</option>');
 					});
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var PartNo = '';
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var PartNo = '@Model.ItemCode';
 						$('#PartNo').val(PartNo);
+						$('#ItemCode').val(PartNo);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -1078,10 +1105,12 @@
 						PartNameDropdown.append('<option value="' + ItemName.ItemCode + '">' + ItemName.Item_Name + '</option>');
 					});
 
-					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var PartName = '';
-						$('#PartName').val(PartName);
+					if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+						var itemCode = '@Model.ItemCode';
+						$('#PartName').val(itemCode);
+						$('#ItemCode').val(itemCode);
 					}
+
 				},
 				error: function (xhr, status, error) {
 					alert('Failed to load groups.');

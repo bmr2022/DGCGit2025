@@ -146,8 +146,43 @@ namespace eTactWeb.DOM.Models
         public int ApprovedBy { get; set; }
         public string ApprovedByName { get; set; }
 
-		public List<string> Samples { get; set; }
-		public int UId { get; set; }
+		//public List<string> Samples { get; set; }
+        public List<string> Samples
+        {
+            get
+            {
+                return new List<string>()
+        {
+            InspValue1?.ToString() ?? string.Empty,
+            InspValue2?.ToString() ?? string.Empty,
+            InspValue3?.ToString() ?? string.Empty,
+            InspValue4?.ToString() ?? string.Empty,
+            InspValue5?.ToString() ?? string.Empty,
+            InspValue6?.ToString() ?? string.Empty,
+            InspValue7?.ToString() ?? string.Empty,
+            InspValue8?.ToString() ?? string.Empty,
+            InspValue9?.ToString() ?? string.Empty,
+            InspValue10?.ToString() ?? string.Empty,
+            InspValue11?.ToString() ?? string.Empty,
+            InspValue12?.ToString() ?? string.Empty,
+            InspValue13?.ToString() ?? string.Empty,
+            InspValue14?.ToString() ?? string.Empty,
+            InspValue15?.ToString() ?? string.Empty,
+            InspValue16?.ToString() ?? string.Empty,
+            InspValue17?.ToString() ?? string.Empty,
+            InspValue18?.ToString() ?? string.Empty,
+            InspValue19?.ToString() ?? string.Empty,
+            InspValue20?.ToString() ?? string.Empty,
+            InspValue21?.ToString() ?? string.Empty,
+            InspValue22?.ToString() ?? string.Empty,
+            InspValue23?.ToString() ?? string.Empty,
+            InspValue24?.ToString() ?? string.Empty,
+            InspValue25?.ToString() ?? string.Empty
+        };
+            }
+        }
+
+        public int UId { get; set; }
         public string EntryByMachine { get; set; } = "";
         public int ActualEntryBy { get; set; }
         public string ActualEntryByName { get; set; }
@@ -217,6 +252,7 @@ namespace eTactWeb.DOM.Models
         public string Color { get; set; }
         public string ProjectNo { get; set; }
         public string ShiftName { get; set; }
+        public int ShiftId { get; set; }
         public string IncomInprocessOutgoing { get; set; }
         public string Characteristic { get; set; }
         public string EvalutionMeasurmentTechnique { get; set; }
@@ -228,5 +264,7 @@ namespace eTactWeb.DOM.Models
         public string ControlMethod { get; set; }
         public string RejectionPlan { get; set; }
         public string InspectionType { get; set; }
+        public string Attachment1 { get; set; }
+        public string Attachment2 { get; set; }
     }
 }
