@@ -216,7 +216,7 @@ public static class CommonFunc
     "dd/MM/yyyy hh:mm:ss tt", "dd-MM-yyyy hh:mm:ss", "dd-MM-yyyy HH:mm:ss", "d-M-yy hh:mm:ss",
     "d-M-yy HH:mm:ss", "dd-M-yy hh:mm:ss", "dd-M-yy HH:mm:ss", "dd/MMM/yyyy HH.mm.ss tt",
     "dd/MMM/yyyy hh.mm.ss tt", "dd/MMM/yyyy h.mm.ss tt", "MM/dd/yyyy HH:mm:ss tt",
-    "M/dd/yyyy HH:mm:ss", "MM/dd/yyyy hh:mm:ss tt", "M/dd/yyyy hh:mm:ss tt", "M/dd/yyyy",
+    "M/dd/yyyy HH:mm:ss", "MM/dd/yyyy hh:mm:ss tt", "M/dd/yyyy hh:mm:ss tt", "M/dd/yyyy","dd/MM/yyyy HH:mm:ss",
      "yyyy/MM/dd",                       // 2025/07/07
     "yyyy.MM.dd",                       // 2025.07.07
     "dd.MM.yyyy",                       // 07.07.2025
