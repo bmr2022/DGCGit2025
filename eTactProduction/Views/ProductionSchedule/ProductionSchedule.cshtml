@@ -297,36 +297,36 @@
                                 </strong>
                             </button>
                         </h2>
-                        <div class="row justify-content-around">
+                        <div class=" row flex-nowrap align-items-end">
 
-                            <div class="col-auto d-flex justify-content-center align-items-center mt-2">
+                            <div class="col-auto mb-2  p-2" style="margin-left:1rem">
                                 <button id="ResetProdSch" type="button" class="btn btn-sm btn-outline-danger">
-                                    <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i> Reset Prod Schedule
+                                    <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i> Reset Prod Sch
                                 </button>
                             </div>
-                            <div class="col-auto d-flex justify-content-center align-items-center mt-2">
+                            <div class="col-auto mb-2  p-2">
                                 <button type="button" class="btn btn-sm btn-primary" id="AddQty" style="color:white!important; float:right;">
                                     Get Bom Child Part
                                 </button>
                             </div>
-                            <div class="col-auto d-flex align-items-center me-3 mt-2">
+                            <div class="col-auto mb-2  p-2">
                                 <button type="button" class="Importbtn btn btn-sm btn-outline-success" id="ProdExcel">
-                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Excel
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> <i class="fa-solid fa-file-excel fa-fw fa-lg"></i>
                                 </button>
                             </div>
-                            <div class="col-auto d-flex align-items-center mt-3">
-                                <button id="addNewItem" type="button" class="btn btn-sm btn-outline-danger mb-2">
-                                    <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i> Add New item
+                            <div class="col-auto mb-2  p-2">
+                                <button id="addNewItem" type="button" class="btn btn-sm btn-outline-danger ">
+                                    <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>  New item
                                 </button>
                             </div>
-                            <div class="col-auto d-flex align-items-center mt-2">
+                            <div class="col-auto mb-2  p-2">
                                 <button type="button" class="Importbtn btn btn-sm btn-outline-warning" id="ImportExcel">
-                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>Import Excel
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i>Import <i class="fa-solid fa-file-excel fa-fw fa-lg"></i>
                                 </button>
                             </div>
-                            <div class="col-auto d-flex align-items-center mt-2">
+                            <div class="col-auto mb-2  p-2">
                                 <button type="button" class="RefreshBom btn btn-sm btn-outline-danger" id="ImportExcel">
-                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Refresh Bom
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Ref Bom
                                 </button>
                             </div>
                             <div class="col-md-1 mb-2 p-2">
@@ -337,8 +337,8 @@
                                 <label asp-for="EffectiveTo" class="form-label">Sch Till Date</label>
                                 <input asp-for="EffectiveTo" class="form-control" readonly />
                             </div>
-                            <div class="col-auto mb-2 p-2">
-                                <label asp-for="PlanForNoOFDays" class="form-label">Plan For No Of Days</label>
+                            <div class="col-md-1 mb-2 p-2">
+                                <label asp-for="PlanForNoOFDays" class="form-label">Planned Days</label>
                                 @if (Model.Mode == "U" || Model.Mode == "V")
                                 {
                                     <input asp-for="PlanForNoOFDays" class="form-control" onchange="PlanForNoOfDays();" value="@(Model.PlanForNoOFDays )" />
@@ -348,8 +348,12 @@
                                     <input asp-for="PlanForNoOFDays" class="form-control" onchange="PlanForNoOfDays();" value="3" />
                                 }
                             </div>
+                            <div class="col-md-1 mb-2 p-2">
+                                <label class="form-label">Work Center</label>
+                                <select id="WorkCenterF" style="background-color:#a2e8f6"></select>
+                            </div>
                         </div>
-
+                     
                         <div class="progress my-2 mb-3" style="height: 4px;">
                             <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                         </div>
@@ -747,7 +751,7 @@
           // var serverDate;
           // alert('load');
             GetServerDate();
-
+            fillWorkCenter();
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
             } else {
@@ -766,7 +770,7 @@
             TotalnoOfItems();
             TotalNoOfBomDetailItems();
             TotalNoOfBomSummaryItems();
-
+                
             AutoComplete("WONo", "PlanNo");
             AutoComplete("PartCode", "PartCode");
             AutoComplete("ItemName", "ItemName");
@@ -839,6 +843,22 @@
         //        }
         //    });
         //});
+                    $('#WorkCenterF').on('change', function () {
+                    var selectedWC = $(this).val(); // Get selected WorkCenter value
+
+                    $('#divProductionSchGrid tr').each(function () {
+                        var $row = $(this);
+                        var workCenterDropdown = $row.find('[id^="WorkCenter-"]');
+                        if (workCenterDropdown.length > 0) {
+                            var rowWCVal = workCenterDropdown.val();
+                            if (selectedWC === "0" || rowWCVal === selectedWC) {
+                                $row.show();
+                            } else {
+                                $row.hide();
+                            }
+                        }
+                    });
+                });
 
         function GetFormRights() {
             $.ajax({
@@ -2391,7 +2411,27 @@
                 }
             });
         }
+                         function fillWorkCenter() {
+                    $.ajax({
+                        type: "POST",
+                                url: "@Url.Action("GetWorkCenter")",
+                        dataType: "json",
+                        success: function (result, status, error) {
+                                       $('#WorkCenterF').empty();
+                                                    $('#WorkCenterF').append('<option value="0" selected>-Select-</option>');
+                            if (result != null) {
+                                                 
+                                var obj = $.parseJSON(result);
+                                $.each(obj.Result, function (index, val) {
+                                                    $('#WorkCenterF').append('<option value="' + val.entryid +
+                                                '">' + val.WorkCenterDescription + '</option>');
+                                });
 
+                            }
+                        }
+                    });
+                }
+      
         function GetWorkCenter(row) {
             var RowCount = $('#divProductionSchGrid tr').length;
 
@@ -2413,6 +2453,10 @@
                                         $('#WorkCenter-' + i).append('<option value="' + val.entryid +
                                             '">' + val.WorkCenterDescription + '</option>');
                                     });
+                                                     var selected =  $('#WorkCenter-' + i).data('selected');
+                                    if (selected) {
+                                                 $('#WorkCenter-' + i).val(selected);
+                                    }
                                 }
                             }
                         }
@@ -2427,6 +2471,10 @@
                                     $('#WorkCenter-' + row).append('<option value="' + val.entryid +
                                         '">' + val.WorkCenterDescription + '</option>');
                                 });
+                                           var selected =  $('#WorkCenter-' + i).data('selected');
+                                            if (selected) {
+                                                         $('#WorkCenter-' + i).val(selected);
+                                            }
                             }
                         }
                     }

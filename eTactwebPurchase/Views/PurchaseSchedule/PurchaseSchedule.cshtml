@@ -727,12 +727,12 @@
                     }).datepicker('show');
                 });
                 alert("entrydate1" + $('#EntryDate').val());
-                var EntryDate = parseDateToFormat($('#EntryDate').val());
-                var PODate = parseDateToFormat($('#PODate').val());
-                var ScheduleDate = parseDateToFormat($('#ScheduleDate').val());
-                var SchEffFromDate = parseDateToFormat($('#SchEffFromDate').val());
-                var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val());
-                var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val());
+                var EntryDate = parseDateToFormat1($('#EntryDate').val());
+                var PODate = parseDateToFormat1($('#PODate').val());
+                var ScheduleDate = parseDateToFormat1($('#ScheduleDate').val());
+                var SchEffFromDate = parseDateToFormat1($('#SchEffFromDate').val());
+                var SchEffTillDate = parseDateToFormat1($('#SchEffTillDate').val());
+                var SchAmendmentDate = parseDateToFormat1($('#SchAmendmentDate').val());
                 /*    console.log("EntryDate" + EntryDate); */
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
@@ -788,12 +788,12 @@
                     }).datepicker('show');
                 });
 
-                var EntryDate = parseDateToFormat($('#EntryDate').val());
-                var PODate = parseDateToFormat($('#PODate').val());
-                var ScheduleDate = parseDateToFormat($('#ScheduleDate').val());
-                var SchEffFromDate = parseDateToFormat($('#SchEffFromDate').val());
-                var SchEffTillDate = parseDateToFormat($('#SchEffTillDate').val());
-                var SchAmendmentDate = parseDateToFormat($('#SchAmendmentDate').val());
+                var EntryDate = parseDateToFormat1($('#EntryDate').val());
+                var PODate = parseDateToFormat1($('#PODate').val());
+                var ScheduleDate = parseDateToFormat1($('#ScheduleDate').val());
+                var SchEffFromDate = parseDateToFormat1($('#SchEffFromDate').val());
+                var SchEffTillDate = parseDateToFormat1($('#SchEffTillDate').val());
+                var SchAmendmentDate = parseDateToFormat1($('#SchAmendmentDate').val());
                 /*    console.log("EntryDate" + EntryDate); */
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODate);
@@ -848,6 +848,23 @@
 
             /* $('#SchEffFromDate').change(); */
         });
+
+        function parseDateToFormat1(inputDate) {
+            if (!inputDate || typeof inputDate !== 'string') return '';
+
+            // Extract only the date part before time
+            const datePart = inputDate.trim().split(' ')[0]; // "9/04/2025"
+
+            const [day, month, year] = datePart.split('/');
+
+            if (!day || !month || !year) return '';
+
+            // Pad day and month to 2 digits
+            const formattedDay = String(day).padStart(2, '0');
+            const formattedMonth = String(month).padStart(2, '0');
+
+            return `${formattedDay}/${formattedMonth}/${year}`;
+        }
 
         $('#sendToExcel').click(function () {
 

@@ -638,7 +638,8 @@
         let DelSeqNo = 0;
         let Dat = "";
 
-        $('#submitBTN').click(function (e) {
+        $('#submitBTN').click(function (e) 
+        {
 
             e.preventDefault();
             //$.notify('Data Saved SucessFully.', 'sucess');
@@ -694,7 +695,8 @@
             if (Err == 1) return false;
             return true;
         });
-        $('#confirmSave').click(function () {
+        $('#confirmSave').click(function () 
+        {
             checkDuplicateEntry();
                 }); 
                 var formRights = {
@@ -726,8 +728,8 @@
                                     if (!formRights.pooptView) {
                                                                             return alert("You do not have rights to view this record.");
                                                                           }
-                                                                                          var mode = formRights.pooptUpdate  ? "U" : "V";
-
+                                                                                          /* var mode = formRights.pooptUpdate  ? "U" : "V"; Comment by mayuri*/
+                                                                                                     var mode ="V";
                                             if (yearCode && entryId) {
 
                                                              var url = '/PurchaseOrder/Index?Mode=' + mode +
@@ -902,7 +904,10 @@
         }
 
 
-        $(document).ready(function () {
+        $(document).ready
+        (
+            function () 
+        {
              
            
             $(':input:visible').each(function () {
@@ -926,9 +931,10 @@
                 fillPONumber();
    /*              alert("before parse EntryDate1 " + $("#EntryDate").val()); */
               
-                      var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-             
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                   /*    var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+                 
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate); */
+
             
            /*    alert("after parse EntryDate1 " + $("#EntryDate").val());
                 */
@@ -998,14 +1004,9 @@
             $('#AccountCode').select2();
             $('#PartCode').select2();
             $('#ItemName').select2();
-
-
-
-
             $('.AF').fadeOut();
             GetFormRights();
             functionFeatureOption();
-
             $('#PoYear').rules("remove", "required");
             $('#POType').rules("remove", "required");
             $('#SchNo').rules("remove", "required");
@@ -1032,7 +1033,8 @@
                 $('select[name^="docTypeId"]').val(1);
                 $('#AccountCode').select2('open').select2('focus');
             }
-            else {
+            else 
+            {
                 $('#Address').focus();
             }
             var today = new Date();
@@ -1049,7 +1051,8 @@
             //$('#AccountCode .select2-search__field')
             /*  alert("before parse EntryDateLAST " + $("#EntryDate").val()); */
 
-        });
+        }
+        );
 
         //for focusing on search field of SELECT2 tool
         $(document).on('select2:open', () => {

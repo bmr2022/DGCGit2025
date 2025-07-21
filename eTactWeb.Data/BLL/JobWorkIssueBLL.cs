@@ -78,9 +78,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _JobWorkIssueDAL.GetStockQty(SPName, ItemCode, StockId,TillDate, BatchNo,UniqueBatchNo);
         }       
-        public async Task<ResponseResult> FillItemsBom(string Flag,string BomStatus,string Types)
+        public async Task<ResponseResult> FillItemsBom(string Flag,string BomStatus,string Types, string SearchItemCode, string SearchPartCode)
         {
-            return await _JobWorkIssueDAL.FillItemsBom(Flag,BomStatus,Types);
+            return await _JobWorkIssueDAL.FillItemsBom(Flag,BomStatus,Types,  SearchItemCode,  SearchPartCode);
         }
         public async Task<ResponseResult> FillEntryandJWNo(int yearCode)
         {
