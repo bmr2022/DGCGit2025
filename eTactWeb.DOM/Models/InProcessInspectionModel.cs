@@ -21,7 +21,7 @@ namespace eTactWeb.DOM.Models
         public string? EntryDate { get; set; }
         public string? EffectiveDate { get; set; }
         public string? TestingDate { get; set; }
-        public string RevNo { get; set; }
+        public int RevNo { get; set; }
         public string SlipNo { get; set; }
         public string InspTimeFrom { get; set; }
         public string InspTimeTo { get; set; }
@@ -105,6 +105,7 @@ namespace eTactWeb.DOM.Models
 		public int ProcessId { get; set; }
 		public bool InspectedBeginingOfProd { get; set; }
 		public bool InspectedAfterMoldCorrection { get; set; }
+		public bool InspectedAfterMachineBreackDown { get; set; }
 		public bool InspectedAfterLotChange { get; set; }
 		public bool InspectedAfterMachinIdel { get; set; }
 		public bool InspectedEndOfProd { get; set; }
@@ -112,7 +113,10 @@ namespace eTactWeb.DOM.Models
 		public int TotalRows { get; set; }
 		public string Attachment1 { get; set; }
 		public string Attachment2 { get; set; }
-		public IList<string>? Inspection { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
+        public IList<string>? Inspection { get; set; }
 		
 		
 		
@@ -136,7 +140,8 @@ namespace eTactWeb.DOM.Models
         public int? SeqNo { get; set; }
         public string Mode { get; set; }
         public string Remarks { get; set; }
-        public string RevNo { get; set; }
+        public int RevNo { get; set; }
+        public string Material { get; set; }
         public string ForInOutInprocess { get; set; }
         public int ItemCode { get; set; }
         public string PartCode { get; set; }
@@ -145,9 +150,47 @@ namespace eTactWeb.DOM.Models
         public int EngApprovedBy { get; set; }
         public int ApprovedBy { get; set; }
         public string ApprovedByName { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
 
-		public List<string> Samples { get; set; }
-		public int UId { get; set; }
+        //public List<string> Samples { get; set; }
+        public List<string> Samples
+        {
+            get
+            {
+                return new List<string>()
+        {
+            InspValue1?.ToString() ?? string.Empty,
+            InspValue2?.ToString() ?? string.Empty,
+            InspValue3?.ToString() ?? string.Empty,
+            InspValue4?.ToString() ?? string.Empty,
+            InspValue5?.ToString() ?? string.Empty,
+            InspValue6?.ToString() ?? string.Empty,
+            InspValue7?.ToString() ?? string.Empty,
+            InspValue8?.ToString() ?? string.Empty,
+            InspValue9?.ToString() ?? string.Empty,
+            InspValue10?.ToString() ?? string.Empty,
+            InspValue11?.ToString() ?? string.Empty,
+            InspValue12?.ToString() ?? string.Empty,
+            InspValue13?.ToString() ?? string.Empty,
+            InspValue14?.ToString() ?? string.Empty,
+            InspValue15?.ToString() ?? string.Empty,
+            InspValue16?.ToString() ?? string.Empty,
+            InspValue17?.ToString() ?? string.Empty,
+            InspValue18?.ToString() ?? string.Empty,
+            InspValue19?.ToString() ?? string.Empty,
+            InspValue20?.ToString() ?? string.Empty,
+            InspValue21?.ToString() ?? string.Empty,
+            InspValue22?.ToString() ?? string.Empty,
+            InspValue23?.ToString() ?? string.Empty,
+            InspValue24?.ToString() ?? string.Empty,
+            InspValue25?.ToString() ?? string.Empty
+        };
+            }
+        }
+
+        public int UId { get; set; }
         public string EntryByMachine { get; set; } = "";
         public int ActualEntryBy { get; set; }
         public string ActualEntryByName { get; set; }
@@ -164,31 +207,31 @@ namespace eTactWeb.DOM.Models
         public bool? EndOfProduction { get; set; }
         public int? InspEntryId { get; set; }
         public int? InspYearCode { get; set; }
-		public decimal? InspValue1 { get; set; } 
-		public decimal? InspValue2 { get; set; } 
-		public decimal? InspValue3 { get; set; }
-		public decimal? InspValue4 { get; set; } 
-		public decimal? InspValue5 { get; set; } 
-		public decimal? InspValue6 { get; set; } 
-		public decimal? InspValue7 { get; set; } 
-		public decimal? InspValue8 { get; set; } 
-		public decimal? InspValue9 { get; set; } 
-		public decimal? InspValue10 { get; set; } 
-		public decimal? InspValue11 { get; set; } 
-		public decimal? InspValue12 { get; set; } 
-		public decimal? InspValue13 { get; set; } 
-		public decimal? InspValue14 { get; set; } 
-		public decimal? InspValue15 { get; set; } 
-		public decimal? InspValue16 { get; set; } 
-		public decimal? InspValue17 { get; set; } 
-		public decimal? InspValue18 { get; set; } 
-		public decimal? InspValue19 { get; set; } 
-		public decimal? InspValue20 { get; set; } 
-		public decimal? InspValue21 { get; set; }
-		public decimal? InspValue22 { get; set; } 
-		public decimal? InspValue23 { get; set; } 
-		public decimal? InspValue24 { get; set; } 
-		public decimal? InspValue25 { get; set; }
+		public string? InspValue1 { get; set; } 
+		public string? InspValue2 { get; set; } 
+		public string? InspValue3 { get; set; }
+		public string? InspValue4 { get; set; } 
+		public string? InspValue5 { get; set; } 
+		public string? InspValue6 { get; set; } 
+		public string? InspValue7 { get; set; } 
+		public string? InspValue8 { get; set; } 
+		public string? InspValue9 { get; set; } 
+		public string? InspValue10 { get; set; } 
+		public string? InspValue11 { get; set; } 
+		public string? InspValue12 { get; set; } 
+		public string? InspValue13 { get; set; } 
+		public string? InspValue14 { get; set; } 
+		public string? InspValue15 { get; set; } 
+		public string? InspValue16 { get; set; } 
+		public string? InspValue17 { get; set; } 
+		public string? InspValue18 { get; set; } 
+		public string? InspValue19 { get; set; } 
+		public string? InspValue20 { get; set; } 
+		public string? InspValue21 { get; set; }
+		public string? InspValue22 { get; set; } 
+		public string? InspValue23 { get; set; } 
+		public string? InspValue24 { get; set; } 
+		public string? InspValue25 { get; set; }
         public string Entry_Date { get; set; }
         public string? TestingDate { get; set; }
         public string SlipNo { get; set; }
@@ -217,6 +260,7 @@ namespace eTactWeb.DOM.Models
         public string Color { get; set; }
         public string ProjectNo { get; set; }
         public string ShiftName { get; set; }
+        public int ShiftId { get; set; }
         public string IncomInprocessOutgoing { get; set; }
         public string Characteristic { get; set; }
         public string EvalutionMeasurmentTechnique { get; set; }
@@ -228,5 +272,7 @@ namespace eTactWeb.DOM.Models
         public string ControlMethod { get; set; }
         public string RejectionPlan { get; set; }
         public string InspectionType { get; set; }
+        public string Attachment1 { get; set; }
+        public string Attachment2 { get; set; }
     }
 }

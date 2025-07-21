@@ -211,23 +211,26 @@ namespace eTactWeb.Data.DAL
 			var _ResponseResult = new ResponseResult();
 			try
 			{
-
+				var entDate = CommonFunc.ParseFormattedDate(model.Entry_Date);
+				var ActentDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+				var upDate = CommonFunc.ParseFormattedDate(model.LastUpdationDate);
+				var mrnDate = CommonFunc.ParseFormattedDate(model.MRNDate);
+				var prodDate = CommonFunc.ParseFormattedDate(model.ProdDate);
 				var SqlParams = new List<dynamic>();
 
 				if (model.Mode == "U" || model.Mode == "V")
 				{
 
 					SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-
+					SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
+					SqlParams.Add(new SqlParameter("@LastUpdatedDate", upDate));
 				}
 				else
 				{
 					SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
 
 				}
-				var entDate = CommonFunc.ParseFormattedDate(model.Entry_Date);
-				var ActentDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-				var upDate = CommonFunc.ParseFormattedDate(model.LastUpdationDate);
+				
                 SqlParams.Add(new SqlParameter("@InspEntryId", model.EntryId));//not
                 SqlParams.Add(new SqlParameter("@InspYearCode", model.YearCode));//not
                 SqlParams.Add(new SqlParameter("@Entrydate", entDate));//not
@@ -249,10 +252,10 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@NoOfCavity", model.NoOfCavity));//not
                 SqlParams.Add(new SqlParameter("@MRNNo", model.MRNNo ?? ""));//not
                 SqlParams.Add(new SqlParameter("@MRNYearCode", model.MRNYearCode));//not
-                SqlParams.Add(new SqlParameter("@MRNDate", model.MRNDate??""));//not
+                SqlParams.Add(new SqlParameter("@MRNDate", mrnDate ?? ""));//not
                 SqlParams.Add(new SqlParameter("@ProdSlipNo", model.ProdSlipNo ?? ""));//not
                 SqlParams.Add(new SqlParameter("@ProdYearCode", model.ProdYearCode));//not
-                SqlParams.Add(new SqlParameter("@ProdDate", model.ProdDate ??""));//not
+                SqlParams.Add(new SqlParameter("@ProdDate", prodDate ??""));//not
                 SqlParams.Add(new SqlParameter("@MRNQty", model.MRNQty));//not
                 SqlParams.Add(new SqlParameter("@ProdQty", model.ProdQty));//not
                 SqlParams.Add(new SqlParameter("@InspActqty", model.InspActqty));//not
@@ -276,12 +279,11 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));//not
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEntryBy));//not
                 SqlParams.Add(new SqlParameter("@EntryByMachineName", model.EntryByMachine ?? ""));//not
-                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdatedDate", model.LastUpdationDate));
+               
                 SqlParams.Add(new SqlParameter("@ApprovedBy", model.ApprovedBy));//not
                 SqlParams.Add(new SqlParameter("@InspectedBy", model.InspectedBy));//not
-                SqlParams.Add(new SqlParameter("@Attachment1", model.Attachment1 ?? ""));
-                SqlParams.Add(new SqlParameter("@Attachment2", model.Attachment2 ?? ""));
+                SqlParams.Add(new SqlParameter("@RevNo", model.RevNo));
+                SqlParams.Add(new SqlParameter("@Material", model.Material ?? ""));
 
                 SqlParams.Add(new SqlParameter("@dt", GIGrid));
 				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPInprocessInpection", SqlParams);
@@ -316,7 +318,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<InProcessInspectionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<InProcessInspectionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, string ItemName, string PartCode, string SlipNo, string MachinNo)
         {
             DataSet? oDataSet = new DataSet();
             var model = new InProcessInspectionModel();
@@ -332,6 +334,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ReportType", "SUMMARY");
                     oCmd.Parameters.AddWithValue("@FromDate", FromDate);
                     oCmd.Parameters.AddWithValue("@ToDate", ToDate);
+                    oCmd.Parameters.AddWithValue("@ItemName", ItemName);
+                    oCmd.Parameters.AddWithValue("@PartCode", PartCode );
+                    oCmd.Parameters.AddWithValue("@SlipNo", SlipNo );
+                    oCmd.Parameters.AddWithValue("@MachineName", MachinNo );
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -355,12 +361,16 @@ namespace eTactWeb.Data.DAL
                                           InspTimeTo = dr["InspimeTo"] != DBNull.Value ? Convert.ToString(dr["InspimeTo"]) : string.Empty,
                                           ItemName = dr["ItemName"] != DBNull.Value ? Convert.ToString(dr["ItemName"]) : string.Empty,
                                           SampleSize = dr["SamlpeSize"] != DBNull.Value ? Convert.ToInt32(dr["SamlpeSize"]) : 0,
+                                          ShiftId = dr["ShiftId"] != DBNull.Value ? Convert.ToInt32(dr["ShiftId"]) : 0,
+										  MachineId = dr["MachineId"] != DBNull.Value ? Convert.ToInt32(dr["MachineId"]) : 0,
                                           ProjectNo = dr["ProjectNo"] != DBNull.Value ? Convert.ToString(dr["ProjectNo"]) : string.Empty,
                                           ProjectDate = dr["ProjectDate"] != DBNull.Value ? Convert.ToString(dr["ProjectDate"]) : string.Empty,
                                           ProjectYearCode = dr["ProjectYearCode"] != DBNull.Value ? Convert.ToInt32(dr["ProjectYearCode"]) : 0,
                                           Color = dr["Color"] != DBNull.Value ? Convert.ToString(dr["Color"]) : string.Empty,
                                           MachineName = dr["MachineName"] != DBNull.Value ? Convert.ToString(dr["MachineName"]) : string.Empty,
                                           AccountName = dr["AccountName"] != DBNull.Value ? Convert.ToString(dr["AccountName"]) : string.Empty,
+                                          
+                                          AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
                                           NoOfCavity = dr["NoOfCavity"] != DBNull.Value ? Convert.ToInt32(dr["NoOfCavity"]) : 0,
                                           MRNNo = dr["MRNNo"] != DBNull.Value ? Convert.ToString(dr["MRNNo"]) : string.Empty,
                                           MRNYearCode = dr["MRNYearCode"] != DBNull.Value ? Convert.ToInt32(dr["MRNYearCode"]) : 0,
@@ -383,8 +393,12 @@ namespace eTactWeb.Data.DAL
                                           LastUpdationDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedDate"]) : string.Empty,
                                           ApprovedByName = dr["ApprovedByName"] != DBNull.Value ? Convert.ToString(dr["ApprovedByName"]) : string.Empty,
                                           EntryByMachine = dr["EntryByMachineName"] != DBNull.Value ? Convert.ToString(dr["EntryByMachineName"]) : string.Empty,
-
-                                      }).ToList();
+                                          PartCode= dr["PartCode"] != DBNull.Value ? Convert.ToString(dr["PartCode"]) : string.Empty,
+                                          Material= dr["Material"] != DBNull.Value ? Convert.ToString(dr["Material"]) : string.Empty,
+                                          
+                                          RevNo= dr["RevNo"] != DBNull.Value ? Convert.ToInt32(dr["RevNo"]) : 0,
+                                          ItemCode= dr["Itemcode"] != DBNull.Value ? Convert.ToInt32(dr["Itemcode"]) : 0,
+									  }).ToList();
 
 
                 }
@@ -476,6 +490,7 @@ namespace eTactWeb.Data.DAL
                 model.InspTimeFrom = DS.Tables[0].Rows[0]["InspTimeFrom"].ToString();
                 model.InspTimeTo = DS.Tables[0].Rows[0]["InspimeTo"].ToString();
                 model.ItemCode = Convert.ToInt32(DS.Tables[0].Rows[0]["Itemcode"].ToString());
+                model.PartCode = DS.Tables[0].Rows[0]["PartCode"].ToString();
                 model.ItemName = DS.Tables[0].Rows[0]["Item_Name"].ToString();
                 model.SampleSize = Convert.ToInt32(DS.Tables[0].Rows[0]["SamlpeSize"].ToString());
                 model.ProjectNo = DS.Tables[0].Rows[0]["ProjectNo"].ToString();
@@ -513,10 +528,21 @@ namespace eTactWeb.Data.DAL
                 model.LastUpdatedByName = DS.Tables[0].Rows[0]["UpdatedByEmployee"].ToString();
                 model.ApprovedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["ApprovedBy"].ToString());
                 model.InspectedBy = Convert.ToInt32(DS.Tables[0].Rows[0]["InspectedBy"].ToString());
+                model.RevNo = int.TryParse(DS.Tables[0].Rows[0]["RevNo"].ToString(), out int revNo) ? revNo : 0;
+                model.Material = DS.Tables[0].Rows[0]["Material"]?.ToString() ?? string.Empty;
+
                 model.Attachment1 = DS.Tables[0].Rows[0]["Attachment1"].ToString();
                 model.Attachment2 = DS.Tables[0].Rows[0]["Attachment2"].ToString();
+				model.InspectedBeginingOfProd = DS.Tables[0].Rows[0]["InspectedBeginingOfProd"].ToString().Equals("1");
+				//model.InspectedAfterMachineBreackDown = DS.Tables[0].Rows[0]["InspectedAfterMachineBreackDown"].ToString().Equals("1");
+				model.InspectedAfterMoldCorrection = DS.Tables[0].Rows[0]["InspectedAfterMoldCorrection"].ToString().Equals("1");
+				model.InspectedAfterLotChange = DS.Tables[0].Rows[0]["InspectedAfterLotChange"].ToString().Equals("1");
+				model.InspectedAfterMachinIdel = DS.Tables[0].Rows[0]["InspectedAfterMachinIdel"].ToString().Equals("1");
+				model.InspectedEndOfProd = DS.Tables[0].Rows[0]["InspectedEndOfProd"].ToString().Equals("1");
 
-                if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+				int sampleSize = Convert.ToInt32(DS.Tables[0].Rows[0]["SamlpeSize"].ToString());
+				model.SampleSize = sampleSize;
+				if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
                 {
                     foreach (DataRow row in DS.Tables[1].Rows)
                     {
@@ -535,32 +561,36 @@ namespace eTactWeb.Data.DAL
                             ControlMethod = row["ControlMethod"].ToString(),
                             RejectionPlan = row["RejectionPlan"].ToString(),
                             Remarks = row["Remarks"].ToString(),
-                            InspValue1 = Convert.ToDecimal(row["InspValue1"].ToString()),
-                            InspValue2 = Convert.ToDecimal(row["InspValue2"].ToString()),
-                            InspValue3 = Convert.ToDecimal(row["InspValue3"].ToString()),
-                            InspValue4 = Convert.ToDecimal(row["InspValue4"].ToString()),
-                            InspValue5 = Convert.ToDecimal(row["InspValue5"].ToString()),
-                            InspValue6 = Convert.ToDecimal(row["InspValue6"].ToString()),
-                            InspValue7 = Convert.ToDecimal(row["InspValue7"].ToString()),
-                            InspValue8 = Convert.ToDecimal(row["InspValue8"].ToString()),
-                            InspValue10 = Convert.ToDecimal(row["InspValue10"].ToString()),
-                            InspValue11 = Convert.ToDecimal(row["InspValue11"].ToString()),
-                            InspValue12 = Convert.ToDecimal(row["InspValue12"].ToString()),
-                            InspValue13 = Convert.ToDecimal(row["InspValue13"].ToString()),
-                            InspValue14 = Convert.ToDecimal(row["InspValue14"].ToString()),
-                            InspValue15 = Convert.ToDecimal(row["InspValue15"].ToString()),
-                            InspValue16 = Convert.ToDecimal(row["InspValue16"].ToString()),
-                            InspValue17 = Convert.ToDecimal(row["InspValue17"].ToString()),
-                            InspValue18 = Convert.ToDecimal(row["InspValue18"].ToString()),
-                            InspValue19 = Convert.ToDecimal(row["InspValue19"].ToString()),
-                            InspValue20 = Convert.ToDecimal(row["InspValue20"].ToString()),
-                            InspValue21 = Convert.ToDecimal(row["InspValue21"].ToString()),
-                            InspValue22 = Convert.ToDecimal(row["InspValue22"].ToString()),
-                            InspValue23 = Convert.ToDecimal(row["InspValue23"].ToString()),
-                            InspValue24 = Convert.ToDecimal(row["InspValue24"].ToString()),
-                            InspValue25 = Convert.ToDecimal(row["InspValue25"].ToString())
+							InspValue1 = row["InspValue1"]?.ToString(),
+							InspValue2 = row["InspValue2"]?.ToString(),
+							InspValue3 = row["InspValue3"]?.ToString(),
+							InspValue4 = row["InspValue4"]?.ToString(),
+							InspValue5 = row["InspValue5"]?.ToString(),
+							InspValue6 = row["InspValue6"]?.ToString(),
+							InspValue7 = row["InspValue7"]?.ToString(),
+							InspValue8 = row["InspValue8"]?.ToString(),
+							InspValue9 = row["InspValue9"]?.ToString(),
+							InspValue10 = row["InspValue10"]?.ToString(),
+							InspValue11 = row["InspValue11"]?.ToString(),
+							InspValue12 = row["InspValue12"]?.ToString(),
+							InspValue13 = row["InspValue13"]?.ToString(),
+							InspValue14 = row["InspValue14"]?.ToString(),
+							InspValue15 = row["InspValue15"]?.ToString(),
+							InspValue16 = row["InspValue16"]?.ToString(),
+							InspValue17 = row["InspValue17"]?.ToString(),
+							InspValue18 = row["InspValue18"]?.ToString(),
+							InspValue19 = row["InspValue19"]?.ToString(),
+							InspValue20 = row["InspValue20"]?.ToString(),
+							InspValue21 = row["InspValue21"]?.ToString(),
+							InspValue22 = row["InspValue22"]?.ToString(),
+							InspValue23 = row["InspValue23"]?.ToString(),
+							InspValue24 = row["InspValue24"]?.ToString(),
+							InspValue25 = row["InspValue25"]?.ToString(),
 
-                        });
+
+							SampleSize = sampleSize
+
+						});
                     }
                     model.DTSSGrid = ItemList;
                 }

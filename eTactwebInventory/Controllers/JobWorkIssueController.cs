@@ -1492,15 +1492,15 @@ namespace eTactWeb.Controllers
             _logger.LogError(JsonConvert.SerializeObject(JSON));
             return Json(JSON);
         }
-        public async Task<JsonResult> FillItemsBom(string BomStatus, string Types)
+        public async Task<JsonResult> FillItemsBom(string BomStatus, string Types, string SearchItemCode, string SearchPartCode)
         {
-            var JSON = await _IJobWorkIssue.FillItemsBom("FillItem", BomStatus, Types);
+            var JSON = await _IJobWorkIssue.FillItemsBom("FillItem", BomStatus, Types, SearchItemCode,  SearchPartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> FillPartCodesBom(string BomStatus, string Types)
+        public async Task<JsonResult> FillPartCodesBom(string BomStatus, string Types, string SearchItemCode, string SearchPartCode)
         {
-            var JSON = await _IJobWorkIssue.FillItemsBom("FillPartCode", BomStatus, Types);
+            var JSON = await _IJobWorkIssue.FillItemsBom("FillPartCode", BomStatus, Types,  SearchItemCode,  SearchPartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

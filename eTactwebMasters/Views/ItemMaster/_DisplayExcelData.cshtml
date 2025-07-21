@@ -16,10 +16,10 @@ else
     foreach (var item in Model.ExcelDataList)
     {
         Cntr = Cntr + 1;
-        <tr class="small @Cntr" style="white-space:nowrap">
+        <tr class="small @Cntr data-row" style="white-space:nowrap">
             <td style="white-space:nowrap;">
 
-                <a class="table-link link-danger" onclick="DeleteItemRow(@Cntr);">
+                <a class="table-link link-danger deleteRowBtn">
                     <span class="fa-stack">
                         <i class="fa fa-square fa-stack-2x"></i>
                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -66,6 +66,10 @@ else
             {
                 <td id="ItemCatCode-@Cntr">@item.ItemCategoryCode</td>
             }
+            <input type="hidden" id="ErrPartCodeExists-@Cntr" value="@item.PartCodeExists" />
+            <input type="hidden" id="ErrItemNameExists-@Cntr" value="@item.ItemNameExists" />
+            <input type="hidden" id="ErrItemGroupCode-@Cntr" value="@item.ItemGroupCode" />
+            <input type="hidden" id="ErrItemCategoryCode-@Cntr" value="@item.ItemCategoryCode" />
             <td id="MinLevel-@Cntr">@item.MinLevel</td>
             <td id="MaxLevel-@Cntr">@item.MaxLevel</td>
             <td id="Stockable-@Cntr">@item.Stockable</td>

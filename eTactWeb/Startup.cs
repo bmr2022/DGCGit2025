@@ -9,6 +9,8 @@ using eTactWeb.Services.Interface;
 using eTactWeb.Data.DAL;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace eTactWeb
 {
@@ -24,96 +26,7 @@ namespace eTactWeb
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env, ILoggerFactory loggerFactory)
         {
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    // The default HSTS value is 30 days. You may want to change this for production
-            //    // scenarios, see https://aka.ms/aspnetcore-hsts.
-            //    app.UseHsts();
-            //}
-
-            //loggerFactory.AddFile("Logs/eTactWeb-.log");
-
-            //app.UseHttpLogging();
-            //app.UseStaticFiles();
-            //app.UseSession();
-            //app.UseMiddleware<SessionCheckMiddleware>();
-            //app.UseOutputCache();
-
-
-
-            //app.UseFastReport();
-
-
-            //app.Use(async (context, next) =>
-            //{
-            //    await next.Invoke();
-            //});
-
-            //app.UseRouting();
-            //app.UseCookiePolicy();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
-
-            //app.UseStatusCodePages();
-            //app.UseEndpoints
-            //(
-            //    endpoints =>
-            //    {
-            //        endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Login}/{id?}");
-            //        endpoints.MapRazorPages();
-            //    }
-            //);
-
-
-
-            //OLD WORKING WALA
-
-            //if (env.IsDevelopment())
-            //{
-            //    app.UseDeveloperExceptionPage();
-            //}
-            //else
-            //{
-            //    app.UseExceptionHandler("/Home/Error");
-            //    app.UseHsts();
-            //}
-            //loggerFactory.AddFile("Logs/eTactWeb-.log");
-            ////app.UseHttpLogging();
-            ////app.UseMiddleware<SessionCheckMiddleware>();
-            ////app.UseOutputCache();
-            ////app.UseStaticFiles();
-            ////app.UseSession();
-            //app.UseExceptionHandler("/Error");
-            //app.UseHttpsRedirection();
-            //app.UseHttpLogging();
-            //app.UseStaticFiles();
-            //app.UseRouting();
-            //app.UseSession();
-            //app.UseMiddleware<SessionCheckMiddleware>();
-            //app.UseOutputCache();
-            //app.UseFastReport();
-            //app.Use(async (context, next) =>
-            //{
-            //    await next.Invoke();
-            //});
-            //app.UseRouting();
-            //app.UseCookiePolicy();
-            //app.UseAuthentication();
-            //app.UseAuthorization();
-            //app.UseStatusCodePages();
-            //app.UseEndpoints
-            //(
-            //    endpoints =>
-            //    {
-            //        endpoints.MapControllerRoute(name: "default", pattern: "{controller=Home}/{action=Login}/{id?}");
-            //        endpoints.MapRazorPages();
-            //    }
-            //);
+            
 
             //NEW EXPERIEMNT
             if (env.IsDevelopment())
@@ -127,7 +40,7 @@ namespace eTactWeb
             }
 
             loggerFactory.AddFile("Logs/eTactWeb-.log");
-
+            app.UseRequestLocalization();
             // --- Middleware Pipeline ---
             app.UseHttpsRedirection();       // Redirect HTTP → HTTPS (early)
             app.UseHttpLogging();            // Log HTTP requests (after HTTPS redirection)
@@ -155,6 +68,17 @@ namespace eTactWeb
 
         public void ConfigureServices(IServiceCollection services)
         {
+            var cultureInfo = new CultureInfo("en-GB");
+            CultureInfo.DefaultThreadCurrentCulture = cultureInfo;
+            CultureInfo.DefaultThreadCurrentUICulture = cultureInfo;
+
+            services.Configure<RequestLocalizationOptions>(options =>
+            {
+                var supportedCultures = new[] { cultureInfo };
+                options.DefaultRequestCulture = new RequestCulture(cultureInfo);
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+            });
             services.AddControllersWithViews();
             services.AddRazorPages().AddRazorRuntimeCompilation();
             services.AddLogging();
@@ -276,6 +200,7 @@ namespace eTactWeb
             services.TryAddScoped<IInProcessInspection, InProcessInspectionBLL>();
             services.TryAddScoped<IPurchaseMIS, PurchaseMISBLL>();
             services.TryAddScoped<ISalesPersonTransfer, SalesPersonTransferBLL>();
+            services.TryAddScoped<IVendoreRatingAnalysisReport, VendoreRatingAnalysisReportBLL>();
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();

@@ -16,7 +16,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetBatchNumber(string SPName, int StoreId, string StoreName,int ItemCode,string TransDate, int YearCode, string BatchNo, string FinFromDate);
         Task<ResponseResult> GetStockQty(string Flag, int ItemCode, int StockId, string TillDate, string BatchNo, string UniqueBatchNo);
         Task<ResponseResult> GetPrevQty(int EntryId, int YearCode, int ItemCode, string uniqueBatchNo);
-        Task<ResponseResult> FillItemsBom(string Flag, string BomStatus,string Types);
+        Task<ResponseResult> FillItemsBom(string Flag, string BomStatus,string Types, string SearchItemCode, string SearchPartCode);
         Task<ResponseResult> GetStoreTotalStock(string Flag,int ItemCode, int StoreId, string TillDate);
         Task<ResponseResult> GetAddressDetails(int AccountCode);
         Task<ResponseResult> FillVendors();
