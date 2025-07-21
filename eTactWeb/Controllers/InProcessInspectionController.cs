@@ -1,4 +1,5 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
+﻿using ClosedXML.Excel;
+using DocumentFormat.OpenXml.Bibliography;
 using DocumentFormat.OpenXml.Office2010.Excel;
 using DocumentFormat.OpenXml.Wordprocessing;
 using eTactWeb.Data.Common;
@@ -716,6 +717,116 @@ namespace eTactWeb.Controllers
 
             return RedirectToAction("InProcessInspectionDashBoard");
 
+        }
+        public async Task<IActionResult> ExportInProcessInspectionToExcel(string ReportType)
+        {
+            //string modelJson = HttpContext.Session.GetString("KeyPOList");
+            if (!_MemoryCache.TryGetValue("KeynProcessInspectionDashBoardList", out List<InProcessInspectionDetailModel> modelList))
+            {
+                return NotFound("No data available to export.");
+            }
+
+
+            using var workbook = new XLWorkbook();
+            var worksheet = workbook.Worksheets.Add("InProcessInspectionReport");
+
+            var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<InProcessInspectionDetailModel>>>
+            {
+                { "SUMMARY", EXPORT_InProcessInspectionSummaryGrid },
+
+            };
+
+            if (reportGenerators.TryGetValue(ReportType, out var generator))
+            {
+                generator(worksheet, modelList);
+            }
+            else
+            {
+                return BadRequest("Invalid report type.");
+            }
+
+            worksheet.Columns().AdjustToContents();
+
+            using var stream = new MemoryStream();
+            workbook.SaveAs(stream);
+            stream.Position = 0;
+
+            return File(
+                stream.ToArray(),
+                "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+                "InProcess Inspection Report.xlsx"
+            );
+        }
+        private void EXPORT_InProcessInspectionSummaryGrid(IXLWorksheet sheet, IList<InProcessInspectionDetailModel> list)
+        {
+            string[] headers = {
+                "#Sr", "Insp Entry Id", "Insp Year Code", "Entry Date", "Testing Date",
+				"Incoming/Inprocess/Outgoing", "Slip No", "Shift Name",
+				"Insp Time From", "Insp Time To", "Item Name", "Part Code",
+				"Sample Size", "Project No", "Project Date", "Project Year Code",
+				"Color", "Material", "RevNo", "Machine Name", "Customer Name",
+				"No Of Cavity", "MRN No", "MRN Year Code", "MRN Date",
+				"Prod Slip No", "Prod Year Code", "Prod Date", "MRN Qty",
+				"Prod Qty", "Insp Actual Qty", "Ok Qty", "Rej Qty", "Lot No",
+				"Weight", "Remark", "CC", "Actual Entry Date", "Actual Entered By",
+				"Last Updated By", "Last Updated Date", "Approved By", "Machine Name"
+            };
+
+
+
+            for (int i = 0; i < headers.Length; i++)
+                sheet.Cell(1, i + 1).Value = headers[i];
+
+            int row = 2, srNo = 1;
+            foreach (var item in list)
+            {
+                sheet.Cell(row, 1).Value = srNo++;
+                sheet.Cell(row, 2).Value = item.InspEntryId;
+                sheet.Cell(row, 3).Value = item.InspYearCode;
+                sheet.Cell(row, 4).Value = item.Entry_Date?.Split(' ')[0];
+                sheet.Cell(row, 5).Value = item.TestingDate?.Split(' ')[0];
+                sheet.Cell(row, 6).Value = item.InspectionType;
+                sheet.Cell(row, 7).Value = item.SlipNo;
+                sheet.Cell(row, 8).Value = item.ShiftName;
+                sheet.Cell(row, 9).Value = item.InspTimeFrom?.Split(' ')[1];
+                sheet.Cell(row, 10).Value = item.InspTimeTo?.Split(' ')[1];
+                sheet.Cell(row, 11).Value = item.ItemName;
+                sheet.Cell(row, 12).Value = item.PartCode;
+                sheet.Cell(row, 13).Value = item.SampleSize;
+                sheet.Cell(row, 14).Value = item.ProjectNo;
+                sheet.Cell(row, 15).Value = item.ProjectDate?.Split(' ')[0];
+                sheet.Cell(row, 16).Value = item.ProjectYearCode;
+                sheet.Cell(row, 17).Value = item.Color;
+                sheet.Cell(row, 18).Value = item.Material;
+                sheet.Cell(row, 19).Value = item.RevNo;
+                sheet.Cell(row, 20).Value = item.MachineName;
+                sheet.Cell(row, 21).Value = item.AccountName;
+                sheet.Cell(row, 22).Value = item.NoOfCavity;
+                sheet.Cell(row, 23).Value = item.MRNNo;
+                sheet.Cell(row, 24).Value = item.MRNYearCode;
+                sheet.Cell(row, 25).Value = item.MRNDate?.Split(' ')[0];
+                sheet.Cell(row, 26).Value = item.ProdSlipNo;
+                sheet.Cell(row, 27).Value = item.ProdYearCode;
+                sheet.Cell(row, 28).Value = item.ProdDate?.Split(' ')[0];
+                sheet.Cell(row, 29).Value = item.MRNQty;
+                sheet.Cell(row, 30).Value = item.ProdQty;
+                sheet.Cell(row, 31).Value = item.InspActqty;
+                sheet.Cell(row, 32).Value = item.OkQty;
+                sheet.Cell(row, 33).Value = item.Rejqty;
+                sheet.Cell(row, 34).Value = item.LotNo;
+                sheet.Cell(row, 35).Value = item.Weight;
+                sheet.Cell(row, 36).Value = item.Remarks;
+                sheet.Cell(row, 37).Value = item.CC;
+                sheet.Cell(row, 38).Value = item.ActualEntryDate?.Split(' ')[0];
+                sheet.Cell(row, 39).Value = item.ActualEntryByName;
+                sheet.Cell(row, 40).Value = item.LastUpdatedBy;
+                sheet.Cell(row, 41).Value = item.LastUpdationDate?.Split(' ')[0];
+                sheet.Cell(row, 42).Value = item.ApprovedByName;
+                sheet.Cell(row, 43).Value = item.EntryByMachine;
+
+
+                row++;
+            }
         }
     }
 }

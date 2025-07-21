@@ -70,12 +70,12 @@
                             <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetDetailData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
-                                <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                                </button>
-                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ControlPlan" asp-action="ControlPlanDashBoard">
+                            <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="InProcessInspection" asp-action="InProcessInspectionDashBoard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
-                                </a>
+                            </a>
                             
                         </div>
                     </form>
@@ -201,7 +201,10 @@
             });
         }
 
-
+        $('#sendToExcel').click(function () {
+            var reportType = "SUMMARY"; 
+            window.location.href = '/InProcessInspection/ExportInProcessInspectionToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
         function GetDetailData() {
 
             var fromDate = $('#FromDate').val();
