@@ -52,6 +52,7 @@ namespace eTactWeb.DOM.Models
         public string? SerialNo { get; set; }
         public string? OldPartCode { get; set; }
         public string? Package { get; set; }
+        public string? IsCustJWAdjMandatory { get; set; }
         public string? Active { get; set; }
 
         [Display(Name = "Alt. Unit")]
@@ -214,13 +215,15 @@ namespace eTactWeb.DOM.Models
         public List<ItemViewModel>? ExcelDataList { get; set; }
         public List<ImportItemViewModel>? ImportExcelDataList { get; set; }
     }
-    public class ImportItemViewModel // Excel data
+    public class ImportItemViewModel
     {
         public int Item_Code { get; set; }
         public string PartCode { get; set; }
         public string Item_Name { get; set; }
         public string ItemGroup { get; set; }
+        public int ItemGroupCode { get; set; }
         public string TypeName { get; set; }
+        public int ItemCategoryCode { get; set; }
         public string Unit { get; set; }
         public string AlternateUnit { get; set; }
         public int HSNNO { get; set; }
@@ -228,26 +231,72 @@ namespace eTactWeb.DOM.Models
         public decimal MaximumLevel { get; set; }
         public int StdPacking { get; set; }
         public int ProdInWorkcenter { get; set; }
-        public string ProdInhouseJW { get; set; }
         public string WorkCenter { get; set; }
+        public string ProdInhouseJW { get; set; }
         public string BatchNO { get; set; }
+        public string ParentCode { get; set; }
         public string EntryDate { get; set; }
-        public string CreatedBy { get; set; }
+        public string LastUpdatedDate { get; set; }
+        public int LeadTime { get; set; }
+        public string CC { get; set; }
+        public decimal SalePrice { get; set; }
+        public decimal PurchasePrice { get; set; }
+        public decimal CostPrice { get; set; }
+        public decimal WastagePercent { get; set; }
+        public decimal WtSingleItem { get; set; }
+        public int NoOfPcs { get; set; }
+        public string QcReq { get; set; }
+        public string ItemType { get; set; }
+        public string ImageURL { get; set; }
+        public string UID { get; set; }
+        public string DrawingNo { get; set; }
+        public decimal ReorderLevel { get; set; }
+        public string YearCode { get; set; }
+        public string RackID { get; set; }
+        public string BinNo { get; set; }
+        public string ItemSize { get; set; }
+        public string Colour { get; set; }
+        public string NeedPO { get; set; }
+        public string PackingType { get; set; }
+        public string ModelNo { get; set; }
+        public int YearlyConsumedQty { get; set; }
+        public string DispItemName { get; set; }
+        public string PurchaseAccountcode { get; set; }
+        public string SaleAccountcode { get; set; }
+        public int MinLevelDays { get; set; }
+        public int MaxLevelDays { get; set; }
+        public string EmpName { get; set; }
+        public int DailyRequirment { get; set; }
+        public string Stockable { get; set; }
+        public string WipStockable { get; set; }
+        public string Store { get; set; }
+        public string ProductLifeInus { get; set; }
+        public string ItemDesc { get; set; }
+        public int MaxWipStock { get; set; }
+        public string NeedSo { get; set; }
+        public string BomRequired { get; set; }
+        public string UniversalPartCode { get; set; }
+        public string UniversalDescription { get; set; }
+        public string IsCustJWAdjMandatory { get; set; }
+        public string CreatedByName { get; set; }
         public DateTime? CreatedOn { get; set; }
-        public string UpdatedBy { get; set; }
+        public string UpdatedByName { get; set; }
         public DateTime? UpdatedOn { get; set; }
+        public string Active { get; set; }
+        public string ItemServAssets { get; set; }
+        public string JobWorkItem { get; set; }
         public string OldPartCode { get; set; }
         public string VoltageVlue { get; set; }
         public string SerialNo { get; set; }
         public string Package { get; set; }
-        public string ItemServAssets { get; set; }
-        public int ItemGroupCode { get; set; }
-        public int ItemCategoryCode { get; set; }
+
+        // Validation helpers (optional)
         public string PartCodeExists { get; set; }
         public string ItemNameExists { get; set; }
         public int SeqNo { get; set; }
-
     }
+
+
     public class ItemViewModel // Excel data
     {
         public string? PartCode { get; set; }

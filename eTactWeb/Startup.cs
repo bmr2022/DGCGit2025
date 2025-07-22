@@ -200,6 +200,7 @@ namespace eTactWeb
             services.TryAddScoped<IInProcessInspection, InProcessInspectionBLL>();
             services.TryAddScoped<IPurchaseMIS, PurchaseMISBLL>();
             services.TryAddScoped<ISalesPersonTransfer, SalesPersonTransferBLL>();
+            services.TryAddScoped<IVendoreRatingAnalysisReport, VendoreRatingAnalysisReportBLL>();
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
