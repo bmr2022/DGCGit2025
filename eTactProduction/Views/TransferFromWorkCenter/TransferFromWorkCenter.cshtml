@@ -191,6 +191,9 @@
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 100%;">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Transfer From WorkCenter Detail</strong>
                         </button>
+                        <button type="button" style="display:none" class="GridButton1 btn btn-sm btn-outline-danger mt-1 mb-1 PendingItem">
+                            <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+                        </button>
                         @*   <button class="ItemBtn btn btn-sm btn-outline-danger" style="width:150px;" type="button">
                         <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                         </button> *@
@@ -198,7 +201,67 @@
 
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
                         <div class="accordion-body">
-                            <div class="row g-2 gx-3" id="_ItemGrid">
+                            
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card PendingItem" style="display:none">
+                                <div class="card-body overflow-auto pb-0" style="max-height:240px;">
+                                    <table class="table table-hover table-bordered table-striped">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="IssueThrBom">
+                                            <tr>
+                                                <th>Item Name</th>
+                                                <th>Part Code</th>
+                                                <th>Total Stock</th>
+                                                <th>Batch Stock</th>
+                                                <th>Transfer Qty</th>
+                                                <th>Unit</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+                                                <th>Prod Sch No</th>
+                                                <th>Prod Sch Year</th>
+                                                <th>Prod Plan No</th>
+                                                <th>Prod Plan Year</th>
+                                                <th>Parent Prod Sch No</th>
+                                                <th>Parent Prod Sch Year</th>
+                                                <th>Prod Entry ID</th>
+                                                <th>Prod Entry Year</th>
+                                                <th>Prod Date</th>
+                                                <th>QC OK Qty</th>
+                                                <th>Prod Qty</th>
+                                                <th>Alt Transfer Qty</th>
+                                                <th>Alt Unit</th>
+                                                <th>Pending To Acknowledge</th>
+                                                <th>Pending Qty To Acknowledge</th>
+                                                <th>Item Size</th>
+                                                <th>Item Color</th>
+                                                <th>InProcess QC Slip No</th>
+                                                <th>InProcess QC Entry ID</th>
+                                                <th>InProcess QC Year</th>
+                                                <th>QC Cleaning Date</th>
+                                                <th>Process Name</th>
+                                                <th>Process ID</th>
+                                                <th>Received By Store Qty</th>
+                                                <th>Received Completed</th>
+                                                <th>Received By Emp Name</th>
+                                                <th>Rate</th>
+                                                <th>Item Weight</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divMultiItemGrid">
+                                            <partial name="_TransferFromWCItemGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="row g-2 gx-3 newitems" id="_ItemGrid" style="display:none">
+
+
+
+
+
+
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
                                     <label asp-for="PartCode" class="form-label" style="color:red">PartCode*</label>
                                     <select class="form-select" asp-for="PartCode" style="width:180px"></select>
@@ -705,6 +768,44 @@
             if (Err == 1) return false;
             return true;
         }
+        function FillTransferGridFromMemoryCache() {
+
+            $.ajax({
+                url: "@Url.Action("FillTransferGridFromMemoryCache")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    if (data != null) {
+                        $('#divMultiItemGrid').html(data);
+                        var firstWCID = $('#WCID-1').val();
+                        var firstWCName = $('#WorkCenterName-1').val();
+
+                        if (firstWCID) {
+                            // ✅ Fill your #WCID dropdown with only that one value
+                            $('#IssueFromWc').empty().append(
+                                $('<option>', {
+                                    value: firstWCID,
+                                    text: firstWCName
+                                })
+                            );
+                            $('#IssueFromWCid').val(firstWCID);
+                           
+                        }
+
+                        var rowCounter = $('#divMultiItemGrid tr').length;
+                        for (let i = 1; i <= rowCounter; i++) {
+                            GetBatchWorkCenterQtyForAll(i);
+                            GetWorkCenterTotalQtyForAll(i);
+                        }
+                        
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
@@ -756,12 +857,33 @@
             GetFormRights();
             FillItemName();
             FillPartCode();
-            FillWorkCenter();
+            /* FillWorkCenter(); */
             /* FillToWorkCenter(); */
             FillIssueByEmp();
             FillRecByEmp();
             FillProcessName();
             GetServerDate();
+            FillTransferGridFromMemoryCache();
+            var rowCounter = $('#divMultiItemGrid tr').length;
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                if (rowCounter > 0) {
+                    $('.PendingItem').show();
+                    $('.newitems').hide();
+
+                }
+                else {
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    FillWorkCenter();
+                }
+            } else {
+                     
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    FillWorkCenter();
+                
+            }
+
             $('#BatchNo').empty();
             $('#BatchNo').append('<option selected>-Select-</option>');
             $('#UniqueBatchNo').empty();
@@ -1290,6 +1412,169 @@
         }
         var itemBatchArray = [];
         var batchList = []; // Global list to track all batch options
+
+        $('.GridButton1').click(function (e) {
+            e.preventDefault();
+            /* if (!Validate_TransferGrid()) return; */
+            var ItemData = [];
+            var RowCount = $('#divMultiItemGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                ItemData.push({
+                    /* "PartCode": $('#PartCode').find(":selected").text().trim(),
+                    "ItemName": $('#ItemName').find(":selected").text().trim(),
+                    "ProdEntryId": parseInt($('#ProdEntryId').val()),
+                    "ProdEntryYearCode": parseInt($('#ProdEntryYearCode').val()),
+                    "ProdDate": $('#ProdDate').val(),
+                    "ProdPlanNo": $('#ProdPlanNo').val(),
+                    "ProdPlanYearCode": parseInt($('#ProdPlanYearCode').val()),
+                    "ProdSchNo": $('#ProdSchNo').val(),
+                    "ProdSchYearCode": parseInt($('#ProdSchYearCode').val()),
+                    "ParentProdSchNo": $('#ParentProdSchNo').val(),
+                    "ParentProdSchYearCode": parseInt($('#ParentProdSchYearCode').val()),
+                    "TransferQty": parseFloat($('#TransferQty').val()),
+                    "QcOkQty": parseFloat($('#QcOkQty').val()),
+                    "ProdQty": parseFloat($('#ProdQty').val()),
+                    "Unit": $('#Unit').val(),
+                    "AltTransferQty": parseFloat($('#AltTransferQty').val()),
+                    "AltUnit": $('#AltUnit').val(),
+                    "PendingToAcknowledge": $('#PendingToAcknowledge').val(),
+                    "PendingQtyToAcknowledge": parseFloat($('#PendingQtyToAcknowledge').val()),
+                    "ItemSize": $('#ItemSize').val(),
+                    "ItemColor": $('#ItemColor').val(),
+                    "InProcessQcSlipNo": $('#InProcessQcSlipNo').val(),
+                    "InProcessQcEntryId": parseInt($('#InProcessQcEntryId').val()),
+                    "InProcessQcYearCode": parseInt($('#InProcessQcYearCode').val()),
+                    "QcCleaningDate": $('#QcCleaningDate').val(),
+                    "ProcessName": $('#ProcessName').find(":selected").text() == '-Select-' ? "" : $('#ProcessName').find(":selected").text(),
+                    "ProcessId": $('#ProcessName').val(),
+                    "TotalStock": parseFloat($('#TotalStock').val()),
+                    "BatchNo": $('#BatchNo').find(':selected').text().trim(),
+                    "UniqueBatchNo": $('#UniqueBatchNo').find(':selected').text().trim(),
+                    "BatchStock": parseFloat($('#BatchStock').val()),
+                    "ReceivedByStoreQty": parseFloat($('#ReceivedByStoreQty').val()),
+                    "ReceivedCompleted": $('#ReceivedCompleted').val(),
+                    "ReceivebyEmpName": $('#ReceivebyEmpName').val(),
+                    "Rate": parseFloat($('#Rate').val()),
+                    "ItemWeight": parseFloat($('#ItemWeight').val()),
+                    "ItemCode": parseFloat($('#ItemName').val()) */
+                   
+                    ItemName: $('#ItemName-' + i).val(),
+                    PartCode: $('#PartCode-' + i).val(),
+                    ItemCode: parseInt($('#ItemCode-' + i).val()) || 0,
+                    TransferQty: parseFloat($('#TransferQty-' + i).val()) || 0,
+                    Unit: $('#Unit-' + i).val(),
+                    BatchNo: $('#BatchNo-' + i).val(),
+                    UniqueBatchNo: $('#UniqueBatchNo-' + i).val(),
+                    TotalStock: parseFloat($('#TotalStock-' + i).val()) || 0,
+                    BatchStock: parseFloat($('#BatchStock-' + i).val()) || 0,
+
+                    ProdSchNo: $('#ProdSchNo-' + i).val(),
+                    ProdSchYearCode: $('#ProdSchYearCode-' + i).val(),
+                    ProdPlanNo: $('#ProdPlanNo-' + i).val(),
+                    ProdPlanYearCode: $('#ProdPlanYearCode-' + i).val(),
+                    ParentProdSchNo: $('#ParentProdSchNo-' + i).val(),
+                    ParentProdSchYearCode: $('#ParentProdSchYearCode-' + i).val(),
+                    ProdEntryId: $('#ProdEntryId-' + i).val(),
+                    ProdEntryYearCode: $('#ProdEntryYearCode-' + i).val(),
+                    ProdDate: $('#ProdDate-' + i).val(),
+                    QcOkQty: parseFloat($('#QcOkQty-' + i).val()) || 0,
+                    ProdQty: parseFloat($('#ProdQty-' + i).val()) || 0,
+                    AltTransferQty: parseFloat($('#AltTransferQty-' + i).val()) || 0,
+                    AltUnit: $('#AltUnit-' + i).val(),
+                    PendingToAcknowledge: $('#PendingToAcknowledge-' + i).val(),
+                    PendingQtyToAcknowledge: parseFloat($('#PendingQtyToAcknowledge-' + i).val()) || 0,
+                    ItemSize: $('#ItemSize-' + i).val(),
+                    ItemColor: $('#ItemColor-' + i).val(),
+                    InProcessQcSlipNo: $('#InProcessQcSlipNo-' + i).val(),
+                    InProcessQcEntryId: parseInt($('#InProcessQcEntryId-' + i).val()) || 0,
+                    InProcessQcYearCode: parseInt($('#InProcessQcYearCode-' + i).val()) || 0,
+                    QcCleaningDate: $('#QcCleaningDate-' + i).val(),
+                    ProcessName: $('#ProcessName-' + i).val(),
+                    ProcessId: $('#ProcessId-' + i).val(),
+                    ReceivedByStoreQty: parseFloat($('#ReceivedByStoreQty-' + i).val()) || 0,
+                    ReceivedCompleted: $('#ReceivedCompleted-' + i).val(),
+                    "ReceivebyEmpName": $('#ReceivebyEmpName').val(),
+                    Rate: parseFloat($('#Rate-' + i).val()) || 0,
+                    ItemWeight: parseFloat($('#ItemWeight-' + i).val()) || 0
+                });
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddTransferItemDetail")',
+                type: "POST",
+                data: JSON.stringify(ItemData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    console.log('Sending item...');
+                    console.log('ItemData', ItemData);
+                },
+                success: function (data, status, xhr) {
+
+                    /* // ✅ Store used batch
+                    itemBatchArray.push({
+                        "itemcode": parseInt($('#ItemCode').val()),
+                        "batchno": $('#BatchNo').val(),
+                        "uniqueBatchNo": $('#UniqueBatchNo').val()
+                    });
+
+                    // ✅ Disable current used batch
+                    const usedBatchNo = $('#BatchNo').val();
+                    $('#BatchNo option[value="' + usedBatchNo + '"]').prop('disabled', true);
+
+                    // ✅ Enable next unused batch from batchList
+                    for (var i = 0; i < batchList.length; i++) {
+                        var nextBatch = batchList[i];
+                        var isUsed = itemBatchArray.some(function (item) {
+                            return item.batchno === nextBatch;
+                        });
+                        if (!isUsed) {
+                            $('#BatchNo option[value="' + nextBatch + '"]').prop('disabled', false).prop('selected', true);
+                            $('#BatchNo').trigger('change'); // optional
+                            break;
+                        }
+                    } */
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
+                    } else {
+                        $('#divTransferGrid').html(data);
+                        $.notify('Item Added To Grid.', "success");
+                    }
+
+                    editingNow = false;
+                    ClearGrid();
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    $('#BatchNo').val('0');
+                    $('#UniqueBatchNo').val('0');
+
+                },
+                error: function (result) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result) {
+                    alert(result.responseText);
+                },
+                complete: function () {
+                    console.log('Done');
+                    $('.Schedule').fadeIn();
+                }
+            });
+        });
+
+
+
+
+
+
+
+
+
+
+
         $('.ItemBtn').click(function (e) {
             e.preventDefault();
             if (!Validate_TransferGrid()) return;
@@ -1691,6 +1976,53 @@
                         $('#BatchStock').val($.parseJSON(result).Result[0].STOCK);
 
                         BatchStock = $.parseJSON(result).Result[0].STOCK;
+                    }
+                }
+            });
+        }
+
+        function GetBatchWorkCenterQtyForAll(i) {
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetWorkCenterQty")",
+                data: { ItemCode: $('#ItemCode-' + i).val(), WcId: $('#IssueFromWc').val(), TillDate: formattedDate, BatchNo: $('#BatchNo-' + i).val(), UniqueBatchNo: $('#UniqueBatchNo-'+i).val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        // BatchStock=0
+                        $('#BatchStock-'+i).val($.parseJSON(result).Result[0].STOCK);
+                        $('#TransferQty-' + i).val($.parseJSON(result).Result[0].STOCK);
+
+                        /* BatchStock = $.parseJSON(result).Result[0].STOCK; */
+                    }
+                }
+            });
+        }
+
+        function GetWorkCenterTotalQtyForAll(i) {
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetWorkCenterTotalStock")",
+                data: { ItemCode: $('#ItemCode-'+i).val(), WcId: $('#IssueFromWc').val(), TillDate: formattedDate },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TotalStock-' + i).val($.parseJSON(result).Result[0].STOCK);
                     }
                 }
             });
