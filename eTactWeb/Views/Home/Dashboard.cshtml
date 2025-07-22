@@ -15,6 +15,14 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
+
+        :root {
+            --primary-color: #4f46e5;
+            --secondary-color: #10b981;
+            --accent-color: #f59e0b;
+            --dark-color: #1e293b;
+        }
+
         body {
             font-family: 'Segoe UI', sans-serif;
             background-color: #f7f9fa;
@@ -660,111 +668,111 @@
             background-color: #fdecea;
         }
 
-        .tab-icon-container {
-            background-color: rgba(255, 255, 255, 0.2);
+        .supplier-card {
+            background: white;
             border-radius: 8px;
-            padding: 8px 12px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            padding: 12px;
+            box-shadow: 0 2px 4px -1px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            border-left: 3px solid var(--primary-color);
+            margin-bottom: 10px;
         }
 
-            .tab-icon-container:hover {
-                background-color: rgba(255, 255, 255, 0.3);
+            .supplier-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
             }
 
-        .card-body {
-            padding: 20px;
-        }
-
-        .vendor-list {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .vendor-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 16px;
-            background-color: rgba(245, 247, 250, 0.5);
-            border-radius: 8px;
-            transition: all 0.3s ease;
-            border-left: 4px solid transparent;
-        }
-
-            .vendor-item:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-                border-left-color: #2575fc;
-                background-color: #fff;
-            }
-
-        .vendor-info {
-            flex: 1;
-        }
-
-        .vendor-name {
+        .supplier-name {
             font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 4px;
+            color: var(--dark-color);
+            font-size: 0.9rem;
+            margin-bottom: 6px;
         }
 
-        .vendor-code {
-            font-size: 0.85rem;
-            color: #7f8c8d;
+        .supplier-code {
+            background-color: #e0e7ff;
+            color: var(--primary-color);
+            padding: 2px 6px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            display: inline-block;
+            margin-bottom: 5px;
         }
 
-        .vendor-ratings {
+        .rating-container {
             display: flex;
-            gap: 16px;
-            text-align: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
         }
 
-        .rating-box {
-            padding: 8px 12px;
-            border-radius: 6px;
-            min-width: 80px;
+        .rating-item {
+            flex: 1;
+            min-width: 60px;
         }
 
-        .price-rating {
-            background-color: rgba(46, 204, 113, 0.1);
-            color: #2ecc71;
-        }
-
-        .delivery-rating {
-            background-color: rgba(52, 152, 219, 0.1);
-            color: #3498db;
-        }
-
-        .quality-rating {
-            background-color: rgba(155, 89, 182, 0.1);
-            color: #9b59b6;
-        }
-
-        .final-rating {
-            background-color: rgba(241, 196, 15, 0.1);
-            color: #f1c40f;
-            font-weight: 700;
-        }
-
-        .rating-label {
-            font-size: 0.75rem;
-            margin-bottom: 2px;
+        .rating-title {
+            font-size: 0.7rem;
+            color: #64748b;
+            margin-bottom: 3px;
         }
 
         .rating-value {
             font-weight: 600;
-            font-size: 1.1rem;
+            font-size: 0.8rem;
+            color: var(--dark-color);
         }
 
-        .no-vendors {
-            text-align: center;
-            color: #7f8c8d;
-            padding: 20px;
-            font-style: italic;
+        .rating-bar {
+            height: 4px;
+            background-color: #e2e8f0;
+            border-radius: 2px;
+            margin-top: 3px;
+            overflow: hidden;
         }
-        
+
+        .rating-fill {
+            height: 100%;
+            border-radius: 3px;
+        }
+
+        .price-fill {
+            background-color: #3d3dcd;
+        }
+
+        .delivery-fill {
+            background-color: #379637;
+        }
+
+        .quality-fill {
+            background-color: #ea9a08;
+        }
+
+        .final-fill {
+            background: linear-gradient(90deg, #3d3dcd, #379637);
+        }
+
+        .supplier-grid {
+            display: flex;
+            flex-wrap: wrap;
+            max-height: 300px;
+            overflow-y: auto;
+            padding: 5px;
+            justify-content: space-between;
+        }
+
+            .supplier-grid > div {
+                flex: 0 0 calc(50% - 8px); /* 2 cards per row with small gap */
+            }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #64748b;
+        }
+
     </style>
 </head>
 <body>
@@ -793,11 +801,11 @@
                 Sales Dashboard
             </div>
         </button>
-    </div>
-    <div id="inventoryTab" class="tab-content active">
-        <button onclick="exportDashboardToForInventoryPdf()" class="btn btn-danger mb-3">
+        <button onclick="ExportPdfForDashBoard()" class="btn btn-danger">
             <i class="fas fa-file-pdf"></i> Export to PDF
         </button>
+    </div>
+    <div id="inventoryTab" class="tab-content active">
         <!-- Inventory Dashboard -->
         <div class="card-container">
             <input type="hidden" id="TotalRMValue" />
@@ -994,9 +1002,6 @@
         </div>
     </div>
     <div id="purchaseTab" class="tab-content">
-        <button onclick="exportDashboardToForPurchaseOrderPdf()" class="btn btn-danger mb-3">
-            <i class="fas fa-file-pdf"></i> Export to PDF
-        </button>
         <input type="hidden" id="RefreshPOAllData" />
         <div class="card-row">
             <div class="purchase-card">
@@ -1247,10 +1252,8 @@
                         <i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="SaveBestAndWorstSupplier()"></i>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div class="vendor-list" id="vendor-list">
-                <!-- Vendors will be dynamically inserted here -->
-                     </div>
+                <div class="supplier-grid" id="supplierContainer">
+                    <!-- Supplier cards will be dynamically inserted here -->
                 </div>
             </div>
         </div>
@@ -1262,8 +1265,8 @@
                         <i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div id="worstSupplierContainer" class="vendor-section"></div>
+                <div class="supplier-grid" id="supplierWorstContainer">
+                    <!-- Supplier cards will be dynamically inserted here -->
                 </div>
             </div>
             <div class="card">
@@ -1303,9 +1306,6 @@
     </div>
     <div id="salesTab" class="tab-content">
         <!-- Supply Chain Dashboard -->
-        <button onclick="exportDashboardToPdf()" class="btn btn-danger mb-3">
-            <i class="fas fa-file-pdf"></i> Export to PDF
-        </button>
         <div class="dashboard-wrapper">
             <!-- Existing sections remain unchanged above -->
             <!-- Monthly Sales Trend -->
@@ -1416,89 +1416,89 @@
         //     });
         // }
 
-        function exportDashboardToForInventoryPdf() {
+        function ExportPdfForDashBoard() {
             const { jsPDF } = window.jspdf;
-            const element = document.getElementById("inventoryTab");
 
-            window.scrollTo(0, 0); // Ensure element is in view
+            const activeTabButton = document.querySelector(".tab-link.active");
+            if (!activeTabButton) {
+                alert("No active tab found!");
+                return;
+            }
 
-            html2canvas(element, {
-                scale: 3,
-                useCORS: true,
-                backgroundColor: "#ffffff"
-            }).then(function (canvas) {
-                const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF("landscape", "mm", "a4"); // Landscape mode
+            const targetId = activeTabButton.getAttribute("data-target");
+            const tabContent = document.querySelector(targetId);
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();
-                const pdfHeight = pdf.internal.pageSize.getHeight();
+            if (!tabContent) {
+                alert("Tab content not found!");
+                return;
+            }
 
-                const imgProps = pdf.getImageProperties(imgData);
-                const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 30) / imgProps.height);
+            const tabNameElement = activeTabButton.querySelector(".tab-text");
+            let dashboardName = "Dashboard Export";
+            let fileName = "DashboardExport.pdf";
+            if (tabNameElement) {
+                dashboardName = tabNameElement.textContent.trim();
+                fileName = `${dashboardName.replace(/\s+/g, '_')}.pdf`;
+            }
 
-                const imgWidth = imgProps.width * ratio;
-                const imgHeight = imgProps.height * ratio;
-
-                // Add Header
-                pdf.setFontSize(16);
-                pdf.text("Inventory Dashboard", 10, 15);
-                pdf.setFontSize(10);
-                pdf.text("Date: " + new Date().toLocaleString(), 10, 22);
-
-                // Add dashboard image below header
-                pdf.addImage(imgData, "PNG", 10, 30, imgWidth, imgHeight);
-                pdf.save("Inventory Dashboard.pdf");
-            });
-        }
-
-        function exportDashboardToForPurchaseOrderPdf() {
-            const { jsPDF } = window.jspdf;
-            const element = document.getElementById("purchaseTab");
-
-            // Ensure the content is fully visible
+            // Scroll to top
             window.scrollTo(0, 0);
 
-            // Use html2canvas to capture the dashboard
-            html2canvas(element, {
-                scale: 2.5,                // Adjust the scale for better clarity
+            // Save original style to restore later
+            const originalStyle = {
+                height: tabContent.style.height,
+                maxHeight: tabContent.style.maxHeight,
+                overflow: tabContent.style.overflow,
+            };
+
+            // Expand container to full content to avoid clipping
+            tabContent.style.height = 'auto';
+            tabContent.style.maxHeight = 'none';
+            tabContent.style.overflow = 'visible';
+            tabContent.style.backgroundColor = "#ffffff";
+
+            html2canvas(tabContent, {
+                scale: 2,
                 useCORS: true,
-                backgroundColor: "#ffffff"
-            }).then(function (canvas) {
-                const imgData = canvas.toDataURL("image/png");
-                const pdf = new jsPDF("landscape", "mm", "a4"); // A4 landscape format
+                backgroundColor: '#ffffff',
+                scrollY: -window.scrollY
+            }).then(canvas => {
+                const imgData = canvas.toDataURL('image/png');
 
-                const pdfWidth = pdf.internal.pageSize.getWidth();    // A4 width
-                const pdfHeight = pdf.internal.pageSize.getHeight();  // A4 height
+                const pdf = new jsPDF('p', 'mm', 'a4');
+                const pageWidth = pdf.internal.pageSize.getWidth();
+                const pageHeight = pdf.internal.pageSize.getHeight();
 
-                const imgProps = pdf.getImageProperties(imgData);
-                const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 40) / imgProps.height); // Leave room for header
+                const imgWidth = pageWidth;
+                const imgHeight = (canvas.height * imgWidth) / canvas.width;
 
-                const imgWidth = imgProps.width * ratio;
-                const imgHeight = imgProps.height * ratio;
+                const marginTop = 20;
+                let position = marginTop + 10;
+                let heightLeft = imgHeight;
 
-                const xCentered = (pdfWidth - imgWidth) / 2; // Center the image on the page
-                const yStart = 30; // Start position for image
+                // Add header
+                pdf.setFont("helvetica", "bold");
+                pdf.setFontSize(16);
+                pdf.text(dashboardName, pageWidth / 2, marginTop, { align: "center" });
 
-                // Header styling
-                pdf.setFontSize(20);
-                pdf.setTextColor(33, 37, 41); // Dark grey color for text
-                pdf.text("Purchase Order Dashboard", 10, 15);
+                // Add first page
+                pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                heightLeft -= (pageHeight - position);
 
-                pdf.setFontSize(12);
-                pdf.setTextColor(100); // Lighter grey for date
-                pdf.text("Date: " + new Date().toLocaleString(), 10, 25);
-
-                // Add the dashboard image
-                pdf.addImage(imgData, "PNG", xCentered, yStart, imgWidth, imgHeight);
-
-                // Adjust PDF height if content exceeds one page
-                const totalHeight = yStart + imgHeight + 10; // Account for additional space
-                if (totalHeight > pdfHeight) {
-                    pdf.addPage(); // Create a new page if content exceeds the page height
+                // Add more pages if needed
+                while (heightLeft > 0) {
+                    position = 10;
+                    pdf.addPage();
+                    pdf.addImage(imgData, 'PNG', 0, position, imgWidth, imgHeight);
+                    heightLeft -= pageHeight;
                 }
 
-                // Save the PDF
-                pdf.save("Purchase_Order_Dashboard.pdf");
+                // Restore original styles
+                tabContent.style.height = originalStyle.height;
+                tabContent.style.maxHeight = originalStyle.maxHeight;
+                tabContent.style.overflow = originalStyle.overflow;
+
+                pdf.save(fileName);
             });
         }
 
@@ -2557,18 +2557,18 @@
                         }
 
                         html += `
-                                                                            <div class="vendor-card">
-                                                                                <div class="vendor-header">
-                                                                                    <div class="vendor-logo">${initials}</div>
-                                                                                    <h3>${item.AccountName}</h3>
-                                                                                    ${badgeHtml}
-                                                                                </div>
-                                                                                <div class="vendor-details">
-                                                                                    <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
-                                                                                    <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
-                                                                                    <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
-                                                                                </div>
-                                                                            </div>`;
+                                                                                            <div class="vendor-card">
+                                                                                                <div class="vendor-header">
+                                                                                                    <div class="vendor-logo">${initials}</div>
+                                                                                                    <h3>${item.AccountName}</h3>
+                                                                                                    ${badgeHtml}
+                                                                                                </div>
+                                                                                                <div class="vendor-details">
+                                                                                                    <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
+                                                                                                    <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
+                                                                                                    <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
+                                                                                                </div>
+                                                                                            </div>`;
                     });
 
                     $('.vendors-container').empty().append(html);
@@ -2611,40 +2611,59 @@
                 success: function (data) {
                     var obj = $.parseJSON(data);
                     var best = obj.Result || [];
-                    var vendorList = $('#vendor-list');
-                    vendorList.empty();
 
-                    best.forEach(vendor => {
-                        vendorList.append(`
-                                    <div class="vendor-item">
-                                        <div class="vendor-info">
-                                            <div class="vendor-name">${vendor.AccountName}</div>
-                                            <div class="vendor-code">${vendor.AccountCode}</div>
+                    let html = '';
+                    if (best.length === 0) {
+                        html = '<div class="col-12 text-center text-muted">No Best Suppliers Found</div>';
+                    } else {
+                        $.each(best, function (i, item) {
+                            html += `
+                                               <div class="supplier-card relative">
+
+                                            <div class="supplier-name">${item.AccountName}</div>
+
+                                    <div class="rating-container">
+                                        <div class="rating-item">
+                                            <div class="rating-title">Price Rating</div>
+                                                    <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
+                                            <div class="rating-bar">
+                                                        <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating * 20}%"></div>
+                                            </div>
                                         </div>
-                                        <div class="vendor-ratings">
-                                            <div class="rating-box price-rating">
-                                                <div class="rating-label">Price</div>
-                                                <div class="rating-value">${vendor.VendorPriceRating.toFixed(1)}</div>
+
+                                        <div class="rating-item">
+                                            <div class="rating-title">Delivery Rating</div>
+                                                    <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
+                                            <div class="rating-bar">
+                                                        <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating * 20}%"></div>
                                             </div>
-                                            <div class="rating-box delivery-rating">
-                                                <div class="rating-label">Delivery</div>
-                                                <div class="rating-value">${vendor.VendorDeliveryRating.toFixed(1)}</div>
+                                        </div>
+
+                                        <div class="rating-item">
+                                            <div class="rating-title">Quality Rating</div>
+                                                    <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
+                                            <div class="rating-bar">
+                                                        <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating * 20}%"></div>
                                             </div>
-                                            <div class="rating-box quality-rating">
-                                                <div class="rating-label">Quality</div>
-                                                <div class="rating-value">${vendor.VendorQualityRating.toFixed(1)}</div>
-                                            </div>
-                                            <div class="rating-box final-rating">
-                                                <div class="rating-label">Overall</div>
-                                                <div class="rating-value">${vendor.VendorFinalRating.toFixed(1)}</div>
+                                        </div>
+
+                                        <div class="rating-item">
+                                            <div class="rating-title">Final Rating</div>
+                                                    <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
+                                            <div class="rating-bar">
+                                                        <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating * 20}%"></div>
                                             </div>
                                         </div>
                                     </div>
-                                `);
-                    });
+                                </div>
+                                    `;
+                        });
+                    }
+
+                    $('#supplierContainer').html(html);
                 },
                 error: function () {
-                    $('#vendor-list').html('<div class="no-vendors">Failed to load vendor data</div>');
+                    $('#supplierContainer').html('<div class="col-12 text-danger text-center">Failed to load vendor data</div>');
                 }
             });
         }
@@ -2657,23 +2676,55 @@
                     var obj = $.parseJSON(data);
                     var worst = obj.Result || [];
 
-                    // Clear containers
-                    $('#worstSupplierContainer').empty();
+                    let html = '';
+                    if (worst.length === 0) {
+                        html = '<div class="col-12 text-center text-muted">No worst Suppliers Found</div>';
+                    } else {
+                        $.each(worst, function (i, item) {
+                            html += `
+                                                       <div class="supplier-card relative">
 
-                    // Worst Supplier Cards
-                    worst.forEach(function (item) {
-                        var card = `
-                                    <div class="vendor-card worst">
-                                        <div class="vendor-title">${item.AccountCode} - ${item.AccountName}</div>
-                                        <div class="vendor-sub">Lowest Rated Supplier</div>
-                                        <div class="rating"><span>Price:</span> ${item.VendorPriceRating}</div>
-                                        <div class="rating"><span>Delivery:</span> ${item.VendorDeliveryRating}</div>
-                                        <div class="rating"><span>Quality:</span> ${item.VendorQualityRating}</div>
-                                        <div class="rating"><span>Final:</span> ${item.VendorFinalRating}</div>
-                                    </div>
-                                `;
-                        $('#worstSupplierContainer').append(card);
-                    });
+                                                    <div class="supplier-name">${item.AccountName}</div>
+
+                                            <div class="rating-container">
+                                                <div class="rating-item">
+                                                    <div class="rating-title">Price Rating</div>
+                                                            <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
+                                                    <div class="rating-bar">
+                                                                <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating * 20}%"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="rating-item">
+                                                    <div class="rating-title">Delivery Rating</div>
+                                                            <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
+                                                    <div class="rating-bar">
+                                                                <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating * 20}%"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="rating-item">
+                                                    <div class="rating-title">Quality Rating</div>
+                                                            <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
+                                                    <div class="rating-bar">
+                                                                <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating * 20}%"></div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="rating-item">
+                                                    <div class="rating-title">Final Rating</div>
+                                                            <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
+                                                    <div class="rating-bar">
+                                                                <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating * 20}%"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                            `;
+                        });
+                    }
+
+                    $('#supplierWorstContainer').html(html);
                 },
                 error: function () {
                     alert('Failed to load supplier data.');

@@ -127,30 +127,14 @@ else
                         <tr id="SAGridRow-@Cntr" onclick="selection(this)">
 
                             <td style="white-space:nowrap;">
-                                @if (Model.EntryId > 0)
-                                {
-                                    <a class="table-link link-primary noCursor" disabled>
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                    <a class="table-link link-danger noCursor" disabled>
+                               
+                                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo,@Model.SampleSize);">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
-                                }
-                                else
-                                {
-                                    <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                }
+                                
                             </td>
                             <th>@Cntr</th>
                             <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.Characteristic</td>
@@ -161,13 +145,14 @@ else
                             <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.RejectionPlan</td>
                             <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.FrequencyofTesting</td>
 
-                           
-                            @for (int i = 0; i < item.Samples.Count; i++)
-                            {
-                                <td style="max-width: 70px; white-space: normal; word-wrap: break-word; font-size:10px;">
-                                    @item.Samples[i]
-                                </td>
-                            }
+
+                                @for (int i = 0; i < Math.Min(item.Samples?.Count ?? 0, Model.SampleSize); i++)
+                                {
+                                    <td style="max-width: 70px; white-space: normal; word-wrap: break-word; font-size:10px;">
+                                        @item.Samples[i]
+                                    </td>
+                                }
+
                         </tr>
                        
                     }

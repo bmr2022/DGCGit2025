@@ -23,7 +23,8 @@ else
             <td id="Item_Name-@Cntr">@item.Item_Name</td>
             <td id="ItemGroup-@Cntr">@item.ItemGroup</td>
             <td id="ItemGroupCode-@Cntr">@item.ItemGroupCode</td>
-            <td id="TypeName-@Cntr">@item.TypeName</td>
+            <input type="hidden" id="TypeName-@Cntr" value="@item.TypeName" />
+            <td id="ItemType-@Cntr">@item.ItemType</td>
             <td id="ItemCategoryCode-@Cntr">@item.ItemCategoryCode</td>
             <td id="Unit-@Cntr">@item.Unit</td>
             <td id="AlternateUnit-@Cntr">@item.AlternateUnit</td>
@@ -31,8 +32,8 @@ else
             <td id="MinimumLevel-@Cntr">@item.MinimumLevel</td>
             <td id="MaximumLevel-@Cntr">@item.MaximumLevel</td>
             <td id="StdPacking-@Cntr">@item.StdPacking</td>
-            <td id="ProdInWorkcenter-@Cntr">@item.ProdInWorkcenter</td>
             <td id="WorkCenter-@Cntr">@item.WorkCenter</td>
+            <td id="ProdInWorkcenter-@Cntr">@item.ProdInWorkcenter</td>
             <td id="ProdInhouseJW-@Cntr">@item.ProdInhouseJW</td>
             <td id="BatchNO-@Cntr">@item.BatchNO</td>
             <td id="OldPartCode-@Cntr">@item.OldPartCode</td>
@@ -40,6 +41,54 @@ else
             <td id="SerialNo-@Cntr">@item.SerialNo</td>
             <td id="Package-@Cntr">@item.Package</td>
 
+            <!-- ✅ Additional fields from Excel that were missing -->
+            <td id="ParentCode-@Cntr">@item.ParentCode</td>
+            <td id="EntryDate-@Cntr">@item.EntryDate</td>
+            <td id="LastUpdatedDate-@Cntr">@item.LastUpdatedDate</td>
+            <td id="LeadTime-@Cntr">@item.LeadTime</td>
+            <td id="CC-@Cntr">@item.CC</td>
+            <td id="SalePrice-@Cntr">@item.SalePrice</td>
+            <td id="PurchasePrice-@Cntr">@item.PurchasePrice</td>
+            <td id="CostPrice-@Cntr">@item.CostPrice</td>
+            <td id="WastagePercent-@Cntr">@item.WastagePercent</td>
+            <td id="WtSingleItem-@Cntr">@item.WtSingleItem</td>
+            <td id="NoOfPcs-@Cntr">@item.NoOfPcs</td>
+            <td id="QcReq-@Cntr">@item.QcReq</td>
+            <td id="ImageURL-@Cntr">@item.ImageURL</td>
+            <td id="UID-@Cntr">@item.UID</td>
+            <td id="DrawingNo-@Cntr">@item.DrawingNo</td>
+            <td id="ReorderLevel-@Cntr">@item.ReorderLevel</td>
+            <td id="YearCode-@Cntr">@item.YearCode</td>
+            <td id="RackID-@Cntr">@item.RackID</td>
+            <td id="BinNo-@Cntr">@item.BinNo</td>
+            <td id="ItemSize-@Cntr">@item.ItemSize</td>
+            <td id="Colour-@Cntr">@item.Colour</td>
+            <td id="NeedPO-@Cntr">@item.NeedPO</td>
+            <td id="PackingType-@Cntr">@item.PackingType</td>
+            <td id="ModelNo-@Cntr">@item.ModelNo</td>
+            <td id="YearlyConsumedQty-@Cntr">@item.YearlyConsumedQty</td>
+            <td id="DispItemName-@Cntr">@item.DispItemName</td>
+            <td id="PurchaseAccountcode-@Cntr">@item.PurchaseAccountcode</td>
+            <td id="SaleAccountcode-@Cntr">@item.SaleAccountcode</td>
+            <td id="MinLevelDays-@Cntr">@item.MinLevelDays</td>
+            <td id="MaxLevelDays-@Cntr">@item.MaxLevelDays</td>
+            <td id="EmpName-@Cntr">@item.EmpName</td>
+            <td id="DailyRequirment-@Cntr">@item.DailyRequirment</td>
+            <td id="Stockable-@Cntr">@item.Stockable</td>
+            <td id="WipStockable-@Cntr">@item.WipStockable</td>
+            <td id="Store-@Cntr">@item.Store</td>
+            <td id="ProductLifeInus-@Cntr">@item.ProductLifeInus</td>
+            <td id="ItemDesc-@Cntr">@item.ItemDesc</td>
+            <td id="MaxWipStock-@Cntr">@item.MaxWipStock</td>
+            <td id="NeedSo-@Cntr">@item.NeedSo</td>
+            <td id="BomRequired-@Cntr">@item.BomRequired</td>
+            <td id="UniversalPartCode-@Cntr">@item.UniversalPartCode</td>
+            <td id="UniversalDescription-@Cntr">@item.UniversalDescription</td>
+            <td id="IsCustJWAdjMandatory-@Cntr">@item.IsCustJWAdjMandatory</td>
+            <td id="Active-@Cntr">@item.Active</td>
+            <td id="JobWorkItem-@Cntr">@item.JobWorkItem</td>
+            <td id="ItemServAssets-@Cntr">@item.ItemServAssets</td>
         </tr>
     }
+
 }

@@ -43,12 +43,24 @@
                                     <option disabled value="">-Select-</option>
                                     <option value="SUMMARY" selected>Summary</option>
                                     <option value="DETAIL">Detail</option>
-
-
                                 </select>
-
                             </div>
-
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="ItemName" class="form-label">ItemName</label>
+                                <input asp-for="ItemName" class="form-control" />
+                            </div>
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="PartCode" class="form-label">PartCode</label>
+                                <input asp-for="PartCode" class="form-control" />
+                            </div>
+                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="SlipNo" class="form-label">Slip No</label>
+                                <input asp-for="SlipNo" class="form-control" />
+                            </div>
+                             <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:200px;">
+                                <label asp-for="MachineNo" class="form-label">Machine Name</label>
+                                <input asp-for="MachineNo" class="form-control" />
+                            </div>
 
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                 <label class="form-label">Global search</label>
@@ -58,12 +70,12 @@
                             <button class="btn btn-sm btn-outline-info" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" onclick="GetDetailData();">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
-                                <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
-                                </button>
-                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="ControlPlan" asp-action="ControlPlanDashBoard">
+                            <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                            </button>
+                            <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="InProcessInspection" asp-action="InProcessInspectionDashBoard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
-                                </a>
+                            </a>
                             
                         </div>
                     </form>
@@ -189,19 +201,29 @@
             });
         }
 
-
+        $('#sendToExcel').click(function () {
+            var reportType = "SUMMARY"; 
+            window.location.href = '/InProcessInspection/ExportInProcessInspectionToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
         function GetDetailData() {
 
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
+            var ItemName = $('#ItemName').val();
+            var PartCode = $('#PartCode').val();
+            var SlipNo = $('#SlipNo').val();
+            var MachinNo = $('#MachineNo').val();
             var reportType = "SUMMARY";
 
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType },
+                data: { FromDate: fromDate, ToDate: toDate, ReportType: reportType,
+                                ItemName: ItemName,PartCode:PartCode,
+                    SlipNo: SlipNo, MachinNo: MachinNo
+                },
                 async: false,
-                data: $('#SParam').serializeArray(),
+                //data: $('#SParam').serializeArray(),
                 success: function (data) {
 
                     $('#divDashboardGrid').empty().append(data);
@@ -216,6 +238,59 @@
                 }
             });
         }
+        var isGlobalSearch = false;
+        var globalSearchString = "";
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
+            var dashboardType = "SUMMARY";
+            $.ajax({
+                url: "/InProcessInspection/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                success: function (data) {
+
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(data);
+                    $('#totalRows').text($('#divDashboardGrid tr').length);
+                    //countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        function loadPage(pageNumber) {
+
+            var url = '';
+            var ReportType = "SUMMARY";
+            var formData = $('#SParam').serializeArray();
+            if (isGlobalSearch) {
+                url = '/InProcessInspection/GlobalSearch';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            }
+            else {
+                url = '@Url.Action("GetDetailData", "InProcessInspection")';
+            }
+
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divDashboardGrid').empty();
+                    $('#divDashboardGrid').html(result);
+                    $('#totalRows').text($('#divDashboardGrid tr').length);
+                    //countAllTotal();
+                }
+            });
+        }
+
 
         function confirmEdit(event) {
 

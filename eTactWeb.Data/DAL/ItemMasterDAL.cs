@@ -6,6 +6,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 
 namespace eTactWeb.Data.DAL
 {
@@ -410,10 +411,11 @@ namespace eTactWeb.Data.DAL
                         NeedSo = oDataSet.Tables[0].Rows[i].ItemArray[49].ToString(),
                         BomRequired = oDataSet.Tables[0].Rows[i].ItemArray[50].ToString(),
                         HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
+                        JobWorkItem = oDataSet.Tables[0].Rows[i].ItemArray[51].ToString(),
                         CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
-                        CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()),
+                        CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54]),
+                        UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[55]),
                         UpdatedByName = oDataSet.Tables[0].Rows[i].ItemArray[56].ToString(),
-                        UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()),
                         Active = oDataSet.Tables[0].Rows[i].ItemArray[57].ToString(),
                         UniversalPartCode = oDataSet.Tables[0].Rows[i].ItemArray[58].ToString(),
                         UniversalDescription = oDataSet.Tables[0].Rows[i].ItemArray[59].ToString(),
@@ -423,7 +425,26 @@ namespace eTactWeb.Data.DAL
                         VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
                         OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
                         SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
-                        Package = oDataSet.Tables[0].Rows[i].ItemArray[66].ToString(),
+                        Package = oDataSet.Tables[0].Rows[i].ItemArray[66]?.ToString() ?? string.Empty,
+                        IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[67].ToString(),
+                        ItemServAssets= oDataSet.Tables[0].Rows[i].ItemArray[68].ToString()
+                        //HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
+                        //CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
+                        //CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()),
+                        //UpdatedByName = oDataSet.Tables[0].Rows[i].ItemArray[56].ToString(),
+                        //UpdatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[55].ToString()),
+                        //Active = oDataSet.Tables[0].Rows[i].ItemArray[57].ToString(),
+                        //UniversalPartCode = oDataSet.Tables[0].Rows[i].ItemArray[58].ToString(),
+                        //UniversalDescription = oDataSet.Tables[0].Rows[i].ItemArray[59].ToString(),
+                        //ProdWorkCenterDescription = oDataSet.Tables[0].Rows[i].ItemArray[60].ToString(),
+                        //ProdInhouseJW = oDataSet.Tables[0].Rows[i].ItemArray[61].ToString(),
+                        //BatchNO = oDataSet.Tables[0].Rows[i].ItemArray[62].ToString(),
+                        //VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
+                        //OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
+                        //SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
+                        //Package = oDataSet.Tables[0].Rows[i].ItemArray[66].ToString(),
+                        //IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[67].ToString(),
+                        //JobWorkItem = oDataSet.Tables[0].Rows[i].ItemArray[68].ToString(),
                     });
                 }
             }

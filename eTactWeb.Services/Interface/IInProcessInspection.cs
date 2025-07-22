@@ -20,7 +20,7 @@ namespace eTactWeb.Services.Interface
 		Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode, int SampleSize);
 		Task<ResponseResult> SaveInprocessInspection(InProcessInspectionModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashboardData(InProcessInspectionModel model);
-        Task<InProcessInspectionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+        Task<InProcessInspectionModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType,string ItemName,string PartCode,string SlipNo,string MachinNo);
         Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId);
         Task<InProcessInspectionModel> GetViewByID(int ID, int YC, string FromDate, string TODate);
     }

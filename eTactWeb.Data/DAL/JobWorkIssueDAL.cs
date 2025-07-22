@@ -684,7 +684,7 @@ namespace eTactWeb.Data.DAL
 
             return Result;
         }
-        public async Task<ResponseResult> FillItemsBom(string Flag, string BomStatus,string Types)
+        public async Task<ResponseResult> FillItemsBom(string Flag, string BomStatus,string Types, string SearchItemCode, string SearchPartCode)
         {
             var Result = new ResponseResult();
 
@@ -695,6 +695,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@BomStatus", BomStatus));
                 SqlParams.Add(new SqlParameter("@itemServAsstes", Types));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
 
                 Result = await _IDataLogic.ExecuteDataTable("SP_JobworkIssue", SqlParams);
             }
