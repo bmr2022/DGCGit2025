@@ -29,9 +29,11 @@ namespace eTactWeb.DOM.Models
     public class WIPStockRegisterDetail
     {
         public int SeqNo { get; set; }        
+        public int? WCID { get; set; }        
         public string? WorkCenterName { get; set; }
         public string? TransactionType { get; set; }
         public string? TransDate { get; set; }
+        public int? itemCode { get; set; }
         public string? PartCode { get; set; }
         public string? ItemName { get; set; }
         public decimal OpnStk { get; set; }

@@ -100,6 +100,12 @@ namespace eTactWeb.Controllers
                 return PartialView("_IndentDetailRegisterGrid", model);
 
             }
+            else if(ReportType == "Indent With PO Detail")
+            {
+                return PartialView("_IndentWithPODetailRegisterGrid", model);
+
+            }
+
             else
             {
                 return PartialView("_IndentPORegisterGrid", model);

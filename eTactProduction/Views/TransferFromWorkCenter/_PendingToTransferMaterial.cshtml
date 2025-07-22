@@ -6,13 +6,15 @@
             <tr>
                 <th>Chk/Unchk <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                 <th>Sr#</th>
+                <th>WCID</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Transaction Type</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Trans Date</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Slip No</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Date</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part code</th>
-                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Desc</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Code</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opn Stk</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="7"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="8"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Iss Qty</th>
@@ -33,7 +35,7 @@
                 <th class="sortCol" data-sortorder="asc" data-columnno="25"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TO Store</th>
             </tr>
         </thead>
-        <tbody id="divStockRegisterBody">
+        <tbody id="divPendMRNGrid">
             @{
                 var @Cntr = 0;
                 if (Model.WIPStockRegisterDetail == null)
@@ -51,6 +53,7 @@
                                 <input style="background-color: #b2b3f0;" id="AcceptedQtySHA-@Cntr" class="form-check-input me-1 mt-2" type="checkbox" role="switch" onchange="CheckacceptedQtySHA();" />
                             </td>
                             <th>@Cntr</th>
+                            <td>@item.WCID</td>
                             <td>@item.WorkCenterName</td>
                             <td>@item.TransactionType</td>
                             @if (item.TransDate != null)
@@ -66,10 +69,11 @@
                             <td>@(item.BillDate != null ? Convert.ToDateTime(item.BillDate).ToString("dd/MM/yyyy") : "")</td>
                             <td>@item.PartCode</td>
                             <td>@item.ItemName</td>
+                            <td>@item.itemCode</td>
                             <td id="opnStk-@Cntr">@item.OpnStk</td>
                             <td id="recQty-@Cntr">@item.RecQty</td>
                             <td id="issQty-@Cntr">@item.IssQty</td>
-                            @if (item.TotStk < 0)
+                            @if (item.TotStk <= 0)
                             {
 
                                 <td id="totStk-@Cntr" style="color:red;">@item.TotStk</td>
