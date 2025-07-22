@@ -233,6 +233,124 @@ namespace eTactWeb.Data.DAL
                     }
 
                 }
+                else if(ReportType=="Detail")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.IndentRegisterGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                         select new IndentRegisterModel
+                                                         {
+                                                             IndentNo = row["IndentNo"] == DBNull.Value ? string.Empty : row["IndentNo"].ToString(),
+                                                             IndentDate = row["IndentDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["IndentDate"]).ToString("dd-MM-yyyy"),
+                                                             itemservice = row["Item/Service"] == DBNull.Value ? string.Empty : row["Item/Service"].ToString(),
+
+                                                             ItemNameOnly = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                             PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                             Specification = row["Specification"] == DBNull.Value ? string.Empty : row["Specification"].ToString(),
+                                                             ItemDescription = row["ItemDescription"] == DBNull.Value ? string.Empty : row["ItemDescription"].ToString(),
+                                                             IndentQty = row["IndentQty"] == DBNull.Value ? string.Empty : row["IndentQty"].ToString(),
+                                                             Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
+                                                             PendQtyForPO = row["PendQtyForPO"] == DBNull.Value ? string.Empty : row["PendQtyForPO"].ToString(),
+                                                             ReqDate = row["ReqDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["ReqDate"]).ToString("dd-MM-yyyy"),
+                                                             Model = row["Model"] == DBNull.Value ? string.Empty : row["Model"].ToString(),
+                                                             Size = row["Size"] == DBNull.Value ? string.Empty : row["Size"].ToString(),
+                                                             Color = row["Color"] == DBNull.Value ? string.Empty : row["Color"].ToString(),
+                                                             ItemRemark = row["ItemRemark"] == DBNull.Value ? string.Empty : row["ItemRemark"].ToString(),
+                                                             Approvalue = row["Approvalue"] == DBNull.Value ? string.Empty : row["Approvalue"].ToString(),
+                                                             AltQty = row["AltQty"] == DBNull.Value ? string.Empty : row["AltQty"].ToString(),
+                                                             AltUnit = row["AltUnit"] == DBNull.Value ? string.Empty : row["AltUnit"].ToString(),
+                                                             StoreName = row["StoreName"] == DBNull.Value ? string.Empty : row["StoreName"].ToString(),
+                                                             TotalStock = row["TotalStock"] == DBNull.Value ? string.Empty : row["TotalStock"].ToString(),
+                                                             Account_Name = row["Vendor1"] == DBNull.Value ? string.Empty : row["Vendor1"].ToString(),
+                                                             Account_Name2 = row["vendor2"] == DBNull.Value ? string.Empty : row["vendor2"].ToString(),
+                                                             DeptName = row["ForDepartment"] == DBNull.Value ? string.Empty : row["ForDepartment"].ToString(),
+                                                             IndentorName = row["IndentorName"] == DBNull.Value ? string.Empty : row["IndentorName"].ToString(),
+                                                             IndentRemark = row["IndentRemark"] == DBNull.Value ? string.Empty : row["IndentRemark"].ToString(),
+                                                             CreatedByName = row["CreatedByName"] == DBNull.Value ? string.Empty : row["CreatedByName"].ToString(),
+                                                             MachineNo = row["MachineNo"] == DBNull.Value ? string.Empty : row["MachineNo"].ToString(),
+                                                             LastUpdationDate = row["LastUpdationDate"] == DBNull.Value ? string.Empty : row["LastUpdationDate"].ToString(),
+                                                             LastUpdatedName = row["LastUpdatedName"] == DBNull.Value ? string.Empty : row["LastUpdatedName"].ToString(),
+                                                             BOMtem = row["BOMtem"] == DBNull.Value ? string.Empty : row["BOMtem"].ToString(),
+                                                             BOMPartCode = row["BOMPartCode"] == DBNull.Value ? string.Empty : row["BOMPartCode"].ToString(),
+                                                             BOMIND = row["BOMIND"] == DBNull.Value ? string.Empty : row["BOMIND"].ToString(),
+                                                             BOMQty = row["BOMQty"] == DBNull.Value ? string.Empty : row["BOMQty"].ToString(),
+                                                             BOMRevNo = row["BOMRevNo"] == DBNull.Value ? string.Empty : row["BOMRevNo"].ToString(),
+                                                             Approved = row["Approved"] == DBNull.Value ? string.Empty : row["Approved"].ToString(),
+                                                             IndentCompleted = row["IndentCompleted"] == DBNull.Value ? string.Empty : row["IndentCompleted"].ToString(),
+                                                             canceled = row["canceled"] == DBNull.Value ? string.Empty : row["canceled"].ToString(),
+                                                             closed = row["closed"] == DBNull.Value ? string.Empty : row["closed"].ToString(),
+                                                             CC = row["CC"] == DBNull.Value ? string.Empty : row["CC"].ToString(),
+                                                             ApprovedDate = row["ApprovedDate"] == DBNull.Value ? string.Empty : row["ApprovedDate"].ToString(),
+                                                             MRPNO = row["MRPNO"] == DBNull.Value ? string.Empty : row["MRPNO"].ToString(),
+                                                             MRPEntryId = row["MRPEntryId"] == DBNull.Value ? string.Empty : row["MRPEntryId"].ToString(),
+                                                             MRPyearcode = row["MRPyearcode"] == DBNull.Value ? string.Empty : row["MRPyearcode"].ToString(),
+
+
+                                                         }).ToList();
+                    }
+
+                }
+                else if(ReportType== "Indent With PO Detail")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.IndentRegisterGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                         select new IndentRegisterModel
+                                                         {
+                                                             IndentNo = row["IndentNo"] == DBNull.Value ? string.Empty : row["IndentNo"].ToString(),
+                                                             IndentDate = row["IndentDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["IndentDate"]).ToString("dd-MM-yyyy"),
+                                                             itemservice = row["Item/Service"] == DBNull.Value ? string.Empty : row["Item/Service"].ToString(),
+                                                             ItemName = row["ItemName"] == DBNull.Value ? string.Empty : row["ItemName"].ToString(),
+                                                             PartCode = row["PartCode"] == DBNull.Value ? string.Empty : row["PartCode"].ToString(),
+                                                             Specification = row["Specification"] == DBNull.Value ? string.Empty : row["Specification"].ToString(),
+                                                             ItemDescription = row["ItemDescription"] == DBNull.Value ? string.Empty : row["ItemDescription"].ToString(),
+                                                             IndentQty = row["IndentQty"] == DBNull.Value ? string.Empty : row["IndentQty"].ToString(),
+                                                             Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
+                                                             TotalPOQty = row["TotalPOQty"] == DBNull.Value ? string.Empty : row["TotalPOQty"].ToString(),
+                                                             PendPOQty = row["PendPOQty"] == DBNull.Value ? string.Empty : row["PendPOQty"].ToString(),
+                                                             PendQtyForPO = row["PendQtyForPO"] == DBNull.Value ? string.Empty : row["PendQtyForPO"].ToString(),
+                                                             ReqDate = row["ReqDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["ReqDate"]).ToString("dd-MM-yyyy"),
+                                                             POVendorName = row["POVendorName"] == DBNull.Value ? string.Empty : row["POVendorName"].ToString(),
+                                                             PONO = row["PONO"] == DBNull.Value ? string.Empty : row["PONO"].ToString(),
+                                                             PODate = row["PODate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["PODate"]).ToString("dd-MM-yyyy"),
+                                                             Model = row["Model"] == DBNull.Value ? string.Empty : row["Model"].ToString(),
+                                                             Size = row["Size"] == DBNull.Value ? string.Empty : row["Size"].ToString(),
+                                                             Color = row["Color"] == DBNull.Value ? string.Empty : row["Color"].ToString(),
+                                                             ItemRemark = row["ItemRemark"] == DBNull.Value ? string.Empty : row["ItemRemark"].ToString(),
+                                                             Approvalue = row["Approvalue"] == DBNull.Value ? string.Empty : row["Approvalue"].ToString(),
+                                                             AltQty = row["AltQty"] == DBNull.Value ? string.Empty : row["AltQty"].ToString(),
+                                                             AltUnit = row["AltUnit"] == DBNull.Value ? string.Empty : row["AltUnit"].ToString(),
+                                                             StoreName = row["StoreName"] == DBNull.Value ? string.Empty : row["StoreName"].ToString(),
+                                                             TotalStock = row["TotalStock"] == DBNull.Value ? string.Empty : row["TotalStock"].ToString(),
+                                                             Account_Name = row["Vendor1"] == DBNull.Value ? string.Empty : row["Vendor1"].ToString(),
+                                                             Account_Name2 = row["Vendor2"] == DBNull.Value ? string.Empty : row["Vendor2"].ToString(),
+                                                             DeptName = row["ForDepartment"] == DBNull.Value ? string.Empty : row["ForDepartment"].ToString(),
+                                                             IndentorName = row["IndentorName"] == DBNull.Value ? string.Empty : row["IndentorName"].ToString(),
+                                                             IndentRemark = row["IndentRemark"] == DBNull.Value ? string.Empty : row["IndentRemark"].ToString(),
+                                                             CreatedByName = row["CreatedByName"] == DBNull.Value ? string.Empty : row["CreatedByName"].ToString(),
+                                                             MachineNo = row["MachineNo"] == DBNull.Value ? string.Empty : row["MachineNo"].ToString(),
+                                                             LastUpdationDate = row["LastUpdationDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["LastUpdationDate"]).ToString("dd-MM-yyyy"),
+                                                             LastUpdatedName = row["LastUpdatedName"] == DBNull.Value ? string.Empty : row["LastUpdatedName"].ToString(),
+                                                             BOMtem = row["BOMtem"] == DBNull.Value ? string.Empty : row["BOMtem"].ToString(),
+                                                             BOMPartCode = row["BOMPartCode"] == DBNull.Value ? string.Empty : row["BOMPartCode"].ToString(),
+                                                             BOMIND = row["BOMIND"] == DBNull.Value ? string.Empty : row["BOMIND"].ToString(),
+                                                             BOMQty = row["BOMQty"] == DBNull.Value ? string.Empty : row["BOMQty"].ToString(),
+                                                             BOMRevNo = row["BOMRevNo"] == DBNull.Value ? string.Empty : row["BOMRevNo"].ToString(),
+                                                             Approved = row["Approved"] == DBNull.Value ? string.Empty : row["Approved"].ToString(),
+                                                             IndentCompleted = row["IndentCompleted"] == DBNull.Value ? string.Empty : row["IndentCompleted"].ToString(),
+                                                             canceled = row["Canceled"] == DBNull.Value ? string.Empty : row["Canceled"].ToString(),
+                                                             closed = row["Closed"] == DBNull.Value ? string.Empty : row["Closed"].ToString(),
+                                                             CC = row["CC"] == DBNull.Value ? string.Empty : row["CC"].ToString(),
+                                                             ApprovedDate = row["ApprovedDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["ApprovedDate"]).ToString("dd-MM-yyyy"),
+                                                             MRPNO = row["MRPNO"] == DBNull.Value ? string.Empty : row["MRPNO"].ToString(),
+                                                             MRPEntryId = row["MRPEntryId"] == DBNull.Value ? string.Empty : row["MRPEntryId"].ToString(),
+                                                             MRPyearcode = row["MRPyearcode"] == DBNull.Value ? string.Empty : row["MRPyearcode"].ToString()
+
+                                                         }).ToList();
+                    }
+
+                }
+
                 else
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)

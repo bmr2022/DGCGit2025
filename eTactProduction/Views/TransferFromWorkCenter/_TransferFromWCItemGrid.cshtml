@@ -1,0 +1,60 @@
+﻿@model eTactWeb.DOM.Models.TransferFromWorkCenterModel
+
+@if (Model.ItemDetailGrid == null)
+{
+    
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr++;
+        @* <input type="hidden" id="WCID-@Cntr" value="@item.WCID" />
+        <input type="hidden" id="WorkCenterName-@Cntr" value="@item.WorkCenterName" /> *@
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td style="display:none"><input type="hidden" id="WCID-@Cntr" value="@item.WCID" /></td>
+            <td style="display:none"><input type="hidden" id="WorkCenterName-@Cntr" value="@item.WorkCenterName" /></td>
+            <td><input readonly id="ItemName-@Cntr" type="text" value="@item.ItemName" /></td>
+            <td>
+                <input readonly id="PartCode-@Cntr" style="width:100px;" type="text" value="@item.PartCode" />
+                <input type="hidden" id="ItemCode-@Cntr" value="@item.ItemCode" />
+            </td>
+            <td><input id="TotalStock-@Cntr" type="text"   readonly /></td>
+            <td><input readonly id="BatchStock-@Cntr" type="text"  /></td>
+            <td><input readonly id="TransferQty-@Cntr" style="width:90px;background-color:lightgoldenrodyellow" type="text"  /></td>
+            <td><input readonly id="Unit-@Cntr" type="text" value="@item.Unit" /></td>
+            <td><input readonly id="BatchNo-@Cntr" type="text" value="@item.BatchNo" /></td>
+            <td><input readonly id="UniqueBatchNo-@Cntr" type="text" value="@item.UniqueBatchNo" /></td>
+            <td><input id="ProdSchNo-@Cntr" type="text" value="@item.ProdSchNo" /></td>
+            <td><input id="ProdSchYearCode-@Cntr" type="text" value="@item.ProdSchYearCode" /></td>
+            <td><input id="ProdPlanNo-@Cntr" type="text" value="@item.ProdPlanNo" /></td>
+            <td><input id="ProdPlanYearCode-@Cntr" type="text" value="@item.ProdPlanYearCode" /></td>
+            <td><input id="ParentProdSchNo-@Cntr" type="text" value="@item.ParentProdSchNo" /></td>
+            <td><input id="ParentProdSchYearCode-@Cntr" type="text" value="@item.ParentProdSchYearCode" /></td>
+            <td><input id="ProdEntryId-@Cntr" type="text" value="@item.ProdEntryId" /></td>
+            <td><input id="ProdEntryYearCode-@Cntr" type="text" value="@item.ProdEntryYearCode" /></td>
+            <td><input id="ProdDate-@Cntr" type="text" value="@item.ProdDate" /></td>
+            <td><input id="QcOkQty-@Cntr" type="text" value="@item.QcOkQty" /></td>
+            <td><input id="ProdQty-@Cntr" type="text" value="@item.ProdQty" /></td>
+            <td><input id="AltTransferQty-@Cntr" type="text" value="@item.AltTransferQty" /></td>
+            <td><input id="AltUnit-@Cntr" type="text" value="@item.AltUnit" /></td>
+            <td><input id="PendingToAcknowledge-@Cntr" type="text" value="@item.PendingToAcknowledge" /></td>
+            <td><input id="PendingQtyToAcknowledge-@Cntr" type="text" value="@item.PendingQtyToAcknowledge" /></td>
+            <td><input id="ItemSize-@Cntr" type="text" value="@item.ItemSize" /></td>
+            <td><input id="ItemColor-@Cntr" type="text" value="@item.ItemColor" /></td>
+            <td><input id="InProcessQcSlipNo-@Cntr" type="text" value="@item.InProcessQcSlipNo" /></td>
+            <td><input id="InProcessQcEntryId-@Cntr" type="text" value="@item.InProcessQcEntryId" /></td>
+            <td><input id="InProcessQcYearCode-@Cntr" type="text" value="@item.InProcessQcYearCode" /></td>
+            <td><input id="QcCleaningDate-@Cntr" type="text" value="@item.QcCleaningDate" /></td>
+            <td><input id="ProcessName-@Cntr" type="text" value="@item.ProcessName" /></td>
+            <td><input id="ProcessId-@Cntr" type="text" value="@item.ProcessId" /></td>
+            <td><input id="ReceivedByStoreQty-@Cntr" type="text" value="@item.ReceivedByStoreQty" /></td>
+            <td><input id="ReceivedCompleted-@Cntr" type="text" value="@item.ReceivedCompleted" /></td>
+            <td><input id="ReceivebyEmpName-@Cntr" type="text" value="@item.ReceivebyEmpName" /></td>
+            <td><input id="Rate-@Cntr" type="text" value="@item.Rate" /></td>
+            <td><input id="ItemWeight-@Cntr" type="text" value="@item.ItemWeight" /></td>
+
+        </tr>
+    }
+}

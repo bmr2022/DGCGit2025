@@ -50,6 +50,118 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", serializedGrid);
             return View(serializedGrid);
         }
+		[HttpPost]
+		public IActionResult StoreCheckedRowsToSession([FromBody] List<TransferFromWorkCenterModel> selectedRows)
+		{
+			if (selectedRows != null && selectedRows.Any())
+			{
+				HttpContext.Session.SetString("ReceiveItems", JsonConvert.SerializeObject(selectedRows));
+				return Json(new { success = true });
+			}
+			return Json(new { success = false, message = "No rows received" });
+		}
+		public IActionResult FillTransferGridFromMemoryCache()
+		{
+			try
+			{
+				string modelJson = HttpContext.Session.GetString("ReceiveItems");
+				List<TransferFromWorkCenterDetail> TransferFromWorkCenterDetail = new List<TransferFromWorkCenterDetail>();
+				if (!string.IsNullOrEmpty(modelJson))
+				{
+					TransferFromWorkCenterDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
+				}
+
+				var MainModel = new TransferFromWorkCenterModel();
+				var IssueGrid = new List<TransferFromWorkCenterDetail>();
+				var SSGrid = new List<TransferFromWorkCenterDetail>();
+				MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+				MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+				MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+				{
+					AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+					SlidingExpiration = TimeSpan.FromMinutes(55),
+					Size = 1024,
+				};
+				var seqNo = 1;
+				if (TransferFromWorkCenterDetail != null)
+				{
+					for (int i = 0; i < TransferFromWorkCenterDetail.Count; i++)
+					{
+
+
+						if (TransferFromWorkCenterDetail[i] != null)
+						{
+							//TransferFromWorkCenterDetail[i].seqno = seqNo++;
+							SSGrid.AddRange(IssueGrid);
+							IssueGrid.Add(TransferFromWorkCenterDetail[i]);
+
+							MainModel.ItemDetailGrid = IssueGrid;
+
+							string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+							HttpContext.Session.SetString("ReceiveItems", serializedGrid);
+						}
+					}
+				}
+
+				return PartialView("_TransferFromWCItemGrid", MainModel);
+			}
+			catch (Exception ex)
+			{
+				throw ex;
+			}
+		}
+        [HttpPost]
+        public IActionResult AddTransferItemDetail([FromBody]  List<TransferFromWorkCenterDetail> model)
+        {
+            try
+            {
+                var MainModel = new TransferFromWorkCenterModel();
+                var RCGrid = new List<TransferFromWorkCenterDetail>();
+                var ReceiveChallanGrid = new List<TransferFromWorkCenterDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    //string modelJson = HttpContext.Session.GetString("ReceiveItems");
+                    //IList<TransferFromWorkCenterDetail> RCDetail = new List<TransferFromWorkCenterDetail>();
+                    //if (modelJson != null)
+                    //{
+                    //    RCDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
+                    //}
+
+                    if (model != null)
+                    {
+
+                        {
+                                item.SeqNo = SeqNo;
+                                //RCGrid = RCDetail.Where(x => x != null).ToList();
+                                ReceiveChallanGrid.AddRange(RCGrid);
+                                RCGrid.Add(item);
+                            SeqNo++;
+
+
+                        }
+                        RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
+                        MainModel.ItemDetailGrid = RCGrid;
+
+                        HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Receive Challan List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_TransferFromWcGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
 
