@@ -142,5 +142,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.FillDisplaySalesHeading();
         }
+        public async Task<ResponseResult> SaveDisplaySalesHeading()
+        {
+            return await _DashboardDAL.SaveDisplaySalesHeading();
+        }
     }
 }
