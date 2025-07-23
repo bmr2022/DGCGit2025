@@ -51,6 +51,13 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyIssWOBomGrid", serializedGrid);
             return View(MainModel);
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IIssueWOBOM.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [Route("{controller}/Index")]
         [HttpGet]

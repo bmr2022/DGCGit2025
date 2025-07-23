@@ -19,6 +19,11 @@ namespace eTactWeb.Data.BLL
         {
             _IDeassembleItemDAL = new DeassembleItemDAL(configuration, iDataLogic, connectionStringService);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _IDeassembleItemDAL.GetFormRights(ID);
+        }
+
 
         public async Task<ResponseResult> NewEntryId()
         {

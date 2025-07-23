@@ -20,6 +20,11 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _ReceiveItemDAL = new ReceiveItemDAL(configuration, iDataLogic);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _ReceiveItemDAL.GetFormRights(ID);
+        }
+
         public async Task<ResponseResult> FillEntryId(string Flag, int YearCode, string SPName)
         {
             return await _ReceiveItemDAL.FillEntryId(Flag, YearCode, SPName);

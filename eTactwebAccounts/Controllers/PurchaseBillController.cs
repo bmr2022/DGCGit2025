@@ -293,11 +293,14 @@ public class PurchaseBillController : Controller
         return View(MainModel);
     }
 
-    public async Task<IActionResult> PurchaseBillList()
+    public async Task<IActionResult> PurchaseBillList(string? FromDate,string? ToDate)
     {
         var _List = new List<TextValue>();
         PBListDataModel model = new PBListDataModel();
-        var MainModel = await IPurchaseBill.GetPurchaseBillListData(string.Empty, string.Empty, string.Empty, null, null, model);
+       FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+
+        ToDate = string.IsNullOrEmpty(model.ToDate) ? DateTime.Now.ToString("dd/MM/yyyy") : model.ToDate;
+        var MainModel = await IPurchaseBill.GetPurchaseBillListData(string.Empty, string.Empty, string.Empty,FromDate,ToDate, model);
         var MRNType = "MRN";
         DateTime now = DateTime.Now;
         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
@@ -322,13 +325,13 @@ public class PurchaseBillController : Controller
         DateTime firstDayOfMonth = new DateTime(now.Year, now.Month, 1);
         DateTime today = DateTime.Now;
 
-        DateTime fromDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        DateTime toDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        string fromDate = (model.FromDate);
+        string toDate = (model.ToDate);
 
         var MainModel = await IPurchaseBill.GetPurchaseBillListData("DisplayPendingData", MRNType, model.DashboardType ?? "SUMMARY", fromDate, toDate, model);
 
-        fromDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-        toDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        //fromDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+        //toDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
 
         var commonparams = new Dictionary<string, object>()
         {

@@ -203,6 +203,7 @@ namespace eTactWeb.DOM.Models
         public string? FinToDate { get; set; }
         public string? ItemServAssets { get; set; }
         public int? ProdInWorkcenter { get; set; }
+        public string? StoreName { get; set; }
         public string? ProdWorkCenterDescription { get; set; }
         public string? ProdInhouseJW { get; set; }
         public string? BatchNO { get; set; }
@@ -269,6 +270,7 @@ namespace eTactWeb.DOM.Models
         public int DailyRequirment { get; set; }
         public string Stockable { get; set; }
         public string WipStockable { get; set; }
+        public string StoreName { get; set; }
         public string Store { get; set; }
         public string ProductLifeInus { get; set; }
         public string ItemDesc { get; set; }

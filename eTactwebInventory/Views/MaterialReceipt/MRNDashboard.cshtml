@@ -143,15 +143,15 @@
 {
     <script>
         $(document).ready(function () {
-             
-            if ($('#DashboardType').val() == "Summary") {
-                //GetFormRights();
-                GetSummaryData();
-            } else {
-                //GetFormRights();
-                GetDetailData();
-            }
-            GetSearchData();
+            GetFormRights();
+            // if ($('#DashboardType').val() == "Summary") {
+            //     //GetFormRights();
+            //     GetSummaryData();
+            // } else {
+            //     //GetFormRights();
+            //     GetDetailData();
+            // }
+            // GetSearchData();
         });
 
         $(function () {
@@ -527,7 +527,7 @@
                             var optUpdate = obj.Result.Table[0].OptUpdate;
                             var optDelete = obj.Result.Table[0].OptDelete;
                             var optView = obj.Result.Table[0].OptView;
-                            var rowCounter = $('#gateDashboardtable tr').length;
+                            var rowCounter = $('#divDashboardGrid tr').length;
                             if (!optAll) {
                                 if (!optSave) {
 

@@ -1397,7 +1397,7 @@ public class PurchaseBillDAL
             }
         }
     }
-    internal async Task<PBListDataModel> GetPurchaseBillListData(string? flag, string? MRNType, string? dashboardtype, DateTime? firstdate, DateTime? todate, PBListDataModel model)
+    internal async Task<PBListDataModel> GetPurchaseBillListData(string? flag, string? MRNType, string? dashboardtype, string? firstdate, string? todate, PBListDataModel model)
     {
         var PBListData = new PBListDataModel();
         var SqlParams = new List<dynamic>();
@@ -1417,16 +1417,16 @@ public class PurchaseBillDAL
                 flag = !string.IsNullOrEmpty(flag) ? flag : "DisplayPendingData";
                 MRNType = !string.IsNullOrEmpty(MRNType) ? MRNType : "MRN";
                 dashboardtype = !string.IsNullOrEmpty(dashboardtype) ? dashboardtype : "SUMMARY";
-                firstdate = (firstdate != null) ? firstdate : firstDayOfMonth;
-                todate = (todate != null) ? todate : today;
-                string fromDate = firstdate.HasValue ? CommonFunc.ParseFormattedDate(firstdate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(firstDayOfMonth.Date.ToString());
-                string toDate = todate.HasValue ? CommonFunc.ParseFormattedDate(todate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(today.Date.ToString());
+                firstdate = CommonFunc.ParseFormattedDate(firstdate);
+                todate = CommonFunc.ParseFormattedDate(todate);
+                //string fromDate = firstdate.HasValue ? CommonFunc.ParseFormattedDate(firstdate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(firstDayOfMonth.Date.ToString());
+                //string toDate = todate.HasValue ? CommonFunc.ParseFormattedDate(todate.Value.Date.ToString()) : CommonFunc.ParseFormattedDate(today.Date.ToString());
                 oCmd.Parameters.AddWithValue("@flag", flag);
                 oCmd.Parameters.AddWithValue("@MRNTYpe", MRNType);
                 //oCmd.Parameters.AddWithValue("@Fromdate", firstdate);
                 //oCmd.Parameters.AddWithValue("@ToDate", todate);
-                oCmd.Parameters.AddWithValue("@Fromdate", fromDate);
-                oCmd.Parameters.AddWithValue("@Todate", toDate);
+                oCmd.Parameters.AddWithValue("@Fromdate", firstdate);
+                oCmd.Parameters.AddWithValue("@Todate", todate);
                 oCmd.Parameters.AddWithValue("@SummaryDetail", dashboardtype.ToUpper());
                 oCmd.Parameters.AddWithValue("@VendorName", !string.IsNullOrEmpty(model.PartyName) && model.PartyName != "0" ? model.PartyName : string.Empty);
                 oCmd.Parameters.AddWithValue("@Mrnno", !string.IsNullOrEmpty(model.MRNNo) && model.MRNNo != "0" ? model.MRNNo : string.Empty);

@@ -96,7 +96,19 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_VendorRatingAnalysisDeliveryDetail", model);
             }
-            
+            if (RatingType== "PRICE RATING")
+            {
+                return PartialView("_VendorRatingAnalysisPricieRating", model);
+            }
+            if (ReportType == "DETAIL" && RatingType == "QUALITY RATING")
+            {
+                return PartialView("_VendorRatingAnalysisQualityRatingDetail", model);
+            }
+            if (ReportType == "SUMMARY" && RatingType == "QUALITY RATING")
+            {
+                return PartialView("_VendorRatingAnalysisQualityRatingSummary", model);
+            }
+
             return null;
         }
         [HttpGet]
@@ -150,7 +162,28 @@ namespace eTactWeb.Controllers
             {
                 return PartialView("_VendorRatingAnalysisDeliveryDetail", model);
             }
+            if (RatingType == "PRICE RATING")
+            {
+                return PartialView("_VendorRatingAnalysisPricieRating", model);
+            }
+            if (ReportType == "DETAIL"&&RatingType == "QUALITY RATING")
+            {
+                return PartialView("_VendorRatingAnalysisQualityRatingDetail", model);
+            }
+            if (ReportType == "SUMMARY" && RatingType == "QUALITY RATING")
+            {
+                return PartialView("_VendorRatingAnalysisQualityRatingSummary", model);
+            }
             return null;
+        }
+        [HttpGet]
+        public IActionResult VendoreRatingAnalysisReportForPDF()
+        {
+            if (_MemoryCache.TryGetValue("KeyVendoreRatingAnalysisReportList", out List<VendoreRatingAnalysisReportModel> stockRegisterList))
+            {
+                return Json(stockRegisterList);
+            }
+            return Json(new List<VendoreRatingAnalysisReportModel>());
         }
     }
 }

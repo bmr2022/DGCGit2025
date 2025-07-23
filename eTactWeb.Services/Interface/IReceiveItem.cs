@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface IReceiveItem
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> FillEntryId(string Flag, int YearCode, string SPName);
         Task<ResponseResult> BindDepartmentList(string FromDate,string ToDate);
         Task<ResponseResult> GetDashboardData();

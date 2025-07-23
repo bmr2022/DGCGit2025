@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface IDeassembleItem
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> NewEntryId();
         Task<ResponseResult> BomQty(int RMItemCode, int FinishItemCode, int bomNo, float FGQty);
 
