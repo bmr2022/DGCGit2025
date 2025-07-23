@@ -27,6 +27,12 @@ namespace eTactWeb.DOM.Models
         public string PartCode { get; set; }
         public string Unit { get; set; }
         public decimal POQty { get; set; }
+        public decimal BillQty { get; set; }
+        public decimal RecQty { get; set; }
+        public decimal RejectedQty { get; set; }
+        public decimal ReWorkQty { get; set; }
+        public decimal QualityRating { get; set; }
+        public decimal QualityPercent { get; set; }
         public decimal GateQty { get; set; }
         public decimal PORate { get; set; }
         public decimal POItemAmt { get; set; }
