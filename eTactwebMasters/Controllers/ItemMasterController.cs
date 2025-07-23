@@ -833,13 +833,14 @@ public class ItemMasterController : Controller
                 }
                 var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
                 var UnitList = _IItemMaster.GetUnitList();
-
+                
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
                     //var cellValue = worksheet.Cells[row, 2].Value;
                     //if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
                     //    break;
                     var partCode = worksheet.Cells[row, headersMap["PartCode"]].Text?.Trim();
+                    var ItemName = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim();
                     if (string.IsNullOrWhiteSpace(partCode)) break;
                     var itemGroup = worksheet.Cells[row, headersMap["ItemGroup"]].Text?.Trim();
                     var itemType = worksheet.Cells[row, headersMap["ItemType"]].Text?.Trim();
@@ -847,7 +848,7 @@ public class ItemMasterController : Controller
                     var unit = worksheet.Cells[row, headersMap["Unit"]].Text?.Trim();
                     var Store = worksheet.Cells[row, headersMap["Store"]].Text?.Trim();
                     var duplicatePartCode = _IDataLogic.isDuplicate(partCode, "PartCode", "Item_Master");
-                    var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim(), "Item_Name", "Item_Master");
+                    var duplicateItemName = _IDataLogic.isDuplicate(ItemName, "Item_Name", "Item_Master");
 
                     var itemGroupCode = _IItemMaster.GetItemGroupCode(itemGroup);
                     var itemCatCode = _IItemMaster.GetItemCatCode(itemType);
@@ -855,8 +856,10 @@ public class ItemMasterController : Controller
                     var StoreIdResult = _IItemMaster.GetStoreCode(Store);
                     var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                     var ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : (Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N");
-
-
+                    var ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim();
+                    var ItemGroupList = _IItemMaster.GetItemGroup(ItemServAssets);
+                    var ItemCategoryList = _IItemMaster.GetItemCategory(ItemServAssets);
+                    
                     //var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 6].Value?.ToString());
                     //var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 20].Value?.ToString());
                     //var WorkCenterId = _IItemMaster.GetWorkCenterId(worksheet.Cells[row, 56].Value?.ToString());
@@ -867,7 +870,7 @@ public class ItemMasterController : Controller
                     //var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                     //var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
 
-                  //  var unit = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
+                    //  var unit = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
                     var unitdataset = UnitList.Result.Result;
                     var unitTable = unitdataset.Tables[0];
 
@@ -883,7 +886,42 @@ public class ItemMasterController : Controller
                     if (!unitExists)
                     {
                         return StatusCode(207, "Invalid Unit: " + unit);
+                    } 
+
+                    var Groupdataset = ItemGroupList.Result.Result;
+                    var GroupTable = Groupdataset.Tables[0];
+
+                    bool GroupExists = false;
+                    foreach (DataRow rows in GroupTable.Rows)
+                    {
+                        if (rows["Group_name"].ToString().Trim().Equals(itemGroup, StringComparison.OrdinalIgnoreCase))
+                        {
+                            GroupExists = true;
+                            break;
+                        }
                     }
+                    if (!GroupExists)
+                    {
+                        return StatusCode(207, $"Invalid ItemGroup: {itemGroup} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                    }
+                    var Categorydataset = ItemCategoryList.Result.Result;
+                    var CategoryTable = Categorydataset.Tables[0];
+
+                    bool CategoryExists = false;
+                    foreach (DataRow rows in CategoryTable.Rows)
+                    {
+                        if (rows["Type_Item"].ToString().Trim().Equals(itemType, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CategoryExists = true;
+                            break;
+                        }
+                    }
+                    if (!CategoryExists)
+                    {
+                        return StatusCode(207, $"Invalid ItemType: {itemType} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                    }
+                    
+
 
 
                     ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
@@ -932,7 +970,7 @@ public class ItemMasterController : Controller
 
                         if (!WorkcenterExists)
                         {
-                            return StatusCode(207, "Invalid Workcenter: " + workCenter);
+                            return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                         }
                     }
 
@@ -956,11 +994,40 @@ public class ItemMasterController : Controller
 
                         if (!StoreExists)
                         {
-                            return StatusCode(207, "Invalid StoreName: " + Store);
+                            return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
 
                         }
 
                     }
+
+                    decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0);
+                    decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
+                    decimal reorderLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["ReorderLevel"]].Value ?? 0);
+
+                    if (minLevel != 0 && maxLevel != 0 && reorderLevel != 0)
+                    {
+                        if (minLevel > maxLevel)
+                        {
+                            return StatusCode(207, $"Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel}).");
+                        }
+
+                        if (reorderLevel < minLevel || reorderLevel > maxLevel)
+                        {
+                            return StatusCode(207, $"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between MinimumLevel ({minLevel}) and MaximumLevel ({maxLevel}).");
+                        }
+                    }
+                    string batchNO = worksheet.Cells[row, headersMap["BatchNO"]].Text?.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(batchNO))
+                    {
+                        var validBatchOptions = new List<string> { "MRNWISE", "NOOFCase", "ForEachQty" };
+
+                        if (!validBatchOptions.Contains(batchNO, StringComparer.OrdinalIgnoreCase))
+                        {
+                            return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
+                        }
+                    }
+
                     data.Add(new ImportItemViewModel
                     {
                         Item_Code = Convert.ToInt32(worksheet.Cells[row, headersMap["Item_Code"]].Value ?? 0),
