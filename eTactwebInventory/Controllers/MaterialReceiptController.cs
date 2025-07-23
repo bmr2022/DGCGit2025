@@ -707,6 +707,9 @@ namespace eTactWeb.Controllers
             {
                 HttpContext.Session.Remove("KeyMaterialReceiptGrid");
                 var model = new MRNQDashboard();
+                FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+
+                ToDate = string.IsNullOrEmpty(model.ToDate) ? DateTime.Now.ToString("dd/MM/yyyy") : model.ToDate;
                 var Result = await _IMaterialReceipt.GetDashboardData().ConfigureAwait(true);
 
                 if (Result != null)
