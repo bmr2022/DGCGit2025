@@ -98,6 +98,13 @@ namespace eTactwebInventory.Controllers
             MainModel.GlobalSearchBack = Searchbox;
             return View(MainModel);
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IDeassembleItem.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> ClearGridAjax()
         {
             HttpContext.Session.Remove("KeyDeassembleItemGrid");
