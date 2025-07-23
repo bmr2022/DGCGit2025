@@ -948,4 +948,11 @@ public class HomeController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
+
+    public async Task<JsonResult> FillDisplaySalesHeading()
+    {
+        var JSON = await _IDashboard.FillDisplaySalesHeading();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
 }

@@ -1427,14 +1427,14 @@
                             <a class="dropdown-item" href="#">Requisition Without BOM &raquo; </a>
                             <ul class="submenu dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" asp-action="ReqWithoutBom" asp-controller="ReqWithoutBom" id="ReqWithoutBom">
+                                    <a class="dropdown-item" asp-action="ReqWithoutBom" asp-controller="ReqWithoutBom" >
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         New Requisition
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item ReqWithoutBom" asp-action="Dashboard" asp-controller="ReqWithoutBom" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                    <a class="dropdown-item " asp-action="Dashboard" asp-controller="ReqWithoutBom" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day);" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
                                 </li>
@@ -2639,6 +2639,8 @@
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
                                 </li>
+                                <input class="userRightsPermission" type="hidden" value="ReqWithoutBom" />
+
                                 <li>
                             </ul>
                         </li>

@@ -172,16 +172,16 @@
                                     <label asp-for="ControlMethod" class="form-label" style="color:red">Control Method*</label>
                                     <input asp-for="ControlMethod" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
                                     <label asp-for="SpecificationFrom" class="form-label" style="color:red">Specification From*</label>
                                     <input asp-for="SpecificationFrom" class="form-control" />
                                 </div>
                                  
                                  
                                
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
                                     <label asp-for="Operator" class="form-label">Operator</label>
-                                    <select class="form-control" id="Operator" asp-for="Operator" style="width:170px;">
+                                    <select class="form-control" id="Operator" asp-for="Operator" >
                                         <option value="">-Select-</option>
                                         <option value="+">+</option>
                                         <option value="*">*</option>
@@ -190,37 +190,34 @@
                                         <option value=",">,</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red;width:140px;" >
                                     <label asp-for="SpecificationTo" class="form-label">Specification To*</label>
                                     <input asp-for="SpecificationTo" class="form-control" />
                                 </div>
 
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="color:red;width:140px;" >
                                     <label asp-for="FrequencyofTesting" class="form-label">Frequency*</label>
                                     <input asp-for="FrequencyofTesting" class="form-control" value="5"/>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
                                     <label asp-for="InspectionBy" class="form-label">InspectionBy</label>
-                                    <select class="form-control" id="InspectionBy" asp-for="InspectionBy" style="width:170px;">
+                                    <select class="form-control" id="InspectionBy" asp-for="InspectionBy" style="width:130px;">
                                         <option value="@Model.InspectionBy">-Select-</option>
                                     </select>
                                 </div>
                                
                                
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
                                     <label asp-for="Remarks" class="form-label">Remarks</label>
                                     <input asp-for="Remarks" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:170px">
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px">
                                     <label asp-for="RejectionPlan" class="form-label">RejectionPlan</label>
-                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan" style="width:170px;">
+                                    <select class="form-control" id="RejectionPlan" asp-for="RejectionPlan" style="width:130px;">
                                         <option value="@Model.RejectionPlan">-Select-</option>
                                     </select>
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-left:20px;">
-                                    <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
-                                    <input asp-for="DrawingNo" class="form-control" />
-                                </div>
+                               
                           
                                 
                                 
@@ -232,27 +229,41 @@
 
                                     </div>
                                 </div> *@
-                                <div class="col-auto">
+                               @*  <div class="col-auto">
                                     <button type="button" class="GridButton btn btn-sm btn-outline-danger mt-3">
                                         <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
                                     </button>
-                                </div>
-                                <div class="row">
                                     <div class="col-md-4" style="width:290px;margin-top:9px;">
                                         <input type="file" id="importFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" />
                                     </div>
                                     <div class="col-md-2" style="margin-top:7px;">
                                         <button type="button" class="btn btn-success" id="btnImport">Import to Grid</button>
                                     </div>
+                                </div> *@
+                                
+                                <div class="col d-flex align-items-center" style="gap: 10px;">
+                                <button type="button" class="GridButton btn btn-sm btn-outline-danger">
+                                    <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                                </button>
+                                <input type="file" id="importFile" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" class="form-control" style="width: 250px;"/>
+                                <button type="button" class="btn btn-success" id="btnImport">Import to Grid</button>
+                                    <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
+                                        @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                        <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                        IMPORT FORMAT
+                                    </a>
+                            </div>
+                                <div class="row">
+                                   
                                 </div>
                                 <div class="progress my-2 mb-3" style="height: 4px;">
                                     <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                                 </div>
                                 <div class="card">
                                     <div class="card-body overflow-auto pb-0">
-                                        <table class="table table-hover table-bordered table-striped">
+                                        <table class="table table-hover table-bordered table-striped" id="itemtable">
                                             <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
-                                                <tr>
+                                                <tr id="headerRow">
                                                     <th>Action</th>
                                                     <th>Seq No</th>
                                                     <th>Characteristic</th>
@@ -262,7 +273,7 @@
                                                     <th>Operator</th>
                                                     <th>Specification To</th>
                                                     <th>Frequency</th>
-                                                    <th>Inpected By</th>
+                                                    <th>Inspection By</th>
                                                  
                                                     <th>Remarks</th>
                                                     <th>Rejection Plan</th>
@@ -445,7 +456,10 @@
                                     </div>
                                     <input type="hidden" id="hdnItemImageURL" value="@Model.ItemImageURL" />
                                 }
-
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="margin-left:20px;">
+                                    <label asp-for="DrawingNo" class="form-label">DrawingNo</label>
+                                    <input asp-for="DrawingNo" class="form-control" />
+                                </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="ActualEntryByName" class="form-label">Actual Entered By</label>
                                     <input type="hidden" asp-for="ActualEntryBy" class="form-control" readonly />
@@ -820,6 +834,288 @@
         //         window.location.href = '@Url.Action("ControlPlan", "ControlPlan")?ItemCode=' + itemCode;
         //     }
         // }
+        function ViewFile(url) {
+            if (url) {
+                window.open(url, '_blank');
+            }
+        }
+        $('#btnImport').click(function () {
+            var fileInput = document.getElementById('importFile');
+            var file = fileInput.files[0];
+
+            if (!file) {
+                $.notify("Please choose a file to import.", "error");
+                return;
+            }
+
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                var data = e.target.result;
+                var workbook = XLSX.read(data, { type: 'binary' });
+                var firstSheet = workbook.SheetNames[0];
+                var sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+                if (sheetData.length === 0) {
+                    $.notify("No data found in the file.", "error");
+                    return;
+                }
+
+                var allItems = sheetData.map(row => ({
+                    SeqNo: 0,
+                    Mode: "",
+                    CntPlanEntryDate: row.CntPlanEntryDate || null,
+                    CntPlanEntryId: row.CntPlanEntryId || 0,
+                    CntPlanYearCode: row.CntPlanYearCode || 0,
+                    Characteristic: row.Characteristic || "",
+                    EvalutionMeasurmentTechnique: row.EvalutionMeasurmentTechnique || "",
+                    SpecificationFrom: row.SpecificationFrom || "",
+                    Operator: row.Operator || "",
+                    SpecificationTo: row.SpecificationTo || "",
+                    FrequencyofTesting: row.FrequencyofTesting || "",
+                    InspectionBy: row.InspectionBy || "",
+                    ControlMethod: row.ControlMethod || "",
+                    RejectionPlan: row.RejectionPlan || "",
+                    Remarks: row.Remarks || "",
+                    ItemimagePath: row.ItemimagePath || "",
+                    DrawingNo: row.DrawingNo || "",
+                    DrawingNoImagePath: row.DrawingNoImagePath || "",
+                    ImageURL: row.ImageURL || "",
+                    Control_PlanNo: row.Control_PlanNo || "",
+                    RevNo: row.RevNo || "",
+                    ForInOutInprocess: row.ForInOutInprocess || "",
+                    ItemCode: row.ItemCode || 0,
+                    PartCode: row.PartCode || "",
+                    ItemName: row.ItemName || "",
+                    AccountCode: row.AccountCode || 0,
+                    EngApprovedBy: row.EngApprovedBy || 0,
+                    ApprovedBy: row.ApprovedBy || 0,
+                    UId: row.UId || 0,
+                    EntryByMachine: row.EntryByMachine || "",
+                    ActualEntryBy: row.ActualEntryBy || 0,
+                    ActualEntryByName: row.ActualEntryByName || "",
+                    ActualEntryDate: row.ActualEntryDate || null,
+                    LastUpdatedBy: row.LastUpdatedBy || 0,
+                    LastUpdatedByName: row.LastUpdatedByName || "",
+                    LastUpdationDate: row.LastUpdationDate || null,
+                    CC: row.CC || null
+                }));
+
+                console.log("Sending data to server:", JSON.stringify(allItems));
+
+                $.ajax({
+                    url: '@Url.Action("ImportControlPlanDetails")',
+                    type: 'POST',
+                    data: JSON.stringify(allItems),
+                    contentType: 'application/json; charset=utf-8',
+                    dataType: 'html',
+                    success: function (data) {
+                        $('#divControlPlanGrid').html(data);
+                        $.notify("Import complete.", "success");
+                    },
+                    error: function (xhr) {
+                        $.notify("Import failed: " + xhr.responseText, "error");
+                        console.error("Import failed:", xhr.responseText);
+                    }
+                });
+            };
+
+            reader.readAsBinaryString(file);
+        });
+        function ExportItems() {
+            // Clone header and grid
+            let headerRowClone = $("#headerRow").clone(true);
+            let tableBodyClone = $("#divControlPlanGrid").clone(true);
+
+            let removeIndices = [];
+
+            // Identify columns to remove and clean header text
+            $("#headerRow th").each(function (index) {
+                let text = $(this).text().trim();
+
+                // Remove "Action" and "Seq No" columns
+                if (text === "Action" || text === "Seq No") {
+                    removeIndices.push(index);
+                    $(this).remove();
+                } else {
+                    // Remove spaces from header text
+                    $(this).text(text.replace(/\s+/g, ""));
+                }
+            });
+
+            // Remove matching <td> cells in all rows
+            $("#divControlPlanGrid tr").each(function () {
+                $(this).find("td").each(function (index) {
+                    if (removeIndices.includes(index)) {
+                        $(this).remove();
+                    }
+                });
+            });
+
+            // Export to Excel
+            let table = $("#itemtable")[0];
+            TableToExcel.convert(table, {
+                name: `ImportItemsFile.xlsx`,
+                sheet: {
+                    name: 'ImportItemsFile'
+                }
+            });
+
+            // Restore original DOM
+            $("#headerRow").replaceWith(headerRowClone);
+            $("#divControlPlanGrid").replaceWith(tableBodyClone);
+        }
+
+
+        // $('#btnImport').click(function () {
+
+        //     var fileInput = document.getElementById('importFile');
+        //     var file = fileInput.files[0];
+        //     if (!file) {
+        //         $.notify("Please choose a file to import.", "error");
+        //         return;
+        //     }
+
+        //     var reader = new FileReader();
+
+        //     reader.onload = function (e) {
+        //         var data = e.target.result;
+        //         var workbook = XLSX.read(data, { type: 'binary' });
+        //         var firstSheet = workbook.SheetNames[0];
+        //         var sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
+
+        //         if (sheetData.length === 0) {
+        //             $.notify("No data found in the file.", "error");
+        //             return;
+        //         }
+        //         var allItems = [];
+        //         // Loop through each row and send to AddControlPlanDetail
+        //         sheetData.forEach((row, index) => {
+        //             var ItemData = {
+        //                 SeqNo: 0,  // default value
+        //                 Mode: "",  // Import mode = insert
+        //                 CntPlanEntryDate: row.CntPlanEntryDate || null,
+        //                 CntPlanEntryId: row.CntPlanEntryId || 0,
+        //                 CntPlanYearCode: row.CntPlanYearCode || 0,
+        //                 Characteristic: row.Characteristic || "",
+        //                 EvalutionMeasurmentTechnique: row.EvalutionMeasurmentTechnique || "",
+        //                 SpecificationFrom: row.SpecificationFrom || "",
+        //                 Operator: row.Operator || "",
+        //                 SpecificationTo: row.SpecificationTo || "",
+        //                 FrequencyofTesting: row.FrequencyofTesting || "",
+        //                 InspectionBy: row.InspectionBy || "",
+        //                 ControlMethod: row.ControlMethod || "",
+        //                 RejectionPlan: row.RejectionPlan || "",
+        //                 Remarks: row.Remarks || "",
+        //                 ItemimagePath: row.ItemimagePath || "",               // added (was missing)
+        //                 DrawingNo: row.DrawingNo || "",
+        //                 DrawingNoImagePath: row.DrawingNoImagePath || "",     // added (was missing)
+        //                 ImageURL: row.ImageURL || "",
+        //                 Control_PlanNo: row.Control_PlanNo || "",             // added (was missing)
+        //                 RevNo: row.RevNo || "",                               // added (was missing)
+        //                 ForInOutInprocess: row.ForInOutInprocess || "",       // added (was missing)
+        //                 ItemCode: row.ItemCode || 0,
+        //                 PartCode: row.PartCode || "",
+        //                 ItemName: row.ItemName || "",
+        //                 AccountCode: row.AccountCode || 0,
+        //                 EngApprovedBy: row.EngApprovedBy || 0,
+        //                 ApprovedBy: row.ApprovedBy || 0,
+        //                 UId: row.UId || 0,
+        //                 EntryByMachine: row.EntryByMachine || "",
+        //                 ActualEntryBy: row.ActualEntryBy || 0,
+        //                 ActualEntryByName: row.ActualEntryByName || "",
+        //                 ActualEntryDate: row.ActualEntryDate || null,
+        //                 LastUpdatedBy: row.LastUpdatedBy || 0,
+        //                 LastUpdatedByName: row.LastUpdatedByName || "",
+        //                 LastUpdationDate: row.LastUpdationDate || null,
+        //                 CC: row.CC || null
+        //                 // UploadImage and ItemImage are IFormFile (file uploads) so not applicable here in JS
+        //             };
+
+        //             allItems.push(ItemData);
+        //         });
+
+
+        //         console.log("Sending data to server:", JSON.stringify(allItems));
+        //         // AJAX call to add each row
+        //         $.ajax({
+        //             url: '@Url.Action("ImportControlPlanDetails")',
+        //             type: 'POST',
+        //             data: JSON.stringify(allItems),
+        //             contentType: 'application/json; charset=utf-8',
+        //             dataType: 'html',
+        //             success: function (data) {
+        //                 $('#divControlPlanGrid').html(data);
+        //                 $.notify("Import complete.", "success");
+        //             },
+        //             error: function (xhr) {
+        //                 $.notify("Import failed: " + xhr.responseText, "error");
+        //                 console.log("Import failed: " + xhr.responseText)
+        //             }
+        //         });
+
+
+        //     };
+
+        //     reader.readAsBinaryString(file);
+        // });
+        //----------new code
+        // function ExportItems() {
+        //     // Backup the original header row and table body
+        //     let headerRow = $("#headerRow").clone();
+        //     let tableBody = $("#divControlPlanGrid").clone();
+
+        //     // Remove unwanted columns from header
+        //     let removeIndices = [];
+        //     $("#headerRow th").each(function (index) {
+        //         let text = $(this).text().trim();
+        //         if (text === "Action" || text === "Seq No") {
+        //             removeIndices.push(index);
+        //             $(this).remove();
+        //         }
+        //     });
+
+        //     // Remove corresponding cells from each row in tbody
+        //     $("#divControlPlanGrid tr").each(function () {
+        //         $(this).find("td").each(function (index) {
+        //             if (removeIndices.includes(index)) {
+        //                 $(this).remove();
+        //             }
+        //         });
+        //     });
+
+        //     // Export table
+        //     let table = $("#itemtable")[0];
+        //     TableToExcel.convert(table, {
+        //         name: `ImportItemsFile.xlsx`,
+        //         sheet: {
+        //             name: 'ImportItemsFile'
+        //         }
+        //     });
+
+        //     // Restore original header and tbody
+        //     $("#headerRow").replaceWith(headerRow);
+        //     $("#divControlPlanGrid").replaceWith(tableBody);
+        // }
+
+        // function ExportItems() {
+        //     let headerRow = $("#headerRow").clone();
+
+        //     $("#headerRow th:contains('Action')").remove();
+        //     $("#headerRow th:contains('Seq No')").remove();
+
+        //     let table = $("#itemtable")[0];
+        //     TableToExcel.convert(table, {
+        //         name: `ImportItemsFile.xlsx`,
+        //         sheet: {
+        //             name: 'ImportItemsFile'
+        //         }
+        //     });
+
+        //     // Restore original header row
+        //     $("#headerRow").replaceWith(headerRow);
+        // }
+
         $(function () {
             $('#FrequencyofTesting').on('input', function () {
                 let value = $(this).val();
@@ -1119,104 +1415,7 @@
                 }
             });
         }
-        function ViewFile(url) {
-            if (url) {
-                window.open(url, '_blank');
-            }
-        }
-        $('#btnImport').click(function () {
-             
-            var fileInput = document.getElementById('importFile');
-            var file = fileInput.files[0];
-            if (!file) {
-                $.notify("Please choose a file to import.", "error");
-                return;
-            }
-
-            var reader = new FileReader();
-
-            reader.onload = function (e) {
-                var data = e.target.result;
-                var workbook = XLSX.read(data, { type: 'binary' });
-                var firstSheet = workbook.SheetNames[0];
-                var sheetData = XLSX.utils.sheet_to_json(workbook.Sheets[firstSheet]);
-
-                if (sheetData.length === 0) {
-                    $.notify("No data found in the file.", "error");
-                    return;
-                }
-                var allItems = [];
-                // Loop through each row and send to AddControlPlanDetail
-                sheetData.forEach((row, index) => {
-                    var ItemData = {
-                        SeqNo: 0,  // default value
-                        Mode: "",  // Import mode = insert
-                        CntPlanEntryDate: row.CntPlanEntryDate || null,
-                        CntPlanEntryId: row.CntPlanEntryId || 0,
-                        CntPlanYearCode: row.CntPlanYearCode || 0,
-                        Characteristic: row.Characteristic || "",
-                        EvalutionMeasurmentTechnique: row.EvalutionMeasurmentTechnique || "",
-                        SpecificationFrom: row.SpecificationFrom || "",
-                        Operator: row.Operator || "",
-                        SpecificationTo: row.SpecificationTo || "",
-                        FrequencyofTesting: row.FrequencyofTesting || "",
-                        InspectionBy: row.InspectionBy || "",
-                        ControlMethod: row.ControlMethod || "",
-                        RejectionPlan: row.RejectionPlan || "",
-                        Remarks: row.Remarks || "",
-                        ItemimagePath: row.ItemimagePath || "",               // added (was missing)
-                        DrawingNo: row.DrawingNo || "",
-                        DrawingNoImagePath: row.DrawingNoImagePath || "",     // added (was missing)
-                        ImageURL: row.ImageURL || "",
-                        Control_PlanNo: row.Control_PlanNo || "",             // added (was missing)
-                        RevNo: row.RevNo || "",                               // added (was missing)
-                        ForInOutInprocess: row.ForInOutInprocess || "",       // added (was missing)
-                        ItemCode: row.ItemCode || 0,
-                        PartCode: row.PartCode || "",
-                        ItemName: row.ItemName || "",
-                        AccountCode: row.AccountCode || 0,
-                        EngApprovedBy: row.EngApprovedBy || 0,
-                        ApprovedBy: row.ApprovedBy || 0,
-                        UId: row.UId || 0,
-                        EntryByMachine: row.EntryByMachine || "",
-                        ActualEntryBy: row.ActualEntryBy || 0,
-                        ActualEntryByName: row.ActualEntryByName || "",
-                        ActualEntryDate: row.ActualEntryDate || null,
-                        LastUpdatedBy: row.LastUpdatedBy || 0,
-                        LastUpdatedByName: row.LastUpdatedByName || "",
-                        LastUpdationDate: row.LastUpdationDate || null,
-                        CC: row.CC || null
-                        // UploadImage and ItemImage are IFormFile (file uploads) so not applicable here in JS
-                    };
-
-                    allItems.push(ItemData);
-                });
-
-
-                console.log("Sending data to server:", JSON.stringify(allItems));
-                    // AJAX call to add each row
-                $.ajax({
-                    url: '@Url.Action("ImportControlPlanDetails")',
-                    type: 'POST',
-                    data: JSON.stringify(allItems),
-                    contentType: 'application/json; charset=utf-8',
-                    dataType: 'html',
-                    success: function (data) {
-                        $('#divControlPlanGrid').html(data);
-                        $.notify("Import complete.", "success");
-                    },
-                    error: function (xhr) {
-                        $.notify("Import failed: " + xhr.responseText, "error");
-                        console.log("Import failed: " + xhr.responseText)
-                    }
-                });
-
-                
-            };
-
-            reader.readAsBinaryString(file);
-        });
-
+       
 
 
         var EditEachItem = false;
@@ -1733,5 +1932,6 @@
         $('#ParentAccountCode').select2();
 
     </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 }

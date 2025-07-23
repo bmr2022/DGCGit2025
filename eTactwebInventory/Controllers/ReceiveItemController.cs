@@ -37,6 +37,13 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyReceiveItemGrid", JsonConvert.SerializeObject(MainModel));
             return View(MainModel);
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IReceiveItem.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> ReceiveItem(int ID, string Mode, int YC, string FromDate = "", string ToDate = "",string ItemName = "", string PartCode = "",  string DashboardType = "", string SearchBox = "")//, ILogger logger)

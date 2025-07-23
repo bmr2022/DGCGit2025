@@ -86,7 +86,7 @@
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
 												<label asp-for="ReportType" class="form-label">Report Type</label>
 												<select asp-for="ReportType" class="form-select">
-													<option selected value="WIPSTOCKDETAIL">WIP STOCKDETAIL REPORT</option>
+													<option selected value="WIPSTOCKDETAILFORTRANSFER">WIP STOCKDETAIL REPORT</option>
 												</select>
 											</div>
 											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
@@ -115,6 +115,11 @@
 												<a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="WIPStockRegister" asp-action="WIPStockRegister">
 													<i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
 												</a>
+												<div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+													<button class="btn btn-sm btn-outline-primary" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" onclick="getCheckedRowData()">
+														<i class="fa fa-check-circle" aria-hidden="true"></i> Receive Material
+													</button>
+												</div>
 											</div>
 										</div>
 										</<div></div>
@@ -132,7 +137,7 @@
 
 									<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_SAGrid">
 										<div class="accordion-body">
-											<div class="card-body" id="divPendingMRP">
+											<div class="card-body" id="">
 												<div class="row">
 													<div class="col-md-12" id="divStockMainRegister">
 														<partial name="_PendingToTransferMaterial" />
@@ -198,21 +203,40 @@
 			  $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
 		  });
 
+		function CheckacceptedQtySHA(i) {
 
-		  $('#checkuncheck').change(function () {
-			 
+			var checkedtruevalues = [];
+			var rowCount = $('#divPendMRNGrid tr').length;
+			for (let i = 1; i <= rowCount; i++) {
+				checkedtruevalues.push({
+					"checked": $('#AcceptedQtySHA-' + i).is(':checked')
+				})
+			}
+
+			var checkedonlytrue = checkedtruevalues.filter(function (item) {
+				return item.checked;
+			}).length;
+			if (rowCount == checkedonlytrue) {
+				$('#checkuncheck').prop('checked', true)
+			} else {
+				$('#checkuncheck').prop('checked', false)
+			}
+		}
+
+		$(document).on('change', '#checkuncheck', function () {
+
 			var rowCount = $('#divPendMRNGrid tr').length;
 			if ($('#checkuncheck').is(':checked') == true) {
 				for (let i = 1; i <= rowCount; i++) {
-					$('#AcceptedQtySHA' + i).prop('checked', true)
+					$('#AcceptedQtySHA-' + i).prop('checked', true)
 				}
 			}
 			else {
 				for (let i = 1; i <= rowCount; i++) {
-					$('#AcceptedQtySHA' + i).prop('checked', false)
+					$('#AcceptedQtySHA-' + i).prop('checked', false)
 				}
 			}
-		  })
+		})
 
 		  function loadPage(pageNumber) {
 
@@ -244,8 +268,57 @@
 				  }
 			  });
 		  }
+		function getCheckedRowData() {
+			var selectedData = [];
+
+			$('#ReportTable tbody tr').each(function () {
+				var $row = $(this);
+				var checkbox = $row.find('input[type="checkbox"]');
+
+				if (checkbox.is(':checked')) {
+					var rowData = {
+
+						WCID: $row.find('td:eq(1)').text().trim(),
+						WorkCenterName: $row.find('td:eq(2)').text().trim(),
+						PartCode: $row.find('td:eq(7)').text().trim(),
+						ItemName: $row.find('td:eq(8)').text().trim(),
+						ItemCode: $row.find('td:eq(9)').text().trim(),
+						TransferQty: $row.find('td:eq(13)').text().trim(),
+						Unit: $row.find('td:eq(14)').text().trim(),
+
+						BatchNo: $row.find('td:eq(21)').text().trim(),
+						UniqueBatchNo: $row.find('td:eq(22)').text().trim(),
+						
+						
+					};
+					selectedData.push(rowData);
+				}
+			});
+
+			// AJAX call to send to session
+			$.ajax({
+				url: "@Url.Action("StoreCheckedRowsToSession")",
+				type: 'POST',
+				contentType: 'application/json',
+				data: JSON.stringify(selectedData),
+				success: function (response) {
+					var redirectUrl = '@Url.Action("Index", "TransferFromWorkCenter")';
+					window.location.href = redirectUrl;
+				},
+				error: function (xhr, status, error) {
+					console.error("Failed to store in session:", error);
+				}
+			});
+		}
+
+
 
 		  function GetWIPRegisterData() {
+			if ($('#WCID').val() == 0)
+			{
+				$.notify("Workcenter is required", "error");
+				return;
+				}
 
 			  $.ajax({
 				  type: "POST",

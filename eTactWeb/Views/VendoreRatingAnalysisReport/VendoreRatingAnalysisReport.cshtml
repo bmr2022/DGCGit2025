@@ -11,7 +11,7 @@
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <div class="card-header card-headerBG text-light bg-gradient">
         <h5>
-            <strong>VendoreRating Analysis Report</strong>
+            <strong>Vendore Rating Analysis Report</strong>
             <span class="d-flex float-end" style="margin-top:-2px;">
                 @*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
 
@@ -51,8 +51,6 @@
                                         <option disabled value="">-Select-</option>
                                         <option value="SUMMARY" selected>Summary</option>
                                         <option value="DETAIL">Detail</option>
-                                        <option value="PURCHASE DASHBOARD VENDOR RATING">PURCHASE DASHBOARD VENDOR RATING</option>
-
                                     </select>
 
                                 </div>
@@ -61,7 +59,6 @@
                                     <select asp-for="RatingType" class="form-select">
                                         <option disabled value="">-Select-</option>
                                         <option value="DELIVERY RATING" selected>DELIVERY RATING</option>
-                                        <option value="PRICE RATING">PRICE RATING</option>
                                         <option value="PRICE RATING">PRICE RATING</option>
                                         <option value="QUALITY RATING">QUALITY RATING</option>
 
@@ -109,7 +106,7 @@
                                     <button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
                                         <i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
                                     </button>
-                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="InventoryAgingReport" asp-action="InventoryAgingReport">
+                                    <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="VendoreRatingAnalysisReport" asp-action="VendoreRatingAnalysisReport">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
                                 </div>
@@ -120,7 +117,7 @@
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="H_SAGrid">
                                     <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Inventory Aging Report Grid</strong>
+                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Vendore Rating Analysis Report Grid</strong>
                                     </button>
                                 </h2>
 
@@ -503,22 +500,23 @@
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF({ orientation: 'landscape', unit: 'pt', format: 'a4' });
 
-            var fromDate = $('#FromDate').val();
+            var fromDate = $('#CurrentDate').val();
 
             var reportTypeText = $('#ReportType option:selected').text();
             var reportTypeValue = $('#ReportType').val();
+            
+            var ratingTypeText = $('#RatingType option:selected').text();
+            var ratingTypeValue = $('#RatingType').val();
 
-            var rmPartCodeText = $('#RMPartCode option:selected').text();
-            var rmPartCodeValue = $('#RMPartCode').val();
+            var PartCodeText = $('#PartCode option:selected').text();
+            var PartCodeValue = $('#PartCode').val();
 
-            var rmItemNameText = $('#RMItemName option:selected').text();
-            var rmItemNameValue = $('#RMItemName').val();
+            var ItemNameText = $('#ItemName option:selected').text();
+            var ItemNameValue = $('#ItemName').val();
 
-            var storeNameText = $('#StoreName option:selected').text();
-            var storeNameValue = $('#StoreName').val();
+            var customerNameText = $('#CustomerName option:selected').text();
+            var customerNameValue = $('#CustomerName').val();
 
-            var fodurationText = $('#Foduration option:selected').text();
-            var fodurationValue = $('#Foduration').val();
 
 
 
@@ -549,7 +547,7 @@
             /* var resp = await fetch('/SaleBillRegister/GetSaleBillRegistergridData');
             va r rows = await resp.json();*/
 
-            var resp = await fetch('/InventoryAgingReport/GetInventoryAgingReportForPDF');
+            var resp = await fetch('/VendoreRatingAnalysisReport/VendoreRatingAnalysisReportForPDF');
 
             if (!resp.ok) {
                 console.error("Fetch failed with status:", resp.status);
@@ -564,79 +562,116 @@
             // Declare headers and body
             let headers = [];
             let body = [];
-
-            // Handle report type logic
-            switch (reportTypeValue) {
-                case 'AginingDataSummary':/*done*/
-                    headers = [
-                        "#Sr", "Store Name", "Part Code", "Item Name", "Unit", "Total Stock", "Rate", "Total Amount",
-                        "0–30", "31–60", "61–90", ">=91", "Type Item", "Group Name"
-                    ];
-
-                    console.log("Data:", rows);
-                    body = rows.map((item, i) => [
-                        i + 1, item.storeName, item.partCode, item.itemName, item.unit, item.totalStock, item.rate, item.totalAmt,
-                        item.aging_0_30, item.aging_31_60, item.aging_61_90, item.aging_91, item.type_Item, item.group_Name
-
-                    ]);
-
-                    columnStyles = {
-                        0: { cellWidth: 20 },
-                        1: { cellWidth: 60 },
-                        2: { cellWidth: 60 },
-                        3: { cellWidth: 60 },
-                        4: { cellWidth: 30 },
-                        5: { cellWidth: 40 },
-                        6: { cellWidth: 40 },
-                        7: { cellWidth: 50 },
-                        8: { cellWidth: 30 },
-                        9: { cellWidth: 30 },
-                        10: { cellWidth: 30 },
-                        11: { cellWidth: 30 },
-                        12: { cellWidth: 50 },
-                        13: { cellWidth: 50 },
-                    };
-                    break;
-                case 'AginingDataBatchWise':
-                    headers = [
-                        "#Sr", "Store Name", "Part Code", "Item Name", "Unit", "Total Stock", "Rate", "Total Amount",
-                        "0-30", "31-60", "61-90", "≥91", "Batch No", "Unique Batch No", "Type Item", "Group Name"
-                    ];
-
-                    console.log("Data:", rows);
-                    body = rows.map((item, i) => [
-                        i + 1, item.storeName, item.partCode, item.itemName, item.unit, item.totalStock, item.rate, item.totalAmt,
-                        item.aging_0_30, item.aging_31_60, item.aging_61_90, item.aging_91, item.batchNo, item.uniqueBatchNo, item.type_Item, item.group_Name
+            if (reportTypeValue == "SUMMARY" && ratingTypeValue == "DELIVERY RATING") {
+                 headers = [
+                    "#Sr", "Customer Name", "Delivery Rating", "Account Code"
+                ];
 
 
-                    ]);
+                console.log("Data:", rows);
 
-                    columnStyles = {
-                        0: { cellWidth: 20 },
-                        1: { cellWidth: 50 },
-                        2: { cellWidth: 50 },
-                        3: { cellWidth: 90 },
-                        4: { cellWidth: 30 },
-                        5: { cellWidth: 40 },
-                        6: { cellWidth: 40 },
-                        7: { cellWidth: 50 },
-                        8: { cellWidth: 30 },
-                        9: { cellWidth: 30 },
-                        10: { cellWidth: 30 },
-                        11: { cellWidth: 30 },
-                        12: { cellWidth: 50 },
-                        13: { cellWidth: 90 },
-                        14: { cellWidth: 50 },
-                        15: { cellWidth: 30 },
-                    };
-                    break;
+                 body = rows.map((item, i) => [
+                    i + 1,
+                    item.customerName,
+                    item.deliveryRating,
+                    item.accountCode
+                ]);
 
-                default:
-                    $.notify(reportTypeValue + " report has no data to display!", "error");
-                    return;
+                 columnStyles = {
+                    0: { cellWidth: 20 },
+                    1: { cellWidth: 100 },
+                    2: { cellWidth: 80 },
+                    3: { cellWidth: 80 }
+                };
             }
+            else if (reportTypeValue == "DETAIL" && ratingTypeValue == "DELIVERY RATING") {
+                 headers = [
+                    "#Sr", "Customer Name", "Part Code", "Item Name", "PO Quantity",
+                    "Gate Quantity", "Delivery Rating", "Item Code", "Account Code"
+                ];
 
-            // Generate table with custom column width handling
+                // Map body rows
+                 body = rows.map((item, i) => [
+                    i + 1, item.customerName, item.partCode, item.itemName, item.poQty,
+                    item.gateQty, item.deliveryRating, item.itemCode, item.accountCode
+                ]);
+                 columnStyles = {
+                    0: { cellWidth: 20 },   // Sr No
+                    1: { cellWidth: 60 },   // Customer Name
+                    2: { cellWidth: 50 },   // Part Code
+                    3: { cellWidth: 60 },   // Item Name
+                    4: { cellWidth: 40 },   // PO Quantity
+                    5: { cellWidth: 40 },   // Gate Quantity
+                    6: { cellWidth: 50 },   // Delivery Rating
+                    7: { cellWidth: 50 },   // Item Code
+                    8: { cellWidth: 50 }    // Account Code
+                };
+            }
+            else if (reportTypeValue == "DETAIL" && ratingTypeValue == "QUALITY RATING") {
+
+                 headers = [
+                    "#Sr", "Customer Name", "Part Code", "Item Name", "PO No",
+                    "Schedule No", "PO Quantity", "Billed Quantity", "Received Quantity",
+                    "Rejected Quantity", "Rework Quantity", "Quality Rating"
+                ];
+
+
+                 body = rows.map((item, i) => [
+                    i + 1, item.customerName, item.partCode, item.itemName, item.pono,
+                    item.schNo, item.poQty, item.billQty, item.recQty,
+                    item.rejectedQty, item.reWorkQty, item.qualityRating
+                ]);
+
+
+                 columnStyles = {
+                    0: { cellWidth: 20 }, 1: { cellWidth: 100 }, 2: { cellWidth: 50 },
+                    3: { cellWidth: 100 }, 4: { cellWidth: 40 }, 5: { cellWidth: 40 },
+                    6: { cellWidth: 40 }, 7: { cellWidth: 40 }, 8: { cellWidth: 40 },
+                    9: { cellWidth: 50 }, 10: { cellWidth: 50 }, 11: { cellWidth: 50 }
+                };
+            }
+            else if (reportTypeValue == "SUMMARY" && ratingTypeValue == "QUALITY RATING") {
+               
+                 headers = [
+                    "#Sr", "Customer Name", "Quality Percent",
+                    "Quality Rating", "Account Code"
+                ];
+
+                 body = rows.map((item, i) => [
+                    i + 1, item.customerName, item.qualityPercent,
+                    item.qualityRating, item.accountCode
+                ]);
+
+                 columnStyles = {
+                    0: { cellWidth: 20 }, 1: { cellWidth: 100 },
+                    2: { cellWidth: 80 }, 3: { cellWidth: 80 },
+                    4: { cellWidth: 80 }
+                };
+
+            }
+            else if (ratingTypeValue == "PRICE RATING") {
+                
+                 headers = [
+                    "#Sr", "Customer Name", "Part Code", "Item Name",
+                    "Vendor Rate", "Min PO Rate", "Max PO Rate", "Price Rating"
+                ];
+
+                
+                 body = rows.map((item, i) => [
+                    i + 1, item.customerName, item.partCode, item.itemName,
+                    item.vendorRate, item.minPORate, item.maxPORate, item.priceRating
+                ]);
+
+                
+                 columnStyles = {
+                    0: { cellWidth: 20 }, 1: { cellWidth: 100 },
+                    2: { cellWidth: 50 }, 3: { cellWidth: 100 },
+                    4: { cellWidth: 40 }, 5: { cellWidth: 40 },
+                    6: { cellWidth: 40 }, 7: { cellWidth: 50 }
+                };
+
+            }
+            
             doc.autoTable({
                 startY: currentY + 15,
                 head: [headers],
@@ -662,7 +697,8 @@
             });
 
             // Save the PDF
-            doc.save(`PO_${reportTypeValue.replace(/\s+/g, '_')}.pdf`);
+            var fileName = `Vendor Rating ${ratingTypeText} ${reportTypeText} Report`.replace(/\s+/g, '_') + '.pdf';
+            doc.save(fileName);
 
         });
 

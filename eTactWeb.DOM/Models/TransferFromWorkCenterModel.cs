@@ -14,6 +14,8 @@ namespace eTactWeb.DOM.Models
         public string? FinToDate {  get; set; }
         public string? ToDate { get; set; }
         public string? CC { get; set; }
+        public int WCID { get; set; }
+        public string? WorkCenterName { get; set; }
         public int Uid {  get; set; }
         public int ActualEnteredBy {  get; set; }
         public string? ActualEnteredByName {  get; set; }
@@ -96,9 +98,15 @@ namespace eTactWeb.DOM.Models
         public IList<TransferFromWorkCenterDetail>? ItemDetailGrid { get; set; }
         public List<string> WIPErrorList { get; set; } = new List<string>();
     }
-    public class TransferFromWorkCenterDetail: TimeStamp
+	public class CheckedItemRequest
+	{
+		public List<string> CheckedItems { get; set; }
+	}
+	public class TransferFromWorkCenterDetail: TimeStamp
     {
         public int SeqNo {  get; set; }
+        public int WCID {  get; set; }
+        public string? WorkCenterName {  get; set; }
         public string? PartCode {  get; set; }
         public string? ItemName {  get; set; }
         public int ItemCode {  get; set; }

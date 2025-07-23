@@ -18,7 +18,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItemCode(string PartCode);
         Task<ResponseResult> GetReportName();
         Task<PBDashBoard> GetDashBoardData();
-        Task<PBListDataModel> GetPurchaseBillListData(string? flag, string? MRNType, string? dashboardtype, DateTime? firstdate, DateTime? todate, PBListDataModel model);
+        Task<PBListDataModel> GetPurchaseBillListData(string? flag, string? MRNType, string? dashboardtype, string? firstdate, string? todate, PBListDataModel model);
         Task<PurchaseBillModel> GetPurchaseBillItemData(string? flag, string? FlagMRNJWCHALLAN, string? Mrnno, int? mrnyearcode, int? accountcode);
         Task<PurchaseBillModel> GetViewPOCcompletedByID(int iD, int yC,string PONO, string v);
          

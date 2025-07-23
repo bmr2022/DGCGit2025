@@ -38,12 +38,14 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
-                SqlParams.Add(new SqlParameter("@EmployeeId", userId));
-                SqlParams.Add(new SqlParameter("@MainMenu", "General"));
-                SqlParams.Add(new SqlParameter("@SubMenu", "Requisition Without BOM"));
+               
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_RequisitionWithoutBOM", SqlParams);
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userId));
+                SqlParams.Add(new SqlParameter("@MainMenu", "ReqWithoutBom"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+
             }
             catch (Exception ex)
             {
