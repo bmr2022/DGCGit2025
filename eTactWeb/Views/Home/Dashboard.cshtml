@@ -773,6 +773,115 @@
             color: #64748b;
         }
 
+        .soft-style {
+            text-align: center;
+            padding: 30px;
+            color: #aaa;
+            font-size: 18px;
+        }
+
+            .soft-style .icon {
+                font-size: 50px;
+                color: #ccc;
+                margin-bottom: 12px;
+            }
+
+        .sales-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 1rem;
+        }
+
+        .sales-cards-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+        }
+
+        .sales-card {
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease-out;
+            position: relative;
+            overflow: hidden;
+            border-left: 4px solid #4CAF50;
+            border-top: 3px solid #e9ecef;
+        }
+
+            .sales-card:hover {
+                transform: translateY(-8px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+            }
+
+            .sales-card.warning {
+                border-left-color: #FF9800;
+            }
+
+        .sales-card-title i {
+            margin-right: 8px;
+            color: currentColor;
+        }
+
+        .sales-card-title {
+            font-size: 13px;
+            color: #6c757d;
+            margin-bottom: 10px;
+            letter-spacing: 0.3px;
+            text-transform: uppercase;
+        }
+
+        .sales-card-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin: 8px 0;
+            position: relative;
+        }
+
+            .sales-card-value small {
+                font-size: 16px;
+                opacity: 0.8;
+            }
+
+        .sales-card-desc {
+            font-size: 13px;
+            color: #95a5a6;
+            margin-top: 10px;
+        }
+
+        .sales-card.highlight {
+            background: linear-gradient(135deg, #fff9f2 0%, #fff1e6 100%);
+            border-left: 4px solid #FF9800;
+            border-top: 3px solid #FF9800;
+        }
+
+        .sales-card.warning {
+            background: linear-gradient(135deg, #fff8f1 0%, #fff2e8 100%);
+            border-top: 3px solid #FF9800;
+        }
+
+            .sales-card.highlight:before,
+            .sales-card.warning:before {
+                content: "";
+                position: absolute;
+                top: -5px;
+                right: -30px;
+                width: 60px;
+                height: 60px;
+                border-radius: 50%;
+                opacity: 0.2;
+            }
+
+        .sales-card.highlight:before {
+            background: #4CAF50;
+        }
+
+        .sales-card.warning:before {
+            background: #FF9800;
+        }
+
     </style>
 </head>
 <body>
@@ -1305,70 +1414,51 @@
         </div>
     </div>
     <div id="salesTab" class="tab-content">
-        <!-- Supply Chain Dashboard -->
-        <div class="dashboard-wrapper">
-            <!-- Existing sections remain unchanged above -->
-            <!-- Monthly Sales Trend -->
-            <div class="trend-section">
-                <div class="sales-card" style="width: 100%; height: 200px;">
-                    <div class="sales-card-title">
-                        Monthly Sales Trend
-                        <select style="float:right">
-                            <option>This Year</option>
-                            <option>Last Year</option>
-                        </select>
+        <div class="sales-container">
+            <div class="sales-cards-container">
+                <div class="sales-card">
+                    <div class="sales-card-title"><i class="fas fa-calendar-alt"></i>Annual Sales</div>
+                    <div class="sales-card-value">$5,000</div>
+                    <div class="sales-card-desc">
+                        <i class="fas fa-chart-line"></i> Total Sale Order Value of Year
                     </div>
                 </div>
-            </div>
-            <!-- Customers & Orders and Returns -->
-            <div class="customer-order-section">
-                <div class="sales-card" style="flex: 2;">
-                    <div class="sales-card-title">Customers & Orders</div>
-                    <div class="sales-section">
-                        <div class="sales-card card-lightblue">
-                            <div class="sales-card-title">New Customers <span class="sales-card-badge">This Year</span></div>
-                            <div class="sales-card-value">56</div>
-                            <div class="sales-card-subtitle">↑ 12% increase from last year</div>
-                        </div>
-                        <div class="sales-card card-lightgreen">
-                            <div class="sales-card-title">New Customers <span class="sales-card-badge">This Month</span></div>
-                            <div class="sales-card-value">12</div>
-                            <div class="sales-card-subtitle">↑ 20% increase from last month</div>
-                        </div>
-                    </div>
-                    <div class="sales-section">
-                        <div class="sales-card">
-                            <div class="sales-card-title">Total Orders</div>
-                            <div class="sales-card-value">148</div>
-                        </div>
-                        <div class="sales-card card-lightyellow">
-                            <div class="sales-card-title">Pending Orders</div>
-                            <div class="sales-card-value">28</div>
-                        </div>
-                        <div class="sales-card card-lightgreen">
-                            <div class="sales-card-title">Completed Orders</div>
-                            <div class="sales-card-value">120</div>
-                        </div>
+                <div class="sales-card">
+                    <div class="sales-card-title"><i class="fas fa-calendar-day"></i>Monthly Sales</div>
+                    <div class="sales-card-value">$1,000</div>
+                    <div class="sales-card-desc">Total Sale Order Value of Month</div>
+                </div>
+                <div class="sales-card">
+                    <div class="sales-card-title"><i class="fas fa-boxes"></i>Annual Volume</div>
+                    <div class="sales-card-value">100</div>
+                    <div class="sales-card-desc">Total Sale Order Item Qty of Year</div>
+                </div>
+                <div class="sales-card">
+                    <div class="sales-card-title"><i class="fas fa-box"></i>Monthly Volume</div>
+                    <div class="sales-card-value">20</div>
+                    <div class="sales-card-desc">Total Sale Order Item Qty of Month</div>
+                </div>
+                <div class="sales-card highlight">
+                    <div class="sales-card-title"><i class="fas fa-trophy"></i>Top Customer</div>
+                    <div class="sales-card-value">Customer A</div>
+                    <div class="sales-card-desc">
+                        <i class="fas fa-user-check"></i> Best Customer of Month
                     </div>
                 </div>
-
-                <div class="sales-card" style="flex: 1;">
-                    <div class="sales-card-title">Returns Summary</div>
-                    <div class="sales-card-subtitle">Return Value (Month) <span class="sales-card-badge-red">Issues</span></div>
-                    <div class="sales-card-value" style="color: #e63946;">$2,450</div>
-                    <div class="sales-card-subtitle">↑ 5% increase from last month</div>
-
-                    <div class="sales-card-subtitle" style="margin-top: 20px;">Return Value (Year) <span class="sales-card-badge-red">Issues</span></div>
-                    <div class="sales-card-value" style="color: #e63946;">$18,760</div>
-                    <div class="sales-card-subtitle">↓ 8% decrease from last year</div>
-
-                    <div class="sales-card-subtitle" style="margin-top: 20px;">
-                        Return Trend
-                        <select style="float:right">
-                            <option>This Year</option>
-                            <option>Last Year</option>
-                        </select>
-                    </div>
+                <div class="sales-card highlight">
+                    <div class="sales-card-title"><i class="fas fa-star"></i>Top Product</div>
+                    <div class="sales-card-value">Item X</div>
+                    <div class="sales-card-desc"><i class="fas fa-barcode"></i> Best Sold Item of Month</div>
+                </div>
+                <div class="sales-card">
+                    <div class="sales-card-title"><i class="fas fa-user-plus"></i>New Customers</div>
+                    <div class="sales-card-value">5 <span class="card-change positive"><i class="fas fa-arrow-up"></i> 10 annual</span></div>
+                    <div class="sales-card-desc"><i class="fas fa-users"></i> New Customers Added in Month</div>
+                </div>
+                <div class="sales-card warning">
+                    <div class="sales-card-title"><i class="fas fa-truck-loading"></i>Pending Dispatch</div>
+                    <div class="sales-card-value">3</div>
+                    <div class="sales-card-desc"><i class="fas fa-clock"></i> Pending Dispatch Qty of Month</div>
                 </div>
             </div>
         </div>
@@ -1543,6 +1633,9 @@
                     GetTopItemByStockValue();
                     GetTopItemBelowMinLevel();
                     GetTopFastMovingItem();
+                } else if (tabId === "salesTab") {
+                    $('#RefreshInventoryAllData').val(false);
+                    FillDisplaySalesHeading();
                 }
             }
 
@@ -2533,43 +2626,51 @@
 
                     const currentDate = new Date();
 
-                    $.each(obj.Result, function (i, item) {
-                        // Generate initials from name
-                        let initials = '';
-                        if (item.AccountName) {
-                            initials = item.AccountName
-                                .split(' ')
-                                .map(word => word.charAt(0))
-                                .join('')
-                                .toUpperCase();
-                        }
-
-                        // Calculate date difference in days
-                        let badgeHtml = '';
-                        if (item.CreatedByDate) {
-                            const createdDate = new Date(item.CreatedByDate);
-                            const timeDiff = currentDate - createdDate; // in ms
-                            const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
-
-                            if (dayDiff >= 0) {
-                                badgeHtml = `<span class="new-badge">${dayDiff} day${dayDiff === 1 ? '' : 's'} ago</span>`;
+                    if (!obj.Result || obj.Result.length === 0) {
+                        html = `
+                                                            <div class="no-vendors-found soft-style">
+                                                                <i class="fas fa-box-open icon"></i>
+                                                                <p>No new vendors added this month</p>
+                                                            </div>`;
+                    } else {
+                        $.each(obj.Result, function (i, item) {
+                            // Generate initials from name
+                            let initials = '';
+                            if (item.AccountName) {
+                                initials = item.AccountName
+                                    .split(' ')
+                                    .map(word => word.charAt(0))
+                                    .join('')
+                                    .toUpperCase();
                             }
-                        }
 
-                        html += `
-                                                                                            <div class="vendor-card">
-                                                                                                <div class="vendor-header">
-                                                                                                    <div class="vendor-logo">${initials}</div>
-                                                                                                    <h3>${item.AccountName}</h3>
-                                                                                                    ${badgeHtml}
-                                                                                                </div>
-                                                                                                <div class="vendor-details">
-                                                                                                    <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
-                                                                                                    <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
-                                                                                                    <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
-                                                                                                </div>
-                                                                                            </div>`;
-                    });
+                            // Calculate date difference in days
+                            let badgeHtml = '';
+                            if (item.CreatedByDate) {
+                                const createdDate = new Date(item.CreatedByDate);
+                                const timeDiff = currentDate - createdDate;
+                                const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+                                if (dayDiff >= 0) {
+                                    badgeHtml = `<span class="new-badge">${dayDiff} day${dayDiff === 1 ? '' : 's'} ago</span>`;
+                                }
+                            }
+
+                            html += `
+                                                                <div class="vendor-card">
+                                                                    <div class="vendor-header">
+                                                                        <div class="vendor-logo">${initials}</div>
+                                                                        <h3>${item.AccountName}</h3>
+                                                                        ${badgeHtml}
+                                                                    </div>
+                                                                    <div class="vendor-details">
+                                                                        <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
+                                                                        <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
+                                                                        <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
+                                                                    </div>
+                                                                </div>`;
+                        });
+                    }
 
                     $('.vendors-container').empty().append(html);
                 },
@@ -2618,45 +2719,45 @@
                     } else {
                         $.each(best, function (i, item) {
                             html += `
-                                               <div class="supplier-card relative">
+                                                                                       <div class="supplier-card relative">
 
-                                            <div class="supplier-name">${item.AccountName}</div>
+                                                                                    <div class="supplier-name">${item.AccountName}</div>
 
-                                    <div class="rating-container">
-                                        <div class="rating-item">
-                                            <div class="rating-title">Price Rating</div>
-                                                    <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
-                                            <div class="rating-bar">
-                                                        <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating * 20}%"></div>
-                                            </div>
-                                        </div>
+                                                                            <div class="rating-container">
+                                                                                <div class="rating-item">
+                                                                                    <div class="rating-title">Price Rating</div>
+                                                                                            <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
+                                                                                    <div class="rating-bar">
+                                                                                                <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating}%"></div>
+                                                                                    </div>
+                                                                                </div>
 
-                                        <div class="rating-item">
-                                            <div class="rating-title">Delivery Rating</div>
-                                                    <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
-                                            <div class="rating-bar">
-                                                        <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating * 20}%"></div>
-                                            </div>
-                                        </div>
+                                                                                <div class="rating-item">
+                                                                                    <div class="rating-title">Delivery Rating</div>
+                                                                                            <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
+                                                                                    <div class="rating-bar">
+                                                                                                <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating}%"></div>
+                                                                                    </div>
+                                                                                </div>
 
-                                        <div class="rating-item">
-                                            <div class="rating-title">Quality Rating</div>
-                                                    <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
-                                            <div class="rating-bar">
-                                                        <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating * 20}%"></div>
-                                            </div>
-                                        </div>
+                                                                                <div class="rating-item">
+                                                                                    <div class="rating-title">Quality Rating</div>
+                                                                                            <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
+                                                                                    <div class="rating-bar">
+                                                                                                <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating}%"></div>
+                                                                                    </div>
+                                                                                </div>
 
-                                        <div class="rating-item">
-                                            <div class="rating-title">Final Rating</div>
-                                                    <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
-                                            <div class="rating-bar">
-                                                        <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating * 20}%"></div>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                                    `;
+                                                                                <div class="rating-item">
+                                                                                    <div class="rating-title">Final Rating</div>
+                                                                                            <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
+                                                                                    <div class="rating-bar">
+                                                                                                <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating}%"></div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </div>
+                                                                        </div>
+                                                                            `;
                         });
                     }
 
@@ -2682,45 +2783,45 @@
                     } else {
                         $.each(worst, function (i, item) {
                             html += `
-                                                       <div class="supplier-card relative">
+                                                                                               <div class="supplier-card relative">
 
-                                                    <div class="supplier-name">${item.AccountName}</div>
+                                                                                            <div class="supplier-name">${item.AccountName}</div>
 
-                                            <div class="rating-container">
-                                                <div class="rating-item">
-                                                    <div class="rating-title">Price Rating</div>
-                                                            <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
-                                                    <div class="rating-bar">
-                                                                <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating * 20}%"></div>
-                                                    </div>
-                                                </div>
+                                                                                    <div class="rating-container">
+                                                                                        <div class="rating-item">
+                                                                                            <div class="rating-title">Price Rating</div>
+                                                                                                    <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
+                                                                                            <div class="rating-bar">
+                                                                                                        <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating}%"></div>
+                                                                                            </div>
+                                                                                        </div>
 
-                                                <div class="rating-item">
-                                                    <div class="rating-title">Delivery Rating</div>
-                                                            <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
-                                                    <div class="rating-bar">
-                                                                <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating * 20}%"></div>
-                                                    </div>
-                                                </div>
+                                                                                        <div class="rating-item">
+                                                                                            <div class="rating-title">Delivery Rating</div>
+                                                                                                    <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
+                                                                                            <div class="rating-bar">
+                                                                                                        <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating}%"></div>
+                                                                                            </div>
+                                                                                        </div>
 
-                                                <div class="rating-item">
-                                                    <div class="rating-title">Quality Rating</div>
-                                                            <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
-                                                    <div class="rating-bar">
-                                                                <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating * 20}%"></div>
-                                                    </div>
-                                                </div>
+                                                                                        <div class="rating-item">
+                                                                                            <div class="rating-title">Quality Rating</div>
+                                                                                                    <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
+                                                                                            <div class="rating-bar">
+                                                                                                        <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating}%"></div>
+                                                                                            </div>
+                                                                                        </div>
 
-                                                <div class="rating-item">
-                                                    <div class="rating-title">Final Rating</div>
-                                                            <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
-                                                    <div class="rating-bar">
-                                                                <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating * 20}%"></div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                            `;
+                                                                                        <div class="rating-item">
+                                                                                            <div class="rating-title">Final Rating</div>
+                                                                                                    <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
+                                                                                            <div class="rating-bar">
+                                                                                                        <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating}%"></div>
+                                                                                            </div>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                                    `;
                         });
                     }
 
