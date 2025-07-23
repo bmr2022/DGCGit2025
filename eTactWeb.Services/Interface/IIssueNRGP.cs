@@ -32,8 +32,8 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> FillAgainstChallanNo(string Flag, int AccountCode, int ItemCode, int YearCode, string ChallanDate);
         public Task<ResponseResult> FillAgainstChallanYC(string Flag, int AccountCode, int ItemCode, int YearCode, string ChallanDate, string AgainstChallanNo);
         public Task<ResponseResult> FillAgainstChallanEntryId(string Flag, int AccountCode, int ItemCode, string ChallanDate, string AgainstChallanNo,string AgainstChallanYC);
-        public Task<ResponseResult> GetAllItems(string Flag);
-        public Task<ResponseResult> FillItemName(string Flag);
+        //public Task<ResponseResult> GetAllItems(string Flag);
+        public Task<ResponseResult> AutoFillitem(string Flag,string showallitem, string SearchItemCode, string SearchPartCode);
         public Task<ResponseResult> CheckItems(string Flag);
         public Task<ResponseResult> FillChallanType(string RGPNRGP);
         public Task<ResponseResult> StockableItems(string Flag, int ItemCode);
