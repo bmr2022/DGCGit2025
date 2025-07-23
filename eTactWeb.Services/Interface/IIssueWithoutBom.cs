@@ -10,6 +10,9 @@ namespace eTactWeb.Services.Interface
 {
     public interface IIssueWithoutBom
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
+
         Task<ResponseResult> FillBranch();
         Task<ResponseResult> GetIsStockable(int ItemCode);
         Task<ResponseResult> GETDepartMent(string ReqNo,int ReqYearCode);

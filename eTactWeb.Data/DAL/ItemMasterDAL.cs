@@ -107,8 +107,41 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-
-		public async Task<ResponseResult> GetUnitList()
+        public async Task<ResponseResult> GetStoreList()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetStoreList"));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> GetWorkCenterList()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetWorkCenterList"));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetUnitList()
 		{
 			var _ResponseResult = new ResponseResult();
 			try
@@ -152,6 +185,24 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetGroupCode"));
                 SqlParams.Add(new SqlParameter("@GroupCodeName", GName));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetStoreCode(string StoreName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetStoreCode"));
+                SqlParams.Add(new SqlParameter("@StoreIdName", StoreName));
                 _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
             }
             catch (Exception ex)
@@ -397,7 +448,7 @@ namespace eTactWeb.Data.DAL
                         DispItemName = oDataSet.Tables[0].Rows[i].ItemArray[36].ToString(),
                         PurchaseAccountcode = oDataSet.Tables[0].Rows[i].ItemArray[37].ToString(),
                         SaleAccountcode = oDataSet.Tables[0].Rows[i].ItemArray[38].ToString(),
-                       
+
                         MinLevelDays = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[39]),
                         MaxLevelDays = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[40]),
                         EmpName = oDataSet.Tables[0].Rows[i].ItemArray[41].ToString(),
@@ -420,14 +471,16 @@ namespace eTactWeb.Data.DAL
                         UniversalPartCode = oDataSet.Tables[0].Rows[i].ItemArray[58].ToString(),
                         UniversalDescription = oDataSet.Tables[0].Rows[i].ItemArray[59].ToString(),
                         ProdWorkCenterDescription = oDataSet.Tables[0].Rows[i].ItemArray[60].ToString(),
-                        ProdInhouseJW = oDataSet.Tables[0].Rows[i].ItemArray[61].ToString(),
-                        BatchNO = oDataSet.Tables[0].Rows[i].ItemArray[62].ToString(),
-                        VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
-                        OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
-                        SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
-                        Package = oDataSet.Tables[0].Rows[i].ItemArray[66]?.ToString() ?? string.Empty,
-                        IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[67].ToString(),
-                        ItemServAssets= oDataSet.Tables[0].Rows[i].ItemArray[68].ToString()
+                        ProdInhouseJW = oDataSet.Tables[0].Rows[i].ItemArray[62].ToString(),
+                        BatchNO = oDataSet.Tables[0].Rows[i].ItemArray[63].ToString(),
+                        VoltageVlue = oDataSet.Tables[0].Rows[i].ItemArray[64].ToString(),
+                        OldPartCode = oDataSet.Tables[0].Rows[i].ItemArray[65].ToString(),
+                        SerialNo = oDataSet.Tables[0].Rows[i].ItemArray[66].ToString(),
+                        Package = oDataSet.Tables[0].Rows[i].ItemArray[67]?.ToString() ?? string.Empty,
+                        IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[68].ToString(),
+                        ItemServAssets = oDataSet.Tables[0].Rows[i].ItemArray[69].ToString(),
+                        ProdInWorkcenter = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[61]),
+                        StoreName = oDataSet.Tables[0].Rows[i].ItemArray[70].ToString()
                         //HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
                         //CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
                         //CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()),
@@ -807,6 +860,25 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "UPDATEMULTIPLE"));   
+                SqlParams.Add(new SqlParameter("@DTSIMGrid", ItemDetailGrid));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> UpdateSelectedItemData(DataTable ItemDetailGrid, string Flag )
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
                 SqlParams.Add(new SqlParameter("@DTSIMGrid", ItemDetailGrid));
 
                 _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);

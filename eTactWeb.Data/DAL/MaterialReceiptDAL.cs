@@ -210,13 +210,17 @@ namespace eTactWeb.Data.DAL
             try
             {
                 DateTime currentDate = DateTime.Today;
+
+                var FromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1).ToString("dd/MM/yyyy").Replace("-", "/");
+
+                var ToDate = DateTime.Now.ToString("dd/MM/yyyy");
                 var currDT= CommonFunc.ParseFormattedDate(currentDate.ToString("dd/MM/yyyy"));
                 DateTime firstDateOfMonth = new DateTime(currentDate.Year, currentDate.Month, 1);
                var firstdt = CommonFunc.ParseFormattedDate(firstDateOfMonth.ToString("dd/MM/yyyy"));
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
-                SqlParams.Add(new SqlParameter("@FromDate", firstdt));
-                SqlParams.Add(new SqlParameter("@Todate", currDT));
+                SqlParams.Add(new SqlParameter("@FromDate", ParseFormattedDate(FromDate)));
+                SqlParams.Add(new SqlParameter("@Todate", ParseFormattedDate(ToDate)));
 
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_MRN", SqlParams);
             }

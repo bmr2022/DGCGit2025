@@ -110,16 +110,23 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssueNRGPDAL.BindAllDropDowns(Flag);
         }
-        public async Task<ResponseResult> GetAllItems(string Flag)
-        {
-            return await _IssueNRGPDAL.GetAllItems(Flag);
-        }
+		//public async Task<ResponseResult> GetAllItems(string Flag)
+		//{
+		//    return await _IssueNRGPDAL.GetAllItems(Flag);
+		//}
 
-        public async Task<ResponseResult> FillItemName(string Flag)
-        {
-            return await _IssueNRGPDAL.FillItemName(Flag);
-        }
-        public async Task<ResponseResult> CheckItems(string Flag)
+		//public async Task<ResponseResult> FillItemName(string Flag)
+		//{
+		//    return await _IssueNRGPDAL.FillItemName(Flag);
+		//}
+
+		
+        public async Task<ResponseResult> AutoFillitem(string Flag, string showallitem, string SearchItemCode, string SearchPartCode)
+		{
+			return await _IssueNRGPDAL.AutoFillitem(Flag, showallitem, SearchItemCode, SearchPartCode);
+		}
+
+		public async Task<ResponseResult> CheckItems(string Flag)
         {
             return await _IssueNRGPDAL.CheckItems(Flag);
         }

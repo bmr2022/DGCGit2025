@@ -21,6 +21,11 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _IssuewithoutBomDAL = new IssueWithoutBomDAL(configuration, iDataLogic, connectionStringService);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _IssuewithoutBomDAL.GetFormRights(ID);
+        }
+
         public async Task<ResponseResult> FillBranch()
         {
             return await _IssuewithoutBomDAL.FillBranch();

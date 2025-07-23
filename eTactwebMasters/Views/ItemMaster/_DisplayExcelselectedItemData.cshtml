@@ -1,0 +1,66 @@
+﻿@model eTactWeb.DOM.Models.ItemMasterModel
+
+@{
+    var Cntr = 0;
+    var flag = (ViewData["Flag"] as string)?.ToLower();
+}
+
+@if (Model.MasterList == null)
+{
+    <tr class="text-center">
+        <td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>
+}
+else
+{
+    @foreach (var item in Model.MasterList)
+    {
+        Cntr++;
+        <tr>
+            <td>@Cntr</td>
+            <td id="Item_Code-@Cntr">@item.Item_Code</td>
+            <td id="PartCode-@Cntr">@item.PartCode</td>
+            <td id="Item_Name-@Cntr">@item.Item_Name</td>
+
+            @if (flag == "hsncode")
+            {
+                <td id="HSNNO-@Cntr" class="col-hsncode">@item.HSNNO</td>
+            }
+            else if (flag == "store")
+            {
+                <td id="Store-@Cntr" class="col-store">@item.StoreName</td>
+                <td id="StoreId-@Cntr" style="display: none;"  class="">@item.Store</td>
+            }
+            else if (flag == "price")
+            {
+                <td id="SalePrice-@Cntr" class="col-price">@item.SalePrice</td>
+                <td id="PurchasePrice-@Cntr" class="col-price">@item.PurchasePrice</td>
+                <td id="CostPrice-@Cntr" class="col-price">@item.CostPrice</td>
+            }
+            else if (flag == "minmaxlevel")
+            {
+                <td id="MaximumLevel-@Cntr" class="col-minmaxlevel">@item.MaximumLevel</td>
+                <td id="MinimumLevel-@Cntr" class="col-minmaxlevel">@item.MinimumLevel</td>
+            }
+            else if (flag == "workcenter")
+            {
+                <td class="col-workcenter">@item.ProdWorkCenterDescription</td>
+                <td id="ProdInWorkcenter-@Cntr" style="display: none;" class="">@item.ProdInWorkcenter</td>
+            }
+            else
+            {
+                <td id="HSNNO-@Cntr" class="col-hsncode">@item.HSNNO</td>
+                <td class="col-workcenter">@item.ProdWorkCenterDescription</td>
+                <td id="ProdInWorkcenter-@Cntr" class="col-workcenter" style="display: none;">@item.ProdInWorkcenter</td>
+                <td id="Store-@Cntr" class="col-store">@item.StoreName</td>
+                <td id="StoreId-@Cntr" class="col-store" style="display: none;">@item.Store</td>
+                <td id="SalePrice-@Cntr" class="col-price">@item.SalePrice</td>
+                <td id="PurchasePrice-@Cntr" class="col-price">@item.PurchasePrice</td>
+                <td id="CostPrice-@Cntr" class="col-price">@item.CostPrice</td>
+                <td id="MaximumLevel-@Cntr" class="col-minmaxlevel">@item.MaximumLevel</td>
+                <td id="MinimumLevel-@Cntr" class="col-minmaxlevel">@item.MinimumLevel</td>
+            }
+        </tr>
+    }
+
+}

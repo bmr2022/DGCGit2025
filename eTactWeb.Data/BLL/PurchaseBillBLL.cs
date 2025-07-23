@@ -144,7 +144,7 @@ namespace eTactWeb.Data.BLL
         {
             throw new NotImplementedException();
         }
-        async Task<PBListDataModel> IPurchaseBill.GetPurchaseBillListData(string? flag, string? MRNType, string? dashboardtype, DateTime? firstdate, DateTime? todate, PBListDataModel model)
+        async Task<PBListDataModel> IPurchaseBill.GetPurchaseBillListData(string? flag, string? MRNType, string? dashboardtype, string? firstdate, string? todate, PBListDataModel model)
         {
             return await _PurchaseBillDAL.GetPurchaseBillListData(flag, MRNType, dashboardtype, firstdate, todate, model);
         }

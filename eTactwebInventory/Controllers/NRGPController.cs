@@ -1419,19 +1419,20 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetAllItems()
-        {
-            var JSON = await _IIssueNRGP.GetAllItems("FillItem");
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
-        }
-        public async Task<JsonResult> FillItemName()
-        {
-            var JSON = await _IIssueNRGP.FillItemName("FillItem");
-            string JsonString = JsonConvert.SerializeObject(JSON);
-            return Json(JsonString);
-        }
-        public async Task<JsonResult> CheckItems()
+
+		public async Task<JsonResult> AutoFillPartCode( string showallitem, string SearchItemCode, string SearchPartCode)
+		{
+			var JSON = await _IIssueNRGP.AutoFillitem("AutoFillPartCode", showallitem, SearchItemCode, SearchPartCode);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+		public async Task<JsonResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
+		{
+			var JSON = await _IIssueNRGP.AutoFillitem("AutoFillItemName", showallitem, SearchItemCode, SearchPartCode);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+		public async Task<JsonResult> CheckItems()
         {
             var JSON = await _IIssueNRGP.CheckItems("CheckItems");
             string JsonString = JsonConvert.SerializeObject(JSON);
