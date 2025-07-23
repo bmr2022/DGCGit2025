@@ -346,47 +346,74 @@ namespace eTactWeb.Data.DAL
 
             return oDataSet;
         }
-        public async Task<ResponseResult> GetAllItems(string Flag)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var Date = DateTime.Now;
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("Flag", Flag));
-                SqlParams.Add(new SqlParameter("@SHowAllItem", 'Y'));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+		//public async Task<ResponseResult> GetAllItems(string Flag)
+		//{
+		//    var _ResponseResult = new ResponseResult();
+		//    try
+		//    {
+		//        var Date = DateTime.Now;
+		//        var SqlParams = new List<dynamic>();
+		//        SqlParams.Add(new SqlParameter("Flag", Flag));
+		//        SqlParams.Add(new SqlParameter("@SHowAllItem", 'Y'));
+		//        _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+		//    }
+		//    catch (Exception ex)
+		//    {
+		//        dynamic Error = new ExpandoObject();
+		//        Error.Message = ex.Message;
+		//        Error.Source = ex.Source;
+		//    }
 
-            return _ResponseResult;
-        }
-        public async Task<ResponseResult> FillItemName(string Flag)
-        {
-            var _ResponseResult = new ResponseResult();
-            try
-            {
-                var Date = DateTime.Now;
-                var SqlParams = new List<dynamic>();
-                SqlParams.Add(new SqlParameter("Flag", Flag));
-                SqlParams.Add(new SqlParameter("@SHowAllItem", 'N'));
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
-            }
-            catch (Exception ex)
-            {
-                dynamic Error = new ExpandoObject();
-                Error.Message = ex.Message;
-                Error.Source = ex.Source;
-            }
+		//    return _ResponseResult;
+		//}
 
-            return _ResponseResult;
-        }
-        public async Task<ResponseResult> CheckItems(string Flag)
+		//public async Task<ResponseResult> FillItemName(string Flag)
+		//{
+		//    var _ResponseResult = new ResponseResult();
+		//    try
+		//    {
+		//        var Date = DateTime.Now;
+		//        var SqlParams = new List<dynamic>();
+		//        SqlParams.Add(new SqlParameter("Flag", Flag));
+		//        SqlParams.Add(new SqlParameter("@SHowAllItem", 'N'));
+		//        _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+		//    }
+		//    catch (Exception ex)
+		//    {
+		//        dynamic Error = new ExpandoObject();
+		//        Error.Message = ex.Message;
+		//        Error.Source = ex.Source;
+		//    }
+
+		//    return _ResponseResult;
+		//}
+
+		public async Task<ResponseResult> AutoFillitem(string Flag, string showallitem, string SearchItemCode, string SearchPartCode)
+		{
+			var Result = new ResponseResult();
+
+			try
+			{
+				var SqlParams = new List<dynamic>();
+
+				SqlParams.Add(new SqlParameter("@Flag", Flag));
+				SqlParams.Add(new SqlParameter("@SHowAllItem", showallitem));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+
+
+                Result = await _IDataLogic.ExecuteDataTable("SP_IssueNRGP", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return Result;
+		}
+		public async Task<ResponseResult> CheckItems(string Flag)
         {
             var _ResponseResult = new ResponseResult();
             try
