@@ -23,6 +23,9 @@ namespace eTactWeb.DOM.Models
         public int TotalRecords { get; set; }
         public int PageNumber { get; set; }
         public int PageSize { get; set; }
+        public string showOnlyCompletedPO { get; set; }
+        public string showClosedPO { get; set; }
+        public string showOnlyActivePO { get; set; }
         public IList<PORegisterDetail>? PORegisterDetails { get; set; }
     }
 
