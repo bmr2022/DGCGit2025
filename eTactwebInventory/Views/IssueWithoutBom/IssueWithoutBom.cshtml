@@ -328,7 +328,7 @@
                                 <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
                                     <label asp-for="RecDept" class="form-label" style="color:red">Rec Dep Code*</label>
                                     <input asp-for="RecDepCode" type="hidden" />
-                                    <p class="form-control">@Model.RecDept</p>
+                                    <input asp-for="RecDept" />
                                 </div>
                                 <div class="col-auto">
                                     <label asp-for="RecByEmpCode" class="form-label" style="color:red">Rec By Emp*</label>
@@ -1247,7 +1247,10 @@ function submitForm(shouldPrint, printWindow) {
                         var obj = $.parseJSON(data);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var deptId = obj.Result.Table[0].FromDepartmentId;
+                            var DeptName = obj.Result.Table[0].DeptName;
                             $('#IssuedByDepCode').val(deptId).trigger('change');
+                            $('#RecDepCode').val(deptId);
+                            $('#RecDept').val(DeptName);
                             // $('#IssuedByDepCode').val(obj.Result[0].FromDepartmentId);
                             // $('#IssuedByDepCode').val(obj.Result.Table[0].FromDepartmentId);
                             // $('#IssuedByDepCode').text(obj.Result.Table[0].DeptName);
@@ -1628,8 +1631,8 @@ function submitForm(shouldPrint, printWindow) {
                         $('#ReqyearCode').val($('#MainREQYearCode').val());
                         $('#ReqyearCode1').val($('#MainREQYearCode').val());
                         $('#ReqDate').val($('#MainREQDate').val());
-                        $('#RecDepCode').val($('#MainReqDeptID').val());
-                        $('#RecDept').val($('#MainReqDept').val());
+                        // $('#RecDepCode').val($('#MainReqDeptID').val());
+                        // $('#RecDept').val($('#MainReqDept').val());
 
                         //$('#IssueDate').val($('#IssuedDateMemory').val());
                         //$('#MachineCode').val($('#MachineCodeMemory').val());

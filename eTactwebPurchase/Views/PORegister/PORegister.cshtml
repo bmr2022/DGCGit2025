@@ -110,7 +110,64 @@
                                     <input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
                                 </div>
                                 <div class=" d-flex justify-content-center mt-3" width="inherit">
+                                    <div class="p-3 border rounded me-3" style="min-width: 220px;">
+                                        <label class="form-label d-block mb-2 fw-bold">Show Active PO</label>
 
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePOYes" value="Y">
+                                            <label class="form-check-label" for="showOnlyActivePOYes">Yes</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePONo" value="N">
+                                            <label class="form-check-label" for="showOnlyActivePONo">No</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showOnlyActivePO" id="showOnlyActivePOAll" value="A">
+                                            <label class="form-check-label" for="showOnlyActivePOAll">All</label>
+                                        </div>
+                                    </div>
+                                    <div class="p-3 border rounded me-3" style="min-width: 220px;">
+                                        <label class="form-label d-block mb-2 fw-bold">Show Closed PO</label>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showClosedPO" id="showClosedPOYes" value="Y">
+                                            <label class="form-check-label" for="showClosedPOYes">Yes</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showClosedPO" id="showClosedPONo" value="N">
+                                            <label class="form-check-label" for="showClosedPONo">No</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showClosedPO" id="showClosedPOAll" value="A">
+                                            <label class="form-check-label" for="showClosedPOAll">All</label>
+                                        </div>
+                                    </div>
+
+
+                                    <div class="p-3 border rounded me-3" style="min-width: 250px;">
+                                        <label class="form-label d-block mb-2 fw-bold">Show Only Completed PO</label>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPOYes" value="Y">
+                                            <label class="form-check-label" for="showOnlyCompletedPOYes">Yes</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPONo" value="N">
+                                            <label class="form-check-label" for="showOnlyCompletedPONo">No</label>
+                                        </div>
+
+                                        <div class="form-check form-check-inline">
+                                            <input class="form-check-input" type="radio" asp-for="showOnlyCompletedPO" id="showOnlyCompletedPOAll" value="A">
+                                            <label class="form-check-label" for="showOnlyCompletedPOAll">All</label>
+                                        </div>
+                                    </div>
+
+                                   
                                     <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetPORegisterData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
                                     </button>
@@ -807,11 +864,18 @@
 
 
         function GetPORegisterData() {
+            var showOnlyActivePO = $("input[name='showOnlyActivePO']:checked").val();
+            var showClosedPO = $("input[name='showClosedPO']:checked").val();
+            var showOnlyCompletedPO = $("input[name='showOnlyCompletedPO']:checked").val();
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetPORegisterData")",
                 async: false,
-                data: { FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), ReportType: $('#ReportMode').val(), Partyname: $('#PartyName').val(), partcode: $('#PartCode').val(), itemName: $('#ItemName').val(), POno: $('#PONO').val(), SchNo: $('#SchNo').val(), OrderType: $('#OrderType').val(), POFor: $('#POFor').val(), ItemType: $('#ItemType').val(), ItemGroup: $('#ItemGroup').val() },
+                data: {
+                    FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val(), ReportType: $('#ReportMode').val(), Partyname: $('#PartyName').val(), partcode: $('#PartCode').val(), itemName: $('#ItemName').val(), POno: $('#PONO').val(), SchNo: $('#SchNo').val(), OrderType: $('#OrderType').val(), POFor: $('#POFor').val(), ItemType: $('#ItemType').val(), ItemGroup: $('#ItemGroup').val(), showOnlyActivePO: showOnlyActivePO,
+                    showClosedPO: showClosedPO,
+                    showOnlyCompletedPO: showOnlyCompletedPO
+                },
                 success: function (result, status, error) {
 
                     $('#divPORegister').empty();

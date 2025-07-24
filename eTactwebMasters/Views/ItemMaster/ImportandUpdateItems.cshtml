@@ -97,7 +97,7 @@
                                     <div class="card-body overflow-auto pb-0">
                                         <div class="table-responsive" style="max-height:350px;">
                                             <table class="table table-hover table-bordered table-striped" id="selecteditemtable" border="1">
-                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead1" style="white-space:nowrap">
+                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead1" style="white-space:nowrap;position: sticky;top: 0;z-index: 10;">
                                                     <tr id="headerRow">
                                                         <th>Sr</th>
                                                         <th>Item_Code</th>
@@ -145,7 +145,7 @@
                                     <div class="card-body overflow-auto pb-0">
                                         <div class="table-responsive" style="max-height:350px;">
                                             <table class="table table-hover table-bordered table-striped" id="itemtable">
-                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap">
+                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead" style="white-space:nowrap;position: sticky;top: 0;z-index: 10;">
                                                   
                                                     <tr id="headerRow">
                                                         <th>Sr</th>
@@ -191,8 +191,10 @@
                                                         <th>ModelNo</th>
                                                         <th>YearlyConsumedQty</th>
                                                         <th>DispItemName</th>
-                                                        <th>PurchaseAccountcode</th>
-                                                        <th>SaleAccountcode</th>
+                                                        <th style="display:none">PurchaseAccountcode</th>
+                                                        <th style="display:none">SaleAccountcode</th>
+                                                        <th >PurchaseAccountName</th>
+                                                        <th>SaleAccountName</th>
                                                         <th>MinLevelDays</th>
                                                         <th>MaxLevelDays</th>
                                                         <th>DailyRequirment</th>
@@ -292,6 +294,16 @@
         </div>
     </form>
 </div>
+<div id="ajaxLoader" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background-color:rgba(255,255,255,0.7); z-index:9999; text-align:center;">
+    <div style="position:absolute; top:50%; left:50%; transform:translate(-50%, -50%);">
+        <span class="spinner-border text-primary" role="status"></span>
+        <br />
+        <span>Processing...</span>
+    </div>
+</div>
+
+<!-- In HTML -->
+<div class="spinner"></div>
 
 @section Scripts
 {
@@ -356,7 +368,11 @@
                 data: formData,
                 processData: false,
                 contentType: false,
+                     beforeSend: function () {
+            $('#ajaxLoader').show(); // ✅ Show loader
+        },
                 success: function (result) {
+                    $('#ajaxLoader').hide();
                     // Render the appropriate grid
                     if (url.includes("PreviewExcelData")) {
                         $('#divItemList1').html(result); // Grid 1
@@ -366,6 +382,7 @@
 
                 },
                 error: function (xhr) {
+                      $('#ajaxLoader').hide();
                     try {
                         var response = JSON.parse(xhr.responseText);
 
@@ -415,7 +432,7 @@
                         if (obj.Result.Table.length == 0) {
                             $("#BtnSubmit").prop("disabled", true);
                         } else {
-                            console.log(obj);
+                           // console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -455,6 +472,7 @@
         }
 
                function SubmitData(e) {
+                   e.preventDefault();
             var flag = $('#columnSelector').val(); // Get selected flag
             var RowCount = $('#divItemList tr').length;
             var RowCount2 = $('#divItemList1 tr').length;
@@ -469,7 +487,7 @@
             var file1 = fileInput1.length ? fileInput1.prop("files")[0] : null;
             var file2 = fileInput2.length ? fileInput2.prop("files")[0] : null;
 
-                   if (RowCount > 1) {
+           if (RowCount > 1) {
             RowCount = RowCount;
             divSelector = '#divItemList';
             url = "/ItemMaster/UpdateItemListdata";
@@ -578,12 +596,23 @@
                 url: url,
                 type: "POST",
                 data: dataToSend,
+                    beforeSend: function () {
+            $('#ajaxLoader').show(); // ✅ Show loader
+        },
                 success: function (data, status, xhr) {
-                  location.reload();
-
-                    console.log("success");
+                     $('#ajaxLoader').hide();
+                  if (data && (data.statusCode === 200 || data.statusCode === 202 )) {
+               window.location.href = data.RedirectUrl;
+            } else {
+           //    console.log(data);
+             //  alert(data.statusText);
+                // Show notify message if error-like StatusText is returned
+               $.notify(data.statusText ,"error");
+            }
+                //    console.log("success");
                 },
                 error: function (result, status, xhr) {
+                     $('#ajaxLoader').hide();
                     $.notify(result.responseText, "error");
                 }
             });
@@ -725,8 +754,8 @@
             var newTh = $("<th>Action</th>");
 
             let table = $("#itemtable");
-            console.log(table);
-             ;
+            //console.log(table);
+          //   ;
             TableToExcel.convert(table[0], {
                 name: `ImportItemsFile.xlsx`,
                 sheet: {

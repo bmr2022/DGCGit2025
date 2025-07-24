@@ -113,6 +113,10 @@ public class ItemMasterBLL : IItemMaster
     {
         return _ItemMasterDAL.GetItemGroupCode(GroupCode);
     }
+    public Task<ResponseResult> GetAccountCode(string AccountName)
+    {
+        return _ItemMasterDAL.GetAccountCode(AccountName);
+    }
 
     public Task<ResponseResult> GetItemCatCode(string CatCode)
     {
