@@ -50,19 +50,99 @@ namespace eTactWeb.Data.DAL
                         dataAdapter.Fill(oDataSet);
                     }
                 }
-                if (ReportType == "SUMMARY" && RatingType== "DELIVERY RATING")
+                if (ReportType == "SUMMARY" && RatingType == "DELIVERY RATING")
                 {
-                    // Check if data exists and map it to the model
+
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
+                        resultList.VendoreRatingAnalysisReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                                      select new VendoreRatingAnalysisReportModel
+                                                                      {
+                                                                          CustomerName = row["VendorName"] != DBNull.Value ? row["VendorName"].ToString() : string.Empty,
+
+                                                                          DeliveryRating = row["AvgDeliveryRating"] != DBNull.Value ? Convert.ToDecimal(row["AvgDeliveryRating"]) : 0,
+                                                                          AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
+
+                                                                      }).ToList();
+                    }
+                }
+                else if (ReportType == "SUMMARY"&& RatingType == "QUALITY RATING")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.VendoreRatingAnalysisReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                                      select new VendoreRatingAnalysisReportModel
+                                                                      {
+                                                                          CustomerName = row["VendorName"] != DBNull.Value ? row["VendorName"].ToString() : string.Empty,
+                                                                          QualityPercent = row["QualityPercent"] != DBNull.Value ? Convert.ToDecimal(row["QualityPercent"]) : 0m,
+                                                                          QualityRating = row["QualityRating"] != DBNull.Value ? Convert.ToDecimal(row["QualityRating"]) : 0m,
+                                                                          AccountCode = row["AccountCode"] != DBNull.Value ? Convert.ToInt32(row["AccountCode"]) : 0,
+
+                                                                      }).ToList();
+                    }
+                }
+                else if (ReportType == "DETAIL"&& RatingType == "QUALITY RATING")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.VendoreRatingAnalysisReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                                      select new VendoreRatingAnalysisReportModel
+                                                                      {
+                                                                          CustomerName = row["VendorName"] != DBNull.Value ? row["VendorName"].ToString() : string.Empty,
+                                                                          PartCode = row["PartCode"] != DBNull.Value ? row["PartCode"].ToString() : string.Empty,
+                                                                          ItemName = row["ItemName"] != DBNull.Value ? row["ItemName"].ToString() : string.Empty,
+                                                                          PONO = row["PONO"] != DBNull.Value ? row["PONO"].ToString() : string.Empty,
+                                                                          SchNo = row["SchNo"] != DBNull.Value ? row["SchNo"].ToString() : string.Empty,
+                                                                          POQty = row["POQty"] != DBNull.Value ? Convert.ToDecimal(row["POQty"]) : 0,
+                                                                          BillQty = row["BillQty"] != DBNull.Value ? Convert.ToDecimal(row["BillQty"]) : 0,
+                                                                          RecQty = row["RecQty"] != DBNull.Value ? Convert.ToDecimal(row["RecQty"]) : 0,
+                                                                          RejectedQty = row["RejectedQty"] != DBNull.Value ? Convert.ToDecimal(row["RejectedQty"]) : 0,
+                                                                          ReWorkQty = row["ReWorkQty"] != DBNull.Value ? Convert.ToDecimal(row["ReWorkQty"]) : 0,
+                                                                          QualityRating = row["QualityRating"] != DBNull.Value ? Convert.ToDecimal(row["QualityRating"]) : 0,
+                                                                          //AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
+
+
+                                                                      }).ToList();
+                    }
+                }
+
+                else if (RatingType == "PRICE RATING")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.VendoreRatingAnalysisReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                                      select new VendoreRatingAnalysisReportModel
+                                                                      {
+                                                                          CustomerName = row["VendorName"] != DBNull.Value ? row["VendorName"].ToString() : string.Empty,
+                                                                          PartCode = row["PartCode"] != DBNull.Value ? row["PartCode"].ToString() : string.Empty,
+                                                                          ItemName = row["ItemName"] != DBNull.Value ? row["ItemName"].ToString() : string.Empty,
+                                                                          VendorRate = row["VendorRate"] != DBNull.Value ? Convert.ToDecimal(row["VendorRate"]) : 0,
+                                                                          MinPORate = row["MinPORate"] != DBNull.Value ? Convert.ToDecimal(row["MinPORate"]) : 0,
+                                                                          MaxPORate = row["MaxPORate"] != DBNull.Value ? Convert.ToDecimal(row["MaxPORate"]) : 0,
+                                                                          PriceRating = row["PriceRating"] != DBNull.Value ? Convert.ToDecimal(row["PriceRating"]) : 0,
+
+                                                                      }).ToList();
+                    }
+                }
+                
+                else if (ReportType == "DETAIL" && RatingType == "DELIVERY RATING")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+
+
                         resultList.VendoreRatingAnalysisReportGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                                select new VendoreRatingAnalysisReportModel
                                                                {
                                                                    CustomerName = row["VendorName"] != DBNull.Value ? row["VendorName"].ToString() : string.Empty,
-
+                                                                   PartCode = row["PartCode"] != DBNull.Value ? row["PartCode"].ToString() : string.Empty,
+                                                                   ItemName = row["ItemName"] != DBNull.Value ? row["ItemName"].ToString() : string.Empty,
+                                                                   POQty = row["POQty"] != DBNull.Value ? Convert.ToDecimal(row["POQty"]) : 0,
+                                                                   GateQty = row["GateQty"] != DBNull.Value ? Convert.ToDecimal(row["GateQty"]) : 0,
                                                                    DeliveryRating = row["AvgDeliveryRating"] != DBNull.Value ? Convert.ToDecimal(row["AvgDeliveryRating"]) : 0,
+                                                                   ItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                                                                    AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
-                                                                   
+                                                                 
                                                                }).ToList();
                     }
                 }

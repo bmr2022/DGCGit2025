@@ -43,9 +43,21 @@ public class ItemMasterBLL : IItemMaster
     {
         return await _ItemMasterDAL.GetItemGroup(ItemServAssets);
     }
-	public async Task<ResponseResult> GetUnitList()
+    public async Task<ResponseResult> GetStoreCode(string StoreName)
+    {
+        return await _ItemMasterDAL.GetStoreCode(StoreName);
+    }
+    public async Task<ResponseResult> GetUnitList()
 	{
 		return await _ItemMasterDAL.GetUnitList();
+	}
+    public async Task<ResponseResult> GetStoreList()
+	{
+		return await _ItemMasterDAL.GetStoreList();
+	}
+    public async Task<ResponseResult> GetWorkCenterList()
+	{
+		return await _ItemMasterDAL.GetWorkCenterList();
 	}
 	public async Task<ResponseResult> GetProdInWorkcenter()
     {
@@ -91,11 +103,19 @@ public class ItemMasterBLL : IItemMaster
     public async Task<ResponseResult> UpdateMultipleItemData(DataTable ItemDetailGrid)
     {
         return await _ItemMasterDAL.UpdateMultipleItemData(ItemDetailGrid);
+    }  
+    public async Task<ResponseResult> UpdateSelectedItemData(DataTable ItemDetailGrid,string flag)
+    {
+        return await _ItemMasterDAL.UpdateSelectedItemData(ItemDetailGrid,flag);
     }
 
     public Task<ResponseResult> GetItemGroupCode(string GroupCode)
     {
         return _ItemMasterDAL.GetItemGroupCode(GroupCode);
+    }
+    public Task<ResponseResult> GetAccountCode(string AccountName)
+    {
+        return _ItemMasterDAL.GetAccountCode(AccountName);
     }
 
     public Task<ResponseResult> GetItemCatCode(string CatCode)

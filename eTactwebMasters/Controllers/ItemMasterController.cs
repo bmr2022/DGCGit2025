@@ -21,6 +21,8 @@ using System.Data;
 using System.Linq;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.IO.Packaging;
+using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Threading.Tasks;
 
 namespace eTactWeb.Controllers;
 
@@ -163,10 +165,10 @@ public class ItemMasterController : Controller
             "ItemMasterReport.xlsx"
         );
     }
-    public IActionResult ExportSelectedItemToExcel(String flag)
+    public IActionResult ExportSelectedItemToExcel(string flag)
     {
         string modelListJson = HttpContext.Session.GetString("KeyItemListSearch");
-
+            
         List<ItemMasterModel> modelList = new List<ItemMasterModel>();
         if (!string.IsNullOrEmpty(modelListJson))
         {
@@ -176,10 +178,101 @@ public class ItemMasterController : Controller
         using var workbook = new XLWorkbook();
         var worksheet = workbook.Worksheets.Add("Item Master");
 
-        // Choose export method based on 'showAll'
-        if (flag== "HSNCODE")
+        int row = 1;
+        int col = 1;
+
+        // Common headers
+        worksheet.Cell(row, col++).Value = "Sr";
+        worksheet.Cell(row, col++).Value = "Item_Code";
+        worksheet.Cell(row, col++).Value = "PartCode";
+        worksheet.Cell(row, col++).Value = "Item_Name";
+
+        // Add selected column(s)
+        if (flag == "hsncode")
         {
-            EXPORT_HSNGrid(worksheet, modelList);
+            worksheet.Cell(row, col).Value = "HSNCODE";
+        }
+        else if (flag == "price")
+        {
+            worksheet.Cell(row, col++).Value = "SalePrice";
+            worksheet.Cell(row, col++).Value = "PurchasePrice";
+            worksheet.Cell(row, col).Value = "CostPrice";
+        }
+        else if (flag == "store")
+        {
+            worksheet.Cell(row, col++).Value = "StoreName";
+        }
+        else if (flag == "workcenter")
+        {
+            worksheet.Cell(row, col++).Value = "WorkCenter";
+        }
+        else if (flag == "minmaxlevel")
+        {
+            worksheet.Cell(row, col++).Value = "MaximumLevel";
+            worksheet.Cell(row, col).Value = "MinimumLevel";
+        }
+        else
+        {
+            // If flag is empty or unrecognized, export all additional columns
+            worksheet.Cell(row, col++).Value = "HSNCODE";
+            worksheet.Cell(row, col++).Value = "WorkCenter";
+            worksheet.Cell(row, col++).Value = "WorkCenterId";
+            worksheet.Cell(row, col++).Value = "Store";
+            worksheet.Cell(row, col++).Value = "SalePrice";
+            worksheet.Cell(row, col++).Value = "PurchasePrice";
+            worksheet.Cell(row, col++).Value = "CostPrice";
+            worksheet.Cell(row, col++).Value = "MaximumLevel";
+            worksheet.Cell(row, col).Value = "MinimumLevel";
+        }
+
+        // Write data rows
+        for (int i = 0; i < modelList.Count; i++)
+        {
+            int r = i + 2;
+            int c = 1;
+
+            worksheet.Cell(r, c++).Value = i + 1;
+            worksheet.Cell(r, c++).Value = modelList[i].Item_Code;
+            worksheet.Cell(r, c++).Value = modelList[i].PartCode;
+            worksheet.Cell(r, c++).Value = modelList[i].Item_Name;
+
+            if (flag == "hsncode")
+            {
+                worksheet.Cell(r, c).Value = modelList[i].HSNNO;
+            }
+            else if (flag == "price")
+            {
+                worksheet.Cell(r, c++).Value = modelList[i].SalePrice;
+                worksheet.Cell(r, c++).Value = modelList[i].PurchasePrice;
+                worksheet.Cell(r, c).Value = modelList[i].CostPrice;
+            }
+            else if (flag == "store")
+            {
+                worksheet.Cell(r, c).Value = modelList[i].StoreName;
+            }
+            else if (flag == "workcenter")
+            {
+                worksheet.Cell(r, c).Value = modelList[i].ProdWorkCenterDescription;
+               // worksheet.Cell(r, c).Value = modelList[i].ProdInWorkcenter;
+            }
+            else if (flag == "minmaxlevel")
+            {
+                worksheet.Cell(r, c++).Value = modelList[i].MaximumLevel;
+                worksheet.Cell(r, c).Value = modelList[i].MinimumLevel;
+            }
+            else
+            {
+                // Export all if no flag
+                worksheet.Cell(r, c++).Value = modelList[i].HSNNO;
+                worksheet.Cell(r, c++).Value = modelList[i].ProdWorkCenterDescription;
+                worksheet.Cell(r, c++).Value = modelList[i].ProdInWorkcenter;
+                worksheet.Cell(r, c++).Value = modelList[i].Store;
+                worksheet.Cell(r, c++).Value = modelList[i].SalePrice;
+                worksheet.Cell(r, c++).Value = modelList[i].PurchasePrice;
+                worksheet.Cell(r, c++).Value = modelList[i].CostPrice;
+                worksheet.Cell(r, c++).Value = modelList[i].MaximumLevel;
+                worksheet.Cell(r, c).Value = modelList[i].MinimumLevel;
+            }
         }
 
         worksheet.Columns().AdjustToContents();
@@ -194,6 +287,7 @@ public class ItemMasterController : Controller
             "ItemMasterReport.xlsx"
         );
     }
+
     private void EXPORT_HSNGrid(IXLWorksheet sheet, IList<ItemMasterModel> list)
     {
         string[] headers = {
@@ -267,98 +361,86 @@ public class ItemMasterController : Controller
     private void EXPORT_AllColumnsGrid(IXLWorksheet sheet, IList<ItemMasterModel> list)
     {
         string[] headers = {
-                "#Sr","Item_Code", "PartCode", "Item_Name", "ParentCode", "ItemGroup", "EntryDate",
-    "LastUpdatedDate", "LeadTime", "CC", "Unit", "SalePrice", "PurchasePrice",
-    "CostPrice", "WastagePercent", "WtSingleItem", "NoOfPcs", "QcReq", "TypeName",
-    "ItemType", "ImageURL", "UID", "DrawingNo", "MinimumLevel", "MaximumLevel",
-    "ReorderLevel", "YearCode", "AlternateUnit", "RackID", "BinNo", "ItemSize",
-    "Colour", "NeedPO", "StdPacking", "PackingType", "ModelNo", "YearlyConsumedQty",
-    "DispItemName","PurchaseAccountcode","SaleAccountcode","MinLevelDays","MaxLevelDays","EmpName",
-    "DailyRequirment","Stockable","WipStockable","Store","ProductLifeInus","ItemDesc","MaxWipStock",
-    "NeedSo","BomRequired","HSNNO","Universal Part Code","Universal Description","WorkCenterDescription","ProdInhouseJW","BatchNO","VoltageValue","SerialNo","OldPartCode","Package","IsCustJWAdjMandatory","CreatedByName","CreatedOn","UpdatedByName",
-            
-    "UpdatedOn","Active","JobWorkItem","ItemServAssets"
-            };
-
-
+        "#Sr", "Item_Code", "PartCode", "Item_Name", "ItemGroup", "LeadTime", "Unit", "SalePrice", "PurchasePrice",
+        "CostPrice", "WastagePercent", "WtSingleItem", "NoOfPcs", "QcReq",
+        "ItemType", "ImageURL", "DrawingNo", "MinimumLevel", "MaximumLevel",
+        "ReorderLevel", "YearCode", "AlternateUnit", "RackID", "BinNo", "ItemSize",
+        "Colour", "NeedPO", "StdPacking", "PackingType", "ModelNo", "YearlyConsumedQty",
+        "DispItemName", "PurchaseAccount", "SaleAccount", "MinLevelDays", "MaxLevelDays",
+        "DailyRequirment", "Stockable", "WipStockable", "Store", "ProductLifeInus", "ItemDesc", "MaxWipStock",
+        "NeedSo", "BomRequired", "HSNNO", "Universal Part Code", "Universal Description", "WorkCenterDescription",
+        "ProdInhouseJW", "BatchNO", "VoltageValue", "SerialNo", "OldPartCode", "Package",
+        "IsCustJWAdjMandatory", "Active", "JobWorkItem", "ItemServAssets"
+    };
 
         for (int i = 0; i < headers.Length; i++)
             sheet.Cell(1, i + 1).Value = headers[i];
 
-        int row = 2, srNo = 1;
+        int row = 2;
+        int srNo = 1;
+
         foreach (var item in list)
         {
-            sheet.Cell(row, 1).Value = srNo++;
-            sheet.Cell(row, 2).Value = item.Item_Code;
-            sheet.Cell(row, 3).Value = item.PartCode;
-            sheet.Cell(row, 4).Value = item.Item_Name;
-            sheet.Cell(row, 5).Value = item.ParentCode;
-            sheet.Cell(row, 6).Value = item.ItemGroup;
-            sheet.Cell(row, 7).Value = item.EntryDate;
-            sheet.Cell(row, 8).Value = item.LastUpdatedDate;
-            sheet.Cell(row, 9).Value = item.LeadTime;
-            sheet.Cell(row, 10).Value = item.CC;
-            sheet.Cell(row, 11).Value = item.Unit;
-            sheet.Cell(row, 12).Value = item.SalePrice;
-            sheet.Cell(row, 13).Value = item.PurchasePrice;
-            sheet.Cell(row, 14).Value = item.CostPrice;
-            sheet.Cell(row, 15).Value = item.WastagePercent;
-            sheet.Cell(row, 16).Value = item.WtSingleItem;
-            sheet.Cell(row, 17).Value = item.NoOfPcs;
-            sheet.Cell(row, 18).Value = item.QcReq;
-            sheet.Cell(row, 19).Value = item.ItemType;
-            sheet.Cell(row, 20).Value = item.TypeName;
-            sheet.Cell(row, 21).Value = item.ImageURL;
-            sheet.Cell(row, 22).Value = item.UID;
-            sheet.Cell(row, 23).Value = item.DrawingNo;
-            sheet.Cell(row, 24).Value = item.MinimumLevel;
-            sheet.Cell(row, 25).Value = item.MaximumLevel;
-            sheet.Cell(row, 26).Value = item.ReorderLevel;
-            sheet.Cell(row, 27).Value = item.YearCode;
-            sheet.Cell(row, 28).Value = item.AlternateUnit;
-            sheet.Cell(row, 29).Value = item.RackID;
-            sheet.Cell(row, 30).Value = item.BinNo;
-            sheet.Cell(row, 31).Value = item.ItemSize;
-            sheet.Cell(row, 32).Value = item.Colour;
-            sheet.Cell(row, 33).Value = item.NeedPO;
-            sheet.Cell(row, 34).Value = item.StdPacking;
-            sheet.Cell(row, 35).Value = item.PackingType;
-            sheet.Cell(row, 36).Value = item.ModelNo;
-            sheet.Cell(row, 37).Value = item.YearlyConsumedQty;
-            sheet.Cell(row, 38).Value = item.DispItemName;
-            sheet.Cell(row, 39).Value = item.PurchaseAccountcode;
-            sheet.Cell(row, 40).Value = item.SaleAccountcode;
-            sheet.Cell(row, 41).Value = item.MinLevelDays;
-            sheet.Cell(row, 42).Value = item.MaxLevelDays;
-            sheet.Cell(row, 43).Value = item.EmpName;
-            sheet.Cell(row, 44).Value = item.DailyRequirment;
-            sheet.Cell(row, 45).Value = item.Stockable;
-            sheet.Cell(row, 46).Value = item.WipStockable;
-            sheet.Cell(row, 47).Value = item.Store;
-            sheet.Cell(row, 48).Value = item.ProductLifeInus;
-            sheet.Cell(row, 49).Value = item.ItemDesc;
-            sheet.Cell(row, 50).Value = item.MaxWipStock;
-            sheet.Cell(row, 51).Value = item.NeedSo;
-            sheet.Cell(row, 52).Value = item.BomRequired;
-            sheet.Cell(row, 53).Value = item.HSNNO;
-            sheet.Cell(row, 54).Value = item.UniversalPartCode;
-            sheet.Cell(row, 55).Value = item.UniversalDescription;
-            sheet.Cell(row, 56).Value = item.ProdWorkCenterDescription;
-            sheet.Cell(row, 57).Value = item.ProdInhouseJW;
-            sheet.Cell(row, 58).Value = item.BatchNO;
-            sheet.Cell(row, 59).Value = item.VoltageVlue;
-            sheet.Cell(row, 60).Value = item.SerialNo;
-            sheet.Cell(row, 61).Value = item.OldPartCode;
-            sheet.Cell(row, 62).Value = item.Package;
-            sheet.Cell(row, 63).Value = item.IsCustJWAdjMandatory;
-            sheet.Cell(row, 64).Value = item.CreatedByName;
-            sheet.Cell(row, 65).Value = item.CreatedOn?.ToString("yyyy-MM-dd");
-            sheet.Cell(row, 66).Value = item.UpdatedByName;
-            sheet.Cell(row, 67).Value = item.UpdatedOn?.ToString("yyyy-MM-dd");
-            sheet.Cell(row, 68).Value = item.Active;
-            sheet.Cell(row, 69).Value = item.JobWorkItem;
-            sheet.Cell(row, 70).Value = item.ItemServAssets;
-
+            int col = 1;
+            sheet.Cell(row, col++).Value = srNo++;
+            sheet.Cell(row, col++).Value = item.Item_Code;
+            sheet.Cell(row, col++).Value = item.PartCode;
+            sheet.Cell(row, col++).Value = item.Item_Name;
+            sheet.Cell(row, col++).Value = item.ItemGroup;
+            sheet.Cell(row, col++).Value = item.LeadTime;
+            sheet.Cell(row, col++).Value = item.Unit;
+            sheet.Cell(row, col++).Value = item.SalePrice;
+            sheet.Cell(row, col++).Value = item.PurchasePrice;
+            sheet.Cell(row, col++).Value = item.CostPrice;
+            sheet.Cell(row, col++).Value = item.WastagePercent;
+            sheet.Cell(row, col++).Value = item.WtSingleItem;
+            sheet.Cell(row, col++).Value = item.NoOfPcs;
+            sheet.Cell(row, col++).Value = item.QcReq;
+            sheet.Cell(row, col++).Value = item.TypeName;
+            sheet.Cell(row, col++).Value = item.ImageURL;
+            sheet.Cell(row, col++).Value = item.DrawingNo;
+            sheet.Cell(row, col++).Value = item.MinimumLevel;
+            sheet.Cell(row, col++).Value = item.MaximumLevel;
+            sheet.Cell(row, col++).Value = item.ReorderLevel;
+            sheet.Cell(row, col++).Value = item.YearCode;
+            sheet.Cell(row, col++).Value = item.AlternateUnit;
+            sheet.Cell(row, col++).Value = item.RackID;
+            sheet.Cell(row, col++).Value = item.BinNo;
+            sheet.Cell(row, col++).Value = item.ItemSize;
+            sheet.Cell(row, col++).Value = item.Colour;
+            sheet.Cell(row, col++).Value = item.NeedPO;
+            sheet.Cell(row, col++).Value = item.StdPacking;
+            sheet.Cell(row, col++).Value = item.PackingType;
+            sheet.Cell(row, col++).Value = item.ModelNo;
+            sheet.Cell(row, col++).Value = item.YearlyConsumedQty;
+            sheet.Cell(row, col++).Value = item.DispItemName;
+            sheet.Cell(row, col++).Value = item.PurchaseAccountName;
+            sheet.Cell(row, col++).Value = item.SaleAccountName;
+            sheet.Cell(row, col++).Value = item.MinLevelDays;
+            sheet.Cell(row, col++).Value = item.MaxLevelDays;
+            sheet.Cell(row, col++).Value = item.DailyRequirment;
+            sheet.Cell(row, col++).Value = item.Stockable;
+            sheet.Cell(row, col++).Value = item.WipStockable;
+            sheet.Cell(row, col++).Value = item.StoreName;
+            sheet.Cell(row, col++).Value = item.ProductLifeInus;
+            sheet.Cell(row, col++).Value = item.ItemDesc;
+            sheet.Cell(row, col++).Value = item.MaxWipStock;
+            sheet.Cell(row, col++).Value = item.NeedSo;
+            sheet.Cell(row, col++).Value = item.BomRequired;
+            sheet.Cell(row, col++).Value = item.HSNNO;
+            sheet.Cell(row, col++).Value = item.UniversalPartCode;
+            sheet.Cell(row, col++).Value = item.UniversalDescription;
+            sheet.Cell(row, col++).Value = item.ProdWorkCenterDescription;
+            sheet.Cell(row, col++).Value = item.ProdInhouseJW;
+            sheet.Cell(row, col++).Value = item.BatchNO;
+            sheet.Cell(row, col++).Value = item.VoltageVlue;
+            sheet.Cell(row, col++).Value = item.SerialNo;
+            sheet.Cell(row, col++).Value = item.OldPartCode;
+            sheet.Cell(row, col++).Value = item.Package;
+            sheet.Cell(row, col++).Value = item.IsCustJWAdjMandatory;
+            sheet.Cell(row, col++).Value = item.Active;
+            sheet.Cell(row, col++).Value = item.JobWorkItem;
+            sheet.Cell(row, col++).Value = item.ItemServAssets;
 
             row++;
         }
@@ -719,7 +801,7 @@ public class ItemMasterController : Controller
      string? Flag = "")
     {
         var model = new ItemMasterModel();
-       
+        model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
         model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HSNNO, UniversalPartCode, Flag);
 
@@ -730,37 +812,72 @@ public class ItemMasterController : Controller
 
 
     [HttpPost]
-    public IActionResult UpdateUploadExcel(IFormFile excelFile)
+    public async Task<IActionResult> UpdateUploadExcel(IFormFile excelFile)
     {
         try
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             List<ImportItemViewModel> data = new List<ImportItemViewModel>();
+            var errors = new List<string>(); // collect errors
 
             using (var stream = excelFile.OpenReadStream())
             using (var package = new ExcelPackage(stream))
             {
                 var worksheet = package.Workbook.Worksheets[0];
+                var totalColumns = worksheet.Dimension.Columns;
+                var headersMap = new Dictionary<string, int>();
+
+                for (int col = 1; col <= totalColumns; col++)
+                {
+                    var header = worksheet.Cells[1, col].Text?.Trim();
+                    if (!string.IsNullOrEmpty(header) && !headersMap.ContainsKey(header))
+                        headersMap[header] = col;
+                }
                 var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
                 var UnitList = _IItemMaster.GetUnitList();
-
+                
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
-                    var cellValue = worksheet.Cells[row, 2].Value;
-                    if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
-                        break;
+                    //var cellValue = worksheet.Cells[row, 2].Value;
+                    //if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
+                    //    break;
+                    var partCode = worksheet.Cells[row, headersMap["PartCode"]].Text?.Trim();
+                    var ItemName = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim();
+                    if (string.IsNullOrWhiteSpace(partCode)) break;
+                    var itemGroup = worksheet.Cells[row, headersMap["ItemGroup"]].Text?.Trim();
+                    var itemType = worksheet.Cells[row, headersMap["ItemType"]].Text?.Trim();
+                    var workCenter = worksheet.Cells[row, headersMap["WorkCenterDescription"]].Text?.Trim();
+                    var unit = worksheet.Cells[row, headersMap["Unit"]].Text?.Trim();
+                    var Store = worksheet.Cells[row, headersMap["Store"]].Text?.Trim();
 
-                    var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 6].Value?.ToString());
-                    var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 20].Value?.ToString());
-                    var WorkCenterId = _IItemMaster.GetWorkCenterId(worksheet.Cells[row, 56].Value?.ToString());
+                    var PurchaseAccount = worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim();
+                    var SaleAccount = worksheet.Cells[row, headersMap["SaleAccount"]].Text?.Trim();
+                 
+                    var duplicatePartCode = _IDataLogic.isDuplicate(partCode, "PartCode", "Item_Master");
+                    var duplicateItemName = _IDataLogic.isDuplicate(ItemName, "Item_Name", "Item_Master");
 
-                    var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 3].Value?.ToString(), "PartCode", "Item_Master");
-                    var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 4].Value?.ToString(), "Item_Name", "Item_Master");
-
+                    var itemPurchaseAccountCode = _IItemMaster.GetAccountCode(PurchaseAccount);
+                    var itemSaleAccountCode = _IItemMaster.GetAccountCode(SaleAccount);
+                    var itemGroupCode = _IItemMaster.GetItemGroupCode(itemGroup);
+                    var itemCatCode = _IItemMaster.GetItemCatCode(itemType);
+                    var WorkCenterId = _IItemMaster.GetWorkCenterId(workCenter);
+                    var StoreIdResult = _IItemMaster.GetStoreCode(Store);
                     var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
-                    var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
+                    var ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : (Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N");
+                    var ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim();
 
-                    var unit = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
+                    var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
+
+                    if (!validItemServAssetsOptions.Contains(ItemServAssets, StringComparer.OrdinalIgnoreCase))
+                    {
+                        errors.Add($"Invalid ItemServAssets: {ItemServAssets} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+                    }
+
+
+                    var ItemGroupList = _IItemMaster.GetItemGroup(ItemServAssets);
+                    var ItemCategoryList = _IItemMaster.GetItemCategory(ItemServAssets);
+                    
                     var unitdataset = UnitList.Result.Result;
                     var unitTable = unitdataset.Tables[0];
 
@@ -775,18 +892,69 @@ public class ItemMasterController : Controller
                     }
                     if (!unitExists)
                     {
-                        return StatusCode(207, "Invalid Unit: " + unit);
+                        errors.Add($"Invalid Unit: {unit} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+                      
+                    } 
+
+                    var Groupdataset = ItemGroupList.Result.Result;
+                    var GroupTable = Groupdataset.Tables[0];
+
+                    bool GroupExists = false;
+                    foreach (DataRow rows in GroupTable.Rows)
+                    {
+                        if (rows["Group_name"].ToString().Trim().Equals(itemGroup, StringComparison.OrdinalIgnoreCase))
+                        {
+                            GroupExists = true;
+                            break;
+                        }
                     }
+                    if (!GroupExists)
+                    {
+                        errors.Add($"Invalid ItemGroup: {itemGroup} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+                    }
+                    var Categorydataset = ItemCategoryList.Result.Result;
+                    var CategoryTable = Categorydataset.Tables[0];
+
+                    bool CategoryExists = false;
+                    foreach (DataRow rows in CategoryTable.Rows)
+                    {
+                        if (rows["Type_Item"].ToString().Trim().Equals(itemType, StringComparison.OrdinalIgnoreCase))
+                        {
+                            CategoryExists = true;
+                            break;
+                        }
+                    }
+                    if (!CategoryExists)
+                    {
+                        errors.Add($"Invalid ItemType: {itemType} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+                      
+                    }
+                    
+
+
 
                     ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
                     int itemGCode = 1;
                     int itemCCode = 1;
                     int itemWorkCenterId = 0;
-
+                    int itemStoreId = 0;
+                    int itemPurchaseAccCode = 0;
+                    int itemSaleAccCode = 0;
                     if (itemGroupCode.Result.Result != null && itemGroupCode.Result.Result.Rows.Count > 0)
                     {
                         itemGCode = (int)itemGroupCode.Result.Result.Rows[0].ItemArray[0];
+                    }
+                      if (itemPurchaseAccountCode.Result.Result != null && itemPurchaseAccountCode.Result.Result.Rows.Count > 0)
+                    {
+                        itemPurchaseAccCode = (int)itemPurchaseAccountCode.Result.Result.Rows[0].ItemArray[0];
+                    }
+                      if (itemSaleAccountCode.Result.Result != null && itemSaleAccountCode.Result.Result.Rows.Count > 0)
+                    {
+                        itemSaleAccCode = (int)itemSaleAccountCode.Result.Result.Rows[0].ItemArray[0];
                     }
 
                     if (itemCatCode.Result.Result != null && itemCatCode.Result.Result.Rows.Count > 0)
@@ -797,91 +965,230 @@ public class ItemMasterController : Controller
                     if (WorkCenterId.Result.Result != null && WorkCenterId.Result.Result.Rows.Count > 0)
                     {
                         itemWorkCenterId = (int)WorkCenterId.Result.Result.Rows[0].ItemArray[0];
+                    }   
+                    if (StoreIdResult.Result.Result != null && StoreIdResult.Result.Result.Rows.Count > 0)
+                    {
+                        itemStoreId = (int)StoreIdResult.Result.Result.Rows[0].ItemArray[0];
+                    }
+                   
+                  
+                    bool WorkcenterExists = false;
+                    
+                    if (!string.IsNullOrWhiteSpace(workCenter))
+                    {
+                        var WorkCenterList = _IItemMaster.GetWorkCenterList();
+                        var WorkCenterdataset = WorkCenterList.Result.Result;
+                        var WorkCenterTable = WorkCenterdataset.Tables[0];
+
+                        foreach (DataRow rows in WorkCenterTable.Rows)
+                        {
+                            if (rows["WorkCenterDescription"].ToString().Trim().Equals(workCenter, StringComparison.OrdinalIgnoreCase))
+                            {
+                                WorkcenterExists = true;
+                                break;
+                            }
+                        }
+
+                        if (!WorkcenterExists)
+                        {
+                            errors.Add($"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+
+                    bool PurchaseAccountNameExists = false;
+
+                    if (!string.IsNullOrWhiteSpace(PurchaseAccount))
+                    {
+                        
+                        var purchaseAccountList =await  _IDataLogic.GetDropDownList("Account_Head_Master_PA", "SP_GetDropDownList");
+
+                        foreach (var item in purchaseAccountList)
+                        {
+                            if (item.Text.Trim().Equals(PurchaseAccount, StringComparison.OrdinalIgnoreCase))
+                            {
+                                PurchaseAccountNameExists = true;
+                                break;
+                            }
+                        }
+
+                        if (!PurchaseAccountNameExists)
+                        {
+                            errors.Add($"Invalid PurchaseAccount: {PurchaseAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid PurchaseAccountCode: {PurchaseAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+
+
+                    bool SaleAccountNameExists = false;
+
+                    if (!string.IsNullOrWhiteSpace(SaleAccount))
+                    {
+                        var SaleAccountNameList =await  _IDataLogic.GetDropDownList("Account_Head_Master_SA", "SP_GetDropDownList");
+                      
+                        foreach (var item in SaleAccountNameList)
+                        {
+                            if (item.Text.Trim().Equals(SaleAccount, StringComparison.OrdinalIgnoreCase))
+                            {
+                                SaleAccountNameExists = true;
+                                break;
+                            }
+                          
+                        }
+
+                        if (!SaleAccountNameExists)
+                        {
+                            errors.Add($"Invalid SaleAccountCode: {SaleAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                          //  return StatusCode(207, $"Invalid SaleAccountName: {SaleAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+
+
+                    bool StoreExists = false;
+                    if (!string.IsNullOrWhiteSpace(Store))
+                    {
+                        var StoreList = _IItemMaster.GetStoreList();
+                        var Storedataset = StoreList.Result.Result;
+                        var StoreTable = Storedataset.Tables[0];
+                        foreach (DataRow rows in StoreTable.Rows)
+                        {
+                            if (rows["Store_Name"].ToString().Trim().Equals(Store, StringComparison.OrdinalIgnoreCase))
+                            {
+                                StoreExists = true;
+                                break;
+                            }
+                        }
+
+
+                        if (!StoreExists)
+                        {
+                            errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                          //  return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+
+                        }
+
+                    }
+
+                    decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0);
+                    decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
+                    decimal reorderLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["ReorderLevel"]].Value ?? 0);
+
+                    if (maxLevel != 0)
+                    {
+                        if (minLevel != 0 && minLevel > maxLevel)
+                        {
+                            errors.Add($"Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel}).");
+                            continue;
+                            //return StatusCode(207, $"Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel}).");
+                        }
+
+                        if (reorderLevel != 0)
+                        {
+                            if ((minLevel != 0 && reorderLevel < minLevel) || reorderLevel > maxLevel)
+                            {
+                                errors.Add($"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between {(minLevel != 0 ? minLevel : 0)} and {maxLevel}.");
+                                continue;
+                              //  return StatusCode(207, $"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between {(minLevel != 0 ? minLevel : 0)} and {maxLevel}.");
+                            }
+                        }
+                    }
+                    string batchNO = worksheet.Cells[row, headersMap["BatchNO"]].Text?.Trim();
+
+                    if (!string.IsNullOrWhiteSpace(batchNO))
+                    {
+                        var validBatchOptions = new List<string> { "MRNWISE", "NOOFCase", "ForEachQty" };
+
+                        if (!validBatchOptions.Contains(batchNO, StringComparer.OrdinalIgnoreCase))
+                        {
+                            errors.Add($"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
+                            continue;
+                         //   return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
+                        }
                     }
 
                     data.Add(new ImportItemViewModel
                     {
-                        Item_Code = Convert.ToInt32(worksheet.Cells[row, 2].Value), // B
-                        PartCode = worksheet.Cells[row, 3].Value?.ToString(),       // C
-                        Item_Name = worksheet.Cells[row, 4].Value?.ToString(),      // D
-                        ParentCode = worksheet.Cells[row, 5].Value?.ToString(),     // E
-                        ItemGroup = worksheet.Cells[row, 6].Value?.ToString(),      // F
-                        EntryDate = worksheet.Cells[row, 7].Value?.ToString(),      // G
-                        LastUpdatedDate = worksheet.Cells[row, 8].Value?.ToString(),// H
-                        LeadTime = Convert.ToInt32(worksheet.Cells[row, 9].Value?.ToString()),       // I
-                        CC = worksheet.Cells[row, 10].Value?.ToString(),            // J
-                        Unit = worksheet.Cells[row, 11].Value?.ToString(),          // K
-                        SalePrice = Convert.ToInt32(worksheet.Cells[row, 12].Value?.ToString()),     // L
-                        PurchasePrice = Convert.ToInt32(worksheet.Cells[row, 13].Value?.ToString()), // M
-                        CostPrice = Convert.ToInt32(worksheet.Cells[row, 14].Value?.ToString()),     // N
-                        WastagePercent = Convert.ToInt32(worksheet.Cells[row, 15].Value?.ToString()),// O
-                        WtSingleItem = Convert.ToDecimal(worksheet.Cells[row, 16].Value?.ToString()),  // P
-                        NoOfPcs =Convert.ToInt32 (worksheet.Cells[row, 17].Value?.ToString()),       // Q
-                        QcReq = worksheet.Cells[row, 18].Value?.ToString(),         // R
-                        TypeName = worksheet.Cells[row, 19].Value?.ToString(),      // S
-                        ItemType = worksheet.Cells[row, 20].Value?.ToString(),      // T
-                        ImageURL = worksheet.Cells[row, 21].Value?.ToString(),      // U
-                        UID = worksheet.Cells[row, 22].Value?.ToString(),           // V
-                        DrawingNo = worksheet.Cells[row, 23].Value?.ToString(),     // W
-                        MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 24].Value ?? 0), // X
-                        MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 25].Value ?? 0), // Y
-                        ReorderLevel = Convert.ToDecimal(worksheet.Cells[row, 26].Value ?? 0), // Z
-                        YearCode = worksheet.Cells[row, 27].Value?.ToString(),      // AA
-                        AlternateUnit = worksheet.Cells[row, 28].Value?.ToString(), // AB
-                        RackID = worksheet.Cells[row, 29].Value?.ToString(),        // AC
-                        BinNo = worksheet.Cells[row, 30].Value?.ToString(),         // AD
-                        ItemSize = worksheet.Cells[row, 31].Value?.ToString(),      // AE
-                        Colour = worksheet.Cells[row, 32].Value?.ToString(),        // AF
-                        NeedPO = worksheet.Cells[row, 33].Value?.ToString(),        // AG
-                        StdPacking = Convert.ToInt32(worksheet.Cells[row, 34].Value ?? 0), // AH
-                        PackingType = worksheet.Cells[row, 35].Value?.ToString(),   // AI
-                        ModelNo = worksheet.Cells[row, 36].Value?.ToString(),       // AJ
-                        YearlyConsumedQty = Convert.ToInt32(worksheet.Cells[row, 37].Value ?? 0), // AK
-                        DispItemName = worksheet.Cells[row, 38].Value?.ToString(),  // AL
-                        PurchaseAccountcode = worksheet.Cells[row, 39].Value?.ToString(), // AM
-                        SaleAccountcode = worksheet.Cells[row, 40].Value?.ToString(), // AN
-                        MinLevelDays = Convert.ToInt32(worksheet.Cells[row, 41].Value ?? 0), // AO
-                        MaxLevelDays = Convert.ToInt32(worksheet.Cells[row, 42].Value ?? 0), // AP
-                        EmpName = worksheet.Cells[row, 43].Value?.ToString(),       // AQ
-                        DailyRequirment = Convert.ToInt32(worksheet.Cells[row, 44].Value ?? 0), // AR
-                        Stockable = worksheet.Cells[row, 45].Value?.ToString(),     // AS
-                        WipStockable = worksheet.Cells[row, 46].Value?.ToString(),  // AT
-                        Store = worksheet.Cells[row, 47].Value?.ToString(),         // AU
-                        ProductLifeInus = worksheet.Cells[row, 48].Value?.ToString(), // AV
-                        ItemDesc = worksheet.Cells[row, 49].Value?.ToString(),      // AW
-                        MaxWipStock = Convert.ToInt32(worksheet.Cells[row, 50].Value ?? 0), // AX
-                        NeedSo = worksheet.Cells[row, 51].Value?.ToString(),        // AY
-                        BomRequired = worksheet.Cells[row, 52].Value?.ToString(),   // AZ
-                        HSNNO = Convert.ToInt32(worksheet.Cells[row, 53].Value ?? 0), // BA
-                        UniversalPartCode = worksheet.Cells[row, 54].Value?.ToString(), // BB
-                        UniversalDescription = worksheet.Cells[row, 55].Value?.ToString(), // BC
-                        WorkCenter = worksheet.Cells[row, 56].Value?.ToString(),    // BD
-                        ProdInhouseJW = worksheet.Cells[row, 57].Value?.ToString(), // BE
-                        BatchNO = worksheet.Cells[row, 58].Value?.ToString(),       // BF
-                        VoltageVlue = worksheet.Cells[row, 59].Value?.ToString(),   // BG
-                        SerialNo = worksheet.Cells[row, 60].Value?.ToString(),      // BH
-                        OldPartCode = worksheet.Cells[row, 61].Value?.ToString(),   // BI
-                        Package = worksheet.Cells[row, 62].Value?.ToString(),       // BJ
-                        IsCustJWAdjMandatory = worksheet.Cells[row, 63].Value?.ToString(), // BK
-                        CreatedByName = worksheet.Cells[row, 64].Value?.ToString(), // BL
-                        CreatedOn = DateTime.TryParse(worksheet.Cells[row, 65].Value?.ToString(), out var createdOn) ? createdOn : (DateTime?)null, // BM
-                        UpdatedByName = worksheet.Cells[row, 66].Value?.ToString(), // BN
-                        UpdatedOn = DateTime.TryParse(worksheet.Cells[row, 67].Value?.ToString(), out var updatedOn) ? updatedOn : (DateTime?)null, // BO
-                        Active = worksheet.Cells[row, 68].Value?.ToString(),        // BP
-                        JobWorkItem = worksheet.Cells[row, 69].Value?.ToString(),   // BQ
-                        ItemServAssets = worksheet.Cells[row, 70].Value?.ToString(),// BR
-
-                        // Additional logic fields
+                        Item_Code = Convert.ToInt32(worksheet.Cells[row, headersMap["Item_Code"]].Value ?? 0),
+                        PartCode = partCode,
+                        Item_Name = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim(),
+                        ItemGroup = itemGroup,
+                        ItemType = itemType,
+                        TypeName= itemType,
+                        Unit = unit,
+                        SalePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["SalePrice"]].Value ?? 0),
+                        PurchasePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["PurchasePrice"]].Value ?? 0),
+                        CostPrice = Convert.ToInt32(worksheet.Cells[row, headersMap["CostPrice"]].Value ?? 0),
+                        HSNNO = Convert.ToInt32(worksheet.Cells[row, headersMap["HSNNO"]].Value ?? 0),
+                        StoreName = worksheet.Cells[row, headersMap.ContainsKey("Store") ? headersMap["Store"] : headersMap["StoreName"]].Text?.Trim(),
+                        Package = worksheet.Cells[row, headersMap["Package"]].Text?.Trim(),
+                        VoltageVlue = worksheet.Cells[row, headersMap["VoltageValue"]].Text?.Trim(),
+                        SerialNo = worksheet.Cells[row, headersMap["SerialNo"]].Text?.Trim(),
+                        OldPartCode = worksheet.Cells[row, headersMap["OldPartCode"]].Text?.Trim(),
                         ItemGroupCode = itemGCode,
                         ItemCategoryCode = itemCCode,
                         ProdInWorkcenter = itemWorkCenterId,
+                        PurchaseAccountcode = itemPurchaseAccCode.ToString(),
+                        SaleAccountcode = itemSaleAccCode.ToString(),
+                        Store = itemStoreId.ToString(),
                         PartCodeExists = PartCodeExists,
                         ItemNameExists = ItemNameExists,
+                        LeadTime = Convert.ToInt32(worksheet.Cells[row, headersMap["LeadTime"]].Value ?? 0),
+                        WastagePercent = Convert.ToInt32(worksheet.Cells[row, headersMap["WastagePercent"]].Value ?? 0),
+                        WtSingleItem = Convert.ToDecimal(worksheet.Cells[row, headersMap["WtSingleItem"]].Value ?? 0),
+                        NoOfPcs = Convert.ToInt32(worksheet.Cells[row, headersMap["NoOfPcs"]].Value ?? 0),
+                        QcReq = worksheet.Cells[row, headersMap["QcReq"]].Text?.Trim(),
+                        ImageURL = worksheet.Cells[row, headersMap["ImageURL"]].Text?.Trim(),
+                        DrawingNo = worksheet.Cells[row, headersMap["DrawingNo"]].Text?.Trim(),
+                        MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0),
+                        MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0),
+                        ReorderLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["ReorderLevel"]].Value ?? 0),
+                        YearCode = worksheet.Cells[row, headersMap["YearCode"]].Text?.Trim(),
+                        AlternateUnit = worksheet.Cells[row, headersMap["AlternateUnit"]].Text?.Trim(),
+                        RackID = worksheet.Cells[row, headersMap["RackID"]].Text?.Trim(),
+                        BinNo = worksheet.Cells[row, headersMap["BinNo"]].Text?.Trim(),
+                        ItemSize = worksheet.Cells[row, headersMap["ItemSize"]].Text?.Trim(),
+                        Colour = worksheet.Cells[row, headersMap["Colour"]].Text?.Trim(),
+                        NeedPO = worksheet.Cells[row, headersMap["NeedPO"]].Text?.Trim(),
+                        StdPacking = Convert.ToInt32(worksheet.Cells[row, headersMap["StdPacking"]].Value ?? 0),
+                        PackingType = worksheet.Cells[row, headersMap["PackingType"]].Text?.Trim(),
+                        ModelNo = worksheet.Cells[row, headersMap["ModelNo"]].Text?.Trim(),
+                        YearlyConsumedQty = Convert.ToInt32(worksheet.Cells[row, headersMap["YearlyConsumedQty"]].Value ?? 0),
+                        DispItemName = worksheet.Cells[row, headersMap["DispItemName"]].Text?.Trim(),
+                        PurchaseAccountName= worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim(),
+                        SaleAccountName = worksheet.Cells[row, headersMap["SaleAccount"]].Text?.Trim(),
+                        MinLevelDays = Convert.ToInt32(worksheet.Cells[row, headersMap["MinLevelDays"]].Value ?? 0),
+                        MaxLevelDays = Convert.ToInt32(worksheet.Cells[row, headersMap["MaxLevelDays"]].Value ?? 0),
+                        DailyRequirment = Convert.ToInt32(worksheet.Cells[row, headersMap["DailyRequirment"]].Value ?? 0),
+                        Stockable = worksheet.Cells[row, headersMap["Stockable"]].Text?.Trim(),
+                        WipStockable = worksheet.Cells[row, headersMap["WipStockable"]].Text?.Trim(),
+                        ProductLifeInus = worksheet.Cells[row, headersMap["ProductLifeInus"]].Text?.Trim(),
+                        ItemDesc = worksheet.Cells[row, headersMap["ItemDesc"]].Text?.Trim(),
+                        MaxWipStock = Convert.ToInt32(worksheet.Cells[row, headersMap["MaxWipStock"]].Value ?? 0),
+                        NeedSo = worksheet.Cells[row, headersMap["NeedSo"]].Text?.Trim(),
+                        BomRequired = worksheet.Cells[row, headersMap["BomRequired"]].Text?.Trim(),
+                        UniversalPartCode = worksheet.Cells[row, headersMap["Universal Part Code"]].Text?.Trim(),
+                        UniversalDescription = worksheet.Cells[row, headersMap["Universal Description"]].Text?.Trim(),
+                        WorkCenter = worksheet.Cells[row, headersMap["WorkCenterDescription"]].Text?.Trim(),
+                        ProdInhouseJW = worksheet.Cells[row, headersMap["ProdInhouseJW"]].Text?.Trim(),
+                        BatchNO = worksheet.Cells[row, headersMap["BatchNO"]].Text?.Trim(),
+                        IsCustJWAdjMandatory = worksheet.Cells[row, headersMap["IsCustJWAdjMandatory"]].Text?.Trim(),
+                        Active = worksheet.Cells[row, headersMap["Active"]].Text?.Trim(),
+                        JobWorkItem = worksheet.Cells[row, headersMap["JobWorkItem"]].Text?.Trim(),
+                        ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim(),
                         SeqNo = row - 1
                     });
 
                 }
             }
+            if (errors.Any())
+            {
+                return BadRequest(new { errors });
+            }
+
 
             var model = new ItemMasterModel
             {
@@ -895,6 +1202,169 @@ public class ItemMasterController : Controller
             return StatusCode(500, "Excel processing error: " + ex.Message);
         }
     }
+    [HttpPost]
+    public IActionResult PreviewExcelData(IFormFile excelFile, string flag)
+    {
+        ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+        var data = new List<ImportItemViewModel>();
+        var errors = new List<string>(); // collect errors
+
+        using (var stream = excelFile.OpenReadStream())
+        using (var package = new ExcelPackage(stream))
+        {
+            var worksheet = package.Workbook.Worksheets[0];
+
+            for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+            {
+                var cellValue = worksheet.Cells[row, 2].Value;
+                if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
+                    break;
+
+                var model = new ImportItemViewModel
+                {
+                    Item_Code = Convert.ToInt32(worksheet.Cells[row, 2].Value),
+                    PartCode = worksheet.Cells[row, 3].Value?.ToString(),
+                    Item_Name = worksheet.Cells[row, 4].Value?.ToString()
+                };
+                var partCode = worksheet.Cells[row, 3].Value?.ToString();
+                var ItemName = worksheet.Cells[row, 4].Value?.ToString();
+                switch (flag?.ToLower())
+                {
+                    case "hsncode":
+                        model.HSNNO = Convert.ToInt32(worksheet.Cells[row, 5].Value ?? 0);
+                        break;
+
+                    case "store":
+                        var Store = worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
+                        bool StoreExists = false;
+                        if (!string.IsNullOrWhiteSpace(Store))
+                        {
+                            var StoreList = _IItemMaster.GetStoreList();
+                            var Storedataset = StoreList.Result.Result;
+                            var StoreTable = Storedataset.Tables[0];
+
+                          
+                            foreach (DataRow rows in StoreTable.Rows)
+                            {
+                                if (rows["Store_Name"].ToString().Trim().Equals(Store, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    StoreExists = true;
+                                    break;
+                                }
+                            }
+
+
+                            if (!StoreExists)
+                            {
+                                errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                                continue;
+                            }
+                        }
+                        model.StoreName = Store;
+                        var StoreIdResult = _IItemMaster.GetStoreCode(Store);
+                        if (StoreIdResult.Result.Result.Rows.Count > 0)
+                        {
+                            model.Store = StoreIdResult.Result.Result.Rows[0].ItemArray[0]?.ToString();
+                        }
+                        break;
+
+                    case "workcenter":
+                        var WorkCenter = worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
+                        var WorkCenterList = _IItemMaster.GetWorkCenterList();
+                        bool WorkcenterExists = false;
+
+                        if (!string.IsNullOrWhiteSpace(WorkCenter))
+                        {
+                            var WorkCenterdataset = WorkCenterList.Result.Result;
+                            var WorkCenterTable = WorkCenterdataset.Tables[0];
+
+                         
+                            foreach (DataRow rows in WorkCenterTable.Rows)
+                            {
+                                if (rows["WorkCenterDescription"].ToString().Trim().Equals(WorkCenter, StringComparison.OrdinalIgnoreCase))
+                                {
+                                    WorkcenterExists = true;
+                                    break;
+                                }
+                            }
+
+                            if (!WorkcenterExists)
+                            {
+                                errors.Add($"Invalid Workcenter: {WorkCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                                continue;
+                            }
+                        }
+                        model.WorkCenter = WorkCenter;
+                        var workCenterIdResult = _IItemMaster.GetWorkCenterId(WorkCenter);
+                        if (workCenterIdResult.Result.Result.Rows.Count > 0)
+                        {
+                            model.ProdInWorkcenter = Convert.ToInt32(workCenterIdResult.Result.Result.Rows[0].ItemArray[0]);
+                        }
+                        break;
+
+                    case "price":
+                        model.SalePrice = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        model.PurchasePrice = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        model.CostPrice = Convert.ToDecimal(worksheet.Cells[row, 7].Value ?? 0);
+                        break;
+
+                    case "minmaxlevel":
+                        model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+
+                        if (maxLevel != 0)
+                        {
+                            if (minLevel != 0 && minLevel > maxLevel)
+                            {
+                                errors.Add($"Row {row}: Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel})");
+                                continue;
+                            }
+                        }
+                        break;
+                }
+
+                data.Add(model);
+            }
+        }
+
+        // ✅ Return validation errors if any
+        if (errors.Any())
+        {
+            return BadRequest(new { errors });
+        }
+
+        var masterList = data.Select(x => new ItemMasterModel
+        {
+            Item_Code = x.Item_Code,
+            PartCode = x.PartCode,
+            Item_Name = x.Item_Name,
+            HSNNO = x.HSNNO,
+            Store = x.Store,
+            StoreName = x.StoreName,
+            SalePrice = x.SalePrice,
+            PurchasePrice = x.PurchasePrice,
+            CostPrice = x.CostPrice,
+            MaximumLevel = x.MaximumLevel,
+            MinimumLevel = x.MinimumLevel,
+            ProdWorkCenterDescription = x.WorkCenter,
+            ProdInWorkcenter = x.ProdInWorkcenter
+        }).ToList();
+
+        var result = new ItemMasterModel
+        {
+            ImportExcelDataList = data,
+            MasterList = masterList
+        };
+
+        HttpContext.Session.SetString("UploadedExcelData", JsonConvert.SerializeObject(data));
+        ViewData["Flag"] = flag;
+        return PartialView("_DisplayExcelselectedItemData", result);
+    }
+
+
+
 
     [HttpPost]
     public IActionResult UploadExcel(IFormFile excelFile)
@@ -1088,6 +1558,7 @@ public class ItemMasterController : Controller
             return View("Error", ResponseResult);
         }
     }
+    [HttpPost]
     public async Task<IActionResult> UpdateItemListdata(List<ImportItemViewModel> model)
     {
         try
@@ -1149,6 +1620,107 @@ public class ItemMasterController : Controller
             ItemGridList = GetItemDetailTable(ItemListt, CC, EmpID);
 
             var Result = await _IItemMaster.UpdateMultipleItemData(ItemGridList);
+
+            if (Result != null)
+            {
+                if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                {
+                    ViewBag.isSuccess = true;
+                    TempData["200"] = "200";
+                }
+                if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                {
+                    ViewBag.isSuccess = true;
+                    TempData["202"] = "202";
+                }
+                if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                {
+                    ViewBag.isSuccess = false;
+                    TempData["500"] = "500";
+                    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                    return View("Error", Result);
+                }
+            }
+
+
+            return RedirectToAction(nameof(ImportItems));
+        }
+        catch (Exception ex)
+        {
+            LogException<ItemMasterController>.WriteException(_logger, ex);
+
+            var ResponseResult = new ResponseResult()
+            {
+                StatusCode = HttpStatusCode.InternalServerError,
+                StatusText = "Error",
+                Result = ex
+            };
+
+            return View("Error", ResponseResult);
+        }
+    }
+    [HttpPost]
+    public async Task<IActionResult> UpdateSelectedItemListdata(List<ImportItemViewModel> model,string flag)
+    {
+        try
+        {
+            HttpContext.Session.Remove("KeyImportSelectedItemList");
+
+            string ItemList = HttpContext.Session.GetString("KeyImportSelectedItemList");
+            IList<ImportItemViewModel> ItemViewModel = new List<ImportItemViewModel>();
+            if (!string.IsNullOrEmpty(ItemList))
+            {
+                ItemViewModel = JsonConvert.DeserializeObject<IList<ImportItemViewModel>>(ItemList);
+            }
+
+            var MainModel = new ItemMasterModel();
+            var ItemDetailGrid = new List<ImportItemViewModel>();
+            var ItemGrid = new List<ImportItemViewModel>();
+            var SSGrid = new List<ImportItemViewModel>();
+
+            var seqNo = 0;
+            foreach (var item in model)
+            {
+                if (item != null)
+                {
+                    if (ItemViewModel == null)
+                    {
+                        item.SeqNo += seqNo + 1;
+                        ItemGrid.Add(item);
+                        seqNo++;
+                    }
+                    else
+                    {
+                        if (ItemViewModel.Where(x => x.PartCode == item.PartCode).Any())
+                        {
+                            return StatusCode(207, "Duplicate");
+                        }
+                        else
+                        {
+                            item.SeqNo = ItemViewModel.Count + 1;
+                            //ItemGrid = ItemViewModel.Where(x => x != null).ToList();
+                            //SSGrid.AddRange(ItemGrid);
+                            ItemGrid.Add(item);
+                        }
+                    }
+                    MainModel.ImportExcelDataList = ItemGrid;
+
+                    HttpContext.Session.SetString("KeyImportSelectedItemList", JsonConvert.SerializeObject(MainModel.ImportExcelDataList));
+                }
+            }
+
+            string modelData = HttpContext.Session.GetString("KeyImportSelectedItemList");
+            IList<ImportItemViewModel> ItemListt = new List<ImportItemViewModel>();
+            if (!string.IsNullOrEmpty(modelData))
+            {
+                ItemListt = JsonConvert.DeserializeObject<IList<ImportItemViewModel>>(modelData);
+            }
+            var CC = HttpContext.Session.GetString("Branch");
+            var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var ItemGridList = new DataTable();
+            ItemGridList = GetItemDetailTable(ItemListt,CC,EmpID);
+            var Flag = "Update" + flag;
+            var Result = await _IItemMaster.UpdateSelectedItemData(ItemGridList, Flag);
 
             if (Result != null)
             {
@@ -1422,7 +1994,7 @@ public class ItemMasterController : Controller
                 item.QcReq ?? "",
                 item.ItemType ?? "",
                 "", "", // UploadItemImage, UploadImage
-                item.UID ?? "",
+                  Empid,        
                 item.DrawingNo ?? "",
                 item.MinimumLevel,
                 item.MaximumLevel,
@@ -1443,7 +2015,7 @@ public class ItemMasterController : Controller
                 item.SaleAccountcode ?? "",
                 item.MinLevelDays,
                 item.MaxLevelDays,
-                item.EmpName ?? "",
+                Empid,
                 item.DailyRequirment,
                 item.Stockable ?? "Y",
                 item.WipStockable ?? "Y",
@@ -1472,6 +2044,41 @@ public class ItemMasterController : Controller
                 item.OldPartCode ?? "",
                 item.Package ?? "",
                 item.IsCustJWAdjMandatory ?? "N"
+            );
+        }
+
+        return MRGrid;
+    } 
+    private static DataTable GetSelectedItemDetailTable(IList<ImportItemViewModel> DetailList)
+    {
+        var MRGrid = new DataTable();
+
+        // === Define all columns ===
+        MRGrid.Columns.Add("Item_Code", typeof(int));
+        MRGrid.Columns.Add("PartCode", typeof(string));
+        MRGrid.Columns.Add("Item_Name", typeof(string));
+        MRGrid.Columns.Add("MinimumLevel", typeof(decimal));
+        MRGrid.Columns.Add("MaximumLevel", typeof(decimal));
+        MRGrid.Columns.Add("HsnNo", typeof(int));
+        MRGrid.Columns.Add("ProdInWorkcenter", typeof(int));
+        MRGrid.Columns.Add("SalePrice", typeof(decimal));
+        MRGrid.Columns.Add("CostPrice", typeof(decimal));
+        MRGrid.Columns.Add("PurchasePrice", typeof(decimal));
+        MRGrid.Columns.Add("Store", typeof(string));
+        foreach (var item in DetailList)
+        {
+            MRGrid.Rows.Add(
+                item.Item_Code,
+                item.PartCode,
+                item.Item_Name ,
+                item.MinimumLevel,
+                item.MaximumLevel,
+                item.HSNNO,
+                item.ProdInWorkcenter,
+                item.SalePrice ,
+                item.CostPrice ,
+                item.PurchasePrice ,
+                item.Store
             );
         }
 

@@ -22,10 +22,10 @@ else
             <td id="PartCode-@Cntr">@item.PartCode</td>
             <td id="Item_Name-@Cntr">@item.Item_Name</td>
             <td id="ItemGroup-@Cntr">@item.ItemGroup</td>
-            <td id="ItemGroupCode-@Cntr">@item.ItemGroupCode</td>
-            <input type="hidden" id="TypeName-@Cntr" value="@item.TypeName" />
+            <td id="ItemGroupCode-@Cntr" style="display:none">@item.ItemGroupCode</td>
+            <input type="hidden" id="TypeName-@Cntr" value="@item.ItemCategoryCode" />
             <td id="ItemType-@Cntr">@item.ItemType</td>
-            <td id="ItemCategoryCode-@Cntr">@item.ItemCategoryCode</td>
+            <td id="ItemCategoryCode-@Cntr" style="display:none">@item.ItemCategoryCode</td>
             <td id="Unit-@Cntr">@item.Unit</td>
             <td id="AlternateUnit-@Cntr">@item.AlternateUnit</td>
             <td id="HSNNO-@Cntr">@item.HSNNO</td>
@@ -33,20 +33,14 @@ else
             <td id="MaximumLevel-@Cntr">@item.MaximumLevel</td>
             <td id="StdPacking-@Cntr">@item.StdPacking</td>
             <td id="WorkCenter-@Cntr">@item.WorkCenter</td>
-            <td id="ProdInWorkcenter-@Cntr">@item.ProdInWorkcenter</td>
+            <td id="ProdInWorkcenter-@Cntr" style="display:none">@item.ProdInWorkcenter</td>
             <td id="ProdInhouseJW-@Cntr">@item.ProdInhouseJW</td>
             <td id="BatchNO-@Cntr">@item.BatchNO</td>
             <td id="OldPartCode-@Cntr">@item.OldPartCode</td>
             <td id="VoltageVlue-@Cntr">@item.VoltageVlue</td>
             <td id="SerialNo-@Cntr">@item.SerialNo</td>
             <td id="Package-@Cntr">@item.Package</td>
-
-            <!-- ✅ Additional fields from Excel that were missing -->
-            <td id="ParentCode-@Cntr">@item.ParentCode</td>
-            <td id="EntryDate-@Cntr">@item.EntryDate</td>
-            <td id="LastUpdatedDate-@Cntr">@item.LastUpdatedDate</td>
             <td id="LeadTime-@Cntr">@item.LeadTime</td>
-            <td id="CC-@Cntr">@item.CC</td>
             <td id="SalePrice-@Cntr">@item.SalePrice</td>
             <td id="PurchasePrice-@Cntr">@item.PurchasePrice</td>
             <td id="CostPrice-@Cntr">@item.CostPrice</td>
@@ -55,7 +49,6 @@ else
             <td id="NoOfPcs-@Cntr">@item.NoOfPcs</td>
             <td id="QcReq-@Cntr">@item.QcReq</td>
             <td id="ImageURL-@Cntr">@item.ImageURL</td>
-            <td id="UID-@Cntr">@item.UID</td>
             <td id="DrawingNo-@Cntr">@item.DrawingNo</td>
             <td id="ReorderLevel-@Cntr">@item.ReorderLevel</td>
             <td id="YearCode-@Cntr">@item.YearCode</td>
@@ -68,15 +61,17 @@ else
             <td id="ModelNo-@Cntr">@item.ModelNo</td>
             <td id="YearlyConsumedQty-@Cntr">@item.YearlyConsumedQty</td>
             <td id="DispItemName-@Cntr">@item.DispItemName</td>
-            <td id="PurchaseAccountcode-@Cntr">@item.PurchaseAccountcode</td>
-            <td id="SaleAccountcode-@Cntr">@item.SaleAccountcode</td>
+            <td id="PurchaseAccountcode-@Cntr" style="display:none">@item.PurchaseAccountcode</td>
+            <td id="SaleAccountcode-@Cntr" style="display:none">@item.SaleAccountcode</td>
+            <td id="PurchaseAccountName-@Cntr">@item.PurchaseAccountName</td>
+            <td id="SaleAccountName-@Cntr">@item.SaleAccountName</td>
             <td id="MinLevelDays-@Cntr">@item.MinLevelDays</td>
             <td id="MaxLevelDays-@Cntr">@item.MaxLevelDays</td>
-            <td id="EmpName-@Cntr">@item.EmpName</td>
             <td id="DailyRequirment-@Cntr">@item.DailyRequirment</td>
             <td id="Stockable-@Cntr">@item.Stockable</td>
             <td id="WipStockable-@Cntr">@item.WipStockable</td>
-            <td id="Store-@Cntr">@item.Store</td>
+            <td id="StoreName-@Cntr">@item.StoreName</td>
+            <td id="StoreId-@Cntr" style="display:none">@item.Store</td>
             <td id="ProductLifeInus-@Cntr">@item.ProductLifeInus</td>
             <td id="ItemDesc-@Cntr">@item.ItemDesc</td>
             <td id="MaxWipStock-@Cntr">@item.MaxWipStock</td>

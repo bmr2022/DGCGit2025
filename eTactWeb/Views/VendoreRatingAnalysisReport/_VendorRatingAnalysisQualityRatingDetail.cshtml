@@ -7,7 +7,7 @@
                 <th>Action</th>
                 <th>Sr#</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name
                 </th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol">
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code
@@ -16,19 +16,28 @@
                     <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name
                 </th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Qty
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No
                 </th>
                 <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Gate Qty
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No
                 </th>
                 <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Avg Delivery Rating
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Qty
                 </th>
                 <th data-columnno="7" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Code
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bill Qty
                 </th>
                 <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rec Qty
+                </th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rejected Qty
+                </th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ReWork Qty
+                </th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Quality Rating
                 </th>
 
             </tr>
@@ -61,11 +70,14 @@
                             <td>@item.CustomerName</td>
                             <td>@item.PartCode</td>
                             <td>@item.ItemName</td>
+                            <td>@item.PONO</td>
+                            <td>@item.SchNo</td>
                             <td>@item.POQty</td>
-                            <td>@item.GateQty</td>
-                            <td>@item.DeliveryRating</td>
-                            <td>@item.ItemCode</td>
-                            <td>@item.AccountCode</td>
+                            <td>@item.BillQty</td>
+                            <td>@item.RecQty</td>
+                            <td>@item.RejectedQty</td>
+                            <td>@item.ReWorkQty</td>
+                            <td>@item.QualityRating</td>
 
 
                         </tr>
@@ -132,9 +144,7 @@
     </ul>
 }
 <style>
-    #divStockRegisterBody{
-        background-color: #ffe6e6;
-    }
+
     .sort-icon {
         padding: 5px;
         margin: 5px;
@@ -151,6 +161,10 @@
         vertical-align: super;
     }
 
+    
+    #divStockRegisterBody {
+        background-color: #ffccff;
+    }
     #dashRThead th {
         background-color: #127387;
         position: sticky;
