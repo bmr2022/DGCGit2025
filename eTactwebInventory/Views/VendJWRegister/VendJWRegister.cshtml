@@ -268,6 +268,8 @@
                                             </div>
                                         </div>
 
+
+
                                     </div>
                                 </div>
                             </div>
@@ -975,11 +977,11 @@
             countAllTotal();
         }
 
-        function FreezeSelection(Currentrow) {
+        // function FreezeSelection(Currentrow) {
 
-            FillColorAccordingPendQty();
-            $(Currentrow).css({ 'background-color': '#00bcd4' });
-        }
+        //     FillColorAccordingPendQty();
+        //     $(Currentrow).css({ 'background-color': '#00bcd4' });
+        // }
 
         function countAllTotal() {
             var Rowcount = 0;
@@ -1084,7 +1086,7 @@
             $('#TotalPendQtyItemParty').val(TotalPendQtyItemParty);
             $('#TotalIssueItemPartyAmount').val(TotalIssueItemPartyAmount);
             $('#TotalRecoIssueQty').val(TotalRecoIssueQty);
-            $('#TotalRecoPendQty').val(TotalRecoPendQty);
+            $('#TotalRecoPendQty').val(TotalRecoIssueQty - TotalRecorecQty);
             $('#TotalRecorecQty').val(TotalRecorecQty);
             $('#TotalIssueRecoQty').val(TotalIssueRecoQty);
             $('#TotalRecRecoQty').val(TotalRecRecoQty);

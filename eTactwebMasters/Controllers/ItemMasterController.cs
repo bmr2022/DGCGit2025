@@ -52,7 +52,7 @@ public class ItemMasterController : Controller
 
         return Json(Result);
     }
-    
+
     public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 50)
     {
         ItemMasterModel model = new ItemMasterModel
@@ -168,7 +168,7 @@ public class ItemMasterController : Controller
     public IActionResult ExportSelectedItemToExcel(string flag)
     {
         string modelListJson = HttpContext.Session.GetString("KeyItemListSearch");
-            
+
         List<ItemMasterModel> modelList = new List<ItemMasterModel>();
         if (!string.IsNullOrEmpty(modelListJson))
         {
@@ -253,7 +253,7 @@ public class ItemMasterController : Controller
             else if (flag == "workcenter")
             {
                 worksheet.Cell(r, c).Value = modelList[i].ProdWorkCenterDescription;
-               // worksheet.Cell(r, c).Value = modelList[i].ProdInWorkcenter;
+                // worksheet.Cell(r, c).Value = modelList[i].ProdInWorkcenter;
             }
             else if (flag == "minmaxlevel")
             {
@@ -307,7 +307,7 @@ public class ItemMasterController : Controller
             sheet.Cell(row, 3).Value = item.PartCode;
             sheet.Cell(row, 4).Value = item.Item_Name;
             sheet.Cell(row, 5).Value = item.HSNNO;
-           
+
             row++;
         }
     }
@@ -835,7 +835,7 @@ public class ItemMasterController : Controller
                 }
                 var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
                 var UnitList = _IItemMaster.GetUnitList();
-                
+
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
                     //var cellValue = worksheet.Cells[row, 2].Value;
@@ -852,7 +852,7 @@ public class ItemMasterController : Controller
 
                     var PurchaseAccount = worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim();
                     var SaleAccount = worksheet.Cells[row, headersMap["SaleAccount"]].Text?.Trim();
-                 
+
                     var duplicatePartCode = _IDataLogic.isDuplicate(partCode, "PartCode", "Item_Master");
                     var duplicateItemName = _IDataLogic.isDuplicate(ItemName, "Item_Name", "Item_Master");
 
@@ -862,8 +862,8 @@ public class ItemMasterController : Controller
                     var itemCatCode = _IItemMaster.GetItemCatCode(itemType);
                     var WorkCenterId = _IItemMaster.GetWorkCenterId(workCenter);
                     var StoreIdResult = _IItemMaster.GetStoreCode(Store);
-                    var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
-                    var ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : (Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N");
+                    var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 1 ? "Y" : "N";
+                    var ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : (Convert.ToInt32(duplicateItemName.Result) > 1 ? "Y" : "N");
                     var ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim();
 
                     var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
@@ -874,10 +874,21 @@ public class ItemMasterController : Controller
                         continue;
                     }
 
+                    //if (PartCodeExists == "Y")
+                    //{
+                    //    errors.Add($"Duplicate PartCode found: {partCode} at row {row} (ItemName: {ItemName})");
+                    //    continue;
+                    //}
+
+                    //if (ItemNameExists == "Y")
+                    //{
+                    //    errors.Add($"Duplicate ItemName found: {ItemName} at  row {row} (PartCode: {partCode})");
+                    //    continue;
+                    //}
 
                     var ItemGroupList = _IItemMaster.GetItemGroup(ItemServAssets);
                     var ItemCategoryList = _IItemMaster.GetItemCategory(ItemServAssets);
-                    
+
                     var unitdataset = UnitList.Result.Result;
                     var unitTable = unitdataset.Tables[0];
 
@@ -894,8 +905,8 @@ public class ItemMasterController : Controller
                     {
                         errors.Add($"Invalid Unit: {unit} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                         continue;
-                      
-                    } 
+
+                    }
 
                     var Groupdataset = ItemGroupList.Result.Result;
                     var GroupTable = Groupdataset.Tables[0];
@@ -930,9 +941,9 @@ public class ItemMasterController : Controller
                     {
                         errors.Add($"Invalid ItemType: {itemType} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                         continue;
-                      
+
                     }
-                    
+
 
 
 
@@ -948,11 +959,11 @@ public class ItemMasterController : Controller
                     {
                         itemGCode = (int)itemGroupCode.Result.Result.Rows[0].ItemArray[0];
                     }
-                      if (itemPurchaseAccountCode.Result.Result != null && itemPurchaseAccountCode.Result.Result.Rows.Count > 0)
+                    if (itemPurchaseAccountCode.Result.Result != null && itemPurchaseAccountCode.Result.Result.Rows.Count > 0)
                     {
                         itemPurchaseAccCode = (int)itemPurchaseAccountCode.Result.Result.Rows[0].ItemArray[0];
                     }
-                      if (itemSaleAccountCode.Result.Result != null && itemSaleAccountCode.Result.Result.Rows.Count > 0)
+                    if (itemSaleAccountCode.Result.Result != null && itemSaleAccountCode.Result.Result.Rows.Count > 0)
                     {
                         itemSaleAccCode = (int)itemSaleAccountCode.Result.Result.Rows[0].ItemArray[0];
                     }
@@ -965,15 +976,15 @@ public class ItemMasterController : Controller
                     if (WorkCenterId.Result.Result != null && WorkCenterId.Result.Result.Rows.Count > 0)
                     {
                         itemWorkCenterId = (int)WorkCenterId.Result.Result.Rows[0].ItemArray[0];
-                    }   
+                    }
                     if (StoreIdResult.Result.Result != null && StoreIdResult.Result.Result.Rows.Count > 0)
                     {
                         itemStoreId = (int)StoreIdResult.Result.Result.Rows[0].ItemArray[0];
                     }
-                   
-                  
+
+
                     bool WorkcenterExists = false;
-                    
+
                     if (!string.IsNullOrWhiteSpace(workCenter))
                     {
                         var WorkCenterList = _IItemMaster.GetWorkCenterList();
@@ -1001,8 +1012,8 @@ public class ItemMasterController : Controller
 
                     if (!string.IsNullOrWhiteSpace(PurchaseAccount))
                     {
-                        
-                        var purchaseAccountList =await  _IDataLogic.GetDropDownList("Account_Head_Master_PA", "SP_GetDropDownList");
+
+                        var purchaseAccountList = await _IDataLogic.GetDropDownList("Account_Head_Master_PA", "SP_GetDropDownList");
 
                         foreach (var item in purchaseAccountList)
                         {
@@ -1026,8 +1037,8 @@ public class ItemMasterController : Controller
 
                     if (!string.IsNullOrWhiteSpace(SaleAccount))
                     {
-                        var SaleAccountNameList =await  _IDataLogic.GetDropDownList("Account_Head_Master_SA", "SP_GetDropDownList");
-                      
+                        var SaleAccountNameList = await _IDataLogic.GetDropDownList("Account_Head_Master_SA", "SP_GetDropDownList");
+
                         foreach (var item in SaleAccountNameList)
                         {
                             if (item.Text.Trim().Equals(SaleAccount, StringComparison.OrdinalIgnoreCase))
@@ -1035,14 +1046,14 @@ public class ItemMasterController : Controller
                                 SaleAccountNameExists = true;
                                 break;
                             }
-                          
+
                         }
 
                         if (!SaleAccountNameExists)
                         {
                             errors.Add($"Invalid SaleAccountCode: {SaleAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                             continue;
-                          //  return StatusCode(207, $"Invalid SaleAccountName: {SaleAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            //  return StatusCode(207, $"Invalid SaleAccountName: {SaleAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                         }
                     }
 
@@ -1067,7 +1078,7 @@ public class ItemMasterController : Controller
                         {
                             errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                             continue;
-                          //  return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            //  return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
 
                         }
 
@@ -1092,7 +1103,7 @@ public class ItemMasterController : Controller
                             {
                                 errors.Add($"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between {(minLevel != 0 ? minLevel : 0)} and {maxLevel}.");
                                 continue;
-                              //  return StatusCode(207, $"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between {(minLevel != 0 ? minLevel : 0)} and {maxLevel}.");
+                                //  return StatusCode(207, $"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between {(minLevel != 0 ? minLevel : 0)} and {maxLevel}.");
                             }
                         }
                     }
@@ -1106,7 +1117,7 @@ public class ItemMasterController : Controller
                         {
                             errors.Add($"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
                             continue;
-                         //   return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
+                            //   return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
                         }
                     }
 
@@ -1117,7 +1128,7 @@ public class ItemMasterController : Controller
                         Item_Name = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim(),
                         ItemGroup = itemGroup,
                         ItemType = itemType,
-                        TypeName= itemType,
+                        TypeName = itemType,
                         Unit = unit,
                         SalePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["SalePrice"]].Value ?? 0),
                         PurchasePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["PurchasePrice"]].Value ?? 0),
@@ -1158,7 +1169,7 @@ public class ItemMasterController : Controller
                         ModelNo = worksheet.Cells[row, headersMap["ModelNo"]].Text?.Trim(),
                         YearlyConsumedQty = Convert.ToInt32(worksheet.Cells[row, headersMap["YearlyConsumedQty"]].Value ?? 0),
                         DispItemName = worksheet.Cells[row, headersMap["DispItemName"]].Text?.Trim(),
-                        PurchaseAccountName= worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim(),
+                        PurchaseAccountName = worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim(),
                         SaleAccountName = worksheet.Cells[row, headersMap["SaleAccount"]].Text?.Trim(),
                         MinLevelDays = Convert.ToInt32(worksheet.Cells[row, headersMap["MinLevelDays"]].Value ?? 0),
                         MaxLevelDays = Convert.ToInt32(worksheet.Cells[row, headersMap["MaxLevelDays"]].Value ?? 0),
@@ -1243,7 +1254,7 @@ public class ItemMasterController : Controller
                             var Storedataset = StoreList.Result.Result;
                             var StoreTable = Storedataset.Tables[0];
 
-                          
+
                             foreach (DataRow rows in StoreTable.Rows)
                             {
                                 if (rows["Store_Name"].ToString().Trim().Equals(Store, StringComparison.OrdinalIgnoreCase))
@@ -1278,7 +1289,7 @@ public class ItemMasterController : Controller
                             var WorkCenterdataset = WorkCenterList.Result.Result;
                             var WorkCenterTable = WorkCenterdataset.Tables[0];
 
-                         
+
                             foreach (DataRow rows in WorkCenterTable.Rows)
                             {
                                 if (rows["WorkCenterDescription"].ToString().Trim().Equals(WorkCenter, StringComparison.OrdinalIgnoreCase))
@@ -1620,31 +1631,67 @@ public class ItemMasterController : Controller
             ItemGridList = GetItemDetailTable(ItemListt, CC, EmpID);
 
             var Result = await _IItemMaster.UpdateMultipleItemData(ItemGridList);
-
             if (Result != null)
             {
-                if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                if ((Result.StatusText == "Success" || Result.StatusText == "Updated") &&
+                     (Result.StatusCode == HttpStatusCode.OK || Result.StatusCode == HttpStatusCode.Accepted))
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["200"] = "200";
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = "Data imported successfully",
+                        RedirectUrl = Url.Action("ImportandUpdateItems", "ItemMaster", new { Flag = "" })
+                    });
                 }
-                if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                else
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["202"] = "202";
-                }
-                if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["500"] = "500";
-                    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                    return View("Error", Result);
+                    return Json(new
+                    {
+                        
+                        StatusText = Result.StatusText,
+                        statusCode = 201,
+                        redirectUrl = ""
+                    });
                 }
             }
 
-
-            return RedirectToAction(nameof(ImportItems));
+            return Json(new
+            {
+                StatusCode = 500,
+                StatusText = "Unknown error occurred"
+            });
         }
+            //if (Result != null)
+            //{
+            //    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+            //    {
+            //        ViewBag.isSuccess = true;
+            //        TempData["200"] = "200";
+            //    }
+            //    if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+            //    {
+            //        ViewBag.isSuccess = true;
+            //        TempData["202"] = "202";
+            //    }
+            //    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+            //    {
+            //        ViewBag.isSuccess = false;
+            //        TempData["500"] = "500";
+            //        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+            //        return View("Error", Result);
+            //    }
+            //    else
+            //    {
+            //        ViewBag.isSuccess = false;
+            //        TempData["500"] = "500";
+            //        return View("Error", Result.StatusText);
+
+        //    }
+        //}
+
+
+        //return RedirectToAction(nameof(ImportItems));
+        
         catch (Exception ex)
         {
             LogException<ItemMasterController>.WriteException(_logger, ex);
@@ -1724,27 +1771,33 @@ public class ItemMasterController : Controller
 
             if (Result != null)
             {
-                if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                if ((Result.StatusText == "Success" || Result.StatusText == "Updated") &&
+                     (Result.StatusCode == HttpStatusCode.OK || Result.StatusCode == HttpStatusCode.Accepted))
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["200"] = "200";
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = "Data imported successfully",
+                        RedirectUrl = Url.Action("ImportandUpdateItems", "ItemMaster", new { Flag = "" })
+                    });
                 }
-                if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                else
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["202"] = "202";
-                }
-                if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["500"] = "500";
-                    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                    return View("Error", Result);
+                    return Json(new
+                    {
+
+                        StatusText = Result.StatusText,
+                        statusCode = 201,
+                        redirectUrl = ""
+                    });
                 }
             }
 
-
-            return RedirectToAction(nameof(ImportItems));
+            return Json(new
+            {
+                StatusCode = 500,
+                StatusText = "Unknown error occurred"
+            });
         }
         catch (Exception ex)
         {

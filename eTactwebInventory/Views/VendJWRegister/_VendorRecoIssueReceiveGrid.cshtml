@@ -15,8 +15,8 @@ else
         <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
             <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
                 <tr>
-                    <th>Action</th>
-                    <th>Sr#</th>
+                    @*  <th>Action</th>
+                     <th>Sr#</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Issue Challan No</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Date</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Vendor Name</th>
@@ -34,6 +34,26 @@ else
                     <th class="sortCol" data-sortorder="asc" data-columnno="15"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Types</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="16"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Completely Receive</th>
                     <th class="sortCol" data-sortorder="asc" data-columnno="17"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Closed</th>
+                     *@
+                    <th>Action</th>
+                    <th>Sr#</th>
+                    <th>Issue Challan No</th>
+                    <th>Challan Date</th>
+                    <th>Vendor Name</th>
+                    <th>Issue Part Code</th>
+                    <th>Issue Item Name</th>
+                    <th>Issue Qty</th>
+                    <th>Adjust Qty</th>
+                    <th>Pend Qty</th>
+                    <th>Rec Challan No</th>
+                    <th>Rec Challan Date</th>
+                    <th>Bom Ind</th>
+                    <th>Rec Item Name</th>
+                    <th>Rec Part Code</th>
+                    <th>Total Rec Qty</th>
+                    <th>Types</th>
+                    <th>Completely Receive</th>
+                    <th>Closed</th>
                 </tr>
             </thead>
             <tbody id="divStockRegisterBody">
@@ -144,7 +164,9 @@ else
 
 
 <style>
-
+    #divStockRegisterBody{
+        background-color: #ccffcc;
+    }
 
     .PMRPGrid {
         width: 100%;

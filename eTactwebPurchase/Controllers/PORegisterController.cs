@@ -34,11 +34,11 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> GetPORegisterData(string FromDate, string ToDate, string ReportType, string  Partyname, string  partcode, string  itemName, string  POno, string  SchNo, string  OrderType, string  POFor, string  ItemType, string  ItemGroup, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        public async Task<IActionResult> GetPORegisterData(string FromDate, string ToDate, string ReportType, string  Partyname, string  partcode, string  itemName, string  POno, string  SchNo, string  OrderType, string  POFor, string  ItemType, string  ItemGroup, string showOnlyCompletedPO, string showClosedPO, string showOnlyActivePO, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var model = new PORegisterModel();
-            model = await _IPORegister.GetPORegisterData(FromDate, ToDate, ReportType, YearCode, Partyname, partcode, itemName, POno, SchNo, OrderType, POFor, ItemType, ItemGroup);
+            model = await _IPORegister.GetPORegisterData(FromDate, ToDate, ReportType, YearCode, Partyname, partcode, itemName, POno, SchNo, OrderType, POFor, ItemType, ItemGroup,  showOnlyCompletedPO,  showClosedPO,  showOnlyActivePO);
             model.ReportMode = ReportType;
             var modelList = model?.PORegisterDetails ?? new List<PORegisterDetail>();
 
