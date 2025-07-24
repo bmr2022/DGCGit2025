@@ -1104,7 +1104,7 @@ $('#btnClose').click(function () {
 
                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") 
                 {
-
+                    $('#GateNo').select2();
                     fillEntryandMRN();
                     $('.BatchDetail').fadeOut();
                     var finFromDate = $('#FinFromDate').val();

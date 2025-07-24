@@ -39,6 +39,7 @@ namespace eTactWeb.Controllers
             ViewData["Title"] = "Transfer From WorkCenter Detail";
             TempData.Clear();
             HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
+            
             var MainModel = new TransferFromWorkCenterModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
@@ -293,6 +294,7 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = true;
                             TempData["200"] = "200";
                             HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
+                            HttpContext.Session.Remove("ReceiveItems");
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {

@@ -32,7 +32,7 @@ namespace eTactWeb.Data.DAL
             //DBConnectionString = configuration.GetConnectionString("eTactDB");
         }
 
-        public async Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType,int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup)
+        public async Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType,int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup, string showOnlyCompletedPO, string showClosedPO, string showOnlyActivePO)
         {
             DataSet? oDataSet = new DataSet();
             var model = new PORegisterModel();
@@ -61,6 +61,9 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@OrderType", OrderType == null ? "" : OrderType);
                     oCmd.Parameters.AddWithValue("@POFor", POFor == null ? "" : POFor);
                     oCmd.Parameters.AddWithValue("@ItemType", ItemType == null ? "" : ItemType);
+                    oCmd.Parameters.AddWithValue("@showOnlyActivePO", showOnlyActivePO == null ? "" : showOnlyActivePO);
+                    oCmd.Parameters.AddWithValue("@ShowClosedPOAlso", showClosedPO == null ? "" : showClosedPO);
+                    oCmd.Parameters.AddWithValue("@ShowOnlyCompletedPO", showOnlyCompletedPO == null ? "" : showOnlyCompletedPO);
                     oCmd.Parameters.AddWithValue("@ItemGroup", ItemGroup == null ? "" : ItemGroup);
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

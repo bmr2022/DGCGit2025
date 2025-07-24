@@ -8,7 +8,9 @@
                 <th>Sr#</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="1"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemName</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="2"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PartCode</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OpnQty</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>IssQty</th>
+                <th class="sortCol" data-sortorder="asc" data-columnno="3"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotalIssQty</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="4"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="5"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Amount</th>
                 <th class="sortCol" data-sortorder="asc" data-columnno="6"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FORPROCESS</th>
@@ -44,7 +46,9 @@
                             <th id="StickyHearder-@Cntr">@srNo</th>
                             <td>@item.Itemname</td>
                             <td style="background-color: #e09ef0;">@item.partcode</td>
-                            <td id="TotalIssQtyItem">@item.IssQty</td>
+                            <td id="">@item.OpnQty</td>
+                            <td id="">@item.IssQty</td>
+                            <td id="TotalIssQtyItem">@item.TotIssueQty</td>
                             <td>@item.unit</td>
                             <td id="TotalAmountItem">@item.Amount</td>
                             <td>@item.FORPROCESS</td>

@@ -25,9 +25,9 @@ namespace eTactWeb.Data.BLL
             _PORegisterDAL = new PORegisterDAL(configuration, iDataLogic, _httpContextAccessor, connectionStringService);
         }
 
-        public async Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType, int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup)
+        public async Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType, int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup, string showOnlyCompletedPO, string showClosedPO, string showOnlyActivePO)
         {
-            return await _PORegisterDAL.GetPORegisterData(FromDate, ToDate, ReportType, YearCode, Partyname, partcode, itemName, POno, SchNo, OrderType, POFor, ItemType, ItemGroup);
+            return await _PORegisterDAL.GetPORegisterData(FromDate, ToDate, ReportType, YearCode, Partyname, partcode, itemName, POno, SchNo, OrderType, POFor, ItemType, ItemGroup, showOnlyCompletedPO,  showClosedPO,  showOnlyActivePO);
         }
     }
 }

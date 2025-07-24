@@ -204,6 +204,8 @@ namespace eTactWeb.DOM.Models
         public string? ItemServAssets { get; set; }
         public int? ProdInWorkcenter { get; set; }
         public string? StoreName { get; set; }
+        public string? SaleAccountName { get; set; }
+        public string? PurchaseAccountName { get; set; }
         public string? ProdWorkCenterDescription { get; set; }
         public string? ProdInhouseJW { get; set; }
         public string? BatchNO { get; set; }
@@ -263,7 +265,9 @@ namespace eTactWeb.DOM.Models
         public int YearlyConsumedQty { get; set; }
         public string DispItemName { get; set; }
         public string PurchaseAccountcode { get; set; }
+        public string PurchaseAccountName { get; set; }
         public string SaleAccountcode { get; set; }
+        public string SaleAccountName { get; set; }
         public int MinLevelDays { get; set; }
         public int MaxLevelDays { get; set; }
         public string EmpName { get; set; }

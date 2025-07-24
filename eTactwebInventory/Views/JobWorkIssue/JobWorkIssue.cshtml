@@ -2765,7 +2765,7 @@ $('#btnClose').click(function () {
                         }
                         else {
                             $('#PurchasePrice').val(obj.Result[0].Rate);
-                            /* $('#Rate').val(obj.Result[0].Rate); */
+                            $('#Rate').val(obj.Result[0].Rate);
 
                             if (parseFloat(obj.Result[0].Rate) == 0) {
                                 $('#PurchasePrice').prop("readonly", false);

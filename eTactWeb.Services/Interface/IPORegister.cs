@@ -10,6 +10,6 @@ namespace eTactWeb.Services.Interface
 {
     public interface IPORegister
     {
-        Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType, int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup);
+        Task<PORegisterModel> GetPORegisterData(string FromDate, string ToDate, string ReportType, int YearCode, string Partyname, string partcode, string itemName, string POno, string SchNo, string OrderType, string POFor, string ItemType, string ItemGroup,string showOnlyCompletedPO,string showClosedPO,string showOnlyActivePO);
     }
 }

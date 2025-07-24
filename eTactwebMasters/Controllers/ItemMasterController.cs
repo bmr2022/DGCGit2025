@@ -22,6 +22,7 @@ using System.Linq;
 using DocumentFormat.OpenXml.Wordprocessing;
 using System.IO.Packaging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Threading.Tasks;
 
 namespace eTactWeb.Controllers;
 
@@ -51,7 +52,7 @@ public class ItemMasterController : Controller
 
         return Json(Result);
     }
-    
+
     public async Task<IActionResult> Dashboard(string Item_Name, string PartCode, string ParentCode, string ItemType, string HsnNo, string Flag, string Package, string OldPartCode, string SerialNo, string VoltageVlue, string UniversalPartCode = "", int pageNumber = 1, int pageSize = 50)
     {
         ItemMasterModel model = new ItemMasterModel
@@ -167,7 +168,7 @@ public class ItemMasterController : Controller
     public IActionResult ExportSelectedItemToExcel(string flag)
     {
         string modelListJson = HttpContext.Session.GetString("KeyItemListSearch");
-            
+
         List<ItemMasterModel> modelList = new List<ItemMasterModel>();
         if (!string.IsNullOrEmpty(modelListJson))
         {
@@ -252,7 +253,7 @@ public class ItemMasterController : Controller
             else if (flag == "workcenter")
             {
                 worksheet.Cell(r, c).Value = modelList[i].ProdWorkCenterDescription;
-               // worksheet.Cell(r, c).Value = modelList[i].ProdInWorkcenter;
+                // worksheet.Cell(r, c).Value = modelList[i].ProdInWorkcenter;
             }
             else if (flag == "minmaxlevel")
             {
@@ -306,7 +307,7 @@ public class ItemMasterController : Controller
             sheet.Cell(row, 3).Value = item.PartCode;
             sheet.Cell(row, 4).Value = item.Item_Name;
             sheet.Cell(row, 5).Value = item.HSNNO;
-           
+
             row++;
         }
     }
@@ -365,7 +366,7 @@ public class ItemMasterController : Controller
         "ItemType", "ImageURL", "DrawingNo", "MinimumLevel", "MaximumLevel",
         "ReorderLevel", "YearCode", "AlternateUnit", "RackID", "BinNo", "ItemSize",
         "Colour", "NeedPO", "StdPacking", "PackingType", "ModelNo", "YearlyConsumedQty",
-        "DispItemName", "PurchaseAccountcode", "SaleAccountcode", "MinLevelDays", "MaxLevelDays",
+        "DispItemName", "PurchaseAccount", "SaleAccount", "MinLevelDays", "MaxLevelDays",
         "DailyRequirment", "Stockable", "WipStockable", "Store", "ProductLifeInus", "ItemDesc", "MaxWipStock",
         "NeedSo", "BomRequired", "HSNNO", "Universal Part Code", "Universal Description", "WorkCenterDescription",
         "ProdInhouseJW", "BatchNO", "VoltageValue", "SerialNo", "OldPartCode", "Package",
@@ -413,8 +414,8 @@ public class ItemMasterController : Controller
             sheet.Cell(row, col++).Value = item.ModelNo;
             sheet.Cell(row, col++).Value = item.YearlyConsumedQty;
             sheet.Cell(row, col++).Value = item.DispItemName;
-            sheet.Cell(row, col++).Value = item.PurchaseAccountcode;
-            sheet.Cell(row, col++).Value = item.SaleAccountcode;
+            sheet.Cell(row, col++).Value = item.PurchaseAccountName;
+            sheet.Cell(row, col++).Value = item.SaleAccountName;
             sheet.Cell(row, col++).Value = item.MinLevelDays;
             sheet.Cell(row, col++).Value = item.MaxLevelDays;
             sheet.Cell(row, col++).Value = item.DailyRequirment;
@@ -811,12 +812,13 @@ public class ItemMasterController : Controller
 
 
     [HttpPost]
-    public IActionResult UpdateUploadExcel(IFormFile excelFile)
+    public async Task<IActionResult> UpdateUploadExcel(IFormFile excelFile)
     {
         try
         {
             ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
             List<ImportItemViewModel> data = new List<ImportItemViewModel>();
+            var errors = new List<string>(); // collect errors
 
             using (var stream = excelFile.OpenReadStream())
             using (var package = new ExcelPackage(stream))
@@ -833,7 +835,7 @@ public class ItemMasterController : Controller
                 }
                 var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
                 var UnitList = _IItemMaster.GetUnitList();
-                
+
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
                     //var cellValue = worksheet.Cells[row, 2].Value;
@@ -847,30 +849,46 @@ public class ItemMasterController : Controller
                     var workCenter = worksheet.Cells[row, headersMap["WorkCenterDescription"]].Text?.Trim();
                     var unit = worksheet.Cells[row, headersMap["Unit"]].Text?.Trim();
                     var Store = worksheet.Cells[row, headersMap["Store"]].Text?.Trim();
+
+                    var PurchaseAccount = worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim();
+                    var SaleAccount = worksheet.Cells[row, headersMap["SaleAccount"]].Text?.Trim();
+
                     var duplicatePartCode = _IDataLogic.isDuplicate(partCode, "PartCode", "Item_Master");
                     var duplicateItemName = _IDataLogic.isDuplicate(ItemName, "Item_Name", "Item_Master");
 
+                    var itemPurchaseAccountCode = _IItemMaster.GetAccountCode(PurchaseAccount);
+                    var itemSaleAccountCode = _IItemMaster.GetAccountCode(SaleAccount);
                     var itemGroupCode = _IItemMaster.GetItemGroupCode(itemGroup);
                     var itemCatCode = _IItemMaster.GetItemCatCode(itemType);
                     var WorkCenterId = _IItemMaster.GetWorkCenterId(workCenter);
                     var StoreIdResult = _IItemMaster.GetStoreCode(Store);
-                    var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
-                    var ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : (Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N");
+                    var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 1 ? "Y" : "N";
+                    var ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : (Convert.ToInt32(duplicateItemName.Result) > 1 ? "Y" : "N");
                     var ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim();
+
+                    var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
+
+                    if (!validItemServAssetsOptions.Contains(ItemServAssets, StringComparer.OrdinalIgnoreCase))
+                    {
+                        errors.Add($"Invalid ItemServAssets: {ItemServAssets} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+                    }
+
+                    //if (PartCodeExists == "Y")
+                    //{
+                    //    errors.Add($"Duplicate PartCode found: {partCode} at row {row} (ItemName: {ItemName})");
+                    //    continue;
+                    //}
+
+                    //if (ItemNameExists == "Y")
+                    //{
+                    //    errors.Add($"Duplicate ItemName found: {ItemName} at  row {row} (PartCode: {partCode})");
+                    //    continue;
+                    //}
+
                     var ItemGroupList = _IItemMaster.GetItemGroup(ItemServAssets);
                     var ItemCategoryList = _IItemMaster.GetItemCategory(ItemServAssets);
-                    
-                    //var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 6].Value?.ToString());
-                    //var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 20].Value?.ToString());
-                    //var WorkCenterId = _IItemMaster.GetWorkCenterId(worksheet.Cells[row, 56].Value?.ToString());
 
-                    //var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 3].Value?.ToString(), "PartCode", "Item_Master");
-                    //var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 4].Value?.ToString(), "Item_Name", "Item_Master");
-
-                    //var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
-                    //var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
-
-                    //  var unit = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
                     var unitdataset = UnitList.Result.Result;
                     var unitTable = unitdataset.Tables[0];
 
@@ -885,8 +903,10 @@ public class ItemMasterController : Controller
                     }
                     if (!unitExists)
                     {
-                        return StatusCode(207, "Invalid Unit: " + unit);
-                    } 
+                        errors.Add($"Invalid Unit: {unit} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+
+                    }
 
                     var Groupdataset = ItemGroupList.Result.Result;
                     var GroupTable = Groupdataset.Tables[0];
@@ -902,7 +922,8 @@ public class ItemMasterController : Controller
                     }
                     if (!GroupExists)
                     {
-                        return StatusCode(207, $"Invalid ItemGroup: {itemGroup} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        errors.Add($"Invalid ItemGroup: {itemGroup} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
                     }
                     var Categorydataset = ItemCategoryList.Result.Result;
                     var CategoryTable = Categorydataset.Tables[0];
@@ -918,9 +939,11 @@ public class ItemMasterController : Controller
                     }
                     if (!CategoryExists)
                     {
-                        return StatusCode(207, $"Invalid ItemType: {itemType} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        errors.Add($"Invalid ItemType: {itemType} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+
                     }
-                    
+
 
 
 
@@ -930,10 +953,19 @@ public class ItemMasterController : Controller
                     int itemCCode = 1;
                     int itemWorkCenterId = 0;
                     int itemStoreId = 0;
-
+                    int itemPurchaseAccCode = 0;
+                    int itemSaleAccCode = 0;
                     if (itemGroupCode.Result.Result != null && itemGroupCode.Result.Result.Rows.Count > 0)
                     {
                         itemGCode = (int)itemGroupCode.Result.Result.Rows[0].ItemArray[0];
+                    }
+                    if (itemPurchaseAccountCode.Result.Result != null && itemPurchaseAccountCode.Result.Result.Rows.Count > 0)
+                    {
+                        itemPurchaseAccCode = (int)itemPurchaseAccountCode.Result.Result.Rows[0].ItemArray[0];
+                    }
+                    if (itemSaleAccountCode.Result.Result != null && itemSaleAccountCode.Result.Result.Rows.Count > 0)
+                    {
+                        itemSaleAccCode = (int)itemSaleAccountCode.Result.Result.Rows[0].ItemArray[0];
                     }
 
                     if (itemCatCode.Result.Result != null && itemCatCode.Result.Result.Rows.Count > 0)
@@ -944,15 +976,15 @@ public class ItemMasterController : Controller
                     if (WorkCenterId.Result.Result != null && WorkCenterId.Result.Result.Rows.Count > 0)
                     {
                         itemWorkCenterId = (int)WorkCenterId.Result.Result.Rows[0].ItemArray[0];
-                    }   
+                    }
                     if (StoreIdResult.Result.Result != null && StoreIdResult.Result.Result.Rows.Count > 0)
                     {
                         itemStoreId = (int)StoreIdResult.Result.Result.Rows[0].ItemArray[0];
                     }
-                   
-                  
+
+
                     bool WorkcenterExists = false;
-                    
+
                     if (!string.IsNullOrWhiteSpace(workCenter))
                     {
                         var WorkCenterList = _IItemMaster.GetWorkCenterList();
@@ -970,11 +1002,61 @@ public class ItemMasterController : Controller
 
                         if (!WorkcenterExists)
                         {
-                            return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            errors.Add($"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                         }
                     }
 
-                   
+                    bool PurchaseAccountNameExists = false;
+
+                    if (!string.IsNullOrWhiteSpace(PurchaseAccount))
+                    {
+
+                        var purchaseAccountList = await _IDataLogic.GetDropDownList("Account_Head_Master_PA", "SP_GetDropDownList");
+
+                        foreach (var item in purchaseAccountList)
+                        {
+                            if (item.Text.Trim().Equals(PurchaseAccount, StringComparison.OrdinalIgnoreCase))
+                            {
+                                PurchaseAccountNameExists = true;
+                                break;
+                            }
+                        }
+
+                        if (!PurchaseAccountNameExists)
+                        {
+                            errors.Add($"Invalid PurchaseAccount: {PurchaseAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid PurchaseAccountCode: {PurchaseAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+
+
+                    bool SaleAccountNameExists = false;
+
+                    if (!string.IsNullOrWhiteSpace(SaleAccount))
+                    {
+                        var SaleAccountNameList = await _IDataLogic.GetDropDownList("Account_Head_Master_SA", "SP_GetDropDownList");
+
+                        foreach (var item in SaleAccountNameList)
+                        {
+                            if (item.Text.Trim().Equals(SaleAccount, StringComparison.OrdinalIgnoreCase))
+                            {
+                                SaleAccountNameExists = true;
+                                break;
+                            }
+
+                        }
+
+                        if (!SaleAccountNameExists)
+                        {
+                            errors.Add($"Invalid SaleAccountCode: {SaleAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //  return StatusCode(207, $"Invalid SaleAccountName: {SaleAccount} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+
 
                     bool StoreExists = false;
                     if (!string.IsNullOrWhiteSpace(Store))
@@ -994,7 +1076,9 @@ public class ItemMasterController : Controller
 
                         if (!StoreExists)
                         {
-                            return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //  return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
 
                         }
 
@@ -1004,16 +1088,23 @@ public class ItemMasterController : Controller
                     decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
                     decimal reorderLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["ReorderLevel"]].Value ?? 0);
 
-                    if (minLevel != 0 && maxLevel != 0 && reorderLevel != 0)
+                    if (maxLevel != 0)
                     {
-                        if (minLevel > maxLevel)
+                        if (minLevel != 0 && minLevel > maxLevel)
                         {
-                            return StatusCode(207, $"Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel}).");
+                            errors.Add($"Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel}).");
+                            continue;
+                            //return StatusCode(207, $"Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel}).");
                         }
 
-                        if (reorderLevel < minLevel || reorderLevel > maxLevel)
+                        if (reorderLevel != 0)
                         {
-                            return StatusCode(207, $"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between MinimumLevel ({minLevel}) and MaximumLevel ({maxLevel}).");
+                            if ((minLevel != 0 && reorderLevel < minLevel) || reorderLevel > maxLevel)
+                            {
+                                errors.Add($"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between {(minLevel != 0 ? minLevel : 0)} and {maxLevel}.");
+                                continue;
+                                //  return StatusCode(207, $"Invalid ReorderLevel at row {row}: ReorderLevel ({reorderLevel}) must be between {(minLevel != 0 ? minLevel : 0)} and {maxLevel}.");
+                            }
                         }
                     }
                     string batchNO = worksheet.Cells[row, headersMap["BatchNO"]].Text?.Trim();
@@ -1024,7 +1115,9 @@ public class ItemMasterController : Controller
 
                         if (!validBatchOptions.Contains(batchNO, StringComparer.OrdinalIgnoreCase))
                         {
-                            return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
+                            errors.Add($"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
+                            continue;
+                            //   return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
                         }
                     }
 
@@ -1035,7 +1128,7 @@ public class ItemMasterController : Controller
                         Item_Name = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim(),
                         ItemGroup = itemGroup,
                         ItemType = itemType,
-                        TypeName= itemType,
+                        TypeName = itemType,
                         Unit = unit,
                         SalePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["SalePrice"]].Value ?? 0),
                         PurchasePrice = Convert.ToInt32(worksheet.Cells[row, headersMap["PurchasePrice"]].Value ?? 0),
@@ -1049,6 +1142,8 @@ public class ItemMasterController : Controller
                         ItemGroupCode = itemGCode,
                         ItemCategoryCode = itemCCode,
                         ProdInWorkcenter = itemWorkCenterId,
+                        PurchaseAccountcode = itemPurchaseAccCode.ToString(),
+                        SaleAccountcode = itemSaleAccCode.ToString(),
                         Store = itemStoreId.ToString(),
                         PartCodeExists = PartCodeExists,
                         ItemNameExists = ItemNameExists,
@@ -1074,8 +1169,8 @@ public class ItemMasterController : Controller
                         ModelNo = worksheet.Cells[row, headersMap["ModelNo"]].Text?.Trim(),
                         YearlyConsumedQty = Convert.ToInt32(worksheet.Cells[row, headersMap["YearlyConsumedQty"]].Value ?? 0),
                         DispItemName = worksheet.Cells[row, headersMap["DispItemName"]].Text?.Trim(),
-                        PurchaseAccountcode = worksheet.Cells[row, headersMap["PurchaseAccountcode"]].Text?.Trim(),
-                        SaleAccountcode = worksheet.Cells[row, headersMap["SaleAccountcode"]].Text?.Trim(),
+                        PurchaseAccountName = worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim(),
+                        SaleAccountName = worksheet.Cells[row, headersMap["SaleAccount"]].Text?.Trim(),
                         MinLevelDays = Convert.ToInt32(worksheet.Cells[row, headersMap["MinLevelDays"]].Value ?? 0),
                         MaxLevelDays = Convert.ToInt32(worksheet.Cells[row, headersMap["MaxLevelDays"]].Value ?? 0),
                         DailyRequirment = Convert.ToInt32(worksheet.Cells[row, headersMap["DailyRequirment"]].Value ?? 0),
@@ -1095,89 +1190,16 @@ public class ItemMasterController : Controller
                         Active = worksheet.Cells[row, headersMap["Active"]].Text?.Trim(),
                         JobWorkItem = worksheet.Cells[row, headersMap["JobWorkItem"]].Text?.Trim(),
                         ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim(),
-
-                        //Item_Code = Convert.ToInt32(worksheet.Cells[row, 2].Value), // B
-                        //PartCode = worksheet.Cells[row, 3].Value?.ToString(),       // C
-                        //Item_Name = worksheet.Cells[row, 4].Value?.ToString(),      // D
-                        //ParentCode = worksheet.Cells[row, 5].Value?.ToString(),     // E
-                        //ItemGroup = worksheet.Cells[row, 6].Value?.ToString(),      // F
-                        //EntryDate = worksheet.Cells[row, 7].Value?.ToString(),      // G
-                        //LastUpdatedDate = worksheet.Cells[row, 8].Value?.ToString(),// H
-                        // LeadTime = Convert.ToInt32(worksheet.Cells[row, headersMap["LeadTime"]].Value ?? 0),       // I
-                        //LeadTime = Convert.ToInt32(worksheet.Cells[row, 9].Value?.ToString()),       // I
-                        // CC = worksheet.Cells[row, 10].Value?.ToString(),            // J
-                        //Unit = worksheet.Cells[row, 11].Value?.ToString(),          // K
-                        //SalePrice = Convert.ToInt32(worksheet.Cells[row, 12].Value?.ToString()),     // L
-                        //PurchasePrice = Convert.ToInt32(worksheet.Cells[row, 13].Value?.ToString()), // M
-                        //CostPrice = Convert.ToInt32(worksheet.Cells[row, 14].Value?.ToString()),     // N
-                        //WastagePercent = Convert.ToInt32(worksheet.Cells[row, 15].Value?.ToString()),// O
-                        //WtSingleItem = Convert.ToDecimal(worksheet.Cells[row, 16].Value?.ToString()),  // P
-                        //NoOfPcs =Convert.ToInt32 (worksheet.Cells[row, 17].Value?.ToString()),       // Q
-                        //QcReq = worksheet.Cells[row, 18].Value?.ToString(),         // R
-                        //TypeName = worksheet.Cells[row, 19].Value?.ToString(),      // S
-                        ////ItemType = worksheet.Cells[row, 20].Value?.ToString(),      // T
-                        //ImageURL = worksheet.Cells[row, 21].Value?.ToString(),      // U
-                        //UID = worksheet.Cells[row, 22].Value?.ToString(),           // V
-                        //DrawingNo = worksheet.Cells[row, 23].Value?.ToString(),     // W
-                        //MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 24].Value ?? 0), // X
-                        //MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 25].Value ?? 0), // Y
-                        //ReorderLevel = Convert.ToDecimal(worksheet.Cells[row, 26].Value ?? 0), // Z
-                        //YearCode = worksheet.Cells[row, 27].Value?.ToString(),      // AA
-                        //AlternateUnit = worksheet.Cells[row, 28].Value?.ToString(), // AB
-                        //RackID = worksheet.Cells[row, 29].Value?.ToString(),        // AC
-                        //BinNo = worksheet.Cells[row, 30].Value?.ToString(),         // AD
-                        //ItemSize = worksheet.Cells[row, 31].Value?.ToString(),      // AE
-                        //Colour = worksheet.Cells[row, 32].Value?.ToString(),        // AF
-                        //NeedPO = worksheet.Cells[row, 33].Value?.ToString(),        // AG
-                        //StdPacking = Convert.ToInt32(worksheet.Cells[row, 34].Value ?? 0), // AH
-                        //PackingType = worksheet.Cells[row, 35].Value?.ToString(),   // AI
-                        //ModelNo = worksheet.Cells[row, 36].Value?.ToString(),       // AJ
-                        //YearlyConsumedQty = Convert.ToInt32(worksheet.Cells[row, 37].Value ?? 0), // AK
-                        //DispItemName = worksheet.Cells[row, 38].Value?.ToString(),  // AL
-                        //PurchaseAccountcode = worksheet.Cells[row, 39].Value?.ToString(), // AM
-                        //SaleAccountcode = worksheet.Cells[row, 40].Value?.ToString(), // AN
-                        //MinLevelDays = Convert.ToInt32(worksheet.Cells[row, 41].Value ?? 0), // AO
-                        //MaxLevelDays = Convert.ToInt32(worksheet.Cells[row, 42].Value ?? 0), // AP
-                        //EmpName = worksheet.Cells[row, 43].Value?.ToString(),       // AQ
-                        //DailyRequirment = Convert.ToInt32(worksheet.Cells[row, 44].Value ?? 0), // AR
-                        //Stockable = worksheet.Cells[row, 45].Value?.ToString(),     // AS
-                        //WipStockable = worksheet.Cells[row, 46].Value?.ToString(),  // AT
-                        //Store = worksheet.Cells[row, 47].Value?.ToString(),         // AU
-                        //ProductLifeInus = worksheet.Cells[row, 48].Value?.ToString(), // AV
-                        //ItemDesc = worksheet.Cells[row, 49].Value?.ToString(),      // AW
-                        //MaxWipStock = Convert.ToInt32(worksheet.Cells[row, 50].Value ?? 0), // AX
-                        //NeedSo = worksheet.Cells[row, 51].Value?.ToString(),        // AY
-                        //BomRequired = worksheet.Cells[row, 52].Value?.ToString(),   // AZ
-                        //HSNNO = Convert.ToInt32(worksheet.Cells[row, 53].Value ?? 0), // BA
-                        //UniversalPartCode = worksheet.Cells[row, 54].Value?.ToString(), // BB
-                        //UniversalDescription = worksheet.Cells[row, 55].Value?.ToString(), // BC
-                        //WorkCenter = worksheet.Cells[row, 56].Value?.ToString(),    // BD
-                        //ProdInhouseJW = worksheet.Cells[row, 57].Value?.ToString(), // BE
-                        //BatchNO = worksheet.Cells[row, 58].Value?.ToString(),       // BF
-                        //VoltageVlue = worksheet.Cells[row, 59].Value?.ToString(),   // BG
-                        //SerialNo = worksheet.Cells[row, 60].Value?.ToString(),      // BH
-                        //OldPartCode = worksheet.Cells[row, 61].Value?.ToString(),   // BI
-                        //Package = worksheet.Cells[row, 62].Value?.ToString(),       // BJ
-                        //IsCustJWAdjMandatory = worksheet.Cells[row, 63].Value?.ToString(), // BK
-                        //CreatedByName = worksheet.Cells[row, 64].Value?.ToString(), // BL
-                        //CreatedOn = DateTime.TryParse(worksheet.Cells[row, 65].Value?.ToString(), out var createdOn) ? createdOn : (DateTime?)null, // BM
-                        //UpdatedByName = worksheet.Cells[row, 66].Value?.ToString(), // BN
-                        //UpdatedOn = DateTime.TryParse(worksheet.Cells[row, 67].Value?.ToString(), out var updatedOn) ? updatedOn : (DateTime?)null, // BO
-                        //Active = worksheet.Cells[row, 68].Value?.ToString(),        // BP
-                        //JobWorkItem = worksheet.Cells[row, 69].Value?.ToString(),   // BQ
-                        //ItemServAssets = worksheet.Cells[row, 70].Value?.ToString(),// BR
-
-                        //// Additional logic fields
-                        //ItemGroupCode = itemGCode,
-                        //ItemCategoryCode = itemCCode,
-                        //ProdInWorkcenter = itemWorkCenterId,
-                        //PartCodeExists = PartCodeExists,
-                        //ItemNameExists = ItemNameExists,
                         SeqNo = row - 1
                     });
 
                 }
             }
+            if (errors.Any())
+            {
+                return BadRequest(new { errors });
+            }
+
 
             var model = new ItemMasterModel
             {
@@ -1215,7 +1237,8 @@ public class ItemMasterController : Controller
                     PartCode = worksheet.Cells[row, 3].Value?.ToString(),
                     Item_Name = worksheet.Cells[row, 4].Value?.ToString()
                 };
-
+                var partCode = worksheet.Cells[row, 3].Value?.ToString();
+                var ItemName = worksheet.Cells[row, 4].Value?.ToString();
                 switch (flag?.ToLower())
                 {
                     case "hsncode":
@@ -1231,7 +1254,7 @@ public class ItemMasterController : Controller
                             var Storedataset = StoreList.Result.Result;
                             var StoreTable = Storedataset.Tables[0];
 
-                          
+
                             foreach (DataRow rows in StoreTable.Rows)
                             {
                                 if (rows["Store_Name"].ToString().Trim().Equals(Store, StringComparison.OrdinalIgnoreCase))
@@ -1244,7 +1267,7 @@ public class ItemMasterController : Controller
 
                             if (!StoreExists)
                             {
-                                errors.Add($"Row {row}: Invalid StoreName: {Store}");
+                                errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                                 continue;
                             }
                         }
@@ -1266,7 +1289,7 @@ public class ItemMasterController : Controller
                             var WorkCenterdataset = WorkCenterList.Result.Result;
                             var WorkCenterTable = WorkCenterdataset.Tables[0];
 
-                         
+
                             foreach (DataRow rows in WorkCenterTable.Rows)
                             {
                                 if (rows["WorkCenterDescription"].ToString().Trim().Equals(WorkCenter, StringComparison.OrdinalIgnoreCase))
@@ -1278,7 +1301,7 @@ public class ItemMasterController : Controller
 
                             if (!WorkcenterExists)
                             {
-                                errors.Add($"Row {row}: Invalid Workcenter: {WorkCenter}");
+                                errors.Add($"Invalid Workcenter: {WorkCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                                 continue;
                             }
                         }
@@ -1299,6 +1322,17 @@ public class ItemMasterController : Controller
                     case "minmaxlevel":
                         model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
                         model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+
+                        if (maxLevel != 0)
+                        {
+                            if (minLevel != 0 && minLevel > maxLevel)
+                            {
+                                errors.Add($"Row {row}: Invalid Levels at row {row}: MinimumLevel ({minLevel}) cannot be greater than MaximumLevel ({maxLevel})");
+                                continue;
+                            }
+                        }
                         break;
                 }
 
@@ -1597,31 +1631,67 @@ public class ItemMasterController : Controller
             ItemGridList = GetItemDetailTable(ItemListt, CC, EmpID);
 
             var Result = await _IItemMaster.UpdateMultipleItemData(ItemGridList);
-
             if (Result != null)
             {
-                if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                if ((Result.StatusText == "Success" || Result.StatusText == "Updated") &&
+                     (Result.StatusCode == HttpStatusCode.OK || Result.StatusCode == HttpStatusCode.Accepted))
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["200"] = "200";
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = "Data imported successfully",
+                        RedirectUrl = Url.Action("ImportandUpdateItems", "ItemMaster", new { Flag = "" })
+                    });
                 }
-                if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                else
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["202"] = "202";
-                }
-                if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["500"] = "500";
-                    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                    return View("Error", Result);
+                    return Json(new
+                    {
+                        
+                        StatusText = Result.StatusText,
+                        statusCode = 201,
+                        redirectUrl = ""
+                    });
                 }
             }
 
-
-            return RedirectToAction(nameof(ImportItems));
+            return Json(new
+            {
+                StatusCode = 500,
+                StatusText = "Unknown error occurred"
+            });
         }
+            //if (Result != null)
+            //{
+            //    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+            //    {
+            //        ViewBag.isSuccess = true;
+            //        TempData["200"] = "200";
+            //    }
+            //    if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+            //    {
+            //        ViewBag.isSuccess = true;
+            //        TempData["202"] = "202";
+            //    }
+            //    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+            //    {
+            //        ViewBag.isSuccess = false;
+            //        TempData["500"] = "500";
+            //        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+            //        return View("Error", Result);
+            //    }
+            //    else
+            //    {
+            //        ViewBag.isSuccess = false;
+            //        TempData["500"] = "500";
+            //        return View("Error", Result.StatusText);
+
+        //    }
+        //}
+
+
+        //return RedirectToAction(nameof(ImportItems));
+        
         catch (Exception ex)
         {
             LogException<ItemMasterController>.WriteException(_logger, ex);
@@ -1701,27 +1771,33 @@ public class ItemMasterController : Controller
 
             if (Result != null)
             {
-                if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                if ((Result.StatusText == "Success" || Result.StatusText == "Updated") &&
+                     (Result.StatusCode == HttpStatusCode.OK || Result.StatusCode == HttpStatusCode.Accepted))
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["200"] = "200";
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = "Data imported successfully",
+                        RedirectUrl = Url.Action("ImportandUpdateItems", "ItemMaster", new { Flag = "" })
+                    });
                 }
-                if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                else
                 {
-                    ViewBag.isSuccess = true;
-                    TempData["202"] = "202";
-                }
-                if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
-                {
-                    ViewBag.isSuccess = false;
-                    TempData["500"] = "500";
-                    _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-                    return View("Error", Result);
+                    return Json(new
+                    {
+
+                        StatusText = Result.StatusText,
+                        statusCode = 201,
+                        redirectUrl = ""
+                    });
                 }
             }
 
-
-            return RedirectToAction(nameof(ImportItems));
+            return Json(new
+            {
+                StatusCode = 500,
+                StatusText = "Unknown error occurred"
+            });
         }
         catch (Exception ex)
         {

@@ -26,6 +26,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> GetProdInWorkcenter();
 		Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription);
         Task<ResponseResult> GetItemGroupCode(string GroupCode);
+        Task<ResponseResult> GetAccountCode(string AccountName);
         Task<ResponseResult> GetItemCatCode(string CatCode);
         //Task<ResponseResult> GetDupItemNameFeatureOpt();
         Task<ItemMasterModel> GetItemMasterByID(int ID);
