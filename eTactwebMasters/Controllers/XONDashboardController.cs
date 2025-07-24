@@ -106,5 +106,11 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> SaveDisplaySalesHeading()
+        {
+            var JSON = await _IDashboard.SaveDisplaySalesHeading();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }
