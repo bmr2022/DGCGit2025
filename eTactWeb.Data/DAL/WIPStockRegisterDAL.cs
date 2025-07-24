@@ -82,8 +82,11 @@ namespace eTactWeb.Data.DAL
                     var toDt = CommonFunc.ParseFormattedDate(ToDate);
                     //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
                     oCmd.Parameters.AddWithValue("@Flag", ReportType);
+                    if (ReportType != "WIPSTOCKDETAILFORTRANSFER")
+                    { 
                     oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                     oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                    }
                     oCmd.Parameters.AddWithValue("@PartCode", string.IsNullOrEmpty(PartCode) ? DBNull.Value : (object)PartCode);
                     oCmd.Parameters.AddWithValue("@ItemName","");
                     oCmd.Parameters.AddWithValue("@GroupName", string.IsNullOrEmpty(ItemGroup) ? DBNull.Value : (object)ItemGroup);
@@ -147,36 +150,16 @@ namespace eTactWeb.Data.DAL
                         model.WIPStockRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
                                                         select new WIPStockRegisterDetail
                                                         {
-                                                            SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
+                                                            //SeqNo = Convert.ToInt32(dr["seqnum"].ToString()),
                                                             itemCode = Convert.ToInt32(dr["itemCode"].ToString()),
                                                             WCID = Convert.ToInt32(dr["WCID"].ToString()),
                                                             ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
                                                             PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
-                                                            TransactionType = string.IsNullOrEmpty(dr["TRansactionType"].ToString()) ? "" : dr["TRansactionType"].ToString(),
-                                                            TransDate = string.IsNullOrEmpty(dr["TRansDAte"].ToString()) ? "" : dr["TRansDAte"].ToString(),
-                                                            BillNo = string.IsNullOrEmpty(dr["TransactionNo"].ToString()) ? "" : dr["TransactionNo"].ToString(),
-                                                            FromWc = string.IsNullOrEmpty(dr["FromWC"].ToString()) ? "" : dr["FromWC"].ToString(),
-                                                            FromStore = string.IsNullOrEmpty(dr["FromStore"].ToString()) ? "" : dr["FromStore"].ToString(),
-                                                            BillDate = string.IsNullOrEmpty(dr["SlipDate"].ToString()) ? "" : dr["SlipDate"].ToString(),
                                                             BatchNo = string.IsNullOrEmpty(dr["batchno"].ToString()) ? "" : dr["batchno"].ToString(),
                                                             UniquebatchNo = string.IsNullOrEmpty(dr["Uniquebatchno"].ToString()) ? "" : dr["Uniquebatchno"].ToString(),
-                                                            ToWC = string.IsNullOrEmpty(dr["ToWC"].ToString()) ? "" : dr["ToWC"].ToString(),
-                                                            ToStore = string.IsNullOrEmpty(dr["ToStore"].ToString()) ? "" : dr["ToStore"].ToString(),
                                                             WorkCenterName = string.IsNullOrEmpty(dr["WorkCenterName"].ToString()) ? "" : dr["WorkCenterName"].ToString(),
-                                                            OpnStk = string.IsNullOrEmpty(dr["OpnStk"].ToString()) ? 0 : Convert.ToDecimal(dr["OpnStk"].ToString()),
-                                                            IssQty = string.IsNullOrEmpty(dr["IssQty"].ToString()) ? 0 : Convert.ToDecimal(dr["IssQty"].ToString()),
-                                                            RecQty = string.IsNullOrEmpty(dr["RecQty"].ToString()) ? 0 : Convert.ToDecimal(dr["RecQty"].ToString()),
                                                             TotStk = string.IsNullOrEmpty(dr["TotalStock"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalStock"].ToString()),
-                                                            AltIssQty = string.IsNullOrEmpty(dr["AltIssQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltIssQty"].ToString()),
-                                                            AltRecQty = string.IsNullOrEmpty(dr["AltRecQty"].ToString()) ? 0 : Convert.ToDecimal(dr["AltRecQty"].ToString()),
-                                                            AltStock = string.IsNullOrEmpty(dr["AltStock"].ToString()) ? 0 : Convert.ToDecimal(dr["AltStock"].ToString()),
                                                             Unit = string.IsNullOrEmpty(dr["Unit"].ToString()) ? "" : dr["Unit"].ToString(),
-                                                            AltUnit = string.IsNullOrEmpty(dr["AltUnit"].ToString()) ? "" : dr["AltUnit"].ToString(),
-                                                            //ItemType = string.IsNullOrEmpty(dr["ITEMTYPE"].ToString()) ? "" : dr["ITEMTYPE"].ToString(),
-                                                            ItemGroup = string.IsNullOrEmpty(dr["itemgroup"].ToString()) ? "" : dr["itemgroup"].ToString(),
-                                                            Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"].ToString()),
-                                                            Amount = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToDecimal(dr["Rate"].ToString()) * (string.IsNullOrEmpty(dr["TotalStock"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalStock"].ToString())),
-                                                            EntryId = string.IsNullOrEmpty(dr["entryId"].ToString()) ? 0 : Convert.ToInt16(dr["entryId"].ToString()),
 
                                                         }).ToList();
                     }
