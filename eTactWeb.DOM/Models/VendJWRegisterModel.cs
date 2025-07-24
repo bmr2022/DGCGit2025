@@ -89,6 +89,8 @@ namespace eTactWeb.DOM.Models
     public string CompletlyReceive { get; set; }
     //public string BatchNo { get; set; }
     public float IssQty { get; set; }
+    public float OpnQty { get; set; }
+    public float TotIssueQty { get; set; }
     public string RemarkDetail { get; set; }
     public int StoreId { get; set; }
     public float PurchasePrice { get; set; }

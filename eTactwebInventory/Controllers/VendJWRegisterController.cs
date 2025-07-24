@@ -36,7 +36,7 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> GetJWRegisterData(string FromDate, string ToDate,string RecChallanNo,string IssChallanNo, string PartyName, string PartCode, string ItemName, string IssueChallanType, string ReportMode, int pageNumber = 1, int pageSize = 20, string SearchBox = "")
+        public async Task<IActionResult> GetJWRegisterData(string FromDate, string ToDate,string RecChallanNo,string IssChallanNo, string PartyName, string PartCode, string ItemName, string IssueChallanType, string ReportMode, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             var model = new VendJWRegisterModel();
@@ -107,7 +107,7 @@ namespace eTactWeb.Controllers
             }
         }
         [HttpGet]
-        public IActionResult GlobalSearch(string searchString,string IssueChallanType,  string dashboardType = "JOBWORKReceiveSUMMARY", int pageNumber = 1, int pageSize = 20)
+        public IActionResult GlobalSearch(string searchString,string IssueChallanType,  string dashboardType = "JOBWORKReceiveSUMMARY", int pageNumber = 1, int pageSize = 50)
         {
             VendJWRegisterModel model = new VendJWRegisterModel();
             model.ReportMode = dashboardType;
