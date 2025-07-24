@@ -39,6 +39,7 @@ namespace eTactWeb.Controllers
             ViewData["Title"] = "Transfer From WorkCenter Detail";
             TempData.Clear();
             HttpContext.Session.Remove("KeyTransferFromWorkCenterGrid");
+            HttpContext.Session.Remove("ReceiveItems");
             var MainModel = new TransferFromWorkCenterModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
