@@ -457,6 +457,7 @@
         }
 
                function SubmitData(e) {
+                   e.preventDefault();
             var flag = $('#columnSelector').val(); // Get selected flag
             var RowCount = $('#divItemList tr').length;
             var RowCount2 = $('#divItemList1 tr').length;
@@ -581,8 +582,14 @@
                 type: "POST",
                 data: dataToSend,
                 success: function (data, status, xhr) {
-                  location.reload();
-
+                  if (data && (data.statusCode === 200 || data.statusCode === 202 )) {
+               window.location.href = data.RedirectUrl;
+            } else {
+               console.log(data);
+               alert(data.statusText);
+                // Show notify message if error-like StatusText is returned
+               $.notify(data.statusText ,"error");
+            }
                     console.log("success");
                 },
                 error: function (result, status, xhr) {
