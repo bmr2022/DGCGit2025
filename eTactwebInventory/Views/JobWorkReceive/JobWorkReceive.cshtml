@@ -493,6 +493,8 @@
 
             $('#clicktoAdjustButton').hide();
             $('#displaylistbutton').hide();
+            $('#GateNo').select2();
+
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 FillNewEntry();
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');

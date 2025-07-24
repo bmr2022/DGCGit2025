@@ -1196,7 +1196,7 @@
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BomRevNo').empty();
-                            $('#BomRevNo').append('<option disabled selected>-Select-</option>');
+                            /* $('#BomRevNo').append('<option disabled selected>-Select-</option>'); */
                             $('#BOMEffDate').val('');
                             $.each(obj.Result, function (index, val) {
                                 var EffDate = "";
