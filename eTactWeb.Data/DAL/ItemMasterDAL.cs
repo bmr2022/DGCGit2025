@@ -194,6 +194,24 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
+        } 
+        public async Task<ResponseResult> GetAccountCode(string AccountName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetAccountCode"));
+                SqlParams.Add(new SqlParameter("@Account_Name", AccountName));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
         public async Task<ResponseResult> GetStoreCode(string StoreName)
         {
@@ -480,7 +498,9 @@ namespace eTactWeb.Data.DAL
                         IsCustJWAdjMandatory = oDataSet.Tables[0].Rows[i].ItemArray[68].ToString(),
                         ItemServAssets = oDataSet.Tables[0].Rows[i].ItemArray[69].ToString(),
                         ProdInWorkcenter = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[61]),
-                        StoreName = oDataSet.Tables[0].Rows[i].ItemArray[70].ToString()
+                        StoreName = oDataSet.Tables[0].Rows[i].ItemArray[70].ToString(),
+                        SaleAccountName = oDataSet.Tables[0].Rows[i].ItemArray[71].ToString(),
+                        PurchaseAccountName = oDataSet.Tables[0].Rows[i].ItemArray[72].ToString()
                         //HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
                         //CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
                         //CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()),

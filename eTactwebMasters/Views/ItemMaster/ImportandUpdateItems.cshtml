@@ -191,8 +191,10 @@
                                                         <th>ModelNo</th>
                                                         <th>YearlyConsumedQty</th>
                                                         <th>DispItemName</th>
-                                                        <th>PurchaseAccountcode</th>
-                                                        <th>SaleAccountcode</th>
+                                                        <th style="display:none">PurchaseAccountcode</th>
+                                                        <th style="display:none">SaleAccountcode</th>
+                                                        <th >PurchaseAccountName</th>
+                                                        <th>SaleAccountName</th>
                                                         <th>MinLevelDays</th>
                                                         <th>MaxLevelDays</th>
                                                         <th>DailyRequirment</th>
@@ -469,7 +471,7 @@
             var file1 = fileInput1.length ? fileInput1.prop("files")[0] : null;
             var file2 = fileInput2.length ? fileInput2.prop("files")[0] : null;
 
-                   if (RowCount > 1) {
+           if (RowCount > 1) {
             RowCount = RowCount;
             divSelector = '#divItemList';
             url = "/ItemMaster/UpdateItemListdata";
