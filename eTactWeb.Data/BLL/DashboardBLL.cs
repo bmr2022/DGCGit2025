@@ -150,6 +150,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _DashboardDAL.FillTop10SALECUSTOMER();
         }
+        public async Task<ResponseResult> FillTop10SOLDItem()
+        {
+            return await _DashboardDAL.FillTop10SOLDItem();
+        }
+        public async Task<ResponseResult> FillTop10SALESPERSON()
+        {
+            return await _DashboardDAL.FillTop10SALESPERSON();
+        }
         public async Task<ResponseResult> SaveDisplaySalesHeading()
         {
             return await _DashboardDAL.SaveDisplaySalesHeading();

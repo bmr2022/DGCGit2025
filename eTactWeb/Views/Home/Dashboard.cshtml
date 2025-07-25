@@ -1211,6 +1211,8 @@
     </div>
     <div id="purchaseTab" class="tab-content">
         <input type="hidden" id="RefreshPOAllData" />
+        <input type="hidden" id="ApprovalTypeHidden" name="ApprovalType" />
+
         <div class="card-row">
             <div class="purchase-card">
                 <div class="card-header">
@@ -1377,23 +1379,23 @@
                                 <td><span id="PendingIndentForPO">0</span></td>
                             </tr>
                             <tr>
-                                <td><a class="table-link link-primary" asp-action="POApproval" target="_blank" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval">PO Approval For First Approvak</a></td>
+                                <td><a class="table-link link-primary" asp-action="POApproval" target="_blank" asp-controller="POApproval" asp-route-ID="0" id="PO&AmendmentApproval" data-approvalType="firstLvlApproval">PO Approval For First Approvak</a></td>
                                 <td><span id="PendingPOApprovalForFirstApproval">0</span></td>
                             </tr>
                             <tr>
-                                <td><a class="table-link link-primary" asp-action="PendingPOApprovalForMgmtApproval" target="_blank" asp-controller="PendingPOApprovalForMgmtApproval" id="POApprovalForMgmtApproval">PO Approval For Mgmt Approval</a></td>
+                                <td><a class="table-link link-primary" asp-action="POApproval" target="_blank" asp-controller="POApproval" id="POApprovalForMgmtApproval" data-approvalType="finalApproval">PO Approval For Mgmt Approval</a></td>
                                 <td><span id="PendingPOApprovalForMgmtApproval">0</span></td>
                             </tr>
                             <tr>
-                                <td><a class="table-link link-primary" asp-action="PSApproval" asp-controller="PSApproval" target="_blank" asp-route-ID="0" id="PSApproval">Amendment PO For Approval</a></td>
+                                <td><a class="table-link link-primary" asp-action="POApproval" asp-controller="POApproval" target="_blank" asp-route-ID="0" id="PSApproval" data-approvalType="amdApproval">Amendment PO For Approval</a></td>
                                 <td><span id="PendingAmendmentPOForApproval">0</span></td>
                             </tr>
                             <tr>
-                                <td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" target="_blank" asp-route-ID="0" id="SOApproval">Schedule For Approval</a></td>
+                                <td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" target="_blank" asp-route-ID="0" id="SOApproval" data-approvalType="UnAppSO">Schedule For Approval</a></td>
                                 <td><span id="PendingScheduleForApproval">0</span></td>
                             </tr>
                             <tr>
-                                <td><a class="table-link link-primary" asp-action="SSApproval" asp-controller="SSApproval" target="_blank" id="SSApproval">Amendment Schedule For Approval</a></td>
+                                <td><a class="table-link link-primary" asp-action="SOApproval" asp-controller="SOApproval" target="_blank" id="SSApproval" data-approvalType="AppAmmSO">Amendment Schedule For Approval</a></td>
                                 <td><span id="PendingAmendmentScheduleForApproval">0</span></td>
                             </tr>
                             <tr>
@@ -1401,7 +1403,7 @@
                                 <td><span id="PendingSOForMRP">0</span></td>
                             </tr>
                             <tr>
-                                <td><a class="table-link link-primary" asp-action="PendingMRPForPO" asp-controller="PendingMRPForPO" target="_blank" id="MRPForPO">MRP For PO</a></td>
+                                <td><a class="table-link link-primary" asp-action="AutoGenerateSchedule" asp-controller="AutoGenerateSchedule" target="_blank" id="MRPForPO">MRP For PO</a></td>
                                 <td><span id="PendingMRPForPO">0</span></td>
                             </tr>
                         </tbody>
@@ -1514,8 +1516,8 @@
     </div>
     <div id="salesTab" class="tab-content">
         <div class="sales-container">
-            <div class="sales-card" onclick="SaveDisplaySalesHeading()">
-                <div class="sales-card-header">
+            <div class="sales-card">
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="fas fa-chart-line"></i>
                     <h2>Sales Overview</h2>
                 </div>
@@ -1559,8 +1561,8 @@
                 </div>
             </div>
 
-            <div class="sales-card" onclick="SaveDisplaySalesHeading()">
-                <div class="sales-card-header">
+            <div class="sales-card">
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="fas fa-file-invoice-dollar"></i>
                     <h2>Invoice Overview</h2>
                 </div>
@@ -1604,8 +1606,8 @@
                 </div>
             </div>
 
-            <div class="sales-card" onclick="SaveDisplaySalesHeading()">
-                <div class="sales-card-header">
+            <div class="sales-card">
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="fas fa-clipboard-list"></i>
                     <h2>Order Statistics</h2>
                 </div>
@@ -1631,8 +1633,8 @@
                 </div>
             </div>
 
-            <div class="sales-card" onclick="SaveDisplaySalesHeading()">
-                <div class="sales-card-header">
+            <div class="sales-card">
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="sales-fas fa-truck-moving"></i>
                     <h2>Dispatch & Returns</h2>
                 </div>
@@ -1663,8 +1665,8 @@
                 </div>
             </div>
 
-            <div class="sales-card" onclick="SaveDisplaySalesHeading()">
-                <div class="sales-card-header">
+            <div class="sales-card">
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="fas fa-trophy"></i>
                     <h2>Sales Performance</h2>
                 </div>
@@ -1690,8 +1692,8 @@
                 </div>
             </div>
 
-            <div class="sales-card" onclick="SaveDisplaySalesHeading()">
-                <div class="sales-card-header">
+            <div class="sales-card" >
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="fas fa-users"></i>
                     <h2>Customer Insights</h2>
                 </div>
@@ -1761,12 +1763,33 @@
                         <table class="custom-table custom-table-scroll" style="width: 100%;">
                             <thead style="background-color:#7493c3">
                                 <tr>
-                                    <th>Part Code</th>
+                                    <th>PartCode</th>
                                     <th>Item Name</th>
-                                    <th>Sale Bill Amt</th>
+                                    <th>Amt</th>
                                 </tr>
                             </thead>
                             <tbody id="Top10SOLDItem">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="sales-card">
+                <div class="sales-card-header">
+                    <i class="fa fa-chart-area"></i>
+                    <h2>Top 10 Sales Person</h2>
+                </div>
+                <div class="sales-card-content">
+                    <div class="table-container" style="max-height:300px;">
+                        <table class="custom-table custom-table-scroll" style="width: 100%;">
+                            <thead style="background-color:#7493c3">
+                                <tr>
+                                    <th>Sale Person</th>
+                                    <th>Sale Bill Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="Top10SALESPERSON">
                             </tbody>
                         </table>
                     </div>
@@ -1817,6 +1840,15 @@
         //         pdf.save("dashboard.pdf");
         //     });
         // }
+
+        $(".table-link").on("click", function () {
+            debugger
+            var approvalType = $(this).data("approvaltype"); // get data-approvalType
+            if (approvalType) {
+                $("#ApprovalTypeHidden").val(approvalType); // set value in hidden input
+               localStorage.setItem('ApprovalType', approvalType);
+            }
+        });
 
         function ExportPdfForDashBoard() {
             const { jsPDF } = window.jspdf;
@@ -1950,6 +1982,8 @@
                     FillDisplaySalesHeading();
                     FillSALEMonthlyTrend();
                     FillTop10SALECUSTOMER();
+                    FillTop10SOLDItem();
+                    FillTop10SALESPERSON();
                 }
             }
 
@@ -3428,6 +3462,64 @@
                         html += '</tr>';
                     });
                     $('#Top10SALECUSTOMER').empty().append(html);
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load customer data.');
+                }
+            });
+        }
+
+        function FillTop10SOLDItem() {
+
+            $.ajax({
+                url: '@Url.Action("FillTop10SOLDItem", "Home")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, error) {
+                    var obj = $.parseJSON(data);
+                    var html = '';
+                    $.each(obj.Result, function (i, item) {
+                        html += '<tr>';
+                        html += '<td><input type="hidden" value="' + item.Itemcode + '">' + item.PartCode + '</td>';
+                        html += '<td>' + item.ItemName + '</td>';
+                        html += '<td>' + item.SalebillAmt + '</td>';
+                        html += '</tr>';
+                    });
+                    $('#Top10SOLDItem').empty().append(html);
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
+                }
+            });
+        }
+
+        function FillTop10SALESPERSON() {
+            $.ajax({
+                url: '@Url.Action("FillTop10SALESPERSON", "Home")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, error) {
+                    var obj = $.parseJSON(data);
+                    var html = '';
+                    $.each(obj.Result, function (i, item) {
+                        var initials = item.SalesPersonname
+                            .split(' ')
+                            .map(word => word[0])
+                            .join('')
+                            .substring(0, 2)
+                            .toUpperCase();
+
+                        html += '<tr>';
+                        html += '<td>';
+                        html += '<div style="display: flex; align-items: center;">';
+                        html += '  <div class="initials-badge">' + initials + '</div>'; // ⬅️ RIGHT HERE
+                        html += '  <div style="margin-left: 10px;">' + item.SalesPersonname + '</div>';
+                        html += '</div>';
+                        html += '</td>';
+                        html += '<td>' + item.SalebillAmt + '</td>';
+                        html += '</tr>';
+                    });
+                    $('#Top10SALESPERSON').empty().append(html);
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load customer data.');
