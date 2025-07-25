@@ -749,7 +749,8 @@
 
         function PanNo() {
             if ($('#GSTNO').val().length == 15) {
-                $('#PANNO').val($('#GSTNO').val().substring(5, 15)).focus();
+                // $('#PANNO').val($('#GSTNO').val().substring(5, 15)).focus();
+                $('#PANNO').val($('#GSTNO').val().substring(2, 12)).focus();
             }
             else {
                 $('#PANNO').val('');

@@ -92,17 +92,20 @@
                     var firstLevelApproval = $('#fLevelApproved-' + i).val();
                     var ammApproval = $('#AmmApproved-' + i).val();
                     if((ammApproval == "N" || ammApproval == null || ammApproval == "null" || ammApproval == "") && mainApproval == "Y"){
+                        $('#approvedRow-' + i).css("color", "green");
+                    }
+                    else if (  mainApproval == "N" || mainApproval == null || mainApproval == "null" || mainApproval == "") {
+                        $('#approvedRow-' + i).css("color", "red");
+                    } else if (mainApproval == "Y" && ammApproval == "Y") {
                         $('#approvedRow-' + i).css("color", "blue");
                     }
-                    else if (mainApproval == "Y") {
-                        $('#approvedRow-' + i).css("color", "green");
-                    } else {
+                     else {
                         if (ammApproval == "Y")
-                            $('#approvedRow-' + i).css("color", "blue");
+                            $('#approvedRow-' + i).css("color", "#F5C227");
                         else if (firstLevelApproval == "Y")
                             $('#approvedRow-' + i).css("color", "purple");
-                        else
-                            $('#approvedRow-' + i).css("color", "red");
+                        else if (ammApproval == "N" || ammApproval == null || ammApproval == "null" || ammApproval == "")
+                            $('#approvedRow-' + i).css("color", "blue");
                     }
                 }
             }

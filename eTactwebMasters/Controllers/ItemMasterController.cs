@@ -1234,11 +1234,11 @@ public class ItemMasterController : Controller
                 var model = new ImportItemViewModel
                 {
                     Item_Code = Convert.ToInt32(worksheet.Cells[row, 2].Value),
-                    PartCode = worksheet.Cells[row, 3].Value?.ToString(),
-                    Item_Name = worksheet.Cells[row, 4].Value?.ToString()
+                    PartCode = worksheet.Cells[row, 3].Value?.ToString().Trim(),
+                    Item_Name = worksheet.Cells[row, 4].Value?.ToString().Trim()
                 };
-                var partCode = worksheet.Cells[row, 3].Value?.ToString();
-                var ItemName = worksheet.Cells[row, 4].Value?.ToString();
+                var partCode = worksheet.Cells[row, 3].Value?.ToString().Trim();
+                var ItemName = worksheet.Cells[row, 4].Value?.ToString().Trim();
                 switch (flag?.ToLower())
                 {
                     case "hsncode":
@@ -1395,10 +1395,10 @@ public class ItemMasterController : Controller
 
                 if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
                     break; // Stop when column 1 is empty
-                var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString());
-                var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString());
-                var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString(), "PartCode", "Item_Master");
-                var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString(), "Item_Name", "Item_Master");
+                var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString().Trim() ?? "");
+                var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString().Trim()?? "");
+                var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString().Trim() ?? "", "PartCode", "Item_Master");
+                var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString().Trim() ?? "", "Item_Name", "Item_Master");
 
                 var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                 var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
@@ -1442,26 +1442,26 @@ public class ItemMasterController : Controller
 
                 data.Add(new ItemViewModel()
                 {
-                    PartCode = worksheet.Cells[row, 1].Value.ToString(),
+                    PartCode = worksheet.Cells[row, 1].Value.ToString().Trim(),
                     PartCodeExists = PartCodeExists,
                     ItemNameExists = ItemNameExists,
-                    ItemName = worksheet.Cells[row, 2].Value.ToString(),
-                    Unit = worksheet.Cells[row, 3].Value.ToString(),
+                    ItemName = worksheet.Cells[row, 2].Value.ToString().Trim(),
+                    Unit = worksheet.Cells[row, 3].Value.ToString().Trim(),
                     HSNNo = (worksheet.Cells[row, 4].Value == null || string.IsNullOrWhiteSpace(worksheet.Cells[row, 4].Value.ToString()))
         ? 0
         : Convert.ToInt32(worksheet.Cells[row, 4].Value.ToString()),
-                    ItemGroup = worksheet.Cells[row, 5].Value.ToString(),
-                    ItemCategory = worksheet.Cells[row, 6].Value.ToString(),
+                    ItemGroup = worksheet.Cells[row, 5].Value.ToString().Trim(),
+                    ItemCategory = worksheet.Cells[row, 6].Value.ToString().Trim(),
                     MinLevel = Convert.ToInt32(worksheet.Cells[row, 7].Value.ToString()),
                     MaxLevel = Convert.ToInt32(worksheet.Cells[row, 8].Value.ToString()),
-                    Stockable = worksheet.Cells[row, 9].Value.ToString(),
-                    WIPStockable = worksheet.Cells[row, 10].Value.ToString(),
-                    NeedPO = worksheet.Cells[row, 11].Value.ToString(),
-                    QcReq = worksheet.Cells[row, 12].Value.ToString(),
+                    Stockable = worksheet.Cells[row, 9].Value.ToString().Trim(),
+                    WIPStockable = worksheet.Cells[row, 10].Value.ToString().Trim(),
+                    NeedPO = worksheet.Cells[row, 11].Value.ToString().Trim(),
+                    QcReq = worksheet.Cells[row, 12].Value.ToString().Trim(),
                     StdPkg = Convert.ToInt32(worksheet.Cells[row, 13].Value.ToString()),
                     ItemGroupCode = itemGCode,
                     ItemCategoryCode = itemCCode,
-                    ItemServAssets = worksheet.Cells[row, 14].Value.ToString()
+                    ItemServAssets = worksheet.Cells[row, 14].Value.ToString().Trim()
                 });
             }
         }

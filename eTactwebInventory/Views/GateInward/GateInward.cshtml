@@ -814,11 +814,15 @@
                     console.log(result);
                     if (result != null) {
                         var obj = $.parseJSON(result);
+                                 var message = obj.Result.Table[0].Column1;
                         if (obj.Result.Table[0].Column1 == 'NOTEXIST') {
                             $('form').submit();
                         }
                         else {
-                            $.notify('Cannot insert duplicate entry for Year, AccountCode, InvoiceNo and ItemCode', { position: "top center", className: "error" });
+                                   $.notify(message, {
+                                position: "top center",
+                                className: "error"
+                            });
                         }
                     }
                 }
