@@ -16,6 +16,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillItems(string ShowAllItems);
         Task<ResponseResult> FillStockBatchNo(int ItemCode, string StoreName, int YearCode, string batchno,string FinStartDate);
         Task<ResponseResult> FillStore();
+        public Task<ResponseResult> AutoFillitem(string Flag, string showallitem, string SearchItemCode, string SearchPartCode);
+
         Task<ResponseResult> GetPrevQty(int EntryId,int YearCode,int ItemCode,string uniqueBatchno);
         Task<ResponseResult> DeleteByID(int ID,int YC,string EntryDate,int ActualEntryBy, string MachineName);
         Task<ResponseResult> GetDashboardData(ISTDashboard model);

@@ -24,6 +24,10 @@ namespace eTactWeb.Data.BLL
             _JobWorkOpeningDAL = new JobWorkOpeningDAL(configuration, iDataLogic, connectionStringService);
             _DataLogicDAL = iDataLogic;
         }
+        public async Task<ResponseResult> AutoFillitem(string Flag,  string SearchItemCode, string SearchPartCode)
+        {
+            return await _JobWorkOpeningDAL.AutoFillitem(Flag, SearchItemCode, SearchPartCode);
+        }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             return await _JobWorkOpeningDAL.GetFormRights(userID);

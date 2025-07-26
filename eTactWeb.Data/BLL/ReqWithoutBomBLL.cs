@@ -22,7 +22,10 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _ReqWithoutBomDAL = new ReqWithoutBomDAL(configuration, iDataLogic,connectionStringService);
         }
-
+        public async Task<ResponseResult> AutoFillitem(string Flag, string TF, string SearchItemCode, string SearchPartCode)
+        {
+            return await _ReqWithoutBomDAL.AutoFillitem(Flag, TF, SearchItemCode, SearchPartCode);
+        }
         public async Task<DataSet> BindAllDropDowns(string Flag)
         {
             return await _ReqWithoutBomDAL.BindAllDropDowns(Flag);

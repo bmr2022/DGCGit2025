@@ -14,6 +14,8 @@ namespace eTactWeb.Services.Interface
         Task<DataSet> BindAllDropDowns(string Flag);
         Task<ResponseResult> FillItems(string TF);
         Task<ResponseResult> FillPartCode(string TF);
+        public Task<ResponseResult> AutoFillitem(string Flag, string TF, string SearchItemCode, string SearchPartCode);
+
         Task<ResponseResult> GetProjectNo();
         Task<ResponseResult> FillDept();
 
