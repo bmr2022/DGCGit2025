@@ -158,7 +158,7 @@
                                         @* <select class="form-select" data-abcd="13" style="width:200px;" asp-for="PartCode">
                                             <option value="">-Select-</option>
                                         </select> *@
-                                        <input type="text" style="width:150px" id="PartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                        <input type="text" style="width:200px" id="PartCodeText" class="form-control" title="" placeholder="Type Part Code..." />
                                         <input type="hidden" asp-for="PartCode" id="PartCode" />
                                     </div>
                                 </div>
@@ -168,7 +168,7 @@
                                         @* <select class="form-select" data-abcd="14" style="width:200px;" asp-for="ItemCode">
                                             <option value="">-Select-</option>
                                         </select> *@
-                                        <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                        <input type="text" style="width:200px" id="ItemNameText" class="form-control" title="" placeholder="Type Item Name..." />
                                         <input type="hidden" asp-for="ItemCode" id="ItemCode" />
                                     </div>
                                 </div>
@@ -469,6 +469,9 @@
         $(document).ready(function () {
             GetFormRights();
             AutoFillItems();
+            $('input[type="text"]').each(function () {
+                $(this).attr('title', $(this).val());
+            });
             // $('#PartCode').select2();
             // $('#ItemCode').select2();
             $('#RecPartCode').select2();
