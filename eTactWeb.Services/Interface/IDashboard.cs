@@ -41,5 +41,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveBestAndWorstSupplier();
         Task<ResponseResult> FillDisplaySalesHeading();
         Task<ResponseResult> SaveDisplaySalesHeading();
+        Task<ResponseResult> FillSALEMonthlyTrend();
+        Task<ResponseResult> FillTop10SOLDItem();
+        Task<ResponseResult> FillTop10SALECUSTOMER();
+        Task<ResponseResult> FillTop10SALESPERSON();   
     }
 }

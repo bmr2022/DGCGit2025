@@ -494,7 +494,7 @@
                 return false;
             }
             else if ($('#IssuedByDepCode').prop('selectedIndex') <= 0) {
-                $.notify('Issued By Emp Code is required', "error");
+                $.notify('Issued By Dep Code is required', "error");
                 return false;
             }
             else if ($('#RecByEmpCode').prop('selectedIndex') <= 0) {
@@ -1248,7 +1248,7 @@ function submitForm(shouldPrint, printWindow) {
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             var deptId = obj.Result.Table[0].FromDepartmentId;
                             var DeptName = obj.Result.Table[0].DeptName;
-                            $('#IssuedByDepCode').val(deptId).trigger('change');
+                            // $('#IssuedByDepCode').val(deptId).trigger('change');
                             $('#RecDepCode').val(deptId);
                             $('#RecDept').val(DeptName);
                             // $('#IssuedByDepCode').val(obj.Result[0].FromDepartmentId);
