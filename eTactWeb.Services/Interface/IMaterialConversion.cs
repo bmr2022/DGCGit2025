@@ -10,6 +10,9 @@ namespace eTactWeb.Services.Interface
 {
     public interface IMaterialConversion
     {
+        public Task<ResponseResult> AutoFillitem(string Flag, string SearchItemCode, string SearchPartCode);
+        public Task<ResponseResult> AutoFillAltitem(string Flag,int origItemcode, string SearchItemCode, string SearchPartCode);
+
         Task<ResponseResult> GetFormRights(int userID);
         Task<ResponseResult> FillEntryID(int YearCode);
         Task<ResponseResult> FillBranch();
