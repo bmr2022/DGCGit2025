@@ -598,6 +598,18 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
+        public async Task<JsonResult> AutoFillPartCode( string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IJobWorkOpening.AutoFillitem("AutoFillPartCode", SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> AutoFillItemName( string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IJobWorkOpening.AutoFillitem("AutoFillItemName", SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         public async Task<JsonResult> FillEntryId(int YearCode,string FormTypeCustJWNRGP)
         {

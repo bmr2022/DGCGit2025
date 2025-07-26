@@ -11,6 +11,8 @@ namespace eTactWeb.Services.Interface
     public interface IJobWorkOpening
     {
         Task<ResponseResult> GetFormRights(int userID);
+        public Task<ResponseResult> AutoFillitem(string Flag, string SearchItemCode, string SearchPartCode);
+
         Task<ResponseResult> FillEntryId(string EntryId, int YearCode, string FormTypeCustJWNRGP, string SPName);
         Task<JobWorkOpeningModel> GetViewByID(int ID, string Mode,int YC,string OpeningType);
         Task<ResponseResult> DeleteByID(int ID, int YC, string SumDetail, int Itemcode, string ChallanNo,string OpeningType,
