@@ -185,6 +185,7 @@ namespace eTactWeb.Controllers
 		[HttpPost]
 
 		public async Task<IActionResult> InProcessInspection(InProcessInspectionModel model)
+		
 		{
 			try
 			{
@@ -377,16 +378,19 @@ namespace eTactWeb.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
-		public async Task<IActionResult> GetInprocessInspectionGridData(int ItemCode, int SampleSize)
+		public async Task<IActionResult> GetInprocessInspectionGridData(int ItemCode, int SampleSize, int? DeletedSeqNo,string? DeletedCharacteristic)
 		{
             //model.Mode = "Search";
             ViewBag.SampleSize = SampleSize;
-            var model = new InProcessInspectionModel();
+			ViewBag.DeletedSeqNo = DeletedSeqNo;
+			ViewBag.DeletedCharacteristic = DeletedCharacteristic?.Trim().ToLower() ?? "";
+			var model = new InProcessInspectionModel();
 			model = await _IInProcessInspection.GetInprocessInspectionGridData(ItemCode,SampleSize);
 			
 			return PartialView("_InprocessInspectionGrid", model);
 			
 
+		
 		}
 
 		[HttpPost]
@@ -525,7 +529,7 @@ namespace eTactWeb.Controllers
 		//	ViewBag.SampleSize = model.SampleSize;
 		//return PartialView("_InProcessInspectionAddtoGrid", model);
 		//}
-		public IActionResult DeleteItemRow(int SeqNo, int SampleSize)
+		public IActionResult DeleteItemRow(int SeqNo, int SampleSize,string Characteristic)
 		{
 			string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
 			List<InProcessInspectionDetailModel> existingGrid = new();
@@ -559,8 +563,9 @@ namespace eTactWeb.Controllers
 				SampleSize = SampleSize
 			};
 			ViewBag.SampleSize = model.SampleSize;
-
-			return PartialView("_InProcessInspectionAddtoGrid", model);
+            ViewBag.DeletedSeqNo = SeqNo;
+            ViewBag.DeletedCharacteristic = itemToRemove.Characteristic;
+            return PartialView("_InProcessInspectionAddtoGrid", model);
 		}
 
 		public async Task<IActionResult> InProcessInspectionDashBoard(string ReportType, string FromDate, string ToDate)

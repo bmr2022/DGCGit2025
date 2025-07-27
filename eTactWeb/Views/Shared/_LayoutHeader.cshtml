@@ -904,11 +904,11 @@
 
                     <li>
                         @*//1 *@
-                        <a class="dropdown-item" id="Account Master" href="#">Qc &raquo;</a>
+                        <a class="dropdown-item" id="ControlPlan" href="#">Qc &raquo;</a>
                         @*    <ul class="submenu dropdown-menu"> *@
                         <ul class="submenu dropdown-menu" data-bs-popper="static">
                             <li>
-                                <a class="dropdown-item" id="Account Master" href="#" style="background:#FFF8DC ; color :#000000">Control plan &raquo;</a>
+                                <a class="dropdown-item" id="ControlPlan" href="#" style="background:#FFF8DC ; color :#000000">Control plan &raquo;</a>
                                 <ul class="submenu dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" asp-action="ControlPlan" asp-route-ID="0" asp-controller="ControlPlan" id="ControlPlan">
@@ -918,10 +918,17 @@
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item PrimaryAccountGroupMaster" asp-action="ControlPlanDashBoard" asp-controller="ControlPlan">
+                                        <a class="dropdown-item ControlPlan" asp-action="ImportControlPlann" asp-route-ID="0" asp-controller="ControlPlan">
+                                            <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> Import Control Plan
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="Item Master" />
+
+                                    </li>
+                                    <li>
+                                        <a class="dropdown-item ControlPlan" asp-action="ControlPlanDashBoard" asp-controller="ControlPlan">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="PrimaryAccountGroupMaster" />
+                                        <input class="userRightsPermission" type="hidden" value="ControlPlan" />
 
                                     </li>
                                 </ul>

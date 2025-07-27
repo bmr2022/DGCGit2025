@@ -5,6 +5,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using OfficeOpenXml;
 using System.Security.Cryptography.X509Certificates;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
@@ -296,6 +297,249 @@ Item.Remarks ?? ""
                 throw;
             }
         }
+        public ActionResult ImportControlPlann()
+        {
+            ControlPlanModel model = new ControlPlanModel();
+            model.Yearcode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+            return View(model);
+        }
+        [HttpPost]
+        public IActionResult UploadExcel(IFormFile excelFile)
+        {
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+            List<ControlPlanViewModel> data = new List<ControlPlanViewModel>();
+
+            using (var stream = excelFile.OpenReadStream())
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets[0];
+                //var dupeItemNameFeatureOpt = _IControlPlan.GetFeatureOption();
+                //var UnitList = _IItemMaster.GetUnitList();
+                for (int row = 2; row <= worksheet.Dimension.Rows; row++)
+                {
+                    var cellValue = worksheet.Cells[row, 1].Value;
+
+                    if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
+                        break; // Stop when column 1 is empty
+                    //var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString().Trim() ?? "");
+                    //var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString().Trim() ?? "");
+                    //var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString().Trim() ?? "", "PartCode", "Item_Master");
+                    //var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString().Trim() ?? "", "Item_Name", "Item_Master");
+
+                    //var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
+                    //var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
+
+                    //var unit = worksheet.Cells[row, 3].Value?.ToString()?.Trim() ?? "";
+
+                    //var unitdataset = UnitList.Result.Result;
+                    //var unitTable = unitdataset.Tables[0];
+
+                    //bool unitExists = false;
+                    //foreach (DataRow rows in unitTable.Rows)
+                    //{
+                    //    if (rows["Unit_name"].ToString().Trim().Equals(unit, StringComparison.OrdinalIgnoreCase))
+                    //    {
+                    //        unitExists = true;
+                    //        break;
+                    //    }
+                    //}
+                    //if (!unitExists)
+                    //{
+                    //    return StatusCode(207, "Invalid Unit" + unit);
+                    //}
+
+
+                    //ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
+
+                    //int itemGCode = 1;
+                    //int itemCCode = 1;
+                    //if (itemGroupCode.Result.Result != null)
+                    //{
+                    //    itemGCode = itemGroupCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemGroupCode.Result.Result.Rows[0].ItemArray[0];
+
+                    //}
+                    //if (itemCatCode.Result.Result != null)
+                    //{
+                    //    itemCCode = itemCatCode.Result.Result.Rows.Count <= 0 ? 0 : (int)itemCatCode.Result.Result.Rows[0].ItemArray[0];
+
+                    //}
+
+
+
+                    data.Add(new ControlPlanViewModel()
+                    {
+                        ItemCode = worksheet.Cells[row, 1].Value != null? Convert.ToInt32(worksheet.Cells[row, 1].Value.ToString().Trim()): 0,
+
+                        PartCode = worksheet.Cells[row, 2].Value.ToString().Trim(),
+                        ItemName = worksheet.Cells[row, 3].Value?.ToString().Trim(),
+                        Characteristic = worksheet.Cells[row, 4].Value?.ToString().Trim(),
+                        EvalutionMeasurmentTechnique = worksheet.Cells[row, 5].Value?.ToString().Trim(),
+                        ControlMethod = worksheet.Cells[row, 6].Value?.ToString().Trim(),
+                        SpecificationFrom = worksheet.Cells[row, 7].Value?.ToString().Trim(),
+                        Operator = worksheet.Cells[row, 8].Value?.ToString().Trim(),
+                        SpecificationTo = worksheet.Cells[row, 9].Value?.ToString().Trim(),
+                        FrequencyofTesting = worksheet.Cells[row, 10].Value?.ToString().Trim(),
+                        InspectionBy = worksheet.Cells[row, 11].Value?.ToString().Trim(),
+                        Remarks = worksheet.Cells[row, 12].Value?.ToString().Trim(),
+                        RejectionPlan = worksheet.Cells[row, 13].Value?.ToString().Trim(),
+                        //DrawingNo = worksheet.Cells[row, 13].Value?.ToString().Trim()
+                    });
+                }
+            }
+            var model = new ControlPlanModel();
+            model.ExcelDataList = data;
+            return PartialView("_DisplayExcelData", model);
+        }
+        public async Task<IActionResult> AddControlPlanListdata(List<ControlPlanViewModel> model)
+        {
+            try
+            {
+                HttpContext.Session.Remove("KeyControlPlanGrid");
+
+                string ItemList = HttpContext.Session.GetString("KeyControlPlanGrid");
+                IList<ControlPlanViewModel> ItemViewModel = new List<ControlPlanViewModel>();
+                if (!string.IsNullOrEmpty(ItemList))
+                {
+                    ItemViewModel = JsonConvert.DeserializeObject<IList<ControlPlanViewModel>>(ItemList);
+                }
+
+                var MainModel = new ControlPlanModel();
+                var ItemDetailGrid = new List<ControlPlanViewModel>();
+                var ItemGrid = new List<ControlPlanViewModel>();
+                var SSGrid = new List<ControlPlanViewModel>();
+
+                var seqNo = 0;
+                foreach (var item in model)
+                {
+                    if (item != null)
+                    {
+                        if (ItemViewModel == null)
+                        {
+                            item.SeqNo += seqNo + 1;
+                            ItemGrid.Add(item);
+                            seqNo++;
+                        }
+                        else
+                        {
+                            if (ItemViewModel.Where(x => x.PartCode == item.PartCode).Any())
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+                            else
+                            {
+                                item.SeqNo = ItemViewModel.Count + 1;
+                                //ItemGrid = ItemViewModel.Where(x => x != null).ToList();
+                                //SSGrid.AddRange(ItemGrid);
+                                ItemGrid.Add(item);
+                            }
+                        }
+                        MainModel.ExcelDataList = ItemGrid;
+
+                        HttpContext.Session.SetString("KeyControlPlanGrid", JsonConvert.SerializeObject(MainModel.ExcelDataList));
+                    }
+                }
+
+                string modelData = HttpContext.Session.GetString("KeyControlPlanGrid");
+                IList<ControlPlanViewModel> ItemListt = new List<ControlPlanViewModel>();
+                if (!string.IsNullOrEmpty(modelData))
+                {
+                    ItemListt = JsonConvert.DeserializeObject<IList<ControlPlanViewModel>>(modelData);
+                }
+                var CC = HttpContext.Session.GetString("Branch");
+                var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var ItemGridList = new DataTable();
+                ItemGridList = GetImportDetailTable(ItemListt);
+
+                var Result = await _IControlPlan.SaveMultipleControlPlanData(ItemGridList);
+
+                if (Result != null)
+                {
+                    if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["200"] = "200";
+                    }
+                    if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["202"] = "202";
+                    }
+                    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        TempData["500"] = "500";
+                        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                        return View("Error", Result);
+                    }
+                }
+
+
+                return RedirectToAction(nameof(ImportControlPlann));
+            }
+            catch (Exception ex)
+            {
+                LogException<ControlPlanController>.WriteException(_logger, ex);
+
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+
+                return View("Error", ResponseResult);
+            }
+        }
+        private static DataTable GetImportDetailTable(IList<ControlPlanViewModel> detailList)
+        {
+            var dt = new DataTable();
+
+            dt.Columns.Add("ItemName", typeof(string));
+            dt.Columns.Add("PartCode", typeof(string));
+            dt.Columns.Add("ItemCode", typeof(long));
+            dt.Columns.Add("YearCode", typeof(long));
+            dt.Columns.Add("CntPlanEntryId", typeof(long));
+            dt.Columns.Add("CntPlanYearCode", typeof(long));
+            dt.Columns.Add("SeqNo", typeof(long));
+            dt.Columns.Add("Characteristic", typeof(string));
+            dt.Columns.Add("EvalutionMeasurmentTechnique", typeof(string));
+            dt.Columns.Add("SpecificationFrom", typeof(string));
+            dt.Columns.Add("Operator", typeof(string));
+            dt.Columns.Add("SpecificationTo", typeof(string));
+            dt.Columns.Add("FrequencyofTesting", typeof(string));
+            dt.Columns.Add("InspectionBy", typeof(string));
+            dt.Columns.Add("ControlMethod", typeof(string));
+            dt.Columns.Add("RejectionPlan", typeof(string));
+            dt.Columns.Add("Remarks", typeof(string));
+
+            long seqNo = 1;
+            foreach (var item in detailList)
+            {
+                dt.Rows.Add(
+                    item.ItemName ?? "",
+                    item.PartCode ?? "",
+                    item.ItemCode,
+                    item.CntPlanYearCode,              // YearCode (same as CntPlanYearCode)
+                    item.CntPlanEntryId,
+                    item.CntPlanYearCode,
+                    seqNo++,                      // Auto-incrementing SeqNo
+                    item.Characteristic ?? "",
+                    item.EvalutionMeasurmentTechnique ?? "",
+                    item.SpecificationFrom ?? "",
+                    item.Operator ?? "",
+                    item.SpecificationTo ?? "",
+                    item.FrequencyofTesting ?? "",
+                    item.InspectionBy ?? "",
+                    item.ControlMethod ?? "",
+                    item.RejectionPlan ?? "",
+                    item.Remarks ?? ""
+                );
+            }
+
+            return dt;
+        }
+
         public async Task<JsonResult> GetNewEntryId(int Yearcode)
         {
             var JSON = await _IControlPlan.GetNewEntryId( Yearcode);

@@ -430,6 +430,24 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
+        public async Task<ResponseResult> SaveMultipleControlPlanData(DataTable ControlPlanDetailGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "INSERTMULTIPLE"));
+                SqlParams.Add(new SqlParameter("@DTImportControlPlanData", ControlPlanDetailGrid));
 
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPQCControlPlanMain", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
     }
 }

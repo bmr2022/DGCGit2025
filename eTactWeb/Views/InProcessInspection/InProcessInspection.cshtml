@@ -112,7 +112,7 @@
 										<label asp-for="RevNo" class="form-label">Rev No</label>
 										<input asp-for="RevNo" class="form-control" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
 										<label asp-for="RevDate" class="form-label">Rev Date</label>
 										<input asp-for="RevDate" class="form-control" />
 									</div>
@@ -164,11 +164,11 @@
 										<label asp-for="InspTimeFrom" class="form-label"> Insp Time From</label>
 										<input asp-for="InspTimeFrom" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
 										<label asp-for="InspTimeTo" class="form-label">Insp Time To</label>
 										<input asp-for="InspTimeTo" class="form-control" type="time"  value="@DateTime.Now.ToString("HH:mm")" />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:130px;">
 										<label asp-for="SampleSize" class="form-label">Sample Size</label>
 										<input asp-for="SampleSize" class="form-control"
 											   id="SampleSize"
@@ -176,9 +176,9 @@
 											   min="1"
 											   max="25"
 											   step="1"
-											   value="1"
 											   oninput="this.value = this.value.replace(/[^0-9]/g,''); if(this.value < 1) this.value=1; GetInprocessInspectionGridData();" />
 									</div>
+
 
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
 										<label asp-for="Color" class="form-label"> Color</label>
@@ -195,10 +195,10 @@
 										<label asp-for="NoOfCavity" class="form-label">No Of Cavity</label>
 										<input asp-for="NoOfCavity" class="form-control"  />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:120px;">
 										<input type="hidden" asp-for="MachineId" />
 										<label asp-for="MachineNo" class="form-label"> Machine No</label>
-										<select class="form-control" asp-for="MachineNo">
+										<select class="form-control" asp-for="MachineNo" style="width:110px;">
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
 											{
@@ -210,10 +210,10 @@
 										<label asp-for="LotNo" class="form-label">Lot No</label>
 										<input asp-for="LotNo" class="form-control"  />
 									</div>
-									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
 										<label asp-for="Shift" class="form-label"> Shift</label>
 										<input type="hidden" asp-for="ShiftID" />
-										<select class="form-control" asp-for="Shift">
+										<select class="form-control" asp-for="Shift" style="width:80px;">
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
 											{
@@ -279,14 +279,24 @@
 												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text"))">
 										</select>
 									</div> *@
-									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="margin-top:22px;width:280px;">
 										<select id="Inspection" class="form-select" multiple
 												asp-for="SelectedInspections"
 												asp-items="@(new SelectList(Model.InspectionOptions, "Key", "Text", Model.SelectedInspections))">
 										</select>
 
 									</div>
+									<div class="col-md-2 mt-1 mb-1" style="width:190px;">
+										<label  class="form-label">Search</label>
+										<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;margine-top:22px;">
+									</div>
+									
 
+									<div class="col-md-10" style="width:130px;margine-top:24px;">
+										<button type="button" id="GridButton" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
+											<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+										</button>
+									</div>
 								</div>
 								<div class="progress my-2 mb-3" style="height: 4px;">
 									<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -300,14 +310,7 @@
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradientn show" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="card-body" id="divPendingMRP">
-											<div class="col-md-2 mt-1 mb-1">
-												<input type="text" class="form-control" id="search-box" placeholder="Search..." style="background-color:#FFFACD;">
-											</div>
-											<div class="col-md-10">
-												<button type="button" id="GridButton" class="GridButton btn btn-sm btn-outline-danger mt-1 mb-1">
-													<i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
-												</button>
-											</div>
+											
 
 											<div class="col-md-12 divStockRegister" id="divinProcessInspectionGrid">
 												<partial name="_InprocessInspectionGrid" />
@@ -813,12 +816,55 @@
 			enableFiltering: true,
 			includeSelectAllOption: true,
 			enableCaseInsensitiveFiltering: true,
-			buttonWidth: '250px',
+			buttonWidth: '270px',
 			nonSelectedText: 'None selected',
 			templates: {
 				button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>'
 			}
 		});
+		var deletedSeqNo = null;
+		var DeletedCharacteristic = null;
+		function DeleteItemRow(seqNo, sampleSize, Characteristic) {
+			deletedSeqNo = seqNo;
+			DeletedCharacteristic = Characteristic;
+
+			$.ajax({
+				url: '/InProcessInspection/DeleteItemRow', // Adjust route if needed
+				data: { SeqNo: seqNo, SampleSize: sampleSize, Characteristic: Characteristic },
+				type: 'GET', // or 'POST' if you prefer, just match controller
+				success: function (result) {
+					// Replace your grid container with updated HTML partial
+					$('#divStockGrid').html(result);
+					$.notify("Process deleted from Grid", "info");
+
+					TotalNoOfRows();
+					//ClearItems();
+					reloadGridWithHighlight(DeletedCharacteristic);
+					addRowToGrid();
+				},
+				error: function () {
+					alert('Error deleting the row.');
+				}
+			});
+		}
+		function reloadGridWithHighlight(characteristic) {
+			var ItemCode = $('#ItemCode').val();
+			var SampleSize = $('#SampleSize').val();
+
+			$.ajax({
+				type: 'POST',
+				url: '/InProcessInspection/GetInprocessInspectionGridData',
+				data: {
+					ItemCode: ItemCode,
+					SampleSize: SampleSize,
+					DeletedCharacteristic: characteristic  // pass deleted characteristic here
+				},
+				success: function (response) {
+					$('#divinProcessInspectionGrid').html(response);
+				}
+			});
+		}
+
 		function GetInprocessInspectionGridData() {
 			 
 			var ItemCode = $('#ItemCode').val();
@@ -829,13 +875,15 @@
 				url: '@Url.Action("GetInprocessInspectionGridData", "InProcessInspection")',
 				data: {
 					ItemCode: ItemCode,
-					SampleSize: sampleSize
+					SampleSize: sampleSize,
+					DeletedSeqNo: deletedSeqNo,
+					DeletedCharacteristic: DeletedCharacteristic
 				},
 				success: function (response) {
 					$('#divinProcessInspectionGrid').html(response);
 					var totalRows = $('#divStockRegisterBody tr').length;
 					$('#totalRows').text(totalRows);
-					
+					deletedSeqNo = null;
 				},
 				error: function (xhr, status, error) {
 					console.error("Error fetching BOM tree data:", error);
@@ -1302,9 +1350,10 @@
 				url: '@Url.Action("AddToGridData", "InProcessInspection")',
 				data: { modelList: gridData, sampleSize: sampleSize },
 				success: function (result) {
+					DeletedCharacteristic = null;
 					$('#divStockGrid').html(result);
 					TotalNoOfRows();
-					ClearItems();
+					//ClearItems();
 					addRowToGrid();
 				},
 				error: function () {
@@ -1312,26 +1361,7 @@
 				}
 			});
 		});
-		function DeleteItemRow(seqNo, sampleSize) {
-			$.ajax({
-				url: '/InProcessInspection/DeleteItemRow', // Adjust route if needed
-				data: { SeqNo: seqNo, SampleSize: sampleSize },
-				type: 'GET', // or 'POST' if you prefer, just match controller
-				success: function (result) {
-					// Replace your grid container with updated HTML partial
-					$('#divStockGrid').html(result);
-					$.notify("Process deleted from Grid", "info");
-
-					TotalNoOfRows();
-					ClearItems();
-					addRowToGrid();
-				},
-				error: function () {
-					alert('Error deleting the row.');
-				}
-			});
-		}
-
+	
 		function TotalNoOfRows() {
 			var Row = $('#divStockGrid tr').length;
 			var tdCount = $('#divStockGrid tr td').length;
