@@ -572,6 +572,15 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
         }
 
+        .sales-card-SO-Dispatch {
+            background: #fff;
+            border-radius: 12px;
+            padding: 20px;
+            flex: 1;
+            min-width: 1000px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
         .sales-card-title {
             font-size: 20px;
             margin-bottom: 10px;
@@ -783,15 +792,15 @@
 
         .soft-style {
             text-align: center;
-            padding: 30px;
+            padding: 15px;
             color: #aaa;
-            font-size: 18px;
+            font-size: 15px;
         }
 
             .soft-style .icon {
-                font-size: 50px;
+                font-size: 35px;
                 color: #ccc;
-                margin-bottom: 12px;
+                margin-bottom: 5px;
             }
 
         .sales-container {
@@ -822,15 +831,15 @@
         }
 
             .sales-card-header h2 {
-                font-size: 20px;
+                font-size: 15px;
             }
 
             .sales-card-header i {
-                font-size: 24px;
+                font-size: 20px;
                 color: var(--sales-primary);
                 margin-right: 12px;
-                width: 40px;
-                height: 40px;
+                width: 35px;
+                height: 35px;
                 background: rgba(67, 97, 238, 0.1);
                 border-radius: 8px;
                 display: flex;
@@ -843,24 +852,25 @@
             align-items: center;
             gap: 12px;
             padding: 10px 0;
+            .sales-card-header h2
         }
 
             .sales-metric i {
-                font-size: 20px;
+                font-size: 15px;
                 color: var(--sales-accent);
                 background: rgba(72, 149, 239, 0.1);
-                padding: 10px;
+                padding: 8px;
                 border-radius: 8px;
             }
 
         .sales-metric-value {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: 600;
             color: var(--sales-dark);
         }
 
         .sales-metric-label {
-            font-size: 13px;
+            font-size: 15px;
             color: #6c757d;
             margin-top: 2px;
         }
@@ -887,7 +897,7 @@
 
         .sales-order-stat-item {
             border-radius: 8px;
-            padding: 12px;
+            padding: 15px;
             background: #d2e0ee;
             text-align: center;
         }
@@ -902,10 +912,13 @@
                 color: #ffc107;
             }
 
-            .sales-order-stat-item.danger {
-                background: rgba(220, 53, 69, 0.1);
-                color: #dc3545;
-            }
+        .sales-order-total {
+            border-radius: 8px;
+            padding: 15px;
+            background: #d2e0ee;
+            text-align: center;
+            width: 300px;
+        }
 
         .sales-time-period-comparison {
             display: flex;
@@ -918,7 +931,7 @@
 
             .sales-time-period h3 {
                 font-size: 16px;
-                margin-bottom: 15px;
+                margin-bottom: 10px;
                 color: var(--sales-primary);
                 display: flex;
                 align-items: center;
@@ -979,6 +992,45 @@
             justify-content: center;
             font-weight: bold;
             font-size: 12px;
+        }
+
+        /* Make metric icons smaller */
+        .small-icon {
+            font-size: 14px;
+            margin-right: 6px;
+            color: #666; /* optional muted color */
+        }
+
+        /* Align icon and text vertically */
+        .sales-metric {
+            display: flex;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .sales-stat-value {
+            font-size: 15px;
+        }
+
+        .sales-order-stats-container + .sales-order-stats-container {
+            margin-top: 10px;
+        }
+
+        .success {
+            background-color: #28a745; /* Green */
+        }
+
+        .warning {
+            background-color: #ffc107; /* Yellow */
+            color: black;
+        }
+
+        .info {
+            background-color: #17a2b8; /* Blue */
+        }
+
+        .danger {
+            background-color: #bce8f0; /* Red */
         }
 
     </style>
@@ -1472,7 +1524,7 @@
                 <div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
                     <h3 style="margin: 0;">Worst Vendors</h3>
                     <div class="tab-icon-container bg-icon">
-                        <i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
+                        <i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="SaveBestAndWorstSupplier()"></i>
                     </div>
                 </div>
                 <div class="supplier-grid" id="supplierWorstContainer">
@@ -1526,34 +1578,34 @@
                         <div class="sales-time-period">
                             <h3><i class="fas fa-calendar-alt"></i> Yearly</h3>
                             <div class="sales-metric">
-                                <i class="fas fa-shopping-cart"></i>
+                                <i class="fas fa-shopping-cart small-icon"></i>
                                 <div>
                                     <div class="sales-metric-value" id="TotalSaleOrderItemQtyofYear">0</div>
-                                    <div class="sales-metric-label">Total Items</div>
+                                    <div class="sales-metric-label">Items</div>
                                 </div>
                             </div>
                             <div class="sales-metric">
-                                <i class="fas fa-dollar-sign"></i>
+                                <i class="fas fa-dollar-sign small-icon"></i>
                                 <div>
-                                    <div class="sales-metric-value" id="TotalSaleOrderValueofYear">$0</div>
-                                    <div class="sales-metric-label">Total Sales</div>
+                                    <div class="sales-metric-value" id="TotalSaleOrderValueofYear">0</div>
+                                    <div class="sales-metric-label">Revenue</div>
                                 </div>
                             </div>
                         </div>
                         <div class="sales-time-period">
                             <h3><i class="fas fa-calendar-week"></i> Monthly</h3>
                             <div class="sales-metric">
-                                <i class="fas fa-shopping-cart"></i>
+                                <i class="fas fa-shopping-cart small-icon"></i>
                                 <div>
                                     <div class="sales-metric-value" id="TotalSaleOrderItemQtyofMonth">0</div>
-                                    <div class="sales-metric-label">Total Items</div>
+                                    <div class="sales-metric-label">Items</div>
                                 </div>
                             </div>
                             <div class="sales-metric">
-                                <i class="fas fa-wallet"></i>
+                                <i class="fas fa-wallet small-icon"></i>
                                 <div>
-                                    <div class="sales-metric-value" id="TotalSaleOrderValueofMonth">$0</div>
-                                    <div class="sales-metric-label">Total Sales</div>
+                                    <div class="sales-metric-value" id="TotalSaleOrderValueofMonth">0</div>
+                                    <div class="sales-metric-label">Revenue</div>
                                 </div>
                             </div>
                         </div>
@@ -1574,14 +1626,14 @@
                                 <i class="fas fa-boxes"></i>
                                 <div>
                                     <div class="sales-metric-value" id="TotalInvoiceItemQtyofYear">0</div>
-                                    <div class="sales-metric-label">Total Items</div>
+                                    <div class="sales-metric-label">Items</div>
                                 </div>
                             </div>
                             <div class="sales-metric">
                                 <i class="fas fa-money-bill-wave"></i>
                                 <div>
-                                    <div class="sales-metric-value" id="TotalInvoiceValueofYear">$0</div>
-                                    <div class="sales-metric-label">Total Value</div>
+                                    <div class="sales-metric-value" id="TotalInvoiceValueofYear">0</div>
+                                    <div class="sales-metric-label">Revenue</div>
                                 </div>
                             </div>
                         </div>
@@ -1591,14 +1643,14 @@
                                 <i class="fas fa-boxes"></i>
                                 <div>
                                     <div class="sales-metric-value" id="TotalInvoiceItemQtyofMonth">0</div>
-                                    <div class="sales-metric-label">Total Items</div>
+                                    <div class="sales-metric-label">Items</div>
                                 </div>
                             </div>
                             <div class="sales-metric">
                                 <i class="fas fa-cash-register"></i>
                                 <div>
-                                    <div class="sales-metric-value" id="TotalInvoiceValueofMonth">$0</div>
-                                    <div class="sales-metric-label">Total Value</div>
+                                    <div class="sales-metric-value" id="TotalInvoiceValueofMonth">0</div>
+                                    <div class="sales-metric-label">Revenue</div>
                                 </div>
                             </div>
                         </div>
@@ -1609,14 +1661,10 @@
             <div class="sales-card">
                 <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="fas fa-clipboard-list"></i>
-                    <h2>Order Statistics</h2>
+                    <h2>Order Status    </h2>
                 </div>
                 <div class="sales-card-content">
                     <div class="sales-order-stats-container">
-                        <div class="sales-order-stat-item">
-                            <div class="sales-stat-value" id="TotalNoOfSaleorderOfMonth">0</div>
-                            <div class="sales-stat-label">Total Orders</div>
-                        </div>
                         <div class="sales-order-stat-item success">
                             <div class="sales-stat-value" id="TotalCompletedNoOfSaleorderOfMonth">0</div>
                             <div class="sales-stat-label">Completed</div>
@@ -1625,74 +1673,17 @@
                             <div class="sales-stat-value" id="TotalPendingNoOfSaleorderOfMonth">0</div>
                             <div class="sales-stat-label">Pending</div>
                         </div>
-                        <div class="sales-order-stat-item danger">
-                            <div class="sales-stat-value" id="TotalCancelledNoOfSaleorderOfMonth">0</div>
-                            <div class="sales-stat-label">Cancelled</div>
+                    </div>
+                    <div class="sales-order-stats-container">
+                        <div class="sales-order-total">
+                            <div class="sales-stat-value" id="TotalNoOfSaleorderOfMonth">0</div>
+                            <div class="sales-stat-label">Total Orders</div>
                         </div>
                     </div>
                 </div>
             </div>
 
             <div class="sales-card">
-                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
-                    <i class="sales-fas fa-truck-moving"></i>
-                    <h2>Dispatch & Returns</h2>
-                </div>
-                <div class="sales-card-content">
-                    <div class="sales-metric">
-                        <i class="fas fa-clock" style="color:#fd7e14; background:rgba(253,126,20,0.1)"></i>
-                        <div>
-                            <div class="sales-metric-value" id="PendDispatchQtyOfMonth">0 pending</div>
-                            <div class="sales-metric-label" id="PendDispatchValueOfMonth">$0 value</div>
-                        </div>
-                    </div>
-                    <div class="sales-metric">
-                        <i class="fas fa-undo" style="color:#6f42c1; background:rgba(111,66,193,0.1)"></i>
-                        <div>
-                            <div class="sales-metric-container">
-                                <div>
-                                    <div class="sales-metric-value" id="ReturnSaleValueoftheMonth">$0</div>
-                                    <div class="sales-metric-label">This Month</div>
-                                </div>
-                                <div class="sales-divider"></div>
-                                <div>
-                                    <div class="sales-metric-value" id="ReturnSaleValueoftheYear">$0</div>
-                                    <div class="sales-metric-label">This Year</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sales-card">
-                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
-                    <i class="fas fa-trophy"></i>
-                    <h2>Sales Performance</h2>
-                </div>
-                <div class="sales-card-content">
-                    <div class="sales-metric with-badge">
-                        <i class="fas fa-box-open" style="color:#ff6b6b; background:rgba(255,107,107,0.1)"></i>
-                        <div>
-                            <div class="sales-metric-value" id="BestSoldItemOfMonth">0<span class="sales-badge">Best Product</span></div>
-                            <div class="sales-metric-label" id="BestSoldItemIdofMonth">ID: 0</div>
-                        </div>
-                    </div>
-                    <div class="sales-metric">
-                        <i class="fas fa-user-tie" style="color:#20c997; background:rgba(32,201,151,0.1)"></i>
-                        <div>
-                            <div class="sales-metric-value" id="BestSalesPersonofMonthEmpid">Sarah Johnson</div>
-                            <div class="sales-metric-label" id="BestSalePersonOrderValue">Generated $0 this month</div>
-                        </div>
-                    </div>
-                    <div class="sales-progress-container">
-                        <div class="sales-progress-bar" style="width: 78%; background: #4361ee;"></div>
-                        <div class="sales-progress-label" id="BestSalesPersonOfMonth">0% of team target</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="sales-card" >
                 <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
                     <i class="fas fa-users"></i>
                     <h2>Customer Insights</h2>
@@ -1706,10 +1697,6 @@
                         </div>
                     </div>
                     <div class="sales-metric">
-                        <i class="fas fa-id-card"></i>
-                        <span>Best Customer Account Code: <strong id="BestCustomerAccountCode"></strong>0</span>
-                    </div>
-                    <div class="sales-metric">
                         <i class="fas fa-user-plus"></i>
                         <span>New Customers (Year): <strong id="NewCustomersAddinYear"></strong></span>
                     </div>
@@ -1721,14 +1708,64 @@
             </div>
 
             <div class="sales-card">
-                <div class="sales-card-header" style="display: flex; align-items: center; gap: 10px;">
-                    <i class="fa fa-chart-area" style="font-size: 20px; color: #0d6efd;"></i>
-                    <h2 style="margin: 0; font-size: 18px;">Monthly Sales Trend</h2>
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
+                    <i class="fas fa-trophy"></i>
+                    <h2>Performance Metrics</h2>
                 </div>
-
                 <div class="sales-card-content">
-                    <!-- Chart canvas -->
-                    <canvas id="gaugeChart" width="300" height="150" style="margin-top:-50px;"></canvas>
+
+                    <!-- 🔶 Product Section -->
+                    <div class="section-title">🏆 Best Product</div>
+                    <div class="sales-metric with-badge product-section">
+                        <i class="fas fa-box-open" style="color:#ff6b6b; background:rgba(255,107,107,0.1)"></i>
+                        <div>
+                            <div class="sales-metric-value" id="BestSoldItemOfMonth">
+                                <span class="sales-badge">Best Product of Month</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- 🔷 Seller Section -->
+                    <div class="section-title">👤 Best Seller</div>
+                    <div class="sales-metric seller-section">
+                        <i class="fas fa-user-tie" style="color:#20c997; background:rgba(32,201,151,0.1)"></i>
+                        <div>
+                            <div class="sales-metric-value" id="BestSalesPersonOfMonth">
+                                <span class="sales-badge">Best Seller of Month</span>
+                            </div>
+                            <div class="sales-metric-label">
+                                Generated <span style="color:black;font-weight:bold;" id="BestSalePersonOrderValue">0</span> this month
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <div class="sales-card">
+                <div class="sales-card-header" onclick="SaveDisplaySalesHeading()">
+                    <i class="fas fa-exchange-alt"></i>
+                    <h2>Dispatch & Returns</h2>
+                </div>
+                <div class="sales-card-content">
+                    <div class="sales-order-stats-container">
+                        <div class="sales-order-stat-item success">
+                            <div class="sales-stat-value" id="TotalCompletedNoOfSaleorderOfMonth">0</div>
+                            <div class="sales-stat-label">Pend Dispatch Qty Of Month</div>
+                        </div>
+                        <div class="sales-order-stat-item warning">
+                            <div class="sales-stat-value" id="TotalPendingNoOfSaleorderOfMonth">0</div>
+                            <div class="sales-stat-label">Pend Dispatch Value Of Month</div>
+                        </div>
+                        <div class="sales-order-stat-item primary">
+                            <div class="sales-stat-value" id="TotalPendingNoOfSaleorderOfMonth">0</div>
+                            <div class="sales-stat-label">Monthly Returns</div>
+                        </div>
+                        <div class="sales-order-stat-item danger">
+                            <div class="sales-stat-value" id="TotalPendingNoOfSaleorderOfMonth">0</div>
+                            <div class="sales-stat-label">Yearly Returns</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
@@ -1738,7 +1775,7 @@
                     <h2>Top 10 Sale Customer</h2>
                 </div>
                 <div class="sales-card-content">
-                    <div class="table-container" style="max-height:300px;">
+                    <div class="table-container" style="max-height:300px; overflow-y:auto; overflow-x:auto;">
                         <table class="custom-table custom-table-scroll" style="width: 100%;">
                             <thead style="background-color:#7493c3">
                                 <tr>
@@ -1759,7 +1796,7 @@
                     <h2>Top 10 Sold Item</h2>
                 </div>
                 <div class="sales-card-content">
-                    <div class="table-container" style="max-height:300px;">
+                    <div class="table-container" style="max-height:300px; overflow-y:auto; overflow-x:auto;">
                         <table class="custom-table custom-table-scroll" style="width: 100%;">
                             <thead style="background-color:#7493c3">
                                 <tr>
@@ -1776,12 +1813,24 @@
             </div>
 
             <div class="sales-card">
+                <div class="sales-card-header" style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chart-area" style="font-size: 20px; color: #0d6efd;"></i>
+                    <h2>Monthly Sales Trend</h2>
+                </div>
+
+                <div class="sales-card-content">
+                    <!-- Chart canvas -->
+                    <canvas id="SALEMonthlyTrend" width="300" height="150"></canvas>
+                </div>
+            </div>
+
+            <div class="sales-card">
                 <div class="sales-card-header">
                     <i class="fa fa-chart-area"></i>
                     <h2>Top 10 Sales Person</h2>
                 </div>
                 <div class="sales-card-content">
-                    <div class="table-container" style="max-height:300px;">
+                    <div class="table-container" style="max-height:300px; overflow-y:auto; overflow-x:auto;">
                         <table class="custom-table custom-table-scroll" style="width: 100%;">
                             <thead style="background-color:#7493c3">
                                 <tr>
@@ -1796,6 +1845,55 @@
                 </div>
             </div>
 
+            <div class="sales-card">
+                <div class="sales-card-header">
+                    <i class="fa fa-chart-area"></i>
+                    <h2>New Customer In this Month</h2>
+                </div>
+                <div class="sales-card-content">
+                    <div class="vendors-container" style="max-height:300px;overflow-y: auto;padding:15px;">
+                    </div>
+                </div>
+            </div>
+
+             <div class="sales-card">
+                <div class="sales-card-header" style="display: flex; align-items: center; gap: 10px;">
+                    <i class="fa fa-chart-area" style="font-size: 20px; color: #0d6efd;"></i>
+                    <h2>Monthly Rejection Trend</h2>
+                </div>
+
+                <div class="sales-card-content">
+                    <!-- Chart canvas -->
+                    <canvas id="MonthlyRejectionTrend" width="300" height="150"></canvas>
+                </div>
+            </div>  
+
+            <div class="sales-card-SO-Dispatch">
+                <div class="sales-card-header">
+                    <i class="fa fa-chart-area"></i>
+                    <h2>SaleOrder Vs Dispatch</h2>
+                </div>
+                <div class="sales-card-content">
+                    <div class="table-container" style="max-height:300px; overflow-y:auto; overflow-x:auto;">
+                        <table class="custom-table custom-table-scroll" style="width: 100%;">
+                            <thead style="background-color:#7493c3">
+                                <tr>
+                                    <th>Account Name</th>
+                                    <th>PartCode</th>
+                                    <th>Item Name</th>
+                                    <th>SO Qty</th>
+                                    <th>Bill Amount</th>
+                                    <th>Pend Qty For SO</th>
+                                    <th>SO Value</th>
+                                    <th>Pend Order Value</th>
+                                </tr>
+                            </thead>
+                            <tbody id="SaleOrderVsDispatch">
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </body>
@@ -1806,47 +1904,12 @@
     <!-- Chart JS Scripts -->
     <script>
 
-        // function exportDashboardToPdf() {
-        //     const { jsPDF } = window.jspdf;
-        //     const element = document.getElementById("supplyChainDashboard");
-
-        //     window.scrollTo(0, 0); // ensure it's in view
-
-        //     html2canvas(element, {
-        //         scale: 2,
-        //         useCORS: true,
-        //         backgroundColor: "#ffffff"
-        //     }).then(function (canvas) {
-        //         const imgData = canvas.toDataURL("image/png");
-        //         const pdf = new jsPDF("p", "mm", "a4");
-
-        //         const pdfWidth = pdf.internal.pageSize.getWidth();
-        //         const pdfHeight = pdf.internal.pageSize.getHeight();
-
-        //         const imgProps = pdf.getImageProperties(imgData);
-        //         const ratio = Math.min(pdfWidth / imgProps.width, (pdfHeight - 30) / imgProps.height);
-
-        //         const imgWidth = imgProps.width * ratio;
-        //         const imgHeight = imgProps.height * ratio;
-
-        //         // Add Header
-        //         pdf.setFontSize(16);
-        //         pdf.text("Supply Chain Dashboard", 10, 15);
-        //         pdf.setFontSize(10);
-        //         pdf.text("Date: " + new Date().toLocaleString(), 10, 25);
-
-        //         // Add dashboard image below header
-        //         pdf.addImage(imgData, "PNG", 10, 30, imgWidth, imgHeight);
-        //         pdf.save("dashboard.pdf");
-        //     });
-        // }
-
         $(".table-link").on("click", function () {
             debugger
             var approvalType = $(this).data("approvaltype"); // get data-approvalType
             if (approvalType) {
                 $("#ApprovalTypeHidden").val(approvalType); // set value in hidden input
-               localStorage.setItem('ApprovalType', approvalType);
+                localStorage.setItem('ApprovalType', approvalType);
             }
         });
 
@@ -1984,6 +2047,9 @@
                     FillTop10SALECUSTOMER();
                     FillTop10SOLDItem();
                     FillTop10SALESPERSON();
+                    FillNEWCustomerOFTHEMONTH();
+                    FillMonthlyRejectionTrend();
+                    FillSaleOrderVsDispatch();
                 }
             }
 
@@ -2900,10 +2966,10 @@
 
                     if (!obj.Result || obj.Result.length === 0) {
                         html = `
-                                                                                                                    <div class="no-vendors-found soft-style">
-                                                                                                                        <i class="fas fa-box-open icon"></i>
-                                                                                                                        <p>No new vendors added this month</p>
-                                                                                                                    </div>`;
+                                                                                                                                                    <div class="no-vendors-found soft-style">
+                                                                                                                                                        <i class="fas fa-box-open icon"></i>
+                                                                                                                                                        <p>No new vendors added this month</p>
+                                                                                                                                                    </div>`;
                     } else {
                         $.each(obj.Result, function (i, item) {
                             // Generate initials from name
@@ -2929,18 +2995,18 @@
                             }
 
                             html += `
-                                                                                                                        <div class="vendor-card">
-                                                                                                                            <div class="vendor-header">
-                                                                                                                                <div class="vendor-logo">${initials}</div>
-                                                                                                                                <h3>${item.AccountName}</h3>
-                                                                                                                                ${badgeHtml}
-                                                                                                                            </div>
-                                                                                                                            <div class="vendor-details">
-                                                                                                                                <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
-                                                                                                                                <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
-                                                                                                                                <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
-                                                                                                                            </div>
-                                                                                                                        </div>`;
+                                                                                                                                                        <div class="vendor-card">
+                                                                                                                                                            <div class="vendor-header">
+                                                                                                                                                                <div class="vendor-logo">${initials}</div>
+                                                                                                                                                                <h3>${item.AccountName}</h3>
+                                                                                                                                                                ${badgeHtml}
+                                                                                                                                                            </div>
+                                                                                                                                                            <div class="vendor-details">
+                                                                                                                                                                <div class="detail-item"><span>PO Amount:</span><strong>$${item.POAmount}</strong></div>
+                                                                                                                                                                <div class="detail-item"><span>PO Number:</span><strong>${item.PONO}</strong></div>
+                                                                                                                                                                <div class="detail-item"><span>Quantity:</span><strong>${item.POQTY}</strong></div>
+                                                                                                                                                            </div>
+                                                                                                                                                        </div>`;
                         });
                     }
 
@@ -2991,45 +3057,45 @@
                     } else {
                         $.each(best, function (i, item) {
                             html += `
-                                                                                                                                               <div class="supplier-card relative">
+                                                                                                                                                                               <div class="supplier-card relative">
 
-                                                                                                                                            <div class="supplier-name">${item.AccountName}</div>
+                                                                                                                                                                            <div class="supplier-name">${item.AccountName}</div>
 
-                                                                                                                                    <div class="rating-container">
-                                                                                                                                        <div class="rating-item">
-                                                                                                                                            <div class="rating-title">Price Rating</div>
-                                                                                                                                                    <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
-                                                                                                                                            <div class="rating-bar">
-                                                                                                                                                        <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating}%"></div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
+                                                                                                                                                                    <div class="rating-container">
+                                                                                                                                                                        <div class="rating-item">
+                                                                                                                                                                            <div class="rating-title">Price Rating</div>
+                                                                                                                                                                                    <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
+                                                                                                                                                                            <div class="rating-bar">
+                                                                                                                                                                                        <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating}%"></div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
 
-                                                                                                                                        <div class="rating-item">
-                                                                                                                                            <div class="rating-title">Delivery Rating</div>
-                                                                                                                                                    <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
-                                                                                                                                            <div class="rating-bar">
-                                                                                                                                                        <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating}%"></div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
+                                                                                                                                                                        <div class="rating-item">
+                                                                                                                                                                            <div class="rating-title">Delivery Rating</div>
+                                                                                                                                                                                    <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
+                                                                                                                                                                            <div class="rating-bar">
+                                                                                                                                                                                        <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating}%"></div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
 
-                                                                                                                                        <div class="rating-item">
-                                                                                                                                            <div class="rating-title">Quality Rating</div>
-                                                                                                                                                    <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
-                                                                                                                                            <div class="rating-bar">
-                                                                                                                                                        <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating}%"></div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
+                                                                                                                                                                        <div class="rating-item">
+                                                                                                                                                                            <div class="rating-title">Quality Rating</div>
+                                                                                                                                                                                    <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
+                                                                                                                                                                            <div class="rating-bar">
+                                                                                                                                                                                        <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating}%"></div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
 
-                                                                                                                                        <div class="rating-item">
-                                                                                                                                            <div class="rating-title">Final Rating</div>
-                                                                                                                                                    <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
-                                                                                                                                            <div class="rating-bar">
-                                                                                                                                                        <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating}%"></div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                    </div>
-                                                                                                                                </div>
-                                                                                                                                    `;
+                                                                                                                                                                        <div class="rating-item">
+                                                                                                                                                                            <div class="rating-title">Final Rating</div>
+                                                                                                                                                                                    <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
+                                                                                                                                                                            <div class="rating-bar">
+                                                                                                                                                                                        <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating}%"></div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </div>
+                                                                                                                                                                    `;
                         });
                     }
 
@@ -3055,45 +3121,45 @@
                     } else {
                         $.each(worst, function (i, item) {
                             html += `
-                                                                                                                                                       <div class="supplier-card relative">
+                                                                                                                                                                                       <div class="supplier-card relative">
 
-                                                                                                                                                    <div class="supplier-name">${item.AccountName}</div>
+                                                                                                                                                                                    <div class="supplier-name">${item.AccountName}</div>
 
-                                                                                                                                            <div class="rating-container">
-                                                                                                                                                <div class="rating-item">
-                                                                                                                                                    <div class="rating-title">Price Rating</div>
-                                                                                                                                                            <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
-                                                                                                                                                    <div class="rating-bar">
-                                                                                                                                                                <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating}%"></div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
+                                                                                                                                                                            <div class="rating-container">
+                                                                                                                                                                                <div class="rating-item">
+                                                                                                                                                                                    <div class="rating-title">Price Rating</div>
+                                                                                                                                                                                            <div class="rating-value">${item.VendorPriceRating.toFixed(1)}</div>
+                                                                                                                                                                                    <div class="rating-bar">
+                                                                                                                                                                                                <div class="rating-fill price-fill" style="width: ${item.VendorPriceRating}%"></div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
 
-                                                                                                                                                <div class="rating-item">
-                                                                                                                                                    <div class="rating-title">Delivery Rating</div>
-                                                                                                                                                            <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
-                                                                                                                                                    <div class="rating-bar">
-                                                                                                                                                                <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating}%"></div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
+                                                                                                                                                                                <div class="rating-item">
+                                                                                                                                                                                    <div class="rating-title">Delivery Rating</div>
+                                                                                                                                                                                            <div class="rating-value">${item.VendorDeliveryRating.toFixed(1)}</div>
+                                                                                                                                                                                    <div class="rating-bar">
+                                                                                                                                                                                                <div class="rating-fill delivery-fill" style="width: ${item.VendorDeliveryRating}%"></div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
 
-                                                                                                                                                <div class="rating-item">
-                                                                                                                                                    <div class="rating-title">Quality Rating</div>
-                                                                                                                                                            <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
-                                                                                                                                                    <div class="rating-bar">
-                                                                                                                                                                <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating}%"></div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
+                                                                                                                                                                                <div class="rating-item">
+                                                                                                                                                                                    <div class="rating-title">Quality Rating</div>
+                                                                                                                                                                                            <div class="rating-value">${item.VendorQualityRating.toFixed(1)}</div>
+                                                                                                                                                                                    <div class="rating-bar">
+                                                                                                                                                                                                <div class="rating-fill quality-fill" style="width: ${item.VendorQualityRating}%"></div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
 
-                                                                                                                                                <div class="rating-item">
-                                                                                                                                                    <div class="rating-title">Final Rating</div>
-                                                                                                                                                            <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
-                                                                                                                                                    <div class="rating-bar">
-                                                                                                                                                                <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating}%"></div>
-                                                                                                                                                    </div>
-                                                                                                                                                </div>
-                                                                                                                                            </div>
-                                                                                                                                        </div>
-                                                                                                                                            `;
+                                                                                                                                                                                <div class="rating-item">
+                                                                                                                                                                                    <div class="rating-title">Final Rating</div>
+                                                                                                                                                                                            <div class="rating-value">${item.VendorFinalRating.toFixed(1)}</div>
+                                                                                                                                                                                    <div class="rating-bar">
+                                                                                                                                                                                                <div class="rating-fill final-fill" style="width: ${item.VendorFinalRating}%"></div>
+                                                                                                                                                                                    </div>
+                                                                                                                                                                                </div>
+                                                                                                                                                                            </div>
+                                                                                                                                                                        </div>
+                                                                                                                                                                            `;
                         });
                     }
 
@@ -3309,27 +3375,27 @@
                         $('#TotalSaleOrderItemQtyofYear').text(obj.Result[0].TotalSaleOrderItemQtyofYear);
                         $('#TotalSaleOrderItemQtyofMonth').text(obj.Result[0].TotalSaleOrderItemQtyofMonth);
                         $('#TotalSaleOrderValueofYear').text(obj.Result[0].TotalSaleOrderValueofYear);
-                        $('#TotalSaleOrderValueofMonth').val(obj.Result[0].TotalSaleOrderValueofMonth);
-                        $('#TotalInvoiceItemQtyofYear').val(obj.Result[0].TotalInvoiceItemQtyofYear);
-                        $('#TotalInvoiceItemQtyofMonth').val(obj.Result[0].TotalInvoiceItemQtyofMonth);
-                        $('#TotalInvoiceValueofYear').val(obj.Result[0].TotalInvoiceValueofYear);
-                        $('#TotalInvoiceValueofMonth').val(obj.Result[0].TotalInvoiceValueofMonth);
-                        $('#BestCustomerOfMonth').val(obj.Result[0].BestCustomerOfMonth);
-                        $('#BestCustomerAccountCode').val(obj.Result[0].BestCustomerAccountCode);
+                        $('#TotalSaleOrderValueofMonth').text(obj.Result[0].TotalSaleOrderValueofMonth);
+                        $('#TotalInvoiceItemQtyofYear').text(obj.Result[0].TotalInvoiceItemQtyofYear);
+                        $('#TotalInvoiceItemQtyofMonth').text(obj.Result[0].TotalInvoiceItemQtyofMonth);
+                        $('#TotalInvoiceValueofYear').text(obj.Result[0].TotalInvoiceValueofYear);
+                        $('#TotalInvoiceValueofMonth').text(obj.Result[0].TotalInvoiceValueofMonth);
+                        $('#BestCustomerOfMonth').text(obj.Result[0].BestCustomerOfMonth);
+                        $('#BestCustomerAccountCode').text(obj.Result[0].BestCustomerAccountCode);
                         $('#BestSoldItemOfMonth').text(obj.Result[0].BestSoldItemOfMonth);
                         $('#BestSoldItemIdofMonth').text(obj.Result[0].BestSoldItemIdofMonth);
                         $('#BestSalesPersonOfMonth').text(obj.Result[0].BestSalesPersonOfMonth);
-                        $('#BestSalesPersonofMonthEmpid').val(obj.Result[0].BestSalesPersonofMonthEmpid);
-                        $('#BestSalePersonOrderValue').val(obj.Result[0].BestSalePersonOrderValue);
-                        $('#NewCustomersAddinYear').val(obj.Result[0].NewCustomersAddinYear);
-                        $('#NewCustomersAddinMonth').val(obj.Result[0].NewCustomersAddinMonth);
-                        $('#PendDispatchQtyOfMonth').val(obj.Result[0].PendDispatchQtyOfMonth);
-                        $('#PendDispatchValueOfMonth').val(obj.Result[0].PendDispatchValueOfMonth);
-                        $('#ReturnSaleValueoftheMonth').val(obj.Result[0].ReturnSaleValueoftheMonth);
-                        $('#ReturnSaleValueoftheYear').val(obj.Result[0].ReturnSaleValueoftheYear);
-                        $('#TotalNoOfSaleorderOfMonth').val(obj.Result[0].TotalNoOfSaleorderOfMonth);
-                        $('#TotalPendingNoOfSaleorderOfMonth').val(obj.Result[0].TotalPendingNoOfSaleorderOfMonth);
-                        $('#TotalCompletedNoOfSaleorderOfMonth').val(obj.Result[0].TotalCompletedNoOfSaleorderOfMonth);
+                        $('#BestSalesPersonofMonthEmpid').text(obj.Result[0].BestSalesPersonofMonthEmpid);
+                        $('#BestSalePersonOrderValue').text(obj.Result[0].BestSalePersonOrderValue);
+                        $('#NewCustomersAddinYear').text(obj.Result[0].NewCustomersAddinYear);
+                        $('#NewCustomersAddinMonth').text(obj.Result[0].NewCustomersAddinMonth);
+                        $('#PendDispatchQtyOfMonth').text(obj.Result[0].PendDispatchQtyOfMonth);
+                        $('#PendDispatchValueOfMonth').text(obj.Result[0].PendDispatchValueOfMonth);
+                        $('#ReturnSaleValueoftheMonth').text(obj.Result[0].ReturnSaleValueoftheMonth);
+                        $('#ReturnSaleValueoftheYear').text(obj.Result[0].ReturnSaleValueoftheYear);
+                        $('#TotalNoOfSaleorderOfMonth').text(obj.Result[0].TotalNoOfSaleorderOfMonth);
+                        $('#TotalPendingNoOfSaleorderOfMonth').text(obj.Result[0].TotalPendingNoOfSaleorderOfMonth);
+                        $('#TotalCompletedNoOfSaleorderOfMonth').text(obj.Result[0].TotalCompletedNoOfSaleorderOfMonth);
                     }
                 },
                 error: function (xhr, status, error) {
@@ -3343,94 +3409,133 @@
             $.ajax({
                 url: '@Url.Action("FillSALEMonthlyTrend", "Home")',
                 type: 'POST',
-                async: false,
-                success: function (response) {
-                    const obj = $.parseJSON(response);
-                    if (obj.StatusCode === 200 && obj.StatusText === 'Success') {
-                        const data = obj.Result[0];
+                success: function (data) {
+                    var parsed = JSON.parse(data);
 
-                        const saleAmt = data.salebillAmt;
-                        const invoiceCount = data.TotalNoofSaleInv;
-                        const monthName = data.MonthCompName;
-                        const target = 200000;
+                    if (!parsed.Result || parsed.Result.length === 0) {
+                        console.warn("No data available for SALE Monthly Trend.");
+                        return;
+                    }
 
-                        const percentage = Math.min(saleAmt / target, 1);
-                        const completed = Math.round(percentage * 100);
-                        const remaining = 100 - completed;
+                    const labels = parsed.Result.map(item => item.MonthCompName);
+                    const saleAmounts = parsed.Result.map(item => item.salebillAmt);
+                    const saleQtys = parsed.Result.map(item => item.TotalNoofSaleInv);
 
-                        const ctx = document.getElementById("gaugeChart").getContext("2d");
-
-                        if (window.gaugeChartInstance) {
-                            window.gaugeChartInstance.destroy();
+                    setTimeout(function () {
+                        const canvas = document.getElementById("SALEMonthlyTrend");
+                        if (!canvas) {
+                            console.warn("Canvas with id 'SALEMonthlyTrend' not found.");
+                            return;
                         }
 
-                        // 🔧 Custom plugin for tick labels and summary text
-                        const drawGaugeLabelsPlugin = {
-                            id: 'gaugeLabels',
-                            afterDraw(chart) {
-                                const ctx = chart.ctx;
-                                const { width, height } = chart;
-                                const centerX = width / 2;
-                                const centerY = height / 1.3;
-                                const radius = width / 2.4;
+                        const ctx = canvas.getContext("2d");
+                        if (window.SALEMonthlyTrend instanceof Chart) {
+                            window.SALEMonthlyTrend.destroy();
+                        }
 
-                                const ticks = 5;
-                                const step = target / (ticks - 1);
-
-                                // Draw tick labels
-                                ctx.save();
-                                ctx.font = "12px Arial";
-                                ctx.fillStyle = "#2c3e50";
-                                ctx.textAlign = "center";
-
-                                for (let i = 0; i < ticks; i++) {
-                                    const angle = Math.PI + (i / (ticks - 1)) * Math.PI;
-                                    const x = centerX + radius * Math.cos(angle);
-                                    const y = centerY + radius * Math.sin(angle);
-                                    ctx.fillText(`₹${(i * step).toLocaleString()}`, x, y);
-                                }
-
-                                ctx.restore();
-
-                                // 🔽 Draw summary text inside canvas
-                                const summary = chart.config.data.customSummary;
-                                if (summary) {
-                                    ctx.save();
-                                    ctx.font = "bold 14px Arial";
-                                    ctx.fillStyle = "#2c3e50";
-                                    ctx.textAlign = "center";
-                                    ctx.fillText(summary, width / 2, height - 10);
-                                    ctx.restore();
-                                }
-                            }
-                        };
-
-                        // Chart creation
-                        window.gaugeChartInstance = new Chart(ctx, {
-                            type: 'doughnut',
+                        window.SALEMonthlyTrend = new Chart(ctx, {
+                            type: "line",
                             data: {
-                                datasets: [{
-                                    data: [completed, remaining],
-                                    backgroundColor: ['#0d6efd', '#bed0e9'],
-                                    borderWidth: 0
-                                }],
-                                customSummary: `${monthName} ₹${saleAmt.toLocaleString()} (${completed}%) Total Inv. ${invoiceCount}`
+                                labels: labels,
+                                datasets: [
+                                    {
+                                        label: "Sale Amount (₹)",
+                                        data: saleAmounts,
+                                        borderColor: "rgba(255, 165, 0, 0.9)",          // Orange border
+                                        backgroundColor: "rgba(255, 165, 0, 0.3)",       // Light orange fill
+                                        yAxisID: 'y',
+                                        fill: false,
+                                        tension: 0.4,
+                                        pointRadius: 5,
+                                        pointHoverRadius: 7
+                                    },
+                                    {
+                                        label: "Sale Qty",
+                                        data: saleQtys,
+                                        borderColor: "rgba(34, 139, 34, 0.9)",           // Forest green border
+                                        backgroundColor: "rgba(34, 139, 34, 0.3)",       // Light green fill
+                                        yAxisID: 'y1',
+                                        fill: false,
+                                        tension: 0.4,
+                                        pointRadius: 5,
+                                        pointHoverRadius: 7
+                                    }
+                                ]
                             },
                             options: {
-                                rotation: -90,
-                                circumference: 180,
-                                cutout: '80%',
+                                responsive: true,
+                                maintainAspectRatio: false,
                                 plugins: {
-                                    legend: { display: false },
-                                    tooltip: { enabled: false }
+                                    legend: {
+                                        position: 'top',
+                                        labels: {
+                                            usePointStyle: true,
+                                            padding: 20
+                                        }
+                                    },
+                                    tooltip: {
+                                        callbacks: {
+                                            label: function (context) {
+                                                const label = context.dataset.label || '';
+                                                const value = context.raw;
+                                                if (label === "Sale Amount (₹)") {
+                                                    return `${label}: ₹${value.toLocaleString('en-IN')}`;
+                                                } else {
+                                                    return `${label}: ${value}`;
+                                                }
+                                            }
+                                        }
+                                    },
+                                    title: {
+                                        display: true,
+                                        text: 'Monthly Sale Order Trend (Line Chart)'
+                                    }
+                                },
+                                scales: {
+                                    x: {
+                                        title: {
+                                            display: true,
+                                            text: "Month",
+                                            font: { weight: 'bold' }
+                                        },
+                                        grid: { display: false }
+                                    },
+                                    y: {
+                                        type: 'linear',
+                                        position: 'left',
+                                        title: {
+                                            display: true,
+                                            text: "Sale Amount (₹)",
+                                            font: { weight: 'bold' }
+                                        },
+                                        ticks: {
+                                            callback: function (value) {
+                                                return '₹' + (value / 1000).toFixed(1) + 'K';
+                                            }
+                                        },
+                                        grid: {
+                                            drawOnChartArea: true
+                                        }
+                                    },
+                                    y1: {
+                                        type: 'linear',
+                                        position: 'right',
+                                        title: {
+                                            display: true,
+                                            text: "Sale Qty",
+                                            font: { weight: 'bold' }
+                                        },
+                                        grid: {
+                                            drawOnChartArea: false
+                                        }
+                                    }
                                 }
-                            },
-                            plugins: [drawGaugeLabelsPlugin]
+                            }
                         });
-                    }
+                    }, 100);
                 },
                 error: function () {
-                    alert('Failed to load sales data.');
+                    alert('Failed to load Monthly Sale Trend data.');
                 }
             });
         }
@@ -3523,6 +3628,198 @@
                 },
                 error: function (xhr, status, error) {
                     alert('Failed to load customer data.');
+                }
+            });
+        }
+
+        function FillNEWCustomerOFTHEMONTH() {
+            $.ajax({
+                url: '@Url.Action("FillNEWCustomerOFTHEMONTH", "Home")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, error) {
+                    var obj = $.parseJSON(data);
+                    var html = '';
+
+                    const currentDate = new Date();
+
+                    if (!obj.Result || obj.Result.length === 0) {
+                        html = `
+                                                                                                                                                            <div class="no-vendors-found soft-style">
+                                                                                                                                                                <i class="fas fa-box-open icon"></i>
+                                                                                                                                                                <p>No new Customer added this month</p>
+                                                                                                                                                            </div>`;
+                    } else {
+                        $.each(obj.Result, function (i, item) {
+                            // Generate initials from name
+                            let initials = '';
+                            if (item.AccountName) {
+                                initials = item.AccountName
+                                    .split(' ')
+                                    .map(word => word.charAt(0))
+                                    .join('')
+                                    .toUpperCase();
+                            }
+
+                            // Calculate date difference in days
+                            let badgeHtml = '';
+                            if (item.CreatedByDate) {
+                                const createdDate = new Date(item.CreatedByDate);
+                                const timeDiff = currentDate - createdDate;
+                                const dayDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
+
+                                if (dayDiff >= 0) {
+                                    badgeHtml = `<span class="new-badge">${dayDiff} day${dayDiff === 1 ? '' : 's'} ago</span>`;
+                                }
+                            }
+
+                            html += `
+                                                                                                                                                                <div class="vendor-card">
+                                                                                                                                                                    <div class="vendor-header">
+                                                                                                                                                                        <div class="vendor-logo">${initials}</div>
+                                                                                                                                                                        <h3>${item.AccountName}</h3>
+                                                                                                                                                                        ${badgeHtml}
+                                                                                                                                                                    </div>
+                                                                                                                                                                    <div class="vendor-details">
+                                                                                                                                                                                <div class="detail-item"><span>Sale Amount:</span><strong>$${item.SalebillAmt}</strong></div>
+                                                                                                                                                                                        <div class="detail-item"><span>Quantity:</span><strong>${item.SaleBillQty}</strong></div>
+                                                                                                                                                                    </div>
+                                                                                                                                                                </div>`;
+                        });
+                    }
+
+                    $('.vendors-container').empty().append(html);
+                },
+                error: function () {
+                    alert('Failed to load vendor cards.');
+                }
+            });
+        }
+
+        function FillMonthlyRejectionTrend() {
+            $.ajax({
+                url: '@Url.Action("FillMonthlyRejectionTrend", "Home")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, error) {
+                    var salesData = $.parseJSON(data);
+
+                    var months = salesData.Result.map(item => item.MonthCompName);
+                    var salesAmounts = salesData.Result.map(item => item.salebillAmt);
+                    var invoiceCounts = salesData.Result.map(item => item.TotalNoofSaleInv * 1000); // Scale for visibility
+
+                    var ctx = document.getElementById('MonthlyRejectionTrend').getContext('2d');
+
+                    // Destroy existing chart instance if exists
+                    if (window.myChart) {
+                        window.myChart.destroy();
+                    }
+
+                    window.myChart = new Chart(ctx, {
+                        type: 'bar',
+                        data: {
+                            labels: months,
+                            datasets: [
+                                {
+                                    label: 'Sales Amount (₹)',
+                                    data: salesAmounts,
+                                    backgroundColor: 'rgba(54, 162, 235, 0.6)', // Blue
+                                    borderColor: 'rgba(54, 162, 235, 1)',
+                                    borderWidth: 1,
+                                    yAxisID: 'y',
+                                    barPercentage: 0.4,        // 👈 Bar thickness
+                                    categoryPercentage: 0.5    // 👈 Space between categories
+                                },
+                                {
+                                    label: 'Total Invoices',
+                                    data: invoiceCounts,
+                                    backgroundColor: 'rgba(255, 99, 132, 0.4)', // Pink
+                                    borderColor: 'rgba(255, 99, 132, 1)',
+                                    borderWidth: 2,
+                                    type: 'line',
+                                    fill: false,
+                                    tension: 0.4,
+                                    pointRadius: 5,
+                                    pointHoverRadius: 7,
+                                    yAxisID: 'y1'
+                                }
+                            ]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            scales: {
+                                x: {
+                                    title: {
+                                        display: true,
+                                        text: 'Month'
+                                    },
+                                    ticks: {
+                                        autoSkip: false
+                                    }
+                                },
+                                y: {
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Sales Amount (₹)'
+                                    }
+                                },
+                                y1: {
+                                    position: 'right',
+                                    beginAtZero: true,
+                                    title: {
+                                        display: true,
+                                        text: 'Invoice Count'
+                                    },
+                                    grid: {
+                                        drawOnChartArea: false
+                                    }
+                                }
+                            },
+                            plugins: {
+                                legend: {
+                                    position: 'top'
+                                },
+                                tooltip: {
+                                    mode: 'index',
+                                    intersect: false
+                                }
+                            }
+                        }
+                    });
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load customer data.');
+                }
+            });
+        }
+
+        function FillSaleOrderVsDispatch() {
+
+            $.ajax({
+                url: '@Url.Action("FillSaleOrderVsDispatch", "Home")',
+                type: 'POST',
+                async: false,
+                success: function (data, status, error) {
+                    var obj = $.parseJSON(data);
+                    var html = '';
+                    $.each(obj.Result, function (i, item) {
+                        html += '<tr>';
+                        html += '<td><input type="hidden" value="' + item.AccountCode + '">' + item.AccountName + '</td>';
+                        html += '<td>' + item.PartCode + '</td>';
+                        html += '<td>' + item.ItemName + '</td>';
+                        html += '<td>' + item.SOQty + '</td>';
+                        html += '<td>' + item.SaleBillQty + '</td>';
+                        html += '<td>' + item.PendQtyForSaleBill + '</td>';
+                        html += '<td>' + item.SaleOrderValue + '</td>';
+                        html += '<td>' + item.PendingOrderValue  + '</td>';
+                        html += '</tr>';
+                    });
+                    $('#SaleOrderVsDispatch').empty().append(html);
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load ledger names.');
                 }
             });
         }

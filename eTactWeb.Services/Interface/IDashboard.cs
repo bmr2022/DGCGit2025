@@ -44,6 +44,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillSALEMonthlyTrend();
         Task<ResponseResult> FillTop10SOLDItem();
         Task<ResponseResult> FillTop10SALECUSTOMER();
-        Task<ResponseResult> FillTop10SALESPERSON();   
+        Task<ResponseResult> FillTop10SALESPERSON();
+        Task<ResponseResult> FillNEWCustomerOFTHEMONTH();
+        Task<ResponseResult> FillMonthlyRejectionTrend();
+        Task<ResponseResult> FillSaleOrderVsDispatch();
     }
 }
