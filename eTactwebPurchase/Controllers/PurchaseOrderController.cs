@@ -1738,6 +1738,7 @@ public class PurchaseOrderController : Controller
         string Currency = Request.Form.Where(x => x.Key == "Currency").FirstOrDefault().Value;
         string Flag = Request.Form.Where(x => x.Key == "Flag").FirstOrDefault().Value;
         string Mode = Request.Form.Where(x => x.Key == "Mode").FirstOrDefault().Value;
+        string AmmNo = Request.Form.Where(x => x.Key == "AmmNo").FirstOrDefault().Value;
 
 
         ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
@@ -1886,7 +1887,7 @@ public class PurchaseOrderController : Controller
                     CostCenter = Convert.ToInt32(worksheet.Cells[row, 28].Value?.ToString() ?? "0"),
                     FirstMonthTentQty = Convert.ToDecimal(worksheet.Cells[row, 29].Value?.ToString() ?? "0"),
                     SecMonthTentQty = Convert.ToDecimal(worksheet.Cells[row, 30].Value?.ToString() ?? "0"),
-                    AmendmentNo = Convert.ToInt32(worksheet.Cells[row, 31].Value?.ToString() ?? "0"),
+                    AmendmentNo = Convert.ToInt32(AmmNo),
                     AmendmentDate = worksheet.Cells[row, 32].Value?.ToString() ?? string.Empty,
                     AmendmentReason = worksheet.Cells[row, 9].Value?.ToString() ?? string.Empty,
                 });

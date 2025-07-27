@@ -16,14 +16,22 @@ namespace eTactWeb.Data.BLL
     {
         private MaterialConversionDAL _MaterialConversionDAL;
         private readonly IDataLogic _DataLogicDAL;
-
+       
         public MaterialConversionBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
             _MaterialConversionDAL = new MaterialConversionDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
+        public async Task<ResponseResult> AutoFillitem(string Flag, string SearchItemCode, string SearchPartCode)
+        {
+            return await _MaterialConversionDAL.AutoFillitem(Flag, SearchItemCode, SearchPartCode);
+        }
+		public async Task<ResponseResult> AutoFillAltitem(string Flag,int origItemcode, string SearchItemCode, string SearchPartCode)
+		{
+			return await _MaterialConversionDAL.AutoFillAltitem(Flag, origItemcode, SearchItemCode, SearchPartCode);
+		}
 
-        public async Task<ResponseResult> GetFormRights(int userID)
+		public async Task<ResponseResult> GetFormRights(int userID)
         {
             return await _MaterialConversionDAL.GetFormRights(userID);
         }

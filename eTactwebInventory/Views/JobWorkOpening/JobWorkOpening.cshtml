@@ -155,17 +155,21 @@
                                 <div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label class="form-label">Part Code</label>
                                     <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <select class="form-select" data-abcd="13" style="width:200px;" asp-for="PartCode">
+                                        @* <select class="form-select" data-abcd="13" style="width:200px;" asp-for="PartCode">
                                             <option value="">-Select-</option>
-                                        </select>
+                                        </select> *@
+                                        <input type="text" style="width:200px" id="PartCodeText" class="form-control" title="" placeholder="Type Part Code..." />
+                                        <input type="hidden" asp-for="PartCode" id="PartCode" />
                                     </div>
                                 </div>
                                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                     <label class="form-label" asp-for="ItemName">Item Name</label>
                                     <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <select class="form-select" data-abcd="14" style="width:200px;" asp-for="ItemCode">
+                                        @* <select class="form-select" data-abcd="14" style="width:200px;" asp-for="ItemCode">
                                             <option value="">-Select-</option>
-                                        </select>
+                                        </select> *@
+                                        <input type="text" style="width:200px" id="ItemNameText" class="form-control" title="" placeholder="Type Item Name..." />
+                                        <input type="hidden" asp-for="ItemCode" id="ItemCode" />
                                     </div>
                                 </div>
 
@@ -464,8 +468,12 @@
     <script>
         $(document).ready(function () {
             GetFormRights();
-            $('#PartCode').select2();
-            $('#ItemCode').select2();
+            AutoFillItems();
+            $('input[type="text"]').each(function () {
+                $(this).attr('title', $(this).val());
+            });
+            // $('#PartCode').select2();
+            // $('#ItemCode').select2();
             $('#RecPartCode').select2();
             $('#RecItemCode').select2();
             $('#ScrapPartCode').select2();
@@ -501,7 +509,7 @@
             if ($('#Mode').val() != 'U' && $('#Mode').val() != "V") {
                 FillEntryId();
             }
-            FillItemPartCode();
+            // FillItemPartCode();
             FillPartyName();
             FillProcessName();
             if ($('#Mode').val() == 'U' || $('#Mode').val() == "V") {
@@ -942,15 +950,23 @@
                              
                             if ($('#BomType').val() == "B") {
                                 if ($('#Mode').val() == "U") {
-                                    $('#ItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                                    // $('#ItemCode').val(obj[0].ItemCode).trigger('change');
+                                    // $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                                    $('#PartCodeText').val(obj[0].PartCode);
+                                    $('#ItemNameText').val(obj[0].ItemName);
+                                    $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                                    $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                     $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#RecPartCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
                                     $('#ScrapPartCode').val(obj[0].ScrapItemCode).trigger('change');
                                 } else {
-                                    $('#ItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                                    // $('#ItemCode').val(obj[0].ItemCode).trigger('change');
+                                    // $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                                    $('#PartCodeText').val(obj[0].PartCode);
+                                    $('#ItemNameText').val(obj[0].ItemName);
+                                    $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                                    $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                     $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#RecPartCode').val(obj[0].RecPartCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
@@ -958,15 +974,19 @@
                                 }
                             } else {
                                 if ($('#Mode').val() == "U") {
-                                    $('#ItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#PartCode').val(obj[0].ItemCode).trigger('change');
+                                    $('#PartCodeText').val(obj[0].PartCode);
+                                    $('#ItemNameText').val(obj[0].ItemName);
+                                    $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                                    $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                     $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#RecPartCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
                                     $('#ScrapPartCode').val(obj[0].ScrapItemCode).trigger('change');
                                 } else {
-                                    $('#ItemCode').val(obj[0].ItemCode).trigger('change');
-                                    $('#PartCode').val(obj[0].PartCode).trigger('change');
+                                    $('#PartCodeText').val(obj[0].PartCode);
+                                    $('#ItemNameText').val(obj[0].ItemName);
+                                    $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                                    $('#PartCode').val(obj[0].ItemCode).trigger("change");
                                     $('#RecItemCode').val(obj[0].RecItemCode).trigger('change');
                                     $('#RecPartCode').val(obj[0].RecPartCode).trigger('change');
                                     $('#ScrapItemCode').val(obj[0].ScrapItemCode).trigger('change');
@@ -1024,8 +1044,10 @@
         function ClereItems() {
             $('#unit,#BatchNo,#UniqueBatchNo,#ProcessId').val('');
             $('#ChallanQty,#RecQty,#pendqty,#ScrapQty,#BomNo,#Rate,#Amount').val(0);
-            $('#PartCode').val('').trigger('change');
-            $('#ItemCode').val('').trigger('change');
+            $('#PartCode').val('');
+            $('#ItemCode').val('');
+            $('#PartCodeText').val('');
+            $('#ItemNameText').val('');
             $('#RecPartCode').val('').trigger('change');
             $('#RecItemCode').val('').trigger('change');
             $('#ScrapPartCode').val('').trigger('change');
@@ -1061,13 +1083,21 @@
                 RemoveErrorCls('IssChallanYearcode');
             }
 
-            if ($('#PartCode').val() == '') {
+            if ($('#PartCodeText').val() == '') {
                 AddErrorCls('PartCode');
                 $.notify('partcode is Required', "error");
                 Err = 1;
             }
             else {
                 RemoveErrorCls('PartCode');
+            }
+            if ($('#ItemNameText').val() == '') {
+                AddErrorCls('ItemCode');
+                $.notify('ItemCode is Required', "error");
+                Err = 1;
+            }
+            else {
+                RemoveErrorCls('ItemCode');
             }
 
             if ($('#RecQty').val() == '') {
@@ -1136,7 +1166,8 @@
                 "RecPartCode": $('#RecPartCode').val(),
                 "RecItemCode": $('#RecItemCode').val(),
                 "RecItemName": $('#RecItemCode').find(':selected').text(),
-                "ItemName": $('#ItemCode').find(':selected').text(),
+                // "ItemName": $('#ItemCode').find(':selected').text(),
+                "ItemName": $('#ItemNameText').val(),
                 "ScrapPartCode": $('#ScrapPartCode').val(),
                 "ScrapItemCode": $('#ScrapItemCode').val(),
                 "ScrapItemName": $('#ScrapItemCode').find(':selected').text(),
@@ -1151,7 +1182,7 @@
                 "Closed": $('#Closed').val(),
                 "ProcessId": $('#ProcessId').val(),
                 "IssChallanYearcode": $('#IssChallanYearcode').val(),
-                "PartCode": $('#PartCode').val(),
+                "PartCode": $('#PartCodeText').val(),
                 "cc": $('#cc').val(),
                 "UID": $('#UID').val(),
                 "CreatedBy": $('#CreatedBy').val(),
@@ -1194,42 +1225,162 @@
             });
         });
 
+        function AutoFillItems() {
 
-        function FillItemPartCode() {
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("FillItemPartCode")",
-                dataType: "json",
-                async: false,
-                success: function (result, status, error) {
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
 
-                        // Sort the array by partcode in ascending order and Item_Name in descending order
-                        obj.Result.sort(function (a, b) {
-                            // Sort by partcode in ascending order
-                            var partCodeComparison = a.partcode.localeCompare(b.partcode);
-                            if (partCodeComparison !== 0) {
-                                return partCodeComparison;
-                            }
-                            // If partcodes are equal, sort by Item_Name in descending order
-                            return b.Item_Name.localeCompare(a.Item_Name);
-                        });
+            // Source for PartCodeText
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillPartCode")',
+                    type: 'POST',
+                    data: {
 
-                        var partCodeDropdown = $('#PartCode').empty();
-                        var itemNameDropdown = $('#ItemCode').empty();
+                        // "showallitem": $('#IC1').is(':checked') ? 'Y' : 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+                        console.log("obj" + obj);
+                        console.log("result" + typeof result === "string" ? JSON.parse(result) : result);
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
 
-                        partCodeDropdown.append('<option value="">-Select-</option>');
-                        itemNameDropdown.append('<option value="">-Select-</option>');
+                            let filtered = obj.Result.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.PartCode.toLowerCase().includes(term);
+                            });
+                            console.log(filtered);
 
-                        obj.Result.forEach(function (item) {
-                            partCodeDropdown.append('<option value="' + item.Item_Code + '">' + item.partcode + '</option>');
-                            itemNameDropdown.append('<option value="' + item.Item_Code + '">' + item.Item_Name + '</option>');
-                        });
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
                     }
-                }
+                });
+            };
+
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillItemName")',
+                    type: 'POST',
+                    data: {
+                        // "showallitem": $('#IC1').is(':checked') ? 'Y' : 'N',
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+                            let filtered = obj.Result.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+
+            };
+
+            // Autocomplete for PartCodeText
+            $("#PartCodeText").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                    $("#ItemNameText").val(ui.item.itemName);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    // GetItemPartCode("PartCode");
+                    // GetItemRate();
+                    // FillCurrentBatchINStore();
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
             });
+
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCodeText").val(ui.item.partCode);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    // GetItemPartCode("ItemCode");
+                    // GetItemRate();
+                    // FillCurrentBatchINStore();
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+
         }
+
+
+
+        // function FillItemPartCode() {
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url.Action("FillItemPartCode")",
+        //         dataType: "json",
+        //         async: false,
+        //         success: function (result, status, error) {
+        //             if (result != null) {
+        //                 var obj = $.parseJSON(result);
+
+        //                 // Sort the array by partcode in ascending order and Item_Name in descending order
+        //                 obj.Result.sort(function (a, b) {
+        //                     // Sort by partcode in ascending order
+        //                     var partCodeComparison = a.partcode.localeCompare(b.partcode);
+        //                     if (partCodeComparison !== 0) {
+        //                         return partCodeComparison;
+        //                     }
+        //                     // If partcodes are equal, sort by Item_Name in descending order
+        //                     return b.Item_Name.localeCompare(a.Item_Name);
+        //                 });
+
+        //                 var partCodeDropdown = $('#PartCode').empty();
+        //                 var itemNameDropdown = $('#ItemCode').empty();
+
+        //                 partCodeDropdown.append('<option value="">-Select-</option>');
+        //                 itemNameDropdown.append('<option value="">-Select-</option>');
+
+        //                 obj.Result.forEach(function (item) {
+        //                     partCodeDropdown.append('<option value="' + item.Item_Code + '">' + item.partcode + '</option>');
+        //                     itemNameDropdown.append('<option value="' + item.Item_Code + '">' + item.Item_Name + '</option>');
+        //                 });
+        //             }
+        //         }
+        //     });
+        // }
 
 
 

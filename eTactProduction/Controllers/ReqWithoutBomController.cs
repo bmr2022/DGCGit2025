@@ -283,6 +283,18 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+        public async Task<JsonResult> AutoFillPartCode(string TF, string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IReqWithoutBOM.AutoFillitem("AutoFillPartCode", TF, SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> AutoFillItemName(string TF, string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IReqWithoutBOM.AutoFillitem("AutoFillItemName", TF, SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));

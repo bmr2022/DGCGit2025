@@ -137,7 +137,11 @@
     {
     <script>
         $(function () {
-
+            var approvalType = localStorage.getItem('ApprovalType');
+            if (approvalType) {
+                // Set it to hidden input
+                $("#ApprovalType").val(approvalType);
+            }
             $(document).on("click", ".redirecttoapproval", function (e) {
                   
                 e.preventDefault();

@@ -21,6 +21,10 @@ namespace eTactWeb.Data.BLL
         {
             _InterStoreTransferDAL = new InterStoreTransferDAL(configuration, iDataLogic,connectionStringService);
         }
+        public async Task<ResponseResult> AutoFillitem(string Flag, string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            return await _InterStoreTransferDAL.AutoFillitem(Flag, showallitem, SearchItemCode, SearchPartCode);
+        }
 
         private InterStoreTransferDAL? _InterStoreTransferDAL { get; }
 
