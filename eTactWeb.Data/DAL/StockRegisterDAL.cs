@@ -115,7 +115,7 @@ namespace eTactWeb.Data.DAL
                                                      }).ToList();
                     }
                 }
-                else if (ReportType == "STOCKSUMMARY")//done(stocksummary,Zeroinventory,balance)
+                else if (ReportType == "STOCKSUMMARY"|| ReportType== "STOCKWITHZEROINVENTORY")//done(stocksummary,Zeroinventory,balance)
                 {
                     if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                     {
