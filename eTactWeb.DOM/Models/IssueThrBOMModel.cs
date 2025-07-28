@@ -52,6 +52,8 @@ namespace eTactWeb.DOM.Models
         public string DashboardTypeBack { get; set; }
         public string GlobalSearchBack { get; set; }
         public int FromStoreBack { get; set; }
+        public string? ReqComplated { get; set; }
+        public string? ReqCanceled { get; set; }
         public IList<TextValue>? EmployeeList { get; set; }
         public IList<IssueThrBomDetail>? ItemDetailGrid { get; set; }
         public IList<IssueThrBomFGData>? FGItemDetailGrid { get; set; }
