@@ -28,6 +28,7 @@ namespace eTactWeb.Services.Interface
         public Task<ResponseResult> GetEmails(int AccountCode);
         Task<ResponseResult> FillAdditionalFields(string Flag, int AccountCode);
         Task<ResponseResult> CheckFeatureOption();
+        Task<ResponseResult> editablePurchasePriceOrNot();
         Task<ResponseResult> FillEntryandJWNo(int YearCode);
         Task<ResponseResult> GetAllItems(string Flag, string TF,string Types);
         Task<ResponseResult> GetPONOByAccount(string Flag, int AccountCode, string PONO, int POYear, int ItemCode, string ChallanDate);
