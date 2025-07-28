@@ -40,7 +40,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveNewVendorOfTheMonth();
         Task<ResponseResult> SaveBestAndWorstSupplier();
         Task<ResponseResult> FillDisplaySalesHeading();
-        Task<ResponseResult> SaveDisplaySalesHeading();
         Task<ResponseResult> FillSALEMonthlyTrend();
         Task<ResponseResult> FillTop10SOLDItem();
         Task<ResponseResult> FillTop10SALECUSTOMER();
@@ -48,5 +47,12 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillNEWCustomerOFTHEMONTH();
         Task<ResponseResult> FillMonthlyRejectionTrend();
         Task<ResponseResult> FillSaleOrderVsDispatch();
+        Task<ResponseResult> SaveDisplaySalesHeading();
+        Task<ResponseResult> SaveNewCustomerOfTheMonth();
+        Task<ResponseResult> SaveTop10SaleCustomer();
+        Task<ResponseResult> SaveTop10SoldItem();
+        Task<ResponseResult> SaveSaleMonthlyTrend();
+        Task<ResponseResult> SaveTop10SalesPerson();
+        Task<ResponseResult> SaveSaleOrderVsDispatch();
     }
 }

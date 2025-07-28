@@ -150,17 +150,6 @@
 			<i id="arrowIcon" class="fa fa-chevron-down float-end" style="float: right;"></i>
 		</div>
 	</div>
-	<div class="card">
-		<div style="width: 100%; background-color: #f0f0f0; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 8px;">
-			<h3 style="margin: 0;">Supply Chain</h3>
-			<div class="icon-container bg-icon">
-				<i class="fa fa-boxes" style="font-size: 24px;cursor:pointer;" onclick="StockValuation()"></i>
-			</div>
-		</div>
-		<div class="card-body">
-			<canvas id="inventoryByCategoryChart"></canvas>
-		</div>
-	</div>
 	<input type="hidden" id="RefreshPOAllData" />
 	<div class="card">
 		<!-- Header -->
@@ -194,6 +183,7 @@
 					<li>Refresh PO Category</li>
 					<li>Refresh PO Vs Consumption</li>
 					<li>Refresh New Vendor Of The Month</li>
+					<li>Refresh Best and Worst Vendors</li>
 				</ul>
 			</div>
 
@@ -248,6 +238,13 @@
 						<i class="fas fa-user-plus fa-fw text-info"></i>
 						New Vendor Of This Month
 					</button>
+
+					<!-- Best and Worst Vendors -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #fac5ee;" onclick="SaveBestAndWorstSupplier()">
+						<i class="fas fa-user fa-fw text-danger"></i>
+						Best and Worst Vendors
+					</button>
 				</div>
 			</div>
 		</div>
@@ -260,40 +257,106 @@
 			<i id="poArrowIcon" class="fa fa-chevron-down float-end" style="float: right;"></i>
 		</div>
 	</div>
+	<input type="hidden" id="RefreshSalesAllData" />
+	<div class="card">
+		<!-- Header -->
+		<div style="width: 100%; background-color: #c5d6ee; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-radius: 10px 10px 0 0;">
+			<h3 style="margin: 0;font-size:20px;">Sales Order</h3>
+			<div class="icon-container bg-icon" onclick="RefreshSalesAllData()">
+				<i id="refreshSaleIcon" class="fas fa-chart-pie" style="font-size: 24px; cursor: pointer;"></i>
+			</div>
+		</div>
+
+		<!-- Body -->
+		<div class="card-body" id="SalesButtons" style="padding: 16px;">
+			<!-- Placeholder -->
+			<div id="SalesPlaceholder" style="
+			background-color: #f9f9f9;
+			border-left: 4px solid #007bff;
+			padding: 12px 16px;
+			border-radius: 4px;
+			color: #333;
+			font-size: 14px;
+			line-height: 1.6;
+		">
+				<p style="margin: 0 0 8px 0; font-weight: 500;">
+					<i class="fa fa-info-circle text-primary"></i> This section includes the following Sales Order operations:
+				</p>
+				<ul style="margin: 0; padding-left: 20px;">
+					<li>Display Sales Heading Info</li>
+					<li>Highlight New Customer Of The Month</li>
+					<li>Update Top 10 Sale Customers</li>
+					<li>Update Top 10 Sold Items</li>
+					<li>Refresh Sales Monthly Trend</li>
+					<li>Update Top 10 Salespersons</li>
+					<li>Update Sales Order Vs Dispatch Data</li>
+				</ul>
+			</div>
+
+			<!-- Action Buttons -->
+			<div id="SalesActions" style="display: none; margin-top: 10px;">
+				<div class="d-flex flex-wrap gap-3">
+					<!-- Display Sales Heading -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #d0ebff;" onclick="SaveDisplaySalesHeading()">
+						<i class="fas fa-heading fa-fw text-primary"></i>
+						Sales Heading
+					</button>
+
+					<!-- New Customer Of The Month -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #fff3bf;" onclick="SaveNewCustomerOfTheMonth()">
+						<i class="fas fa-user-plus fa-fw text-warning"></i>
+						New Customer This Month
+					</button>
+
+					<!-- Top 10 Sale Customers -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #ffe0e0;" onclick="SaveTop10SaleCustomer()">
+						<i class="fas fa-users fa-fw text-danger"></i>
+						Top 10 Customers
+					</button>
+
+					<!-- Top 10 Sold Items -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #d3f9d8;" onclick="SaveTop10SoldItem()">
+						<i class="fas fa-boxes fa-fw text-success"></i>
+						Top 10 Sold Items
+					</button>
+
+					<!-- Sale Monthly Trend -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #e5dbff;" onclick="SaveSaleMonthlyTrend()">
+						<i class="fas fa-chart-line fa-fw text-indigo"></i>
+						Monthly Trend
+					</button>
+
+					<!-- Top 10 Salesperson -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #ffd8a8;" onclick="SaveTop10SalesPerson()">
+						<i class="fas fa-user-tie fa-fw text-orange"></i>
+						Top 10 Salespersons
+					</button>
+
+					<!-- Sales Order Vs Dispatch -->
+					<button type="button" class="btn text-dark shadow-sm rounded px-3 py-2"
+							style="background-color: #c5f6fa;" onclick="SaveSaleOrderVsDispatch()">
+						<i class="fas fa-truck-loading fa-fw text-info"></i>
+						Order Vs Dispatch
+					</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Footer Toggle -->
+		<div class="card-footer"
+			 style="cursor: pointer; background-color: #c5d6ee; padding: 12px 16px;"
+			 onclick="toggleSalesSection()">
+			<span style="font-weight: 600; font-size: 15px;">Click here to refresh Sales data</span>
+			<i id="salesArrowIcon" class="fa fa-chevron-down float-end" style="float: right;"></i>
+		</div>
+	</div>
 </div>
-@* <div class="dashboard-action-buttons">
-	<input type="hidden" id="NoOfItemInStock" />
-
-	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
-		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-		Click here to Refresh No Of item In Stock
-	</button>
-
-	<button type="button" class="btn btn-primary submitBTN" onclick="StockValuation()">
-		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-		Click here to Calculate Stock Valuation
-	</button>
-
-	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
-		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-		Click here to Get List of Dead item
-	</button>
-
-	<button type="button" class="btn btn-primary submitBTN" onclick="PendingInventoryTask()">
-		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-		Click here to get Pending Job List
-	</button>
-
-	<button type="button" class="btn btn-primary submitBTN" onclick="FillNoOfItemInStock()">
-		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-		Click here to get Item Below Min Level
-	</button>
-
-	<button type="button" class="btn btn-success submitBTN" onclick="RefreshInventoryAllData()">
-		<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-		Click To refresh All
-	</button>
-</div> *@
 
 @section Scripts {
 	<script>
@@ -301,6 +364,7 @@
 		$(document).ready(function () {
 			$('#RefreshInventoryAllData').val(false);
 			$('#RefreshPOAllData').val(false);
+			$('#RefreshSalesAllData').val(false);
 		});
 
 		function toggleInventory() {
@@ -325,6 +389,24 @@
 			const placeholder = document.getElementById("POPlaceholder");
 			const actions = document.getElementById("POActions");
 			const icon = document.getElementById("poArrowIcon");
+
+			if (actions.style.display === "none" || actions.style.display === "") {
+				actions.style.display = "block";
+				placeholder.style.display = "none";
+				icon.classList.remove("fa-chevron-down");
+				icon.classList.add("fa-chevron-up");
+			} else {
+				actions.style.display = "none";
+				placeholder.style.display = "block";
+				icon.classList.remove("fa-chevron-up");
+				icon.classList.add("fa-chevron-down");
+			}
+		}
+
+		function toggleSalesSection() {
+			const placeholder = document.getElementById("SalesPlaceholder");
+			const actions = document.getElementById("SalesActions");
+			const icon = document.getElementById("salesArrowIcon");
 
 			if (actions.style.display === "none" || actions.style.display === "") {
 				actions.style.display = "block";
@@ -406,6 +488,41 @@
 			}, 50);
 		}
 
+		function RefreshSalesAllData() {
+			var icon = $('.refreshSaleIcon');
+
+			// Change icon to spinner
+			icon.removeClass('fa-file-invoice-dollar').addClass('fa-spinner fa-spin');
+
+			// Disable click interaction
+			icon.css('pointer-events', 'none'); // Disable pointer
+			icon.css('opacity', '0.6');         // Optional: show visually it's disabled
+
+			// Let the browser render the spinner first
+			setTimeout(function () {
+				$('#RefreshSalesAllData').val(true);
+
+				// Call your inventory functions
+				SaveDisplaySalesHeading();
+				SaveNewCustomerOfTheMonth();
+				SaveTop10SaleCustomer();
+				SaveTop10SoldItem();
+				SaveSaleMonthlyTrend();
+				SaveTop10SalesPerson();
+				SaveSaleOrderVsDispatch();
+
+				$.notify('Successfully refreshed all SO Data...!', {
+					position: "top center",
+					className: "success"
+				});
+
+				// Reload the page
+				setTimeout(function () {
+					location.reload();
+				}, 1000);
+
+			}, 10);
+		}
 
 		function FillNoOfItemInStock(){
 			$.ajax({
@@ -707,6 +824,198 @@
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						if ($('#RefreshPOAllData').val() == "false") {
 							$.notify('Successfully Refresh New Vendor Of The Month...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveBestAndWorstSupplier() {
+			$.ajax({
+				url: '@Url.Action("SaveBestAndWorstSupplier", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshPOAllData').val() == "false") {
+							$.notify('Successfully Refresh New Vendor Of The Month...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveDisplaySalesHeading() {
+			$.ajax({
+				url: '@Url.Action("SaveDisplaySalesHeading", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshSalesAllData').val() == "false") {
+							$.notify('Successfully Refresh Display Sales Heading...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveNewCustomerOfTheMonth() {
+			$.ajax({
+				url: '@Url.Action("SaveNewCustomerOfTheMonth", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshSalesAllData').val() == "false") {
+							$.notify('Successfully Refresh New Customer of the Month...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveTop10SaleCustomer() {
+			$.ajax({
+				url: '@Url.Action("SaveTop10SaleCustomer", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshSalesAllData').val() == "false") {
+							$.notify('Successfully Refresh Top 10 Sale Customer...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveTop10SoldItem() {
+			$.ajax({
+				url: '@Url.Action("SaveTop10SoldItem", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshSalesAllData').val() == "false") {
+							$.notify('Successfully Refresh Top 10 Sold Items...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveSaleMonthlyTrend() {
+			$.ajax({
+				url: '@Url.Action("SaveSaleMonthlyTrend", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshSalesAllData').val() == "false") {
+							$.notify('Successfully Refresh Monthly Trend...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveTop10SalesPerson() {
+			$.ajax({
+				url: '@Url.Action("SaveTop10SalesPerson", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+					debugger
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshSalesAllData').val() == "false") {
+							$.notify('Successfully Refresh Top 10 Sales Person...!', { position: "top center", className: "success" });
+							setTimeout(function () {
+								location.reload(); // Refresh after 2 seconds
+							}, 1000);
+						}
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to save data.');
+				}
+			});
+		}
+
+		function SaveSaleOrderVsDispatch() {
+			$.ajax({
+				url: '@Url.Action("SaveSaleOrderVsDispatch", "XONDashboard")',
+				type: 'POST',
+				async: false,
+				data: {},
+				success: function (response, status, error) {
+
+					var obj = $.parseJSON(response);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						if ($('#RefreshSalesAllData').val() == "false") {
+							$.notify('Successfully Refresh SaleOrder Vs Dispatch...!', { position: "top center", className: "success" });
 							setTimeout(function () {
 								location.reload(); // Refresh after 2 seconds
 							}, 1000);

@@ -777,5 +777,131 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<ResponseResult> SaveNewCustomerOfTheMonth()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "NEW Customer OF THE MONTH"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveTop10SaleCustomer()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "Top 10 SALE CUSTOMER"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveTop10SoldItem()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "Top 10 SOLD Item"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveSaleMonthlyTrend()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "SALE Monthly Trend"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveTop10SalesPerson()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "Top 10 SALES PERSON"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveSaleOrderVsDispatch()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@DashboardType ", "SALE"));
+                SqlParams.Add(new SqlParameter("@FLAG", "SaleOrder Vs Dispatch"));
+                SqlParams.Add(new SqlParameter("@CurrentDate", DateTime.UtcNow));
+                SqlParams.Add(new SqlParameter("@CurrentYear", DateTime.UtcNow.Year));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPDashboardCalculation", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
     }
 }
