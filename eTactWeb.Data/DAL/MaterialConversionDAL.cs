@@ -503,7 +503,57 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
          }
-         public async Task<ResponseResult> GetOriginalItemName()
+        public async Task<ResponseResult> AutoFillitem(string Flag, string SearchItemCode, string SearchPartCode)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+
+
+                Result = await _IDataLogic.ExecuteDataTable("SpMaterialConversionMainDetail", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+
+		public async Task<ResponseResult> AutoFillAltitem(string Flag,int origItemcode, string SearchItemCode, string SearchPartCode)
+		{
+			var Result = new ResponseResult();
+
+			try
+			{
+				var SqlParams = new List<dynamic>();
+
+				SqlParams.Add(new SqlParameter("@Flag", Flag));
+				SqlParams.Add(new SqlParameter("@origItemcode", origItemcode));
+				SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+				SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+
+
+				Result = await _IDataLogic.ExecuteDataTable("SpMaterialConversionMainDetail", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return Result;
+		}
+		public async Task<ResponseResult> GetOriginalItemName()
          {
             var _ResponseResult = new ResponseResult();
             try

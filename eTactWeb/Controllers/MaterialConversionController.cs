@@ -105,7 +105,32 @@ namespace eTactWeb.Controllers
 
             return View(MainModel);
         }
-        public async Task<JsonResult> GetFormRights()
+        public async Task<JsonResult> AutoFillPartCode( string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IMaterialConversion.AutoFillitem("AutoFillPartCode", SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> AutoFillItemName( string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IMaterialConversion.AutoFillitem("AutoFillItemName", SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+		public async Task<JsonResult> AutoFillAlternatePartCode(int origItemcode,string SearchItemCode, string SearchPartCode)
+		{
+			var JSON = await _IMaterialConversion.AutoFillAltitem("AutoFillAlternatePartCode", origItemcode, SearchItemCode, SearchPartCode);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+		public async Task<JsonResult> AutoFillAlternateItemName(int origItemcode,string SearchItemCode, string SearchPartCode)
+		{
+			var JSON = await _IMaterialConversion.AutoFillAltitem("AutoFillAlternateItemName", origItemcode, SearchItemCode, SearchPartCode);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+		public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             var JSON = await _IMaterialConversion.GetFormRights(userID);

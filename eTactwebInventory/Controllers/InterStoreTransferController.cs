@@ -120,6 +120,18 @@ namespace eTactWeb.Controllers
             webReport.Report.Refresh();
             return View(webReport);
         }
+        public async Task<JsonResult> AutoFillPartCode(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await IInterStore.AutoFillitem("AutoFillPartCode", showallitem, SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await IInterStore.AutoFillitem("AutoFillItemName", showallitem, SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));

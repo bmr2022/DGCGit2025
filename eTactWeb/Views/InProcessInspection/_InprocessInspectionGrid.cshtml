@@ -53,11 +53,14 @@
                 }
                 else
                 {
+                    var deletedChar = (ViewBag.DeletedCharacteristic as string ?? "").Trim().ToLower();
                     foreach (var item in Model.DTSSGrid)
                     {
                         Cntr = Cntr + 1;
-
-                        <tr id="SAGridRow-@Cntr" onclick="selection(this)">
+                        
+                        var currentChar = (item.Characteristic ?? "").Trim().ToLower();
+                        var rowClass = currentChar == deletedChar ? "highlight-deleted-row" : "";
+                        <tr id="SAGridRow-@Cntr" onclick="selection(this)" class="@rowClass">
                           
                             <td>
                                 <a class="table-link link-primary ms-2" onclick="CopyRow(this)" title="Copy Row">
@@ -106,7 +109,10 @@
 
 
 <style>
-
+    .highlight-deleted-row {
+        background-color: #e6ccff !important;
+        transition: background-color 0.5s ease;
+    }
     .sort-icon {
         padding: 5px;
         margin: 5px;

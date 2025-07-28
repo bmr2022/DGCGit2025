@@ -216,20 +216,24 @@
                                 <div class="col-lg">
                                     <label asp-for="PartCode" class="form-label me-2" style="color: red;">Part Code*</label>
                                     <input id="SHA" class="form-check-input me-1 showAll" type="checkbox" role="switch" /> <label class="form-label">Show All</label>
-                                    <select class="form-select" asp-for="PartCode" style="width:220px;">
+                                    @* <select class="form-select" asp-for="PartCode" style="width:220px;">
                                         <option value="">-Select-</option>
-                                    </select>
+                                    </select> *@
+                                    <input type="text" style="width:150px" id="PartCodeText" class="form-control" placeholder="Type Part Code..." />
+                                    <input type="hidden" asp-for="PartCode" id="PartCode" />
                                 </div>
                                 @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">*@
-                                <div class="col-lg">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                     <label asp-for="ItemCode" class="form-label me-2" style="color: red;">Item Name*</label>
-                                    <input id="SHAItems" class="form-check-input me-1 showAll" type="checkbox" role="switch" /> <label class="form-label">Show All</label>
+                                   @*  <input id="SHAItems" class="form-check-input me-1 showAll" type="checkbox" role="switch" /> <label class="form-label">Show All</label>
                                     <select class="form-select" asp-for="ItemCode" style="width:220px;">
                                         <option value="">-Select-</option>
-                                    </select>
+                                    </select> *@
+                                    <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                    <input type="hidden" asp-for="ItemCode" id="ItemCode" />
                                 </div>
 
-                                <div class="col-lg">
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-3 col-xs-12">
                                     <label asp-for="BatchNo" class="control-label" style="color: red;">BatchNo*</label>
                                     <select class="form-select" asp-for="BatchNo">
                                         <option value="">-Select-</option>
@@ -390,8 +394,8 @@
     <script>
         $(document).ready(function () {
             GetFormRights();
-            $('#PartCode').select2();
-            $('#ItemCode').select2();
+           /*  $('#PartCode').select2();
+            $('#ItemCode').select2(); */
             //$('#Storeid').select2();
             //$('#Wcid').select2();
 
@@ -399,8 +403,9 @@
             $('#ToWCID').prop("disabled", true);
             FillStore();
             FillLoadToStoreName();
-            FillPartCode();
-            FillItem();
+            AutoFillItems();
+           /*  FillPartCode();
+            FillItem(); */
             GetAllowBackDate();
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
@@ -815,9 +820,11 @@
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
 
-                            $('#PartCode').val(obj[0].ItemCode).trigger("change");
                             $('#ItemCode').val(obj[0].ItemCode).trigger("change");
-                            //$('#ItemCode').text(obj[0].ItemName);
+                            $('#PartCode').val(obj[0].ItemCode).trigger("change");
+                            /* $('#ItemName').val(obj[0].ItemName); */
+                            $('#PartCodeText').val(obj[0].PartCode);
+                            $('#ItemNameText').val(obj[0].ItemName);
                             $('#TotalStockQty').val(obj[0].TotalStockQty);
                             $('#LotStockQty').val(obj[0].LotStockQty);
                             if ($('#BatchNo').val() == obj[0].BatchNo) {
@@ -936,8 +943,8 @@
             var uniquebatchnoo = $('#UniqueBatchNo').val();
             var SchData = {
                 "ItemCode": parseInt($('#ItemCode').val()),
-                "PartCode": $('#PartCode :selected').text(),
-                "ItemName": $('#ItemCode :selected').text(),
+                "PartCode": $('#PartCodeText').val(),
+                "ItemName": $('#ItemNameText').val(),
                 "TotalStockQty": $('#TotalStockQty').val(),
                 "LotStockQty": $('#LotStockQty').val(),
                 "Qty": $('#Qty').val(),
@@ -963,7 +970,7 @@
                     if (xhr.status == 200 && xhr.responseText == result) {
                         $('#divISTGrid').html(result);
                         $('#PartCode,#ItemCode,#Storeid,#Wcid').val("").trigger("change");
-                        $('#batchno,#uniqbatchno,#AdjType,#reasonOfAdjustment').val("");
+                        $('#batchno,#uniqbatchno,#AdjType,#reasonOfAdjustment,#PartCodeText,#ItemNameText').val("");
                         $('#Unit,#altUnit').val("");
                         $('#TotalStockQty,#LotStockQty,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount,#Qty').val(0);
                         $('#BatchNo,#UniqueBatchNo,#ReasonOfTransfer').val('');
@@ -1531,8 +1538,135 @@
                 }
             });
         }
+        function AutoFillItems() {
 
-        function FillItem() {
+
+            // Source for PartCodeText
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillPartCode")',
+                    type: 'POST',
+                    data: {
+
+                        "showallitem": $('#IC1').is(':checked') ? 'Y' : 'N',
+                        SearchItemCode: '',
+                        SearchPartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+                        console.log("obj" + obj);
+                        console.log("result" + typeof result === "string" ? JSON.parse(result) : result);
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+
+                            let filtered = obj.Result.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.PartCode.toLowerCase().includes(term);
+                            });
+                            console.log(filtered);
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.PartCode,
+                                    value: item.PartCode,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // Source for ItemNameText
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("AutoFillItemName")',
+                    type: 'POST',
+                    data: {
+                        "showallitem": $('#SHA').is(':checked') ? 'Y' : 'N',
+                        SearchItemCode: request.term,
+                        SearchPartCode: ''
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+                            let filtered = obj.Result.filter(function (item) {
+                                let term = request.term.toLowerCase();
+                                return item.ItemName.toLowerCase().includes(term);
+                            });
+
+                            response($.map(filtered, function (item) {
+                                return {
+                                    label: item.ItemName,
+                                    value: item.Item_Code,
+                                    itemName: item.ItemName,
+                                    itemCode: item.Item_Code,
+                                    partCode: item.PartCode
+                                };
+                            }));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+
+            };
+
+            // Autocomplete for PartCodeText
+            $("#PartCodeText").autocomplete({
+                source: partCodeSource,
+                select: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                    $("#ItemNameText").val(ui.item.itemName);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    GetUnitAltUnit($('#ItemCode').val());
+                    FillRate();
+                    FillTotalStock();
+                    FillStockBatchNo();
+                    /* GetItemPartCode("PartCode");
+                    GetItemRate();
+                    FillCurrentBatchINStore(); */
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value);
+                    return false;
+                },
+                minLength: 2
+            });
+
+            // Autocomplete for ItemNameText
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCodeText").val(ui.item.partCode);
+                    $('#ItemCode').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    GetUnitAltUnit($('#ItemCode').val());
+                    FillRate();
+                    FillTotalStock();
+                    FillStockBatchNo();
+                    /* GetItemPartCode("ItemCode");
+                    GetItemRate();
+                    FillCurrentBatchINStore(); */
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                },
+                minLength: 2
+            });
+
+        }
+
+
+      /*   function FillItem() {
 
             var ShowAllItem = "";
             if ($('#SHAItems').prop("checked") == true) {
@@ -1594,7 +1728,7 @@
                     }
                 }
             });
-        }
+        } */
 
         function FillStore() {
             $.ajax({
