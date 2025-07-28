@@ -57,7 +57,6 @@
 		<Content Remove="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 		<Content Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 		<Content Remove="Views\Home\Dashboard.cshtml" />
-		<Content Remove="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
 		<Content Remove="wwwroot\Scripts\CheckUserRights.js" />
 		
 	</ItemGroup>
@@ -66,7 +65,6 @@
 		<None Include="bundleconfig.json" />
 		<None Include="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 		<None Include="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
-		<None Include="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
 
 		<None Include="Views\Shared\_FormsButton.cshtml">
 			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -167,7 +165,6 @@
 	  <_ContentIncludedByDefault Remove="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 	  <_ContentIncludedByDefault Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
 	  <_ContentIncludedByDefault Remove="Views\Home\Dashboard.cshtml" />
-	  <_ContentIncludedByDefault Remove="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
 	  <_ContentIncludedByDefault Remove="wwwroot\Scripts\CheckUserRights.js" />
 	</ItemGroup>
 
@@ -213,10 +210,6 @@
 
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Views\Features_Options\_Features_OptionsPurchaseBill.cshtml" />
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Views\InProcessInspection\_InprocessInspectionGrid.cshtml" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -293,25 +293,39 @@ namespace eTactWeb.Controllers
 			};
 
 					
+					//for (int i = 1; i <= 25; i++)
+					//{
+					//	var propertyName = $"InspValue{i}";
+					//	var prop = Item.GetType().GetProperty(propertyName);
+					//	decimal value = 0;
+
+					//	//if (prop != null)
+					//	//{
+					//	//	var propValue = prop.GetValue(Item);
+					//	//	value = propValue != null ? Convert.ToDecimal(propValue) : 0;
+					//	//}
+					//	if (prop != null && decimal.TryParse(prop.ToString(), out var result))
+					//	{
+					//		value = result; 
+					//	}
+					//	rowValues.Add(value);
+					//}
+
 					for (int i = 1; i <= 25; i++)
-					{
-						var propertyName = $"InspValue{i}";
-						var prop = Item.GetType().GetProperty(propertyName);
-						decimal value = 0;
+{
+	var propertyName = $"InspValue{i}";
+	var prop = Item.GetType().GetProperty(propertyName);
 
-						//if (prop != null)
-						//{
-						//	var propValue = prop.GetValue(Item);
-						//	value = propValue != null ? Convert.ToDecimal(propValue) : 0;
-						//}
-						if (prop != null && decimal.TryParse(prop.ToString(), out var result))
-						{
-							value = result; 
-						}
-						rowValues.Add(value);
-					}
-
-					
+	if (prop != null)
+	{
+		var value = prop.GetValue(Item)?.ToString() ?? "0";
+		rowValues.Add(value);
+	}
+	else
+	{
+		rowValues.Add("0");
+	}
+}
 					GIGrid.Rows.Add(rowValues.ToArray());
 				}
 
@@ -546,11 +560,11 @@ namespace eTactWeb.Controllers
 				existingGrid.Remove(itemToRemove);
 
 				// Reassign SeqNo to keep them continuous
-				int seq = 1;
-				foreach (var item in existingGrid)
-				{
-					item.SeqNo = seq++;
-				}
+				//int seq = 1;
+				//foreach (var item in existingGrid)
+				//{
+				//	item.SeqNo = seq++;
+				//}
 
 				// Update session
 				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
