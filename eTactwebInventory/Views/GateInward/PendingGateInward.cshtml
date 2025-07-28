@@ -1,0 +1,175 @@
+﻿@model eTactWeb.DOM.Models.GateInwardModel
+@{
+	ViewData["Title"] = "Gate Inward";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+
+	.select2-container--default .select2-selection--single {
+		background-color: #e0f2f1;
+		border: 1.5px solid #0a0a0a !important;
+		border-radius: 4px;
+	}
+
+		.select2-container--default .select2-selection--single .select2-selection__rendered {
+			/* border-bottom: 1.5px solid #000 !important; */
+			border-bottom: none !important;
+		}
+
+	.select2-container--default .select2-results > .select2-results__options {
+		background-color: #e0f2f1; /* Dropdown background color */
+		color: #000;
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+	<div class="card-header card-headerBG text-light bg-gradient">
+		<h5>
+			<strong>Pending Gate Inward</strong>
+			<span class="d-flex float-end" style="margin-top:-2px;">
+				@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+
+			</span>
+		</h5>
+	</div>
+	<div>
+	</div>
+	<div class="card-body bg-light pt-0">
+		<div class="accordion shadow-lg">
+			<div class="card-body">
+				<div class="card overflow-auto">
+					<div class="card-body">
+						<form id="SParam">
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="H_GateEntry">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_GateEntry" aria-expanded="true" aria-controls="B_GateEntry">
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Pending Gate Entry</strong>
+									</button>
+								</h2>
+								<div id="B_GateEntry" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_GateEntry">
+									<div class="accordion-body">
+
+										<div class="row">
+										@* 	<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+												<div class="row">
+													<div class="col">
+														<label class="form-label">From Date</label>
+														<input asp-for="FromDate" class="form-control" />
+													</div>
+													<div class="col">
+														<label class="form-label">To Date</label>
+														<input asp-for="ToDate" class="form-control" />
+													</div>
+												</div>
+											</div> *@
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+													
+												<label asp-for="AccountCode" class="form-label">Vendor Name</label>
+												<input asp-for="AccountCode" class="form-control" />
+												@* <select class="form-select" data-abcd="7" asp-for="AccountCode" id="account">
+													<option value="" disabled>-Select-</option>
+												</select> *@
+												</div>
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="PoNo" class="form-label" >PO NO</label>
+												@*  <input asp-for="NeedPo" type="hidden"/> *@
+												<select class="form-select" data-abcd="7" asp-for="PoNo" id="PONO">
+													<option value="" disabled>-Select-</option>
+												</select>
+												
+											</div>
+											<div class ="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label class="form-label" style="color: red;">
+													document type*
+												</label>
+												<select class="form-select" data-abcd="4">
+													<option value="" disabled selected>-select-</option>
+												</select>
+											</div>
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="PartCode" class="form-label">PartCode</label>
+												<input asp-for="PartCode" class="form-control" />
+											</div>
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ItemName" class="form-label">Item Name</label>
+												<input asp-for="ItemName" class="form-control" />
+											</div>
+										
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label class="form-label">Global search</label>
+												<input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+											</div>
+											<div class=" d-flex justify-content-center mt-3" width="inherit">
+												<button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;">
+													<i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+												</button>
+												<button class="btn btn-sm btn-outline-danger" style="padding:3px; height:30px; width:100px; margin-left:20px;" type="button" id="sendToPDF">
+													<i class="fa-solid fa-file-pdf fa-fw fa-lg"></i> PDF
+												</button>
+												<button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+													<i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+												</button>
+												<a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="GateInward" asp-action="GateInward">
+													<i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+												</a>
+												
+											</div>
+										</div>
+										</<div></div>
+									</div>
+								</div>
+								<div class="progress my-2 mb-3" style="height: 4px;">
+									<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+							
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+@section Scripts
+{
+	<script>
+		$(function ()
+		   {
+		AutoComplete('VGateMainDetail', 'AccountCode', 'Account_Name', null);
+		  AutoComplete('VGateMainDetail', 'ItemName', 'Item_Name', null);
+		  AutoComplete('VGateMainDetail', 'PartCode', 'PartCode', null);
+		  AutoComplete('VGateMainDetail', 'PONO', 'PONo', null);
+		  AutoComplete('VGateMainDetail', 'Gateno', 'GateNo', null);
+		  AutoComplete('VGateMainDetail', 'ScheduleNo', 'SchNo', null);
+		   });
+	</script>
+	<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+	<!-- jsPDF core -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+	<!-- jsPDF AutoTable plugin -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+}
+
+<style>
+
+	.sort-icon {
+		padding: 5px;
+		margin: 5px;
+		vertical-align: top;
+	}
+
+	.ascCol {
+		font-size: 15px;
+		vertical-align: bottom;
+	}
+
+	.descCol {
+		font-size: 15px;
+		vertical-align: super;
+	}
+
+</style>
