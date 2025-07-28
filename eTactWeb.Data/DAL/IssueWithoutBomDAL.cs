@@ -105,6 +105,26 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        public async Task<ResponseResult> PassForCloseReq()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "PassForCloseReq"));
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_IssueWithoutBomM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> GETDepartMent(string ReqNo, int ReqYearCode)
         {
             var _ResponseResult = new ResponseResult();
@@ -391,6 +411,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Uid", model.CreatedBy));
                 SqlParams.Add(new SqlParameter("@CC", model.CC));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
+                SqlParams.Add(new SqlParameter("@reqComplated", model.ReqComplated));
+                SqlParams.Add(new SqlParameter("@ReqCancel", model.ReqCanceled));
 
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", MRGrid));

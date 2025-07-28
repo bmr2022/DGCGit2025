@@ -312,7 +312,7 @@
 										<div class="card-body" id="divPendingMRP">
 											
 
-											<div class="col-md-12 divStockRegister" id="divinProcessInspectionGrid">
+											<div class="col-md-12 divStockRegister" id="divinProcessInspectionGrid" >
 												<partial name="_InprocessInspectionGrid" />
 											</div>
 										</div>
@@ -330,7 +330,7 @@
 								</div> *@
 								<div class="card">
 									<div class="card-body" id="divPendingMRP">
-										<div class="col-md-12 divStockRegister" id="divStockGrid">
+										<div class="col-md-12 divStockRegister" id="divStockGrid" >
 											<partial name="_InProcessInspectionAddtoGrid" />
 										</div>
 									</div>
@@ -339,7 +339,6 @@
 							</div>
 							<div class="row g-2 gx-3">
 								<div class="col-12 text-center">
-
 									<strong>TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
 								</div>
 							</div>
@@ -525,6 +524,7 @@
 				
 			}
 			TotalNoOfRows();
+			UpdateInspectionRowCount();
 			const now = new Date();
 			const hours = now.getHours().toString().padStart(2, '0');
 			const minutes = now.getMinutes().toString().padStart(2, '0');
@@ -824,46 +824,128 @@
 		});
 		var deletedSeqNo = null;
 		var DeletedCharacteristic = null;
+		var deletedRowData = null;
+
 		function DeleteItemRow(seqNo, sampleSize, Characteristic) {
-			deletedSeqNo = seqNo;
-			DeletedCharacteristic = Characteristic;
+			// Find row data before deleting
+			var $rowToDelete = $('#divinProcessInspectionGrid tbody tr').filter(function () {
+				return $(this).find('td').eq(1).text().trim() === Characteristic;
+			});
+			if ($rowToDelete.length) {
+				deletedRowData = {
+					SeqNo: $rowToDelete.find('td').eq(0).text().trim(),
+					Characteristic: Characteristic,
+					EvalutionMeasurmentTechnique: $rowToDelete.find('td').eq(2).text().trim(),
+					ControlMethod: $rowToDelete.find('td').eq(3).text().trim(),
+					SpecificationFrom: $rowToDelete.find('td').eq(4).text().trim(),
+					SpecificationTo: $rowToDelete.find('td').eq(5).text().trim(),
+					RejectionPlan: $rowToDelete.find('td').eq(6).text().trim(),
+					FrequencyofTesting: $rowToDelete.find('td').eq(7).text().trim(),
+					Samples: []
+				};
+				$rowToDelete.find('input.sample-input').each(function (index, element) {
+					deletedRowData.Samples.push($(this).val().trim() || "0");
+				});
+			}
 
 			$.ajax({
-				url: '/InProcessInspection/DeleteItemRow', // Adjust route if needed
+				url: '/InProcessInspection/DeleteItemRow',
 				data: { SeqNo: seqNo, SampleSize: sampleSize, Characteristic: Characteristic },
-				type: 'GET', // or 'POST' if you prefer, just match controller
+				type: 'GET',
 				success: function (result) {
-					// Replace your grid container with updated HTML partial
 					$('#divStockGrid').html(result);
-					$.notify("Process deleted from Grid", "info");
-
 					TotalNoOfRows();
-					//ClearItems();
-					reloadGridWithHighlight(DeletedCharacteristic);
-					addRowToGrid();
+					UpdateInspectionRowCount();
+					highlightAndScrollToRow(Characteristic);
+
+					// Prefill form inputs after reload
+					prefillFormWithDeletedData(deletedRowData);
+
+					$.notify("Process deleted from Grid", "info");
 				},
 				error: function () {
 					alert('Error deleting the row.');
 				}
 			});
 		}
-		function reloadGridWithHighlight(characteristic) {
-			var ItemCode = $('#ItemCode').val();
-			var SampleSize = $('#SampleSize').val();
+		function prefillFormWithDeletedData(data) {
+			if (!data) return;
 
-			$.ajax({
-				type: 'POST',
-				url: '/InProcessInspection/GetInprocessInspectionGridData',
-				data: {
-					ItemCode: ItemCode,
-					SampleSize: SampleSize,
-					DeletedCharacteristic: characteristic  // pass deleted characteristic here
-				},
-				success: function (response) {
-					$('#divinProcessInspectionGrid').html(response);
+			//$('#SeqNoInput').val(data.SeqNo);
+			$('#CharacteristicInput').val(data.Characteristic);
+			$('#EvalutionMeasurmentTechniqueInput').val(data.EvalutionMeasurmentTechnique);
+			$('#ControlMethodInput').val(data.ControlMethod);
+			$('#SpecificationFromInput').val(data.SpecificationFrom);
+			$('#SpecificationToInput').val(data.SpecificationTo);
+			$('#RejectionPlanInput').val(data.RejectionPlan);
+			$('#FrequencyofTestingInput').val(data.FrequencyofTesting);
+
+			// Assuming your sample inputs have IDs like SampleInput1, SampleInput2 etc.
+			for (var i = 0; i < data.Samples.length; i++) {
+				$('#InspValue' + (i + 1)).val(data.Samples[i]);
+			}
+			
+		}
+
+		// function DeleteItemRow(seqNo, sampleSize, Characteristic) {
+		// 	deletedSeqNo = seqNo;
+		// 	DeletedCharacteristic = Characteristic;
+
+		// 	$.ajax({
+		// 		url: '/InProcessInspection/DeleteItemRow', 
+		// 		data: { SeqNo: seqNo, SampleSize: sampleSize, Characteristic: Characteristic },
+		// 		type: 'GET', 
+		// 		success: function (result) {
+		// 			$('#divStockGrid').html(result);
+					
+
+		// 			TotalNoOfRows();
+		// 			UpdateInspectionRowCount();
+		// 			//reloadGridWithHighlight(DeletedCharacteristic);
+		// 			highlightAndScrollToRow(DeletedCharacteristic);
+		// 			$.notify("Process deleted from Grid", "info");
+		// 		},
+		// 		error: function () {
+		// 			alert('Error deleting the row.');
+		// 		}
+		// 	});
+		// }
+		function highlightAndScrollToRow(characteristic) {
+			if (!characteristic) return;
+
+			var normalizedChar = characteristic.trim().toLowerCase();
+			var $rows = $('#divinProcessInspectionGrid tbody tr');
+
+			$rows.each(function () {
+				var $td = $(this).find('td').eq(1); // Assuming 2nd column is Characteristic
+				if ($td.text().trim().toLowerCase() === normalizedChar) {
+					$(this).addClass('highlight-deleted-row');
+					this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					return false; // Stop loop after finding first match
 				}
 			});
 		}
+		// function reloadGridWithHighlight(characteristic) {
+		// 	var ItemCode = $('#ItemCode').val();
+		// 	var SampleSize = $('#SampleSize').val();
+
+		// 	$.ajax({
+		// 		type: 'POST',
+		// 		url: '/InProcessInspection/GetInprocessInspectionGridData',
+		// 		data: {
+		// 			ItemCode: ItemCode,
+		// 			SampleSize: SampleSize,
+		// 			DeletedCharacteristic: characteristic  
+		// 		},
+		// 		success: function (response) {
+		// 			$('#divinProcessInspectionGrid').html(response);
+		// 			var $highlightedRow = $('#divinProcessInspectionGrid .highlight-deleted-row');
+		// 			if ($highlightedRow.length) {
+		// 				$highlightedRow[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+		// 			}
+		// 		}
+		// 	});
+		// }
 
 		function GetInprocessInspectionGridData() {
 			 
@@ -881,9 +963,10 @@
 				},
 				success: function (response) {
 					$('#divinProcessInspectionGrid').html(response);
-					var totalRows = $('#divStockRegisterBody tr').length;
-					$('#totalRows').text(totalRows);
+					
+					TotalNoOfRows();
 					deletedSeqNo = null;
+					$.notify("Process Add To Grid", "success");
 				},
 				error: function (xhr, status, error) {
 					console.error("Error fetching BOM tree data:", error);
@@ -1350,11 +1433,13 @@
 				url: '@Url.Action("AddToGridData", "InProcessInspection")',
 				data: { modelList: gridData, sampleSize: sampleSize },
 				success: function (result) {
-					DeletedCharacteristic = null;
 					$('#divStockGrid').html(result);
 					TotalNoOfRows();
+					UpdateInspectionRowCount();
+					DeletedCharacteristic = null;
+					reloadGridWithHighlight(null);
 					//ClearItems();
-					addRowToGrid();
+					//addRowToGrid();
 				},
 				error: function () {
 					$.notify('Something Went Wrong, Please Try Again.', "error");
@@ -1363,10 +1448,15 @@
 		});
 	
 		function TotalNoOfRows() {
-			var Row = $('#divStockGrid tr').length;
-			var tdCount = $('#divStockGrid tr td').length;
-			$('#lblItemCount').text(tdCount >= 1 ? Row : 0);
+			var rowCount = $('#divStockGrid tbody tr').length;
+			$('#lblItemCount').text(rowCount);
 		}
+
+		function UpdateInspectionRowCount() {
+			var rowCount = $('#divinProcessInspectionGrid tbody tr').length;
+			$('#totalRows').text(rowCount);
+		}
+
 		function ClearGrid() {
 			$.ajax({
 				type: "POST",
@@ -1450,7 +1540,13 @@
 	</script>
 }
 
+<style>
+	.highlight-deleted-row {
+		background-color: #e6ccff !important;
+		transition: background-color 0.5s ease;
+	}
 
+</style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />

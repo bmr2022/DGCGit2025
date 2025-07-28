@@ -41,6 +41,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckFeatureOption()
         {
             return await _JobWorkIssueDAL.CheckFeatureOption();
+        } 
+        public async Task<ResponseResult> editablePurchasePriceOrNot()
+        {
+            return await _JobWorkIssueDAL.editablePurchasePriceOrNot();
         }
         public async Task<ResponseResult> GetAddressDetails(int AccountCode)
         {

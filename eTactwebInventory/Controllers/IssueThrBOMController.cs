@@ -137,6 +137,12 @@ namespace eTactWeb.Controllers
             MainModel.GlobalSearchBack = SearchBox;
             return View(MainModel);
         }
+        public async Task<JsonResult> PassForCloseReq()
+        {
+            var JSON = await _IIssueThrBOM.PassForCloseReq();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
