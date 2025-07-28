@@ -48,6 +48,8 @@ namespace eTactWeb.DOM.Models
         public string GlobalSearchBack { get; set; }
         public int FromStoreBack { get; set; }
         public string BackFlag { get; set; }
+        public string? ReqComplated { get; set; }
+        public string? ReqCanceled { get; set; }
         public IList<TextValue>? EmployeeList { get; set; }
         public IList<IssueWithoutBomDetail>? ItemDetailGrid { get; set; }
 

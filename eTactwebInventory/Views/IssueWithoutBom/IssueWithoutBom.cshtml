@@ -45,6 +45,7 @@
                             <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" />
                             <input asp-for="FromStoreBack" type="hidden" value="@Model.FromStoreBack" />
                             <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
+                            <input type="hidden" id="AddPassWord" />
 
                             @*<input asp-for="BackFlag" type="hidden" value="false"/>*@
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
@@ -367,6 +368,22 @@
                                     <input type="" asp-for="MachineCode" class="form-control" value="@Environment.MachineName" readonly />
 
                                 </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ReqComplated" class="form-label">ReqComplated</label>
+                                    <input type="" asp-for="ReqComplated" class="form-control"  readonly />
+
+                                </div>
+                                <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                    <label asp-for="ReqCanceled" class="form-label">ReqCanceled</label>
+                                    <input type="" asp-for="ReqCanceled" class="form-control" readonly />
+
+                                </div>
+                                 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <button type="button" class="btn btn-sm  BtnPassword" style="margin:3px;background-color:beige">
+                                    @* <i class="fa fa-lock" style="color: #127387;"></i> *@
+                                   Click for CloseReq
+                                </button>
+                                </<div>
                             </div>
                         </div>
 
@@ -478,6 +495,46 @@
         </div>
     </div>
 </div>
+
+<div class="modal fade" id="CloseReqPasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Enter Password:</h6>
+                                            <input type="password" class="form-control" id="CloseReqPassword" placeholder="Enter Password" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-success" onclick="PasswordCheck();">Done</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 
@@ -718,6 +775,48 @@ function submitForm(shouldPrint, printWindow) {
                 }
             });
         }
+        $('.BtnPassword').click(function () {
+            // if(isAllowTaxPass == "Y"){
+            $('#CloseReqPasswordAllowPopup').modal("show");
+            // }
+        });
+        function PassForCloseReq() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("PassForCloseReq")",
+                async: false,
+                dataType: "json",
+                success: function (result) {
+                    // If the result is a JSON string, parse it first
+                    let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                    if (obj.StatusCode === 200 && obj.StatusText === "Success") {
+                        if (obj.Result && obj.Result.Table && obj.Result.Table.length > 0) {
+                            $('#AddPassWord').val(obj.Result.Table[0].PassForCloseReq);
+                            console.log($('#AddPassWord').val());
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
+        function PasswordCheck() {
+            var AddPassWord = $('#AddPassWord').val();
+            if ($('#CloseReqPassword').val() != AddPassWord) {
+                $.notify('please enter correct password...!', "error");
+            } else {
+                $('#ReqComplated').val("Y");
+                $('#ReqCanceled').val("Y");
+
+
+
+                $('#CloseReqPasswordAllowPopup').modal('hide');
+            }
+            $('#CloseReqPassword').val("");
+        }
 
         $('#IssueDate').change(function () {
             var rowCounter = $('#divIssueWOBOMGrid tr').length;
@@ -790,6 +889,11 @@ function submitForm(shouldPrint, printWindow) {
                 }
             });
         });
+        // $('.BtnPassword').click(function () {
+        //     // if(isAllowTaxPass == "Y"){
+        //     $('#PasswordAllowPopup').modal("show");
+        //     // }
+        // });
 
         $('#AddWithScanningUniq').click(function () {
 
@@ -897,6 +1001,7 @@ function submitForm(shouldPrint, printWindow) {
         $(document).ready(function () {
              
             fillDepartment();
+            PassForCloseReq();
             //$('#IssueByScanButton').hide(); $('#BomStatus')
             //$('#RecByEmpCode').append('<option disabled value="" selected>-Select-</option>');
             $('#IssueByScanBtn').css('background-color', 'rgb(248 255 178)');

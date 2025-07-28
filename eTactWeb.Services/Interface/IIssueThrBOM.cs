@@ -13,6 +13,8 @@ namespace eTactWeb.Services.Interface
     public interface IIssueThrBOM
     {
         Task<ResponseResult> GetFormRights(int userID);
+        Task<ResponseResult> PassForCloseReq();
+
         Task<ResponseResult> GetNewEntry(int YearCode);
         Task<ResponseResult> FillProjectNo();
         Task<ResponseResult> GetIsStockable(int ItemCode);
