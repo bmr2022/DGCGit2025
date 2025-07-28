@@ -63,8 +63,9 @@ namespace eTactWeb.DOM.Models
         public string ReportType { get; set; }
         public string Searchbox { get; set; }
         public IList<ControlPlanDetailModel> DTSSGrid { get; set; }
+        public List<ControlPlanViewModel>? ExcelDataList { get; set; }
     }
-    public class ControlPlanDetailModel
+    public class ControlPlanDetailModel 
     {
         public int SeqNo { get; set; }
         public string Mode { get; set; }
@@ -110,5 +111,26 @@ namespace eTactWeb.DOM.Models
         public IFormFile? ItemImage { get; set; }
         public string? ItemImageURL { get; set; }
     }
-
+    public class ControlPlanViewModel // Excel data
+    {
+        public int? SeqNo { get; set; }
+        public int CntPlanEntryId { get; set; }
+        public int CntPlanYearCode { get; set; }
+        public string? PartCode { get; set; }
+        public string? ItemName { get; set; }
+        public int? ItemCode { get; set; }
+        public string? PartCodeExists { get; set; }
+        public string? ItemNameExists { get; set; }
+        public string Characteristic { get; set; }
+        public string EvalutionMeasurmentTechnique { get; set; }
+        public string SpecificationFrom { get; set; }
+        public string Operator { get; set; }
+        public string SpecificationTo { get; set; }
+        public string FrequencyofTesting { get; set; }
+        public string InspectionBy { get; set; }
+        public string ControlMethod { get; set; }
+        public string RejectionPlan { get; set; }
+        public string Remarks { get; set; }
+        public string DrawingNo { get; set; }
+    }
 }
