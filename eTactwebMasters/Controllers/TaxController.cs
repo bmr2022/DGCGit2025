@@ -1965,6 +1965,11 @@ public class TaxController : Controller
             case "PurchaseOrder":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseOrder", out MainModel);
+                string modelJson = HttpContext.Session.GetString("PurchaseOrder");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    MainModel = JsonConvert.DeserializeObject<PurchaseOrderModel>(modelJson);
+                }
                 MainModel.AccountCode = AC;
                 MainModel.TxPageName = TxPageName;
                 TaxGrid = await GetHSNTaxList(MainModel);
@@ -1979,7 +1984,7 @@ public class TaxController : Controller
             case "PurchaseBill":
                 HttpContext.Session.Get(TxPageName);
                 _MemoryCache.TryGetValue("PurchaseBill", out MainModel);
-                string modelJson = HttpContext.Session.GetString("PurchaseBill");
+                 modelJson = HttpContext.Session.GetString("PurchaseBill");
                 if (!string.IsNullOrEmpty(modelJson))
                 {
                     MainModel = JsonConvert.DeserializeObject<PurchaseBillModel>(modelJson);
