@@ -4,3 +4,159 @@
     ViewData["Title"] = "User Right Dashboard";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
+
+<div class="shadow-lg">
+    <form asp-action="UserRights" autocomplete="off" class="form-horizontal">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>User Right Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="UserRightDashboard" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+
+        @Html.AntiForgeryToken()
+
+        <div class="card-body">
+            <div class=card>
+                <div class="card-body">
+                    <div class="row g-3" style="justify-content:center">
+                        @* <div class="col col-md-2 col-sm-6 col-xs-6">
+                            <label class="form-label">Select User</label>
+                            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                <input id="AC1" class="form-check-input" type="checkbox" role="switch" />Show All
+                            </div>
+                            <select class="form-select" asp-for="EmpID" asp-items="@(new SelectList(Model.UserList,"Value","Text"))" onchange="GetSearchData()">
+                                <option value=0>-Select-</option>
+                            </select>
+                        </div>
+                        <div class="col col-md-2 col-sm-6 col-xs-6">
+                            <label class="form-label">Select Module</label>
+                            <select class="form-select fs" asp-for="Module" asp-items="@(new SelectList(Model.ModuleList,"Value","Text"))" onchange="GetMenuList(this.id);">
+                                <option value=0>-Select-</option>
+                            </select>
+                        </div>
+                        <div class="col col-md-2 col-sm-6 col-xs-6">
+                            <label class="form-label">Select Menu</label>
+                            <select class="form-select fs" asp-for="MainMenu" asp-items="@(new SelectList(Model.MainMenuList,"Value","Text"))">
+                                <option value=0>-Select-</option>
+                            </select>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="All">
+                                <label class="form-check-label">All</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Save">
+                                <label class="form-check-label">Save</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Update">
+                                <label class="form-check-label">Update</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Delete">
+                                <label class="form-check-label">Delete</label>
+                            </div>
+                        </div>
+                        <div class="col col-md-1 col-sm-6 col-xs-6">
+                            <div class="form-check form-switch KC1">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="View">
+                                <label class="form-check-label">View</label>
+                            </div>
+                        </div> *@
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        @if (TempData["Duplicate"] != null)
+        {
+            <div id="duplicateMessage" data-msg="@TempData["Duplicate"]"></div>
+        }
+
+        <div class="progress my-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div>
+
+        <div class="card-footer justify-content-around">
+            <div class="row" style="text-align-last: start;">
+                <div class="col-auto m-2">
+                    <button type="button" class="btn btn-sm btn-secondary" onclick="back();"><i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>BACK</button>
+                </div>
+                <div class="col-auto mb-2">
+                    <label class="form-label">Global search</label>
+                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                </div>
+                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                    <button type="button" class="btn btn-sm btn-outline-danger btnClearGrid mt-3" style="margin-top:10px;">
+                        <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
+                        CLEAR GRID
+                    </button>
+                </div>
+             @*    <div class="d-flex col justify-content-center buttonGrid">
+                    @if (@Model.Mode != "V")
+                    {
+                        <div class="col-auto m-2">
+                            <button type="button" data-abcd="24" class="ItemBtn btn btn-sm btn-outline-danger">
+                                <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                            </button>
+                        </div>
+                        @if (@Model.Mode == "U")
+                        {
+                            <div class="col-auto m-2">
+                                <button type="submit" class="UpdateBtn btn btn-primary btn-sm bg-graident">
+                                    <i class="fa fa-pencil fa-lg fa-fw" aria-hidden="true"></i>UPDATE
+                                </button>
+                            </div>
+                            <div class="col-auto m-2">
+                                <a class="Copy btn btn-sm btn-outline-primary bg-gradient" asp-action="UserRights" asp-route-Mode="C" asp-route-ID="@Model.EmpID" asp-route-userName="@Model.UserName" style="color:blue!important;margin-right:5px;">
+                                    <i class="fa-solid fa-floppy-disk-pen fa-fw fa-lg" style="--fa-secondary-color: blue; --fa-secondary-opacity: 1.0;--fa-animation-duration: 2s;"></i>
+                                    COPY
+                                </a>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="col-auto m-2">
+                                <button type="reset" class="btn btn-sm btn-danger bg-graident" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>RESET
+                                </button>
+                            </div>
+
+                            <div class="col-auto m-2">
+                                <button type="submit" class="SubmitBtn btn btn-sm btn-success bg-graident">
+                                    <i class="fa fa-hdd-o fa-lg fa-fw" aria-hidden="true"></i>SUBMIT
+                                </button>
+                            </div>
+                        }
+                    }
+                </div> *@
+
+            </div>
+            <div class="card-body overflow-auto pb-0 table-responsive" style="max-height:350px;">
+                <table class="table table-hover table-bordered table-striped" id="UserRightsTable">
+                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static;" id="UserRighthead">
+                       
+                    </thead>
+                    <tbody id="UserRightsGrid">
+                        <partial name="_UserRightGrid" />
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+
+    </form>
+</div>
