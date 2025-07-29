@@ -78,6 +78,121 @@ public class GateInwardDashboard
     public IList<GateInwardDashboard>? GateDashboard { get; set; }
 }
 [Serializable]
+public class PendingGateInwardDashboard
+{
+    // Master entry info
+    public int seqno { get; set; }
+    public string? Gateno { get; set; }
+    public string? GDate { get; set; }
+    public string? VendorName { get; set; }
+    public int? AccountCode { get; set; }
+    public string? address { get; set; }
+    public string? Invoiceno { get; set; }
+    public string? InvoiceDate { get; set; }
+    public string? DocName { get; set; }
+    public string? CompGateNo { get; set; }
+    public string? POTypeServItem { get; set; }
+    public string? entryId { get; set; }
+    public int? yearcode { get; set; }
+    public string? MrnNo { get; set; }
+    public int? MRNYEARCODE { get; set; }
+    public string? MRNDate { get; set; }
+    public string? EnteredBy { get; set; }
+    public string? UpdatedBy { get; set; }
+
+    // Item details
+    public string? PartCode { get; set; }
+    public string? ItemName { get; set; }
+    public string? ItemCode { get; set; }
+    public string? Unit { get; set; }
+    public string? AltUnit { get; set; }
+    public float Rate { get; set; }
+    public float Qty { get; set; }
+    public float AltQty { get; set; }
+    public float PendPOQty { get; set; }
+    public float POQty { get; set; }
+    public float AltPOQty { get; set; }
+    public float AltPendQty { get; set; }
+    public decimal? PendQty { get; set; }
+    public string? Size { get; set; }
+    public string? Color { get; set; }
+    public string? ItemSize { get; set; }
+    public string? ItemColor { get; set; }
+
+    // Weight info
+    public float TareWeight { get; set; }
+    public float GrossWeight { get; set; }
+    public float NetWeight { get; set; }
+
+    // PO and Schedule Info
+    public string? PONo { get; set; }
+    public string? ScheduleNo { get; set; }
+    public int PoYearCode { get; set; }
+    public int SchYearCode { get; set; }
+    public string? POtype { get; set; }
+    public string? POType { get; set; }
+    public string? ShowPoTillDate { get; set; }
+
+    // Status Info
+    public string? Remarks { get; set; }
+    public string? DashboardType { get; set; }
+    public string? CC { get; set; }
+    public string? EntryByMachineName { get; set; }
+
+    // Challan/Sale Bill
+    public string? SaleBillNo { get; set; }
+    public int? SaleBillYearCode { get; set; }
+    public decimal? SaleBillQty { get; set; }
+    public string? AgainstChallanNo { get; set; }
+    public decimal? ChallanQty { get; set; }
+    public int? AgainstChallanYearCode { get; set; }
+    public int? ChallanYearCode { get; set; }
+
+    // Batch / Other
+    public string? SupplierBatchNo { get; set; }
+    public decimal? ShelfLife { get; set; }
+    public int? SeqNo { get; set; }
+    public string? Types { get; set; }
+    public string? OtherDetail { get; set; }
+
+    // Process Info
+    public int ProcessId { get; set; }
+    public string? Process { get; set; }
+    public string? ProcessName { get; set; }
+
+    // UI/Filter support
+    public int? NoOfBoxes { get; set; }
+    public string? Summary { get; set; }
+
+    public int TotalRecords { get; set; }
+    public int PageNumber { get; set; }
+    public int PageSize { get; set; }
+
+    public IList<PendingGateInwardDashboard>? PendingGateEntryDashboard { get; set; }
+}
+[Serializable]
+public class PendingGateEntryDashboard : PendingGateInwardDashboard
+{
+    public string? FromDate { get; set; }
+    public string? ItemName { get; set; }
+    public string? ItemCode { get; set; }
+    public string? PartCode { get; set; }
+    public string? DocName { get; set; }
+    public string? PONO { get; set; }
+    public string? ScheduleNo { get; set; }
+    public string? SessionYearCode { get; set; }
+    public string? Searchbox { get; set; }
+    public IList<TextValue>? AccountList { get; set; }
+    public IList<TextValue>? DocumentList { get; set; }
+    //right
+    //public IList<TextValue>? PONOList { get; set; }
+    public IList<TextValue>? GateNOList { get; set; }
+    public string? ToDate { get; set; }
+    public string? FromDate1 { get; set; }
+    public string? ToDate1 { get; set; }
+
+}
+[Serializable]
 public class GateDashboard : GateInwardDashboard
 {
     public string? FromDate { get; set; }

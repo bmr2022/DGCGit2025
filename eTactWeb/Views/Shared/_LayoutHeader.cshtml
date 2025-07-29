@@ -1303,7 +1303,14 @@
                                     </a>
                                     @* <input class="userRightsPermission" type="hidden" value="Gate Inward" /> *@
                                 </li>
-
+                                <li>
+                                    <a class="dropdown-item" asp-action="PendingGateInward" asp-controller="GateInward" id="GateInward">
+                                        <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
+                                           style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
+                                       Pending Gate Inward
+                                    </a>
+                                    @* <input class="userRightsPermission" type="hidden" value="Gate Inward" /> *@
+                                </li>
                                 <li>
                                     <a class="dropdown-item GateInward" asp-action="Dashboard" asp-controller="GateInward">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard

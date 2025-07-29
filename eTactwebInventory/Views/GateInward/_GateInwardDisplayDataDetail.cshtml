@@ -1,0 +1,193 @@
+﻿@model eTactWeb.DOM.Models.PendingGateInwardDashboard
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
+
+
+    <div class="table-responsive" style="max-height:350px;">
+        <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="GateDataTable">
+            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                <tr>
+                <th>Chk/Unchk <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                <th>Sr#</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year Code</th>
+                    <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                    <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pend Qty</th>
+                    <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Qty</th>
+                    <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Rate</th>
+                    <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Unit</th>
+                    <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                    <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
+                    <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Remarks</th>
+                    <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Process</th>
+                    <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill No</th>
+                    <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill Year Code</th>
+                    <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill Qty</th>
+                    <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Against Challan No</th>
+                    <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Year Code</th>
+                    <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Challan Qty</th>
+                    <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Supplier batch no</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Shelf Life</th>
+                    <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>No Of Boxes</th>
+                </tr>
+            </thead>
+        <tbody id="PendinggateDashboardtable">
+            @{
+                var Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
+
+                if (Model.PendingGateEntryDashboard == null || Model.PendingGateEntryDashboard.Count == 0)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    foreach (var item in Model.PendingGateEntryDashboard)
+                    {
+                        Cntr++;
+                        <tr >
+                            <td style="text-align:center;">
+                                <input style="background-color: #b2b3f0;" id="AcceptedQtySHA-@Cntr" class="form-check-input me-1 mt-2" type="checkbox" role="switch" onchange="CheckacceptedQtySHA();" />
+                            </td>
+                            <td style="display:none;">@item.ItemCode</td>
+                            <td>@srNo</td> <!-- Action (Serial) -->
+                            <td>@item.PONo</td>
+                            <td>@item.yearcode</td>
+                            <td>@item.ScheduleNo</td>
+                            <td>@item.SchYearCode</td>
+                            <td>@item.ItemName</td>
+                            <td>@item.PartCode</td>
+                            <td>@item.Unit</td>
+                            <td>@item.PendQty</td>
+                            <td>@item.PendQty</td>
+                            <td>@item.Rate</td>
+                            <td>@item.AltUnit</td>
+                            <td>@item.AltQty</td>
+                            <td>@item.ItemSize</td>
+                            <td>@item.ItemColor</td>
+                            <td>@item.Remarks</td>
+                            <td>@item.Process</td>
+                            <td>@item.SaleBillNo</td>
+                            <td>@item.SaleBillYearCode</td>
+                            <td>@item.SaleBillQty</td>
+                            <td>@item.AgainstChallanNo</td>
+                            <td>@item.ChallanYearCode</td>
+                            <td>@item.ChallanQty</td>
+                            <td>@item.SupplierBatchNo</td>
+                            <td>@item.ShelfLife</td>
+                            <td>@item.NoOfBoxes</td>
+                        </tr>
+                        srNo++;
+                    }
+                }
+            }
+        </tbody>
+
+        </table>
+
+    </div>
+
+  
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #GateDataTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #dashGateThead th {
+        background-color: #127387;
+        position: sticky;
+        top: -2px;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .sort-icon {
+        padding: 5px;
+        margin: 5px;
+        vertical-align: top;
+    }
+
+    .ascCol {
+        font-size: 15px;
+        vertical-align: bottom;
+    }
+
+    .descCol {
+        font-size: 15px;
+        vertical-align: super;
+    }
+
+    .pagination {
+        display: flex;
+        justify - content: center;
+        align - items: center;
+        list - style: none;
+        padding: 0;
+        margin: 20px auto;
+        gap: 5px; /* Space between buttons */
+        white - space: nowrap; /* Keeps it in a single line */
+    }
+
+    .page - item {
+        display: inline - block;
+    }
+
+    .page - link {
+        display: flex;
+        align - items: center;
+        justify - content: center;
+        width: 40px;
+        height: 40px;
+        text - decoration: none;
+        color: black;
+        border: 1px solid #ddd;
+        font - size: 16px;
+        background - color: white;
+        border - radius: 5px;
+        transition: background 0.3s;
+    }
+
+    .page - item.active.page - link {
+        background - color: #4CAF50;
+        color: white;
+        border: 1px solid #4CAF50;
+    }
+
+    .page - item.disabled.page - link {
+        background - color: #f0f0f0;
+        color: #999;
+        cursor: default;
+    }
+
+    .page - link: hover: not(.disabled): not(.active) {
+        background - color: #ddd;
+    }
+
+</style>
+
+

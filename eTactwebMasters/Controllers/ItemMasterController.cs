@@ -1399,15 +1399,32 @@ public class ItemMasterController : Controller
                 var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString().Trim()?? "");
                 var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString().Trim() ?? "", "PartCode", "Item_Master");
                 var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString().Trim() ?? "", "Item_Name", "Item_Master");
+                var workCenter = worksheet.Cells[row, 15].Value?.ToString().Trim() ?? "";
+                var Store = worksheet.Cells[row, 16].Value?.ToString().Trim() ?? "";
 
+                //var workCenter = worksheet.Cells[row, headersMap["WorkCenterDescription"]].Text?.Trim();
+                //var Store = worksheet.Cells[row, headersMap["Store"]].Text?.Trim();
                 var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                 var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
+                var WorkCenterId = _IItemMaster.GetWorkCenterId(workCenter);
+                var StoreIdResult = _IItemMaster.GetStoreCode(Store);
+                var partCode = worksheet.Cells[row, 1].Value.ToString().Trim();
+                var ItemName = worksheet.Cells[row, 2].Value.ToString().Trim();
 
                 var unit = worksheet.Cells[row, 3].Value?.ToString()?.Trim() ?? "";
 
                 var unitdataset = UnitList.Result.Result;
                 var unitTable = unitdataset.Tables[0];
-
+                int itemWorkCenterId = 0;
+                int itemStoreId = 0;
+                if (WorkCenterId.Result.Result != null && WorkCenterId.Result.Result.Rows.Count > 0)
+                {
+                    itemWorkCenterId = (int)WorkCenterId.Result.Result.Rows[0].ItemArray[0];
+                }
+                if (StoreIdResult.Result.Result != null && StoreIdResult.Result.Result.Rows.Count > 0)
+                {
+                    itemStoreId = (int)StoreIdResult.Result.Result.Rows[0].ItemArray[0];
+                }
                 bool unitExists = false;
                 foreach (DataRow rows in unitTable.Rows)
                 {
@@ -1422,7 +1439,56 @@ public class ItemMasterController : Controller
                     return StatusCode(207, "Invalid Unit" + unit);
                 }
 
+                bool WorkcenterExists = false;
 
+                if (!string.IsNullOrWhiteSpace(workCenter))
+                {
+                    var WorkCenterList = _IItemMaster.GetWorkCenterList();
+                    var WorkCenterdataset = WorkCenterList.Result.Result;
+                    var WorkCenterTable = WorkCenterdataset.Tables[0];
+
+                    foreach (DataRow rows in WorkCenterTable.Rows)
+                    {
+                        if (rows["WorkCenterDescription"].ToString().Trim().Equals(workCenter, StringComparison.OrdinalIgnoreCase))
+                        {
+                            WorkcenterExists = true;
+                            break;
+                        }
+                    }
+
+                    if (!WorkcenterExists)
+                    {
+                        return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        
+                        //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                    }
+                }
+
+                bool StoreExists = false;
+                if (!string.IsNullOrWhiteSpace(Store))
+                {
+                    var StoreList = _IItemMaster.GetStoreList();
+                    var Storedataset = StoreList.Result.Result;
+                    var StoreTable = Storedataset.Tables[0];
+                    foreach (DataRow rows in StoreTable.Rows)
+                    {
+                        if (rows["Store_Name"].ToString().Trim().Equals(Store, StringComparison.OrdinalIgnoreCase))
+                        {
+                            StoreExists = true;
+                            break;
+                        }
+                    }
+
+
+                    if (!StoreExists)
+                    {
+                        return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+
+                        //  return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+
+                    }
+
+                }
                 ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
                 int itemGCode = 1;
@@ -1438,30 +1504,37 @@ public class ItemMasterController : Controller
 
                 }
 
+                string GetCellValue(ExcelWorksheet sheet, int r, int c) =>
+    sheet.Cells[r, c].Value?.ToString().Trim() ?? string.Empty;
+
+                int GetCellIntValue(ExcelWorksheet sheet, int r, int c) =>
+                    int.TryParse(sheet.Cells[r, c].Value?.ToString().Trim(), out int result) ? result : 0;
 
 
                 data.Add(new ItemViewModel()
                 {
-                    PartCode = worksheet.Cells[row, 1].Value.ToString().Trim(),
+                    PartCode = GetCellValue(worksheet, row, 1),
                     PartCodeExists = PartCodeExists,
                     ItemNameExists = ItemNameExists,
-                    ItemName = worksheet.Cells[row, 2].Value.ToString().Trim(),
-                    Unit = worksheet.Cells[row, 3].Value.ToString().Trim(),
-                    HSNNo = (worksheet.Cells[row, 4].Value == null || string.IsNullOrWhiteSpace(worksheet.Cells[row, 4].Value.ToString()))
-        ? 0
-        : Convert.ToInt32(worksheet.Cells[row, 4].Value.ToString()),
-                    ItemGroup = worksheet.Cells[row, 5].Value.ToString().Trim(),
-                    ItemCategory = worksheet.Cells[row, 6].Value.ToString().Trim(),
-                    MinLevel = Convert.ToInt32(worksheet.Cells[row, 7].Value.ToString()),
-                    MaxLevel = Convert.ToInt32(worksheet.Cells[row, 8].Value.ToString()),
-                    Stockable = worksheet.Cells[row, 9].Value.ToString().Trim(),
-                    WIPStockable = worksheet.Cells[row, 10].Value.ToString().Trim(),
-                    NeedPO = worksheet.Cells[row, 11].Value.ToString().Trim(),
-                    QcReq = worksheet.Cells[row, 12].Value.ToString().Trim(),
-                    StdPkg = Convert.ToInt32(worksheet.Cells[row, 13].Value.ToString()),
+                    ItemName = GetCellValue(worksheet, row, 2),
+                    Unit = GetCellValue(worksheet, row, 3),
+                    HSNNo = GetCellIntValue(worksheet, row, 4),
+                    ItemGroup = GetCellValue(worksheet, row, 5),
+                    ItemCategory = GetCellValue(worksheet, row, 6),
+                    MinLevel = GetCellIntValue(worksheet, row, 7),
+                    MaxLevel = GetCellIntValue(worksheet, row, 8),
+                    Stockable = GetCellValue(worksheet, row, 9),
+                    WIPStockable = GetCellValue(worksheet, row, 10),
+                    NeedPO = GetCellValue(worksheet, row, 11),
+                    QcReq = GetCellValue(worksheet, row, 12),
+                    StdPkg = GetCellIntValue(worksheet, row, 13),
                     ItemGroupCode = itemGCode,
                     ItemCategoryCode = itemCCode,
-                    ItemServAssets = worksheet.Cells[row, 14].Value.ToString().Trim()
+                    ItemServAssets = GetCellValue(worksheet, row, 14),
+                    Store = itemStoreId.ToString(),
+                    StoreName = Store,
+                    WorkCenter = workCenter,
+                    ProdInWorkcenter = itemWorkCenterId
                 });
             }
         }
@@ -1875,6 +1948,7 @@ public class ItemMasterController : Controller
         MRGrid.Columns.Add("UpdatedOn", typeof(string));
         MRGrid.Columns.Add("Active", typeof(string));
         MRGrid.Columns.Add("ItemServAssets", typeof(string));
+        MRGrid.Columns.Add("ProdInWorkcenter", typeof(string));
 
         foreach (var Item in DetailList)
         {
@@ -1926,7 +2000,7 @@ public class ItemMasterController : Controller
                                         0,                           // 41. DailyRequirment (float)
                                         "Y",                         // 42. Stockable (string)
                                         "Y",                         // 43. WipStockable (string)
-                                        "",                          // 44. Store (string)
+                                         Item.Store ?? "",                       // 44. Store (string)
                                         0,                           // 45. ProductLifeInus (float)
                                         "",                          // 46. ItemDesc (string)
                                         0,                           // 47. MaxWipStock (float)
@@ -1939,7 +2013,8 @@ public class ItemMasterController : Controller
                                         0,                           // 54. UpdatedBy (int) - EXTRA VALUE
                                         today.ToString("yyyy-MM-dd").Split(" ")[0], // 55. UpdatedOn (string) - EXTRA VALUE
                                         "Y",                          // 56. Active (string) - EXTRA VALUE
-                                        Item.ItemServAssets          // 57. ItemServAssets (string) - EXTRA VALUE
+                                        Item.ItemServAssets      ,    // 57. ItemServAssets (string) - EXTRA VALUE
+                                        Item.ProdInWorkcenter          // 57. ItemServAssets (string) - EXTRA VALUE
                                     }
 
                 );

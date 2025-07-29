@@ -7,6 +7,7 @@ using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Office.Interop.Excel;
 using Newtonsoft.Json;
 using OfficeOpenXml;
+using OfficeOpenXml.Table.PivotTable;
 using System;
 using System.ComponentModel;
 using System.Data;
@@ -887,8 +888,13 @@ public class BomController : Controller
         //model.BomList = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
         //model.PageNumber = pageNumber;
         //model.PageSize = pageSize;
+        var viewName = string.Equals(ReportType?.Trim(), "detail", StringComparison.OrdinalIgnoreCase)
+    ? "_BomDashboardDetailGrid"
+    : "_BomDashboardGrid";
 
-        return PartialView("_BomDashboardGrid", model);
+        return PartialView(viewName, model);
+      
+      //  return PartialView("_BomDashboardGrid", model);
     }
     public static List<T> ConvertDataTableToList<T>(DataTable dt) where T : new()
     {

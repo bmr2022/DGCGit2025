@@ -7,12 +7,12 @@
                     <th>Sr#</th>
                     <th>Action</th>
                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BomNo</th>
-
-                    <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Part Code</th>
-                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Item Name</th>
-                    <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Part Code</th>
+                      <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Part Code</th>
                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>FG Item Name</th>
-                    <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Name</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Part Code</th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>RM Item Name</th>
+
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Name</th>
                     <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Bom Qty</th>
                     <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EntryDate</th>
                     <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EffectiveDate</th>
@@ -70,12 +70,12 @@
                                         </div>
                                     </td>
                                     <td class="FWB">@Model.DTDashboard.Rows[i]["BomNo"]</td>
-                                    <td>@Model.DTDashboard.Rows[i]["RMPartCode"]</td>
-                                    <td>@Model.DTDashboard.Rows[i]["RMItemName"]</td>
-
+                                 
                                     <td>@Model.DTDashboard.Rows[i]["FGPartCode"]</td>
 
                                     <td>@Model.DTDashboard.Rows[i]["FGItem"]</td>
+                                <td>@Model.DTDashboard.Rows[i]["RMPartCode"]</td>
+                                    <td>@Model.DTDashboard.Rows[i]["RMItemName"]</td>
 
                                     <td>@Model.DTDashboard.Rows[i]["bomname"]</td>
 
