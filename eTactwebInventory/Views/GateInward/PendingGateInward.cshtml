@@ -165,14 +165,14 @@
 					AccountCode: document.getElementById("VendorName").value,
 					docTypeId: document.getElementById("docTypeId").value,
 					PoNo: cells[3].textContent.trim(),
-					PoYear: parseInt(cells[4].textContent.trim()),
+					PoYear:parseInt (cells[4].textContent.trim()),
 					SchNo: cells[5].textContent.trim(),
-					SchYearCode: parseInt(cells[6].textContent.trim()),
+					SchYearCode: (cells[6].textContent.trim()),
 					ItemName: cells[7].textContent.trim(),
 					PartCode: cells[8].textContent.trim(),
 					Unit: cells[9].textContent.trim(),
 					PendQty: parseFloat(cells[10].textContent.trim()),
-					Qty: parseFloat(cells[11].textContent.trim()),
+					Qty: parseFloat(cells[11].querySelector('input').value.trim()),
 					Rate: parseFloat(cells[12].textContent.trim()),
 					AltUnit: cells[13].textContent.trim(),
 					AltQty: parseFloat(cells[14].textContent.trim()),
@@ -205,7 +205,13 @@
 				data: { model: selectedData },
 				async: false,
 				success: function (response) {
-					window.location.href = '/GateInward/GateInward?Mode=I';
+
+
+							var accountCode = document.getElementById("VendorName").value;
+		var docTypeId = document.getElementById("docTypeId").value;
+
+		window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}`;
+
 				},
 				error: function (xhr, status, error) {
 					console.error("Failed to store in session:", error);

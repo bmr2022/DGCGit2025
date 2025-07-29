@@ -151,7 +151,7 @@ namespace eTactWeb.Controllers
         }
         //[Route("GateInward/Index")]
         [HttpGet]
-        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")//, ILogger logger)
+        public async Task<ActionResult> GateInward(int ID, string Mode, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "",string AccountCode="",string docTypeId="")//, ILogger logger)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -165,16 +165,20 @@ namespace eTactWeb.Controllers
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
             if (Mode == "I" && ID == 0)
             {
-                var selectedJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                MainModel.AccountCode = Convert.ToInt32(AccountCode.ToString());
+                MainModel.docTypeId = Convert.ToInt32( docTypeId.ToString());
+                var selectedJson = HttpContext.Session.GetString("KeyGateInwardGrid");
                 if (!string.IsNullOrEmpty(selectedJson))
                 {
                     var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
                     MainModel.ItemDetailGrid = selectedItems;
+                   
                 }
             }
-            HttpContext.Session.Remove("KeyGateInwardItemDetail");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
+                HttpContext.Session.Remove("KeyGateInwardItemDetail");
+
                 MainModel = await _IGateInward.GetViewByID(ID, YC).ConfigureAwait(false);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
@@ -1055,8 +1059,8 @@ namespace eTactWeb.Controllers
                 //HttpContext.Session.SetString("KeyGateInwardItemDetail", serializedGrid);
                 //return PartialView("PendingGateInward", ItemData);
 
-                HttpContext.Session.Remove("KeyGateInwardItemDetail");
-                var sessionData = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                HttpContext.Session.Remove("KeyGateInwardGrid");
+                var sessionData = HttpContext.Session.GetString("KeyGateInwardGrid");
                 var PendingDetails = string.IsNullOrEmpty(sessionData)
     ? new List<PendingGateInwardDashboard>()
     : JsonConvert.DeserializeObject<List<PendingGateInwardDashboard>>(sessionData);
@@ -1093,7 +1097,7 @@ namespace eTactWeb.Controllers
                             }
 
                             
-                            HttpContext.Session.SetString("KeyGateInwardItemDetail", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                            HttpContext.Session.SetString("KeyGateInwardGrid", JsonConvert.SerializeObject(IssueGrid));
 
                         }
 
@@ -1102,12 +1106,12 @@ namespace eTactWeb.Controllers
                     //var jsonData = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
                     //HttpContext.Session.SetString("KeyPendingProductionSchedule", jsonData);
                 }
-                var sessionGridData = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                var sessionGridData = HttpContext.Session.GetString("KeyGateInwardGrid");
                 var grid = string.IsNullOrEmpty(sessionGridData)
     ? new List<PendingGateInwardDashboard>()
     : JsonConvert.DeserializeObject<List<PendingGateInwardDashboard>>(sessionGridData);
-                var issueDataJson = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
-                HttpContext.Session.SetString("KeyGateInwardItemDetail", issueDataJson);
+                var issueDataJson = JsonConvert.SerializeObject(IssueGrid);
+                HttpContext.Session.SetString("KeyGateInwardGrid", issueDataJson);
 
 
                 return Json("done");

@@ -127,7 +127,7 @@ public class PendingGateInwardDashboard
     // PO and Schedule Info
     public string? PONo { get; set; }
     public string? ScheduleNo { get; set; }
-    public int PoYearCode { get; set; }
+    public int PoYear { get; set; }
     public int SchYearCode { get; set; }
     public string? POtype { get; set; }
     public string? POType { get; set; }
