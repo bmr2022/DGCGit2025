@@ -1137,6 +1137,7 @@ public class BomController : Controller
         model.ExcelDataList = data;
         return PartialView("_DisplayExcelData", model);
     }
+    [HttpPost]
     public async Task<IActionResult> AddBomListData(List<BomViewModel> model)
     {
         try

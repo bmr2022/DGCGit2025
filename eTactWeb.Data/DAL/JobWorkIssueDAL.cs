@@ -113,7 +113,26 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<DataSet> BindAllDropDowns(string Flag)
+
+		public async Task<ResponseResult> editablePurchasePriceOrNot()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "editablePurchasePriceOrNot"));
+
+				_ResponseResult = await _IDataLogic.ExecuteDataSet("SP_JobworkIssue", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+			return _ResponseResult;
+		}
+		public async Task<DataSet> BindAllDropDowns(string Flag)
         {
             var oDataSet = new DataSet();
 

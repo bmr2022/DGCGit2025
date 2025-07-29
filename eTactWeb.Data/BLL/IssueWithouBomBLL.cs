@@ -30,6 +30,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _IssuewithoutBomDAL.FillBranch();
         }
+        public async Task<ResponseResult> PassForCloseReq()
+        {
+            return await _IssuewithoutBomDAL.PassForCloseReq();
+        }
         public async Task<ResponseResult> GETDepartMent(string ReqNo, int ReqYearCode)
         {
             return await _IssuewithoutBomDAL.GETDepartMent( ReqNo,  ReqYearCode);

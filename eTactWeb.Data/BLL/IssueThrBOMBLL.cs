@@ -23,6 +23,11 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = iDataLogic;
             _IssueThrBOMDAL = new IssueThrBOMDAL(configuration, iDataLogic);
         }
+
+        public async Task<ResponseResult> PassForCloseReq()
+        {
+            return await _IssueThrBOMDAL.PassForCloseReq();
+        }
         public async Task<ResponseResult> GetFormRights(int userID)
         {
             return await _IssueThrBOMDAL.GetFormRights(userID);

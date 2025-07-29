@@ -992,6 +992,12 @@ namespace eTactWeb.Controllers
             var JSON = await _IJobWorkIssue.CheckFeatureOption();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        } 
+        public async Task<JsonResult> editablePurchasePriceOrNot()
+        {
+            var JSON = await _IJobWorkIssue.editablePurchasePriceOrNot();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         public async Task<JsonResult> GetBatchNumber(int StoreId, string StoreName, int ItemCode, string TransDate, int YearCode, string BatchNo)
         {

@@ -381,7 +381,7 @@
                                                     </td>
                                                     <td><input asp-for="StockQty" style="width:50px !important" readonly /></td>
                                                     <td><input asp-for="BatchStockQty" style="width:50px !important" readonly /></td>
-                                                    <td><input asp-for="PurchasePrice" class="form-control" style="width:70px !important"  /></td>
+                                                    <td><input asp-for="PurchasePrice" class="form-control" style="width:70px !important" readonly /></td>
 
                                                     <td><input asp-for="IssQty" style="width:50px; !important" class="form-control" /></td>
                                                     <td><input asp-for="Unit" class="form-control" style="width:50px !important" readonly /></td>
@@ -1295,6 +1295,7 @@ $('#btnClose').click(function () {
 
         $(document).ready(function () {
             functionFeatureOption();
+            editablePurchasePriceOrNot();
              
             $('#BomStatus').css('background-color', 'rgb(248 255 178)');
             $('#BatchNo').css('background-color', 'rgb(248 255 178)');
@@ -1952,6 +1953,32 @@ $('#btnClose').click(function () {
                             $('#ChallanDate').prop("readonly", true);
                             $('#ChallanDate').css("pointer-events", "none");
                             $('#ChallanDate').css('color', 'rgb(248 255 178)'); // feature option
+                        }
+                    }
+                }
+            });
+        }
+
+        function editablePurchasePriceOrNot() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("editablePurchasePriceOrNot")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        var editablePurchasePriceOrNot = obj.Result.Table[0].editablePurchasePriceOrNot;
+                       
+                        console.log(editablePurchasePriceOrNot);
+                        if (editablePurchasePriceOrNot == 'Y') {
+                            $('#PurchasePrice').prop("readonly", false);
+                           
+                            
+                        }
+                        else {
+                            $('#PurchasePrice').prop("readonly", true);
+                           
                         }
                     }
                 }
@@ -2758,7 +2785,7 @@ $('#btnClose').click(function () {
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result[0] == undefined) {
-                            $('#PurchasePrice').prop("readonly", false);
+                            /* $('#PurchasePrice').prop("readonly", false); */
 
                             //$('#PurchasePrice').val(0);
 
@@ -2768,7 +2795,7 @@ $('#btnClose').click(function () {
                             $('#Rate').val(obj.Result[0].Rate);
 
                             if (parseFloat(obj.Result[0].Rate) == 0) {
-                                $('#PurchasePrice').prop("readonly", false);
+                                /* $('#PurchasePrice').prop("readonly", false); */
                             }
                         }
 
@@ -3012,7 +3039,7 @@ $('#btnClose').click(function () {
                         $.notify('Item Added To Grid', "success");
                         GetAmtAfterDiscount();
                         ClearGrid();
-                        $('#PurchasePrice').prop("readonly", true);
+                        /* $('#PurchasePrice').prop("readonly", true); */
 
 
                         //var rowCount = $('#divJobWorkGrid tr').length;

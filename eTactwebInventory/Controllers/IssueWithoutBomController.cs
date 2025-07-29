@@ -866,6 +866,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> PassForCloseReq()
+        {
+            var JSON = await _IIssueWOBOM.PassForCloseReq();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GetAllowBatch()
         {
             var JSON = await _IIssueWOBOM.GetAllowBatch();
