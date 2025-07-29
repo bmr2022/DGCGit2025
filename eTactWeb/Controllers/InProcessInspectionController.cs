@@ -349,9 +349,9 @@ namespace eTactWeb.Controllers
 				EndOfProduction = selected.Contains("EndOfProduction")
 			};
 		}
-		public async Task<JsonResult> FillEntryID(int YearCode)
+		public async Task<JsonResult> FillEntryID(int YearCode,string TestingDate)
 		{
-			var JSON = await _IInProcessInspection.FillEntryID(YearCode);
+			var JSON = await _IInProcessInspection.FillEntryID(YearCode, TestingDate);
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
@@ -425,8 +425,8 @@ namespace eTactWeb.Controllers
 				{
 					existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
 				}
-
-				foreach (var model in modelList)
+                var usedSeqNos = existingGrid.Select(x => x.SeqNo).ToList();
+                foreach (var model in modelList)
 				{
 					if (existingGrid.Any(x => x.Characteristic == model.Characteristic))
 					{
@@ -434,15 +434,24 @@ namespace eTactWeb.Controllers
 						continue;
 					}
 
-					model.SeqNo = existingGrid.Count + 1;
-					existingGrid.Add(model);
+                    //model.SeqNo = existingGrid.Count + 1;
+
+                    int newSeqNo = 1;
+                    while (usedSeqNos.Contains(newSeqNo))
+                        newSeqNo++;
+
+                    model.SeqNo = newSeqNo;
+                    usedSeqNos.Add(newSeqNo);
+
+                    existingGrid.Add(model);
 				}
 
 				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
 				ViewBag.SampleSize = sampleSize;
 				var MainModel = new InProcessInspectionModel
 				{
-					DTSSGrid = existingGrid,
+                    //DTSSGrid = existingGrid,
+                    DTSSGrid = existingGrid.OrderBy(x => x.SeqNo).ToList(),
                     SampleSize = sampleSize
 				};
 
@@ -543,6 +552,8 @@ namespace eTactWeb.Controllers
 		//	ViewBag.SampleSize = model.SampleSize;
 		//return PartialView("_InProcessInspectionAddtoGrid", model);
 		//}
+
+		//sec
 		public IActionResult DeleteItemRow(int SeqNo, int SampleSize,string Characteristic)
 		{
 			string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");

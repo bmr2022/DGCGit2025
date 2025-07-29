@@ -76,8 +76,8 @@
                                     </span>
                                 </a>
                             </td>
-                            <th>@item.SeqNo</th>
-                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.Characteristic</td>
+                            <th>@Cntr</th>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="characteristic">@item.Characteristic</td>
                             <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.EvalutionMeasurmentTechnique</td>
                             <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.ControlMethod</td>
                             <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.SpecificationFrom</td>
@@ -89,6 +89,7 @@
                             {
                                 <td>
                                     <input type="text"
+                                           id="InspValue_@i"
                                            name="SampleHeader_@i"
                                            class="form-control sample-input"
                                            data-from="@item.SpecificationFrom"
