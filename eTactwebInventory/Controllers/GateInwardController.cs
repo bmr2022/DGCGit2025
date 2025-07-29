@@ -16,6 +16,8 @@ using System.Globalization;
 using System.Data;
 using DocumentFormat.OpenXml.Drawing.Diagrams;
 using DocumentFormat.OpenXml.Wordprocessing;
+using PdfSharp.Drawing.BarCodes;
+using PdfSharp.Pdf.Content.Objects;
 
 namespace eTactWeb.Controllers
 {
@@ -161,7 +163,15 @@ namespace eTactWeb.Controllers
             MainModel.PreparedByEmp = HttpContext.Session.GetString("EmpName");
             //MainModel.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
             MainModel.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-
+            if (Mode == "I" && ID == 0)
+            {
+                var selectedJson = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                if (!string.IsNullOrEmpty(selectedJson))
+                {
+                    var selectedItems = JsonConvert.DeserializeObject<List<GateInwardItemDetail>>(selectedJson);
+                    MainModel.ItemDetailGrid = selectedItems;
+                }
+            }
             HttpContext.Session.Remove("KeyGateInwardItemDetail");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
@@ -408,6 +418,67 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyGateInardList", serializedGrid);
             return PartialView("_GateInwardDashboardGrid", model);
         }
+        public async Task<IActionResult> GetPendingGateEntrySearchData(int AccountCode, string PoNo, int PoYearCode, int ItemCode, string FromDate, string ToDate, string ScheduleNo, string DashboardType, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
+        {
+            //model.Mode = "Search";
+            var model = new PendingGateInwardDashboard();
+            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate);
+           
+            var modelList = model?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.PendingGateEntryDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<PendingGateInwardDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            string serializedGrid = JsonConvert.SerializeObject(modelList);
+            HttpContext.Session.SetString("KeyPendingGateInwardList", serializedGrid);
+            return PartialView("_GateInwardDisplayDataDetail", model);
+            }
+
+            
+
         public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
         {
             //model.Mode = "Search";
@@ -526,6 +597,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+
         public async Task<GateInwardModel> BindModels(GateInwardModel model)
         {
             if (model == null)
@@ -547,6 +619,21 @@ namespace eTactWeb.Controllers
 
             return model;
         }
+        public async Task<PendingGateEntryDashboard> PendingBindModel(PendingGateEntryDashboard model)
+        {
+            if (model == null)
+            {
+                model = new PendingGateEntryDashboard();
+            }
+
+            model.AccountList = await _IDataLogic.GetDropDownList("CREDITORDEBTORLIST", "F", "SP_GetDropDownList");
+            model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
+            //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
+
+
+            return model;
+        }
+
         public async Task<JsonResult> CheckFeatureOption()
         {
             var JSON = await _IGateInward.CheckFeatureOption();
@@ -897,6 +984,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
+
         public async Task<IActionResult> Dashboard(string FromDate = "", string ToDate = "", string Flag = "True", string VendorName = "", string GateNo = "", string PartCode = "", string DocName = "", string ItemName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
         {
             try
@@ -957,6 +1045,89 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
+        [HttpPost]
+        public IActionResult StoreCheckedRowsToSession(List<PendingGateInwardDashboard> model)
+        {
+            try
+            {
+                //HttpContext.Session.Remove("KeyGateInwardItemDetail");
+                //string serializedGrid = JsonConvert.SerializeObject(ItemData);
+                //HttpContext.Session.SetString("KeyGateInwardItemDetail", serializedGrid);
+                //return PartialView("PendingGateInward", ItemData);
+
+                HttpContext.Session.Remove("KeyGateInwardItemDetail");
+                var sessionData = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                var PendingDetails = string.IsNullOrEmpty(sessionData)
+    ? new List<PendingGateInwardDashboard>()
+    : JsonConvert.DeserializeObject<List<PendingGateInwardDashboard>>(sessionData);
+
+                TempData.Clear();
+
+                var MainModel = new GateInwardModel();
+                var IssueWithoutBomGrid = new List<PendingGateInwardDashboard>();
+                var IssueGrid = new List<PendingGateInwardDashboard>();
+                //var IssueGrid = new List<PendingGateInwardDashboard>();
+                var SSGrid = new List<PendingGateInwardDashboard>();
+              
+                var seqNo = 0;
+                if (model != null)
+                {
+                    foreach (var item in model)
+                    {
+                        if (item != null)
+                        {
+                            if (PendingDetails == null)
+                            {
+                                item.seqno += seqNo + 1;
+                                IssueGrid.Add(item);
+                                seqNo++;
+                            }
+                            else
+                            {
+                              
+                                    item.seqno = PendingDetails.Count + 1;
+                                    //   IssueGrid = IssueAgainstProdScheduleDetail.Where(x => x != null).ToList();
+                                    SSGrid.AddRange(IssueGrid);
+                                    IssueGrid.Add(item);
+                                
+                            }
+
+                            
+                            HttpContext.Session.SetString("KeyGateInwardItemDetail", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+
+                        }
+
+                    }
+                    //MainModel.ItemDetailGrid = IssueGrid;
+                    //var jsonData = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                    //HttpContext.Session.SetString("KeyPendingProductionSchedule", jsonData);
+                }
+                var sessionGridData = HttpContext.Session.GetString("KeyGateInwardItemDetail");
+                var grid = string.IsNullOrEmpty(sessionGridData)
+    ? new List<PendingGateInwardDashboard>()
+    : JsonConvert.DeserializeObject<List<PendingGateInwardDashboard>>(sessionGridData);
+                var issueDataJson = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                HttpContext.Session.SetString("KeyGateInwardItemDetail", issueDataJson);
+
+
+                return Json("done");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+          
+        }
+        [Route("{controller}/PendingGateInward")]
+        public async Task<IActionResult> PendingGateInward()
+        {
+            var model = new PendingGateEntryDashboard();
+            model.PendingGateEntryDashboard = new List<PendingGateInwardDashboard>();
+            model = await PendingBindModel(model);
+
+            return View(model);
+        }
+
         public async Task<IActionResult> DeleteByID(int ID, int YC, string FromDate = "", string ToDate = "", string VendorName = "", string GateNo = "", string PartCode = "", string ItemName = "", string DocName = "", string PONO = "", string ScheduleNo = "", string Searchbox = "", string DashboardType = "")
         {
             var Result = await _IGateInward.DeleteByID(ID, YC);

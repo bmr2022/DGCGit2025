@@ -22,7 +22,7 @@
                         </a>*@
                         <div class="col-auto">
                             @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                            <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
+                            <a class="btn btn-secondary btn-sm" onclick="ExportItems()">
                                 @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                 <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                 IMPORT FORMAT
@@ -104,6 +104,8 @@
                                                         <th>QC Req</th>
                                                         <th>Std Pkg</th>
                                                         <th>ItemServAssets</th>
+                                                        <th>WorkCenter</th>
+                                                        <th>Store</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="divItemList">
@@ -140,7 +142,7 @@
                                     </a>*@
                                     <div class="col-auto">
                                         @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                        <a class="btn btn-secondary btn-sm" onclick="ExportItems();">
+                                        <a class="btn btn-secondary btn-sm" onclick="ExportItems()">
                                             @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
                                             <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
                                             IMPORT FORMAT
@@ -332,7 +334,9 @@
                         "NeedPO": $('#NeedPo-' + i).text(),
                         "QcReq": $('#QCReq-' + i).text(),
                         "StdPkg": parseInt($('#StdPkg-' + i).text()),
-                        "ItemServAssets": $('#ItemServAssets-' + i).text()
+                        "ItemServAssets": $('#ItemServAssets-' + i).text(),
+                        "ProdInWorkcenter": $('#ProdInWorkcenter-' + i).val(),
+                        "Store": $('#Store-' + i).val()
                     });
                 }
             }
@@ -410,7 +414,7 @@
 
             let table = $("#itemtable");
             console.log(table);
-             ;
+             
             TableToExcel.convert(table[0], {
                 name: `ImportItemsFile.xlsx`,
                 sheet: {

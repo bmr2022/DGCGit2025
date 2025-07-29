@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using System.Data;
+using System.Data.Common;
 using System.Diagnostics;
 using System.Globalization;
 using System.Net;
@@ -12,6 +13,7 @@ using System.Reflection;
 using System.Reflection.PortableExecutable;
 using static eTactWeb.DOM.Models.Common;
 using static eTactWeb.DOM.Models.GateInwardModel;
+using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
 using common = eTactWeb.Data.Common;
 
 namespace eTactWeb.Data.DAL;
@@ -116,6 +118,77 @@ public class GateInwardDAL
             Error.Source = ex.Source;
         }
         return _ResponseResult;
+    }
+    public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
+  string FromDate, string ToDate)
+    {
+        DataSet? oDataSet = new DataSet();
+        var model = new PendingGateInwardDashboard();
+        try
+        {
+            using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+            {
+                SqlCommand oCmd = new SqlCommand("SP_GateMainDetail", myConnection)
+                {
+                    CommandType = CommandType.StoredProcedure
+                };
+                //DateTime fromDt = DateTime.ParseExact(FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //DateTime toDt = DateTime.ParseExact(ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //Group_Code,Group_name,Under_GroupCode,Entry_date,GroupCatCode,UnderCategoryId,seqNo
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(ToDate);
+                oCmd.Parameters.AddWithValue("@Flag", "PendingGateEntryDashBoard");
+                oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+                oCmd.Parameters.AddWithValue("@PONo", PoNo);
+                oCmd.Parameters.AddWithValue("@POYearCode", PoYearCode);
+                oCmd.Parameters.AddWithValue("@itemcode", ItemCode);
+                oCmd.Parameters.AddWithValue("@FromDate", fromDt);
+                oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                await myConnection.OpenAsync();
+                using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                {
+                    oDataAdapter.Fill(oDataSet);
+                }
+            }
+            //if (DashboardType == "Summary")
+            //{
+            if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+            {
+                model.PendingGateEntryDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                       select new PendingGateInwardDashboard
+                                       {
+                                           ItemCode = dr["itemcode"].ToString(),
+                                           PartCode = dr["PartCode"].ToString(),
+                                           ItemName = dr["ItemName"].ToString(),
+                                           PONo = dr["PONo"].ToString(),
+                                           POQty = string.IsNullOrEmpty(dr["POQty"].ToString()) ? 0 : Convert.ToSingle(dr["POQty"]),
+                                           PendQty = string.IsNullOrEmpty(dr["PendQty"].ToString()) ? 0 : Convert.ToDecimal(dr["PendQty"]),
+                                           Unit = dr["Unit"].ToString(),
+                                           AltPOQty = string.IsNullOrEmpty(dr["AltPOQty"].ToString()) ? 0 : Convert.ToSingle(dr["AltPOQty"]),
+                                           AltUnit = dr["AltUnit"].ToString(),
+                                           Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToSingle(dr["Rate"]),
+                                           POTypeServItem = dr["POTypeServItem"].ToString(),
+                                           ScheduleNo = dr["ScheduleNo"].ToString(),
+                                           POType = dr["POType"].ToString(),
+                                           VendorName = dr["Account_name"].ToString(),
+                                           yearcode = string.IsNullOrEmpty(dr["YearCode"].ToString()) ? 0 : Convert.ToInt32(dr["YearCode"])
+
+                                       }).ToList();
+            }
+          
+
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        finally
+        {
+            oDataSet.Dispose();
+        }
+        return model;
     }
     public async Task<ResponseResult> GetSearchData(GateDashboard model)
     {

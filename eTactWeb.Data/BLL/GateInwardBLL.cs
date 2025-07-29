@@ -70,7 +70,13 @@ namespace eTactWeb.Data.BLL
         public async Task<GateInwardDashboard> GetDashboardData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate,string DashboardType)
         {
             return await _GateInwardDAL.GetDashboardData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate,DashboardType);
+        } 
+        public async Task<PendingGateInwardDashboard> GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
+   string FromDate, string ToDate)
+        {
+            return await _GateInwardDAL.GetPendingGateEntryDashboardData(AccountCode, PoNo, PoYearCode, ItemCode, FromDate, ToDate);
         }
+    
         public async Task<GateInwardDashboard> GetDashboardDetailData(string VendorName, string Gateno, string ItemName, string PartCode,string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate)
         {
             return await _GateInwardDAL.GetDashboardDetailData(VendorName, Gateno, ItemName, PartCode, DocName, PONO, ScheduleNo, FromDate, ToDate);
@@ -109,7 +115,8 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetDashboardData()
         {
             return await _GateInwardDAL.GetDashboardData();
-        }
+        } 
+       
 
         public async Task<ResponseResult> GetFormRights(int ID)
         {
