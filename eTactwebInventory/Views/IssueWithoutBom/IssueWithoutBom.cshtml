@@ -46,6 +46,7 @@
                             <input asp-for="FromStoreBack" type="hidden" value="@Model.FromStoreBack" />
                             <input type="hidden" id="ShouldPrint" name="ShouldPrint"  />
                             <input type="hidden" id="AddPassWord" />
+                            <input type="hidden" id="AddPassWordForCloseItem" />
 
                             @*<input asp-for="BackFlag" type="hidden" value="false"/>*@
                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
@@ -171,10 +172,15 @@
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Without BOM Grid</strong>
                         </button>
+                        <button class=" btn btn-sm btn-outline-primary" style="width:150px;" id="BtnForCloseReqItem" type="button">
+                            Click For CloseItem
+                        </button>
+
                         <button class="GridButton btn btn-sm btn-outline-danger" style="width:150px;" type="button">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                         </button>
 
+                        
                     </h2>
 
                     <div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
@@ -287,6 +293,7 @@
                                             <th>Project NO</th>
                                             <th>Project year code</th>
                                             <th>IssuedAlternateItem</th>
+                                            <th>CancelReq</th>
                                         </tr>
                                     </thead>
                                     <tbody id="divIssueWOBOMGridAdd">
@@ -534,6 +541,45 @@
 </div>
 
 
+<div class="modal fade" id="CloseReqItemPasswordAllowPopup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Enter Password For Close Requisition Item</h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Enter Password:</h6>
+                                            <input type="password" class="form-control" id="CloseReqItemPassword" placeholder="Enter Password" />
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-sm btn-success" onclick="PasswordCheckForCloseItem();">Done</button>
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal" onclick="RefreshSchedule('');">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
 
 
 
@@ -775,11 +821,55 @@ function submitForm(shouldPrint, printWindow) {
                 }
             });
         }
+        $('#BtnForCloseReqItem').click(function () {
+            // if(isAllowTaxPass == "Y"){
+            $('#CloseReqItemPasswordAllowPopup').modal("show");
+            // }
+        });
+        function PasswordCheckForCloseItem() {
+            var AddPassWord = $('#AddPassWordForCloseItem').val();
+            if ($('#CloseReqItemPassword').val() != AddPassWord) {
+                $.notify('please enter correct password...!', "error");
+            } else {
+                $('.CancelItemChkBox').prop('disabled', false);
+               
+
+
+
+                $('#CloseReqItemPasswordAllowPopup').modal('hide');
+            }
+            $('#CloseReqItemPassword').val("");
+        }
+
+        function PassForCloseRequisitionItem() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("PassForCloseRequisitionItem")",
+                async: false,
+                dataType: "json",
+                success: function (result) {
+                    // If the result is a JSON string, parse it first
+                    let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+                    if (obj.StatusCode === 200 && obj.StatusText === "Success") {
+                        if (obj.Result && obj.Result.Table && obj.Result.Table.length > 0) {
+                            $('#AddPassWordForCloseItem').val(obj.Result.Table[0].PassForCloseRequisitionItem);
+                            console.log($('#AddPassWordForCloseItem').val());
+                        }
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("AJAX Error:", status, error);
+                }
+            });
+        }
+
         $('.BtnPassword').click(function () {
             // if(isAllowTaxPass == "Y"){
             $('#CloseReqPasswordAllowPopup').modal("show");
             // }
         });
+       
         function PassForCloseReq() {
             $.ajax({
                 type: "POST",
@@ -1002,6 +1092,7 @@ function submitForm(shouldPrint, printWindow) {
              
             fillDepartment();
             PassForCloseReq();
+            PassForCloseRequisitionItem();
             //$('#IssueByScanButton').hide(); $('#BomStatus')
             //$('#RecByEmpCode').append('<option disabled value="" selected>-Select-</option>');
             $('#IssueByScanBtn').css('background-color', 'rgb(248 255 178)');
@@ -1538,6 +1629,7 @@ function submitForm(shouldPrint, printWindow) {
                     // "ReqNo1": $('#MainGridReqNo-' + i).val(),
                     "ReqNo1": $('#ReqNo1').val(),
                     "ReqDate1": $('#MainGridReqDate-' + i).val(),
+                    "ReqItemCancel": $('#CancelItem-' + i).is(':checked') ? 'Y' : 'N',
                     // "ReqYearCode1": $('#MainGridReqYearCode-' + i).val(),
                     "ReqYearCode1": $('#ReqyearCode1').val(),
                     "ItemCode": parseInt($('#MainGridItemCode-' + i).val()),

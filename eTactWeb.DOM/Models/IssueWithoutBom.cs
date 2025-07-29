@@ -95,6 +95,7 @@ namespace eTactWeb.DOM.Models
         public int? OriginalItemCode { get; set; }
         public int ReqDepartmentID { get; set; }
         public string? ReqDept { get; set;}
+        public string? ReqItemCancel { get; set;}
 
         public int IssWOBOMEntryId { get; set; }
         public int IssWOBOMYearCode { get; set; }
