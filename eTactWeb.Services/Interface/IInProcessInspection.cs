@@ -16,7 +16,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillMachineName();
 		Task<ResponseResult> FillCustomer();
 		Task<ResponseResult> FillColor(string PartNo);
-		Task<ResponseResult> FillEntryID(int YearCode);
+		Task<ResponseResult> FillEntryID(int YearCode,string TestingDate);
 		Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode, int SampleSize);
 		Task<ResponseResult> SaveInprocessInspection(InProcessInspectionModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashboardData(InProcessInspectionModel model);

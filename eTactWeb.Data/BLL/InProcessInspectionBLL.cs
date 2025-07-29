@@ -47,9 +47,9 @@ namespace eTactWeb.Data.BLL
 		{
             return await _InProcessInspectionDAL.FillColor(PartNo);
 		}
-		public async Task<ResponseResult> FillEntryID(int YearCode)
+		public async Task<ResponseResult> FillEntryID(int YearCode, string TestingDate)
 		{
-			return await _InProcessInspectionDAL.FillEntryID(YearCode);
+			return await _InProcessInspectionDAL.FillEntryID(YearCode, TestingDate);
 		}
 		public async Task<InProcessInspectionModel> GetInprocessInspectionGridData(int ItemCode, int SampleSize)
 		{
