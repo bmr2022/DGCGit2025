@@ -322,6 +322,10 @@ namespace eTactWeb.DOM.Models
         public string? NeedPO { get; set; }
         public string? QcReq { get; set; }
         public string? ItemServAssets { get; set; }
+        public string? Store { get; set; }
+        public string? WorkCenter { get; set; }
+        public string? StoreName { get; set; }
+        public int? ProdInWorkcenter { get; set; }
         public int StdPkg { get; set; }
         public int SeqNo { get; set; }
     }
