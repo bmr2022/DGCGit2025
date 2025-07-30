@@ -250,7 +250,7 @@ namespace eTactWeb.Controllers
 			}
 		}
 		private static DataTable GetDetailTable(IList<InProcessInspectionDetailModel> DetailList)
-		{
+			{
 			try
 			{
 				var GIGrid = new DataTable();
@@ -428,7 +428,32 @@ namespace eTactWeb.Controllers
                 var usedSeqNos = existingGrid.Select(x => x.SeqNo).ToList();
                 foreach (var model in modelList)
 				{
-					if (existingGrid.Any(x => x.Characteristic == model.Characteristic))
+
+					//var deletedRow = existingGrid.FirstOrDefault(x => x.Characteristic == model.Characteristic && x.Copied == true);
+					var deletedRow = existingGrid.FirstOrDefault(x => x.SeqNo == model.SeqNo && x.Characteristic == model.Characteristic && x.Copied == true);
+					if (deletedRow != null)
+					{
+						// Restore the soft-deleted row with updated values
+						deletedRow.Copied = false;
+
+						// Update other fields as needed (example below, update your actual fields)
+						deletedRow.EvalutionMeasurmentTechnique = model.EvalutionMeasurmentTechnique;
+						deletedRow.ControlMethod = model.ControlMethod;
+						deletedRow.SpecificationFrom = model.SpecificationFrom;
+						deletedRow.SpecificationTo = model.SpecificationTo;
+						deletedRow.RejectionPlan = model.RejectionPlan;
+						deletedRow.FrequencyofTesting = model.FrequencyofTesting;
+						//deletedRow.Samples = model.Samples;
+						deletedRow.Samples.Clear();
+						foreach (var sample in model.Samples)
+						{
+							deletedRow.Samples.Add(sample);
+						}
+						// No need to add again because we updated the existing soft-deleted row
+						continue;
+					}
+					if (existingGrid.Any(x => x.Characteristic == model.Characteristic) && !model.Copied)
+					//if (existingGrid.Any(x => x.Characteristic == model.Characteristic && x.SeqNo == model.SeqNo) && !model.Copied)
 					{
 						// skip duplicates
 						continue;
@@ -442,8 +467,8 @@ namespace eTactWeb.Controllers
 
                     model.SeqNo = newSeqNo;
                     usedSeqNos.Add(newSeqNo);
-
-                    existingGrid.Add(model);
+					
+					existingGrid.Add(model);
 				}
 
 				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
@@ -569,7 +594,7 @@ namespace eTactWeb.Controllers
 			if (itemToRemove != null)
 			{
 				existingGrid.Remove(itemToRemove);
-
+				itemToRemove.Copied = true;
 				// Reassign SeqNo to keep them continuous
 				//int seq = 1;
 				//foreach (var item in existingGrid)

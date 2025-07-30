@@ -76,14 +76,14 @@
                                     </span>
                                 </a>
                             </td>
-                            <th>@Cntr</th>
+                            <th class="seqno">@Cntr</th>
                             <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="characteristic">@item.Characteristic</td>
-                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.EvalutionMeasurmentTechnique</td>
-                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.ControlMethod</td>
-                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.SpecificationFrom</td>
-                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.SpecificationTo</td>
-                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.RejectionPlan</td>
-                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;">@item.FrequencyofTesting</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="EvalutionMeasurmentTechnique">@item.EvalutionMeasurmentTechnique</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="ControlMethod">@item.ControlMethod</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="SpecificationFrom">@item.SpecificationFrom</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="SpecificationTo">@item.SpecificationTo</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="RejectionPlan">@item.RejectionPlan</td>
+                            <td style="max-width: 70px; white-space: normal; word-wrap: break-word;font-size:10px;" class="FrequencyofTesting">@item.FrequencyofTesting</td>
 
                             @for (int i = 1; i <= (ViewBag.SampleSize > 25 ? 25 : ViewBag.SampleSize); i++)
                             {
