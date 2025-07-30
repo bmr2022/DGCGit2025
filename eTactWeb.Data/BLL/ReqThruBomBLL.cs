@@ -34,6 +34,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _ReqThruBomDAL.FillItems();
         }
+        public async Task<ResponseResult> AutoFillPartCode(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            return await _ReqThruBomDAL.AutoFillPartCode(showallitem, SearchItemCode, SearchPartCode);
+        } 
+        public async Task<ResponseResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            return await _ReqThruBomDAL.AutoFillItemName(showallitem, SearchItemCode, SearchPartCode);
+        }
         public async Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName)
         {
             return await _ReqThruBomDAL.GetNewEntry(Flag, YearCode, SPName);
