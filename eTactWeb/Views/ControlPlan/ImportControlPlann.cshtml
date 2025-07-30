@@ -403,25 +403,21 @@
             //var groupTh = $("#headerRow th:eq(5)");
             //var catTH = $("#headerRow th:eq(6)");
             firstTh.remove();
-            $("#headerRow th:eq(5)").remove();
-            $("#headerRow th:eq(6)").remove();
+            // $("#headerRow th:eq(5)").remove();
+            // $("#headerRow th:eq(6)").remove();
             var newTh = $("<th>Action</th>");
 
             let table = $("#itemtable");
             console.log(table);
             ;
             TableToExcel.convert(table[0], {
-                name: `ImportItemsFile.xlsx`,
+                name: `ImportControlPlanFile.xlsx`,
                 sheet: {
-                    name: 'ImportItemsFile'
+                    name: 'ImportControlPlanFile'
                 }
             });
 
-            var groupTh = $("<th>Group Code</th>");
-            var catTh = $("<th>Category Code</th>");
             $("#headerRow").prepend(newTh);
-            $("#headerRow th:eq(6)").before(groupTh);
-            $("#headerRow th:eq(7)").before(catTh);
         }
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>

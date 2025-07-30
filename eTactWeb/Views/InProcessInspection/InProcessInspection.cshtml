@@ -116,10 +116,13 @@
 										<label asp-for="RevDate" class="form-label">Rev Date</label>
 										<input asp-for="RevDate" class="form-control" />
 									</div>
+									<input type="hidden" id="originalPartNo" value="@Model.PartNo" />
+									<input type="hidden" id="originalPartName" value="@Model.PartName" />
+
 									<input type="hidden" asp-for="ItemCode" />
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-										<label asp-for="PartNo" class="form-label" style="color:red"> Part No*</label>
-										<select class="form-control" id="PartNo" asp-for="PartNo">
+										<label asp-for="PartNo" class="form-label" style="color:red" > Part No*</label>
+										<select class="form-control" id="PartNo" asp-for="PartNo" onchange="onPartChange('PartNo')">
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
 											{
@@ -129,8 +132,8 @@
 									</div>
 
 									<div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-										<label asp-for="PartName" class="form-label" style="color:red"> Part Name*</label>
-										<select class="form-control" id="PartName" asp-for="PartName">
+										<label asp-for="PartName" class="form-label" style="color:red" > Part Name*</label>
+										<select class="form-control" id="PartName" asp-for="PartName" ">
 											<option value="">-Select-</option>
 											@if (Model.Mode == "U" || Model.Mode == "V")
 											{
@@ -680,6 +683,22 @@
 		if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
 			$('#AccountCode').val($('#CustomerName').val());
 		}
+		function onPartChange(fieldId) {
+			var original = $('#original' + fieldId).val();
+			var current = $('#' + fieldId).val();
+
+			if (original !== current) {
+				if (confirm("Changing the part will reset the grid. Do you want to proceed?")) {
+					// User said YES: clear grid
+					$('#divStockGrid tbody').empty();
+					// Optional: rebind grid from server with fresh data if needed
+				} else {
+					// User said NO: revert back
+					$('#' + fieldId).val(original);
+				}
+			}
+		}
+
 		$("#search-box").on("keyup", function () {
 			var value = $(this).val().toLowerCase();
 			$("#divinProcessInspectionGrid tbody tr").filter(function () {
@@ -834,13 +853,24 @@
 			// var $rowToDelete = $('#divinProcessInspectionGrid tbody tr').filter(function () {
 			// 	return $(this).find('td').eq(1).text().trim() === Characteristic;
 			// });
+			DeletedCharacteristic = Characteristic;
+			// var $rowToDelete = $('#divStockGrid tbody tr').filter(function () {
+			// 	return $(this).find('td').eq(1).text().trim() === Characteristic;
+			// });
+			// var $rowToDelete = $('#divStockGrid tbody tr').filter(function () {
+			// 	var rowSeqNo = $(this).find('td.seqno').text().trim();
+			// 	var rowChar = $(this).find('td.characteristic').text().trim();
+			// 	return rowSeqNo == seqNo && rowChar === Characteristic.trim();
+			// });
 			var $rowToDelete = $('#divStockGrid tbody tr').filter(function () {
-				return $(this).find('td').eq(1).text().trim() === Characteristic;
+				var rowSeqNo = $(this).find('th').text().trim();
+				var rowChar = $(this).find('td').eq(1).text().trim();
+				return rowSeqNo == seqNo && rowChar === Characteristic;
 			});
-
 			if ($rowToDelete.length) {
 				deletedRowData = {
-					SeqNo: $rowToDelete.find('td').eq(0).text().trim(),
+					//SeqNo: $rowToDelete.find('td').eq(0).text().trim(),
+					SeqNo: $rowToDelete.find('th').text().trim(),
 					Characteristic: Characteristic,
 					EvalutionMeasurmentTechnique: $rowToDelete.find('td').eq(2).text().trim(),
 					ControlMethod: $rowToDelete.find('td').eq(3).text().trim(),
@@ -891,14 +921,14 @@
 		function prefillFormWithDeletedData(data) {
 			if (!data) return;
 
-			$('#SeqNoInput').val(data.SeqNo);
-			$('#CharacteristicInput').val(data.Characteristic);
-			$('#EvalutionMeasurmentTechniqueInput').val(data.EvalutionMeasurmentTechnique);
-			$('#ControlMethodInput').val(data.ControlMethod);
-			$('#SpecificationFromInput').val(data.SpecificationFrom);
-			$('#SpecificationToInput').val(data.SpecificationTo);
-			$('#RejectionPlanInput').val(data.RejectionPlan);
-			$('#FrequencyofTestingInput').val(data.FrequencyofTesting);
+			$('.seqno').val(data.SeqNo);
+			$('.characteristic').val(data.Characteristic);
+			$('.EvalutionMeasurmentTechnique').val(data.EvalutionMeasurmentTechnique);
+			$('.ControlMethod').val(data.ControlMethod);
+			$('.SpecificationFrom').val(data.SpecificationFrom);
+			$('.SpecificationTo').val(data.SpecificationTo);
+			$('.RejectionPlan').val(data.RejectionPlan);
+			$('.FrequencyofTesting').val(data.FrequencyofTesting);
 
 			// for (var i = 0; i < data.Samples.length; i++) {
 			// 	$('#InspValue_' + (i + 1)).val(data.Samples[i]);
@@ -914,9 +944,18 @@
 
 			let matchingRow = null;
 
+			// $('#divinProcessInspectionGrid tbody tr').each(function () {
+			// 	const rowCharacteristic = $(this).find('td.characteristic').text().trim();
+			// 	if (rowCharacteristic === data.Characteristic.trim()) {
+			// 		matchingRow = $(this);
+			// 		return false; // break loop
+			// 	}
+			// });
 			$('#divinProcessInspectionGrid tbody tr').each(function () {
+				const rowSeqNo = $(this).find('td.seqno').text().trim();
 				const rowCharacteristic = $(this).find('td.characteristic').text().trim();
-				if (rowCharacteristic === data.Characteristic.trim()) {
+
+				if (rowSeqNo == data.SeqNo && rowCharacteristic === data.Characteristic.trim()) {
 					matchingRow = $(this);
 					return false; // break loop
 				}
@@ -982,7 +1021,7 @@
 
 				let flashes = 4;
 				let interval = setInterval(() => {
-					$matchedRow.css('background-color', '#ffff99');
+					$matchedRow.css('background-color', '#e6e6ff');
 					setTimeout(() => {
 						$matchedRow.css('background-color', '');
 					}, 300);
@@ -1112,6 +1151,7 @@
 			$newRow.find('input').val('');
 			let newIndex = $('#divinProcessInspectionGrid tbody tr').length + 1;
 			$newRow.attr('id', 'SAGridRow-' + newIndex);
+			$newRow.attr('data-copied', 'true');
 			$('#divinProcessInspectionGrid tbody').append($newRow);
 			updateSrNos();
 
@@ -1536,7 +1576,8 @@
 					SpecificationTo: $cells.eq(5).text().trim(),
 					RejectionPlan: $cells.eq(6).text().trim(),
 					FrequencyofTesting: $cells.eq(7).text().trim(),
-					Samples: [] 
+					Samples: [] ,
+					Copied: $row.attr('data-copied') === 'true'
 				};
 				$row.find('input.sample-input').each(function (index, element) {
 					var sampleValue = $(this).val().trim() || "0";
@@ -1558,14 +1599,13 @@
 					$('#divStockGrid').html(result);
 					TotalNoOfRows();
 					UpdateInspectionRowCount();
-					DeletedCharacteristic = null;
 					highlightAndScrollToRow(null);
 					//ClearItems();
 					//addRowToGrid();
 
-					if (lastAddedCharacteristic) {
+					if (DeletedCharacteristic) {
 						setTimeout(function () {
-							highlightAndScrollToRowforManualGrid(lastAddedCharacteristic);
+							highlightAndScrollToRowforManualGrid(DeletedCharacteristic);
 						}, 100); // slight delay for rendering
 					}
 					$.notify("Process Add To Grid", "success");
