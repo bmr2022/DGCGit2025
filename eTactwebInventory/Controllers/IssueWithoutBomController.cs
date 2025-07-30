@@ -529,6 +529,7 @@ namespace eTactWeb.Controllers
                 MRGrid.Columns.Add("ReqYearCode", typeof(string));
                 MRGrid.Columns.Add("ReqDate", typeof(string));
                 MRGrid.Columns.Add("ReqEntryId", typeof(int));
+                MRGrid.Columns.Add("CancelReq", typeof(string));
 
                 foreach (var Item in DetailList)
                 {
@@ -574,7 +575,8 @@ namespace eTactWeb.Controllers
                     Item.ReqNo1 == null ? "" : Item.ReqNo1,
                     Item.ReqyearCode1== null?"":Item.ReqyearCode1,
                     Item.ReqDate1 == null ? "" : Item.ReqDate1,
-                    Item.ReqEntryId == 0?0:Item.ReqEntryId
+                    Item.ReqEntryId == 0?0:Item.ReqEntryId,
+                     Item.ReqItemCancel == null ? "" : Item.ReqItemCancel,
                         });
                 }
 
@@ -869,6 +871,13 @@ namespace eTactWeb.Controllers
         public async Task<JsonResult> PassForCloseReq()
         {
             var JSON = await _IIssueWOBOM.PassForCloseReq();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
+        public async Task<JsonResult> PassForCloseRequisitionItem()
+        {
+            var JSON = await _IIssueWOBOM.PassForCloseRequisitionItem();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

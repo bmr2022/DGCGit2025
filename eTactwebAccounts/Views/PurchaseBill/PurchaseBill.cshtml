@@ -1124,6 +1124,7 @@
                     type: "POST",
                     data: { gridList: ItemData },
                     success: function (data, status, xhr) {
+                        debugger
                         if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
                             $.notify('Duplicate Item Not Allowed.', "info");
                             $('.GridButton').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);

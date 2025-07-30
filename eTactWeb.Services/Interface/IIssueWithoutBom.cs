@@ -35,6 +35,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillStoreName();
         Task<ResponseResult> FillDept();
         Task<ResponseResult> PassForCloseReq();
+        Task<ResponseResult> PassForCloseRequisitionItem();
         Task<DataSet> FillEmployee(string Flag);
         Task<ResponseResult> GetIssueScanFeature();
         Task<ResponseResult> CheckStockBeforeSaving(int ItemCode, int StoreId, string TillDate, string BatchNo, string UniqBatchNo);

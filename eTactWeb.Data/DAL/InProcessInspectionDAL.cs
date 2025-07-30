@@ -23,7 +23,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-		public async Task<ResponseResult> FillEntryID(int YearCode)
+		public async Task<ResponseResult> FillEntryID(int YearCode, string TestingDate)
 		{
 			var _ResponseResult = new ResponseResult();
 			try
@@ -31,6 +31,7 @@ namespace eTactWeb.Data.DAL
 				var SqlParams = new List<dynamic>();
 				SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
 				SqlParams.Add(new SqlParameter("@InspYearCode", YearCode));
+				SqlParams.Add(new SqlParameter("@Testingdate", TestingDate));
 				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPInprocessInpection", SqlParams);
 			}
 			catch (Exception ex)

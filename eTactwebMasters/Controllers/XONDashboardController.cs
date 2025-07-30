@@ -112,5 +112,41 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> SaveNewCustomerOfTheMonth()
+        {
+            var JSON = await _IDashboard.SaveNewCustomerOfTheMonth();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SaveTop10SaleCustomer()
+        {
+            var JSON = await _IDashboard.SaveTop10SaleCustomer();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SaveTop10SoldItem()
+        {
+            var JSON = await _IDashboard.SaveTop10SoldItem();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SaveSaleMonthlyTrend()
+        {
+            var JSON = await _IDashboard.SaveSaleMonthlyTrend();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SaveTop10SalesPerson()
+        {
+            var JSON = await _IDashboard.SaveTop10SalesPerson();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> SaveSaleOrderVsDispatch()
+        {
+            var JSON = await _IDashboard.SaveSaleOrderVsDispatch();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

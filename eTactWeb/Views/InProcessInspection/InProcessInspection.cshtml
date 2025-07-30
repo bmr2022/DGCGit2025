@@ -518,11 +518,12 @@
 		$(document).ready(function () {
 			GetFormRights();
 			if ($('#Mode').val() !== "U") {
-
+				setFormattedDate();
 				FillEntryID();
 				
 				
 			}
+			setFormattedDate();
 			TotalNoOfRows();
 			UpdateInspectionRowCount();
 			const now = new Date();
@@ -621,7 +622,7 @@
 			FillCustomer();
 			FillShift();
 	
-			setFormattedDate();
+		
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
@@ -826,11 +827,17 @@
 		var DeletedCharacteristic = null;
 		var deletedRowData = null;
 
+		//var deletedRowData = null;
+
 		function DeleteItemRow(seqNo, sampleSize, Characteristic) {
 			// Find row data before deleting
-			var $rowToDelete = $('#divinProcessInspectionGrid tbody tr').filter(function () {
+			// var $rowToDelete = $('#divinProcessInspectionGrid tbody tr').filter(function () {
+			// 	return $(this).find('td').eq(1).text().trim() === Characteristic;
+			// });
+			var $rowToDelete = $('#divStockGrid tbody tr').filter(function () {
 				return $(this).find('td').eq(1).text().trim() === Characteristic;
 			});
+
 			if ($rowToDelete.length) {
 				deletedRowData = {
 					SeqNo: $rowToDelete.find('td').eq(0).text().trim(),
@@ -843,9 +850,22 @@
 					FrequencyofTesting: $rowToDelete.find('td').eq(7).text().trim(),
 					Samples: []
 				};
-				$rowToDelete.find('input.sample-input').each(function (index, element) {
-					deletedRowData.Samples.push($(this).val().trim() || "0");
+				// $rowToDelete.find('input.sample-input').each(function (index, element) {
+				// 	deletedRowData.Samples.push($(this).val().trim() || "0");
+				// });
+
+				console.log("Row to delete:", $rowToDelete.html());
+				$rowToDelete.find('.sample').each(function () {
+					const raw = $(this).html();
+					const value = $(this).text().replace(/\s+/g, ' ').trim();
+					console.log("Cell HTML:", raw, "→", value);
+					deletedRowData.Samples.push(value === "" ? "0" : value);
 				});
+				$('.sample').each(function () {
+					console.log('[' + $(this).text() + ']');
+				})
+				console.log("Final Samples:", deletedRowData.Samples);
+				
 			}
 
 			$.ajax({
@@ -858,7 +878,6 @@
 					UpdateInspectionRowCount();
 					highlightAndScrollToRow(Characteristic);
 
-					// Prefill form inputs after reload
 					prefillFormWithDeletedData(deletedRowData);
 
 					$.notify("Process deleted from Grid", "info");
@@ -868,10 +887,11 @@
 				}
 			});
 		}
+
 		function prefillFormWithDeletedData(data) {
 			if (!data) return;
 
-			//$('#SeqNoInput').val(data.SeqNo);
+			$('#SeqNoInput').val(data.SeqNo);
 			$('#CharacteristicInput').val(data.Characteristic);
 			$('#EvalutionMeasurmentTechniqueInput').val(data.EvalutionMeasurmentTechnique);
 			$('#ControlMethodInput').val(data.ControlMethod);
@@ -880,11 +900,38 @@
 			$('#RejectionPlanInput').val(data.RejectionPlan);
 			$('#FrequencyofTestingInput').val(data.FrequencyofTesting);
 
-			// Assuming your sample inputs have IDs like SampleInput1, SampleInput2 etc.
-			for (var i = 0; i < data.Samples.length; i++) {
-				$('#InspValue' + (i + 1)).val(data.Samples[i]);
+			// for (var i = 0; i < data.Samples.length; i++) {
+			// 	$('#InspValue_' + (i + 1)).val(data.Samples[i]);
+			// }
+			// for (var i = 0; i < data.Samples.length && i < 25; i++) {
+			// 	var input = $('#InspValue_' + (i + 1));
+			// 	if (input.length) {
+			// 		input.val(data.Samples[i]);
+			// 	} else {
+			// 		console.warn('Input not found: #InspValue_' + (i + 1));
+			// 	}
+			// }
+
+			let matchingRow = null;
+
+			$('#divinProcessInspectionGrid tbody tr').each(function () {
+				const rowCharacteristic = $(this).find('td.characteristic').text().trim();
+				if (rowCharacteristic === data.Characteristic.trim()) {
+					matchingRow = $(this);
+					return false; // break loop
+				}
+			});
+
+			if (!matchingRow) {
+				console.warn("No matching row found for characteristic:", data.Characteristic);
+				return;
 			}
-			
+
+			// Now fill sample inputs in that row only
+			const sampleInputs = matchingRow.find('input.sample-input');
+			for (let i = 0; i < data.Samples.length && i < 25 && i < sampleInputs.length; i++) {
+				$(sampleInputs[i]).val(data.Samples[i]);
+			}
 		}
 
 		// function DeleteItemRow(seqNo, sampleSize, Characteristic) {
@@ -910,12 +957,84 @@
 		// 		}
 		// 	});
 		// }
+		function highlightAndScrollToRowforManualGrid(characteristic) {
+			var normalizedChar = characteristic?.trim().toLowerCase();
+			var $rows = $('#divStockGrid tbody tr');
+
+			$rows.removeClass('highlight-deleted-row').css('background-color', '');
+
+			if (typeof characteristic !== "string" || !normalizedChar) {
+				return;
+			}
+
+			let $matchedRow = null;
+
+			$rows.each(function () {
+				var $td = $(this).find('td').eq(1); // assuming 2nd column has characteristic
+				if ($td.text().trim().toLowerCase() === normalizedChar) {
+					$matchedRow = $(this);
+					return false;
+				}
+			});
+
+			if ($matchedRow) {
+				$matchedRow[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+				let flashes = 4;
+				let interval = setInterval(() => {
+					$matchedRow.css('background-color', '#ffff99');
+					setTimeout(() => {
+						$matchedRow.css('background-color', '');
+					}, 300);
+					flashes--;
+					if (flashes <= 0) {
+						clearInterval(interval);
+					}
+				}, 500);
+			}
+		}
+
+		// function highlightAndScrollToRowforManualGrid(characteristic) {
+		// 	var normalizedChar = characteristic?.trim().toLowerCase();
+		// 	var $rows = $('#divStockGrid tbody tr');
+
+		// 	$rows.removeClass('highlight-deleted-row').css('background-color', '');
+
+		// 	if (typeof characteristic !== "string" || !normalizedChar) {
+		// 		return;
+		// 	}
+
+		// 	$rows.each(function () {
+		// 		var $td = $(this).find('td').eq(1);
+		// 		if ($td.text().trim().toLowerCase() === normalizedChar) {
+					
+		// 			this.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+					
+		// 			let flashes = 3;
+		// 			let interval = setInterval(() => {
+		// 				$(this).css('background-color', '#e6fff3');
+		// 				setTimeout(() => {
+		// 					$(this).css('background-color', '');
+		// 				}, 300);
+		// 				flashes--;
+		// 				if (flashes <= 0) {
+		// 					clearInterval(interval);
+		// 				}
+		// 			}, 600);
+
+		// 			return false; // Stop after first match
+		// 		}
+		// 	});
+		// }
 		function highlightAndScrollToRow(characteristic) {
-			if (!characteristic) return;
-
-			var normalizedChar = characteristic.trim().toLowerCase();
+			
+			var normalizedChar = characteristic;
 			var $rows = $('#divinProcessInspectionGrid tbody tr');
-
+			if (typeof characteristic !== "string" || characteristic.trim() === "") {
+				$rows.removeClass('highlight-deleted-row');
+				return;
+			}
 			$rows.each(function () {
 				var $td = $(this).find('td').eq(1); // Assuming 2nd column is Characteristic
 				if ($td.text().trim().toLowerCase() === normalizedChar) {
@@ -966,7 +1085,7 @@
 					
 					TotalNoOfRows();
 					deletedSeqNo = null;
-					$.notify("Process Add To Grid", "success");
+					
 				},
 				error: function (xhr, status, error) {
 					console.error("Error fetching BOM tree data:", error);
@@ -1009,18 +1128,20 @@
 		function FillEntryID() {
 
 			var YearCode = $('#YearCode').val();
+			var TestingDate = $('#TestingDate').val();
 			$.ajax({
 				url: '@Url.Action("FillEntryID", "InProcessInspection")',
 				type: 'POST',
 				data: {
-					YearCode: YearCode
+					YearCode: YearCode,
+					TestingDate: TestingDate
 				},
 				async: false,
 				success: function (data, status, xhr) {
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#EntryId').val(obj.Result[0].EntryId || 0);
-						$('#RevNo').val(obj.Result[0].GateNo || 0);
+						$('#SlipNo').val(obj.Result[0].SlipNo || 0);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -1424,6 +1545,7 @@
 				});
 
 				gridData.push(rowData);
+				lastAddedCharacteristic = rowData.Characteristic;
 			});
 
 			console.log(gridData); 
@@ -1437,9 +1559,16 @@
 					TotalNoOfRows();
 					UpdateInspectionRowCount();
 					DeletedCharacteristic = null;
-					reloadGridWithHighlight(null);
+					highlightAndScrollToRow(null);
 					//ClearItems();
 					//addRowToGrid();
+
+					if (lastAddedCharacteristic) {
+						setTimeout(function () {
+							highlightAndScrollToRowforManualGrid(lastAddedCharacteristic);
+						}, 100); // slight delay for rendering
+					}
+					$.notify("Process Add To Grid", "success");
 				},
 				error: function () {
 					$.notify('Something Went Wrong, Please Try Again.', "error");

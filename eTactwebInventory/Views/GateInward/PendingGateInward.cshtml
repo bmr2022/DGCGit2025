@@ -1,0 +1,423 @@
+﻿@model eTactWeb.DOM.Models.PendingGateEntryDashboard
+@{
+	ViewData["Title"] = "Gate Inward";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+
+	.select2-container--default .select2-selection--single {
+		background-color: #e0f2f1;
+		border: 1.5px solid #0a0a0a !important;
+		border-radius: 4px;
+	}
+
+		.select2-container--default .select2-selection--single .select2-selection__rendered {
+			/* border-bottom: 1.5px solid #000 !important; */
+			border-bottom: none !important;
+		}
+
+	.select2-container--default .select2-results > .select2-results__options {
+		background-color: #e0f2f1; /* Dropdown background color */
+		color: #000;
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+
+	<div class="card-header card-headerBG text-light bg-gradient">
+		<h5>
+			<strong>Pending Gate Inward</strong>
+			<span class="d-flex float-end" style="margin-top:-2px;">
+				@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+
+			</span>
+		</h5>
+	</div>
+	<div>
+	</div>
+	<div class="card-body bg-light pt-0">
+		<div class="accordion shadow-lg">
+			<div class="card-body">
+				<div class="card overflow-auto">
+					<div class="card-body">
+						<form id="SParam">
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="H_GateEntry">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_GateEntry" aria-expanded="true" aria-controls="B_GateEntry">
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Pending Gate Entry</strong>
+									</button>
+								</h2>
+								<div id="B_GateEntry" class="accordion-collapse collapse pnl4 bg-gradient show" aria-labelledby="H_GateEntry">
+									<div class="accordion-body">
+
+										<div class="row">
+									<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
+												<div class="row">
+													<div class="col">
+														<label class="form-label">From Date</label>
+														<input asp-for="FromDate" class="form-control" />
+													</div>
+													<div class="col">
+														<label class="form-label">To Date</label>
+														<input asp-for="ToDate" class="form-control" />
+													</div>
+												</div>
+											</div>
+											
+												<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+													<input type="hidden" asp-for="SessionYearCode" value="@Model.SessionYearCode" />
+												<label asp-for="VendorName" class="form-label" style="color: red;">Vendor Name*</label>
+												<select class="form-select" asp-for="VendorName" data-abcd="1" asp-items="@(new SelectList(Model.AccountList,"Value","Text"))">
+													<option value="" disabled selected>-Select-</option>
+												</select>
+													@*<input asp-for="VendorName" class="form-control" />*@
+												</div>
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label class="form-label" style="color: red;">
+													document type*
+												</label>
+
+												<select class="form-select" data-abcd="4" id="docTypeId" asp-items="@(new SelectList(Model.DocumentList,"Value","Text"))">
+													<option value="" disabled selected>-select-</option>
+												</select>
+											</div>
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="PONo" class="form-label" >PO NO</label>
+												@*  <input asp-for="NeedPo" type="hidden"/> *@
+												<select class="form-select" data-abcd="7" asp-for="PONo" id="PONO">
+													<option value="" disabled>-Select-</option>
+												</select>
+												
+											</div>
+											
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="PartCode" class="form-label">PartCode</label>
+												<input asp-for="PartCode" class="form-control" />
+											</div>
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label asp-for="ItemName" class="form-label">Item Name</label>
+												<input asp-for="ItemName" class="form-control" />
+											</div>
+										
+											<div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+												<label class="form-label">Global search</label>
+												<input id="search-box" class="form-control" style="background-color: #FFFACD;" placeholder="Search..." />
+											</div>
+											<div class=" d-flex justify-content-center mt-3" width="inherit">
+												<button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+													<i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+												</button>
+												
+												<button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+													<i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+												</button>
+												<a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="GateInward" asp-action="PendingGateInward">
+													<i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+												</a>
+												<div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+													<button class="btn btn-sm btn-outline-primary" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" onclick="getCheckedRowData()">
+														<i class="fa fa-check-circle" aria-hidden="true"></i> Gate Entry
+													</button>
+												</div>
+											</div>
+										</div>
+										<div></div>
+									</div>
+								</div>
+								<div class="progress my-2 mb-3" style="height: 4px;">
+									<div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+								</div>
+								<div class="card-body">
+									<div class="card overflow-auto">
+										<div class="card-body" id="divPendingEntryDashboardGrid">
+											<partial name="_GateInwardDisplayDataDetail" />
+										
+										</div>
+									</div>
+								</div>
+							</div>
+						</form>
+					</div>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+
+
+@section Scripts
+{
+	<script>
+			  function getCheckedRowData() {
+						var selectedData = [];
+		var rows = document.querySelectorAll('#GateDataTable tbody tr');
+		var seqCounter = 1;
+
+		for (var i = 0; i < rows.length; i++) {
+			var row = rows[i];
+			var checkbox = row.querySelector('input[type="checkbox"]');
+
+			if (checkbox && checkbox.checked) {
+				var cells = row.querySelectorAll('td');
+
+				var rowData = {
+					SeqNo: seqCounter,
+					AccountCode: document.getElementById("VendorName").value,
+					docTypeId: document.getElementById("docTypeId").value,
+					PoNo: cells[3].textContent.trim(),
+					PoYear:parseInt (cells[4].textContent.trim()),
+					SchNo: cells[5].textContent.trim(),
+					SchYearCode: (cells[6].textContent.trim()),
+					ItemName: cells[7].textContent.trim(),
+					PartCode: cells[8].textContent.trim(),
+					Unit: cells[9].textContent.trim(),
+					PendQty: parseFloat(cells[10].textContent.trim()),
+					Qty: parseFloat(cells[11].querySelector('input').value.trim()),
+					Rate: parseFloat(cells[12].textContent.trim()),
+					AltUnit: cells[13].textContent.trim(),
+					AltQty: parseFloat(cells[14].textContent.trim()),
+					ItemSize: cells[15].textContent.trim(),
+					ItemColor: cells[16].textContent.trim(),
+					Remarks: cells[17].textContent.trim(),
+					ProcessName: cells[18].textContent.trim(),
+					SaleBillNo: cells[19].textContent.trim(),
+					SaleBillYearCode: parseInt(cells[20].textContent.trim()),
+					SaleBillQty: parseFloat(cells[21].textContent.trim()),
+					AgainstChallanNo: cells[22].textContent.trim(),
+					AgainstChallanYearcode: parseInt(cells[23].textContent.trim()),
+					ChallanQty: parseFloat(cells[24].textContent.trim()),
+					SupplierBatchNo: cells[25].textContent.trim(),
+					ShelfLife: parseFloat(cells[26].textContent.trim()),
+					NoOfBoxes: parseInt(cells[27].textContent.trim()),
+					ItemCode: parseInt(cells[1].textContent.trim()) // hidden column
+				};
+
+				selectedData.push(rowData);
+				seqCounter++; // Only increment if checkbox is checked
+			}
+		}
+
+
+			// AJAX call to send to session
+			$.ajax({
+				url: "@Url.Action("StoreCheckedRowsToSession")",
+				   type: "POST",
+				data: { model: selectedData },
+				async: false,
+				success: function (response) {
+
+
+							var accountCode = document.getElementById("VendorName").value;
+		var docTypeId = document.getElementById("docTypeId").value;
+
+		window.location.href = `/GateInward/GateInward?Mode=I&AccountCode=${accountCode}&docTypeId=${docTypeId}`;
+
+				},
+				error: function (xhr, status, error) {
+					console.error("Failed to store in session:", error);
+				}
+			});
+					
+		}
+			function CheckacceptedQtySHA(i) {
+
+			var checkedtruevalues = [];
+			var rowCount = $('#PendinggateDashboardtable tr').length;
+			for (let i = 1; i <= rowCount; i++) {
+				checkedtruevalues.push({
+					"checked": $('#AcceptedQtySHA-' + i).is(':checked')
+				})
+			}
+
+			var checkedonlytrue = checkedtruevalues.filter(function (item) {
+				return item.checked;
+			}).length;
+			if (rowCount == checkedonlytrue) {
+				$('#checkuncheck').prop('checked', true)
+			} else {
+				$('#checkuncheck').prop('checked', false)
+			}
+		}
+
+		$(function ()
+		   {
+				  GetServerDate();
+			  var currentDate = new Date();
+
+			var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+			function formatDate(date)
+			{
+				var day = ("0" + date.getDate()).slice(-2);
+				var month = ("0" + (date.getMonth() + 1)).slice(-2);
+				var year = date.getFullYear();
+				var dateString = day + "/" + month + "/" + year;
+				return dateString;
+
+				
+			}
+			//$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
+			$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+			$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+		AutoComplete('VGateMainDetail', 'VendorName', 'Account_Name', null);
+		  AutoComplete('VGateMainDetail', 'ItemName', 'Item_Name', null);
+		  AutoComplete('VGateMainDetail', 'PartCode', 'PartCode', null);
+		  AutoComplete('VGateMainDetail', 'PONO', 'PONo', null);
+		  AutoComplete('VGateMainDetail', 'Gateno', 'GateNo', null);
+		  AutoComplete('VGateMainDetail', 'ScheduleNo', 'SchNo', null);
+		  if ($('#FromDate1').val() != "" && $('#ToDate1').val() != "") {
+
+				var inputFromDateString = $('#FromDate1').val().split(" ")[0];
+				var inputToDateString = $('#ToDate1').val().split(" ")[0];
+
+				var originalFromDate = new Date(inputFromDateString);
+				var originalToDate = new Date(inputToDateString);
+
+
+				//fromdate
+				var day = originalFromDate.getDate();
+				var month = originalFromDate.getMonth() + 1; // Months are zero-based
+				var year = originalFromDate.getFullYear();
+
+				var convertedFromDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+				//todate
+				var day = originalToDate.getDate();
+				var month = originalToDate.getMonth() + 1; // Months are zero-based
+				var year = originalToDate.getFullYear();
+
+				var convertedToDateText = day.toString().padStart(2, '0') + '/' + month.toString().padStart(2, '0') + '/' + year;
+
+
+				$('#FromDate').val(convertedFromDateText);
+				$('#ToDate').val(convertedToDateText);
+
+			}
+
+		   });
+			$('#sendToExcel').click(function () {
+			$("#GateDataTable").table2excel({
+				filename: "GateData.xls"
+			});
+		});
+
+
+			$("#docTypeId").change(function () {
+			fillPONumber();
+		})
+
+			 function GetServerDate() {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("GetServerDate")",
+				async: false,
+				success: function (result, status, error) {
+					console.log(result);
+					if (result != null) {
+						$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+					}
+				}
+			});
+		}
+		 var fillPONumber = function () {
+			$.ajax({
+				url: "@Url.Action("GetPOList", "GateInward")",
+				data: { Code: $('#VendorName').val(), Type: "Item", Year:$('#SessionYearCode').val(), DocTypeId: $('#docTypeId').val() },
+				success: function (result, status, xhr) {
+					if (result.length == 0) {
+						$('#ItemCheck').prop('disabled', false);
+					}
+					if (result != null) {
+						var obj = $.parseJSON(result);
+						$('#PONO').empty();
+						$('#PONO').append('<option disabled selected> -Select - </option>');
+						var i = 0;
+					 /*    $.each(obj.Result.Table, function (index, val) {
+													$('#PONO').append('<option value = "' + obj.Result.Table[i].PONO +  '" data-EntryId="' + val.EntryId+'"> ' + obj.Result.Table[i].PONO + ' </option>');
+							i++;
+						}); */
+					   $.each(obj.Result.Table, function (index, val) {
+					$('#PONO').append(
+										'<option value="' + obj.Result.Table[i].PONO + '" data-EntryId="' + obj.Result.Table[i].EntryId + '">' +
+							   obj.Result.Table[i].PONO +
+						'</option>'
+					);
+							i++;
+				});
+
+					}
+				},
+				error: function (e) {
+					console.log(e);
+				}
+			});
+		}
+
+	
+			   function GetSearchData(){
+					let searchBox = $('#search-box').val();
+
+		let data = {
+
+					AccountCode: $('#VendorName').val(),
+					PoNo: $('#PoNo').val(),
+					PoYearCode: $('#SessionYearCode').val(),
+					ItemCode: 0, // if needed, fetch from a dropdown
+					FromDate: $('#FromDate').val(),
+					ToDate: $('#ToDate').val(),
+					ScheduleNo: $('#ScheduleNo').val(),
+					DashboardType: "", // Add if needed
+					
+					SearchBox: searchBox
+				};
+			$.ajax({
+				url: '@Url.Action("GetPendingGateEntrySearchData")',
+				type: "POST",
+				data: data,
+				async:false,
+				success: function (data) {
+					   $('#divPendingEntryDashboardGrid').empty().append(data);
+					var dashGrid = $('#PendinggateDashboardtable tr').length;
+					$('#totalRows').text(dashGrid);
+					/* $('#divDashboardGrid').empty().append(data);
+					var dashGrid = $('#gateDashboardtable tr').length;
+					$('#totalRows').text(dashGrid); */
+				},
+				error: function (response) {
+					alert(response.responseText);
+				},
+				failure: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+	</script>
+	<script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+	<!-- jsPDF core -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+	<script src="~/Scripts/table2excel.js"></script>
+
+	<!-- jsPDF AutoTable plugin -->
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+}
+
+<style>
+
+	.sort-icon {
+		padding: 5px;
+		margin: 5px;
+		vertical-align: top;
+	}
+
+	.ascCol {
+		font-size: 15px;
+		vertical-align: bottom;
+	}
+
+	.descCol {
+		font-size: 15px;
+		vertical-align: super;
+	}
+
+</style>

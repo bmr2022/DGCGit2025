@@ -712,7 +712,7 @@ public class TaxController : Controller
                 {
                     TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modeltxGridJson);
                 }
-
+                 isExp = TaxGrid.Any(m => m.TxType == "EXPENSES");
                 foreach (var item in ItemDetailGrid)
                 {
                     //Basic Total Amount
@@ -795,8 +795,8 @@ public class TaxController : Controller
                     var existsTaxType = TaxGrid != null ? TaxGrid!.Any(x => x.TxType == "EXPENSES") : false;
                     _List.Add(new TaxModel
                     {
-                        TxSeqNo = _List.Count + 1,
-                        //TxSeqNo = !existsTaxType ? (_List.Count + 1) : (intialCount + (_List.Count + 1)),
+                       // TxSeqNo = _List.Count + 1,
+                        TxSeqNo = !existsTaxType ? (_List.Count + 1) : (intialCount + (_List.Count + 1)),
                         TxType = TxModel.TxType,
                         TxPartCode = PartCode,
                         TxPartName = PartName,
@@ -819,8 +819,8 @@ public class TaxController : Controller
                     {
                         _List.Add(new TaxModel
                         {
-                            TxSeqNo = _List.Count + 1,
-                            //TxSeqNo = intialCount + (_List.Count + 1),
+                            //TxSeqNo = _List.Count + 1,
+                            TxSeqNo = !existsTaxType ? (_List.Count + 1) : (intialCount + (_List.Count + 1)),
                             TxType = TxModel.TxType,
                             TxPartCode = PartCode,
                             TxPartName = PartName,
@@ -1565,10 +1565,10 @@ public class TaxController : Controller
 
                         //Amt = Amt * Convert.ToDecimal(TP) / 100;
                     }
-                    //else
-                    //{
-                    //    Amt = Amt * Convert.ToDecimal(TP) / 100;
-                    //}
+                    else
+                    {
+                        Amt = Amt * Convert.ToDecimal(TP) / 100;
+                    }
                 }
             }
             //else
