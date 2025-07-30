@@ -1598,7 +1598,7 @@ public class PurchaseBillDAL
                         AltUnit = dr["AltUnit"].ToString(),
                         BillRate = !string.IsNullOrEmpty(dr["BillRate"].ToString()) ? Convert.ToDecimal(dr["BillRate"]) : 0,
                         MRP = !string.IsNullOrEmpty(dr["MRP"].ToString()) ? Convert.ToDecimal(dr["MRP"]) : 0,
-                        //Amount = !string.IsNullOrEmpty(dr["Amount"].ToString()) ? Convert.ToDecimal(dr["Amount"]) : 0,
+                        Amount = !string.IsNullOrEmpty(dr["Amount"].ToString()) ? Convert.ToDecimal(dr["Amount"]) : 0,
                         RateIncludingTax = !string.IsNullOrEmpty(dr["RateIncludingTax"].ToString()) ? Convert.ToDecimal(dr["RateIncludingTax"]) : 0,
                         AmtInOtherCurrency = !string.IsNullOrEmpty(dr["AmtInOtherCurrency"].ToString()) ? Convert.ToInt32(dr["AmtInOtherCurrency"]) : 0,
                         RateOfConvFactor = !string.IsNullOrEmpty(dr["RateOfConvFactor"].ToString()) ? Convert.ToInt32(dr["RateOfConvFactor"]) : 0,
@@ -1645,6 +1645,9 @@ public class PurchaseBillDAL
 
                 foreach (DataRow dr in oDataSet.Tables[2].Rows)
                 {
+                    decimal taxBaseAmount = !string.IsNullOrEmpty(dr["TaxAmount"].ToString()) ? Convert.ToDecimal(dr["TaxAmount"]) : 0;
+                    decimal taxPercent = !string.IsNullOrEmpty(dr["TaxPer"].ToString()) ? Convert.ToDecimal(dr["TaxPer"]) : 0;
+                    decimal calculatedAmount = taxBaseAmount * taxPercent / 100;
                     var taxDetail = new TaxModel
                     {
                         TxSeqNo = seq++,
@@ -1661,7 +1664,7 @@ public class PurchaseBillDAL
                         TxTaxTypeName = dr["TaxExpType"].ToString(),
                         TxAccountCode = !string.IsNullOrEmpty(dr["TaxAccountCode"].ToString()) ? Convert.ToInt32(dr["TaxAccountCode"]) : 0,
                         TxAccountName = dr["TaxName"].ToString(),
-                        TxAmount = !string.IsNullOrEmpty(dr["TaxAmount"].ToString()) ? Convert.ToDecimal(dr["TaxAmount"]) : 0,
+                        TxAmount = calculatedAmount,
                         TxRefundable = dr["TaxRefundable"].ToString(),
                         TxRemark = dr["POTaxRemark"].ToString(),
                     };

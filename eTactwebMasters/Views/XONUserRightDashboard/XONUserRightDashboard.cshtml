@@ -25,57 +25,33 @@
             <div class=card>
                 <div class="card-body">
                     <div class="row g-3" style="justify-content:center">
-                        @* <div class="col col-md-2 col-sm-6 col-xs-6">
+                        <div class="col col-md-2 col-sm-6 col-xs-6">
                             <label class="form-label">Select User</label>
                             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
                                 <input id="AC1" class="form-check-input" type="checkbox" role="switch" />Show All
                             </div>
-                            <select class="form-select" asp-for="EmpID" asp-items="@(new SelectList(Model.UserList,"Value","Text"))" onchange="GetSearchData()">
+                            <select class="form-select" asp-for="EmpId" onchange="GetSearchData()">
                                 <option value=0>-Select-</option>
                             </select>
                         </div>
                         <div class="col col-md-2 col-sm-6 col-xs-6">
-                            <label class="form-label">Select Module</label>
-                            <select class="form-select fs" asp-for="Module" asp-items="@(new SelectList(Model.ModuleList,"Value","Text"))" onchange="GetMenuList(this.id);">
+                            <label class="form-label">Select Dashboard</label>
+                            <select class="form-select fs" asp-for="DashboardName"  onchange="GetMenuList(this.id);">
                                 <option value=0>-Select-</option>
                             </select>
                         </div>
                         <div class="col col-md-2 col-sm-6 col-xs-6">
-                            <label class="form-label">Select Menu</label>
-                            <select class="form-select fs" asp-for="MainMenu" asp-items="@(new SelectList(Model.MainMenuList,"Value","Text"))">
+                            <label class="form-label">Select Dashboard Subscreen</label>
+                            <select class="form-select fs" asp-for="DashboardSubScreen" >
                                 <option value=0>-Select-</option>
                             </select>
                         </div>
                         <div class="col col-md-1 col-sm-6 col-xs-6">
                             <div class="form-check form-switch KC1">
-                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="All">
-                                <label class="form-check-label">All</label>
-                            </div>
-                        </div>
-                        <div class="col col-md-1 col-sm-6 col-xs-6">
-                            <div class="form-check form-switch KC1">
-                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Save">
-                                <label class="form-check-label">Save</label>
-                            </div>
-                        </div>
-                        <div class="col col-md-1 col-sm-6 col-xs-6">
-                            <div class="form-check form-switch KC1">
-                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Update">
-                                <label class="form-check-label">Update</label>
-                            </div>
-                        </div>
-                        <div class="col col-md-1 col-sm-6 col-xs-6">
-                            <div class="form-check form-switch KC1">
-                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="Delete">
-                                <label class="form-check-label">Delete</label>
-                            </div>
-                        </div>
-                        <div class="col col-md-1 col-sm-6 col-xs-6">
-                            <div class="form-check form-switch KC1">
-                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="View">
+                                <input class="form-check-input FCI1" type="checkbox" role="switch" asp-for="IsView">
                                 <label class="form-check-label">View</label>
                             </div>
-                        </div> *@
+                        </div>
                     </div>
                 </div>
             </div>
@@ -151,7 +127,7 @@
                        
                     </thead>
                     <tbody id="UserRightsGrid">
-                        <partial name="_UserRightGrid" />
+                       
                     </tbody>
                 </table>
             </div>
