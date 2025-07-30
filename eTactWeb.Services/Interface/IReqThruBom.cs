@@ -17,6 +17,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName);
         Task<ResponseResult> DisplayBomDetail(int ItemCode, float WOQty, int BomRevNo);
         Task<ResponseResult> FillItems();
+        Task<ResponseResult> AutoFillPartCode(string showallitem, string SearchItemCode, string SearchPartCode);
+        Task<ResponseResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode);
         Task<ResponseResult> FillWorkOrder();
         Task<ResponseResult> FillWorkCenter();
         Task<ResponseResult> FillTotalStock(int ItemCode, int Store);

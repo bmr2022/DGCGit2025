@@ -615,6 +615,18 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> AutoFillPartCode(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IReqThruBom.AutoFillPartCode(showallitem, SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            var JSON = await _IReqThruBom.AutoFillItemName( showallitem, SearchItemCode, SearchPartCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillWorkOrder()
         {
             var JSON = await _IReqThruBom.FillWorkOrder();

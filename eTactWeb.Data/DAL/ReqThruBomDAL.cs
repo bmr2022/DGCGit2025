@@ -76,6 +76,46 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
+        } 
+        public async Task<ResponseResult> AutoFillPartCode(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AutoFillPartCode"));
+                SqlParams.Add(new SqlParameter("@SHowAllItem", showallitem));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_RequisitionThrBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        } 
+        public async Task<ResponseResult> AutoFillItemName(string showallitem, string SearchItemCode, string SearchPartCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AutoFillItemName"));
+                SqlParams.Add(new SqlParameter("@SHowAllItem", showallitem));
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_RequisitionThrBOM", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
         public async Task<ResponseResult> GetFormRights(int userId)
         {
