@@ -151,6 +151,8 @@
                                 <th data-columnno="24" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount Amount</th>
                                 <th data-columnno="25" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
                                 <th data-columnno="26" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+                                <th data-columnno="26" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StoreId</th>
+                                <th data-columnno="26" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>StoreName</th>
 
                             </tr>
                         </thead>
@@ -335,6 +337,8 @@
                                     '<td>' + val.DisAmt + '</td>' +
                                     '<td>' + val.ItemAmount + '</td>' +
                                     '<td>' + val.AltQty + '</td>'+
+                                    '<td>' + val.Storeid + '</td>' +
+                                    '<td>' + val.Store_Name + '</td>' +
 
                                     '</tr>'
                                 $('#divPendMRNGrid').append(html);
@@ -399,7 +403,9 @@
                         DiscountPer: $row.find('td:eq(23)').text().trim(),
                         DiscountAmt: $row.find('td:eq(24)').text().trim(),
                         Amount: $row.find('td:eq(25)').text().trim(),
-                        AltQty: $row.find('td:eq(26)').text().trim()
+                        AltQty: $row.find('td:eq(26)').text().trim(),
+                        StoreId: $row.find('td:eq(27)').text().trim(),
+                        StoreName: $row.find('td:eq(28)').text().trim()
 
 
                     };
