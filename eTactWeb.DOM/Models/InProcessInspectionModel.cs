@@ -155,8 +155,9 @@ namespace eTactWeb.DOM.Models
         public int PageSize { get; set; }
         public bool IsDeleted { get; set; }
 
-        //public List<string> Samples { get; set; }
-        public List<string> Samples
+		//public List<string> Samples { get; set; }
+		public bool Copied { get; set; }
+		public List<string> Samples
         {
             get
             {

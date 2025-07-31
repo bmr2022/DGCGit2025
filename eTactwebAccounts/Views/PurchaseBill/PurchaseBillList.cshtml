@@ -402,8 +402,10 @@
         }
 
         var currentSearchColumn = null;
-        $("#search-box").on("keyup", function () {
+
+        $(document).on("input", "#search-box", function () {
             var value = $(this).val().toLowerCase();
+
             $("#divDashboardGrid1 tr").filter(function () {
                 if (currentSearchColumn !== null) {
                     var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
