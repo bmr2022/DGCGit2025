@@ -265,10 +265,10 @@ namespace eTactWeb.Controllers
                 foreach (var Item in DetailList)
                 {
                     string evalTech = Item.EvalutionMeasurmentTechnique;
-                    if (!string.IsNullOrWhiteSpace(evalTech) && evalTech.Length > 1)
-                    {
-                        evalTech = evalTech.Substring(0, 1); 
-                    }
+                    //if (!string.IsNullOrWhiteSpace(evalTech) && evalTech.Length > 1)
+                    //{
+                    //    evalTech = evalTech.Substring(0, 1); 
+                    //}
                     GIGrid.Rows.Add(
                         new object[]
                         {
@@ -276,7 +276,7 @@ namespace eTactWeb.Controllers
 Item.CntPlanYearCode,
 Item.SeqNo,
 Item.Characteristic ?? "",
-evalTech ?? "",
+Item.EvalutionMeasurmentTechnique ?? "",
 Item.SpecificationFrom ?? "",
 Item.Operator ?? "",
 Item.SpecificationTo ?? "",
