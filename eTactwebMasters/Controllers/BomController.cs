@@ -1310,8 +1310,8 @@ public class BomController : Controller
                     Item.BomName,
                     Item.BomNo,//bomno
                     0,
-                    "",
-                    "",
+                   today.ToString("yyyy-MM-dd").Split(" ")[0],
+                   today.ToString("yyyy-MM-dd").Split(" ")[0],
                     Item.SeqNo,
                     Item.RMItemCode,
                     Item.RMQty,
