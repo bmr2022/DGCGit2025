@@ -2159,49 +2159,49 @@ namespace eTactWeb.Controllers
                 HttpContext.Session.Remove("KeyProductionEntryScrapdetail");
                 HttpContext.Session.Remove("KeyProductionEntryProductdetail");
                 var model = new ProductionDashboard();
-                var Result = await _IProductionEntry.GetDashboardData().ConfigureAwait(true);
-                DateTime now = DateTime.Now;
+  //              var Result = await _IProductionEntry.GetDashboardData().ConfigureAwait(true);
+  //              DateTime now = DateTime.Now;
 
-                model.FromDate = CommonFunc.ParseFormattedDate(new DateTime(now.Year, now.Month, 1).ToString());
-                model.ToDate = CommonFunc.ParseFormattedDate(new DateTime(DateTime.Today.Year + 1, 3, 31).ToString());
+  //              model.FromDate = CommonFunc.ParseFormattedDate(new DateTime(now.Year, now.Month, 1).ToString());
+  //              model.ToDate = CommonFunc.ParseFormattedDate(new DateTime(DateTime.Today.Year + 1, 3, 31).ToString());
 
-                if (Result != null)
-                {
-                    var _List = new List<TextValue>();
-                    DataSet DS = Result.Result;
-                    if (DS != null)
-                    {
-                        var DT = DS.Tables[0].DefaultView.ToTable(true, "PRODEntryId", "Entrydate", "PRODYearcode",
-    "ProdAgainstPlanManual", "NewProdRework", "ProdSlipNo", "ProdDate", "nextstoreId", "NextToStore", "NextWCID", "NextToWorkCenter", "ProdPlanNo", "ProdPlanYearCode", "ProdPlanDate", "ProdPlanSchNo"
-  , "ProdPlanSchYearCode", "ProdPlanSchDate", "Reqno", "ReqThrBOMYearcode", "ReqDate", "FGPartCode", "FGItemName",
-  "WOQTY", "ProdSchQty", "FGProdQty", "FGOKQty", "FGRejQty", "RejQtyDuetoTrail", "PendQtyForProd", "PendQtyForQC"
-  , "PendingQtyToIssue", "BOMNO", "BOMDate", "MachineName", "StageDescription", "ProdInWC", "RejQtyInWC",
-  "rejStore", "TransferFGToWCorSTORE", "QCMandatory", "TransferToQc", "StartTime", "ToTime", "setupTime", "PrevWC"
-  , "ProducedINLineNo", "QCChecked", "InitialReading", "FinalReading", "Shots", "Completed", "UtilisedHours",
-  "ProdLineNo", "stdShots", "stdCycletime", "Remark", "CyclicTime", "ProductionHour", "ItemModel", "cavity"
-  , "startupRejQty", "efficiency", "ActualTimeRequired", "BatchNo", "UniqueBatchNo", "parentProdSchNo", "parentProdSchDate"
-  , "parentProdSchYearcode", "SONO", "SOYearcode", "SODate", "sotype", "QCOffered",
-  "QCOfferDate", "QCQTy", "OKQty", "RejQTy", "StockQTy", "matTransferd", "RewQcYearCode", "RewQcDate", "shiftclose",
-  "ComplProd", "CC", "EntryByMachineNo", "ActualEntryDate", "ActualEntryByEmp", "ActualEmpByName", "LastUpdatedBy", "LastUpdationDate",
-  "EntryByDesignation", "operatorName", "supervisior", "LastUpdatedByName");
-                        model.ProductionDashboard = CommonFunc.DataTableToList<ProductionEntryDashboard>(DT, "ProductionEntry");
+  //              if (Result != null)
+  //              {
+  //                  var _List = new List<TextValue>();
+  //                  DataSet DS = Result.Result;
+  //                  if (DS != null)
+  //                  {
+  //                      var DT = DS.Tables[0].DefaultView.ToTable(true, "PRODEntryId", "Entrydate", "PRODYearcode",
+  //  "ProdAgainstPlanManual", "NewProdRework", "ProdSlipNo", "ProdDate", "nextstoreId", "NextToStore", "NextWCID", "NextToWorkCenter", "ProdPlanNo", "ProdPlanYearCode", "ProdPlanDate", "ProdPlanSchNo"
+  //, "ProdPlanSchYearCode", "ProdPlanSchDate", "Reqno", "ReqThrBOMYearcode", "ReqDate", "FGPartCode", "FGItemName",
+  //"WOQTY", "ProdSchQty", "FGProdQty", "FGOKQty", "FGRejQty", "RejQtyDuetoTrail", "PendQtyForProd", "PendQtyForQC"
+  //, "PendingQtyToIssue", "BOMNO", "BOMDate", "MachineName", "StageDescription", "ProdInWC", "RejQtyInWC",
+  //"rejStore", "TransferFGToWCorSTORE", "QCMandatory", "TransferToQc", "StartTime", "ToTime", "setupTime", "PrevWC"
+  //, "ProducedINLineNo", "QCChecked", "InitialReading", "FinalReading", "Shots", "Completed", "UtilisedHours",
+  //"ProdLineNo", "stdShots", "stdCycletime", "Remark", "CyclicTime", "ProductionHour", "ItemModel", "cavity"
+  //, "startupRejQty", "efficiency", "ActualTimeRequired", "BatchNo", "UniqueBatchNo", "parentProdSchNo", "parentProdSchDate"
+  //, "parentProdSchYearcode", "SONO", "SOYearcode", "SODate", "sotype", "QCOffered",
+  //"QCOfferDate", "QCQTy", "OKQty", "RejQTy", "StockQTy", "matTransferd", "RewQcYearCode", "RewQcDate", "shiftclose",
+  //"ComplProd", "CC", "EntryByMachineNo", "ActualEntryDate", "ActualEntryByEmp", "ActualEmpByName", "LastUpdatedBy", "LastUpdationDate",
+  //"EntryByDesignation", "operatorName", "supervisior", "LastUpdatedByName");
+  //                      model.ProductionDashboard = CommonFunc.DataTableToList<ProductionEntryDashboard>(DT, "ProductionEntry");
 
-                    }
-                    if (Flag != "True")
-                    {
-                        model.FromDate1 = FromDate;
-                        model.ToDate1 = ToDate;
-                        model.ProdSlipNo = SlipNo;
-                        model.ItemName = ItemName;
-                        model.PartCode = PartCode;
-                        model.ProdPlanNo = ProdPlanNo;
-                        model.ProdSchNo = ProdSchNo;
-                        model.ReqNo = ReqNo;
-                        model.Searchbox = Searchbox;
-                        model.DashboardType = DashboardType;
-                        return View(model);
-                    }
-                }
+  //                  }
+  //                  if (Flag != "True")
+  //                  {
+  //                      model.FromDate1 = FromDate;
+  //                      model.ToDate1 = ToDate;
+  //                      model.ProdSlipNo = SlipNo;
+  //                      model.ItemName = ItemName;
+  //                      model.PartCode = PartCode;
+  //                      model.ProdPlanNo = ProdPlanNo;
+  //                      model.ProdSchNo = ProdSchNo;
+  //                      model.ReqNo = ReqNo;
+  //                      model.Searchbox = Searchbox;
+  //                      model.DashboardType = DashboardType;
+  //                      return View(model);
+  //                  }
+  //              }
                 return View(model);
             }
             catch (Exception ex)

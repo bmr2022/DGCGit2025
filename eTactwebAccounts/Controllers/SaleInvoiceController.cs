@@ -55,6 +55,156 @@ namespace eTactWeb.Controllers
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
             _MemoryCache = iMemoryCache;
         }
+
+        public async Task<IActionResult> SaleBillList()
+        {
+            ViewData["Title"] = "Pending SaleBill List";
+            TempData.Clear();
+            HttpContext.Session.Remove("KeyPendingSaleBill");
+            var MainModel = new PendingSaleBillList();
+            var model = new PendingSaleBillList();
+            MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+            MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+            MainModel.CurrentYear = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+
+
+            HttpContext.Session.SetString("KeyPendingSaleBill", JsonConvert.SerializeObject(model));
+            return View(MainModel);
+        }
+
+        public async Task<JsonResult> FillStoreList()
+        {
+            var JSON = await _SaleBill.FillStoreList();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillCustomerListForPending()
+        {
+            var JSON = await _SaleBill.FillCustomerListForPending();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            var JSON = await _SaleBill.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        [HttpPost]
+        public IActionResult StoreCheckedRowsToSession([FromBody] List<SaleBillModel> selectedRows)
+        {
+            if (selectedRows != null && selectedRows.Any())
+            {
+                HttpContext.Session.SetString("SaleBillListItem", JsonConvert.SerializeObject(selectedRows));
+                return Json(new { success = true });
+            }
+            return Json(new { success = false, message = "No rows received" });
+        }
+        public IActionResult FillSaleBillGridFromMemoryCache()
+        {
+            try
+            {
+                string modelJson = HttpContext.Session.GetString("SaleBillListItem");
+                List<SaleBillDetail> SaleBillDetail = new List<SaleBillDetail>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    SaleBillDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+                }
+
+                var MainModel = new SaleBillModel();
+                var IssueGrid = new List<SaleBillDetail>();
+                var SSGrid = new List<SaleBillDetail>();
+                //MainModel.FromDate = HttpContext.Session.GetString("FromDate");
+                //MainModel.ToDate = HttpContext.Session.GetString("ToDate");
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024,
+                };
+                var seqNo = 1;
+                if (SaleBillDetail != null)
+                {
+                    for (int i = 0; i < SaleBillDetail.Count; i++)
+                    {
+
+
+                        if (SaleBillDetail[i] != null)
+                        {
+                            //TransferFromWorkCenterDetail[i].seqno = seqNo++;
+                            SSGrid.AddRange(IssueGrid);
+                            IssueGrid.Add(SaleBillDetail[i]);
+
+                            MainModel.ItemDetailGrid = IssueGrid;
+
+                            string serializedGrid = JsonConvert.SerializeObject(MainModel.ItemDetailGrid);
+                            HttpContext.Session.SetString("SaleBillListItem", serializedGrid);
+                        }
+                    }
+                }
+
+                return PartialView("_SaleBillItemMemoryGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        [HttpPost]
+        public IActionResult AddMultiSaleBillDetail([FromBody] List<SaleBillDetail> model)
+        {
+            try
+            {
+                var MainModel = new SaleBillModel();
+                var RCGrid = new List<SaleBillDetail>();
+                var ReceiveChallanGrid = new List<SaleBillDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    //string modelJson = HttpContext.Session.GetString("ReceiveItems");
+                    //IList<TransferFromWorkCenterDetail> RCDetail = new List<TransferFromWorkCenterDetail>();
+                    //if (modelJson != null)
+                    //{
+                    //    RCDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
+                    //}
+
+                    if (model != null)
+                    {
+
+                        {
+                            item.SeqNo = SeqNo;
+                            //RCGrid = RCDetail.Where(x => x != null).ToList();
+                            ReceiveChallanGrid.AddRange(RCGrid);
+                            RCGrid.Add(item);
+                            SeqNo++;
+
+
+                        }
+                        RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
+                        MainModel.saleBillDetails = RCGrid;
+
+                        HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
+                        HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(MainModel));
+
+                        //HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Receive Challan List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_SaleBillGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> SaleInvoice(SaleBillModel model, string ShouldEinvoice)
         {

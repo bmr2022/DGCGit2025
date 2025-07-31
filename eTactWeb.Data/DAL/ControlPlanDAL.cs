@@ -237,6 +237,7 @@ namespace eTactWeb.Data.DAL
                                                             RevNo = dr["RevNo"] != DBNull.Value ? Convert.ToString(dr["RevNo"]) : string.Empty,
                                                             ForInOutInprocess = dr["ForInOutInprocess"] != DBNull.Value ? Convert.ToString(dr["ForInOutInprocess"]) : string.Empty,
                                                             ItemCode = dr["ItemCode"] != DBNull.Value ? Convert.ToInt32(dr["ItemCode"]) : 0,
+                                                            PartCode = dr["PartCode"] != DBNull.Value ? Convert.ToString(dr["PartCode"]) : string.Empty,
                                                             ItemName = dr["Item_Name"] != DBNull.Value ? Convert.ToString(dr["Item_Name"]) : string.Empty,
                                                             AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
                                                             // AccountName       = dr["Account_Name"]         != DBNull.Value ? Convert.ToString(dr["Account_Name"])         : string.Empty,
