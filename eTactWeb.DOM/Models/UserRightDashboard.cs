@@ -10,6 +10,8 @@ namespace eTactWeb.DOM.Models
     {
         public int EmpId {  get; set; }
         public int UserId { get; set; }
+        public string? Mode {  get; set; }
+        public string? UserName { get; set; }
         public string? DashboardName {  get; set; }
         public string? DashboardSubScreen {  get; set; }
         public bool IsView {  get; set; }
@@ -17,5 +19,6 @@ namespace eTactWeb.DOM.Models
         public DateTime CreatedOn { get; set; }
         public int UpdatedById {  get; set; }
         public DateTime UpdatedOn { get; set; }
+        public IList<UserRightDashboard>? UserRightsDashboard { get; set; }
     }
 }
