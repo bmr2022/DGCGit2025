@@ -93,11 +93,13 @@ namespace eTactWeb.Controllers
                 }
             }
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
-            {
-                
-                
-                MainModel.Mode = Mode;
+            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+                if (!isFromPartCode && !string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+
+                {
+
+
+                    MainModel.Mode = Mode;
                 MainModel = await _IControlPlan.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.CntPlanEntryId = ID;

@@ -408,7 +408,7 @@ namespace eTactWeb.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize)
+		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize, int? deletedSeqNo)
 		{
 			try
 			{
