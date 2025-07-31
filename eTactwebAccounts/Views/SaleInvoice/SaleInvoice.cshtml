@@ -2385,7 +2385,7 @@
                                 //$('#PartCode,#ItemCode').val(0).trigger("change");
 
                                 $('#Uniquebatchno,#Batchno,#Qty,#SOPendQty').val(0);
-                                $('#StoreId').val(0);
+                                // $('#StoreId').val(0);
                                 // $('#LotStock,#TotalStock').val("");
 
                                 // $('#BOMInd,#ProducedUnprod').val('');
@@ -2407,7 +2407,8 @@
 
                                 BasicTotal();
                                 ClearAdjustmentGrid();
-                                ResetPendQty();
+                                // ResetPendQty();
+                                FillSOPendQty();
                                 // var rowCount = $('#divSaleBillList tr').length;
 
                                 // for (var i = 1; i <= rowCount; i++) {
@@ -2558,12 +2559,13 @@
                             var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                             $('#divSaleBillList').html(NoData);
 
-                            $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty,#StoreId').val(0);
+                            $('#Uniquebatchno,#Batchno,#Qty,#SaleSchYearCode,#SOPendQty,#Qty').val(0);
                             $('#LotStock,#TotalStock').val("");
                             $('#BOMInd,#ProducedUnprod').val('');
                             $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Amount').val(0);
 
                             BasicTotal();
+                            FillSOPendQty();
                         },
                         error: function (req, status, error) {
                             alert(error);
@@ -2937,6 +2939,10 @@
 
                                 if ($('#StateCode').val() == "") {
                                     $.notify('StateCode is manadatory...!', "error");
+                                    alert("StateCode is manadatory...!");
+                                    $('#AccountCode').val('0');
+                                    $('#AccountCode').trigger("change");
+
                                 }
                             }
                         }

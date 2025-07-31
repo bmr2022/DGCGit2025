@@ -223,6 +223,7 @@ namespace eTactWeb.Controllers
             var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<StockRegisterDetail>>>
             {
                 { "STOCKSUMMARY", ExportStockSummary },
+                { "STOCKWITHZEROINVENTORY", ExportStockSummary },
                 { "STOCKDETAIL", ExportStockDetail }
                 // Add more report types here if needed
             };
