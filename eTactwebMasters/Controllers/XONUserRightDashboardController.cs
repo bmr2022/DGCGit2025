@@ -1,4 +1,5 @@
-﻿using eTactWeb.DOM.Models;
+﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
@@ -7,9 +8,17 @@ namespace eTactwebMasters.Controllers
 {
     public class XONUserRightDashboardController : Controller
     {
-        public IActionResult XONUserRightDashboard()
+        private readonly EncryptDecrypt _EncryptDecrypt;
+        private readonly IXONUserRightDashboardBLL _IXONUserRightDashboardBLL;
+        private readonly IDataLogic _IDataLogic;
+        private readonly IWebHostEnvironment _IWebHostEnvironment;
+        private dynamic Result;
+        public XONUserRightDashboardController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IXONUserRightDashboardBLL IXONUserRightDashboardBLL)
         {
-            return View();
+            _IDataLogic = iDataLogic;
+            _IWebHostEnvironment = iWebHostEnvironment;
+            _EncryptDecrypt = encryptDecrypt;
+            _IXONUserRightDashboardBLL = IXONUserRightDashboardBLL;
         }
         public async Task<IActionResult> XONUserRightDashboard(int ID, string Mode, string userName = "")
         {
@@ -35,11 +44,26 @@ namespace eTactwebMasters.Controllers
                 model.Mode = Mode;
             }
 
-            //model.UserList = await _IAdminModule.GetUserList("False");
-            //model.ModuleList = await _IAdminModule.GetMenuList("Module", "", "");
+            model.UserList = await _IXONUserRightDashboardBLL.GetUserList("False");
+            model.DashboardNameList = await _IXONUserRightDashboardBLL.GetDashboardName();
             //model.MainMenuList = await _IAdminModule.GetMenuList("MainMenu", model.Module, "");
             //model.EmpID = ID;
             return View(model);
+        }
+        public async Task<JsonResult> GetUserList(string ShowAll)
+        {
+            var Result = await _IXONUserRightDashboardBLL.GetUserList(ShowAll);
+            return Json(Result);
+        }
+        public async Task<JsonResult> GetDashboardName()
+        {
+            var Result = await _IXONUserRightDashboardBLL.GetDashboardName();
+            return Json(Result);
+        }
+        public async Task<JsonResult> GetDashboardSubScreen(string DashboardName)
+        {
+            var Result = await _IXONUserRightDashboardBLL.GetDashboardSubScreen(DashboardName);
+            return Json(Result);
         }
     }
 }
