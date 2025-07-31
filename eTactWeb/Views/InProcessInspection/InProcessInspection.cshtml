@@ -79,7 +79,7 @@
 									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
 									<input type="hidden" value="@Model.Entry_Date" asp-for="Entry_Date" />
 									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
-
+									<input type="hidden" id="DeletedSeqNo" name="DeletedSeqNo" />
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="EntryId" class="form-label">Entry Id</label>
 										<input asp-for="EntryId" class="form-control" readonly />
@@ -941,7 +941,7 @@
 			// 		console.warn('Input not found: #InspValue_' + (i + 1));
 			// 	}
 			// }
-
+			$('#DeletedSeqNo').val(data.SeqNo);
 			let matchingRow = null;
 
 			// $('#divinProcessInspectionGrid tbody tr').each(function () {
@@ -952,7 +952,7 @@
 			// 	}
 			// });
 			$('#divinProcessInspectionGrid tbody tr').each(function () {
-				const rowSeqNo = $(this).find('td.seqno').text().trim();
+				const rowSeqNo = $(this).find('th').text().trim();
 				const rowCharacteristic = $(this).find('td.characteristic').text().trim();
 
 				if (rowSeqNo == data.SeqNo && rowCharacteristic === data.Characteristic.trim()) {
@@ -960,7 +960,7 @@
 					return false; // break loop
 				}
 			});
-
+			
 			if (!matchingRow) {
 				console.warn("No matching row found for characteristic:", data.Characteristic);
 				return;
@@ -1558,17 +1558,20 @@
 		// 	});
 		// });
 
+
+
 		$('#GridButton').click(function (e) {
 			e.preventDefault();
-			debugger
+
 			var gridData = [];
 			var sampleSize = parseInt($('#SampleSize').val()) || 1;
+			var deletedSeqNo = parseInt($('#DeletedSeqNo').val()) || 0;
+
 			$('#divinProcessInspectionGrid tbody tr').each(function () {
 				var $cells = $(this).find('td');
 				var $row = $(this);
 				var rowData = {
 					SeqNo: $cells.eq(0).text().trim(),
-					//SeqNo: nextSeqNo,
 					Characteristic: $cells.eq(1).text().trim(),
 					EvalutionMeasurmentTechnique: $cells.eq(2).text().trim(),
 					ControlMethod: $cells.eq(3).text().trim(),
@@ -1576,9 +1579,10 @@
 					SpecificationTo: $cells.eq(5).text().trim(),
 					RejectionPlan: $cells.eq(6).text().trim(),
 					FrequencyofTesting: $cells.eq(7).text().trim(),
-					Samples: [] ,
+					Samples: [],
 					Copied: $row.attr('data-copied') === 'true'
 				};
+
 				$row.find('input.sample-input').each(function (index, element) {
 					var sampleValue = $(this).val().trim() || "0";
 					rowData.Samples.push(sampleValue);
@@ -1589,24 +1593,25 @@
 				lastAddedCharacteristic = rowData.Characteristic;
 			});
 
-			console.log(gridData); 
-			
 			$.ajax({
 				type: "POST",
 				url: '@Url.Action("AddToGridData", "InProcessInspection")',
-				data: { modelList: gridData, sampleSize: sampleSize },
+				data: {
+					modelList: gridData,
+					sampleSize: sampleSize,
+					deletedSeqNo: deletedSeqNo
+				},
 				success: function (result) {
 					$('#divStockGrid').html(result);
 					TotalNoOfRows();
 					UpdateInspectionRowCount();
 					highlightAndScrollToRow(null);
-					//ClearItems();
-					//addRowToGrid();
+					$('#DeletedSeqNo').val(''); // Clear after add
 
 					if (DeletedCharacteristic) {
 						setTimeout(function () {
 							highlightAndScrollToRowforManualGrid(DeletedCharacteristic);
-						}, 100); // slight delay for rendering
+						}, 100);
 					}
 					$.notify("Process Add To Grid", "success");
 				},
@@ -1615,6 +1620,64 @@
 				}
 			});
 		});
+
+		// $('#GridButton').click(function (e) {
+		// 	e.preventDefault();
+		// 	debugger
+		// 	var gridData = [];
+		// 	var sampleSize = parseInt($('#SampleSize').val()) || 1;
+		// 	$('#divinProcessInspectionGrid tbody tr').each(function () {
+		// 		var $cells = $(this).find('td');
+		// 		var $row = $(this);
+		// 		var rowData = {
+		// 			SeqNo: $cells.eq(0).text().trim(),
+		// 			//SeqNo: nextSeqNo,
+		// 			Characteristic: $cells.eq(1).text().trim(),
+		// 			EvalutionMeasurmentTechnique: $cells.eq(2).text().trim(),
+		// 			ControlMethod: $cells.eq(3).text().trim(),
+		// 			SpecificationFrom: $cells.eq(4).text().trim(),
+		// 			SpecificationTo: $cells.eq(5).text().trim(),
+		// 			RejectionPlan: $cells.eq(6).text().trim(),
+		// 			FrequencyofTesting: $cells.eq(7).text().trim(),
+		// 			Samples: [] ,
+		// 			Copied: $row.attr('data-copied') === 'true'
+		// 		};
+		// 		$row.find('input.sample-input').each(function (index, element) {
+		// 			var sampleValue = $(this).val().trim() || "0";
+		// 			rowData.Samples.push(sampleValue);
+		// 			rowData["InspValue" + (index + 1)] = sampleValue;
+		// 		});
+
+		// 		gridData.push(rowData);
+		// 		lastAddedCharacteristic = rowData.Characteristic;
+		// 	});
+
+		// 	console.log(gridData); 
+			
+		// 	$.ajax({
+		// 		type: "POST",
+		// 		url: '@Url.Action("AddToGridData", "InProcessInspection")',
+		// 		data: { modelList: gridData, sampleSize: sampleSize },
+		// 		success: function (result) {
+		// 			$('#divStockGrid').html(result);
+		// 			TotalNoOfRows();
+		// 			UpdateInspectionRowCount();
+		// 			highlightAndScrollToRow(null);
+		// 			//ClearItems();
+		// 			//addRowToGrid();
+
+		// 			if (DeletedCharacteristic) {
+		// 				setTimeout(function () {
+		// 					highlightAndScrollToRowforManualGrid(DeletedCharacteristic);
+		// 				}, 100); // slight delay for rendering
+		// 			}
+		// 			$.notify("Process Add To Grid", "success");
+		// 		},
+		// 		error: function () {
+		// 			$.notify('Something Went Wrong, Please Try Again.', "error");
+		// 		}
+		// 	});
+		// });
 	
 		function TotalNoOfRows() {
 			var rowCount = $('#divStockGrid tbody tr').length;
