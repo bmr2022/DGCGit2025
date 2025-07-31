@@ -150,6 +150,61 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
+
+        [HttpPost]
+        public IActionResult AddMultiSaleBillDetail([FromBody] List<SaleBillDetail> model)
+        {
+            try
+            {
+                var MainModel = new SaleBillModel();
+                var RCGrid = new List<SaleBillDetail>();
+                var ReceiveChallanGrid = new List<SaleBillDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    //string modelJson = HttpContext.Session.GetString("ReceiveItems");
+                    //IList<TransferFromWorkCenterDetail> RCDetail = new List<TransferFromWorkCenterDetail>();
+                    //if (modelJson != null)
+                    //{
+                    //    RCDetail = JsonConvert.DeserializeObject<List<TransferFromWorkCenterDetail>>(modelJson);
+                    //}
+
+                    if (model != null)
+                    {
+
+                        {
+                            item.SeqNo = SeqNo;
+                            //RCGrid = RCDetail.Where(x => x != null).ToList();
+                            ReceiveChallanGrid.AddRange(RCGrid);
+                            RCGrid.Add(item);
+                            SeqNo++;
+
+
+                        }
+                        RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
+                        MainModel.saleBillDetails = RCGrid;
+
+                        HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
+                        HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(MainModel));
+
+                        //HttpContext.Session.SetString("KeyTransferFromWorkCenterGrid", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Receive Challan List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_SaleBillGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         [HttpPost]
         public async Task<IActionResult> SaleInvoice(SaleBillModel model, string ShouldEinvoice)
         {

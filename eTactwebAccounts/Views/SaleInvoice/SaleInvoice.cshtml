@@ -121,6 +121,9 @@
                         <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
                         </button>
+                        <button type="button" style="display:none" class="GridButton1 btn btn-sm btn-outline-danger mt-1 mb-1 PendingItem">
+                            <i class="fa-duotone fa-angle-double-down fa-fw fa-lg"></i> ADD TO GRID
+                        </button>
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
                         <div class="accordion-body">
@@ -132,17 +135,17 @@
                                             <tr>
                                                
                                                 <th>SO No</th>
-                                                <th>SO Year Code</th>
-                                                <th>Customer Order No</th>
-                                                <th>Schedule No</th>
-                                                <th>Sale Schedule Year Code</th>
+                                                <th>SO YC</th>
+                                                <th>CustOrderNo</th>
+                                                <th>Sch No</th>
+                                                <th>Sch YC</th>
                                                
                                                 <th>Part Code</th>
                                                 <th>Item Name</th>
                                                 <th>Unit</th>
-                                                <th>HSN No</th>
+                                                <th>HSNNo</th>
                                                
-                                                <th>SO Pending Qty</th>
+                                                <th>Pend Qty</th>
                                                 <th>StoreName</th>
                                                 <th>Batch No</th>
                                                 <th>Unique Batch No</th>
@@ -622,26 +625,7 @@
                 }
                           
                 $(document).ready(function () {
-                    FillSaleBillGridFromMemoryCache();
-            var rowCounter = $('#divMultiItemGrid tr').length;
-            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
-                if (rowCounter > 0) {
-                    $('.PendingItem').show();
-                    $('.newitems').hide();
-
-                }
-                else {
-                    $('.PendingItem').hide();
-                    $('.newitems').show();
-                    // FillWorkCenter();
-                }
-            } else {
-
-                $('.PendingItem').hide();
-                $('.newitems').show();
-                // FillWorkCenter();
-
-            }
+                    
                             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
 
                    const domesticExport = $('#DomesticExportNEPZ').val();
@@ -942,6 +926,26 @@
                     //     }
                     // }
                     GetServerDate();
+            FillSaleBillGridFromMemoryCache();
+            var rowCounter = $('#divMultiItemGrid tr').length;
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                if (rowCounter > 0) {
+                    $('.PendingItem').show();
+                    $('.newitems').hide();
+
+                }
+                else {
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    // FillWorkCenter();
+                }
+            } else {
+
+                $('.PendingItem').hide();
+                $('.newitems').show();
+                // FillWorkCenter();
+
+            }
                    });
                            $('#DomesticExportNEPZ').change(function () {
                        updateSupplyTypeOptions();
@@ -973,10 +977,10 @@
                         // }
 
                         var rowCounter = $('#divMultiItemGrid tr').length;
-                        // for (let i = 1; i <= rowCounter; i++) {
-                        //     GetBatchWorkCenterQtyForAll(i);
-                        //     GetWorkCenterTotalQtyForAll(i);
-                        // }
+                        for (let i = 1; i <= rowCounter; i++) {
+                            FillTotalStockForAll(i);
+                            FillLotStockForALl(i);
+                        }
 
                     }
                 },
@@ -985,6 +989,111 @@
                 }
             });
         }
+
+
+        $('.GridButton1').click(function (e) {
+            e.preventDefault();
+            /* if (!Validate_TransferGrid()) return; */
+            var ItemData = [];
+            var RowCount = $('#divMultiItemGrid tr').length;
+            for (var i = 1; i <= RowCount; i++) {
+                ItemData.push({
+
+                    SONO: $('#SONO-' + i).val(),
+                    SOYearCode: $('#SOYearCode-' + i).val(),
+                    CustOrderNo: $('#CustOrderNo-' + i).val(),
+                    SchNo: $('#SchNo-' + i).val(),
+                    SaleSchYearCode: $('#SaleSchYearCode-' + i).val(),
+                    PartCode: $('#PartCode-' + i).val(),
+                    ItemCode: $('#ItemCode-' + i).val(),
+                    ItemName: $('#ItemName-' + i).val(),
+                    Unit: $('#Unit-' + i).val(),
+
+                    HSNNo: $('#HSNNo-' + i).val(),
+                    SOPendQty: $('#SOPendQty-' + i).val(),
+                    StoreName: $('#StoreName-' + i).val(),
+                    StoreId: $('#StoreId-' + i).val(),
+                    Batchno: $('#Batchno-' + i).val(),
+                    Uniquebatchno: $('#Uniquebatchno-' + i).val(),
+                    TotalStock: $('#TotalStock-' + i).val(),
+                    LotStock: $('#LotStock-' + i).val(),
+                    Rate: $('#Rate-' + i).val(),
+                    Qty: parseFloat($('#Qty-' + i).val()) || 0,
+                    SOType: $('#SOType-' + i).val,
+                    DiscountPer: $('#DiscountPer-' + i).val,
+                    DiscountAmt: $('#DiscountAmt-' + i).val,
+                    Amount: parseFloat($('#Amount-' + i).val()) || 0,
+                    AltQty: $('#AltQty-' + i).val(),
+                   
+                });
+            }
+
+            $.ajax({
+                url: '@Url.Action("AddMultiSaleBillDetail")',
+                type: "POST",
+                data: JSON.stringify(ItemData),
+                contentType: 'application/json',
+                beforeSend: function () {
+                    console.log('Sending item...');
+                    console.log('ItemData', ItemData);
+                },
+                success: function (data, status, xhr) {
+
+                    /* // ✅ Store used batch
+                    itemBatchArray.push({
+                        "itemcode": parseInt($('#ItemCode').val()),
+                        "batchno": $('#BatchNo').val(),
+                        "uniqueBatchNo": $('#UniqueBatchNo').val()
+                    });
+
+                    // ✅ Disable current used batch
+                    const usedBatchNo = $('#BatchNo').val();
+                    $('#BatchNo option[value="' + usedBatchNo + '"]').prop('disabled', true);
+
+                    // ✅ Enable next unused batch from batchList
+                    for (var i = 0; i < batchList.length; i++) {
+                        var nextBatch = batchList[i];
+                        var isUsed = itemBatchArray.some(function (item) {
+                            return item.batchno === nextBatch;
+                        });
+                        if (!isUsed) {
+                            $('#BatchNo option[value="' + nextBatch + '"]').prop('disabled', false).prop('selected', true);
+                            $('#BatchNo').trigger('change'); // optional
+                            break;
+                        }
+                    } */
+
+                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                        $.notify('Duplicate Item Not Allowed.', "info");
+                        $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
+                    } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                        $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
+                    } else {
+                        $('#divSaleBillList').html(data);
+                        $.notify('Item Added To Grid.', "success");
+                    }
+
+                    editingNow = false;
+                    ClearGrid();
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    // $('#BatchNo').val('0');
+                    // $('#UniqueBatchNo').val('0');
+
+                },
+                error: function (result) {
+                    $.notify(result.responseText, "error");
+                },
+                failure: function (result) {
+                    alert(result.responseText);
+                },
+                complete: function () {
+                    console.log('Done');
+                    $('.Schedule').fadeIn();
+                }
+            });
+        });
+
 
                                   function updateSupplyTypeOptions() {
                                              const $supplyType = $('#SupplyType');
@@ -3909,6 +4018,27 @@
                     });
                 }
 
+        function FillLotStockForALl(i) {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillLotStock", "StockAdjustment")",
+                data: { ItemCode: $('#ItemCode-'+i).val(), StoreId: $('#StoreId-'+i).val(), TillDate: $('#SaleBillDate').val(), BatchNo: $('#Batchno-'+i).val(), UniqueBatchNo: $('#Uniquebatchno-'+i).val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#LotStock-'+i).val($.parseJSON(result).Result[0].STOCK);
+                        BatchStock = $.parseJSON(result).Result[0].STOCK;
+                    }
+                    // SetminQty();
+                    CalculateAmount();
+                }
+            });
+        }
+
                 function DiscountPerCalculation() {
 
                     CalculateAmount();
@@ -3980,6 +4110,21 @@
                     });
                 }
 
+        function FillTotalStockForAll(i) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreTotalStock", "NRGP")",
+                data: { ItemCode: $('#ItemCode-'+i).val(), StoreId: $('#StoreId-'+i).val(), TillDate: $('#SaleBillDate').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TotalStock-'+i).val(obj.Result[0].STOCK);
+                    }
+                }
+            });
+        }
+
                 function FillCurrentBatchINStore() {
 
                     var ItemCode = $('#ItemCode').val();
@@ -4048,6 +4193,78 @@
                         }
                     });
                 }
+
+
+        function FillCurrentBatchINStoreForALl(i) {
+
+            var ItemCode = $('#ItemCode-'+i).val();
+            var YearCode = $('#SaleBillYearCode').val();
+            var StoreName = $('#StoreName-'+i).val();
+            var batchno = "";
+            if ($('#Batchno').prop('selectedIndex') != 0) {
+                batchno = $('#Batchno').val();
+            }
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillCurrentBatchINStore", "NRGP")",
+                data: { "ItemCode": ItemCode, "YearCode": YearCode, "StoreName": StoreName, "batchno": batchno },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Batchno').empty();
+                            $('#Batchno').append('<option value="0" selected>-Select-</option>');
+
+                            var seenValues = {};
+                            $.each(obj.Result, function (index, val) {
+                                if (!seenValues[val.batchno]) {
+                                    seenValues[val.batchno] = true;
+                                    $('#Batchno').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                }
+                            });
+
+
+                            GetBatchInventory();
+
+                            var selectListLength = $('#Batchno option').length - 1;
+                            var itemArrayLength = itemBatchArray.length;
+                            if (itemArrayLength > 0) {
+                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                                    return item.itemcode === parseInt(ItemCode);
+                                });
+                                var selectList = $('#Batchno');
+                                selectList.find('option').each(function () {
+                                    var optionValue = $(this).val();
+                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                                        return item.batchno === optionValue;
+                                    });
+
+                                    if (existsInItemsWithCode16) {
+                                        $(this).remove();
+                                    }
+                                });
+
+                                //}
+                                //if (itemBatchArray.length > 0) {
+                                //    $('#BatchNo option[value="' + itemBatchArray[0].batchno + '"]').remove();
+                                //    $('#uniquebatchno option[value="' + itemBatchArray[0].uniquebatchno + '"]').remove();
+                                //}
+                            }
+                        } else {
+                            $('#Batchno').empty();
+                            $('#Batchno').append('<option value="0" disabled selected>-Select-</option>');
+                            $('#Uniquebatchno').empty();
+                            $('#Uniquebatchno').append('<option value="0" disabled selected>-Select-</option>');
+                        }
+
+                    }
+                }
+            });
+        }
+
+
 
                 function FillSOSchedule() {
                     $.ajax({
