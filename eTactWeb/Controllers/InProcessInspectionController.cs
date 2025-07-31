@@ -408,58 +408,53 @@ namespace eTactWeb.Controllers
 		}
 
 		[HttpPost]
-		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize, int? deletedSeqNo)
-		{
-			try
-			{
-				if (modelList == null || !modelList.Any())
-				{
-					ModelState.TryAddModelError("Error", "List cannot be empty.");
-					return BadRequest("No data received.");
-				}
+        [HttpPost]
+        public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize, int? deletedSeqNo)
+        {
+            try
+            {
+                if (modelList == null || !modelList.Any())
+                    return BadRequest("No data received.");
 
-				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
-				List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
+                string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+                List<InProcessInspectionDetailModel> existingGrid = new();
 
-				if (!string.IsNullOrEmpty(modelJson))
-				{
-					existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
-				}
+                if (!string.IsNullOrEmpty(modelJson))
+                    existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+
                 var usedSeqNos = existingGrid.Select(x => x.SeqNo).ToList();
+
+                // Restore soft-deleted row if applicable
+                if (deletedSeqNo.HasValue)
+                {
+                    var deletedRow = existingGrid.FirstOrDefault(x => x.SeqNo == deletedSeqNo.Value && x.Copied == true);
+                    if (deletedRow != null)
+                    {
+                        var formModel = modelList.FirstOrDefault(x => x.SeqNo == deletedSeqNo.Value)
+                                     ?? modelList.First();
+
+                        deletedRow.Copied = false;
+                        deletedRow.EvalutionMeasurmentTechnique = formModel.EvalutionMeasurmentTechnique;
+                        deletedRow.ControlMethod = formModel.ControlMethod;
+                        deletedRow.SpecificationFrom = formModel.SpecificationFrom;
+                        deletedRow.SpecificationTo = formModel.SpecificationTo;
+                        deletedRow.RejectionPlan = formModel.RejectionPlan;
+                        deletedRow.FrequencyofTesting = formModel.FrequencyofTesting;
+                        //deletedRow.Samples = formModel.Samples?.ToList() ?? new List<string>();
+                        deletedRow.Samples.Clear();
+                        foreach (var sample in formModel.Samples)
+                        {
+                            deletedRow.Samples.Add(sample);
+                        }
+                        // Remove restored item from the list so it doesn't get added again
+                        modelList = modelList.Where(x => x.SeqNo != deletedSeqNo.Value).ToList();
+                    }
+                }
+
                 foreach (var model in modelList)
-				{
-
-					//var deletedRow = existingGrid.FirstOrDefault(x => x.Characteristic == model.Characteristic && x.Copied == true);
-					var deletedRow = existingGrid.FirstOrDefault(x => x.SeqNo == model.SeqNo && x.Characteristic == model.Characteristic && x.Copied == true);
-					if (deletedRow != null)
-					{
-						// Restore the soft-deleted row with updated values
-						deletedRow.Copied = false;
-
-						// Update other fields as needed (example below, update your actual fields)
-						deletedRow.EvalutionMeasurmentTechnique = model.EvalutionMeasurmentTechnique;
-						deletedRow.ControlMethod = model.ControlMethod;
-						deletedRow.SpecificationFrom = model.SpecificationFrom;
-						deletedRow.SpecificationTo = model.SpecificationTo;
-						deletedRow.RejectionPlan = model.RejectionPlan;
-						deletedRow.FrequencyofTesting = model.FrequencyofTesting;
-						//deletedRow.Samples = model.Samples;
-						deletedRow.Samples.Clear();
-						foreach (var sample in model.Samples)
-						{
-							deletedRow.Samples.Add(sample);
-						}
-						// No need to add again because we updated the existing soft-deleted row
-						continue;
-					}
-					if (existingGrid.Any(x => x.Characteristic == model.Characteristic) && !model.Copied)
-					//if (existingGrid.Any(x => x.Characteristic == model.Characteristic && x.SeqNo == model.SeqNo) && !model.Copied)
-					{
-						// skip duplicates
-						continue;
-					}
-
-                    //model.SeqNo = existingGrid.Count + 1;
+                {
+                    if (existingGrid.Any(x => x.Characteristic == model.Characteristic) && !model.Copied)
+                        continue;
 
                     int newSeqNo = 1;
                     while (usedSeqNos.Contains(newSeqNo))
@@ -467,29 +462,108 @@ namespace eTactWeb.Controllers
 
                     model.SeqNo = newSeqNo;
                     usedSeqNos.Add(newSeqNo);
-					
-					existingGrid.Add(model);
-				}
+                    existingGrid.Add(model);
+                }
 
-				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
-				ViewBag.SampleSize = sampleSize;
-				var MainModel = new InProcessInspectionModel
-				{
-                    //DTSSGrid = existingGrid,
+                HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
+
+                var MainModel = new InProcessInspectionModel
+                {
                     DTSSGrid = existingGrid.OrderBy(x => x.SeqNo).ToList(),
                     SampleSize = sampleSize
-				};
+                };
 
-				return PartialView("_InProcessInspectionAddtoGrid", MainModel);
-			}
-			catch (Exception ex)
-			{
-				return StatusCode(500, "Internal server error: " + ex.Message);
-			}
-		}
-		
-			// GET: Fetch item by SeqNo to edit
-			public IActionResult EditItemRow(int SeqNo)
+                ViewBag.SampleSize = sampleSize;
+                return PartialView("_InProcessInspectionAddtoGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, "Internal server error: " + ex.Message);
+            }
+        }
+
+        //public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize)
+        //{
+        //	try
+        //	{
+        //		if (modelList == null || !modelList.Any())
+        //		{
+        //			ModelState.TryAddModelError("Error", "List cannot be empty.");
+        //			return BadRequest("No data received.");
+        //		}
+
+        //		string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+        //		List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
+
+        //		if (!string.IsNullOrEmpty(modelJson))
+        //		{
+        //			existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+        //		}
+        //              var usedSeqNos = existingGrid.Select(x => x.SeqNo).ToList();
+        //              foreach (var model in modelList)
+        //		{
+
+        //			//var deletedRow = existingGrid.FirstOrDefault(x => x.Characteristic == model.Characteristic && x.Copied == true);
+        //			var deletedRow = existingGrid.FirstOrDefault(x => x.SeqNo == model.SeqNo && x.Characteristic == model.Characteristic && x.Copied == true);
+        //			if (deletedRow != null)
+        //			{
+        //				// Restore the soft-deleted row with updated values
+        //				deletedRow.Copied = false;
+
+        //				// Update other fields as needed (example below, update your actual fields)
+        //				deletedRow.EvalutionMeasurmentTechnique = model.EvalutionMeasurmentTechnique;
+        //				deletedRow.ControlMethod = model.ControlMethod;
+        //				deletedRow.SpecificationFrom = model.SpecificationFrom;
+        //				deletedRow.SpecificationTo = model.SpecificationTo;
+        //				deletedRow.RejectionPlan = model.RejectionPlan;
+        //				deletedRow.FrequencyofTesting = model.FrequencyofTesting;
+        //				//deletedRow.Samples = model.Samples;
+        //				deletedRow.Samples.Clear();
+        //				foreach (var sample in model.Samples)
+        //				{
+        //					deletedRow.Samples.Add(sample);
+        //				}
+        //				// No need to add again because we updated the existing soft-deleted row
+        //				continue;
+        //			}
+        //			if (existingGrid.Any(x => x.Characteristic == model.Characteristic) && !model.Copied)
+        //			//if (existingGrid.Any(x => x.Characteristic == model.Characteristic && x.SeqNo == model.SeqNo) && !model.Copied)
+        //			{
+        //				// skip duplicates
+        //				continue;
+        //			}
+
+        //                  //model.SeqNo = existingGrid.Count + 1;
+
+        //                  int newSeqNo = 1;
+        //                  while (usedSeqNos.Contains(newSeqNo))
+        //                      newSeqNo++;
+
+        //                  model.SeqNo = newSeqNo;
+        //                  usedSeqNos.Add(newSeqNo);
+
+        //			existingGrid.Add(model);
+        //		}
+
+        //		HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
+        //		ViewBag.SampleSize = sampleSize;
+        //		var MainModel = new InProcessInspectionModel
+        //		{
+        //                  //DTSSGrid = existingGrid,
+        //                  DTSSGrid = existingGrid.OrderBy(x => x.SeqNo).ToList(),
+        //                  SampleSize = sampleSize
+        //		};
+
+        //		return PartialView("_InProcessInspectionAddtoGrid", MainModel);
+        //	}
+        //	catch (Exception ex)
+        //	{
+        //		return StatusCode(500, "Internal server error: " + ex.Message);
+        //	}
+        //}
+
+        // GET: Fetch item by SeqNo to edit
+        public IActionResult EditItemRow(int SeqNo)
 			{
 				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
 				List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
