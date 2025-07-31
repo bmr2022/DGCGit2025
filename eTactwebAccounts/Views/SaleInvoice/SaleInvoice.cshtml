@@ -124,7 +124,52 @@
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
                         <div class="accordion-body">
+
+                            <div class="card PendingItem" style="display:none">
+                                <div class="card-body overflow-auto pb-0" style="max-height:240px;">
+                                    <table class="table table-hover table-bordered table-striped">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap" id="IssueThrBom">
+                                            <tr>
+                                               
+                                                <th>SO No</th>
+                                                <th>SO Year Code</th>
+                                                <th>Customer Order No</th>
+                                                <th>Schedule No</th>
+                                                <th>Sale Schedule Year Code</th>
+                                               
+                                                <th>Part Code</th>
+                                                <th>Item Name</th>
+                                                <th>Unit</th>
+                                                <th>HSN No</th>
+                                               
+                                                <th>SO Pending Qty</th>
+                                                <th>StoreName</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+                                                <th>TotalStock</th>
+                                                <th>BatchStock</th>
+                                               
+                                                <th>Rate</th>
+                                                <th>Qty</th>                                            
+                                                <th>SO Type</th>                                               
+                                                <th>Discount %</th>
+                                                <th>Discount Amt</th>
+                                                <th>Amount</th>
+                                                <th>Alt Qty</th>
+
+                                            </tr>
+                                        </thead>
+                                        <tbody id="divMultiItemGrid">
+                                            <partial name="_SaleBillItemMemoryGrid" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+
+                            <div id="_ItemGrid" class="newitems" style="display:none">
                             @await Html.PartialAsync("_SaleBillItemDetail", Model)
+                            </div>
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
@@ -577,6 +622,26 @@
                 }
                           
                 $(document).ready(function () {
+                    FillSaleBillGridFromMemoryCache();
+            var rowCounter = $('#divMultiItemGrid tr').length;
+            if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
+                if (rowCounter > 0) {
+                    $('.PendingItem').show();
+                    $('.newitems').hide();
+
+                }
+                else {
+                    $('.PendingItem').hide();
+                    $('.newitems').show();
+                    // FillWorkCenter();
+                }
+            } else {
+
+                $('.PendingItem').hide();
+                $('.newitems').show();
+                // FillWorkCenter();
+
+            }
                             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
 
                    const domesticExport = $('#DomesticExportNEPZ').val();
@@ -882,6 +947,44 @@
                        updateSupplyTypeOptions();
                    });
 
+        function FillSaleBillGridFromMemoryCache() {
+
+            $.ajax({
+                url: "@Url.Action("FillSaleBillGridFromMemoryCache")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    if (data != null) {
+                        $('#divMultiItemGrid').html(data);
+                        // var firstWCID = $('#WCID-1').val();
+                        // var firstWCName = $('#WorkCenterName-1').val();
+
+                        // if (firstWCID) {
+                        //     // ✅ Fill your #WCID dropdown with only that one value
+                        //     $('#IssueFromWc').empty().append(
+                        //         $('<option>', {
+                        //             value: firstWCID,
+                        //             text: firstWCName
+                        //         })
+                        //     );
+                        //     $('#IssueFromWCid').val(firstWCID);
+
+                        // }
+
+                        var rowCounter = $('#divMultiItemGrid tr').length;
+                        // for (let i = 1; i <= rowCounter; i++) {
+                        //     GetBatchWorkCenterQtyForAll(i);
+                        //     GetWorkCenterTotalQtyForAll(i);
+                        // }
+
+                    }
+                },
+                error: function (errMsg) {
+                    console.log(errMsg);
+                }
+            });
+        }
 
                                   function updateSupplyTypeOptions() {
                                              const $supplyType = $('#SupplyType');

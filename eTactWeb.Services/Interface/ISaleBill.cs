@@ -41,7 +41,12 @@ namespace eTactWeb.Services.Interface
         Task<SaleBillModel> GetViewByID(int ID, string Mode, int YC);
         Task<ResponseResult> DeleteByID(int ID, int YC, string machineName);
 
+        Task<ResponseResult> FillStoreList();
+        Task<ResponseResult> FillCustomerListForPending();
+
         Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
         //Task<ResponseResult> GetReportName();
+        Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
+
     }
 }

@@ -129,7 +129,7 @@
             var ReqNoBack = sessionStorage.getItem('ReqNoBack');
             var DashboardTypeBack = sessionStorage.getItem('DashboardTypeBack');
              
-            GetServerDate();
+            // GetServerDate();
             if ($('#gateDashboardtable tr').length < 1) {
                 var dashGrid = 0;
                 $('#totalRows').text(dashGrid);
@@ -211,75 +211,75 @@
             sessionStorage.removeItem('ReqNoBack');
         });
 
-        $('#FromDate').change(function () {
-            GetSearchData();
-        })
+        // $('#FromDate').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#ToDate').change(function () {
-            GetSearchData();
-        })
+        // $('#ToDate').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#SlipNo').change(function () {
-            GetSearchData();
-        })
+        // $('#SlipNo').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#ItemName').change(function () {
-            GetSearchData();
-        })
+        // $('#ItemName').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#PartCode').change(function () {
-            GetSearchData();
-        })
+        // $('#PartCode').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#ProdPlanNo').change(function () {
-            GetSearchData();
-        })
+        // $('#ProdPlanNo').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#ProdSchNo').change(function () {
-            GetSearchData();
-        })
+        // $('#ProdSchNo').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#ReqNo').change(function () {
-            GetSearchData();
-        })
+        // $('#ReqNo').change(function () {
+        //     GetSearchData();
+        // })
 
-        $('#DashboardType').change(function () {
-            GetSearchData();
-        })
-        function loadPage(pageNumber) {
+        // $('#DashboardType').change(function () {
+        //     GetSearchData();
+        // })
+        // function loadPage(pageNumber) {
              
 
-            var dashboardType = $('#DashboardType').val();
-            var url = '';
+        //     var dashboardType = $('#DashboardType').val();
+        //     var url = '';
 
-            if (dashboardType === "Summary") {
-                url = '@Url.Action("GetSearchData", "ProductionEntry")';
-            }else if (dashboardType === "Detail") {
-                url = '@Url.Action("GetDetailData", "ProductionEntry")';
-            }else if (dashboardType === "DetailWithBatchwise") {
-                url = '@Url.Action("GetBatchwiseDetail", "ProductionEntry")';
-            }else if (dashboardType === "Breakdown") {
-                url = '@Url.Action("GetBreakdownData", "ProductionEntry")';
-            }else if (dashboardType === "Operation") {
-                url = '@Url.Action("GetOperationData", "ProductionEntry")';
-            }else if (dashboardType === "Scrap") {
-                url = '@Url.Action("GetScrapData", "ProductionEntry")';
-            }
+        //     if (dashboardType === "Summary") {
+        //         url = '@Url.Action("GetSearchData", "ProductionEntry")';
+        //     }else if (dashboardType === "Detail") {
+        //         url = '@Url.Action("GetDetailData", "ProductionEntry")';
+        //     }else if (dashboardType === "DetailWithBatchwise") {
+        //         url = '@Url.Action("GetBatchwiseDetail", "ProductionEntry")';
+        //     }else if (dashboardType === "Breakdown") {
+        //         url = '@Url.Action("GetBreakdownData", "ProductionEntry")';
+        //     }else if (dashboardType === "Operation") {
+        //         url = '@Url.Action("GetOperationData", "ProductionEntry")';
+        //     }else if (dashboardType === "Scrap") {
+        //         url = '@Url.Action("GetScrapData", "ProductionEntry")';
+        //     }
          
-            var formData = $('#SParam').serializeArray();
-            formData.push({ name: 'pageNumber', value: pageNumber });
-            $.ajax({
-                type: 'GET',
-                url: url,
-                data: formData,
-                success: function (result) {
-                    $('#divDashboardGrid').empty();
-                    $('#divDashboardGrid').html(result);
-                    $('#totalRows').text($('#gateDashboardtable tr').length);
-                    //countAllTotal();
-                }
-            });
-        }
+        //     var formData = $('#SParam').serializeArray();
+        //     formData.push({ name: 'pageNumber', value: pageNumber });
+        //     $.ajax({
+        //         type: 'GET',
+        //         url: url,
+        //         data: formData,
+        //         success: function (result) {
+        //             $('#divDashboardGrid').empty();
+        //             $('#divDashboardGrid').html(result);
+        //             $('#totalRows').text($('#gateDashboardtable tr').length);
+        //             //countAllTotal();
+        //         }
+        //     });
+        // }
         $("#search-box").on("input", function () {
              
             var searchString = $(this).val().trim();

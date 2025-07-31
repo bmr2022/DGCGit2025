@@ -1,0 +1,508 @@
+﻿@model eTactWeb.DOM.Models.PendingSaleBillList
+
+@{
+    ViewData["Title"] = "SaleBillList ";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Pending Sall Bill
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    @*<a asp-action="ReqWithoutBom" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                    <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                    Add New
+                    </a>*@
+                    <a asp-action="ReceiveItemInStoreDashboard" asp-route-ID="0" class="btn btn-secondary btn-sm" asp-controller="ReceiveItem">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input type="hidden" value="@Model.FromDate" id="finFromDate" />
+                                        <input type="hidden" value="@Model.ToDate" id="finToDate" />
+                                        <input asp-for="FromDate" maxlength="10" class="form-control" value="@Model.FromDate" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" maxlength="10" class="form-control" value="@Model.ToDate" />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">InvoiceDate</label>
+                                        
+                                        <input asp-for="InvoiceDate" maxlength="10" class="form-control" value="@Model.InvoiceDate" />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">CurrentYear</label>
+                                        <input asp-for="CurrentYear" maxlength="10" class="form-control" value="@Model.CurrentYear" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                <label asp-for="BillFromStoreId" class="control-label" style="color: red;"> BillFromStore </label>
+                                <select class="form-select" asp-for="BillFromStoreId">
+                                    <option value="">-Select-</option>
+                                </select>
+
+                            </div>
+                             <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+
+                                <label asp-for="accountCode" class="control-label" style="color: red;"> CustomerName </label>
+                                <select class="form-select" asp-for="accountCode">
+                                    <option value="">-Select-</option>
+                                </select>
+
+                            </div>
+                            
+                            
+                            
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4 d-flex justify-content-end mt-3">
+                                <button class="btn btn-sm btn-outline-primary" type="button" onclick="showDetail();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SHOW
+                                </button>
+                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="PendingMRNtoQc" asp-action="PendingMRNtoQc" style="padding:3px;height:30px;width:100px;margin-left:20px;">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                            </div>
+                            <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                <button class="btn btn-sm btn-outline-primary" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" onclick="getCheckedRowData()">
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i> Receive Material
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="progress my-3 mb-3" style="height: 4px;">
+            <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+        </div> <div class="card">
+            <div class="card-body overflow-auto pb-0">
+                <div class="table-responsive" style="max-height:350px;">
+                    <table class="table table-hover table-bordered table-striped" id="GateDataTable">
+                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                            <tr>
+                                <th>Check/UnCheck <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
+                                <th data-columnno="1" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Name</th>
+                                <th data-columnno="2" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Code</th>
+                                <th data-columnno="3" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO No</th>
+                                <th data-columnno="4" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Year Code</th>
+                                <th data-columnno="5" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Customer Order No</th>
+                                <th data-columnno="6" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule No</th>
+                                <th data-columnno="7" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Schedule Year Code</th>
+                                <th data-columnno="8" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Code</th>
+                                <th data-columnno="9" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
+                                <th data-columnno="10" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
+                                <th data-columnno="11" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unit</th>
+                                <th data-columnno="12" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>HSN No</th>
+                                <th data-columnno="13" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Order Qty</th>
+                                <th data-columnno="14" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Pending Qty</th>
+                                <th data-columnno="15" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sale Bill Qty</th>
+                                <th data-columnno="16" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Item Rate</th>
+                                <th data-columnno="17" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Type</th>
+                                <th data-columnno="18" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO For</th>
+                                <th data-columnno="19" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Stock</th>
+                                <th data-columnno="20" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch No</th>
+                                <th data-columnno="21" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Unique Batch No</th>
+                                <th data-columnno="22" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Batch Stock</th>
+                                <th data-columnno="23" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount %</th>
+                                <th data-columnno="24" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Discount Amount</th>
+                                <th data-columnno="25" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Amount</th>
+                                <th data-columnno="26" class="sortCol"><span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Alt Qty</th>
+
+                            </tr>
+                        </thead>
+                        <tbody id="divPendMRNGrid">
+                            <tr class="text-center">
+                                <td colspan="25" class="text-black-50"><strong>NO DATA YET</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(function () {
+            var fromDate;
+            var toDate;
+
+            var today = new Date();
+            var threeMonthsAgo = new Date(today.getTime() - (3 * 30 * 24 * 60 * 60 * 1000));
+            var finFromDate = $('#finFromDate').val();
+            var finToDate = $('#finToDate').val();
+            var dateParts1 = finFromDate.split("/");
+            var monthNames = {
+                "Jan": "01",
+                "Feb": "02",
+                "Mar": "03",
+                "Apr": "04",
+                "May": "05",
+                "Jun": "06",
+                "Jul": "07",
+                "Aug": "08",
+                "Sep": "09",
+                "Oct": "10",
+                "Nov": "11",
+                "Dec": "12"
+            };
+            var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+            var dateParts2 = finToDate.split("/");
+            var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+            $("#FromDate").datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate1);
+            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDate2);
+
+            $('#BillFromStoreId').select2();
+            $('#accountCode').select2();
+            GetServerDate();
+            FillStoreList();
+            FillCustomerList();
+            
+            showDetail();
+        });
+
+        function GetServerDate() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("GetServerDate", "Routing")",
+                async: false,
+                success: function (result, status, error) {
+
+                    $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (result));
+
+
+
+                }
+            });
+        }
+
+        function FillStoreList() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillStoreList")",
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#BillFromStoreId').empty();
+                            $('#BillFromStoreId').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#BillFromStoreId').append('<option value="' + val.Storeid + '">' + val.store_Name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var BillFromStoreId = "@Model.BillFromStoreId";
+                                $('#BillFromStoreId').val(BillFromStoreId).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        function FillCustomerList() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillCustomerListForPending")",
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#accountCode').empty();
+                            $('#accountCode').append('<option value="" disabled selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#accountCode').append('<option value="' + val.account_code + '">' + val.account_name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var accountCode = "@Model.accountCode";
+                                $('#accountCode').val(accountCode).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showDetail() {
+
+            var data = {
+                "Flag": "ShowPendingSaleorderforBill",
+                "FromDate": $('#FromDate').val(),
+                "Todate": $('#ToDate').val(),
+                "InvoiceDate": $('#InvoiceDate').val(),
+                "CurrentYear": $('#CurrentYear').val(),
+                "BillFromStoreId": $('#BillFromStoreId').val(),
+                "accountCode": $('#accountCode').val()
+                
+            }
+
+            $.ajax({
+                url: '@Url.Action("ShowPendingSaleorderforBill")',
+                type: "POST",
+                data: data,
+                success: function (data) {
+                    if (data != null) {
+
+                        var obj = $.parseJSON(data);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#divPendMRNGrid').empty();
+                            var i = 1;
+                            $.each(obj.Result.Table, function (index, val) {
+                                
+                                var html = '';
+                                html += '<tr>' +
+                                    '<td style="text-align:center;"><input style="background-color: #b2b3f0;" id="AcceptedQtySHA' + i + '" class="form-check-input me-1 mt-2" type="checkbox" role="switch" onchange="CheckacceptedQtySHA(' + i + ');"/></td>' +
+                                    '<td>' + val.CustomerName + '</td>' +
+                                    '<td>' + val.Accountcode + '</td>' +
+                                    '<td>' + val.SONo + '</td>' +
+                                    '<td>' + val.SOYearCode + '</td>' +
+                                    '<td>' + val.CustorderNo + '</td>' +
+                                    '<td>' + val.SchNo + '</td>' +
+                                    '<td>' + val.SchYearCode + '</td>' +
+                                    '<td><input id="ItemCode' + i + '" type="hidden" value="' + val.ItemCode + '"/>' + val.ItemCode + '</td>' +
+                                    '<td>' + val.PartCode + '</td>' +
+                                    '<td>' + val.ItemName + '</td>' +
+                                    '<td>' + val.Unit + '</td>' +
+                                    '<td>' + val.HSNNO + '</td>' +
+                                    '<td>' + val.OrderQty + '</td>' +
+                                    '<td>' + val.OrderPendQty + '</td>' +
+                                    '<td>' + val.SaleBillQty + '</td>' +
+                                    '<td>' + val.SOItemRate + '</td>' +
+                                    '<td>' + val.SOType + '</td>' +
+                                    '<td>' + val.SOFor + '</td>' +
+                                    '<td>' + val.TotalStock + '</td>' +
+                                    '<td id="BatchNo' + i + '">' + val.BatchNo + '</td>' +
+                                    '<td id="UniqueBatchNo' + i + '">' + val.UniqueBatchNo + '</td>' +
+                                    '<td>' + val.BatchStock + '</td>' +
+                                    '<td>' + val.DisPer + '</td>' +
+                                    '<td>' + val.DisAmt + '</td>' +
+                                    '<td>' + val.ItemAmount + '</td>' +
+                                    '<td>' + val.AltQty + '</td>'+
+
+                                    '</tr>'
+                                $('#divPendMRNGrid').append(html);
+                                $('#TransertoMIRBtn').prop("disabled", false);
+
+                                var count = $('#divPendMRNGrid tr').length;
+                                $('#totalRows').text(count);
+                                i++;
+                            });
+
+                        }
+                        else {
+                            $('#divPendMRNGrid').empty();
+                            var count = $('#divPendMRNGrid tr').length;
+                            $('#totalRows').text(count);
+                            $('#divPendMRNGrid').append('<tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>')
+
+                        }
+                    }
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        function getCheckedRowData() {
+            var selectedData = [];
+
+            $('#GateDataTable tbody tr').each(function () {
+                var $row = $(this);
+                var checkbox = $row.find('input[type="checkbox"]');
+
+                if (checkbox.is(':checked')) {
+                    var rowData = {
+
+                        AccountName: $row.find('td:eq(1)').text().trim(),
+                        AccountCode: $row.find('td:eq(2)').text().trim(),
+                        
+                        SONO: $row.find('td:eq(3)').text().trim(),
+                        SOYearCode: $row.find('td:eq(4)').text().trim(),
+                        CustOrderNo: $row.find('td:eq(5)').text().trim(),
+                        SchNo: $row.find('td:eq(6)').text().trim(),
+                        SaleSchYearCode: $row.find('td:eq(7)').text().trim(),
+                        ItemCode: $row.find('td:eq(8)').text().trim(),
+                        PartCode: $row.find('td:eq(9)').text().trim(),
+                        ItemName: $row.find('td:eq(10)').text().trim(),
+                        Unit: $row.find('td:eq(11)').text().trim(),
+                        HSNNo: $row.find('td:eq(12)').text().trim(),
+                        Qty: $row.find('td:eq(13)').text().trim(),
+                        SOPendQty: $row.find('td:eq(14)').text().trim(),
+                        /* SaleBillQty: $row.find('td:eq(15)').text().trim(), */
+                        Rate: $row.find('td:eq(16)').text().trim(),
+                        SOType: $row.find('td:eq(17)').text().trim(),
+                        /* SOFor: $row.find('td:eq(18)').text().trim(), */
+                        /* TotalStock: $row.find('td:eq(19)').text().trim(), */
+                        Batchno: $row.find('td:eq(20)').text().trim(),
+                        Uniquebatchno: $row.find('td:eq(21)').text().trim(),
+                        /* BatchStock: $row.find('td:eq(22)').text().trim(), */
+                        DiscountPer: $row.find('td:eq(23)').text().trim(),
+                        DiscountAmt: $row.find('td:eq(24)').text().trim(),
+                        Amount: $row.find('td:eq(25)').text().trim(),
+                        AltQty: $row.find('td:eq(26)').text().trim()
+
+
+                    };
+                    selectedData.push(rowData);
+                }
+            });
+
+            // AJAX call to send to session
+            $.ajax({
+                url: "@Url.Action("StoreCheckedRowsToSession")",
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(selectedData),
+                success: function (response) {
+                    var redirectUrl = '@Url.Action("SaleInvoice", "SaleInvoice")';
+                    window.location.href = redirectUrl;
+                },
+                error: function (xhr, status, error) {
+                    console.error("Failed to store in session:", error);
+                }
+            });
+        }
+
+        function CheckacceptedQtySHA(i) {
+
+            var checkedtruevalues = [];
+            var rowCount = $('#divPendMRNGrid tr').length;
+            for (let i = 1; i <= rowCount; i++) {
+                checkedtruevalues.push({
+                    "checked": $('#AcceptedQtySHA' + i).is(':checked')
+                })
+            }
+
+            var checkedonlytrue = checkedtruevalues.filter(function (item) {
+                return item.checked;
+            }).length;
+            if (rowCount == checkedonlytrue) {
+                $('#checkuncheck').prop('checked', true)
+            } else {
+                $('#checkuncheck').prop('checked', false)
+            }
+        }
+
+        $('#checkuncheck').change(function () {
+
+            var rowCount = $('#divPendMRNGrid tr').length;
+            if ($('#checkuncheck').is(':checked') == true) {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', true)
+                }
+            }
+            else {
+                for (let i = 1; i <= rowCount; i++) {
+                    $('#AcceptedQtySHA' + i).prop('checked', false)
+                }
+            }
+        })
+
+        
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('divPendMRNGrid', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('divPendMRNGrid', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#divPendMRNGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+    </script>
+}
