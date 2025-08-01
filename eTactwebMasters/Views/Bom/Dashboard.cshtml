@@ -117,17 +117,28 @@
                                 <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
 
-                            <div class="col-lg-3 col-md-8 col-sm-6 col-xs-12 d-flex justify-content-evenly mt-3" style="margin-left:20px;">
+                            <div class="col-md-8 col-sm-6 col-xs-12 d-flex flex-wrap gap-2 mt-3 ms-3">
+                                <!-- Search -->
                                 <button class="btn btn-sm btn-outline-info" type="button" onclick="GetSearchData();">
-                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i> SEARCH
                                 </button>
-                                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+
+                                <!-- Excel -->
+                                <button class="btn btn-sm btn-outline-success px-3" type="button" id="sendToExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg"></i> EXCEL
                                 </button>
+
+                                <!-- Reset -->
                                 <a class="btn btn-sm btn-outline-danger" asp-controller="Bom" asp-action="Dashboard">
-                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i> RESET
                                 </a>
+
+                                <!-- Refresh BOM -->
+                                <button class="btn btn-sm btn-outline-info px-3" type="button" id="RefreshBom">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg"></i> Ref BOM
+                                </button>
                             </div>
+
                         </div>
                     </form>
                 </div>
@@ -203,7 +214,23 @@
 {
     <script>
 
+                 $('#RefreshBom').click(function () {
 
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetBomMultiLevelGrid")",
+                success: function (response) {
+                    if ($.parseJSON(response).Result.length > 0) {
+                        $.notify('Bom refresh successfully.', 'success');
+                    } else {
+                        $.notify('Bom not refresh properly.', 'error');
+                    }
+                },
+                error: function (xhr, status, error) {
+                    console.error("An error occurred: " + error);
+                }
+            });
+        });
         $(document).ready(function () {
             $('#DashboardType').select2();
             // GetSummaryData();
