@@ -9,6 +9,43 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
+    public class PendingSaleBillList
+    {
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string InvoiceDate { get; set; }
+        public int CurrentYear { get; set; }
+        public int BillFromStoreId { get; set; }
+        public int accountCode { get; set; }
+        
+        public string CustomerName { get; set; }
+        public string AccountCode { get; set; }
+        public int SONo { get; set; }
+        public int SOYearCode { get; set; }
+        public string CustOrderNo { get; set; }
+        public string SchNo { get; set; }
+        public int SchYearCode { get; set; }
+        public int ItemCode { get; set; }
+        public string PartCode { get; set; }
+        public string ItemName { get; set; }
+        public string Unit { get; set; }
+        public string HSNNo { get; set; }
+        public decimal OrderQty { get; set; }
+        public decimal OrderPendQty { get; set; }
+        public decimal SaleBillQty { get; set; }
+        public decimal SOItemRate { get; set; }
+        public string SOType { get; set; }
+        public string SOFor { get; set; }
+        public decimal TotalStock { get; set; }
+        public string BatchNo { get; set; }
+        public string UniqueBatchNo { get; set; }
+        public decimal BatchStock { get; set; }
+        public decimal DisPer { get; set; }
+        public decimal DisAmt { get; set; }
+        public decimal ItemAmount { get; set; }
+        public decimal AltQty { get; set; }
+    }
+
     public class SaleBillDashboard : SaleBillModel
     {
         public string? FromDate1 { get; set; }
@@ -103,6 +140,8 @@ namespace eTactWeb.DOM.Models
         public string? StockableNonStockable { get; set; }
         public string? VendJwAdjustmentMandatory { get; set; }
         public int? BomNo {  get; set; }
+        public int? AccountCode {  get; set; }
+        public string? AccountName {  get; set; }
     }
     public class SaleBillModel : SaleBillDetail
     {

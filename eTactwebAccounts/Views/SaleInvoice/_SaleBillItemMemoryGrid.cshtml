@@ -1,0 +1,43 @@
+﻿@model eTactWeb.DOM.Models.SaleBillModel
+
+@if (Model.ItemDetailGrid == null)
+{
+
+}
+else
+{
+    var Cntr = 0;
+    foreach (var item in Model.ItemDetailGrid)
+    {
+        Cntr++;
+        @* <input type="hidden" id="WCID-@Cntr" value="@item.WCID" />
+        <input type="hidden" id="WorkCenterName-@Cntr" value="@item.WorkCenterName" /> *@
+        <tr id="itemGrid-@Cntr" class="small" style="white-space:nowrap">
+            <td><input type="text" style="width:50px" readonly id="SONO-@Cntr" value="@item.SONO" /></td>
+            <td><input type="text" style="width:50px" readonly id="SOYearCode-@Cntr" value="@item.SOYearCode" /></td>
+            <td><input type="text" style="width:50px" readonly id="CustOrderNo-@Cntr" value="@item.CustOrderNo" /></td>
+            <td><input type="text" style="width:50px" readonly id="SchNo-@Cntr" value="@item.SchNo" /></td>
+            <td><input type="text" style="width:50px" readonly id="SaleSchYearCode-@Cntr" value="@item.SaleSchYearCode" /></td>
+
+            <td><input type="text" readonly id="PartCode-@Cntr" value="@item.PartCode" /><input type="hidden" readonly id="ItemCode-@Cntr" value="@item.ItemCode" /></td>
+            <td><input type="text" readonly id="ItemName-@Cntr" value="@item.ItemName" /></td>
+            <td><input type="text" style="width:50px" readonly id="Unit-@Cntr" value="@item.Unit" /></td>
+            <td><input type="text" style="width:50px" readonly id="HSNNo-@Cntr" value="@item.HSNNo" /></td>
+
+            <td><input type="text" style="width:50px" readonly id="SOPendQty-@Cntr" value="@item.SOPendQty" /></td>
+            <td><input type="text" readonly id="StoreName-@Cntr" value="@item.StoreName" /><input type="hidden" readonly id="StoreId-@Cntr" value="@item.StoreId" /></td>
+            <td><input type="text" readonly id="Batchno-@Cntr" value="@item.Batchno" /></td>
+            <td><input type="text" readonly id="Uniquebatchno-@Cntr" value="@item.Uniquebatchno" /></td>
+            <td><input type="text" style="width:50px" readonly id="TotalStock-@Cntr" value="@item.TotalStock" /></td>
+            <td><input type="text" style="width:50px" readonly id="LotStock-@Cntr" value="@item.LotStock" /></td>
+            <td><input type="text" style="width:50px" readonly id="Rate-@Cntr" value="@item.Rate" /></td>
+            <td><input type="text" style="width:50px" readonly id="Qty-@Cntr" value="@item.Qty" /></td>
+            <td><input type="text" style="width:50px" readonly id="SOType-@Cntr" value="@item.SOType" /></td>
+            <td><input type="text" style="width:50px" readonly id="DiscountPer-@Cntr" value="@item.DiscountPer" /></td>
+            <td><input type="text" style="width:50px" readonly id="DiscountAmt-@Cntr" value="@item.DiscountAmt" /></td>
+            <td><input type="text" style="width:50px" readonly id="Amount-@Cntr" value="@item.Amount" /></td>
+            <td><input type="text" style="width:50px" readonly id="AltQty-@Cntr" value="@item.AltQty" /></td>
+
+        </tr>
+    }
+}

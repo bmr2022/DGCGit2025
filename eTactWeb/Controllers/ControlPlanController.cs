@@ -93,11 +93,13 @@ namespace eTactWeb.Controllers
                 }
             }
 
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
-            {
-                
-                
-                MainModel.Mode = Mode;
+            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+                if (!isFromPartCode && !string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+
+                {
+
+
+                    MainModel.Mode = Mode;
                 MainModel = await _IControlPlan.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.CntPlanEntryId = ID;
@@ -263,10 +265,10 @@ namespace eTactWeb.Controllers
                 foreach (var Item in DetailList)
                 {
                     string evalTech = Item.EvalutionMeasurmentTechnique;
-                    if (!string.IsNullOrWhiteSpace(evalTech) && evalTech.Length > 1)
-                    {
-                        evalTech = evalTech.Substring(0, 1); 
-                    }
+                    //if (!string.IsNullOrWhiteSpace(evalTech) && evalTech.Length > 1)
+                    //{
+                    //    evalTech = evalTech.Substring(0, 1); 
+                    //}
                     GIGrid.Rows.Add(
                         new object[]
                         {
@@ -274,7 +276,7 @@ namespace eTactWeb.Controllers
 Item.CntPlanYearCode,
 Item.SeqNo,
 Item.Characteristic ?? "",
-evalTech ?? "",
+Item.EvalutionMeasurmentTechnique ?? "",
 Item.SpecificationFrom ?? "",
 Item.Operator ?? "",
 Item.SpecificationTo ?? "",

@@ -26,7 +26,77 @@ namespace eTactWeb.Data.DAL
         public IConfiguration? Configuration { get; }
 
         private string DBConnectionString { get; }
+        public async Task<ResponseResult> FillStoreList()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillStoreList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccPendingSaleOrderForSalebill", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
 
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> FillCustomerListForPending()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "FillCustomerList"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccPendingSaleOrderForSalebill", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                //StartDate = DateTime.ParseExact(model.FromDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //EndDate = DateTime.ParseExact(model.ToDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+                //SqlParams.Add(new SqlParameter("@StartDate", StartDate));
+                //SqlParams.Add(new SqlParameter("@EndDate", EndDate));
+                var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                var toDt = CommonFunc.ParseFormattedDate(Todate);
+                var InvDate = CommonFunc.ParseFormattedDate(InvoiceDate);
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                //SqlParams.Add(new SqlParameter("@FromDate", fromdt.ToString("yyyy/MM/dd")));
+                //SqlParams.Add(new SqlParameter("@ToDate", todt.ToString("yyyy/MM/dd")));
+                SqlParams.Add(new SqlParameter("@FromDate", fromDt));
+                SqlParams.Add(new SqlParameter("@ToDate", toDt));
+                SqlParams.Add(new SqlParameter("@CurrentYear", CurrentYear));
+                SqlParams.Add(new SqlParameter("@InvoiceDate", InvDate));
+                SqlParams.Add(new SqlParameter("@BillFromStoreId", BillFromStoreId));
+                SqlParams.Add(new SqlParameter("@accountCode", accountCode));
+                
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccPendingSaleOrderForSalebill", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetReportName()
         {
             var _ResponseResult = new ResponseResult();
@@ -691,6 +761,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SOno", sono));
                 SqlParams.Add(new SqlParameter("@SoYearCode", soYearcode));
                 SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
+                SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
                 SqlParams.Add(new SqlParameter("@itemCode", itemCode));
                 SqlParams.Add(new SqlParameter("@AccountCode", accountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
