@@ -11,6 +11,6 @@ namespace eTactWeb.Services.Interface
     {
         Task<IList<TextValue>> GetUserList(string ShowAllUsers);
         Task<IList<TextValue>> GetDashboardName();
-        Task<IList<TextValue>> GetDashboardSubScreen(string DashboardName);
+        Task<ResponseResult> GetDashboardSubScreen(string DashboardName);
     }
 }

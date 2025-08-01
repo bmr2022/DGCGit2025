@@ -1,6 +1,7 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
+using Org.BouncyCastle.Ocsp;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -116,52 +117,25 @@ namespace eTactWeb.Data.DAL
             }
             return _List;
         }
-        public async Task<IList<TextValue>> GetDashboardSubScreen(string DashboardName)
+        public async Task<ResponseResult> GetDashboardSubScreen(string DashboardName)
         {
-            List<TextValue>? _List = new List<TextValue>();
-            dynamic Listval = new TextValue();
-
+            var _ResponseResult = new ResponseResult();
             try
             {
-                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
-                {
-                    SqlCommand oCmd = new SqlCommand("SP_UserRightDashboard", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    oCmd.Parameters.AddWithValue("@Flag", "DashboardSubScreen");
-                    oCmd.Parameters.AddWithValue("@DashboardName", DashboardName);
+                var SqlParams = new List<dynamic>();
 
-                    await myConnection.OpenAsync();
-
-                    Reader = await oCmd.ExecuteReaderAsync();
-
-                    if (Reader != null)
-                    {
-                        while (Reader.Read())
-                        {
-                            Listval = new TextValue()
-                            {
-                                Text = Reader["DashboardSubScreen"].ToString(),
-                                Value = Reader["DashboardSubScreen"].ToString()
-                            };
-                            _List.Add(Listval);
-                        }
-                    }
-                }
+                SqlParams.Add(new SqlParameter("@Flag", "DashboardSubScreen"));
+                SqlParams.Add(new SqlParameter("@DashboardName", DashboardName));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_UserRightDashboard", SqlParams);
             }
-            catch (Exception)
+            catch (Exception ex)
             {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
             }
-            finally
-            {
-                if (Reader != null)
-                {
-                    Reader.Close();
-                    Reader.Dispose();
-                }
-            }
-            return _List;
+
+            return _ResponseResult;
         }
     }
 }

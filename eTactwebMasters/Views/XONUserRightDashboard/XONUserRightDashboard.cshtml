@@ -151,11 +151,11 @@
                 data: { DashboardName: $('#DashboardName').val()},
                 success: function (data) {
 
-                    $('#MainMenu').empty();
-                    $('#MainMenu').append('<option value="0">-Select-</option>');
+                    $('#DashboardSubScreen').empty();
+                    $('#DashboardSubScreen').append('<option value="0">-Select-</option>');
                     $.each(data,
                         function (key, val) {
-                            $('#MainMenu').append('<option value="' + val.value + '">' + val.text + '</option>');
+                            $('#DashboardSubScreen').append('<option value="' + val.text + '">' + val.text + '</option>');
                         });
                 }
             });

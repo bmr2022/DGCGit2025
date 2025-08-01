@@ -29,7 +29,7 @@ namespace eTactWeb.Data.BLL
         {
             return await _XONUserRightDashboardDAL.GetDashboardName();
         }
-        public async Task<IList<TextValue>> GetDashboardSubScreen(string DashboardName)
+        public async Task<ResponseResult> GetDashboardSubScreen(string DashboardName)
         {
             return await _XONUserRightDashboardDAL.GetDashboardSubScreen(DashboardName);
         }
