@@ -182,9 +182,9 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.BankIFSCCode = dr["BankIFSCCode"].ToString();
                         _AccountMasterModel.BankSwiftCode = dr["BankSwiftCode"].ToString();
                         _AccountMasterModel.InterbranchSaleBILL = dr["InterbranchSaleBILL"].ToString();
-                        _AccountMasterModel.salesperson_name = dr["salesperson_name"].ToString();
-                        _AccountMasterModel.salesemailid = dr["salesemailid"].ToString();
-                        _AccountMasterModel.salesmobileno = dr["salesmobileno"].ToString();
+                        //_AccountMasterModel.salesperson_name = dr["salesperson_name"] == DBNull.Value ? "" : dr["salesperson_name"].ToString(); 
+                        //_AccountMasterModel.salesemailid = dr["salesemailid"].ToString();
+                        //_AccountMasterModel.salesmobileno = dr["salesmobileno"].ToString();
                         _AccountMasterModel.Approved_By = dr["Approved_By"].ToString();
                         _AccountMasterModel.Approved = dr["Approved"].ToString();
                         _AccountMasterModel.ApprovalDate = dr["ApprovalDate"].ToString();
@@ -196,6 +196,10 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.CreatedBy = Convert.ToInt32(dr["CreatedBy"]);
                         _AccountMasterModel.CreatedOn = Convert.ToDateTime(dr["CreatedOn"]);
                         _AccountMasterModel.CreatedByName = dr["UserName"].ToString();
+                        _AccountMasterModel.MSMENo = dr["MSMENo"].ToString();
+                        _AccountMasterModel.MSMEType = dr["MSMEType"].ToString();
+                        _AccountMasterModel.DiscountCategory = dr["DiscountCategory"].ToString();
+                        _AccountMasterModel.Region = dr["Region"].ToString();
                     }
                 }
             }
@@ -596,6 +600,10 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@YearCode", model.YearCode);
                     oCmd.Parameters.AddWithValue("@Uid", model.Uid);
                     oCmd.Parameters.AddWithValue("@CC", model.CC);
+                    oCmd.Parameters.AddWithValue("@MSMENo", model.MSMENo);
+                    oCmd.Parameters.AddWithValue("@MSMEType", model.MSMEType);
+                    oCmd.Parameters.AddWithValue("@Region", model.Region);
+                    oCmd.Parameters.AddWithValue("@DiscountCategory", model.DiscountCategory);
 
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     if (model.Mode == "Update")
