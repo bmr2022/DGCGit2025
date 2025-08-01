@@ -761,6 +761,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@SOno", sono));
                 SqlParams.Add(new SqlParameter("@SoYearCode", soYearcode));
                 SqlParams.Add(new SqlParameter("@custOrderNo", custOrderNo));
+                SqlParams.Add(new SqlParameter("@ScheduleNo", schNo));
+                SqlParams.Add(new SqlParameter("@ScheduleYearCode", schYearCode));
                 SqlParams.Add(new SqlParameter("@itemCode", itemCode));
                 SqlParams.Add(new SqlParameter("@AccountCode", accountCode));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_SaleBillMainDetail", SqlParams);
