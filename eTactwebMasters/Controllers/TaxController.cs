@@ -1576,7 +1576,7 @@ public class TaxController : Controller
             //    Amt = Amt * Convert.ToDecimal(TP) / 100;
             //}
 
-            Amt = Amt * ToDecimal(TP) / 100;
+           // Amt = Amt * ToDecimal(TP) / 100;
         }
 
         return Json(new { Amt, TaxOnExp });
