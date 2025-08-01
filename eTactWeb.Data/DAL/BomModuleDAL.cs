@@ -640,7 +640,90 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+        public async Task<ResponseResult> GetFGPartCodeList( string SearchFGPartCode)
+        {
+            var Result = new ResponseResult();
 
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "SEARCHFGPARTCODELIST"));
+                SqlParams.Add(new SqlParameter("@SearchFGPartCode", SearchFGPartCode ?? ""));
+                Result = await _IDataLogic.ExecuteDataTable("SP_Bom", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+        public async Task<ResponseResult> GetFGItemNameList(string SearchFGItemName)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "SEARCHFGPARTCODELIST"));
+                SqlParams.Add(new SqlParameter("@SearchFGItemName", SearchFGItemName ?? ""));
+                Result = await _IDataLogic.ExecuteDataTable("SP_Bom", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+        public async Task<ResponseResult> GetRMItemNameList(string SearchRMItemName)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "SEARCHRMITEMNAMELIST"));
+                SqlParams.Add(new SqlParameter("@SearchFGItem_Name", SearchRMItemName ?? ""));
+                Result = await _IDataLogic.ExecuteDataTable("SP_Bom", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
+        public async Task<ResponseResult> GetRMPartCodeList(string SearchRMPartcode)
+        {
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "SEARCHRMPARTCODELIST"));
+                SqlParams.Add(new SqlParameter("@SearchRMPartCode", SearchRMPartcode ?? ""));
+                Result = await _IDataLogic.ExecuteDataTable("SP_Bom", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
+        }
         public string GetUnit(string IC, string Mode)
         {
             object _Unit = "";

@@ -274,6 +274,22 @@ namespace eTactWeb.Data.DAL
                                     Value = Reader["statecode"].ToString()
                                 };
                             }
+                            else if (Flag == "GetDiscountCategory")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader["DiscountCategory"].ToString(),
+                                    Value = Reader["DiscountCategory"].ToString()
+                                };
+                            }
+                            else if (Flag == "GetRegion")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader["Region"].ToString(),
+                                    Value = Reader["Region"].ToString()
+                                };
+                            }
                             else if (Flag == "VPrimaryAccountHeadMaster")
                             {
                                 Listval = new TextValue()

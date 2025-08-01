@@ -3,12 +3,12 @@
     <div class="col-lg-4 col-md-4 col-sm-6 col-xs-12">
         <label asp-for="ItemCode" class="form-label">Part Code</label>
         <select asp-for="ItemCode" class="form-select" asp-items="@(new SelectList(Model.CodeList,"Text","Value"))">
-            @if (@Model.Mode == "U")
-            {
-                <input type="hidden" value="@Model.ItemCode" id="hiddenItemCode" />
-            }
             <option value="">-Select-</option>
         </select>
+        @if (@Model.Mode == "U")
+        {
+            <input type="hidden" value="@Model.ItemCode" id="hiddenItemCode" />
+        }
     </div>
     <div class="col-lg-8 col-md-8 col-sm-6 col-xs-12">
         <div class="row">

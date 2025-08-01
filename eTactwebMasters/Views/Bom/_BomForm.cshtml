@@ -57,8 +57,8 @@
         </div>
     </div>
 </div>
-<div class="accordion-item" id="optionalParameterSection" style="display:none;">
-    <h2 class="accordion-header" id="H_Measurements">
+
+   @*  <h2 class="accordion-header" id="H_Measurements">
         <button class="accordion-button collapsed text-light pnl1BG bg-gradient"
                 type="button" data-bs-toggle="collapse" data-bs-target="#B_Measurements"
                 aria-expanded="true" aria-controls="B_Measurements">
@@ -66,9 +66,9 @@
                 <i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Optional Parameter
             </strong>
         </button>
-    </h2>
+    </h2> *@
     <div id="B_Measurements" class="accordion-collapse collapse pnl1 bg-gradient"
-         aria-labelledby="H_Measurements">
+         aria-labelledby="H_Measurements" >
         <div class="accordion-body">
             <div class="row g-2 gx-3">
                 <div class="col-lg-6 mt-2" id="DivFG3">
@@ -255,7 +255,7 @@
             </div>
         </div>
     </div>
-</div>
+
 <div class="accordion-item">
  @*    <h2 class="accordion-header" id="H_Grid">
         <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_Grid" aria-expanded="true" aria-controls="B_Grid">
@@ -346,9 +346,9 @@
 <script>
     function toggleSection() {
         if ($("#hideUnhideToggle").is(":checked")) {
-            $("#optionalParameterSection").slideDown();
+            $("#B_Measurements").show();
         } else {
-            $("#optionalParameterSection").slideUp();
+            $("#B_Measurements").hide();
         }
     }
 </script>

@@ -89,6 +89,8 @@ namespace eTactWeb.Controllers
                 //model.ParentGroupList = _IAccountMaster.GetDropDownList("VPrimaryAccountHeadMaster");
                 model.StateList = await _IDataLogic.GetDropDownList("StateMaster", "SP_AccountMaster");
                 model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
+                model.DiscountCategoryList = await _IDataLogic.GetDropDownList("GetDiscountCategory", "SP_AccountMaster");
+                model.RegionList = await _IDataLogic.GetDropDownList("GetRegion", "SP_AccountMaster");
                 model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
                 model.Entry_Date = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
@@ -106,6 +108,8 @@ namespace eTactWeb.Controllers
                 //model.ParentGroupList = _IAccountMaster.GetDropDownList("VPrimaryAccountHeadMaster");
                 model.StateList = await _IDataLogic.GetDropDownList("StateMaster", "SP_AccountMaster");
                 model.ParentGroupList = await _IDataLogic.GetDropDownList("VPrimaryAccountHeadMaster", "SP_AccountMaster");
+                model.DiscountCategoryList = await _IDataLogic.GetDropDownList("GetDiscountCategory", "SP_AccountMaster");
+                model.RegionList = await _IDataLogic.GetDropDownList("GetRegion", "SP_AccountMaster");
             }
             if (Mode != "U")
             {

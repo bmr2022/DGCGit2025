@@ -24,6 +24,10 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveBomData(DataTable DT, BomModel model);
         Task<ResponseResult> SaveMultipleBomData(DataTable BomDetailGrid);
         Task<ResponseResult> GetByProdItemName(int MainItemcode);
+        Task<ResponseResult> GetRMPartCodeList(string SearchRMPartcode);
+        Task<ResponseResult> GetRMItemNameList(string SearchRMItemName);
+        Task<ResponseResult> GetFGItemNameList(string SearchFGItemName);
+        Task<ResponseResult> GetFGPartCodeList(string SearchFGPartCode);
         Task<ResponseResult> GetBomMultiLevelGrid();
 
     }
