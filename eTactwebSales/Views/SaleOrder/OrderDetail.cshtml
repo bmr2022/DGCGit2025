@@ -1727,6 +1727,21 @@
                     });
                 }
          */
+        $(function () {
+            // Initialize both datepickers
+            $('#SODate').datepicker({
+                dateFormat: 'dd/mm/yy',
+                onSelect: function (selectedDate) {
+                    // When SO Date changes, set minDate of Delivery Date
+                    var parsedDate = $.datepicker.parseDate('dd/mm/yy', selectedDate);
+                    $('#DeliveryDate').datepicker('option', 'minDate', parsedDate);
+                }
+            });
+
+            $('#DeliveryDate').datepicker({
+                dateFormat: 'dd/mm/yy'
+            });
+        });
         $(document).ready(function () {
             // alert('inside load');
             $('#AccountCode').select2();
@@ -1920,13 +1935,14 @@
             // $('#SODate').datepicker("option", "maxDate", formattedDate2);
 
             var today = new Date();
-
+            mindate = $('#SODate').val();
             $("#DeliveryDate").datepicker({
                 dateFormat: "dd/mm/yy",  // Format as dd/mmm/yyyy
-                minDate: 0,             // 🔹 Disable past dates
+                 minDate: 0,             // 🔹 Disable past dates
                 setDate: today          // 🔹 Set default date to today
             }).datepicker("setDate", today); // Set today's date on load
 
+           
             /* $('#SODate').datepicker({
             dateFormat: 'dd/mm/yy',  // Ensure correct format
             minDate: formattedDate1,
@@ -2013,7 +2029,16 @@
 
         });//ready end here
 
+        $('#SODate').change(function () {
+            var today = new Date();
+            mindate = $('#SODate').val();
+            $("#DeliveryDate").datepicker({
+                dateFormat: "dd/mm/yy",  // Format as dd/mmm/yyyy
+                // minDate: mindate,             // 🔹 Disable past dates
+                setDate: today          // 🔹 Set default date to today
+            }).datepicker("setDate", today); // Set today's date on load
 
+        });
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {
@@ -2652,7 +2677,7 @@
                                         $('#Rate').val('0.00').prop('disabled', true).attr('readonly', 'readonly');
                                         $('#OtherRateCurr').val('0').prop('disabled', false).removeAttr('readonly');
                                         $('#OtherRateCurr').keyup(function () {
-                                            $('#Rate').val($('#OtherRateCurr').val().trim() != "" ? parseFloat($('#OtherRateCurr').val()) * parseFloat($('#ExRate').val()) : 0);
+                                            OtherRateCurr($('#Rate').val($('#OtherRateCurr').val().trim() != "" ? parseFloat($('#OtherRateCurr').val()) * parseFloat($('#ExRate').val()) : 0));
                                             CalculateRate();
                                         });
                                     }

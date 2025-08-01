@@ -176,6 +176,11 @@
                                         <i class="fa-solid fa-file-pdf fa-fw fa-lg me-2"></i>PDF
                                     </button>
 
+                                    <button class="btn btn-sm btn-outline-info d-flex align-items-center justify-content-center" type="button" style="padding: 3px 10px; height: 36px; width: 120px;" id="RefreshBom">
+                                        <i class="fa-solid fa-upload fa-fw fa-lg"></i> Ref BOM
+                                    </button>
+                                  
+
                                 </div>
 
                             </div>
@@ -398,6 +403,23 @@
                 $('#bomStokeCenter').hide(); // Hide BOM STOCK fields for other report types
             }
         }
+             $('#RefreshBom').click(function () {
+
+               $.ajax({
+                   type: "POST",
+                      url: "@Url.Action("GetBomMultiLevelGrid", "BOM")",
+                   success: function (response) {
+                       if ($.parseJSON(response).Result.length > 0) {
+                           $.notify('Bom refresh successfully.', 'success');
+                       } else {
+                           $.notify('Bom not refresh properly.', 'error');
+                       }
+                   },
+                   error: function (xhr, status, error) {
+                       console.error("An error occurred: " + error);
+                   }
+               });
+           });
         $('#sendToPDF').click(async function () {
 
             const { jsPDF } = window.jspdf;

@@ -322,7 +322,30 @@ public class BomController : Controller
 
         return View(model);
     }
-
+    public async Task<JsonResult> GetRMPartCodeList(string SearchRMPartcode)
+    {
+        var JSON = await _IBom.GetRMPartCodeList(SearchRMPartcode);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> GetRMItemNameList(string SearchRMItemName)
+    {
+        var JSON = await _IBom.GetRMItemNameList(SearchRMItemName);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }   
+    public async Task<JsonResult> GetFGItemNameList(string GetFGItemNameList)
+    {
+        var JSON = await _IBom.GetFGItemNameList(GetFGItemNameList);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    } 
+    public async Task<JsonResult> GetFGPartCodeList(string GetFGPartCodeList)
+    {
+        var JSON = await _IBom.GetFGPartCodeList(GetFGPartCodeList);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
     public async Task<JsonResult> GetFormRights()
     {
         var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -1041,9 +1064,17 @@ public class BomController : Controller
 				{
 					return StatusCode(207, "Invalid  RMPartCode  " + RMPartCode);
 				}
+                if (RmItemCode == FGItemCode)
+                {
+                    return StatusCode(207, $"Error: FGItemCode and RmItemCode cannot be the same. Row: {row}, FGItemCode: {RmItemCode}");
+                }
+                if (!string.IsNullOrWhiteSpace(FGItemName) && !string.IsNullOrWhiteSpace(RMItemName) && FGItemName == RMItemName)
+                {
+                    return StatusCode(207, $"Error: FGItemName and RMItemName cannot be the same. Row: {row}, FGItemName: {FGItemName}");
+                }
 
 
-				var BomRevNo = _IBom.GetBomNo(FGItemCode, "GetBomNo");
+                var BomRevNo = _IBom.GetBomNo(FGItemCode, "GetBomNo");
                 //var BomRevNoChck = _IBom.GetBomNo(FGItemCode, "GetCheckBomNo");
 
                 var duplicateBom = "";
@@ -1310,8 +1341,8 @@ public class BomController : Controller
                     Item.BomName,
                     Item.BomNo,//bomno
                     0,
-                    "",
-                    "",
+                   today.ToString("yyyy-MM-dd").Split(" ")[0],
+                   today.ToString("yyyy-MM-dd").Split(" ")[0],
                     Item.SeqNo,
                     Item.RMItemCode,
                     Item.RMQty,

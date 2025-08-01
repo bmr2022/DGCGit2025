@@ -1,13 +1,13 @@
 ﻿@model eTactWeb.DOM.Models.BomModel
 
 @{
-    ViewData["Title"] = "Form";
+    ViewData["Title"] = "Bom";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
 <div class="card bg-gradient mb-3 rounded shadow-lg">
     <form asp-action="BomForm" asp-controller="Bom" autocomplete="off" class="form-horizontal" asp-antiforgery=true>
-        <input type="hidden" asp-for="Mode" />
+        <input type="hidden" asp-for="Mode" id="Mode"/>
         <div class="card border-light bg-gradient rounded shadow-lg">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h4>
@@ -170,7 +170,104 @@
 @section Scripts
     {
     <script>
+     
         $(document).ready(function () {
+        //          function bindAutocomplete(inputTextId, hiddenInputId, url, paramName, labelField, valueField, onSelectCallback) {
+        //     $("#" + inputTextId).autocomplete({
+        //         source: function (request, response) {
+        //             let params = {};
+        //             params[paramName] = request.term;
+
+        //             $.ajax({
+        //                 url: url,
+        //                 type: "GET",
+        //                 data: params,
+        //                 success: function (data) {
+        //                     let result = [];
+
+        //                  try {
+        //                  let parsed = typeof data === "string" ? JSON.parse(data) : data;
+        //                  result = parsed.Result || []; // ✅ FIX: access Result property
+        //              } catch (e) {
+        //                  console.error("JSON parse error:", e);
+        //              }
+
+        //              console.log("API Result:", result);
+
+        //                     response($.map(result, function (item) {
+        //                             let label = item[labelField];
+        //                  let value = String(item[valueField]);
+
+        //                   console.log("Mapped item:", { label, value,item});
+
+        //                         return {
+        //                              label: label,
+        //                               value: value,
+        //                             fullItem: item
+        //                         };
+        //                     }));
+        //                 }
+        //             });
+        //         },
+        //         minLength: 2,
+        //         focus: function (event, ui) {
+        //             $("#" + inputTextId).val(ui.item.label);
+        //             return false;
+        //         },
+        //         select: function (event, ui) {
+        //             $("#" + inputTextId).val(ui.item.label);
+        //             $("#" + hiddenInputId).val(ui.item.value);
+
+        //             if (typeof onSelectCallback === 'function') {
+        //                 onSelectCallback(ui.item.fullItem);
+        //             }
+
+        //             return false;
+        //         }
+        //     });
+        // }
+
+        // // FG Part Code → auto-fill FG Item Name
+        // bindAutocomplete(
+        //       "FinishItemCodeText",   // visible
+        // "FinishItemCode",       // hidden
+        // "/Bom/GetFGPartCodeList",
+        // "GetFGPartCodeList",
+        // "PartCode",             // label field
+        // "Item_Code",
+        //     function (item) {
+        //         $('#divBomGrid').empty();
+        //         $('#FinishedItemNameText').val(item.ItemName);
+        //         $('#FinishedItemName').val(item.Item_Code);
+        //         FGNameChange("FinishItemCode");
+        //     }
+        // );
+
+        // // FG Item Name → auto-fill FG Part Code
+        // bindAutocomplete(
+        //     "FinishedItemNameText",
+        //     "FinishedItemName",
+        //     "/Bom/GetFGItemNameList",
+        //     "SearchFGItemName",
+        //     "ItemName",
+        //     "Item_Code",
+        //     function (item) {
+        //         $('#divBomGrid').empty();
+        //         $('#FinishItemCodeText').val(item.PartCode);
+        //         $('#FinishItemCode').val(item.Item_Code);
+        //         FGCodeChange("FinishedItemName");
+        //     }
+        // );
+
+        // FG Item Name: text = ItemName, value = Item_Code
+        // initAutocomplete("FinishedItemName", "/Bom/GetFGItemNameList", "GetFGItemNameList", "ItemName", "Item_Code");
+
+        // // RM Part Code: text = PartCode, value = Item_Code
+        // initAutocomplete("ItemCode", "/Bom/GetRMPartCodeList", "SearchRMPartcode", "PartCode", "Item_Code");
+
+        // RM Item Name: text = ItemName, value = Item_Code
+       // initAutocomplete("ItemName", "/Bom/GetRMItemNameList", "SearchRMItemName", "ItemName", "Item_Code");
+
             $('#FinishItemCode').select2();
             $('#FinishedItemName').select2();
             $('#ItemCode').select2();
@@ -183,13 +280,14 @@
             $('#ByprodItemCode1').select2();
             $('#Byprodpartcode2').select2();
             $('#ByprodItemCode2').select2();
-
+         
             GetFormRights();
             $("#EntryDate").attr('style', 'pointer-events:none;');
             $("#EntryDate").datepicker({ minDate: 0 });
             $("#EffectiveDate").datepicker({ minDate: 0 });
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                 $("#optionalParameterSection").slideDown();
+             var mode = "@Model.Mode";
+              if (mode === "U" || mode === "V") {
+                 $("#B_Measurements").hide();
                 FGItemcode = $('#hiddenFGItemCode').val();
                 Itemcode = $('#hiddenItemCode').val();
                 //AltItemCode1 = $('#hiddenAltItemCode1').val();
@@ -205,7 +303,9 @@
                
                 //$('#FinishItemCode').val(FGItemcode).trigger('change');
                 //$('#FinishedItemName').val(FGItemcode).trigger('change');
-            }
+                    } else {
+          $("#B_Measurements").show();
+        }
 
             $('#UpdateButton').click(function(){
                 $('#Mode').val("U");
@@ -365,7 +465,9 @@
         function GetByProdPartCode() {
              
             var MainItemcode = $('#FinishedItemName').val();
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+        //    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 var MainItemcode = '@Model.FinishedItemName'
             }
             $.ajax({
@@ -382,8 +484,9 @@
                     $.each(obj.Result, function (index, item) {
                         ByprodpartcodeDropdown.append('<option value="' + item.itemcode + '">' + item.Partcode + '</option>');
                     });
-
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+                  //  if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var Byprodpartcode1 = '@Model.Byprodpartcode1';
                         $('#Byprodpartcode1').val(Byprodpartcode1).trigger("change");
                     }
@@ -430,8 +533,9 @@
 
         function GetByProdItemName() {
             var MainItemcode = $('#FinishedItemName').val();
-
-            if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+         //   if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
                 MainItemcode = '@Model.FinishedItemName';
             }
 
@@ -451,7 +555,9 @@
                     });
 
                     // If in update/view mode, trigger change to set display
-                    if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                        var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+                 //   if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
                         $dropdown.val('@Model.ByprodItemCode1');
                         $dropdown.trigger("change");
                     }
@@ -466,7 +572,9 @@
         function GetByProdPartCode2() {
              
             var MainItemcode = $('#FinishedItemName').val();
-            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+          //  if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                 var MainItemcode = '@Model.FinishedItemName'
             }
             $.ajax({
@@ -483,8 +591,9 @@
                     $.each(obj.Result, function (index, item) {
                         ByprodpartcodeDropdown.append('<option value="' + item.itemcode + '">' + item.Partcode + '</option>');
                     });
-
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+                   // if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                         var Byprodpartcode1 = '@Model.Byprodpartcode2';
                         $('#Byprodpartcode2').val(Byprodpartcode1).trigger("change");
                     }
@@ -530,8 +639,9 @@
 
         function GetByProdItemName2() {
             var MainItemcode = $('#FinishedItemName').val();
-
-            if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+         //   if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
                 MainItemcode = '@Model.FinishedItemName';
             }
 
@@ -551,7 +661,9 @@
                     });
 
                     // If in update/view mode, trigger change to set display
-                    if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                        var mode = "@Model.Mode";
+               if (mode === "U" || mode === "V") {
+                //    if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
                         $dropdown.val('@Model.ByprodItemCode2');
                         $dropdown.trigger("change");
                     }
@@ -616,14 +728,19 @@
 
         });
         function toggleSection() {
-            
-            if ($("#hideUnhideToggle").is(":checked")) {
-                $("#optionalParameterSection").slideDown();
+              if ($("#hideUnhideToggle").is(":checked")) {
+                $("#B_Measurements").show();
             } else {
-                $("#optionalParameterSection").slideUp();
+                $("#B_Measurements").hide();
             }
-             
         }
+            // if ($("#hideUnhideToggle").is(":checked")) {
+            //     $("#optionalParameterSection").slideDown();
+            // } else {
+            //     $("#optionalParameterSection").slideUp();
+            // }
+             
+       // }
         function FGCodeChange(ID) {
             // $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') }).done(function () { GetGridData(ID) });
             $.when(SetPartCodeItem(ID)).done(function () { GetBomNo('FinishItemCode') }).done(function () { GetBomName('FinishedItemName') });
@@ -962,7 +1079,7 @@
             else {
                 $('#ItemCode').removeClass('is-invalid');
             }
-
+        
             if (!$('#ItemName').val()) {
                 AddErrorCls('ItemName');
                 IsErr = 1;
@@ -991,19 +1108,19 @@
             }
             else if (IsErr == 0) {
                 if ($('#FinishItemCode').val()) {
-                    if ($('#FinishItemCode').val() == $('#ItemCode').val()) {
+                    if ($('#FinishItemCode').val() === $('#ItemCode').val()) {
                         AddErrorCls('FinishItemCode');
                         AddErrorCls('ItemCode');
                         $.notify('FG Part Code and Part Code cannot be same.', "info");
                         IsErr = 1;
                     }
-                    else if ($('#FinishItemCode').val() == $('#AltItemCode1').val()) {
+                    else if ($('#FinishItemCode').val() === $('#AltItemCode1').val()) {
                         AddErrorCls('FinishItemCode');
                         AddErrorCls('AltItemCode1');
                         $.notify('FG Part Code and Alt Part Code1 cannot be same.', "info");
                         IsErr = 1;
                     }
-                    else if ($('#FinishItemCode').val() == $('#AltItemCode2').val()) {
+                    else if ($('#FinishItemCode').val() === $('#AltItemCode2').val()) {
                         AddErrorCls('FinishItemCode');
                         AddErrorCls('AltItemCode2');
                         $.notify('FG Part Code and Alt Part Code2 cannot be same.', "info");
@@ -1011,14 +1128,14 @@
                     }
                     else {
                         if ($('#ItemCode').val()) {
-                            if ($('#ItemCode').val() == $('#AltItemCode1').val()) {
+                            if ($('#ItemCode').val() === $('#AltItemCode1').val()) {
                                 AddErrorCls('ItemCode');
                                 AddErrorCls('AltItemCode1');
                                 $.notify('Part Code and Alt Part Code1 cannot be same.', "info");
                                 IsErr = 1;
                             }
                             else {
-                                if ($('#ItemCode').val() == $('#AltItemCode2').val()) {
+                                if ($('#ItemCode').val() === $('#AltItemCode2').val()) {
                                     AddErrorCls('ItemCode');
                                     AddErrorCls('AltItemCode2');
                                     $.notify('Part Code and Alt Part Code2 cannot be same.', "info");
@@ -1026,7 +1143,7 @@
                                 }
                                 else {
                                     if ($('#AltItemCode1').val()) {
-                                        if ($('#AltItemCode1').val() == $('#AltItemCode2').val()) {
+                                        if ($('#AltItemCode1').val() === $('#AltItemCode2').val()) {
                                             AddErrorCls('AltItemCode1');
                                             AddErrorCls('AltItemCode2');
                                             $.notify('Alt Part Code1 and Alt Part Code2 cannot be same.', "info");
@@ -1247,7 +1364,8 @@
               
             var BomNo = $('#BomNo').val();
             var ItemCode = $('#FinishItemCode').val();
-             $("#optionalParameterSection").slideDown();
+               
+            $("#B_Measurements").hide();
 
             $.ajax({
                 url: '@Url.Action("EditBomSeq","Bom")',
@@ -1262,6 +1380,8 @@
                         //$('#BomQty').val(obj[0].BomQty);
 
                         $('#ItemCode').val(obj[0].ItemCode).change();
+                        // $('#ItemCode').val(obj[0].ItemCode);
+                        // $('#FinishItemCode').val(obj[0].FinishItemCode);
                         $('#ByprodItemCode1').val(obj[0].ByprodItemCode1).change();
                         $('#ByprodItemCode2').val(obj[0].ByprodItemCode2).change();
                         

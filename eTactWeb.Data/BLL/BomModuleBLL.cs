@@ -109,5 +109,22 @@ public class BomModuleBLL : IBomModule
     public async Task<ResponseResult> GetBomMultiLevelGrid()
     {
         return await _BomModuleDAL.GetBomMultiLevelGrid();
+    }  
+    public async Task<ResponseResult> GetRMPartCodeList(string SearchRMPartcode)
+    {
+        return await _BomModuleDAL.GetRMPartCodeList(SearchRMPartcode);
+    } 
+    public async Task<ResponseResult> GetRMItemNameList(string SearchRMItemName)
+    {
+        return await _BomModuleDAL.GetRMItemNameList(SearchRMItemName);
     }
+    public async Task<ResponseResult> GetFGItemNameList(string SearchFGItemName)
+    {
+        return await _BomModuleDAL.GetFGItemNameList(SearchFGItemName);
+    } 
+    public async Task<ResponseResult> GetFGPartCodeList(string SearchFGPartCode)
+    {
+        return await _BomModuleDAL.GetFGPartCodeList(SearchFGPartCode);
+    }
+
 }
