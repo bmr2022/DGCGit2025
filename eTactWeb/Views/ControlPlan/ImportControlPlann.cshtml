@@ -194,9 +194,17 @@
 
 @section Scripts
 {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.css" rel="stylesheet" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
     <script>
         $(document).ready(function () {
             //GetFormRights();
+            var success = '@TempData["200"]';
+            if (success === '200') {
+                $.notify("Data saved successfully!", "success");
+            }
         });
         function UploadButton() {
             var fileInput = $('#ExcelFile');
@@ -346,7 +354,7 @@
 
                 success: function (data, status, xhr) {
                     console.log("success");
-
+                    $.notify("Data saved successfully!", "success");
                 },
                 error: function (result, status, xhr) {
                     $.notify(result.responseText, "error");
@@ -420,6 +428,6 @@
             $("#headerRow").prepend(newTh);
         }
     </script>
-    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+   
 
 }

@@ -21,6 +21,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int EntryByempId);
         Task<ControlPlanModel> GetViewByID(int ID, int YC, string FromDate, string TODate);
         Task<ControlPlanModel> GetByItemOrPartCode(int ItemCode);
-        Task<ResponseResult> SaveMultipleControlPlanData(DataTable ControlPlanDetailGrid);
+        Task<ResponseResult> SaveMultipleControlPlanData(DataTable ControlPlanDetailGrid,int YearCode,string EntryDate, string ForInOutInprocess, int EngApprovedBy, string CC, int UId, string ActualEntryDate);
     }
 }

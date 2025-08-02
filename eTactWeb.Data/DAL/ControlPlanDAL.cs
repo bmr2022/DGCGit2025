@@ -431,7 +431,7 @@ namespace eTactWeb.Data.DAL
 
             return model;
         }
-        public async Task<ResponseResult> SaveMultipleControlPlanData(DataTable ControlPlanDetailGrid)
+        public async Task<ResponseResult> SaveMultipleControlPlanData(DataTable ControlPlanDetailGrid, int YearCode, string EntryDate,string ForInOutInprocess,int EngApprovedBy,string CC,int UId,string ActualEntryDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -439,8 +439,15 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "INSERTMULTIPLE"));
                 SqlParams.Add(new SqlParameter("@DTImportControlPlanData", ControlPlanDetailGrid));
+				SqlParams.Add(new SqlParameter("@CntPlanEntryDate", EntryDate));      
+				SqlParams.Add(new SqlParameter("@CntPlanYearCode", YearCode));
+				SqlParams.Add(new SqlParameter("@ForInOutInprocess", ForInOutInprocess));
+				SqlParams.Add(new SqlParameter("@EngApprovedBy", EngApprovedBy));
+				SqlParams.Add(new SqlParameter("@CC", CC));
+				SqlParams.Add(new SqlParameter("@UId", UId));
+				SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDate));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPQCControlPlanMain", SqlParams);
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPQCControlPlanMain", SqlParams);
             }
             catch (Exception ex)
             {

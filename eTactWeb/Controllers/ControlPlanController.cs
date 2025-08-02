@@ -393,7 +393,7 @@ Item.Remarks ?? ""
             model.ExcelDataList = data;
             return PartialView("_DisplayExcelData", model);
         }
-        public async Task<IActionResult> AddControlPlanListdata(List<ControlPlanViewModel> model)
+        public async Task<IActionResult> AddControlPlanListdata(List<ControlPlanViewModel> model, int YearCode, string EntryDate, string ForInOutInprocess, int EngApprovedBy, string CC, int UId, string ActualEntryDate)
         {
             try
             {
@@ -448,12 +448,15 @@ Item.Remarks ?? ""
                 {
                     ItemListt = JsonConvert.DeserializeObject<IList<ControlPlanViewModel>>(modelData);
                 }
-                var CC = HttpContext.Session.GetString("Branch");
-                var EmpID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                CC = HttpContext.Session.GetString("Branch");
+                EngApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 var ItemGridList = new DataTable();
                 ItemGridList = GetImportDetailTable(ItemListt);
-
-                var Result = await _IControlPlan.SaveMultipleControlPlanData(ItemGridList);
+				YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+				EntryDate = DateTime.Today.ToString("dd/MMM/yyyy", CultureInfo.InvariantCulture);
+				CC = HttpContext.Session.GetString("Branch");
+				EngApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+				var Result = await _IControlPlan.SaveMultipleControlPlanData(ItemGridList,YearCode, EntryDate, ForInOutInprocess,  EngApprovedBy,  CC,  UId,  ActualEntryDate);
 
                 if (Result != null)
                 {
@@ -461,6 +464,7 @@ Item.Remarks ?? ""
                     {
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
+                        TempData.Keep("200");
                     }
                     if (Result.StatusText == "Updated" && Result.StatusCode == HttpStatusCode.Accepted)
                     {

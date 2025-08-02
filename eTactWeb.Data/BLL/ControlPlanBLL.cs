@@ -67,9 +67,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ControlPlanDAL.GetByItemOrPartCode( ItemCode);
         }
-        public async Task<ResponseResult> SaveMultipleControlPlanData(DataTable ControlPlanDetailGrid)
+        public async Task<ResponseResult> SaveMultipleControlPlanData(DataTable ControlPlanDetailGrid, int YearCode, string EntryDate, string ForInOutInprocess, int EngApprovedBy, string CC, int UId, string ActualEntryDate)
         {
-            return await _ControlPlanDAL.SaveMultipleControlPlanData(ControlPlanDetailGrid);
+            return await _ControlPlanDAL.SaveMultipleControlPlanData(ControlPlanDetailGrid, YearCode, EntryDate, ForInOutInprocess, EngApprovedBy, CC, UId, ActualEntryDate);
         }
     }
 }
