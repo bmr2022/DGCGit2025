@@ -157,42 +157,107 @@ namespace eTactWeb.DOM.Models
 
 		//public List<string> Samples { get; set; }
 		public bool Copied { get; set; }
-		public List<string> Samples
-        {
-            get
-            {
-                return new List<string>()
-        {
-            InspValue1?.ToString() ?? string.Empty,
-            InspValue2?.ToString() ?? string.Empty,
-            InspValue3?.ToString() ?? string.Empty,
-            InspValue4?.ToString() ?? string.Empty,
-            InspValue5?.ToString() ?? string.Empty,
-            InspValue6?.ToString() ?? string.Empty,
-            InspValue7?.ToString() ?? string.Empty,
-            InspValue8?.ToString() ?? string.Empty,
-            InspValue9?.ToString() ?? string.Empty,
-            InspValue10?.ToString() ?? string.Empty,
-            InspValue11?.ToString() ?? string.Empty,
-            InspValue12?.ToString() ?? string.Empty,
-            InspValue13?.ToString() ?? string.Empty,
-            InspValue14?.ToString() ?? string.Empty,
-            InspValue15?.ToString() ?? string.Empty,
-            InspValue16?.ToString() ?? string.Empty,
-            InspValue17?.ToString() ?? string.Empty,
-            InspValue18?.ToString() ?? string.Empty,
-            InspValue19?.ToString() ?? string.Empty,
-            InspValue20?.ToString() ?? string.Empty,
-            InspValue21?.ToString() ?? string.Empty,
-            InspValue22?.ToString() ?? string.Empty,
-            InspValue23?.ToString() ?? string.Empty,
-            InspValue24?.ToString() ?? string.Empty,
-            InspValue25?.ToString() ?? string.Empty
-        };
-            }
-        }
+		public List<string>? Samples
+		{
+			get
+			{
+				return new List<string>()
+		{
+			InspValue1?.ToString() ?? string.Empty,
+			InspValue2?.ToString() ?? string.Empty,
+			InspValue3?.ToString() ?? string.Empty,
+			InspValue4?.ToString() ?? string.Empty,
+			InspValue5?.ToString() ?? string.Empty,
+			InspValue6?.ToString() ?? string.Empty,
+			InspValue7?.ToString() ?? string.Empty,
+			InspValue8?.ToString() ?? string.Empty,
+			InspValue9?.ToString() ?? string.Empty,
+			InspValue10?.ToString() ?? string.Empty,
+			InspValue11?.ToString() ?? string.Empty,
+			InspValue12?.ToString() ?? string.Empty,
+			InspValue13?.ToString() ?? string.Empty,
+			InspValue14?.ToString() ?? string.Empty,
+			InspValue15?.ToString() ?? string.Empty,
+			InspValue16?.ToString() ?? string.Empty,
+			InspValue17?.ToString() ?? string.Empty,
+			InspValue18?.ToString() ?? string.Empty,
+			InspValue19?.ToString() ?? string.Empty,
+			InspValue20?.ToString() ?? string.Empty,
+			InspValue21?.ToString() ?? string.Empty,
+			InspValue22?.ToString() ?? string.Empty,
+			InspValue23?.ToString() ?? string.Empty,
+			InspValue24?.ToString() ?? string.Empty,
+			InspValue25?.ToString() ?? string.Empty
+		};
+			}
+			set
+			{
+				if (value == null || value.Count == 0) return;
 
-        public int UId { get; set; }
+				InspValue1 = string.IsNullOrEmpty(value[0]) ? null : value[0];
+				InspValue2 = value.Count > 1 ? value[1] : null;
+				InspValue3 = value.Count > 2 ? value[2] : null;
+				InspValue4 = value.Count > 3 ? value[3] : null;
+				InspValue5 = value.Count > 4 ? value[4] : null;
+				InspValue6 = value.Count > 5 ? value[5] : null;
+				InspValue7 = value.Count > 6 ? value[6] : null;
+				InspValue8 = value.Count > 7 ? value[7] : null;
+				InspValue9 = value.Count > 8 ? value[8] : null;
+				InspValue10 = value.Count > 9 ? value[9] : null;
+				InspValue11 = value.Count > 10 ? value[10] : null;
+				InspValue12 = value.Count > 11 ? value[11] : null;
+				InspValue13 = value.Count > 12 ? value[12] : null;
+				InspValue14 = value.Count > 13 ? value[13] : null;
+				InspValue15 = value.Count > 14 ? value[14] : null;
+				InspValue16 = value.Count > 15 ? value[15] : null;
+				InspValue17 = value.Count > 16 ? value[16] : null;
+				InspValue18 = value.Count > 17 ? value[17] : null;
+				InspValue19 = value.Count > 18 ? value[18] : null;
+				InspValue20 = value.Count > 19 ? value[19] : null;
+				InspValue21 = value.Count > 20 ? value[20] : null;
+				InspValue22 = value.Count > 21 ? value[21] : null;
+				InspValue23 = value.Count > 22 ? value[22] : null;
+				InspValue24 = value.Count > 23 ? value[23] : null;
+				InspValue25 = value.Count > 24 ? value[24] : null;
+			}
+		}
+
+		//public List<string> ?Samples
+		//      {
+		//          get
+		//          {
+		//              return new List<string>()
+		//      {
+		//          InspValue1?.ToString() ?? string.Empty,
+		//          InspValue2?.ToString() ?? string.Empty,
+		//          InspValue3?.ToString() ?? string.Empty,
+		//          InspValue4?.ToString() ?? string.Empty,
+		//          InspValue5?.ToString() ?? string.Empty,
+		//          InspValue6?.ToString() ?? string.Empty,
+		//          InspValue7?.ToString() ?? string.Empty,
+		//          InspValue8?.ToString() ?? string.Empty,
+		//          InspValue9?.ToString() ?? string.Empty,
+		//          InspValue10?.ToString() ?? string.Empty,
+		//          InspValue11?.ToString() ?? string.Empty,
+		//          InspValue12?.ToString() ?? string.Empty,
+		//          InspValue13?.ToString() ?? string.Empty,
+		//          InspValue14?.ToString() ?? string.Empty,
+		//          InspValue15?.ToString() ?? string.Empty,
+		//          InspValue16?.ToString() ?? string.Empty,
+		//          InspValue17?.ToString() ?? string.Empty,
+		//          InspValue18?.ToString() ?? string.Empty,
+		//          InspValue19?.ToString() ?? string.Empty,
+		//          InspValue20?.ToString() ?? string.Empty,
+		//          InspValue21?.ToString() ?? string.Empty,
+		//          InspValue22?.ToString() ?? string.Empty,
+		//          InspValue23?.ToString() ?? string.Empty,
+		//          InspValue24?.ToString() ?? string.Empty,
+		//          InspValue25?.ToString() ?? string.Empty
+		//      };
+		//          }
+		//      }
+
+		public int UId { get; set; }
         public string EntryByMachine { get; set; } = "";
         public int ActualEntryBy { get; set; }
         public string ActualEntryByName { get; set; }

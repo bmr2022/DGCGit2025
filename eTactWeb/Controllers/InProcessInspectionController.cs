@@ -67,8 +67,7 @@ namespace eTactWeb.Controllers
             MainModel.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.InspectedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
-            //MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-         
+            
 
             HttpContext.Session.Remove("KeyInProcessInspectionGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
@@ -77,7 +76,7 @@ namespace eTactWeb.Controllers
 
                 MainModel.Mode = Mode;
                 MainModel = await _IInProcessInspection.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
-                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.Mode = Mode; 
                 MainModel.EntryId = ID;
                 MainModel.YearCode = YC;
                 MainModel.Entry_Date = EntryDate;
@@ -179,7 +178,7 @@ namespace eTactWeb.Controllers
     };
             }
 
-            return View(MainModel); // Pass the model with old data to the view
+            return View(MainModel); 
         }
 		[Route("{controller}/Index")]
 		[HttpPost]
@@ -189,7 +188,7 @@ namespace eTactWeb.Controllers
 		{
 			try
 			{
-				// Get session-stored detail grid
+				
 				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
 				List<InProcessInspectionDetailModel> InProcessInspectionDetail = new List<InProcessInspectionDetailModel>();
 				if (!string.IsNullOrEmpty(modelJson))
@@ -197,7 +196,7 @@ namespace eTactWeb.Controllers
 					InProcessInspectionDetail = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
 				}
 				
-				// Store updated detail back in session
+				
 				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(InProcessInspectionDetail));
 
 				var GIGrid = GetDetailTable(InProcessInspectionDetail);
@@ -293,23 +292,7 @@ namespace eTactWeb.Controllers
 			};
 
 					
-					//for (int i = 1; i <= 25; i++)
-					//{
-					//	var propertyName = $"InspValue{i}";
-					//	var prop = Item.GetType().GetProperty(propertyName);
-					//	decimal value = 0;
-
-					//	//if (prop != null)
-					//	//{
-					//	//	var propValue = prop.GetValue(Item);
-					//	//	value = propValue != null ? Convert.ToDecimal(propValue) : 0;
-					//	//}
-					//	if (prop != null && decimal.TryParse(prop.ToString(), out var result))
-					//	{
-					//		value = result; 
-					//	}
-					//	rowValues.Add(value);
-					//}
+					
 
 					for (int i = 1; i <= 25; i++)
 {
@@ -394,7 +377,7 @@ namespace eTactWeb.Controllers
 		}
 		public async Task<IActionResult> GetInprocessInspectionGridData(int ItemCode, int SampleSize, int? DeletedSeqNo,string? DeletedCharacteristic)
 		{
-            //model.Mode = "Search";
+         
             ViewBag.SampleSize = SampleSize;
 			ViewBag.DeletedSeqNo = DeletedSeqNo;
 			ViewBag.DeletedCharacteristic = DeletedCharacteristic?.Trim().ToLower() ?? "";
@@ -407,163 +390,97 @@ namespace eTactWeb.Controllers
 		
 		}
 
-		[HttpPost]
-        [HttpPost]
-        public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize, int? deletedSeqNo)
-        {
-            try
-            {
-                if (modelList == null || !modelList.Any())
-                    return BadRequest("No data received.");
+		 [HttpPost]
+		public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize, int? deletedSeqNo)
+		{
+			try
+			{
+				if (modelList == null || !modelList.Any())
+					return BadRequest("No data received.");
 
-                string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
-                List<InProcessInspectionDetailModel> existingGrid = new();
+				
+				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
+				List<InProcessInspectionDetailModel> existingGrid = new();
 
-                if (!string.IsNullOrEmpty(modelJson))
-                    existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
+				if (!string.IsNullOrEmpty(modelJson))
+					existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
 
-                var usedSeqNos = existingGrid.Select(x => x.SeqNo).ToList();
+				var usedSeqNos = existingGrid.Select(x => x.SeqNo).ToList();
 
-                // Restore soft-deleted row if applicable
-                if (deletedSeqNo.HasValue)
-                {
-                    var deletedRow = existingGrid.FirstOrDefault(x => x.SeqNo == deletedSeqNo.Value && x.Copied == true);
-                    if (deletedRow != null)
-                    {
-                        var formModel = modelList.FirstOrDefault(x => x.SeqNo == deletedSeqNo.Value)
-                                     ?? modelList.First();
+				
+				if (deletedSeqNo.HasValue && deletedSeqNo.Value > 0)
+				{
+					
+					var deletedRow = existingGrid.FirstOrDefault(x => x.SeqNo == deletedSeqNo.Value && x.Copied == true);
+					if (deletedRow != null)
+					{
+						
+						var formModel = modelList.FirstOrDefault(x => x.SeqNo == deletedSeqNo.Value)
+									 ?? modelList.First();
 
-                        deletedRow.Copied = false;
-                        deletedRow.EvalutionMeasurmentTechnique = formModel.EvalutionMeasurmentTechnique;
-                        deletedRow.ControlMethod = formModel.ControlMethod;
-                        deletedRow.SpecificationFrom = formModel.SpecificationFrom;
-                        deletedRow.SpecificationTo = formModel.SpecificationTo;
-                        deletedRow.RejectionPlan = formModel.RejectionPlan;
-                        deletedRow.FrequencyofTesting = formModel.FrequencyofTesting;
-                        //deletedRow.Samples = formModel.Samples?.ToList() ?? new List<string>();
-                        deletedRow.Samples.Clear();
-                        foreach (var sample in formModel.Samples)
-                        {
-                            deletedRow.Samples.Add(sample);
-                        }
-                        // Remove restored item from the list so it doesn't get added again
-                        modelList = modelList.Where(x => x.SeqNo != deletedSeqNo.Value).ToList();
-                    }
-                }
+						deletedRow.Copied = false;
+						deletedRow.EvalutionMeasurmentTechnique = formModel.EvalutionMeasurmentTechnique;
+						deletedRow.ControlMethod = formModel.ControlMethod;
+						deletedRow.SpecificationFrom = formModel.SpecificationFrom;
+						deletedRow.SpecificationTo = formModel.SpecificationTo;
+						deletedRow.RejectionPlan = formModel.RejectionPlan;
+						deletedRow.FrequencyofTesting = formModel.FrequencyofTesting;
 
-                foreach (var model in modelList)
-                {
-                    if (existingGrid.Any(x => x.Characteristic == model.Characteristic) && !model.Copied)
-                        continue;
+						deletedRow.Samples = new List<string>(formModel.Samples ?? new List<string>());
+						
 
-                    int newSeqNo = 1;
-                    while (usedSeqNos.Contains(newSeqNo))
-                        newSeqNo++;
+					}
+				}
+				
+				else
+				{
+					foreach (var model in modelList)
+					{
+						
+						if (existingGrid.Any(x => x.SeqNo == model.SeqNo && !x.Copied))
+							continue;
 
-                    model.SeqNo = newSeqNo;
-                    usedSeqNos.Add(newSeqNo);
-                    existingGrid.Add(model);
-                }
+						
+						if (model.SeqNo == 0 || usedSeqNos.Contains(model.SeqNo))
+						{
+							int newSeqNo = 1;
+							while (usedSeqNos.Contains(newSeqNo))
+								newSeqNo++;
 
-                HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
+							model.SeqNo = newSeqNo;
+						}
 
-                var MainModel = new InProcessInspectionModel
-                {
-                    DTSSGrid = existingGrid.OrderBy(x => x.SeqNo).ToList(),
-                    SampleSize = sampleSize
-                };
+						usedSeqNos.Add(model.SeqNo);
+						existingGrid.Add(model);
+					}
+				}
 
-                ViewBag.SampleSize = sampleSize;
-                return PartialView("_InProcessInspectionAddtoGrid", MainModel);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, "Internal server error: " + ex.Message);
-            }
-        }
+				
+				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
 
-        //public IActionResult AddToGridData(List<InProcessInspectionDetailModel> modelList, int sampleSize)
-        //{
-        //	try
-        //	{
-        //		if (modelList == null || !modelList.Any())
-        //		{
-        //			ModelState.TryAddModelError("Error", "List cannot be empty.");
-        //			return BadRequest("No data received.");
-        //		}
+				var visibleGrid = existingGrid
+					.Where(x => !x.Copied)
+					.OrderBy(x => x.SeqNo)
+					.ToList();
 
-        //		string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
-        //		List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
+				var MainModel = new InProcessInspectionModel
+				{
+					DTSSGrid = existingGrid.OrderBy(x => x.SeqNo).ToList(),
+					SampleSize = sampleSize
+				};
 
-        //		if (!string.IsNullOrEmpty(modelJson))
-        //		{
-        //			existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
-        //		}
-        //              var usedSeqNos = existingGrid.Select(x => x.SeqNo).ToList();
-        //              foreach (var model in modelList)
-        //		{
+				ViewBag.SampleSize = sampleSize;
 
-        //			//var deletedRow = existingGrid.FirstOrDefault(x => x.Characteristic == model.Characteristic && x.Copied == true);
-        //			var deletedRow = existingGrid.FirstOrDefault(x => x.SeqNo == model.SeqNo && x.Characteristic == model.Characteristic && x.Copied == true);
-        //			if (deletedRow != null)
-        //			{
-        //				// Restore the soft-deleted row with updated values
-        //				deletedRow.Copied = false;
+				return PartialView("_InProcessInspectionAddtoGrid", MainModel);
+			}
+			catch (Exception ex)
+			{
+				return StatusCode(500, "Internal server error: " + ex.Message);
+			}
+		}
 
-        //				// Update other fields as needed (example below, update your actual fields)
-        //				deletedRow.EvalutionMeasurmentTechnique = model.EvalutionMeasurmentTechnique;
-        //				deletedRow.ControlMethod = model.ControlMethod;
-        //				deletedRow.SpecificationFrom = model.SpecificationFrom;
-        //				deletedRow.SpecificationTo = model.SpecificationTo;
-        //				deletedRow.RejectionPlan = model.RejectionPlan;
-        //				deletedRow.FrequencyofTesting = model.FrequencyofTesting;
-        //				//deletedRow.Samples = model.Samples;
-        //				deletedRow.Samples.Clear();
-        //				foreach (var sample in model.Samples)
-        //				{
-        //					deletedRow.Samples.Add(sample);
-        //				}
-        //				// No need to add again because we updated the existing soft-deleted row
-        //				continue;
-        //			}
-        //			if (existingGrid.Any(x => x.Characteristic == model.Characteristic) && !model.Copied)
-        //			//if (existingGrid.Any(x => x.Characteristic == model.Characteristic && x.SeqNo == model.SeqNo) && !model.Copied)
-        //			{
-        //				// skip duplicates
-        //				continue;
-        //			}
-
-        //                  //model.SeqNo = existingGrid.Count + 1;
-
-        //                  int newSeqNo = 1;
-        //                  while (usedSeqNos.Contains(newSeqNo))
-        //                      newSeqNo++;
-
-        //                  model.SeqNo = newSeqNo;
-        //                  usedSeqNos.Add(newSeqNo);
-
-        //			existingGrid.Add(model);
-        //		}
-
-        //		HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
-        //		ViewBag.SampleSize = sampleSize;
-        //		var MainModel = new InProcessInspectionModel
-        //		{
-        //                  //DTSSGrid = existingGrid,
-        //                  DTSSGrid = existingGrid.OrderBy(x => x.SeqNo).ToList(),
-        //                  SampleSize = sampleSize
-        //		};
-
-        //		return PartialView("_InProcessInspectionAddtoGrid", MainModel);
-        //	}
-        //	catch (Exception ex)
-        //	{
-        //		return StatusCode(500, "Internal server error: " + ex.Message);
-        //	}
-        //}
-
-        // GET: Fetch item by SeqNo to edit
-        public IActionResult EditItemRow(int SeqNo)
+		
+		public IActionResult EditItemRow(int SeqNo)
 			{
 				string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
 				List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
@@ -583,7 +500,7 @@ namespace eTactWeb.Controllers
 				return Json(itemToEdit);
 			}
 
-			// POST: Update edited item back to session grid
+			
 			[HttpPost]
 			public IActionResult UpdateItemRow([FromBody] InProcessInspectionDetailModel updatedItem)
 			{
@@ -602,13 +519,13 @@ namespace eTactWeb.Controllers
 					return NotFound("Item not found.");
 				}
 
-				// Replace old item with updated one
+				
 				existingGrid[index] = updatedItem;
 
-				// Save updated list back to session
+				
 				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
 
-				// Return updated partial view to refresh grid UI
+				
 				var model = new InProcessInspectionModel
 				{
 					DTSSGrid = existingGrid,
@@ -618,42 +535,8 @@ namespace eTactWeb.Controllers
 				return PartialView("_InProcessInspectionAddtoGrid", model);
 			}
 
-		// GET or POST: Delete item by SeqNo and update session grid
-		//public IActionResult DeleteItemRow(int SeqNo)
-		//{
-		//	string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
-		//	List<InProcessInspectionDetailModel> existingGrid = new List<InProcessInspectionDetailModel>();
-
-		//	if (!string.IsNullOrEmpty(modelJson))
-		//	{
-		//		existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
-		//	}
-
-		//	var itemToRemove = existingGrid.FirstOrDefault(x => x.SeqNo == SeqNo);
-		//	if (itemToRemove != null)
-		//	{
-		//		existingGrid.Remove(itemToRemove);
-
-
-		//		for (int i = 0; i < existingGrid.Count; i++)
-		//		{
-		//			existingGrid[i].SeqNo = i + 1;
-		//		}
-
-		//	HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
-		//	}
-
-		//	var model = new InProcessInspectionModel
-		//	{
-		//		DTSSGrid = existingGrid,
-		//		SampleSize = existingGrid.FirstOrDefault()?.Samples?.Count ?? 1
-		//	};
-		//	ViewBag.SampleSize = model.SampleSize;
-		//return PartialView("_InProcessInspectionAddtoGrid", model);
-		//}
-
-		//sec
-		public IActionResult DeleteItemRow(int SeqNo, int SampleSize,string Characteristic)
+		
+		public IActionResult DeleteItemRow(int SeqNo, int SampleSize, string Characteristic)
 		{
 			string modelJson = HttpContext.Session.GetString("KeyInProcessInspectionGrid");
 			List<InProcessInspectionDetailModel> existingGrid = new();
@@ -663,33 +546,30 @@ namespace eTactWeb.Controllers
 				existingGrid = JsonConvert.DeserializeObject<List<InProcessInspectionDetailModel>>(modelJson);
 			}
 
-			// Find and remove by SeqNo
+			// Soft delete: mark as Copied = true instead of removing
 			var itemToRemove = existingGrid.FirstOrDefault(x => x.SeqNo == SeqNo);
 			if (itemToRemove != null)
 			{
-				existingGrid.Remove(itemToRemove);
 				itemToRemove.Copied = true;
-				// Reassign SeqNo to keep them continuous
-				//int seq = 1;
-				//foreach (var item in existingGrid)
-				//{
-				//	item.SeqNo = seq++;
-				//}
 
-				// Update session
+				
 				HttpContext.Session.SetString("KeyInProcessInspectionGrid", JsonConvert.SerializeObject(existingGrid));
 			}
 
+			
+			var visibleRows = existingGrid.Where(x => !x.Copied).ToList();
+
 			var model = new InProcessInspectionModel
 			{
-				DTSSGrid = existingGrid,
-				//SampleSize = existingGrid.FirstOrDefault()?.Samples?.Count ?? 1
+				DTSSGrid = visibleRows,
 				SampleSize = SampleSize
 			};
+
 			ViewBag.SampleSize = model.SampleSize;
-            ViewBag.DeletedSeqNo = SeqNo;
-            ViewBag.DeletedCharacteristic = itemToRemove.Characteristic;
-            return PartialView("_InProcessInspectionAddtoGrid", model);
+			ViewBag.DeletedSeqNo = SeqNo;
+			ViewBag.DeletedCharacteristic = itemToRemove?.Characteristic;
+
+			return PartialView("_InProcessInspectionAddtoGrid", model);
 		}
 
 		public async Task<IActionResult> InProcessInspectionDashBoard(string ReportType, string FromDate, string ToDate)
@@ -788,7 +668,7 @@ namespace eTactWeb.Controllers
             var model = new InProcessInspectionModel();
             model.ReportType = dashboardType;
 
-            // Retrieve all cached data (not just 1 page)
+           
             if (!_MemoryCache.TryGetValue("KeynProcessInspectionDashBoardList", out List<InProcessInspectionDetailModel> allData) || allData == null)
             {
                 return PartialView("_InProcessInspectionDashBoardGrid", model);
@@ -796,7 +676,7 @@ namespace eTactWeb.Controllers
 
             List<InProcessInspectionDetailModel> filteredResults;
 
-            // Global search across all string properties
+           
             if (string.IsNullOrWhiteSpace(searchString))
             {
                 filteredResults = allData;
@@ -812,7 +692,7 @@ namespace eTactWeb.Controllers
                     .ToList();
             }
 
-            // Update model with filtered data and pagination
+            
             model.TotalRecords = filteredResults.Count;
             model.DTSSGrid = filteredResults
                                 .Skip((pageNumber - 1) * pageSize)

@@ -62,7 +62,7 @@ public class TaxController : Controller
     }
     public IActionResult ClearAdjGrid()
     {
-        //_MemoryCache.Remove("KeyAdjGrid");
+        _MemoryCache.Remove("KeyAdjGrid");
         HttpContext.Session.Remove("KeyAdjGrid");
         return Json("Ok");
     }
@@ -1576,7 +1576,7 @@ public class TaxController : Controller
             //    Amt = Amt * Convert.ToDecimal(TP) / 100;
             //}
 
-            Amt = Amt * ToDecimal(TP) / 100;
+           // Amt = Amt * ToDecimal(TP) / 100;
         }
 
         return Json(new { Amt, TaxOnExp });
