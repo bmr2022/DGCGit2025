@@ -2528,6 +2528,10 @@
             });
         }
 
+        function ClearSpecificItemTax(ItemCode){
+
+        }
+
         function ClearGrid() {
             var itemGridArr = [];
             var rowCount = $('#divSaleBillList tr').length;
@@ -3230,6 +3234,7 @@
         var EditEachItem = false;
         var EditDeleteBatchValidation = false;
         function EditItemRows(SeqNo) {
+            debugger
             var RowCount = $('#divSaleBillList tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -3243,9 +3248,10 @@
                     success: function (data) {
                         var obj = $.parseJSON(data);
                         if (obj != null) {
-
+                            var ItemCode = $('#GridIC-' + SeqNo).val()
                             ClearDRCRGrid();
                             ClearAdjustmentGrid();
+                            DeleteTaxRowByItemCode(ItemCode);
                             EditEachItem = true;
                             EditDeleteBatchValidation = true;
 

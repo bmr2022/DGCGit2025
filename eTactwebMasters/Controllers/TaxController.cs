@@ -2917,4 +2917,67 @@ public class TaxController : Controller
 
         return ErrMsg;
     }
+
+    public IActionResult DeleteTaxRowByItemCode(string SN, int ItemCode)
+    {
+        decimal TotalTaxAmt = 0;
+        dynamic MainModel = null;
+
+        // Initialize model based on SN
+        if (SN == "ItemList") MainModel = new SaleOrderModel();
+        else if (SN == "PurchaseOrder") MainModel = new PurchaseOrderModel();
+        else if (SN == "DirectPurchaseBill") MainModel = new DirectPurchaseBillModel();
+        else if (SN == "PurchaseBill") MainModel = new PurchaseBillModel();
+        else if (SN == "SaleInvoice") MainModel = new SaleBillModel();
+        else if (SN == "CreditNote") MainModel = new AccCreditNoteModel();
+        else if (SN == "PurchaseRejection") MainModel = new AccPurchaseRejectionModel();
+        else if (SN == "JobWorkIssue") MainModel = new JobWorkIssueModel();
+
+        // Get tax grid from session
+        IList<TaxModel> TaxGrid = new List<TaxModel>();
+        string modelTxGridJson = HttpContext.Session.GetString("KeyTaxGrid");
+
+        if (!string.IsNullOrEmpty(modelTxGridJson))
+        {
+            TaxGrid = JsonConvert.DeserializeObject<List<TaxModel>>(modelTxGridJson);
+        }
+
+        if (TaxGrid != null)
+        {
+            MainModel.TaxDetailGridd = TaxGrid;
+
+            // Cast to List<TaxModel> for LINQ use
+            var taxList = MainModel.TaxDetailGridd as List<TaxModel>;
+
+            if (taxList != null)
+            {
+                // Remove all rows for the given ItemCode
+                var removeList = taxList.Where(x => x.TxItemCode == ItemCode).ToList();
+
+                foreach (var item in removeList)
+                {
+                    taxList.Remove(item);
+                }
+
+                // Reindex TxSeqNo for that ItemCode
+                int index = 0;
+                foreach (var item in taxList.Where(x => x.TxItemCode == ItemCode))
+                {
+                    index++;
+                    item.TxSeqNo = index;
+                }
+
+                // Recalculate total tax amount
+                TotalTaxAmt = taxList.Sum(x => x.TxAmount);
+                TotalTaxAmt += MainModel.ItemNetAmount ?? 0;
+                MainModel.TotalTaxAmt = TotalTaxAmt;
+
+                // Save updated tax list back to session
+                string serializedGrid = JsonConvert.SerializeObject(taxList);
+                HttpContext.Session.SetString("KeyTaxGrid", serializedGrid);
+            }
+        }
+
+        return PartialView("_TaxGrid", MainModel);
+    }
 }
