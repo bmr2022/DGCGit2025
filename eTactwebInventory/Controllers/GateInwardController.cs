@@ -422,11 +422,25 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyGateInardList", serializedGrid);
             return PartialView("_GateInwardDashboardGrid", model);
         }
-        public async Task<IActionResult> GetPendingGateEntrySearchData(int AccountCode, string PoNo, int PoYearCode, int ItemCode, string FromDate, string ToDate, string ScheduleNo, string DashboardType, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
+        public async Task<IActionResult> GetPendingGateEntrySearchData(
+    int AccountCode,
+    string PoNo,
+    int PoYearCode,
+    int ItemCode,
+    string FromDate,
+    string ToDate,
+    string ScheduleNo,
+    string DashboardType,
+    string PartCode,
+    string ItemName,
+    int pageNumber = 1,
+    int pageSize = 10,
+    string SearchBox = "")
+
         {
             //model.Mode = "Search";
             var model = new PendingGateInwardDashboard();
-            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate);
+            model = await _IGateInward.GetPendingGateEntryDashboardData(AccountCode , PoNo, PoYearCode, ItemCode, FromDate, ToDate, PartCode, ItemName);
            
             var modelList = model?.PendingGateEntryDashboard ?? new List<PendingGateInwardDashboard>();
 
@@ -630,7 +644,7 @@ namespace eTactWeb.Controllers
                 model = new PendingGateEntryDashboard();
             }
 
-            model.AccountList = await _IDataLogic.GetDropDownList("CREDITORDEBTORLIST", "F", "SP_GetDropDownList");
+            model.AccountList = await _IDataLogic.GetDropDownList("PendingPOAccountList", "SP_GateMainDetail");
             model.DocumentList = await _IDataLogic.GetDropDownList("DocumentList", "SP_GetDropDownList");
             //model.PONO = await _IDataLogic.GetDropDownList("PENDINGPOLIST","I", "SP_GateMainDetail");
 

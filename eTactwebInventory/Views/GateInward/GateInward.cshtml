@@ -1047,9 +1047,14 @@
             $("#SaleBillNumber,#SaleBillYear,#SaleBillQnty").css("display", "none");
             $('#ItemCheck').prop('disabled', false);
             loadCC();
+                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
              var EntryDate = parseDateToFormat($('#EntryDate').val());
 
-                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                     }else{
+                           var EntryDate = parseDateToFormat1($('#EntryDate').val());
+            $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                     }
                     /*     alert("finalLAST"); */
 
             //$('#AccountCode .select2-search__field')
@@ -1079,6 +1084,73 @@
             e.preventDefault();
             $('#PaymentMode').focus();
         });
+                function parseDateToFormat1(dateString, outputFormat = "dd/MM/yyyy") {
+            if (!dateString) return "";
+
+            // Remove time if present
+            dateString = dateString.trim().split(" ")[0];
+
+            let day, month, year;
+
+            // Handle ISO format (yyyy-MM-dd)
+            if (dateString.includes("-")) {
+                const parts = dateString.split("-");
+                if (parts[0].length === 4) { // yyyy-MM-dd
+                    year = parts[0];
+                    month = parts[1];
+                    day = parts[2];
+                }
+            }
+            // Handle slash format (dd/MM/yyyy or MM/dd/yyyy)
+            else if (dateString.includes("/")) {
+                const parts = dateString.split("/");
+                // If year is last, assume dd/MM/yyyy
+                if (parts[2].length === 4) {
+                    day = parts[0];
+                    month = parts[1];
+                    year = parts[2];
+                }
+                // If year is first, assume yyyy/MM/dd
+                else if (parts[0].length === 4) {
+                    year = parts[0];
+                    month = parts[1];
+                    day = parts[2];
+                }
+            }
+            // Handle month name format (MMM dd yyyy)
+            else if (isNaN(Date.parse(dateString)) === false) {
+                const d = new Date(dateString);
+                day = String(d.getDate()).padStart(2, "0");
+                month = String(d.getMonth() + 1).padStart(2, "0");
+                year = d.getFullYear();
+            }
+
+            // Default to today's date if parsing failed
+            if (!day || !month || !year) {
+                const today = new Date();
+                day = String(today.getDate()).padStart(2, "0");
+                month = String(today.getMonth() + 1).padStart(2, "0");
+                year = today.getFullYear();
+            }
+
+            // Return in desired format
+            switch (outputFormat) {
+                case "yyyy-MM-dd":
+                    return `${year}-${month}-${day}`;
+                case "dd/MMM/yyyy":
+                    return `${day}/${getMonthName(month)}/${year}`;
+                default: // dd/MM/yyyy
+                    return `${day}/${month}/${year}`;
+            }
+        }
+
+        // Helper for month names
+        function getMonthName(month) {
+            const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+            return monthNames[parseInt(month, 10) - 1];
+        }
+
+     
 
         function GetServerDate() {
 

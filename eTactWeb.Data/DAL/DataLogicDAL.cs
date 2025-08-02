@@ -274,6 +274,14 @@ namespace eTactWeb.Data.DAL
                                     Value = Reader["statecode"].ToString()
                                 };
                             }
+                            else if (Flag == "PendingPOAccountList")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader["Account_Name"].ToString(),
+                                    Value = Reader["Account_Code"].ToString()
+                                };
+                            }
                             else if (Flag == "GetDiscountCategory")
                             {
                                 Listval = new TextValue()
@@ -629,6 +637,7 @@ namespace eTactWeb.Data.DAL
                                     Value = Reader["Entry_Id"].ToString()
                                 };
                             }
+                          
                             else if (Flag == "Employee_Master")
                             {
                                 Listval = new TextValue()

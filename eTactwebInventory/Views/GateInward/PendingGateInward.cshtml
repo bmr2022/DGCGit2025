@@ -159,38 +159,39 @@
 
 			if (checkbox && checkbox.checked) {
 				var cells = row.querySelectorAll('td');
+				var qtyInput = cells[13].querySelector('input'); 
 
 				var rowData = {
-					SeqNo: seqCounter,
-					AccountCode: document.getElementById("VendorName").value,
-					docTypeId: document.getElementById("docTypeId").value,
-					PoNo: cells[3].textContent.trim(),
-					PoYear:parseInt (cells[4].textContent.trim()),
-					SchNo: cells[5].textContent.trim(),
-					SchYearCode: (cells[6].textContent.trim()),
-					ItemName: cells[7].textContent.trim(),
-					PartCode: cells[8].textContent.trim(),
-					Unit: cells[9].textContent.trim(),
-					PendQty: parseFloat(cells[10].textContent.trim()),
-					Qty: parseFloat(cells[11].querySelector('input').value.trim()),
-					Rate: parseFloat(cells[12].textContent.trim()),
-					AltUnit: cells[13].textContent.trim(),
-					AltQty: parseFloat(cells[14].textContent.trim()),
-					ItemSize: cells[15].textContent.trim(),
-					ItemColor: cells[16].textContent.trim(),
-					Remarks: cells[17].textContent.trim(),
-					ProcessName: cells[18].textContent.trim(),
-					SaleBillNo: cells[19].textContent.trim(),
-					SaleBillYearCode: parseInt(cells[20].textContent.trim()),
-					SaleBillQty: parseFloat(cells[21].textContent.trim()),
-					AgainstChallanNo: cells[22].textContent.trim(),
-					AgainstChallanYearcode: parseInt(cells[23].textContent.trim()),
-					ChallanQty: parseFloat(cells[24].textContent.trim()),
-					SupplierBatchNo: cells[25].textContent.trim(),
-					ShelfLife: parseFloat(cells[26].textContent.trim()),
-					NoOfBoxes: parseInt(cells[27].textContent.trim()),
-					ItemCode: parseInt(cells[1].textContent.trim()) // hidden column
-				};
+			SeqNo: seqCounter,
+			AccountCode: document.getElementById("VendorName").value,
+			docTypeId: document.getElementById("docTypeId").value,
+			PoNo: cells[3].textContent.trim(),
+			PoYear: parseInt(cells[5].textContent.trim()),
+			SchNo: cells[6].textContent.trim(),
+			SchYearCode: cells[8].textContent.trim(),
+			ItemName: cells[9].textContent.trim(),
+			PartCode: cells[10].textContent.trim(),
+			Unit: cells[11].textContent.trim(),
+			PendQty: parseFloat(cells[12].textContent.trim()),
+			Qty: qtyInput ? parseFloat(qtyInput.value.trim()) : 0,
+			Rate: parseFloat(cells[14].textContent.trim()),
+			AltUnit: cells[15].textContent.trim(),
+			AltQty: parseFloat(cells[16].textContent.trim()),
+			ItemSize: cells[17].textContent.trim(),
+			ItemColor: cells[18].textContent.trim(),
+			Remarks: cells[19].textContent.trim(),
+			ProcessName: cells[20].textContent.trim(),
+			SaleBillNo: cells[21].textContent.trim(),
+			SaleBillYearCode: parseInt(cells[22].textContent.trim()),
+			SaleBillQty: parseFloat(cells[23].textContent.trim()),
+			AgainstChallanNo: cells[24].textContent.trim(),
+			AgainstChallanYearcode: parseInt(cells[25].textContent.trim()),
+			ChallanQty: parseFloat(cells[26].textContent.trim()),
+			SupplierBatchNo: cells[27].textContent.trim(),
+			ShelfLife: parseFloat(cells[28].textContent.trim()),
+			NoOfBoxes: parseInt(cells[29].textContent.trim()),
+			ItemCode: parseInt(cells[1].textContent.trim()) // hidden column
+		};
 
 				selectedData.push(rowData);
 				seqCounter++; // Only increment if checkbox is checked
@@ -360,9 +361,11 @@
 		let data = {
 
 					AccountCode: $('#VendorName').val(),
-					PoNo: $('#PoNo').val(),
+					PoNo: $('#PONO').val(),
 					PoYearCode: $('#SessionYearCode').val(),
 					ItemCode: 0, // if needed, fetch from a dropdown
+					PartCode:$("#PartCode").val(),
+					ItemName:$("#ItemName").val(),
 					FromDate: $('#FromDate').val(),
 					ToDate: $('#ToDate').val(),
 					ScheduleNo: $('#ScheduleNo').val(),

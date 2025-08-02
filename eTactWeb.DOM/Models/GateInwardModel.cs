@@ -85,6 +85,8 @@ public class PendingGateInwardDashboard
     public string? Gateno { get; set; }
     public string? GDate { get; set; }
     public string? VendorName { get; set; }
+    public string? PODate { get; set; }
+    public string? SODate { get; set; }
     public int? AccountCode { get; set; }
     public string? address { get; set; }
     public string? Invoiceno { get; set; }
@@ -126,8 +128,9 @@ public class PendingGateInwardDashboard
 
     // PO and Schedule Info
     public string? PONo { get; set; }
-    public string? ScheduleNo { get; set; }
+    public string? SchNo { get; set; }
     public int PoYear { get; set; }
+    public int SoYearCode { get; set; }
     public int SchYearCode { get; set; }
     public string? POtype { get; set; }
     public string? POType { get; set; }

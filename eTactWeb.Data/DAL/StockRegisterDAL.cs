@@ -41,21 +41,25 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlCommand oCmd = new SqlCommand("SPReportSTockRegisterForAllStore", myConnection)
                     {
-                        CommandType = CommandType.StoredProcedure
+                        CommandType = CommandType.StoredProcedure,
+                        CommandTimeout = 200
                     };
                     if (ReportType == "SHOWALLSTORESTOCK" || ReportType == "SHOWALLSTORE+WIPSTOCK" || ReportType == "SHOWALLSTORE+WIPSTOCK+JOBWORK")
                     {
 
                         oCmd = new SqlCommand("SPReportSTockRegisterForAllStore", myConnection)
                         {
-                            CommandType = CommandType.StoredProcedure
+                            CommandType = CommandType.StoredProcedure,
+                            CommandTimeout = 200
+
                         };
                     }
                     else
                     {
                         oCmd = new SqlCommand("SPReportSTockRegister", myConnection)
                         {
-                            CommandType = CommandType.StoredProcedure
+                            CommandType = CommandType.StoredProcedure,
+                            CommandTimeout = 200
                         };
                     }
                     var fromDt = CommonFunc.ParseFormattedDate(FromDate);
