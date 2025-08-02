@@ -150,6 +150,7 @@ public class Common
     {
         public string? Text { get; set; }
         public string? Value { get; set; }
+        public int EmpId { get; set; }
     }
 
     public class TimeStamp

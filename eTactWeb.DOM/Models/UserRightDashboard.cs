@@ -9,7 +9,9 @@ namespace eTactWeb.DOM.Models
 {
     public class UserRightDashboard
     {
+        public int SeqNo {  get; set; }
         public int EmpId {  get; set; }
+        public string? EmpName {  get; set; }
         public int UserId { get; set; }
         public IList<TextValue>? UserList { get; set; }
         public string? Mode {  get; set; }

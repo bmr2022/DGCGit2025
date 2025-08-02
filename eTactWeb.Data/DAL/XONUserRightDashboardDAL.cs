@@ -51,7 +51,8 @@ namespace eTactWeb.Data.DAL
                             Listval = new TextValue()
                             {
                                 Text = Reader["UserName"].ToString(),
-                                Value = Reader["UID"].ToString()
+                                Value = Reader["UID"].ToString(),
+                                EmpId = Convert.ToInt32(Reader["EmpID"])
                             };
                             _List.Add(Listval);
                         }
