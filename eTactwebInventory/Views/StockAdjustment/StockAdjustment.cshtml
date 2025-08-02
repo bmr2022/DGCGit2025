@@ -658,7 +658,7 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate","SaleOrder")",
+                       url: "@Url.Action("GetServerDate", "GateInward")",
                 async: false,
                 success: function (result, status, error) {
                     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));

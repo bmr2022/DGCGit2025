@@ -14,8 +14,10 @@
                 <th>Chk/Unchk <input id="checkuncheck" class="form-check-input me-1 mt-2" type="checkbox" role="switch" /></th>
                 <th>Sr#</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO No</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
                     <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Year</th>
-                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th>
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch No</th> 
+                    <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Date</th>
                     <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sch Year Code</th>
                     <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
                     <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>
@@ -62,9 +64,11 @@
                             <td style="display:none;">@item.ItemCode</td>
                             <td>@srNo</td> <!-- Action (Serial) -->
                             <td>@item.PONo</td>
-                            <td>@item.yearcode</td>
-                            <td>@item.ScheduleNo</td>
-                            <td>@item.SchYearCode</td>
+                            <td>@item.PODate</td>
+                            <td>@item.PoYear</td>
+                            <td>@item.SchNo</td>
+                            <td>@item.SODate</td>
+                            <td>@item.SoYearCode</td>
                             <td>@item.ItemName</td>
                             <td>@item.PartCode</td>
                             <td>@item.Unit</td>

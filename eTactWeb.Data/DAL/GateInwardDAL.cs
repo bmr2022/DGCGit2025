@@ -120,7 +120,7 @@ public class GateInwardDAL
         return _ResponseResult;
     }
     public async Task<PendingGateInwardDashboard>  GetPendingGateEntryDashboardData(int AccountCode, string PoNo, int PoYearCode, int ItemCode,
-  string FromDate, string ToDate)
+  string FromDate, string ToDate,string Partcode,string ItemName)
     {
         DataSet? oDataSet = new DataSet();
         var model = new PendingGateInwardDashboard();
@@ -144,6 +144,8 @@ public class GateInwardDAL
                 oCmd.Parameters.AddWithValue("@itemcode", ItemCode);
                 oCmd.Parameters.AddWithValue("@FromDate", fromDt);
                 oCmd.Parameters.AddWithValue("@ToDate", toDt);
+                oCmd.Parameters.AddWithValue("@PartCode", Partcode);
+                oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                 await myConnection.OpenAsync();
                 using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
                 {
@@ -168,10 +170,13 @@ public class GateInwardDAL
                                            AltUnit = dr["AltUnit"].ToString(),
                                            Rate = string.IsNullOrEmpty(dr["Rate"].ToString()) ? 0 : Convert.ToSingle(dr["Rate"]),
                                            POTypeServItem = dr["POTypeServItem"].ToString(),
-                                           ScheduleNo = dr["ScheduleNo"].ToString(),
+                                           SchNo = dr["ScheduleNo"].ToString(),
                                            POType = dr["POType"].ToString(),
                                            VendorName = dr["Account_name"].ToString(),
-                                           yearcode = string.IsNullOrEmpty(dr["YearCode"].ToString()) ? 0 : Convert.ToInt32(dr["YearCode"])
+                                           PODate = dr["podate"].ToString(),
+                                           SODate = dr["schdate"].ToString(),
+                                           PoYear = string.IsNullOrEmpty(dr["PoYearCode"].ToString()) ? 0 : Convert.ToInt32(dr["PoYearCode"]),
+                                           SoYearCode = string.IsNullOrEmpty(dr["SoYearcode"].ToString()) ? 0 : Convert.ToInt32(dr["SoYearcode"])
 
                                        }).ToList();
             }
