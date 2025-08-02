@@ -716,6 +716,9 @@
 				// $('#AmmDate').datepicker("option", "minDate", parseDateToFormat($('#WEF').val()));
 				// $('#AmmDate').datepicker("option", "maxDate", parseDateToFormat($('#POCloseDate').val()));
 						 var EntryDate = parseDateToFormat($('#EntryDate').val());
+						 if($('#Mode').val()=="U"){
+									 EntryDate = ($('#EntryDate').val());
+						 }
 					 /*    console.log("EntryDate" + EntryDate); */
 						$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 						// alert("entrydate2" + $('#EntryDate').val());
