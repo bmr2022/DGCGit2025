@@ -7,7 +7,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models
 {
-    public class UserRightDashboard
+    public class UserRightDashboardModel
     {
         public int SeqNo {  get; set; }
         public int EmpId {  get; set; }
@@ -24,6 +24,6 @@ namespace eTactWeb.DOM.Models
         public DateTime CreatedOn { get; set; }
         public int UpdatedById {  get; set; }
         public DateTime UpdatedOn { get; set; }
-        public IList<UserRightDashboard>? UserRightsDashboard { get; set; }
+        public IList<UserRightDashboardModel>? UserRightsDashboard { get; set; }
     }
 }

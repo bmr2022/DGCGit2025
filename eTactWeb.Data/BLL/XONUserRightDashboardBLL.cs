@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -32,6 +33,14 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> GetDashboardSubScreen(string DashboardName)
         {
             return await _XONUserRightDashboardDAL.GetDashboardSubScreen(DashboardName);
+        }
+        public async Task<ResponseResult> SaveUserRightDashboard(UserRightDashboardModel model, DataTable UserRightDashboardGrid)
+        {
+            return await _XONUserRightDashboardDAL.SaveUserRightDashboard(model, UserRightDashboardGrid);
+        }
+        public async Task<UserRightDashboardModel> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen)
+        {
+            return await _XONUserRightDashboardDAL.GetSearchData(EmpName, UserName, DashboardName, DashboardSubScreen);
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model eTactWeb.DOM.Models.UserRightDashboard
+﻿@model eTactWeb.DOM.Models.UserRightDashboardModel
 
 @{
     ViewData["Title"] = "User Right Dashboard";
@@ -6,7 +6,7 @@
 }
 
 <div class="shadow-lg">
-    <form asp-action="UserRights" autocomplete="off" class="form-horizontal">
+    <form asp-action="XONUserRightDashboard" autocomplete="off" class="form-horizontal" asp-controller="XONUserRightDashboard">
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>User Right Dashboard</strong>
@@ -33,7 +33,7 @@
                             </div>
 
                             <!-- Hidden field to store EmpId -->
-                            <input type="hidden" asp-for="EmpId"  />
+                            <input type="hidden" asp-for="EmpId" />
 
                             <!-- User dropdown -->
                             <select class="form-select" id="UserId" name="UserId">
@@ -55,7 +55,7 @@
                         </div>
                         <div class="col col-md-2 col-sm-6 col-xs-6">
                             <label class="form-label">Select Dashboard SubScreen</label>
-                            <select class="form-select fs" asp-for="DashboardSubScreen" >
+                            <select class="form-select fs" asp-for="DashboardSubScreen">
                                 <option value=0>-Select-</option>
                             </select>
                         </div>
@@ -89,7 +89,7 @@
                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                 </div>
                 <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                    <button type="button" class="btn btn-sm btn-outline-danger btnClearGrid mt-3" style="margin-top:10px;">
+                    <button type="button" class="btn btn-sm btn-outline-danger mt-3" style="margin-top:10px;" onclick="ClearUserRightDashboardGrid()">
                         <i class="fa-solid fa-hand-sparkles fa-fw fa-lg"></i>
                         CLEAR GRID
                     </button>
@@ -134,22 +134,26 @@
                 </div>
             </div>
             <div class="card-body overflow-auto pb-0 table-responsive" style="max-height:350px;">
-                <table class="table table-hover table-bordered table-striped" id="UserRightsTable">
-                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static;" id="UserRighthead">
-                       
+                <table class="table table-hover table-bordered table-striped" id="UserRightDashboardTable">
+                    <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap;position:static;" id="UserRightDashboardHead">
+                        <tr>
+                            <th>Action</th>
+                            <th>User Name</th>
+                            <th>Dashboard Name</th>
+                            <th>Dashboard SubScreen</th>
+                            <th>IsView</th>
+                        </tr>
                     </thead>
-                    <tbody id="UserRightsGrid">
-                       
+                    <tbody id="divUserRightDashboardGrid">
+                        <partial name="_XONUserRightDashboardGrid" />
                     </tbody>
                 </table>
             </div>
         </div>
-
-
     </form>
 </div>
 
-@section Scripts{
+@section Scripts {
     <script>
         $(document).ready(function () {
             $('#UserId').on('change', function () {
@@ -157,13 +161,14 @@
                 $('#EmpId').val(selectedEmpId || '');
             });
         });
+
         function GetDashboardSubScreen() {
 
             $.ajax({
                 url: "@Url.Action("GetDashboardSubScreen")",
                 type: 'GET',
                 async: false,
-                data: { DashboardName: $('#DashboardName').val()},
+                data: { DashboardName: $('#DashboardName').val() },
                 success: function (data) {
                     debugger
                     var obj = $.parseJSON(data);
@@ -178,7 +183,6 @@
         }
 
         $('.ItemBtn').click(function (e) {
-
             e.preventDefault();
             if (!ValidateUserRightDashboard_Grid()) return;
 
@@ -187,60 +191,37 @@
                 "UserName": $('#UserId').find(":selected").text(),
                 "EmpId": parseInt($('#EmpId').val()),
                 "DashboardName": $('#DashboardName').find(":selected").text(),
-                "DashboardSubScreen": $('#DashboardSubScreen').find(":selected").text()
-            }
+                "DashboardSubScreen": $('#DashboardSubScreen').find(":selected").text(),
+                "IsView": $('#IsView').is(':checked')
+            };
 
             $.ajax({
-                url: "@Url.Action("AddGateInwardDetail")",
+                url: "@Url.Action("AddUserRightsDashboardDetail")", // ✅ FIXED
                 type: "POST",
-                data: ItemData,
+                data: UserRightDashboard,
                 beforeSend: function (xhr) {
+                    // Optional loading UI
                 },
                 success: function (data, status, xhr) {
-                    console.log(2);
-                    if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                    if (data === "Duplicate" && (xhr.status === 207 || xhr.responseText === "Duplicate")) {
                         $.notify('Duplicate Item Not Allowed.', "info");
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                     }
-                    else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
+                    else if (xhr.status === 205 && (xhr.responseText.indexOf('Reset') !== -1 || xhr.statusText.indexOf('Reset') !== -1)) {
                         $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
                     }
                     else {
-
-                        if (!DelSeqNo && DelSeqNo != 0) {
-                            $('#divSaleItemGrid ."' + DelSeqNo + "'").remove();
-                        }
-                        $('#divSaleItemGrid').html(data);
-                        $.notify('Item Added To Grid.', "success");
-                        var sum = 0;
-                        var rowCount = $('#divSaleItemGrid tr').length;
-                        var columnCount = $('#divSaleItemGrid tr td').length;
-
-                        for (var i = 1; i <= rowCount; i++) {
-
-                            sum += parseFloat($('#Qty-' + i).text() == '.00' ? 0 : $('#Qty-' + i).text()) * parseFloat($('#Rate-' + i).text() == '.00' ? 0 : $('#Rate-' + i).text());
-                        }
-                        //noofitems
-                        if (columnCount > 1)
-                            $('#lblItemCount').text(rowCount);
-                        else
-                            $('#lblItemCount').text(0);
-                        //ClearItem();
+                        $('#divUserRightDashboardGrid').html(data);
                         editingNow = false;
+                        ClearGrid();
+                        $.notify('Item Added To Grid.', "success");
                     }
-
-                    $('#lblItemNetAmount').text(sum.toFixed(2));
-                    ClearGrid();
                 },
-                error: function (result, status, xhr) {
-                    $.notify(result.responseText, "error");
-                },
-                failure: function (result, status, xhr) {
+                error: function (xhr, status, error) {
+                    $.notify(xhr.responseText || "An error occurred", "error");
                 },
                 complete: function () {
-                    console.log(5);
                     $('.Schedule').fadeIn();
-                    //$('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                 }
             }).done(function () {
                 console.log(3);
@@ -250,6 +231,23 @@
                 console.log(4);
             });
         });
+
+        function ClearUserRightDashboardGrid() {
+            $.ajax({
+                type: "POST",
+                url: "/XONUserRightDashboard/ClearUserRightDashboardGrid",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    $('#divUserRightDashboardGrid').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divUserRightDashboardGrid').html(NoData);
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
 
         function ValidateUserRightDashboard_Grid() {
 
@@ -272,12 +270,82 @@
                 $.notify("Dashboard SubScreen is Required", "error");
                 Err = 1;
             }
-            
+
             Err == 1 ? ShowErrorFld('H_SAGrid') : HideErrorFld('H_SAGrid');
             if (Err == 1) return false;
 
             return true;
         }
+
+        var editingNow = false;
+        function EditItemRow(SeqNo) {
+            debugger
+            if (editingNow == false) {
+
+                return new Promise((resolve, reject) => {
+                    $.ajax({
+                        url: '@Url.Action("EditItemRow")',
+                        type: "POST",
+                        data: { SeqNo: SeqNo, Mode: $('#Mode').val() },
+                    })
+                        .done(function (data, status, xhr) {
+
+                            if (data === "Duplicate" && (xhr.statusCode === 207 || xhr.responseText === "Duplicate")) {
+                                $.notify("If Same Tax Exists, Item Cannot Be Edited...!", "warning");
+                                reject("Duplicate");
+                            } else {
+                                editingNow = true;
+                                var obj = $.parseJSON(data);
+                                DeleteItemRow(SeqNo)
+                                    .then(() => {
+                                        if (isEditAllowed == "false") {
+                                            reject("Edit not allowed");
+                                        } else {
+                                            $('#UserId').val(obj[0].UserId).trigger('change');
+                                            $('#DashboardName').val(obj[0].DashboardName).trigger('change');
+                                            $('#EmpId').val(obj[0].EmpId);
+                                            $('#DashboardSubScreen').val(obj[0].DashboardSubScreen).trigger('change');
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        reject(error);
+                                    });
+                            }
+                        })
+                        .fail(function (response) {
+                            reject(response.responseText);
+                        });
+                });
+            }
+            else {
+                $.notify("Cannot edit as one item is already on above edit grid", "error");
+            }
+        }
+
+        function DeleteItemRow(SeqNo) {
+
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: '@Url.Action("DeleteItemRow")',
+                    type: "POST",
+                    data: { "SeqNo": SeqNo, "Mode": $('#Mode').val() },
+                    success: function (data) {
+                        $('#divUserRightDashboardGrid').html(data);
+                        $.notify("Item Deleted from Grid", "info");
+                        isEditAllowed = "true";
+                        resolve();
+                    },
+                    error: function (response) {
+                        reject(response.responseText);
+                    }
+                });
+            });
+        }
+
+        function ClearGrid(){
+            $('#UserId,#DashboardName,#DashboardSubScreen').prop('selectedIndex', 0);
+        }
+
 
     </script>
 }

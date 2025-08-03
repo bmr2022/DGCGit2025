@@ -1,4 +1,5 @@
-﻿using System;
+﻿using eTactWeb.DOM.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,5 +13,7 @@ namespace eTactWeb.Services.Interface
         Task<IList<TextValue>> GetUserList(string ShowAllUsers);
         Task<IList<TextValue>> GetDashboardName();
         Task<ResponseResult> GetDashboardSubScreen(string DashboardName);
+        Task<ResponseResult> SaveUserRightDashboard(UserRightDashboardModel model, DataTable UserRightDashboardGrid);
+        Task<UserRightDashboardModel> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen);
     }
 }

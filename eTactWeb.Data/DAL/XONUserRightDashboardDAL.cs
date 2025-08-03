@@ -1,4 +1,5 @@
 ﻿using eTactWeb.Data.Common;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Org.BouncyCastle.Ocsp;
@@ -137,6 +138,87 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+        }
+        public async Task<ResponseResult> SaveUserRightDashboard(UserRightDashboardModel model, DataTable UserRightDashboardGrid)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+
+                var SqlParams = new List<dynamic>();
+                if (model.Mode == "U" || model.Mode == "V")
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    SqlParams.Add(new SqlParameter("@UpdatedBy", model.UpdatedById));
+                }
+                else
+                {
+                    SqlParams.Add(new SqlParameter("@Flag", "INSERT"));
+                    SqlParams.Add(new SqlParameter("@CreatedBy", model.CreatedById));
+                }
+                SqlParams.Add(new SqlParameter("@DTUserRightDashboardGrid", UserRightDashboardGrid));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_UserRightDashboard", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<UserRightDashboardModel> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen)
+        {
+            DataSet? oDataSet = new DataSet();
+            var _UserRightDashboardModel = new UserRightDashboardModel();
+            try
+            {
+                DataTable? oDataTable = new DataTable();
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SP_UserRights", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@EmpName", EmpName);
+                    oCmd.Parameters.AddWithValue("@UserName", UserName);
+                    oCmd.Parameters.AddWithValue("@Flag", "SEARCH");
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    _UserRightDashboardModel.UserRightsDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                                    select new UserRightDashboardModel
+                                                                    {
+                                                                        UserId = string.IsNullOrEmpty(dr["UID"].ToString()) ? 0 : Convert.ToInt32(dr["UID"].ToString()),
+                                                                        EmpId = string.IsNullOrEmpty(dr["EmpID"].ToString()) ? 0 : Convert.ToInt32(dr["EmpID"].ToString()),
+                                                                        EmpName = dr["EmpName"].ToString(),
+                                                                        UserName = dr["UserName"].ToString()
+                                                                    }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+                return Error;
+            }
+            finally
+            {
+                if (Reader != null)
+                {
+                    Reader.Close();
+                    Reader.Dispose();
+                }
+            }
+
+            return _UserRightDashboardModel;
         }
     }
 }

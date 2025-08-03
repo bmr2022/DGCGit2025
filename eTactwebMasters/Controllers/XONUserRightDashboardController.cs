@@ -2,47 +2,57 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
+using static eTactWeb.Data.Common.CommonFunc;
+using System.Net;
 using static eTactWeb.DOM.Models.Common;
+using System.Data;
+using DocumentFormat.OpenXml.Wordprocessing;
+using System.Data.SqlClient;
+using System.Dynamic;
 
 namespace eTactwebMasters.Controllers
 {
     public class XONUserRightDashboardController : Controller
     {
-        private readonly EncryptDecrypt _EncryptDecrypt;
         private readonly IXONUserRightDashboardBLL _IXONUserRightDashboardBLL;
         private readonly IDataLogic _IDataLogic;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
-        private dynamic Result;
-        public XONUserRightDashboardController(IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, EncryptDecrypt encryptDecrypt, IXONUserRightDashboardBLL IXONUserRightDashboardBLL)
+        private readonly ILogger<XONUserRightDashboardController> _logger;
+        public XONUserRightDashboardController(ILogger<XONUserRightDashboardController> logger, IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, IXONUserRightDashboardBLL IXONUserRightDashboardBLL)
         {
             _IDataLogic = iDataLogic;
+            _logger = logger;
             _IWebHostEnvironment = iWebHostEnvironment;
-            _EncryptDecrypt = encryptDecrypt;
             _IXONUserRightDashboardBLL = IXONUserRightDashboardBLL;
         }
         public async Task<IActionResult> XONUserRightDashboard(int ID, string Mode, string userName = "")
         {
-            UserRightDashboard model = new();
+            UserRightDashboardModel model = new();
             if (Mode == "C")
             {
                 string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
-                List<UserRightDashboard> UserRightDashboardModelDetail = new List<UserRightDashboard>();
+                List<UserRightDashboardModel> UserRightDashboardModelDetail = new List<UserRightDashboardModel>();
                 if (!string.IsNullOrEmpty(modelJson))
                 {
-                    UserRightDashboardModelDetail = JsonConvert.DeserializeObject<List<UserRightDashboard>>(modelJson);
+                    UserRightDashboardModelDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
                 }
                 model.UserRightsDashboard = UserRightDashboardModelDetail;
             }
             else
             {
                 HttpContext.Session.Remove("KeyUserRightsDetail");
-                model.UserRightsDashboard = new List<UserRightDashboard>();
+                model.CreatedById = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.CreatedOn = DateTime.Now;
+                model.UserRightsDashboard = new List<UserRightDashboardModel>();
             }
 
             if (ID != 0 || (Mode == "V" || Mode == "U" || Mode == "C"))
             {
                 model.Mode = Mode;
+                model.UpdatedById = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                model.UpdatedOn = DateTime.Now;
             }
 
             model.UserList = await _IXONUserRightDashboardBLL.GetUserList("False");
@@ -50,6 +60,95 @@ namespace eTactwebMasters.Controllers
             //model.MainMenuList = await _IAdminModule.GetMenuList("MainMenu", model.Module, "");
             //model.EmpID = ID;
             return View(model);
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> XONUserRightDashboard(UserRightDashboardModel model)
+        {
+            try
+            {
+                var UserRightDashboardGrid = new DataTable();
+
+                string modelJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                List<UserRightDashboardModel> UserRightDashboardDetail = new List<UserRightDashboardModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    UserRightDashboardDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
+                }
+                string modelEditJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                List<UserRightDashboardModel> UserRightDashboardDetailEdit = new List<UserRightDashboardModel>();
+                if (!string.IsNullOrEmpty(modelEditJson))
+                {
+                    UserRightDashboardDetailEdit = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelEditJson);
+                }
+
+                if (UserRightDashboardDetail == null && UserRightDashboardDetailEdit == null)
+                {
+                    ModelState.Clear();
+                    ModelState.TryAddModelError("UserRightDashboardDetail", "User Right Dashboard Grid Should Have Atleast 1 Item...!");
+                    return View("XONUserRightDashboard", model);
+                }
+
+                else
+                {
+                    model.CreatedById = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                    if (model.Mode == "U")
+                    {
+                        model.UpdatedById = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        UserRightDashboardGrid = GetDetailTable(UserRightDashboardDetailEdit);
+                    }
+                    else
+                    {
+                        UserRightDashboardGrid = GetDetailTable(UserRightDashboardDetail);
+                    }
+
+                    var Result = await _IXONUserRightDashboardBLL.SaveUserRightDashboard(model, UserRightDashboardGrid);
+
+                    if (Result != null)
+                    {
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["200"] = "200";
+                            HttpContext.Session.Remove("KeyUserRightDashboardDetail");
+                        }
+                        if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
+                        {
+                            ViewBag.isSuccess = true;
+                            TempData["202"] = "202";
+                        }
+                        if (Result.StatusText == "Duplicate")
+                        {
+                            string gateNo = string.Empty;
+                            gateNo = Result.Result.Rows[0]["Result"].ToString();
+                            ViewBag.isSuccess = false;
+                            TempData["409"] = "409";
+                        }
+                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            ViewBag.isSuccess = false;
+                            TempData["500"] = "500";
+                            _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
+                            return View("Error", Result);
+                        }
+                    }
+                }
+                return RedirectToAction(nameof(XONUserRightDashboard));
+            }
+            catch (Exception ex)
+            {
+                LogException<XONUserRightDashboardController>.WriteException(_logger, ex);
+
+
+                var ResponseResult = new ResponseResult()
+                {
+                    StatusCode = HttpStatusCode.InternalServerError,
+                    StatusText = "Error",
+                    Result = ex
+                };
+
+                return View("Error", ResponseResult);
+            }
         }
         public async Task<JsonResult> GetUserList(string ShowAll)
         {
@@ -67,154 +166,256 @@ namespace eTactwebMasters.Controllers
             string JsonString = JsonConvert.SerializeObject(Result);
             return Json(JsonString);
         }
-        public async Task<IActionResult> AddUserRightsDashboardDetail(UserRightDashboard model)
+        public IActionResult AddUserRightsDashboardDetail(UserRightDashboardModel model)
         {
             try
             {
-                string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
-                IList<UserRightDashboard> UserRightDashboardModelDetail = new List<UserRightDashboard>();
-                if (!string.IsNullOrEmpty(modelJson))
+                if (model.Mode == "U" || model.Mode == "V")
                 {
-                    UserRightDashboardModelDetail = JsonConvert.DeserializeObject<List<UserRightDashboard>>(modelJson);
-                }
-
-                //ALL MODULES and MAINMENUS
-                if (model.DashboardName == "0" && model.DashboardName == "0")
-                {
-                    var MainModel1 = new UserRightDashboard();
-
-                    if (UserRightDashboardModelDetail != null)
+                    string modelJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                    List<UserRightDashboardModel> UserRightDashboardDetail = new List<UserRightDashboardModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
                     {
-                        if (UserRightDashboardModelDetail.Count > 0)
+                        UserRightDashboardDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
+                    }
+
+                    var MainModel = new UserRightDashboardModel();
+                    var UserRightDashboardModelGrid = new List<UserRightDashboardModel>();
+                    var UserRightDashboardGrid = new List<UserRightDashboardModel>();
+                    var SSGrid = new List<UserRightDashboardModel>();
+
+                    if (model != null)
+                    {
+                        if (UserRightDashboardDetail == null || UserRightDashboardDetail.Count() == 0)
                         {
-                            return StatusCode(203, "AlreadyExists");
+                            model.SeqNo = 1;
+                            UserRightDashboardGrid.Add(model);
                         }
                         else
                         {
-                            var UserRightDashboardModel = new UserRightDashboard();
-                            var UserRightDashboardGrid1 = new List<UserRightDashboard>();
-                            var UserGrid1 = new List<UserRightDashboard>();
-                            var SSGrid1 = new List<UserRightDashboard>();
-
-
-                            UserRightDashboardModel.DashboardNameList ??= new List<TextValue>();
-
-                            UserRightDashboardModel.DashboardNameList.Add(new TextValue
+                            if (UserRightDashboardDetail.Any(x=>x.UserId == model.UserId && x.DashboardName == model.DashboardName && x.DashboardSubScreen == model.DashboardSubScreen))
                             {
-                                Text = "Sales Dashboard",
-                                Value = "Sales"
-                            });
-                            int SeqNo = 1;
-                            foreach (var item in UserRightDashboardModel.UserRightsDashboard)
+                                return StatusCode(207, "Duplicate");
+                            }
+                            else
                             {
-                                var newUserRightDashboardModel = new UserRightDashboard();
-
-                                newUserRightDashboardModel.DashboardName = item.DashboardName;
-                                newUserRightDashboardModel.IsView = model.IsView;
-                                newUserRightDashboardModel.DashboardSubScreen = model.DashboardSubScreen;
-
-                                foreach (var item1 in newUserRightDashboardModel.DashboardName)
-                                {
-                                    string userRightsJson = HttpContext.Session.GetString("KeyUserRightsDetail");
-                                    IList<UserRightDashboard> UserRightDashboardModelDetail1 = new List<UserRightDashboard>();
-                                    if (!string.IsNullOrEmpty(userRightsJson))
-                                    {
-                                        UserRightDashboardModelDetail1 = JsonConvert.DeserializeObject<List<UserRightDashboard>>(userRightsJson);
-                                    }
-                                    var newMenuItemModel = new UserRightDashboard();
-
-                                    newMenuItemModel.DashboardName = newUserRightDashboardModel.DashboardName;
-
-                                    if (newMenuItemModel != null)
-                                    {
-                                        if (UserRightDashboardModelDetail1 == null)
-                                        {
-                                            newMenuItemModel.SeqNo = 1;
-                                            UserGrid1.Add(newMenuItemModel);
-                                        }
-                                        else
-                                        {
-                                            newMenuItemModel.SeqNo = SeqNo++;
-                                            UserGrid1 = UserRightDashboardModelDetail1.Where(x => x != null).ToList();
-                                            SSGrid1.AddRange(UserGrid1);
-                                            UserGrid1.Add(newMenuItemModel);
-                                        }
-
-                                        MainModel1.UserRightsDashboard = UserGrid1;
-                                        HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(MainModel1.UserRightsDashboard));
-                                    }
-                                    else
-                                    {
-                                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
-                                    }
-                                }
+                                model.SeqNo = UserRightDashboardDetail.Count + 1;
+                                UserRightDashboardGrid = UserRightDashboardDetail.Where(x => x != null).ToList();
+                                SSGrid.AddRange(UserRightDashboardGrid);
+                                UserRightDashboardGrid.Add(model);
                             }
                         }
+
+                        MainModel.UserRightsDashboard = UserRightDashboardGrid;
+
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.UserRightsDashboard);
+                        HttpContext.Session.SetString("KeyUserRightDashboardDetail", serializedGrid);
                     }
-                    return PartialView("_UserRightGrid", MainModel1);
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+
+                    return PartialView("_XONUserRightDashboardGrid", MainModel);
                 }
                 else
                 {
-                    var MainModel = new UserRightDashboard();
-                    var existingListJson = HttpContext.Session.GetString("KeyUserRightsDetail");
-                    var existingRights = !string.IsNullOrEmpty(existingListJson)
-                        ? JsonConvert.DeserializeObject<List<UserRightDashboard>>(existingListJson)
-                        : new List<UserRightDashboard>();
-
-                    var duplicates = new List<string>();
-                    int seqNo = 0;
-
-                    MainModel.DashboardName = model.DashboardName;
-                    
-
-                    if (model.DashboardName == "0")
-                        model.DashboardName = string.Empty;
-
-                    MainModel.DashboardNameList ??= new List<TextValue>();
-
-                    MainModel.DashboardNameList.Add(new TextValue
+                    string modelJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                    List<UserRightDashboardModel> UserRightDashboardDetail = new List<UserRightDashboardModel>();
+                    if (!string.IsNullOrEmpty(modelJson))
                     {
-                        Text = "Sales Dashboard",
-                        Value = "Sales"
-                    });
+                        UserRightDashboardDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
+                    }
 
-                    foreach (var item1 in MainModel.DashboardName)
+                    var MainModel = new UserRightDashboardModel();
+                    var UserRightDashboardModelGrid = new List<UserRightDashboardModel>();
+                    var UserRightDashboardGrid = new List<UserRightDashboardModel>();
+                    var SSGrid = new List<UserRightDashboardModel>();
+
+                    if (model != null)
                     {
-                        var newEntry = new UserRightDashboard
+                        if (UserRightDashboardDetail == null || UserRightDashboardDetail.Count() == 0)
                         {
-                            DashboardName = MainModel.DashboardName,
-                        };
-
-                        bool isDuplicate = existingRights.Any(x =>
-                            x.EmpName == newEntry.EmpName &&
-                            x.DashboardName == newEntry.DashboardName &&
-                            x.DashboardSubScreen == newEntry.DashboardSubScreen);
-
-                        if (isDuplicate)
+                            model.SeqNo = 1;
+                            UserRightDashboardGrid.Add(model);
+                        }
+                        else
                         {
-                            duplicates.Add(newEntry.DashboardName);
-                            continue;
+                            if (UserRightDashboardDetail.Any(x => x.UserId == model.UserId && x.DashboardName == model.DashboardName && x.DashboardSubScreen == model.DashboardSubScreen))
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+                            else
+                            {
+                                model.SeqNo = UserRightDashboardDetail.Count + 1;
+                                UserRightDashboardGrid = UserRightDashboardDetail.Where(x => x != null).ToList();
+                                SSGrid.AddRange(UserRightDashboardGrid);
+                                UserRightDashboardGrid.Add(model);
+                            }
+
                         }
 
-                        newEntry.SeqNo = seqNo++;
-                        existingRights.Add(newEntry);
+                        MainModel.UserRightsDashboard = UserRightDashboardGrid;
+
+                        string serializedGrid = JsonConvert.SerializeObject(MainModel.UserRightsDashboard);
+                        HttpContext.Session.SetString("KeyUserRightDashboardDetail", serializedGrid);
                     }
-
-                    HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(existingRights));
-                    MainModel.UserRightsDashboard = existingRights;
-
-                    if (duplicates.Any())
+                    else
                     {
-                        TempData["Duplicate"] = "Duplicate rights not allowed for: " + string.Join(", ", duplicates);
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
                     }
 
-                    return PartialView("_UserRightGrid", MainModel);
+                    return PartialView("_XONUserRightDashboardGrid", MainModel);
                 }
             }
             catch (Exception ex)
             {
                 throw ex;
             }
+        }
+        public IActionResult ClearUserRightDashboardGrid()
+        {
+            HttpContext.Session.Remove("KeyUserRightDashboardDetail");
+            return Json("Ok");
+        }
+        public IActionResult EditItemRow(int SeqNo, string Mode)
+        {
+            IList<UserRightDashboardModel> UserRightDashboardDetail = new List<UserRightDashboardModel>();
+            if (Mode == "U" || Mode == "V")
+            {
+                string modelJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    UserRightDashboardDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
+                }
+            }
+            else
+            {
+                string modelJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    UserRightDashboardDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
+                }
+            }
+            IEnumerable<UserRightDashboardModel> SSGrid = UserRightDashboardDetail;
+            if (UserRightDashboardDetail != null)
+            {
+                SSGrid = UserRightDashboardDetail.Where(x => x.SeqNo == SeqNo);
+            }
+            string JsonString = JsonConvert.SerializeObject(SSGrid);
+            return Json(JsonString);
+        }
+        public IActionResult DeleteItemRow(int SeqNo, string Mode)
+        {
+            var MainModel = new UserRightDashboardModel();
+            if (Mode == "U" || Mode == "V")
+            {
+                string modelJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                List<UserRightDashboardModel> UserRightDashboardDetail = new List<UserRightDashboardModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    UserRightDashboardDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
+                }
+
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (UserRightDashboardDetail != null && UserRightDashboardDetail.Count > 0)
+                {
+                    UserRightDashboardDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in UserRightDashboardDetail)
+                    {
+                        Indx++;
+                        item.SeqNo = Indx;
+                    }
+                    MainModel.UserRightsDashboard = UserRightDashboardDetail;
+
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.UserRightsDashboard);
+                    HttpContext.Session.SetString("KeyUserRightDashboardDetail", serializedGrid);
+                }
+            }
+            else
+            {
+                string modelJson = HttpContext.Session.GetString("KeyUserRightDashboardDetail");
+                List<UserRightDashboardModel> UserRightDashboardDetail = new List<UserRightDashboardModel>();
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    UserRightDashboardDetail = JsonConvert.DeserializeObject<List<UserRightDashboardModel>>(modelJson);
+                }
+
+                int Indx = Convert.ToInt32(SeqNo) - 1;
+
+                if (UserRightDashboardDetail != null && UserRightDashboardDetail.Count > 0)
+                {
+                    UserRightDashboardDetail.RemoveAt(Convert.ToInt32(Indx));
+
+                    Indx = 0;
+
+                    foreach (var item in UserRightDashboardDetail)
+                    {
+                        Indx++;
+                        item.SeqNo = Indx;
+                    }
+                    MainModel.UserRightsDashboard = UserRightDashboardDetail;
+
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.UserRightsDashboard);
+                    HttpContext.Session.SetString("KeyUserRightDashboardDetail", serializedGrid);
+                }
+            }
+
+            return PartialView("_XONUserRightDashboardGrid", MainModel);
+        }
+        private static DataTable GetDetailTable(IList<UserRightDashboardModel> DetailList)
+        {
+            try
+            {
+                var UserRightDashboardGrid = new DataTable();
+
+                UserRightDashboardGrid.Columns.Add("UID", typeof(int));
+                UserRightDashboardGrid.Columns.Add("EmpID", typeof(int));
+                UserRightDashboardGrid.Columns.Add("DashboardName", typeof(string));
+                UserRightDashboardGrid.Columns.Add("DashboardSubscreen", typeof(string));
+                UserRightDashboardGrid.Columns.Add("SeqNo", typeof(int));
+                UserRightDashboardGrid.Columns.Add("OptView", typeof(bool));
+                
+                foreach (var Item in DetailList)
+                {
+
+                    UserRightDashboardGrid.Rows.Add(
+                        new object[]
+                        {
+                    Item.UserId,
+                    Item.EmpId,
+                    Item.DashboardName??"",
+                    Item.DashboardSubScreen??"",
+                    Item.SeqNo,
+                    Item.IsView
+                        });
+                }
+                UserRightDashboardGrid.Dispose();
+                return UserRightDashboardGrid;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        public async Task<IActionResult> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen) 
+        {
+            var model = new UserRightDashboardModel();
+            model.UserRightsDashboard = new List<UserRightDashboardModel>();
+            model = await _IXONUserRightDashboardBLL.GetSearchData(EmpName, UserName, DashboardName, DashboardSubScreen);
+            model.Mode = "Summary";
+            return PartialView("_SearchFieldDashboard", model);
         }
     }
 }
