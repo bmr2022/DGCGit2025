@@ -1,21 +1,136 @@
 ﻿@model eTactWeb.DOM.Models.TrailBalanceModel
 
+
 <div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
     <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
         <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
             <tr>
                 <th>Action</th>
                 <th>Sr#</th>
-                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name</th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Open DR </th>
-                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Open CR</th>
-                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Opening</th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Curr DRAmt</th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Curr CRAmt</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Current Amt</th>
-                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Amt</th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Curr DrTotal</th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Curr CrTotal</th>
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="1" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Group Name</span>
+                    </div>
+                </th>
+
+                <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="2" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Open DR</span>
+                    </div>
+                </th>
+
+                <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="3" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Open DR</span>
+                    </div>
+                </th>
+
+                <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="4" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Total Opening</span>
+                    </div>
+                </th>
+
+                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="5" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Curr DRAmt</span>
+                    </div>
+                </th>
+
+                <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="6" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Curr CRAmt</span>
+                    </div>
+                </th>
+
+                <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="7" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Net Current Amt</span>
+                    </div>
+                </th>
+
+                <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="8" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Net Amt</span>
+                    </div>
+                </th>
+
+                <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="9" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Curr DrTotal</span>
+                    </div>
+                </th>
+
+                <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                    <div class="header-icons" style="display:flex; align-items:center; gap:6px;">
+                        <span class="sort-icon" title="Sort Column" style="user-select:none; cursor:pointer;">
+                            <i class="fa fa-sort-down" style="display:none;"></i>
+                        </span>
+                        <span class="toggle-col" data-col="10" title="Hide/Show Column">
+                            <i class="fa fa-eye-slash"></i>
+                        </span>
+                        <span>Curr CrTotal</span>
+                    </div>
+                </th>
+
+
+
+
+
             </tr>
         </thead>
         <tbody id="divStockRegisterBody">
@@ -70,6 +185,18 @@
 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
 <style>
+    .header-icons {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .hidden-column {
+        display: none !important;
+    }
+    .sort-icon, .toggle-col {
+        cursor: pointer;
+    }
 
     .sort-icon {
         padding: 5px;
@@ -94,3 +221,94 @@
         z-index: 1;
     }
 </style>
+@* <script>
+    $(document).ready(function () {
+        debugger
+        $('.toggle-col').on('click', function () {
+            var colIndex = $(this).data('col'); // Get column index (1-based)
+            var $icon = $(this).find('i');
+
+            // Convert to 0-based for nth-child
+            var nthCol = colIndex + 1;
+
+            // Toggle visibility
+            var isVisible = $('table tr th:nth-child(' + nthCol + '), table tr td:nth-child(' + nthCol + ')').is(':visible');
+
+            if (isVisible) {
+                $('table tr th:nth-child(' + nthCol + '), table tr td:nth-child(' + nthCol + ')').hide();
+                $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+            } else {
+                $('table tr th:nth-child(' + nthCol + '), table tr td:nth-child(' + nthCol + ')').show();
+                $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+            }
+        });
+    });
+</script> *@
+<script>
+    const hiddenCols = {};
+
+    $(document).ready(function () {
+        // Use event delegation to handle current and future .toggle-col elements
+        $(document).on('click', '.toggle-col', function () {
+            var $th = $(this).closest('th');
+            var colIndex = $th.index() + 1; // real index in DOM (1-based)
+
+            var $icon = $(this).find('i');
+
+            const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
+
+            if (isVisible) {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').addClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                hiddenCols[colIndex] = $th.text().trim();
+                updateHiddenColPanel();
+            } else {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').removeClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                delete hiddenCols[colIndex];
+                updateHiddenColPanel();
+            }
+        });
+
+        $('#toggle-hidden-cols-btn').on('click', function () {
+            $('#hidden-cols-panel').toggle();
+        });
+    });
+
+    function updateHiddenColPanel() {
+        const $panel = $('#hidden-cols-panel');
+        $panel.empty();
+
+        if (Object.keys(hiddenCols).length === 0) {
+            $panel.append('<em>No hidden columns</em>');
+            return;
+        }
+
+        $.each(hiddenCols, function (index, name) {
+            const btn = $('<button class="btn btn-sm btn-outline-primary" style="margin: 2px;"></button>')
+                .text('Show: ' + name)
+                .on('click', function () {
+                    $('table tr').each(function () {
+                        $(this).find('th:nth-child(' + index + '), td:nth-child(' + index + ')').removeClass('hidden-column');
+                    });
+                    $('.toggle-col').each(function () {
+                        const $btn = $(this);
+                        const colIndex = $btn.closest('th').index() + 1;
+                        if (colIndex == index) {
+                            $btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                        }
+                    });
+                    delete hiddenCols[index];
+                    updateHiddenColPanel();
+                });
+
+
+
+            $panel.append(btn);
+        });
+    }
+</script>

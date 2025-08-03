@@ -23,9 +23,9 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = dataLogicDAL;
         }
 
-		public async Task<ResponseResult> FillEntryId()
+		public async Task<ResponseResult> FillEntryId(int YearCode, string EntryDate)
 		{
-			return await _LedgerPartyWiseOpeningDAL.FillEntryId();
+			return await _LedgerPartyWiseOpeningDAL.FillEntryId( YearCode,  EntryDate);
 		}
 		public async Task<ResponseResult> FillLedgerName(int OpeningYearCode)
         {

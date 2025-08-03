@@ -948,7 +948,36 @@
                         </ul>  @*//put menu above it *@
 
                     </li>  @*//1 *@
-                  
+                    <li>
+                        @*//1 *@
+                        <a class="dropdown-item" id="ControlPlan" href="#">Sale&raquo;</a>
+                        @*    <ul class="submenu dropdown-menu"> *@
+                        <ul class="submenu dropdown-menu" data-bs-popper="static">
+                            <li>
+                                <a class="dropdown-item" id="ControlPlan" href="#" style="background:#FFF8DC ; color :#000000">Discount Customer Category Master &raquo;</a>
+                                <ul class="submenu dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="DiscountCustomerCategoryMaster" asp-route-ID="0" asp-controller="DiscountCustomerCategoryMaster" id="DiscountCustomerCategoryMaster">
+                                            <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Discount Customer Category Master
+                                        </a>
+
+
+                                    </li>
+                                  
+                                    <li>
+                                        <a class="dropdown-item DiscountCustomerCategoryMaster" asp-action="DiscountCustomerCategoryMasterDashBoard" asp-controller="DiscountCustomerCategoryMaster">
+                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="Operation Master" />
+
+                                    </li>
+                                </ul>
+                            </li>
+
+
+                        </ul>  @*//put menu above it *@
+
+                    </li>
                 </ul>
                 </li>
                 <li class="nav-item dropdown">

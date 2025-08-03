@@ -298,13 +298,15 @@ namespace eTactWeb.Data.DAL
             return model;
         }
 
-		public async Task<ResponseResult> FillEntryId()
+		public async Task<ResponseResult> FillEntryId(int YearCode,string EntryDate)
 		{
 			var _ResponseResult = new ResponseResult();
 			try
 			{
 				var SqlParams = new List<dynamic>();
 				SqlParams.Add(new SqlParameter("@flag", "NewEntryId"));
+				SqlParams.Add(new SqlParameter("@OpeningYearCode", YearCode));
+				SqlParams.Add(new SqlParameter("@LedgerOpnEntryDate",EntryDate));
 				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSPLedgerBillWiseOpening", SqlParams);
 			}
 			catch (Exception ex)
