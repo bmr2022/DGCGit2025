@@ -202,6 +202,11 @@ namespace eTactWeb
             services.TryAddScoped<ISalesPersonTransfer, SalesPersonTransferBLL>();
             services.TryAddScoped<IVendoreRatingAnalysisReport, VendoreRatingAnalysisReportBLL>();
             services.TryAddScoped<IXONUserRightDashboardBLL, XONUserRightDashboardBLL>();
+            services.TryAddScoped<IDiscountCustomerCategoryMaster, DiscountCustomerCategoryMasterBLL>();
+
+
+
+
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
             services.TryAddTransient<ITaxMaster, TaxMasterBLL>();
             services.TryAddTransient<IOrderBasedProdPlan, OrderBasedProdPlanBLL>();

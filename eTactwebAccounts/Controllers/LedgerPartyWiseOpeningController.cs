@@ -155,9 +155,9 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
-		public async Task<JsonResult> FillEntryId()
+		public async Task<JsonResult> FillEntryId(int YearCode, string EntryDate)
 		{
-			var JSON = await _ILedgerPartyWiseOpening.FillEntryId();
+			var JSON = await _ILedgerPartyWiseOpening.FillEntryId( YearCode,  EntryDate);
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}

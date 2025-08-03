@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
 {
@@ -21,5 +22,24 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-    }
+		public async Task<ResponseResult> FillEntryID(int YearCode)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
+				SqlParams.Add(new SqlParameter("@DiscountCustCatYearCode", YearCode));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPSalesDiscountCustomerCategoryMaster", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+	}
 }

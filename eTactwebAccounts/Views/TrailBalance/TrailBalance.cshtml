@@ -4,7 +4,9 @@
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
-
+    .hidden-column {
+        display: none !important;
+    }
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -86,6 +88,9 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TrailBalance" asp-action="TrailBalance">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
+                                    <button id="toggle-hidden-cols-btn" class="btn btn-secondary" style="padding:3px;height:30px;width:100px;margin-left:20px;">Unhide Columns</button>
+                                        <div id="hidden-cols-panel" style="display: none; margin-top: 5px;"></div>
+                                   
                                 </div>
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             </div>
@@ -188,10 +193,38 @@
 @section Scripts
 {
     <script>
-
+        
         $(document).ready(function () {
+            const hiddenCols = {};
             console.log("Ready");
+            $('.toggle-col').on('click', function () {
+                var $th = $(this).closest('th');
+                var colIndex = $th.index() + 1; // correct nth-child
 
+                var $icon = $(this).find('i');
+
+                const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
+
+                if (isVisible) {
+                    $('table tr').each(function () {
+                        $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').addClass('hidden-column');
+                    });
+                    $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                    hiddenCols[colIndex] = $th.text().trim();
+                    updateHiddenColPanel();
+                } else {
+                    $('table tr').each(function () {
+                        $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').removeClass('hidden-column');
+                    });
+                    $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                    delete hiddenCols[colIndex];
+                    updateHiddenColPanel();
+                }
+            });
+
+            $('#toggle-hidden-cols-btn').on('click', function () {
+                $('#hidden-cols-panel').toggle();
+            });
             function loadReportFields(reportType) {
                 let html = '';
 
@@ -362,7 +395,38 @@
         $("#ReportType").change(function () {
             GetTrailBalanceDetailsData();
         });
+        function updateHiddenColPanel() {
+            const $panel = $('#hidden-cols-panel');
+            $panel.empty();
 
+            if (Object.keys(hiddenCols).length === 0) {
+                $panel.append('<em>No hidden columns</em>');
+                return;
+            }
+
+            $.each(hiddenCols, function (index, name) {
+                const btn = $('<button class="btn btn-sm btn-outline-primary" style="margin: 2px;"></button>')
+                    .text('Show: ' + name)
+                    .on('click', function () {
+                        $('table tr').each(function () {
+                            $(this).find('th:nth-child(' + index + '), td:nth-child(' + index + ')').removeClass('hidden-column');
+                        });
+                        $('.toggle-col').each(function () {
+                            const $btn = $(this);
+                            const colIndex = $btn.closest('th').index() + 1;
+                            if (colIndex == index) {
+                                $btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                            }
+                        });
+                        delete hiddenCols[index];
+                        updateHiddenColPanel();
+                    });
+
+
+
+                $panel.append(btn);
+            });
+        }
 
         function GetTrailBalanceDetailsData() {
 

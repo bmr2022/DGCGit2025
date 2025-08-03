@@ -389,10 +389,15 @@
         });
 
         function FillEntryID() {
-             ;
+            var YearCode = $('#OpeningYearCode').val();
+            var EntryDate = $('#EntryDate').val();
             $.ajax({
                 url: '@Url.Action("FillEntryId", "LedgerPartyWiseOpening")',
                 type: 'POST',
+                data:{
+                    YearCode:YearCode,
+                    EntryDate: EntryDate
+                },
                 async: false,
                 success: function (data, status, xhr) {
                     console.log(data);

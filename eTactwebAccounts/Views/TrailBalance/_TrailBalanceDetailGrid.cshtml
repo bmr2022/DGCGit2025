@@ -6,23 +6,159 @@
             <tr>
                 <th>Action</th>
                 <th>Sr#</th>
-                <th  data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Name</th>
-                <th style="width:90px !important;" data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Parent GroupName</th>
-                <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Sub Group Parent</th>
-                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Under Group</th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Account Name</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Opn Dr</th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Opn Cr</th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opn Dr</th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Opn Cr</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Group Opening</th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Total Opening</th>
-                <th  style="width:40px !important;" data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Curr Dr</th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Curr Cr</th>
-                <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Curr Dr</th>
-                <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Curr Cr</th>
-                <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Net Amt</th>
-                <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Net Amt</th>
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="1" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Group Name</span>
+                    </div>
+                </th>
+
+                <th style="width:90px !important;">
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="2" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Parent Group Name</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="3" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Account Name</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="4" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Group Opn Dr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="5" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Group Opn Cr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="6" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Opn Dr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="7" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Opn Cr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="8" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Total Group Opening</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="9" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Total Opening</span>
+                    </div>
+                </th>
+
+                <th style="width:40px !important;">
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="10" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Curr Dr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="11" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Curr Cr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="12" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Group Curr Dr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="13" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Group Curr Cr</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="14" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Net Amt</span>
+                    </div>
+                </th>
+
+                <th>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="15" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Group Net Amt</span>
+                    </div>
+                </th>
+
+                <th style="width:20px !important;">
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="16" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Sub Group Parent</span>
+                    </div>
+                </th>
+
+                <th style="width:20px !important;">
+                    <div style="display:flex; align-items:center; gap:5px;">
+                        <span class="toggle-col" data-col="17" title="Hide/Show Column" style="cursor:pointer;">
+                            <i class="fa fa-eye-slash" aria-hidden="true"></i>
+                        </span>
+                        <span>Under Group</span>
+                    </div>
+                </th>
+
                 @* <th data-columnno="21" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Id</th>
                 <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TB Seq</th>
                 <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Group Ledger</th> *@
@@ -63,8 +199,7 @@
                             <th>@Cntr</th>
                             <td>@item.TrailBalanceGroupName</td>
                             <td>@item.ParentGroupName</td>
-                            <td>@item.SubGroupParent</td>
-                            <td>@item.UnderGroup</td>
+                            
                             <td>@item.AccountName</td>
                             <td id="totGroupOpnDrG-@Cntr" style="background-color:#D3D3D3">@item.GroupOpnDr</td>
                             <td id="totGroupOpnCrG-@Cntr" style="background-color:#D3D3D3">@item.GroupOpnCr</td>
@@ -81,7 +216,8 @@
                             <td style="display:none">@item.TrailBalanceGroupId</td>
                             <td style="display:none">@item.TBSeq</td>
                             <td style="display:none">@item.GroupLedger </td>
-
+                            <td>@item.SubGroupParent</td>
+                            <td>@item.UnderGroup</td>
                         </tr>
                     }
                 }
@@ -94,7 +230,9 @@
 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
 <style>
-
+    .hidden-column {
+        display: none !important;
+    }
     .sort-icon {
         padding: 5px;
         margin: 5px;
@@ -125,3 +263,72 @@
  
     }
 </style>
+<script>
+    const hiddenCols = {};
+
+    $(document).ready(function () {
+        // Use event delegation to handle current and future .toggle-col elements
+        $(document).on('click', '.toggle-col', function () {
+            var $th = $(this).closest('th');
+            var colIndex = $th.index() + 1; // real index in DOM (1-based)
+
+            var $icon = $(this).find('i');
+
+            const isVisible = !$('table tr th:nth-child(' + colIndex + ')').hasClass('hidden-column');
+
+            if (isVisible) {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').addClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye-slash').addClass('fa-eye');
+                hiddenCols[colIndex] = $th.text().trim();
+                updateHiddenColPanel();
+            } else {
+                $('table tr').each(function () {
+                    $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')').removeClass('hidden-column');
+                });
+                $icon.removeClass('fa-eye').addClass('fa-eye-slash');
+                delete hiddenCols[colIndex];
+                updateHiddenColPanel();
+            }
+        });
+
+        $('#toggle-hidden-cols-btn').on('click', function () {
+            $('#hidden-cols-panel').toggle();
+        });
+    });
+
+
+    function updateHiddenColPanel() {
+        const $panel = $('#hidden-cols-panel');
+        $panel.empty();
+
+        if (Object.keys(hiddenCols).length === 0) {
+            $panel.append('<em>No hidden columns</em>');
+            return;
+        }
+
+        $.each(hiddenCols, function (index, name) {
+            const btn = $('<button class="btn btn-sm btn-outline-primary" style="margin: 2px;"></button>')
+                .text('Show: ' + name)
+                .on('click', function () {
+                    $('table tr').each(function () {
+                        $(this).find('th:nth-child(' + index + '), td:nth-child(' + index + ')').removeClass('hidden-column');
+                    });
+                    $('.toggle-col').each(function () {
+                        const $btn = $(this);
+                        const colIndex = $btn.closest('th').index() + 1;
+                        if (colIndex == index) {
+                            $btn.find('i').removeClass('fa-eye').addClass('fa-eye-slash');
+                        }
+                    });
+                    delete hiddenCols[index];
+                    updateHiddenColPanel();
+                });
+
+
+
+            $panel.append(btn);
+        });
+    }
+</script>
