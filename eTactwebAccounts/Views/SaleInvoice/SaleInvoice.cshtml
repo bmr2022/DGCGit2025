@@ -1,4 +1,10 @@
 ﻿@using eTactWeb.DOM.Models
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
+@{
+    var yearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
+}
 @model eTactWeb.DOM.Models.SaleBillModel
 @{
     ViewData["Title"] = "SaleInvoice";
@@ -2235,7 +2241,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-
+                            debugger
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -2528,7 +2534,7 @@
             });
         }
 
-        function ClearSpecificItemTax(ItemCode){
+        function ClearSpecificItemTax(ItemCode) {
 
         }
 
@@ -3103,133 +3109,127 @@
             return true;
         }
 
+        function CheckFinYearBeforeSave(callback) {
+    $.ajax({
+        type: "POST",
+        url: "@Url.Action("CheckFinYearBeforeSave")",
+        data: {
+            YearCode: @yearCode,
+            Date: $('#SaleBillEntryDate').val(),
+            DateName: ""
+        },
+        dataType: "json",
+        success: function (result, textStatus, jqXHR) {
+            if (jqXHR.status === 200) {
+                if (result != null) {
+                    var obj = $.parseJSON(result);
+
+                    // Check the response value
+                    if (obj.Result && obj.Result.length > 0 && obj.Result[0].Result === 'Correct date') {
+                        callback(true); // ✅ Valid date
+                    } else {
+                        $.notify(obj.Result[0].Result || "Invalid response!", "error");
+                        callback(false); // ❌ Invalid
+                    }
+                } else {
+                    $.notify("Empty response from server!", "error");
+                    callback(false);
+                }
+            } else {
+                $.notify("Unexpected server response!", "error");
+                callback(false);
+            }
+        },
+        error: function (jqXHR, textStatus, errorThrown) {
+            $.notify("Error checking financial year!", "error");
+            callback(false);
+        }
+    });
+}
+
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-            debugger
+            debugger;
             e.preventDefault();
 
-            if (!ValidateSubmit()) return;
+            ValidateSubmitWrapper(function (isValid) {
+                if (!isValid) return;
 
-            if ($('#divSaleBillList tr td').length <= 1) {
-                $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
-            }
-            else if ($('#GSTNO').val() != "") {
-                if ($('#divTaxGrid tr td').length <= 1) {
-                    $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                }
-                else {
-                    if ($('#divAdjItemList tr td').length <= 1) {
-                        $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
-                    }
-                    else if ($('#divdbCrItemList tr td').length <= 1) {
-                        $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
-                    }
-                    else if ($('#StateCode').val() == 0) {
-                        $.notify('StateCode is mandatory...!', "error");
-                    }
-
-                    else if ($('#divAdjItemList tr td').length > 1) {
-                        var hasCR = false;
-                        $('tr.adjGridRow').each(function () {
-                            $(this).find('.GridAdjDrCr').each(function () {
-                                if ($(this).text().trim().toUpperCase() === 'CR') {
-                                    hasCR = true;
-                                    return false;
-                                }
-                            });
-
-                            if (hasCR) {
-                                return false;
-                            }
-                        });
-
-                        if (hasCR) {
-                            $.notify('AdjGrid should not have CR value...!', "error");
-                        } else {
-                            if ($('#SaleBillJobwork').val() == 'J') {
-                                var rowCount = $('#divSaleBillList tr').length;
-                                for (var i = 1; i <= rowCount; i++) {
-                                    var stockable = $('#stockableItems-' + i).text() === 'Y';
-                                    var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
-                                    if (stockable || custJWAdj) {
-                                        itemsStockableAndCustJw.push($('#GridIC-' + i).val());
-                                    }
-                                }
-
-                                // Validate jobwork grids
-                                var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
-                                var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
-                                var isBomItemsValidInCust = ValidateBomItemsInCustGrid();
-
-                                // Validate PendToAdj
-                                var isPentoAdj = true;
-                                $('.bomCustRowJW').find('#pendToAdj').each(function () {
-                                    if (parseFloat($(this).text()) > 0) {
-                                        isPentoAdj = false;
-                                        $.notify('PendToAdj qty must be adjusted.', "error");
+                if ($('#divSaleBillList tr td').length <= 1) {
+                    $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
+                } else if ($('#GSTNO').val() != "") {
+                    if ($('#divTaxGrid tr td').length <= 1) {
+                        $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
+                    } else {
+                        if ($('#divAdjItemList tr td').length <= 1) {
+                            $.notify('Adjust Grid Should Have Atleast 1 Item...!', "error");
+                        } else if ($('#divdbCrItemList tr td').length <= 1) {
+                            $.notify('DRCR Grid Should Have Atleast 1 Item...!', "error");
+                        } else if ($('#StateCode').val() == 0) {
+                            $.notify('StateCode is mandatory...!', "error");
+                        } else if ($('#divAdjItemList tr td').length > 1) {
+                            var hasCR = false;
+                            $('tr.adjGridRow').each(function () {
+                                $(this).find('.GridAdjDrCr').each(function () {
+                                    if ($(this).text().trim().toUpperCase() === 'CR') {
+                                        hasCR = true;
                                         return false;
                                     }
                                 });
+                                if (hasCR) return false;
+                            });
 
-                                // Final Jobwork validation block
-                                if (isCustJWValid && isBomCustJWValid && isBomItemsValidInCust && isPentoAdj) {
+                            if (hasCR) {
+                                $.notify('AdjGrid should not have CR value...!', "error");
+                            } else {
+                                if ($('#SaleBillJobwork').val() == 'J') {
+                                    var rowCount = $('#divSaleBillList tr').length;
+                                    var itemsStockableAndCustJw = [];
+
+                                    for (var i = 1; i <= rowCount; i++) {
+                                        var stockable = $('#stockableItems-' + i).text() === 'Y';
+                                        var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
+                                        if (stockable || custJWAdj) {
+                                            itemsStockableAndCustJw.push($('#GridIC-' + i).val());
+                                        }
+                                    }
+
+                                    var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
+                                    var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
+                                    var isBomItemsValidInCust = ValidateBomItemsInCustGrid();
+
+                                    var isPentoAdj = true;
+                                    $('.bomCustRowJW').find('#pendToAdj').each(function () {
+                                        if (parseFloat($(this).text()) > 0) {
+                                            isPentoAdj = false;
+                                            $.notify('PendToAdj qty must be adjusted.', "error");
+                                            return false;
+                                        }
+                                    });
+
+                                    if (isCustJWValid && isBomCustJWValid && isBomItemsValidInCust && isPentoAdj) {
+                                        if (confirm("Are you sure you want to save this entry?")) {
+                                            $('#EinvoicePopup').modal('show');
+                                        }
+                                    }
+                                } else {
                                     if (confirm("Are you sure you want to save this entry?")) {
                                         $('#EinvoicePopup').modal('show');
                                     }
                                 }
-
-                                // var rowCount = $('#divSaleBillList tr').length;
-                                // for (var i = 1; i <= rowCount; i++) {
-                                //     var stockable = $('#stockableItems-' + i).text() === 'Y';
-                                //     var custJWAdj = $('#custJWAdjMandatory-' + i).text() === 'Y';
-                                //     if (stockable || custJWAdj) {
-                                //         itemsStockableAndCustJw.push($('#GridIC-' + i).val());
-                                //     }
-                                // }
-
-                                // var isCustJWValid = ValidateAdjChallanGrid('#divCustJobWorkISsueSummary', '#fgItemCodeGrid-');
-                                // var isBomCustJWValid = ValidateAdjChallanGrid('#divBomCustJobWorkISsueSummary', '#fgBomItemCodeGrid-');
-                                // var isPentoAdj = true;
-                                // if ($('.bomCustRowJW').find('#pendToAdj').filter(function () {
-                                //     return parseFloat($(this).text()) > 0;
-                                // }).length > 0) {
-                                //     isPentoAdj = false;
-                                //     $.notify('PendToAdj qty must be adjusted...!', "error");
-                                // }
-
-                                // if (isCustJWValid && isBomCustJWValid && isPentoAdj) {
-                                //     if (confirm("are you sure you want to save this entry?")) {
-                                //          $('#EinvoicePopup').modal('show');
-                                //        // $("form").submit();
-                                //     }
-                                // }
                             }
-                            else {
-                                if (confirm("are you sure you want to save this entry?")) {
-                                    $('#EinvoicePopup').modal('show');
-                                    //  $("form").submit();
-                                }
-
+                        } else if ($('#GSTRegistered').val() == 'Y') {
+                            if ($('#divTaxGrid tr td').length <= 1) {
+                                $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                             }
-                        }
-                    }
-                    else if ($('#GSTRegistered').val() == 'Y') {
-                        if ($('#divTaxGrid tr td').length <= 1) {
-                            $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
-                        }
-                    }
-
-                    else {
-                        // $('#exampleModal').modal('show');
-                        if (confirm("are you sure you want to save this entry?")) {
-                            $('#EinvoicePopup').modal('show');
-                            //      $("form").submit();
+                        } else {
+                            if (confirm("Are you sure you want to save this entry?")) {
+                                $('#EinvoicePopup').modal('show');
+                            }
                         }
                     }
                 }
-            }
-
+            });
         });
-
 
         var EditEachItem = false;
         var EditDeleteBatchValidation = false;
@@ -3522,7 +3522,6 @@
                     $.notify("Please enter at least 10 characters in Vehicle No", "error");
                     return false;
                 }
-                return true;
             }
 
             if ($('#CustOrderNo').val() == '') {
@@ -3534,8 +3533,7 @@
             let TotalAmount = parseFloat($('#AdjTotalAmt1').text());
             let NetAmount = parseFloat($('#NetTotal').val());
 
-            if (AdjustAmount === TotalAmount && TotalAmount === NetAmount) {
-            } else {
+            if (AdjustAmount !== TotalAmount || TotalAmount !== NetAmount) {
                 $.notify("AdjustAmount, TotalAmount, and NetAmount must all be equal....!", "error");
                 return false;
             }
@@ -3547,22 +3545,22 @@
             }
 
             if ($('#AccountCode').val() == 0) {
-                $.notify("Customer Name is manadatory...!", "error");
+                $.notify("Customer Name is mandatory...!", "error");
                 return false;
             }
 
             if ($('#DocTypeAccountCode').val() == 0) {
-                $.notify("DocType Name is manadatory...!", "error");
+                $.notify("DocType Name is mandatory...!", "error");
                 return false;
             }
 
             if ($('#SaleBillNo').val() == '') {
-                $.notify("SaleBillNo is manadatory...!", "error");
+                $.notify("SaleBillNo is mandatory...!", "error");
                 return false;
             }
 
             if ($('#PaymentCreditDay').val() == 0) {
-                $.notify("Credit Days should not 0...!", "error");
+                $.notify("Credit Days should not be 0...!", "error");
                 return false;
             }
 
@@ -3581,6 +3579,17 @@
             }
 
             return true;
+        }
+
+        function ValidateSubmitWrapper(callback) {
+            if (!ValidateSubmit()) {
+                callback(false);
+                return;
+            }
+
+            CheckFinYearBeforeSave(function (isValid) {
+                callback(isValid);
+            });
         }
 
         $('#vehicleNo').on('input', function () {

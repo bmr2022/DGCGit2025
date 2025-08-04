@@ -41,10 +41,10 @@ namespace eTactWeb.Controllers
         private readonly IConfiguration _iconfiguration;
         private readonly ILogger<SaleBillController> _logger;
         private readonly ICustomerJobWorkIssue _ICustomerJobWorkIssue;
-
+        private readonly ICommon _ICommon;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
         private readonly IMemoryCache _MemoryCache;
-        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache)
+        public SaleInvoiceController(ILogger<SaleBillController> logger, IDataLogic iDataLogic, ISaleBill iSaleBill, IEinvoiceService IEinvoiceService, IConfiguration configuration, EncryptDecrypt encryptDecrypt, IWebHostEnvironment iWebHostEnvironment, ICustomerJobWorkIssue CustomerJobWorkIssue, IMemoryCache iMemoryCache, ICommon ICommon)
         {
             _logger = logger;
             _IDataLogic = iDataLogic;
@@ -54,6 +54,7 @@ namespace eTactWeb.Controllers
             _iconfiguration = configuration;
             _ICustomerJobWorkIssue = CustomerJobWorkIssue;
             _MemoryCache = iMemoryCache;
+            _ICommon = ICommon;
         }
 
         public async Task<IActionResult> SaleBillList()
@@ -86,7 +87,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId, int accountCode)
         {
-            var JSON = await _SaleBill.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode);
+            var JSON = await _SaleBill.ShowPendingSaleorderforBill(Flag, CurrentYear, FromDate, Todate, InvoiceDate, BillFromStoreId, accountCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -214,7 +215,7 @@ namespace eTactWeb.Controllers
             DataTable DrCrDetailDT = null;
             DataTable AdjChallanDetailDT = null;
             string SaleBillModel = HttpContext.Session.GetString("SaleBillModel");
-             SaleBillModel MainModel = new SaleBillModel();
+            SaleBillModel MainModel = new SaleBillModel();
             if (!string.IsNullOrEmpty(SaleBillModel))
             {
                 MainModel = JsonConvert.DeserializeObject<SaleBillModel>(SaleBillModel);
@@ -373,7 +374,7 @@ namespace eTactWeb.Controllers
                         model1.CreatedBy = !string.IsNullOrEmpty(uidStr) ? Convert.ToInt32(uidStr) : 0;
                         //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                         model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                       
+
                         TempData["ShowEinvoicePopup"] = "true";
                         if (ShouldEinvoice == "true")
                         {
@@ -390,7 +391,7 @@ namespace eTactWeb.Controllers
                                 distanceKM = model.DistanceKM,
                                 EntrybyId = model.EntryByempId,
                                 MachineName = model.MachineName
-                             
+
                             });
                         }
                         HttpContext.Session.Remove("KeySaleBillGrid");
@@ -450,7 +451,7 @@ namespace eTactWeb.Controllers
                         HttpContext.Session.Remove("KeySaleBillGrid");
                         HttpContext.Session.Remove("SaleBillModel");
                     }
-                        if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
+                    if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
                         var errNum = Result.Result.Message.ToString().Split(":")[1];
                         model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
@@ -471,11 +472,11 @@ namespace eTactWeb.Controllers
                     }
                     HttpContext.Session.SetString("SaleInvoice", JsonConvert.SerializeObject(model));
                 }
-               return Json(new { status = "Success" });
-               // return View();
+                return Json(new { status = "Success" });
+                // return View();
             }
         }
-       
+
         public static DataTable GetAdjustChallanDetailTable(List<CustomerInputJobWorkIssueAdjustDetail> model)
         {
             DataTable Table = new();
@@ -1596,7 +1597,7 @@ namespace eTactWeb.Controllers
             //    viewbag.issuccess = false;
             //    tempdata["500"] = "500";
             //}
-            if (Result.StatusText == "Success"|| Result.StatusText == "deleted"|| Result.StatusCode == HttpStatusCode.Gone)
+            if (Result.StatusText == "Success" || Result.StatusText == "deleted" || Result.StatusCode == HttpStatusCode.Gone)
             {
                 ViewBag.isSuccess = true;
                 TempData["410"] = "410";
@@ -1612,7 +1613,7 @@ namespace eTactWeb.Controllers
             {
                 ViewBag.isSuccess = false;
                 TempData["500"] = "500";
-          
+
             }
             return RedirectToAction("SBDashboard", new { Flag = "False", ItemName = itemName, PartCode = partCode, saleBillno = saleBillno, customerName = customerName, sono = sono, custOrderNo = custOrderNo, schNo = schNo, performaInvNo = performaInvNo, saleQuoteNo = saleQuoteNo, domensticExportNEPZ = domensticExportNEPZ, fromdate = fromdate, todate = toDate, searchBox = Searchbox });
         }
@@ -1709,7 +1710,7 @@ namespace eTactWeb.Controllers
                         rawEInvoice = rawResponse["eInvoiceResponse"]?.ToString(),
                         rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
                     });
-                  //  return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
+                    //  return BadRequest("Failed to parse eInvoice JSON: " + ex.Message);
                 }
                 string uploadsFolder = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "QRCode");
                 if (!Directory.Exists(uploadsFolder))
@@ -1729,13 +1730,13 @@ namespace eTactWeb.Controllers
                     return Ok(new
                     {
                         qrCodeUrl = publicUrl,
-                        ewbPdfUrl="",
+                        ewbPdfUrl = "",
                         rawEInvoice = rawResponse["eInvoiceResponse"]?.ToString(),
                         rawEWayBill = rawResponse["eWayBillResponse"]?.ToString()
                     });
                 }
-                    //   var ewayInvoiceStr = rawResponse["eWayBillResponse"]?.ToString();
-                    string ewayInvoiceStr = rawResponse["eWayBillResponse"]?.ToString();
+                //   var ewayInvoiceStr = rawResponse["eWayBillResponse"]?.ToString();
+                string ewayInvoiceStr = rawResponse["eWayBillResponse"]?.ToString();
 
                 if (string.IsNullOrWhiteSpace(ewayInvoiceStr))
                     return BadRequest("Missing eInvoice response.");
@@ -1764,7 +1765,7 @@ namespace eTactWeb.Controllers
                 }
                 string ewbPdfUrl = eInvoiceObj1["results"]?["message"]?["EwaybillPdf"]?.ToString() ?? "";
 
-              //  string ewbPdfUrl = rawResponse["PDF"]?.ToString() ?? "";
+                //  string ewbPdfUrl = rawResponse["PDF"]?.ToString() ?? "";
 
                 return Ok(new
                 {
@@ -1832,7 +1833,7 @@ namespace eTactWeb.Controllers
             var Result = _IDataLogic.isDuplicate(ColVal, ColName, "SaleBillMain");
             return Result;
         }
-   
+
         [HttpPost]
         public JsonResult AutoComplete(string ColumnName, string prefix)
         {
@@ -1846,8 +1847,11 @@ namespace eTactWeb.Controllers
 
             return Json(Result);
         }
-
+        public async Task<JsonResult> CheckFinYearBeforeSave(int YearCode, string Date, string DateName)
+        {
+            var JSON = await _ICommon.CheckFinYearBeforeSave(YearCode, Date, DateName);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
-
-   
 }
