@@ -78,7 +78,7 @@ namespace eTactWeb.Controllers
             var MRPSOList = new List<MRPSaleOrderDetail>();
             model.Month = ForMonth;
             model.YearCode = YearCode;
-            model.IncludeProjection = "Y";
+            model.IncludeProjection = "N";
             var Result = await IMRP.PendingMRPData(model);
 
             if (Result != null)
