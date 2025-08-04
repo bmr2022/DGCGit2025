@@ -1584,6 +1584,7 @@
                     GetItemPartCode("PartCode");
                     GetItemRate();
                     FillCurrentBatchINStore();
+                    StockableItems(parseInt($('#ItemCode').val()));
                     return false;
                 },
                 focus: function (event, ui) {
@@ -1604,6 +1605,7 @@
                     GetItemPartCode("ItemCode");
                     GetItemRate();
                     FillCurrentBatchINStore();
+                    StockableItems(parseInt($('#ItemCode').val()));
                     return false;
                 },
                 focus: function (event, ui) {
