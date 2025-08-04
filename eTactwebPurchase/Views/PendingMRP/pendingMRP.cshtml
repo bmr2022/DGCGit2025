@@ -485,7 +485,7 @@
 			$.ajax({
 				type: "POST",
 				url: "@Url.Action("FillMRPSOList")",
-				data: { "ForMonth": ForMonth, "YearCode": YearCode },
+				data: { "ForMonth": ForMonth, "YearCode": YearCode, "IncludeProjection": IncludeProjection },
 				dataType: "json",
 				async:false,
 				success: function (result, status, error) {
