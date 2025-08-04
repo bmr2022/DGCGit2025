@@ -434,7 +434,8 @@
 					"ForMonthYear": ForMonthYear,
 					"StoreId": SelectedStorevalues,
 					"WcId": SelectedWcValues,
-					"ScheduleNo": schnoyearValue
+					"ScheduleNo": schnoyearValue,
+							"IncludeProjection": IncludeProjection
 				});
 
 			} else {
@@ -480,6 +481,7 @@
 		function FillMRPSOList() {
 			var ForMonth = parseInt($('#Month').val().split("-")[1]);
 			var YearCode = parseInt($('#YearCode').val());
+			var IncludeProjection = ($('#IncludeProjection').val());
 			$.ajax({
 				type: "POST",
 				url: "@Url.Action("FillMRPSOList")",

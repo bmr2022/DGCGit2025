@@ -402,9 +402,10 @@
             //$('#MrpFirstDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
 
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                FillSaleOrderMRPGrid();
                 FillMRPDetailGrid();
                 FillFGMRPDetailGrid();
-                FillSaleOrderMRPGrid();
+                
             }
 
             $('#MRPREvDate').rules("remove", "required");
