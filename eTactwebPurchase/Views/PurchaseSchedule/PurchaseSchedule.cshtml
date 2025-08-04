@@ -1599,6 +1599,7 @@
                         $('#PartCode,#ItemCode').val('0');
                         $('#SchQty,#PendQty,#AltSchQty,#AltPendQty').val('0');
                         $('#AltUnit,#PendQty').val('0');
+                        
                     }
                 },
                 success: function (result, status, xhr) {
@@ -1608,6 +1609,9 @@
                             $('#ItemCode').prop('selectedIndex', 0).trigger("change"),
                         $('#SchQty,#PendQty,#AltSchQty,#AltPendQty,#Rate').val('0');
                         $('#AltUnit,#PendQty').val('0');
+                        $('#DeliveryDate')
+                            .datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+
                     }
                 },
                 error: function (result, status, xhr) {
@@ -1779,7 +1783,7 @@
                         $('#AltPendQty').val(obj[0].AltPendQty);
                         $('#Rate').val(obj[0].Rate);
                         $('#RateInOthCurr').val(obj[0].RateInOthCurr);
-                        $('#DeliveryDate').val(obj[0].DeliveryDate);
+                        $('#DeliveryDate').val(parseDateToFormat1(obj[0].DeliveryDate));
                         $('#ItemSize').val(obj[0].ItemSize);
                         $('#ItemColor').val(obj[0].ItemColor);
                         $('#OtherDetail').val(obj[0].OtherDetail);
