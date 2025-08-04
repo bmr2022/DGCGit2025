@@ -946,6 +946,8 @@ namespace eTactWeb.Controllers
             MRGrid.Columns.Add("ItemSize", typeof(string));
             MRGrid.Columns.Add("ItemColor", typeof(string));
             MRGrid.Columns.Add("PartCode", typeof(string));
+            MRGrid.Columns.Add("DisPer", typeof(decimal));
+            MRGrid.Columns.Add("DiscRs", typeof(decimal));
             DateTime currentDate = DateTime.Now;
             foreach (var Item in DetailList)
             {
@@ -995,6 +997,8 @@ namespace eTactWeb.Controllers
                     Item.ItemSize == null ? "" : Item.ItemSize,
                     Item.ItemColor == null ? "" : Item.ItemColor,
                     Item.PartCode== null ? "" : Item.PartCode,
+                      Item.DisPer,
+                    Item.DiscRs,
                     });
             }
             MRGrid.Dispose();

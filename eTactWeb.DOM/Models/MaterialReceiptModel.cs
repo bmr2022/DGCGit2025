@@ -116,6 +116,8 @@ public class MaterialReceiptDetail : TimeStamp
     public decimal ShortExcessQty { get; set; }
     public decimal Rate { get; set; }
     public decimal RateinOther { get; set; }
+    public decimal DisPer { get; set; }
+    public decimal DiscRs { get; set; }
     public decimal Amount { get; set; }
     public decimal PendPOQty { get; set; }
     public string QCCompleted { get; set; }
