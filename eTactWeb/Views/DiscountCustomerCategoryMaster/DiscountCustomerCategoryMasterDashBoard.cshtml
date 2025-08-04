@@ -1,0 +1,347 @@
+﻿@model eTactWeb.DOM.Models.DiscountCustomerCategoryMasterModel
+
+@{
+    ViewData["Title"] = "Dashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<div class="shadow-lg">
+    <div class="card rounded border-light bg-gradient">
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                Discount Customer Category Master - <strong>Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-action="DiscountCustomerCategoryMaster" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body">
+                    <form id="SParam">
+                        <div class="row">
+
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
+                                <input type="hidden" asp-for="@Model.ActualEntryByEmpId" value="@Model.ActualEntryByEmpId" />
+                                <input type="hidden" asp-for="@Model.SeqNo" value="@Model.SeqNo" />
+                                <div class="row">
+                                    <div class="col">
+                                        <label class="form-label">From Date</label>
+                                        <input asp-for="FromDate" class="form-control" readonly />
+                                    </div>
+                                    <div class="col">
+                                        <label class="form-label">To Date</label>
+                                        <input asp-for="ToDate" class="form-control" readonly />
+                                    </div>
+                                </div>
+                            </div>
+                           
+
+
+                            <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
+                                <label class="form-label">Global search</label>
+                                <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                            </div>
+                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
+                                <button class="btn btn-sm btn-outline-info" type="button" onclick="GetDetailData();">
+                                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
+                                </button>
+                                <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
+                                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                                </button>
+                                <a class="btn btn-sm btn-outline-danger" asp-controller="DiscountCustomerCategoryMaster" asp-action="DiscountCustomerCategoryMasterDashBoard">
+                                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                                </a>
+                               
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <div class="card-body pb-0 pt-0">
+            <div class="progress" style="height: 4px;">
+                <div class="progress-bar progress-bar-striped bg-info" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+            </div>
+        </div>
+        <div class="card-body">
+            <div class="card overflow-auto">
+                <div class="card-body" id="divDashboardGrid">
+                    <partial name="_DiscountCustomerCategoryMasterDashBoardGrid" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts
+{
+    <script>
+        $(document).ready(function () {
+            GetFormRights();
+
+            //$('#ReportType').select2();
+
+            GetDetailData();
+            
+            var CurrentDate = new Date();
+
+            var currentDate = new Date();
+            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+            $('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            $('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", 'now');
+
+
+            AutoComplete('VWorkorderMainDetail', 'WONO', 'WONO', null);
+            AutoComplete('VWorkorderMainDetail', 'CC', 'cc', null);
+            AutoComplete('VWorkorderMainDetail', 'SONO', 'SONO', null);
+            AutoComplete('VWorkorderMainDetail', 'SchNo', 'SchNo', null);
+            AutoComplete('VWorkorderMainDetail', 'AccountName', 'Account_Name', null);
+            AutoComplete('VWorkorderMainDetail', 'PartCode', 'PartCode', null);
+            AutoComplete('VWorkorderMainDetail', 'ItemName', 'ItemName', null);
+
+
+
+            $("#search-box").val($('#search-box').val()).trigger('keyup');
+
+            sessionStorage.removeItem('FromDateBack');
+            sessionStorage.removeItem('ToDateBack');
+            sessionStorage.removeItem('SlipNoBack');
+            sessionStorage.removeItem('BatchNoBack');
+            sessionStorage.removeItem('PartCodeBack');
+            sessionStorage.removeItem('ItemNameBack');
+            sessionStorage.removeItem('DocTypeBack');
+            sessionStorage.removeItem('GlobalSearchBack');
+            sessionStorage.removeItem('DashboardTypeBack');
+        });
+
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            var rowCounter = $('#gateDashboardtable tr').length;
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#viewCursorDiv-' + i).empty();
+                                $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                                                        <span class="fa-stack">
+                                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                                        </span>
+                                                                                                                    </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#editCursorDiv-' + i).empty();
+                                $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                                                                <span class="fa-stack">
+                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                                                </span>
+                                                                                                                            </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#deleteCursorDiv-' + i).empty();
+                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                                                                <span class="fa-stack">
+                                                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                                                </span>
+                                                                                                                            </a>`);
+                            }
+                            $("#divDashboardGrid").css("display", "none");
+                            $(".totalrows").css("display", "none");
+                            $("#SParam").hide();
+                        } else {
+
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            if (!optAll) {
+                                if (!optSave) {
+
+                                    $("#savebtn").css("pointer-events", "none");
+                                } else {
+                                    $("#savebtn").css("pointer-events", "");
+                                }
+                                if (!optView) {
+
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#viewCursorDiv-' + i).empty();
+                                        $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>`);
+                                    }
+                                }
+                                if (!optUpdate) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#editCursorDiv-' + i).empty();
+                                        $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>`);
+                                    }
+                                }
+                                if (!optDelete) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#deleteCursorDiv-' + i).empty();
+                                        $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                        <span class="fa-stack">
+                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                        </span>
+                                                                                    </a>`);
+                                    }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+
+        function GetDetailData() {
+
+            var fromDate = $('#FromDate').val();
+            var toDate = $('#ToDate').val();
+            $.ajax({
+                url: '@Url.Action("GetDetailData")',
+                type: "POST",
+                data: { FromDate: fromDate, ToDate: toDate},
+                async: false,
+                data: $('#SParam').serializeArray(),
+                success: function (data) {
+                    $('#divDashboardGrid').empty().append(data);
+                    var totalRows = $('#divDashboardGrid tr').length;
+                    $('#totalRows').text(totalRows);
+                    //GetFormRights();
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+        function formatDate1(date) {
+            var day = ("0" + date.getDate()).slice(-2);
+            var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+            var month = monthNames[date.getMonth()];
+            var year = date.getFullYear();
+            var dateString = day + "/" + month + "/" + year;
+            return dateString;
+        }
+
+        var currentSearchColumn = null;
+
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#DashboardGrid tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable('ISTDashboard', colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable('ISTDashboard', colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function confirmdelete(event, element) {
+            event.preventDefault();
+
+            var urlHref = $(event.currentTarget).attr("href");
+            if (confirm("Are you sure you want to delete this entry?")) {
+                CheckIssuedTransStock(event, element, urlHref);
+                //var linkurl = $(event.currentTarget).attr("href");
+                //linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&BatchNo=" + $('#Batchno').val() + "&SummaryDetail=" + $('#SummaryDetail').val();
+
+                //window.location.replace(linkurl);
+            }
+        }
+
+        function BackButtonData(event, EntryId, YearCode) {
+
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkurl = urlHref;
+            linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&BatchNo=" + $('#Batchno').val() + "&SummaryDetail=" + $('#SummaryDetail').val() + "&Searchbox=" + $('#search-box').val();
+            window.location.href = linkurl;
+        }
+
+        
+        function confirmEdit(event) {
+
+            event.preventDefault();
+            var urlHref = $(event.currentTarget).attr("href");
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val();
+            window.location.href = linkUrl;
+
+        }
+
+        
+        function selection(CurrentRow) {
+
+            $(CurrentRow).css({ 'background-color': '#00bcd4' });
+
+            $("#DashboardGrid tr").not(CurrentRow).css({ 'background-color': '' });
+        }
+
+    </script>
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+}
