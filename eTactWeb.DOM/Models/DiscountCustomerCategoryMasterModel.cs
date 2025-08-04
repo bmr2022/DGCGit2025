@@ -13,6 +13,7 @@ namespace eTactWeb.DOM.Models
         public string DiscountCatSlipNo { get; set; } 
         public int DiscountCustCatYearCode { get; set; } 
         public string DiscountCategory { get; set; }
+        public int DiscountCategoryId { get; set; }
         public string? EffectiveFromDate { get; set; } 
         public decimal MinDiscountPer { get; set; } 
         public decimal MaxDiscountPer { get; set; }
@@ -35,6 +36,10 @@ namespace eTactWeb.DOM.Models
         public string DiscountCatSlipDate { get; set; }
         public string PartCode { get; set; }
         public int ItemCode { get; set; }
+        public int SeqNo { get; set; }
+        public string FromDate { get; set; }
+        public string ToDate { get; set; }
+        public string Searchbox { get; set; }
         public IList<DiscountCustomerCategoryMasterModel> DiscountCustomerCategoryMasterGrid { get; set; }
     }
 }
