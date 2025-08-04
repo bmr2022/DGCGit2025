@@ -204,7 +204,7 @@ public static class CommonFunc
             DateTime date;
             string[] formats =
             {
-                           "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "dd/MM/yy", "dd-MMM-yyyy",
+                          "dd/MM/yyyy HH:mm:ss", "yyyy-MM-dd", "dd-MM-yyyy", "dd/MM/yyyy", "dd/MM/yy", "dd-MMM-yyyy",
     "MM/dd/yyyy", "MM/dd/yy", "dd-MM-yy", "d-M-yy", "MMM dd, yyyy", "dd-MMM-yyyy HH:mm",
     "dd/MMM/yyyy", "dd/MMM/yyyy HH:mm:ss", "dd/MMM/yyyy hh:mm:ss tt", "yyyy/MM/dd HH:mm:ss",
     "MM/dd/yyyy HH:mm:ss", "yyyy-MM-dd HH:mm:ss", "d-M-yyyy hh:mm:ss tt", "d-M-yyyy",
@@ -216,7 +216,7 @@ public static class CommonFunc
     "dd/MM/yyyy hh:mm:ss tt", "dd-MM-yyyy hh:mm:ss", "dd-MM-yyyy HH:mm:ss", "d-M-yy hh:mm:ss",
     "d-M-yy HH:mm:ss", "dd-M-yy hh:mm:ss", "dd-M-yy HH:mm:ss", "dd/MMM/yyyy HH.mm.ss tt",
     "dd/MMM/yyyy hh.mm.ss tt", "dd/MMM/yyyy h.mm.ss tt", "MM/dd/yyyy HH:mm:ss tt",
-    "M/dd/yyyy HH:mm:ss", "MM/dd/yyyy hh:mm:ss tt", "M/dd/yyyy hh:mm:ss tt", "M/dd/yyyy","dd/MM/yyyy HH:mm:ss",
+    "M/dd/yyyy HH:mm:ss", "MM/dd/yyyy hh:mm:ss tt", "M/dd/yyyy hh:mm:ss tt", "M/dd/yyyy",
      "yyyy/MM/dd",                       // 2025/07/07
     "yyyy.MM.dd",                       // 2025.07.07
     "dd.MM.yyyy",                       // 07.07.2025
@@ -247,15 +247,20 @@ public static class CommonFunc
                 // Successfully parsed; return the date in "yyyy-MM-dd" format
                 return date.ToString("dd/MMM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
             }
+            else
+            {
+                return date.ToString("dd/MMM/yyyy", System.Globalization.CultureInfo.InvariantCulture);
+            }
         }
         catch (Exception ex)
         {
             // Log the exception if needed (e.g., to a file, database, or logging framework)
+            return dateString.ToString();
             Console.WriteLine($"Error parsing date: {ex.Message}");
         }
-
+      
         // Return empty string if parsing failed
-        return dateString.ToString();
+
     }
     public static string FormatToDDMMYYYY(string inputDate)
     {

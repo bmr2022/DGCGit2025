@@ -2084,7 +2084,7 @@
         $('button[type="submit"]').click(function (e) {
             e.preventDefault();
             $('#TypeOfSave').val("NS");
-
+            debugger
             let isError = false;
             var poGrid = $('#divPBItemList tr td').length;
             var taxGrid = $('#divTaxGrid tr td').length;
@@ -2169,8 +2169,8 @@
                     }
                 }
                 if (minDate && vouchDate) {
-                    var minDateObj = new Date(minDate);
-                    var vouchDateObj = new Date(vouchDate);
+                          var minDateObj = formatDateToDDMMYY(minDate);
+                             var vouchDateObj = new Date(vouchDate);
 
                     if (minDateObj > vouchDateObj) {
                         $.notify("Vouch Date should be grater than MRN/MIR Date", "error");

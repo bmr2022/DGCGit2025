@@ -301,7 +301,9 @@
 				filename: "GateData.xls"
 			});
 		});
-
+			$("#VendorName").change(function () {
+			fillPONumber();
+		})
 
 			$("#docTypeId").change(function () {
 			fillPONumber();
@@ -356,8 +358,19 @@
 
 	
 			   function GetSearchData(){
+					   let vendorName = $('#VendorName').val();
+		let docType = $('#docTypeId').val();
 					let searchBox = $('#search-box').val();
-
+						if (!vendorName) {
+			alert("Please select Vendor Name.");
+			$('#VendorName').focus();
+			return;
+		}
+		if (!docType) {
+			alert("Please select Document Type.");
+			$('#docTypeId').focus();
+			return;
+		}
 		let data = {
 
 					AccountCode: $('#VendorName').val(),

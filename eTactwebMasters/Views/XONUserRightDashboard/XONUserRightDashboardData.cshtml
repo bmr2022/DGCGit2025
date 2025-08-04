@@ -1,0 +1,63 @@
+﻿@model eTactWeb.DOM.Models.UserRightDashboardModel
+
+@{
+    ViewData["Title"] = "UserRightDashboard";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+<div class="shadow-lg">
+    <div class="card border-secondary bg-gradient">
+        <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+            <h5>
+                User <strong> - Dashboard</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a asp-controller="XONUserRightDashboard" asp-action="XONUserRightDashboardData" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
+                        <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
+                        Add New
+                    </a>
+                </span>
+            </h5>
+        </div>
+
+        <div class="row mt-2">
+
+            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="margin-left: 20px">
+                <label asp-for="EmpName" class="form-label">User Name</label>
+                <input asp-for="EmpName" class="form-control" />
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="margin-left: 20px">
+                <label asp-for="UserName" class="form-label">Emp Name</label>
+                <input asp-for="UserName" class="form-control" />
+            </div>
+            <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12" style="margin-left: 20px">
+                <label class="form-label">Type</label>
+                <select id="Type" class="form-select">
+                    <option value="" disabled>-Select-</option>
+                    <option value="Summary" selected>Summary</option>
+                    <option value="Detail">Detail</option>
+                </select>
+            </div>
+            @* <div class="col-lg-2 col-md-4 col-sm-12 col-xs-12">
+            <label asp-for="SubMenu" class="form-label">Sub Menu</label>
+            <input asp-for="SubMenu" class="form-control" />
+            </div>*@
+            <div class=" d-flex justify-content-center mt-3" width="inherit">
+
+                <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetSearchData();">
+                    <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
+                </button>
+                <button class="btn btn-sm btn-outline-success" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="sendToExcel">
+                    <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
+                </button>
+                <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="Admin" asp-action="UserRightDashboard">
+                    <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
+                </a>
+            </div>
+        </div>
+        <div id="divDashboard">
+            <partial name="_SearchFieldDashboard" />
+        </div>
+        <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+    </div>
+</div>

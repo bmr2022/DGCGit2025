@@ -72,12 +72,13 @@ namespace eTactWeb.Controllers
             return View(model);
         }
 
-        public async Task<IActionResult> FillMRPSOList(int ForMonth, int YearCode)
+        public async Task<IActionResult> FillMRPSOList(int ForMonth, int YearCode,string IncludeProjection)
         {
             var model = new PendingMRP();
             var MRPSOList = new List<MRPSaleOrderDetail>();
             model.Month = ForMonth;
             model.YearCode = YearCode;
+            model.IncludeProjection = IncludeProjection;
             var Result = await IMRP.PendingMRPData(model);
 
             if (Result != null)
@@ -171,7 +172,8 @@ namespace eTactWeb.Controllers
                     SchYearCode = item.schYearCode,
                     AccountCode = item.accountcode,
                     AccountName = item.account_name,
-                    BOMExist = item.BOM
+                    BOMExist = item.BOM,
+                    
 
                 });
             }

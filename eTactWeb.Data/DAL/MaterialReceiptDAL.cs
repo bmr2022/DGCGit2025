@@ -363,6 +363,8 @@ namespace eTactWeb.Data.DAL
                         ShortExcessQty = string.IsNullOrEmpty(row["ShortExcessQty"].ToString()) ? 0 : Convert.ToDecimal(row["ShortExcessQty"].ToString()),
                         Rate = string.IsNullOrEmpty(row["Rate"].ToString()) ? 0 : Convert.ToDecimal(row["Rate"].ToString()),
                         RateinOther = string.IsNullOrEmpty(row["rateinother"].ToString()) ? 0 : Convert.ToDecimal(row["rateinother"].ToString()),
+                        DisPer = string.IsNullOrEmpty(row["DiscPer"].ToString()) ? 0 : Convert.ToDecimal(row["DiscPer"].ToString()),
+                        DiscRs = string.IsNullOrEmpty(row["DiscAmt"].ToString()) ? 0 : Convert.ToDecimal(row["DiscAmt"].ToString()),
                         Amount = string.IsNullOrEmpty(row["Amount"].ToString()) ? 0 : Convert.ToDecimal(row["Amount"].ToString()),
                         PendPOQty = string.IsNullOrEmpty(row["PendPOQty"].ToString()) ? 0 : Convert.ToDecimal(row["PendPOQty"].ToString()),
                         QCCompleted = row["QCCompleted"].ToString().Trim(),

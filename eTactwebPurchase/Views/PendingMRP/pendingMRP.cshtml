@@ -434,7 +434,8 @@
 					"ForMonthYear": ForMonthYear,
 					"StoreId": SelectedStorevalues,
 					"WcId": SelectedWcValues,
-					"ScheduleNo": schnoyearValue
+					"ScheduleNo": schnoyearValue,
+							"IncludeProjection": IncludeProjection
 				});
 
 			} else {
@@ -480,10 +481,11 @@
 		function FillMRPSOList() {
 			var ForMonth = parseInt($('#Month').val().split("-")[1]);
 			var YearCode = parseInt($('#YearCode').val());
+			var IncludeProjection = ($('#IncludeProjection').val());
 			$.ajax({
 				type: "POST",
 				url: "@Url.Action("FillMRPSOList")",
-				data: { "ForMonth": ForMonth, "YearCode": YearCode },
+				data: { "ForMonth": ForMonth, "YearCode": YearCode, "IncludeProjection": IncludeProjection },
 				dataType: "json",
 				async:false,
 				success: function (result, status, error) {
