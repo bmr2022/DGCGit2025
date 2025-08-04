@@ -1312,31 +1312,18 @@ public class PurchaseOrderDAL
         {
             var SqlParams = new List<dynamic>();
 
-            var EntryDt = CommonFunc.ParseFormattedDate(model.EntryDate);
-           var PoDt = CommonFunc.ParseFormattedDate(model.PODate);
-           var WEFDate = CommonFunc.ParseFormattedDate(model.WEF);
-           var PoCloseDt =CommonFunc.ParseFormattedDate(model.POCloseDate);
-           var AmmDt =CommonFunc.ParseFormattedDate(model.AmmDate);
-            //RefDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.RefDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            //DateTime? RefDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.RefDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate) ? parsedDate : (DateTime?)null;
-            var RefDt =CommonFunc.ParseFormattedDate(model.RefDate);
-            //QuotDt = DateTime.ParseExact(CommonFunc.ParseFormattedDate(model.QuotDate), "dd/MMM/yyyy", CultureInfo.InvariantCulture);
-            //DateTime? QuotDt = DateTime.TryParseExact(CommonFunc.ParseFormattedDate(model.QuotDate ?? ""), "dd/MMM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime parsedDate1) ? parsedDate1 : (DateTime?)null;
-            var QuotDt = CommonFunc.ParseFormattedDate(model.QuotDate);
-            //EntryDt = ParseDate(model.EntryDate);
-            //PoDt = ParseDate(model.PODate);
-            //WEFDate = ParseDate(model.WEF);
-            //PoCloseDt = ParseDate(model.POCloseDate);
-            //AmmDt = ParseDate(model.AmmDate);
-            //RefDt = ParseDate(model.RefDate);
-            //QuotDt = ParseDate(model.QuotDate);
-
-
-            SqlParams.Add(new SqlParameter("@EntryDate", EntryDt == default ? string.Empty : EntryDt));
+            var EntryDt = model.EntryDate;
+           var PoDt = model.PODate;
+           var WEFDate = model.WEF;
+           var PoCloseDt =model.POCloseDate;
+            var AmmDt = model.AmmDate;
+            var RefDt =model.RefDate;
+            var QuotDt = model.QuotDate;
+            SqlParams.Add(new SqlParameter("@EntryDate", EntryDt == default ? string.Empty : CommonFunc.ParseFormattedDate( EntryDt)));
             SqlParams.Add(new SqlParameter("@PODate", PoDt == default ? string.Empty : PoDt));
-            SqlParams.Add(new SqlParameter("@WEF", WEFDate == default ? string.Empty : WEFDate));
-            SqlParams.Add(new SqlParameter("@POCloseDate", PoCloseDt == default ? string.Empty : PoCloseDt));
-            SqlParams.Add(new SqlParameter("@AmmEffDate", AmmDt == default ? string.Empty : AmmDt));
+            SqlParams.Add(new SqlParameter("@WEF", WEFDate == default ? string.Empty : CommonFunc.ParseFormattedDate(WEFDate)));
+            SqlParams.Add(new SqlParameter("@POCloseDate", PoCloseDt == default ? string.Empty : CommonFunc.ParseFormattedDate(PoCloseDt)));
+            SqlParams.Add(new SqlParameter("@AmmEffDate", AmmDt == default ? string.Empty : CommonFunc.ParseFormattedDate(AmmDt)));
             SqlParams.Add(new SqlParameter("@RefDate", RefDt == default ? string.Empty : RefDt));
 
             SqlParams.Add(new SqlParameter("@Flag", model.Mode == "COPY" ? "INSERT" : model.Mode));
@@ -1357,7 +1344,7 @@ public class PurchaseOrderDAL
                 var AppDate = model.ApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.ApprovedDate) : string.Empty;
                 var FirstLvlAppDate = model.FirstLvlApprovedDate != null ? Common.CommonFunc.ParseFormattedDate(model.FirstLvlApprovedDate) : string.Empty;
 
-                SqlParams.Add(new SqlParameter("@ApprovedDate", AppDate == default ? string.Empty : AppDate));
+                SqlParams.Add(new SqlParameter("@ApprovedDate", AppDate == default ? string.Empty : CommonFunc.ParseFormattedDate(AppDate)));
                 SqlParams.Add(new SqlParameter("@AmendApproveDate", AmmAppDate == default ? string.Empty : AmmAppDate));
                 SqlParams.Add(new SqlParameter("@Approval1LevelDate", AmmAppDate == default ? string.Empty : AmmAppDate));
 
