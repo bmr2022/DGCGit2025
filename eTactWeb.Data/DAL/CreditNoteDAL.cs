@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
 using static eTactWeb.DOM.Models.Common;
-using CommonFunc = eTactWeb.Data.Common.CommonFunc;
+using static eTactWeb.Data.Common.CommonFunc;
 
 namespace eTactWeb.Data.DAL
 {
@@ -316,7 +316,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode,string CreditNoteVoucherDate,string SubVoucherName)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -324,6 +324,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@CreditNoteYearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@CreditNoteVoucherDate", ParseFormattedDate(CreditNoteVoucherDate)));
+                SqlParams.Add(new SqlParameter("@SubVoucherName", "Credit-Note"));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSP_CreditNoteMainDetail", SqlParams);
             }
             catch (Exception ex)

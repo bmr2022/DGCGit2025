@@ -622,7 +622,7 @@
             var YearCode = $('#CreditNoteYearCode').val();
             $.ajax({
                 type: "POST",
-                data: { "YearCode": YearCode },
+                data: { "YearCode": YearCode, "CreditNoteVoucherDate": $('#CreditNoteInvoiceDate').val() },
                 url: "@Url.Action("NewEntryId")",
                 dataType: "json",
                 async: false,

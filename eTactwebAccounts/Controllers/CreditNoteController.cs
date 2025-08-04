@@ -773,9 +773,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> NewEntryId(int YearCode)
+        public async Task<JsonResult> NewEntryId(int YearCode,string CreditNoteVoucherDate,string SubVoucherName)
         {
-            var JSON = await _creditNote.NewEntryId(YearCode);
+            var JSON = await _creditNote.NewEntryId(YearCode,CreditNoteVoucherDate,SubVoucherName);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

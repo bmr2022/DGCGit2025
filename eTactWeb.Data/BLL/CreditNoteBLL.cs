@@ -27,9 +27,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _creditNoteDAL.GetHSNUNIT(itemCode);
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode, string CreditNoteVoucherDate, string SubVoucherName)
         {
-            return await _creditNoteDAL.NewEntryId(YearCode);
+            return await _creditNoteDAL.NewEntryId(YearCode,CreditNoteVoucherDate,SubVoucherName);
         }
         public async Task<ResponseResult> FillDetailFromPopupGrid(DataTable model,int itemCode,int popCt)
         {
