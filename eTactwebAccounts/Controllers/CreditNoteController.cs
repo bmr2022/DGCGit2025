@@ -808,5 +808,11 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillSubVoucher()
+        {
+            var JSON = await _creditNote.FillSubVoucher();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

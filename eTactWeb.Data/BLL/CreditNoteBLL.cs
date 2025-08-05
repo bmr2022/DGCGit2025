@@ -63,5 +63,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _creditNoteDAL.DeleteByID(ID,YC,accountCode,entryByMachineName);
         }
+        public async Task<ResponseResult> FillSubVoucher()
+        {
+            return await _creditNoteDAL.FillSubVoucher();
+        }
     }
 }
