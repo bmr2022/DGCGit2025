@@ -1054,7 +1054,12 @@
                      }else{
                            var EntryDate = parseDateToFormat1($('#EntryDate').val());
             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                     }
+                        /* var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split("-").join("/")); */
+                                  /*   alert(EntryDate); */
+                                    /* //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate)); */
+                                    $('#InvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#InvoiceDate').val()));
+
+                             }
                     /*     alert("finalLAST"); */
 
             //$('#AccountCode .select2-search__field')

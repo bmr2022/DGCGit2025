@@ -203,7 +203,7 @@ namespace eTactWeb
             services.TryAddScoped<IVendoreRatingAnalysisReport, VendoreRatingAnalysisReportBLL>();
             services.TryAddScoped<IXONUserRightDashboardBLL, XONUserRightDashboardBLL>();
             services.TryAddScoped<IDiscountCustomerCategoryMaster, DiscountCustomerCategoryMasterBLL>();
-
+            services.TryAddScoped<ICommon,CommonBLL>();
 
 
 
