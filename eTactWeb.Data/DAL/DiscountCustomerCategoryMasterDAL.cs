@@ -222,5 +222,91 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@DiscountCustCatEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@DiscountCustCatYearCode", YearCode));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPSalesDiscountCustomerCategoryMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+        public async Task<DiscountCustomerCategoryMasterModel> GetViewByID(int ID, int YC)
+        {
+            var model = new DiscountCustomerCategoryMasterModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@MatConvEntryId", ID));
+                SqlParams.Add(new SqlParameter("@YearCode", YC));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPSalesDiscountCustomerCategoryMaster", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+        private static DiscountCustomerCategoryMasterModel PrepareView(DataSet DS, ref DiscountCustomerCategoryMasterModel? model)
+        {
+            try
+            {
+                var ItemList = new List<DiscountCustomerCategoryMasterModel>();
+                var DetailList = new List<DiscountCustomerCategoryMasterModel>();
+                DS.Tables[0].TableName = "DiscountCustomerCategoryMaster";
+                int cnt = 0;
+                model.DiscountCustCatEntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountCustCatEntryId"].ToString());
+                model.DiscountCustCatYearCode = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscountCustCatYearCode"].ToString());
+                model.DiscountCategory = DS.Tables[0].Rows[0]["DiscountCategory"].ToString();
+                model.DiscountCatSlipNo = DS.Tables[0].Rows[0]["DiscountCatSlipNo"].ToString();
+                model.EffectiveFromDate = DS.Tables[0].Rows[0]["EffectiveFromDate"].ToString();
+                model.MinDiscountPer = Convert.ToDecimal(DS.Tables[0].Rows[0]["MinDiscountPer"].ToString());
+                model.MaxDiscountPer = Convert.ToDecimal(DS.Tables[0].Rows[0]["MaxDiscountPer"].ToString());
+                model.ApplicableMonthlyYearlyAfterEachSale = DS.Tables[0].Rows[0]["ApplicableMonthlyYearlyAfterEachSale"].ToString();
+                model.ApplicableOnAdvancePayment = DS.Tables[0].Rows[0]["ApplicableOnAdvancePayment"].ToString();
+                model.MinmumAdvancePaymentPercent = Convert.ToDecimal(DS.Tables[0].Rows[0]["MinmumAdvancePaymentPercent"].ToString());
+                
+                model.CategoryActive = DS.Tables[0].Rows[0]["CategoryActive"].ToString();
+                model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
+                model.ActualEntryByEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryByEmpId"].ToString());
+                model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
+                model.LastUpdatedbyEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedbyEmpId"].ToString());
+                model.LastupDationDate = DS.Tables[0].Rows[0]["LastupDationDate"].ToString();
+                model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
+                model.Uid = Convert.ToInt32(DS.Tables[0].Rows[0]["Uid"].ToString());
+                model.ApprovedByEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["ApprovedByEmpId"].ToString());
+
+
+                return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }
