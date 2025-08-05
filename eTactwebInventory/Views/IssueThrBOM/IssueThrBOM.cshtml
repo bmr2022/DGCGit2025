@@ -657,7 +657,7 @@
 
 // When user clicks "Print"
 $('#btnPrint').click(function () {
-
+            if (!Validate_IssueInsert()) return;
             ChkStockBeforeSaving(function (isValid) {
                 if (isValid) {
                     const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
@@ -675,7 +675,7 @@ $('#btnPrint').click(function () {
 
 // When user clicks "Close" or no print
 $('#btnClose').click(function () {
-
+            if (!Validate_IssueInsert()) return;
             ChkStockBeforeSaving(function (isValid) {
                 if (isValid) {
                     $('#PasswordAllowPopup').modal("hide");
