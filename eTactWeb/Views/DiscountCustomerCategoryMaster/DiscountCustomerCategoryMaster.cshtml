@@ -42,7 +42,7 @@
 								{
 									Model.Mode = "U";
 									<div class="col-auto">
-										<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+										<button type="submit" class="submitBTN btn btn-sm btn-outline-light bg-gradient submitBTN">
 											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
 											UPDATE
 										</button>
@@ -271,7 +271,7 @@
 @section Scripts {
 	<script>
 		$(document).ready(function () {
-			GetFormRights();
+			//GetFormRights();
 			if ($('#Mode').val() !== "U") {
 
 				FillEntryID();
@@ -325,6 +325,9 @@
 			});
 			
 			
+		});
+		$('#DiscountCategory').change(function () {
+			$('#DiscountCategoryId').val($('#DiscountCategory').val());
 		});
 		function setFormattedDate() {
 			var today = new Date();

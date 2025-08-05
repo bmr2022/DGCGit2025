@@ -4591,6 +4591,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         var BomEffecDate = obj.Result[0].EffectiveDate;
+                        var parts = BomEffecDate.split("T");
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#BOMNo').empty();
                             /* $('#BOMNo').append('<option>-Select-</option>'); */
@@ -4601,7 +4602,7 @@
                                 $('#BOMNo').append('<option ' + isSelected + ' value="' + val.BomNo + '">' + val.BomNo + '</option>')
                             })
                             if (BomEffecDate != null) {
-                                $('#BomEffecDate').val(BomEffecDate);
+                                $('#BomEffecDate').val(parts[0]);
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 var bomno = $('#BOMNo').val();

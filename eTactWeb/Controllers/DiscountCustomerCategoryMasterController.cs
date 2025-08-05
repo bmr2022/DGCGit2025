@@ -25,8 +25,14 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
         }
 		[Route("{controller}/Index")]
-		public async Task<ActionResult> DiscountCustomerCategoryMaster(int ID, int YC, string Mode, string SlipNo)
-		{
+		public async Task<ActionResult> DiscountCustomerCategoryMaster(int ID, int YC, string Mode, string SlipNo,
+             string DiscountCategory, string DiscountCatSlipNo, string EffectiveFromDate,
+decimal MinDiscountPer, decimal MaxDiscountPer, string ApplicableMonthlyYearlyAfterEachSale,
+string ApplicableOnAdvancePayment, decimal MinmumAdvancePaymentPercent, string CategoryActive,
+string EntryByMachine, string ActualEntryByEmpName, string ActualEntryDate,
+string LastUpdatedbyEmpName, string LastupDationDate, string CC
+)
+        {
 			var MainModel = new DiscountCustomerCategoryMasterModel();
 
 			MainModel.DiscountCustCatYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
@@ -39,14 +45,28 @@ namespace eTactWeb.Controllers
 			HttpContext.Session.Remove("KeyMaterialConversionGrid");
 			if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
 			{
-				//MainModel = await _IMaterialConversion.GetViewByID(ID, YC, FromDate, ToDate).ConfigureAwait(false);
-				//MainModel.Mode = Mode; // Set Mode to Update
-				//MainModel.EntryId = ID;
-				//MainModel.OpeningYearCode = YC;
-				//MainModel.StoreId = StoreId;
-				
+				MainModel = await _IDiscountCustomerCategoryMaster.GetViewByID(ID, YC).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.DiscountCustCatEntryId = ID;
+                MainModel.DiscountCustCatYearCode = YC;
+                MainModel.DiscountCategory = DiscountCategory;
+                MainModel.DiscountCatSlipNo = DiscountCatSlipNo;
+                MainModel.EffectiveFromDate = EffectiveFromDate;
+                MainModel.MinDiscountPer = MinDiscountPer;
+                MainModel.MaxDiscountPer = MaxDiscountPer;
+                MainModel.ApplicableMonthlyYearlyAfterEachSale = ApplicableMonthlyYearlyAfterEachSale;
+                MainModel.ApplicableOnAdvancePayment = ApplicableOnAdvancePayment;
+                MainModel.MinmumAdvancePaymentPercent = MinmumAdvancePaymentPercent;
+                MainModel.CategoryActive = CategoryActive;
+                MainModel.EntryByMachine = EntryByMachine;
+                MainModel.ActualEntryByEmpName = ActualEntryByEmpName;
+                MainModel.ActualEntryDate = ActualEntryDate;
+                MainModel.LastUpdatedbyEmpName = LastUpdatedbyEmpName;
+                MainModel.LastupDationDate = LastupDationDate;
+                MainModel.CC = CC;
 
-				if (Mode == "U")
+
+                if (Mode == "U")
 				{
 					MainModel.LastUpdatedbyEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 					MainModel.LastUpdatedbyEmpName = HttpContext.Session.GetString("EmpName");
@@ -92,7 +112,7 @@ namespace eTactWeb.Controllers
 					}
 				}
 
-				return RedirectToAction(nameof(DiscountCustomerCategoryMaster));
+				return RedirectToAction(nameof(DiscountCustomerCategoryMasterDashBoard));
 
 			}
 			catch (Exception ex)
@@ -147,7 +167,17 @@ namespace eTactWeb.Controllers
          
             var Result = await _IDiscountCustomerCategoryMaster.GetDashboardData(model);
 
-         
+            if (Result.Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null && DS.Tables.Count > 0)
+                {
+                    var dt = DS.Tables[0];
+                    model.DiscountCustomerCategoryMasterGrid = CommonFunc.DataTableToList<DiscountCustomerCategoryMasterModel>(dt, "DiscountCustomerCategoryMasterDashBoard");
+                }
+                
+            }
 
             return View(model);
         }
@@ -158,6 +188,29 @@ namespace eTactWeb.Controllers
             model = await _IDiscountCustomerCategoryMaster.GetDashboardDetailData(FromDate, ToDate);
             
              return PartialView("_DiscountCustomerCategoryMasterDashBoardGrid", model);
+        }
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode)
+        {
+            var Result = await _IDiscountCustomerCategoryMaster.DeleteByID(EntryId, YearCode);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("DiscountCustomerCategoryMasterDashBoard");
+
         }
     }
 }

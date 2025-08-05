@@ -22,10 +22,10 @@
                 <div class="card-body">
                     <form id="SParam">
                         <div class="row">
-
                             <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
                                 <input type="hidden" asp-for="@Model.ActualEntryByEmpId" value="@Model.ActualEntryByEmpId" />
                                 <input type="hidden" asp-for="@Model.SeqNo" value="@Model.SeqNo" />
+                                <input type="hidden" asp-for="@Model.Mode" value="@Model.Mode" />
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">From Date</label>
@@ -44,18 +44,18 @@
                                 <label class="form-label">Global search</label>
                                 <input type="text" class="form-control" asp-for="Searchbox" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                             </div>
-                            <div class="col-sm-12 col-md-12 col-lg-12 col-xl-12 d-flex justify-content-end mt-3">
-                                <button class="btn btn-sm btn-outline-info" type="button" onclick="GetDetailData();">
+
+                            <button class="btn btn-sm btn-outline-info" type="button" onclick="GetDetailData();" style="padding:3px;height:30px;width:100px;margin-left:20px;">
                                     <i class="fa-solid fa-magnifying-glass fa-fw fa-lg "></i>SEARCH
                                 </button>
                                 <button class="btn btn-sm btn-outline-success me-3" style="padding:3px;height:30px;width:100px;margin-left:20px;" type="button" id="btnGridExcel">
                                     <i class="fa-solid fa-upload fa-fw fa-lg "></i>EXCEL
                                 </button>
-                                <a class="btn btn-sm btn-outline-danger" asp-controller="DiscountCustomerCategoryMaster" asp-action="DiscountCustomerCategoryMasterDashBoard">
+                            <a style="padding:3px;height:30px;width:100px;margin-left:20px;" class="btn btn-sm btn-outline-danger" asp-controller="DiscountCustomerCategoryMaster" asp-action="DiscountCustomerCategoryMasterDashBoard">
                                     <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                 </a>
                                
-                            </div>
+                           
                         </div>
                     </form>
                 </div>
@@ -80,7 +80,7 @@
 {
     <script>
         $(document).ready(function () {
-            GetFormRights();
+            //GetFormRights();
 
             //$('#ReportType').select2();
 

@@ -1,4 +1,4 @@
-﻿@model eTactWeb.DOM.Models.DiscountCustomerCategoryMasterModel
+﻿@model eTactWeb.DOM.Models.MaterialConversionModel
 @using Microsoft.AspNetCore.Http
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
@@ -15,66 +15,43 @@
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry ID
             </th>
             <th data-columnno="2" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Year Code
-            </th>
-            <th data-columnno="3" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Discount Category
-            </th>
-            <th data-columnno="4" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Slip No
             </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Slip Date
+            </th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Issue To Store/WC
+            </th>
             <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Effective From Date
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Approved By
             </th>
             <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Min Discount (%)
-            </th>
-            <th data-columnno="7" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Max Discount (%)
-            </th>
-            <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Applicable Type
-            </th>
-            <th data-columnno="9" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> On Advance Payment
-            </th>
-            <th data-columnno="10" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Min Advance (%)
-            </th>
-            <th data-columnno="11" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category Active
-            </th>
-            <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Machine Name
-            </th>
-            <th data-columnno="14" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By 
-            </th>
-            <th data-columnno="15" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date
             </th>
-            <th data-columnno="17" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By 
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By (ID)
             </th>
-            <th data-columnno="18" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Update Date
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Machine Name
             </th>
-            <th data-columnno="19" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CC
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Year Code
             </th>
+
 
             </tr>
         </thead>
         <tbody id="DashboardGrid">
             @{
                 var @Cntr = 0;
-            if (Model.DiscountCustomerCategoryMasterGrid == null || Model.DiscountCustomerCategoryMasterGrid.Count == 0)
+            if (Model.MaterialConversionGrid == null || Model.MaterialConversionGrid.Count == 0)
                 {
                     <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
                 }
                 else
                 {
-                foreach (var item in Model.DiscountCustomerCategoryMasterGrid)
+                foreach (var item in Model.MaterialConversionGrid)
                     {
                         Cntr = Cntr + 1;
                         <tr onclick="selection(this)">
@@ -83,7 +60,7 @@
                                 <div id="container">
                                    
                                     <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="DiscountCustomerCategoryMaster" asp-route-Mode="V" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" onclick="BackButtonData(event,'@item.DiscountCustCatEntryId','@item.DiscountCustCatYearCode');">
+                                    <a class="table-link link-success" asp-action="MaterialConversion" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.MatConvYearCode" asp-route-SlipNo="@item.SlipNo" onclick="BackButtonData(event,'@item.EntryId','@item.MatConvYearCode');">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -92,7 +69,7 @@
                                     </div>
                                       <div id="editCursorDiv-@Cntr">
 
-                                    <a class="table-link link-primary" asp-action="DiscountCustomerCategoryMaster" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" asp-route-FromDate="@item.FromDate" asp-route-ToDate="@item.ToDate">
+                                    <a class="table-link link-primary" asp-action="MaterialConversion" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-SlipNo="@item.SlipNo" asp-route-YC="@item.MatConvYearCode" asp-route-FromDate="@item.FromDate" asp-route-ToDate="@item.ToDate">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -100,7 +77,7 @@
                                             </a>
                                        </div>
                                         <div id="deleteCursorDiv-@Cntr">
-                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.DiscountCustCatEntryId"  asp-route-YearCode="@item.DiscountCustCatYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid">
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.EntryId" asp-route-YearCode="@item.MatConvYearCode" asp-route-SlipNo="@item.SlipNo" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -112,23 +89,16 @@
                                 </div>
                             </td>
 
-                        <td>@item.DiscountCustCatEntryId</td>
-                        <td>@item.DiscountCustCatYearCode</td>
-                        <td>@item.DiscountCategory</td>
-                        <td>@item.DiscountCatSlipNo</td>
-                        <td>@item.EffectiveFromDate?.ToString().Split(' ')[0]</td>
-                        <td>@item.MinDiscountPer</td>
-                        <td>@item.MaxDiscountPer</td>
-                        <td>@item.ApplicableMonthlyYearlyAfterEachSale</td>
-                        <td>@item.ApplicableOnAdvancePayment</td>
-                        <td>@item.MinmumAdvancePaymentPercent</td>
-                        <td>@item.CategoryActive</td>
+                        <td>@item.EntryId</td>
+                        <td>@item.SlipNo</td>
+                        <td>@item.SlipDate</td>
+                        <td>@item.IssueToStoreWC</td>
+                        <td>@item.ApprovedByEmpName</td>
+                        <td>@item.ActualEntryDate</td>
+                        <td>@item.UpdatedByEmpId</td>
                         <td>@item.EntryByMachine</td>
-                        <td>@item.ActualEntryByEmpName</td>
-                        <td>@item.ActualEntryDate?.ToString().Split(' ')[0]</td>
-                        <td>@item.LastUpdatedbyEmpName</td>
-                        <td>@item.LastupDationDate?.ToString().Split(' ')[0]</td>
-                        <td>@item.CC</td>
+                        <td>@item.OpeningYearCode</td>
+
 
 
                         </tr>

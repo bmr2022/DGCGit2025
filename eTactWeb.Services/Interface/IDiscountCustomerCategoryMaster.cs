@@ -16,6 +16,8 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> SaveDiscountCustomerCategoryMaster(DiscountCustomerCategoryMasterModel model);
         Task<ResponseResult> GetDashboardData(DiscountCustomerCategoryMasterModel model);
         Task<DiscountCustomerCategoryMasterModel> GetDashboardDetailData(string FromDate, string ToDate);
+        Task<ResponseResult> DeleteByID(int EntryId, int YearCode);
+        Task<DiscountCustomerCategoryMasterModel> GetViewByID(int ID, int YC);
 
     }
 }
