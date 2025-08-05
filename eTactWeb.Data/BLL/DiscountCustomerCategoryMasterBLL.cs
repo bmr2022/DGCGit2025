@@ -47,5 +47,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _DiscountCustomerCategoryMasterDAL.GetDashboardDetailData(FromDate, ToDate);
         }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode)
+        {
+            return await _DiscountCustomerCategoryMasterDAL.DeleteByID(EntryId, YearCode);
+        }
+        public async Task<DiscountCustomerCategoryMasterModel> GetViewByID(int ID, int YC)
+        {
+            return await _DiscountCustomerCategoryMasterDAL.GetViewByID(ID, YC);
+        }
     }
 }

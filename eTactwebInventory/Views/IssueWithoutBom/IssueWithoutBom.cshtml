@@ -641,6 +641,50 @@
 
         // When user clicks "Print"
 $('#btnPrint').click(function () {
+            if ($('#divIssueWOBOMGridAdd tr td').length <= 1) {
+                $.notify('Grid Should Have Atleast 1 Item...!', "error");
+                return false;
+            }
+            else if ($('#IssuedByDepCode').prop('selectedIndex') <= 0) {
+                $.notify('Issued By Dep Code is required', "error");
+                return false;
+            }
+            else if ($('#RecByEmpCode').prop('selectedIndex') <= 0) {
+                $.notify('Rec By Emp Code is required', "error");
+                return false;
+            }
+            else if ($('#IssuedByDepCode').prop('selectedIndex') <= 0) {
+                $.notify('Rec By Emp Code is required', "error");
+                return false;
+            }
+            else {
+                var rowCount = $('#divIssueWOBOMGridAdd tr').length;
+                for (var i = 1; i <= rowCount; i++) {
+                    CheckStockBeforeSaving(i);
+                }
+                for (var i = 1; i <= rowCount; i++) {
+                    CheckRequisitionBeforeSaving(i);
+                }
+
+                if (ICName.length > 0) {
+                    var ICNameArray = ICName;
+                    var delimiter = ",";
+                    var displayICName = ICNameArray.join(delimiter);
+
+                    $.notify("Stock not sufficient for " + displayICName, "error");
+                    //$("#result").text(concatenatedString);
+                }
+                else if (ICName2.length > 0) {
+                    var ICName2Array = ICName2;
+                    var delimiter = ",";
+                    var displayICName = ICName2Array.join(delimiter);
+
+                    $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
+                }
+
+
+
+            }
     const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
     $('#PasswordAllowPopup').modal("hide");
 
@@ -651,6 +695,50 @@ $('#btnPrint').click(function () {
 
 // When user clicks "Close" or no print
 $('#btnClose').click(function () {
+            if ($('#divIssueWOBOMGridAdd tr td').length <= 1) {
+                $.notify('Grid Should Have Atleast 1 Item...!', "error");
+                return false;
+            }
+            else if ($('#IssuedByDepCode').prop('selectedIndex') <= 0) {
+                $.notify('Issued By Dep Code is required', "error");
+                return false;
+            }
+            else if ($('#RecByEmpCode').prop('selectedIndex') <= 0) {
+                $.notify('Rec By Emp Code is required', "error");
+                return false;
+            }
+            else if ($('#IssuedByDepCode').prop('selectedIndex') <= 0) {
+                $.notify('Rec By Emp Code is required', "error");
+                return false;
+            }
+            else {
+                var rowCount = $('#divIssueWOBOMGridAdd tr').length;
+                for (var i = 1; i <= rowCount; i++) {
+                    CheckStockBeforeSaving(i);
+                }
+                for (var i = 1; i <= rowCount; i++) {
+                    CheckRequisitionBeforeSaving(i);
+                }
+
+                if (ICName.length > 0) {
+                    var ICNameArray = ICName;
+                    var delimiter = ",";
+                    var displayICName = ICNameArray.join(delimiter);
+
+                    $.notify("Stock not sufficient for " + displayICName, "error");
+                    //$("#result").text(concatenatedString);
+                }
+                else if (ICName2.length > 0) {
+                    var ICName2Array = ICName2;
+                    var delimiter = ",";
+                    var displayICName = ICName2Array.join(delimiter);
+
+                    $.notify("Requisition upto maximum limit already issued for " + displayICName, "error");
+                }
+
+
+
+            }
     $('#PasswordAllowPopup').modal("hide");
 
     setTimeout(() => {

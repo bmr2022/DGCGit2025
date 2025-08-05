@@ -1,5 +1,174 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model eTactWeb.DOM.Models.DiscountCustomerCategoryMasterModel
+@using Microsoft.AspNetCore.Http
+@using System.Reflection.PortableExecutable
+@inject IHttpContextAccessor HttpContextAccessor
 @{
+    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
 }
+
+<table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
+    <thead class="bg-gradient card-headerBG text-light">
+        <tr>
+            <th>Sr#</th>
+            <th>Action</th>
+            <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry ID
+            </th>
+            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Year Code
+            </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Discount Category
+            </th>
+            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Slip No
+            </th>
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Effective From Date
+            </th>
+            <th data-columnno="6" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Min Discount (%)
+            </th>
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Max Discount (%)
+            </th>
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Applicable Type
+            </th>
+            <th data-columnno="9" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> On Advance Payment
+            </th>
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Min Advance (%)
+            </th>
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category Active
+            </th>
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Machine Name
+            </th>
+            <th data-columnno="14" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By
+            </th>
+            <th data-columnno="15" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date
+            </th>
+            <th data-columnno="17" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By
+            </th>
+            <th data-columnno="18" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Update Date
+            </th>
+            <th data-columnno="19" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CC
+            </th>
+
+        </tr>
+    </thead>
+    <tbody id="DashboardGrid">
+        @{
+            var @Cntr = 0;
+            if (Model.DiscountCustomerCategoryMasterGrid == null || Model.DiscountCustomerCategoryMasterGrid.Count == 0)
+            {
+                <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+            }
+            else
+            {
+                foreach (var item in Model.DiscountCustomerCategoryMasterGrid)
+                {
+                    Cntr = Cntr + 1;
+                    <tr onclick="selection(this)">
+                        <th>@Cntr</th>
+                        <td style="text-align:center;white-space: nowrap;">
+                            <div id="container">
+
+                                <div id="viewCursorDiv-@Cntr">
+                                    <a class="table-link link-success" asp-action="DiscountCustomerCategoryMaster" asp-route-Mode="V" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" onclick="BackButtonData(event,'@item.DiscountCustCatEntryId','@item.DiscountCustCatYearCode');">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="editCursorDiv-@Cntr">
+
+                                    <a class="table-link link-primary" asp-action="DiscountCustomerCategoryMaster" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" asp-route-FromDate="@item.FromDate"
+                                    asp-route-ToDate="@item.ToDate"
+                                       asp-route-ID="@item.DiscountCustCatEntryId"
+                                       asp-route-YC="@item.DiscountCustCatYearCode"
+                                       asp-route-DiscountCategory="@item.DiscountCategory"
+                                       asp-route-DiscountCatSlipNo="@item.DiscountCatSlipNo"
+                                       asp-route-EffectiveFromDate="@item.EffectiveFromDate?.ToString().Split(' ')[0]"
+                                       asp-route-MinDiscountPer="@item.MinDiscountPer"
+                                       asp-route-MaxDiscountPer="@item.MaxDiscountPer"
+                                       asp-route-ApplicableMonthlyYearlyAfterEachSale="@item.ApplicableMonthlyYearlyAfterEachSale"
+                                       asp-route-ApplicableOnAdvancePayment="@item.ApplicableOnAdvancePayment"
+                                       asp-route-MinmumAdvancePaymentPercent="@item.MinmumAdvancePaymentPercent"
+                                       asp-route-CategoryActive="@item.CategoryActive"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-ActualEntryDate="@item.ActualEntryDate?.ToString().Split(' ')[0]"
+                                       asp-route-LastUpdatedbyEmpName="@item.LastUpdatedbyEmpName"
+                                       asp-route-LastupDationDate="@item.LastupDationDate?.ToString().Split(' ')[0]"
+                                       asp-route-CC="@item.CC">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="deleteCursorDiv-@Cntr">
+                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.DiscountCustCatEntryId" asp-route-YearCode="@item.DiscountCustCatYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+
+
+                            </div>
+                        </td>
+
+                        <td>@item.DiscountCustCatEntryId</td>
+                        <td>@item.DiscountCustCatYearCode</td>
+                        <td>@item.DiscountCategory</td>
+                        <td>@item.DiscountCatSlipNo</td>
+                        <td>@item.EffectiveFromDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.MinDiscountPer</td>
+                        <td>@item.MaxDiscountPer</td>
+                        <td>@item.ApplicableMonthlyYearlyAfterEachSale</td>
+                        <td>@item.ApplicableOnAdvancePayment</td>
+                        <td>@item.MinmumAdvancePaymentPercent</td>
+                        <td>@item.CategoryActive</td>
+                        <td>@item.EntryByMachine</td>
+                        <td>@item.ActualEntryByEmpName</td>
+                        <td>@item.ActualEntryDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.LastUpdatedbyEmpName</td>
+                        <td>@item.LastupDationDate?.ToString().Split(' ')[0]</td>
+                        <td>@item.CC</td>
+
+
+                    </tr>
+                }
+            }
+        }
+    </tbody>
+</table>
+<center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
+
+
+<style>
+    #container {
+        display: flex;
+    }
+
+        #container > div {
+            flex: 1;
+            margin-right: 10px;
+        }
+
+    #DashboardGrid {
+        background-color: blanchedalmond;
+    }
+</style>

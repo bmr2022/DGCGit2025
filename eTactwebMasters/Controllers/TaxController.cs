@@ -764,8 +764,9 @@ public class TaxController : Controller
                     {
                         ExpTaxAmt = TaxGrid.Where(m => m.TxType == "EXPENSES" && m.TxAdInTxable == "Y").Sum(x => x.TxAmount);
                         //TaxOnExp = ((ItemAmount / BasicTotal) * ExpTaxAmt);
-                        TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : ExpTaxAmt / BasicTotal * ItemAmount;
-                        ItemAmount = TaxOnExp + ItemAmount;
+                        TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : Math.Round((ExpTaxAmt / BasicTotal) * ItemAmount, 2, MidpointRounding.AwayFromZero);
+
+                        ItemAmount = Math.Round(ItemAmount + TaxOnExp, 2, MidpointRounding.AwayFromZero);
                     }
 
                     TaxAmount = ItemAmount * TxModel.TxPercentg / 100;
@@ -849,6 +850,21 @@ public class TaxController : Controller
                 {
                     MainModel = new JobWorkIssueModel();
                 }
+                var expenseEntries = TaxGrid.Where(m => m.TxType == "EXPENSES").ToList();
+
+                var existingExpenseKeys = new HashSet<string>(_List
+    .Where(t => t.TxType == "EXPENSES")
+    .Select(t => $"{t.TxAccountCode}_{t.TxPartCode}_{t.TxAmount}"));
+
+                // Only keep those EXPENSES that are not already in the new list
+                var filteredExpenses = expenseEntries
+                    .Where(e => !existingExpenseKeys.Contains($"{e.TxAccountCode}_{e.TxPartCode}_{e.TxAmount}"))
+                    .ToList();
+
+                // Merge unique EXPENSES + new taxes
+                _List = filteredExpenses.Concat(_List).ToList();
+               // _List = expenseEntries.Concat(_List).ToList();
+
                 MainModel!.TaxDetailGridd = _List;
                 TaxGrid = MainModel.TaxDetailGridd;
 
@@ -915,7 +931,8 @@ public class TaxController : Controller
                 //};
 
                 //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
-
+                var pagename = TxModel.TxPageName;
+                ClearTax(pagename);
                 StoreInCache("KeyTaxGrid", TaxGrid);
                 string serializedData = JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
                 HttpContext.Session.SetString("KeyTaxGrid", serializedData);
