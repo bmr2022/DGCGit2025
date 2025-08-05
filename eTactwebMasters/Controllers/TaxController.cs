@@ -764,8 +764,9 @@ public class TaxController : Controller
                     {
                         ExpTaxAmt = TaxGrid.Where(m => m.TxType == "EXPENSES" && m.TxAdInTxable == "Y").Sum(x => x.TxAmount);
                         //TaxOnExp = ((ItemAmount / BasicTotal) * ExpTaxAmt);
-                        TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : ExpTaxAmt / BasicTotal * ItemAmount;
-                        ItemAmount = TaxOnExp + ItemAmount;
+                        TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : Math.Round((ExpTaxAmt / BasicTotal) * ItemAmount, 2, MidpointRounding.AwayFromZero);
+
+                        ItemAmount = Math.Round(ItemAmount + TaxOnExp, 2, MidpointRounding.AwayFromZero);
                     }
 
                     TaxAmount = ItemAmount * TxModel.TxPercentg / 100;

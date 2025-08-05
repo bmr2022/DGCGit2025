@@ -1242,6 +1242,7 @@
         AutoComplete("DistanceKM", "DistanceKM");
         //  AutoComplete('VIssueAgainstPlanSchMainDetailItem', 'vehicleNo', 'vehicleNo', null);
         AutoComplete("vehicleNo", "vehicleNo");
+
         var InvDate = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
 
         // var parts = InvDate.split('/');
@@ -1254,7 +1255,10 @@
 
         GetTaxPartItem();
 
-        if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); BomAdjustChallanGrid(); }
+        if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); BomAdjustChallanGrid();
+                     var InvDate = ($('#SaleBillDate').val().split(" ")[0]);
+                $('#RemovalDate').datepicker("option", "minDate", InvDate);
+        }
 
         DueDateCalculation();
 
@@ -4463,9 +4467,9 @@
                             .datepicker("setDate", parseDateToFormat(`${d[1]}-${d[0]}-${d[2]}`));
                               $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
-                        let hiddenDate = $('#hiddenSaleBillDate').val().split(" ")[0].split("-");
+                                let hiddenDate =  $('#hiddenSaleBillDate').val().split(" ")[0];
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                            .datepicker("setDate", `${hiddenDate[0]}/${hiddenDate[1]}/${hiddenDate[2]}`);
+                                    .datepicker("setDate", hiddenDate);
 
                         var currentYear = getFinancialYear();
                         if ($('#SaleBillYearCode').val() == currentYear) {
