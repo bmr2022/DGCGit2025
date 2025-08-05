@@ -9,7 +9,7 @@ namespace eTactWeb.Services.Interface
         Task<AccCreditNoteModel> GetViewByID(int ID, int YearCode,string mode);
         Task<ResponseResult> GetHSNUNIT(int itemCode);
         Task<ResponseResult> FillDetailFromPopupGrid(DataTable model,int itemCode,int poopCt);
-        Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> NewEntryId(int YearCode, string CreditNoteVoucherDate, string SubVoucherName);
         Task<ResponseResult> FillCustomerName(string againstSalePurchase);
         Task<ResponseResult> FillCreditNotePopUp(string againstSalePurchase, string fromBillDate, string toBillDate,int itemCode, int accountCode, int yearCode,string showAllBill);
         Task<ResponseResult> FillItems(string fromSaleBillDate, string toSaleBillDate,int accountCode, string showAllItems);
