@@ -1324,7 +1324,7 @@ public class PurchaseOrderDAL
             SqlParams.Add(new SqlParameter("@WEF", WEFDate == default ? string.Empty : CommonFunc.ParseFormattedDate(WEFDate)));
             SqlParams.Add(new SqlParameter("@POCloseDate", PoCloseDt == default ? string.Empty : CommonFunc.ParseFormattedDate(PoCloseDt)));
             SqlParams.Add(new SqlParameter("@AmmEffDate", AmmDt == default ? string.Empty : CommonFunc.ParseFormattedDate(AmmDt)));
-            SqlParams.Add(new SqlParameter("@RefDate", RefDt == default ? string.Empty : RefDt));
+            SqlParams.Add(new SqlParameter("@RefDate", RefDt == default ? string.Empty : CommonFunc.ParseFormattedDate( RefDt)));
 
             SqlParams.Add(new SqlParameter("@Flag", model.Mode == "COPY" ? "INSERT" : model.Mode));
             SqlParams.Add(new SqlParameter("@ID", model.ID));
