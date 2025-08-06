@@ -973,20 +973,45 @@
 
                     if (data != null) {
                         $('#divMultiItemGrid').html(data);
-                        // var firstWCID = $('#WCID-1').val();
-                        // var firstWCName = $('#WorkCenterName-1').val();
+                        var firstAccountCode = $('#AccountCode-1').val();
+                        var AccountName = $('#AccountName-1').val();
 
-                        // if (firstWCID) {
-                        //     // ✅ Fill your #WCID dropdown with only that one value
-                        //     $('#IssueFromWc').empty().append(
-                        //         $('<option>', {
-                        //             value: firstWCID,
-                        //             text: firstWCName
-                        //         })
-                        //     );
-                        //     $('#IssueFromWCid').val(firstWCID);
+                        if (firstAccountCode) {
+                            // ✅ Fill your #WCID dropdown with only that one value
+                            $('#AccountCode').empty().append(
+                                $('<option>', {
+                                    value: firstAccountCode,
+                                    text: AccountName
+                                })
+                            );
+                            // $('#AccountCode').prop('disabled', true);
+                            $.getJSON({
+                                url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
+                                data: { Code: $('#AccountCode').val() },
+                                success: function (result, status, xhr) {
+                                    if (result != null) {
+                                        var obj = $.parseJSON(result);
+                                        $('#GSTRegistered').val(obj.Result[0].GSTRegistered);
+                                    }
+                                    // if ($('#divSaleBillList tr td').length > 1) {
+                                    //     isAccountCodeClear = true;
+                                    // }
+                                    itemArrayLength = [];
+                                }
+                            });
+                            FillDistance();
+                            
+                            FillCurrency();
+            FillCustomerAddress();
+                            
+                            btnClearTax();
+                            ClearAdjustmentGrid();
+                            ClearDRCRGrid();
+                            ClearCustomerJWGrid();
+                            // $('#IssueFromWCid').val(firstWCID);
 
-                        // }
+
+                        }
 
                         var rowCounter = $('#divMultiItemGrid tr').length;
                         for (let i = 1; i <= rowCounter; i++) {
@@ -1012,30 +1037,30 @@
                 ItemData.push({
 
                     SONO: $('#SONO-' + i).val(),
-                    SOYearCode: $('#SOYearCode-' + i).val(),
+                    SOYearCode: parseInt($('#SOYearCode-' + i).val()),
                     CustOrderNo: $('#CustOrderNo-' + i).val(),
                     SchNo: $('#SchNo-' + i).val(),
-                    SaleSchYearCode: $('#SaleSchYearCode-' + i).val(),
+                    SaleSchYearCode: parseInt($('#SaleSchYearCode-' + i).val()),
                     PartCode: $('#PartCode-' + i).val(),
-                    ItemCode: $('#ItemCode-' + i).val(),
+                    ItemCode: parseInt($('#ItemCode-' + i).val()),
                     ItemName: $('#ItemName-' + i).val(),
                     Unit: $('#Unit-' + i).val(),
 
                     HSNNo: $('#HSNNo-' + i).val(),
-                    SOPendQty: $('#SOPendQty-' + i).val(),
+                    SOPendQty: parseFloat($('#SOPendQty-' + i).val()),
                     StoreName: $('#StoreName-' + i).val(),
-                    StoreId: $('#StoreId-' + i).val(),
+                    StoreId: parseInt($('#StoreId-' + i).val()),
                     Batchno: $('#Batchno-' + i).val(),
                     Uniquebatchno: $('#Uniquebatchno-' + i).val(),
-                    TotalStock: $('#TotalStock-' + i).val(),
-                    LotStock: $('#LotStock-' + i).val(),
-                    Rate: $('#Rate-' + i).val(),
+                    TotalStock: parseFloat($('#TotalStock-' + i).val()),
+                    LotStock: parseFloat($('#LotStock-' + i).val()),
+                    Rate: parseFloat($('#Rate-' + i).val()),
                     Qty: parseFloat($('#Qty-' + i).val()) || 0,
                     SOType: $('#SOType-' + i).val,
-                    DiscountPer: $('#DiscountPer-' + i).val,
-                    DiscountAmt: $('#DiscountAmt-' + i).val,
+                    DiscountPer: parseFloat($('#DiscountPer-' + i).val()),
+                    DiscountAmt: parseFloat($('#DiscountAmt-' + i).val()),
                     Amount: parseFloat($('#Amount-' + i).val()) || 0,
-                    AltQty: $('#AltQty-' + i).val(),
+                    AltQty: parseFloat($('#AltQty-' + i).val()),
 
                 });
             }
@@ -1081,12 +1106,41 @@
                     } else if (xhr.status == 205 && (xhr.responseText.indexOf('Reset') || xhr.statusText.indexOf('Reset'))) {
                         $.notify('Adding Item Not Allowed, Please Clear Gate Detail...!!!', "info");
                     } else {
+                        $('.gridHiddenField').show();
                         $('#divSaleBillList').html(data);
                         $.notify('Item Added To Grid.', "success");
                     }
 
                     editingNow = false;
-                    ClearGrid();
+                    BasicTotal();
+                    ClearAdjustmentGrid();
+                    // ResetPendQty();
+                    
+                    // var rowCount = $('#divSaleBillList tr').length;
+
+                    // for (var i = 1; i <= rowCount; i++) {
+
+                    //     sum += parseFloat($('#GridAmount-' + i).text() == '.00' ? 0 : $('#GridAmount-' + i).text());
+                    // }
+                    $('#ItemNetAmount').val(sum);
+
+                    // $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                    var txSum = 0;
+                    if ($('#divTaxGrid tr td').length > 1) {
+                        for (var i = 1; i <= taxRowCount; i++) {
+                            txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                        }
+                    }
+
+                    var txTotal = sum + txSum;
+                    $('#NetTotal').val(txTotal.toFixed(2));
+                    $('#AdjPendAmt').val($('#NetTotal').val());
+                    $('#TotalDiscountPercentage').val(0);
+                    $('#TotalAmtAftrDiscount').val(0);
+                    GetTaxPartItem();
+                    GetDbCrDetail();
+                    // ClearGrid();
                     $('.PendingItem').hide();
                     $('.newitems').show();
                     // $('#BatchNo').val('0');

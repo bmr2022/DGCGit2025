@@ -185,6 +185,8 @@ namespace eTactWeb.Controllers
                         }
                         RCGrid = RCGrid.OrderBy(item => item.SeqNo).ToList();
                         MainModel.saleBillDetails = RCGrid;
+                        MainModel.ItemDetailGrid = RCGrid;
+
 
                         HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
                         HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(MainModel));
