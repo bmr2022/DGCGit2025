@@ -204,6 +204,7 @@ namespace eTactWeb
             services.TryAddScoped<IXONUserRightDashboardBLL, XONUserRightDashboardBLL>();
             services.TryAddScoped<IDiscountCustomerCategoryMaster, DiscountCustomerCategoryMasterBLL>();
             services.TryAddScoped<ICommon,CommonBLL>();
+            services.TryAddScoped<IPartyItemGroupDiscount,PartyItemGroupDiscountBLL>();
 
 
 
