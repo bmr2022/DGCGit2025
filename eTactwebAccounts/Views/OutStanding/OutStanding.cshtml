@@ -262,6 +262,7 @@
             //$('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", currentDate);
 
             FillGroupName();
+            FillPartyName();
             GetDetailsData();
             // handleReportTypeChange();
 
@@ -374,9 +375,6 @@
 
         $('#ReportType').change(function () {
             FillGroupName();
-        });
-
-        $('#GroupName').change(function () {
             FillPartyName();
         });
 
