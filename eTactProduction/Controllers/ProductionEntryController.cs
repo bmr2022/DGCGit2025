@@ -1945,15 +1945,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetItems(string ProdAgainst, int YearCode)
+        public async Task<JsonResult> GetItems(string ProdAgainst, int YearCode, string ItemName)
         {
-            var JSON = await _IProductionEntry.GetItems(ProdAgainst, YearCode);
+            var JSON = await _IProductionEntry.GetItems(ProdAgainst, YearCode,ItemName);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetPartCode(string ProdAgainst, int YearCode)
+        public async Task<JsonResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode)
         {
-            var JSON = await _IProductionEntry.GetPartCode(ProdAgainst, YearCode);
+            var JSON = await _IProductionEntry.GetPartCode(ProdAgainst, YearCode   ,PartCode);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

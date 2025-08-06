@@ -267,13 +267,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionEntryDAL.GetBatchNumber(SPName, ItemCode, YearCode, WcId, TransDate, BatchNo);
         }
-        public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode)
+        public async Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName)
         {
-            return await _ProductionEntryDAL.GetItems(ProdAgainst, YearCode);
+            return await _ProductionEntryDAL.GetItems(ProdAgainst, YearCode,ItemName);
         }
-        public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode)
+        public async Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode)
         {
-            return await _ProductionEntryDAL.GetPartCode(ProdAgainst, YearCode);
+            return await _ProductionEntryDAL.GetPartCode(ProdAgainst, YearCode, PartCode);
         }
         public async Task<ResponseResult> FillWorkcenter()
         {

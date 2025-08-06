@@ -187,16 +187,21 @@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="PartCode" class="form-label" style="color: red;">Part Code*</label>
+                                    <input type="text" id="PartCodeText" class="form-control"  placeholder="Type Part Code..." />
+                                    <input type="hidden" asp-for="PartCode" id="PartCode" data-val="true" data-val-required="The PartCode field is required." name="PartCode" value="0" />
+            @* 
                                     <select asp-for="PartCode" class="form-select">
                                         <option value="">-Select-</option>
-                                    </select>
+                                    </select> *@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
                                     <label asp-for="ItemName" class="form-label" style="color: red;">Item Name*</label>
                                     <input asp-for="FGItemCode" type="hidden" class="form-label" />
-                                    <select asp-for="ItemName" class="form-select">
+                                     <input type="text" id="ItemNameText" class="form-control" placeholder="Type Item Name..." />
+                                    <input type="hidden" asp-for="ItemName" id="ItemName" name="ItemName" value="" />
+                                  @*  <select asp-for="ItemName" class="form-select">
                                         <option value="">-Select-</option>
-                                    </select>
+                                    </select>*@
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-9">
                                     <label asp-for="Operation" class="form-label" style="color: red;">Operation*</label>
@@ -1415,8 +1420,9 @@
             FillWorkcenter();
             FillMachineGroup();
             FillMachineName();
-            GetItem();
-            GetPartCode();
+            FillItems();
+            /* GetItem();
+            GetPartCode(); */
             FillOperator();
             FillSuperwiser();
             FillOperatorName();
@@ -1432,6 +1438,11 @@
             FillTool();
             FillShiftTime();
             CheckAutoOrManual();
+                if ($('#Store').val() == 'S') {
+                 FillIssStore();}
+                 else{
+                       FillIssWorkcenterForQcMandatory();
+                 }
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
                 /* alert("inside"); */
                 fillEntryandGate();
@@ -1882,8 +1893,8 @@
 
         $('#ProdAgainstPlanManual').select2();
         $('#Shift').select2();
-        $('#ItemName').select2();
-        $('#PartCode').select2();
+       /* by mayuri  $('#ItemName').select2();
+        $('#PartCode').select2(); */
         $('#WorkCenter').select2();
         $('#ReqNo').select2();
         $('#ReqYear').select2();
@@ -1945,8 +1956,9 @@
                 $('#ProdQty').val(0);
                 $('#PendQty').val(0);
             }
-            GetItem();
-            GetPartCode();
+             FillItems();
+            /* GetItem();
+            GetPartCode(); */
         }
 
         $('#ProdAgainstPlanManual').change(function () {
@@ -1976,8 +1988,9 @@
                     $('#ProdQty').val(0);
                     $('#PendQty').val(0);
                 }
-                GetItem();
-                GetPartCode();
+                 FillItems();
+             /*    GetItem();
+                GetPartCode(); */
             } else if ($('#ProdAgainstPlanManual').val() == "PRODSCHEDULE") {
                 $('#ProdSchdiv').show();
                 $('#ProdSchYeardiv').show();
@@ -2000,8 +2013,9 @@
                     $('#ProdQty').val(0);
                     $('#PendQty').val(0);
                 }
-                GetItem();
-                GetPartCode();
+                 FillItems();
+                /* GetItem();
+                GetPartCode(); */
             } else if ($('#ProdAgainstPlanManual').val() == "UNPLANNED") {
                 $('#ProdSchdiv').hide();
                 $('#ProdSchYeardiv').hide();
@@ -2029,8 +2043,9 @@
                     $('#ProdQty').val(0);
                     $('#PendQty').val(0);
                 }
-                GetItem();
-                GetPartCode();
+                  FillItems();
+           /*      GetItem();
+                GetPartCode(); */
             }
         })
         var currentSearchColumn = null;
@@ -2097,7 +2112,7 @@
                 FillIssStore();
             }
         })
-
+     
         $('#StoreTransfer').change(function () {
 
             if ($('#StoreTransfer').val() == 'W') {
@@ -3502,7 +3517,7 @@
                 type: "POST",
                 url: "@Url.Action("FillOperation")",
                 dataType: "json",
-                data: { "ItemCode": $('#ItemName').val(), "WcId": $('#WorkCenter').val() },
+                 data: { "ItemCode": parseInt($('#ItemName').val()), "WcId": $('#WorkCenter').val() },
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -4183,8 +4198,8 @@
                 }
             });
         }
-
-        $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
+        /* mayuri */
+       /*  $(document).on('select2:select', '#ItemName,#PartCode', function (e) {
 
             var cntId = e.target.id;
             if (cntId == 'ItemName') {
@@ -4192,7 +4207,7 @@
             }
             else {
                 PartCodeChange(cntId);
-            }
+            } 
             $('#FGItemCode').val($('#ItemName').val())
             $('#displayroutingdata').show();
             ClearGridAjax();
@@ -4212,7 +4227,7 @@
             FillProductPartCode();
             FillProductItems();
             FillProductStoreforScrap();
-        });
+         });*/
 
         function GetItemNameForPendingProduction() {
 
@@ -4363,6 +4378,52 @@
                 }
             });
         }
+           function GetProcessDetail() {
+
+             $.ajax({
+                 type: "POST",
+                 url: "@Url.Action("GetProcessDetail")",
+                 dataType: "json",
+                 data: { ItemCode: parseInt($('#ItemName').val()), "ProcessId": $('#Operation').val(), "WcId": $('#WorkCenter').val() },
+                 async: false,
+                 success: function (result, status, error) {
+
+                     if (result != null) {
+                         var obj = $.parseJSON(result);
+                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                             var QcCheck = (obj.Result[0].NeedQc);
+                             $('#QcMandatory').val(QcCheck);
+                             if (QcCheck == "Y") {
+                                 if (obj.Result[0].wcid > 0) {
+                                     $('#Store').prop("disabled", true);
+                                     $('#NextWorkCenter').prop("disabled", true);
+                                     $('#Store').val('W').trigger("change");
+                                     $('#Store').append('<option value="W"> WorkCenter < /option>');
+                                     $('#SenToQc').val('Y').trigger("change");
+                                     $('#SenToQc').prop("disabled", true);
+                                     $('#NextWorkCenter').val(obj.Result[0].wcid).trigger("change");
+                                 }
+                             }
+                             else if (QcCheck == "N") {
+                                 $('#SenToQc').prop("disabled", true);
+                                 $('#SenToQc').val('N').trigger("change");
+                                 $('#Store').prop("disabled", false);
+                                 $('#NextWorkCenter').prop("disabled", false);
+                             } else {
+                                 $('#SenToQc').prop("disabled", false);
+                                 $('#Store').prop("disabled", false);
+                                 $('#NextWorkCenter').prop("disabled", false);
+                             }
+                         }
+                         else {
+                             $('#SenToQc').prop("disabled", false);
+                             $('#Store').prop("disabled", false);
+                             $('#NextWorkCenter').prop("disabled", false);
+                         }
+                     }
+                 }
+             });
+         }
 
         function FillProductItems() {
             $.ajax({
@@ -4426,12 +4487,160 @@
                 }
             });
         }
+         var isItemSelected = false;
+           function FillItems() {
+                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                 var itemname = $('#FGItemCode').val();
+                                     $("#PartCodeText").val('@Model.PartCode');
+                                    $("#ItemNameText").val('@Model.ItemName');
+                                    $('#ItemName').val(itemname);
+                                    $('#PartCode').val(itemname);
+                                 FillBomNo();
+                                 FillReqNo();
+                                 FillProdSchNo();
+                                 FillOperation();
+                                 GetProcessDetail();
+                             }
+            const partCodeSource = function (request, response) {
+                $.ajax({
+                    url: '@Url.Action("GetPartCode")',
+                    type: 'POST',
+                    data: {
+                        ProdAgainst: $('#ProdAgainstPlanManual').val(),
+                        YearCode: $('#YearCode').val(),
+                        PartCode: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+                        console.log("result:",result);
+                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+                            let filtered = obj.Result.filter(item =>
+                                item.PartCode.toLowerCase().includes(request.term.toLowerCase())
+                            );
+                            response(filtered.map(item => ({
+                                label: item.PartCode,
+                                value: item.PartCode,
+                                itemName: item.Item_Name,
+                                itemCode: item.Item_Code
+                            })));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
 
-        function GetItem() {
+            const itemNameSource = function (request, response) {
+                $.ajax({
+                     url: "@Url.Action("GetItems")",
+                    type: 'POST',
+                    data: {
+                        ProdAgainst: $('#ProdAgainstPlanManual').val(),
+                        YearCode: $('#YearCode').val(),
+                        ItemName: request.term
+                    },
+                    success: function (result) {
+                        let obj = typeof result === "string" ? JSON.parse(result) : result;
+                         if (obj.StatusCode === 200 && obj.StatusText === 'Success' &&Array.isArray(obj.Result)) {
+                            let filtered = obj.Result.filter(item =>
+                                item.Item_Name.toLowerCase().includes(request.term.toLowerCase())
+                            );
+                            response(filtered.map(item => ({
+                                label: item.Item_Name + ' ---> ' + item.PartCode,
+                                value: item.Item_Name,
+                                itemName: item.Item_Name,
+                                itemCode: item.Item_Code,
+                                partCode: item.PartCode
+                            })));
+                        } else {
+                            response([]);
+                        }
+                    }
+                });
+            };
+
+            // PartCode autocomplete
+            $("#PartCodeText").autocomplete({
+                source: partCodeSource,
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+                    $("#ItemNameText").val(ui.item.itemName);
+                    $('#ItemName').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    $('#FGItemCode').val(ui.item.itemCode);
+                     PartCodeChange('PartCode');
+                 
+             $('#displayroutingdata').show();
+             ClearGridAjax();
+             FillReqNo();
+             FillProdSchNo();
+             $('#ProdSchYear').empty();
+             FillBomNo();
+             FillOperation();
+             GetProcessDetail();
+             GetTotalStockWorkCenterQty();
+             $('#TargetQty').val(0);
+             $('#ProdPlan').val('');
+             $('#ProdPlanYear').val(0);
+             $('#ProdPlanDate').val(0);
+             FillScrapData();
+             FillProductDetail();
+             FillProductPartCode();
+             FillProductItems();
+             FillProductStoreforScrap();
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#PartCodeText").val(ui.item.value);
+                    return false;
+                }
+            });
+
+            // ItemName autocomplete
+            $("#ItemNameText").autocomplete({
+                source: itemNameSource,
+                minLength: 2,
+                select: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+                    $("#PartCodeText").val(ui.item.partCode);
+                    $('#ItemName').val(ui.item.itemCode);
+                    $('#PartCode').val(ui.item.itemCode);
+                    $('#FGItemCode').val(ui.item.itemCode);
+                     ItemNameChange('ItemName');
+                    
+                        $('#displayroutingdata').show();
+              ClearGridAjax();
+              FillReqNo();
+              FillProdSchNo();
+              $('#ProdSchYear').empty();
+              FillBomNo();
+              FillOperation();
+              GetProcessDetail();
+              GetTotalStockWorkCenterQty();
+              $('#TargetQty').val(0);
+              $('#ProdPlan').val('');
+              $('#ProdPlanYear').val(0);
+              $('#ProdPlanDate').val(0);
+              FillScrapData();
+              FillProductDetail();
+              FillProductPartCode();
+              FillProductItems();
+              FillProductStoreforScrap();
+                    return false;
+                },
+                focus: function (event, ui) {
+                    $("#ItemNameText").val(ui.item.itemName);
+                    return false;
+                }
+            });
+        }
+
+      /*  function GetItem() {
 
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("GetItems")",
+                url: "@Url.Action("GetItems")"
                 dataType: "json",
                 data: { ProdAgainst: $('#ProdAgainstPlanManual').val(), YearCode: $('#YearCode').val() },
                 success: function (result, status, error) {
@@ -4499,55 +4708,9 @@
                     }
                 }
             });
-        }
+        }  */
 
-        function GetProcessDetail() {
-
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("GetProcessDetail")",
-                dataType: "json",
-                data: { ItemCode: parseInt($('#ItemName').val()), "ProcessId": $('#Operation').val(), "WcId": $('#WorkCenter').val() },
-                async: false,
-                success: function (result, status, error) {
-
-                    if (result != null) {
-                        var obj = $.parseJSON(result);
-                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            var QcCheck = (obj.Result[0].NeedQc);
-                            $('#QcMandatory').val(QcCheck);
-                            if (QcCheck == "Y") {
-                                if (obj.Result[0].wcid > 0) {
-                                    $('#Store').prop("disabled", true);
-                                    $('#NextWorkCenter').prop("disabled", true);
-                                    $('#Store').val('W').trigger("change");
-                                    $('#Store').append('<option value="W"> WorkCenter < /option>');
-                                    $('#SenToQc').val('Y').trigger("change");
-                                    $('#SenToQc').prop("disabled", true);
-                                    $('#NextWorkCenter').val(obj.Result[0].wcid).trigger("change");
-                                }
-                            }
-                            else if (QcCheck == "N") {
-                                $('#SenToQc').prop("disabled", true);
-                                $('#SenToQc').val('N').trigger("change");
-                                $('#Store').prop("disabled", false);
-                                $('#NextWorkCenter').prop("disabled", false);
-                            } else {
-                                $('#SenToQc').prop("disabled", false);
-                                $('#Store').prop("disabled", false);
-                                $('#NextWorkCenter').prop("disabled", false);
-                            }
-                        }
-                        else {
-                            $('#SenToQc').prop("disabled", false);
-                            $('#Store').prop("disabled", false);
-                            $('#NextWorkCenter').prop("disabled", false);
-                        }
-                    }
-                }
-            });
-        }
-
+      
         $('#SenToQc').change(function () {
 
             var SenToQc = $('#SenToQc').val();
@@ -4617,7 +4780,8 @@
         function SetPartCodeItemName(ID) {
             if (!ID) return;
             else {
-                var v = $('#' + ID).select2('val');
+                /* var v = $('#' + ID).select2('val'); */
+                var v = $('#' + ID).val();
                 if (ID == "PartCode") {
                     $("#ItemName").val(v).trigger("change");
                 }
@@ -5053,13 +5217,13 @@
                 RemoveErrorCls('Stock');
             } */
 
-            if ($('#PartCode').val() == '-Select-') {
+            if (!$('#PartCode').val() || $('#PartCode').val().trim() === '') {
                 Err = 1;
                 $.notify('Please select PartCode first.', "error");
             } else {
                 RemoveErrorCls('PartCode');
             }
-            if ($('#ItemName').val() == '-Select-') {
+              if (!$('#ItemName').val() || $('#ItemName').val().trim() === '') {
                 Err = 1;
                 $.notify('Please select ItemName first.', "error");
             } else {
