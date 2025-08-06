@@ -1,0 +1,41 @@
+﻿@model eTactWeb.DOM.Models.PartyItemGroupDiscountModel;
+@{
+    var Cntr = 1;
+}
+@if (Model.PartyItemGroupDiscountGrid == null)
+{
+    @*<tr class="text-center">
+        <td colspan="25" class="text-black-50"><strong>NO DATA ADDED</strong></td>
+    </tr>*@
+}
+else
+{
+    foreach (var item in Model.PartyItemGroupDiscountGrid)
+    {
+        Cntr = Cntr + 1;
+        <tr class="small" style="white-space:nowrap">
+            <td style="white-space:nowrap;">
+                <a class="table-link link-primary" style="border:none;" id="editButton-@item.SeqNo" onclick="EditItemRows(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+                <a class="table-link link-danger" onclick="DeleteItemRow(@item.SeqNo);">
+                    <span class="fa-stack">
+                        <i class="fa fa-square fa-stack-2x"></i>
+                        <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                    </span>
+                </a>
+            </td>
+
+            <td id="SeqNo-@Cntr">@item.SeqNo</td>
+            <td>@item.GroupCode</td>
+            <td>@item.GroupName</td>
+            <td>@item.SaleDiscount</td>
+            <td>@item.PurchaseDiscount</td>
+        
+            
+        </tr>
+    }
+}

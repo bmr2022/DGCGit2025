@@ -83,20 +83,9 @@
                             <div id="container">
 
                                 <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="DiscountCustomerCategoryMaster" asp-route-Mode="V" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" onclick="BackButtonData(event,'@item.DiscountCustCatEntryId','@item.DiscountCustCatYearCode');">
-                                        <span class="fa-stack">
-                                            <i class="fa fa-square fa-stack-2x"></i>
-                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                        </span>
-                                    </a>
-                                </div>
-                                <div id="editCursorDiv-@Cntr">
-
-                                    <a class="table-link link-primary" asp-action="DiscountCustomerCategoryMaster" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" asp-route-FromDate="@item.FromDate"
-                                    asp-route-ToDate="@item.ToDate"
-                                       asp-route-ID="@item.DiscountCustCatEntryId"
-                                       asp-route-YC="@item.DiscountCustCatYearCode"
-                                       asp-route-DiscountCategory="@item.DiscountCategory"
+                                    <a class="table-link link-success" asp-action="DiscountCustomerCategoryMaster" asp-route-Mode="V" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" onclick="BackButtonData(event,'@item.DiscountCustCatEntryId','@item.DiscountCustCatYearCode');"
+                                      
+                                       asp-route-DiscountCategoryId="@item.DiscountCategory"
                                        asp-route-DiscountCatSlipNo="@item.DiscountCatSlipNo"
                                        asp-route-EffectiveFromDate="@item.EffectiveFromDate?.ToString().Split(' ')[0]"
                                        asp-route-MinDiscountPer="@item.MinDiscountPer"
@@ -109,8 +98,42 @@
                                        asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
                                        asp-route-ActualEntryDate="@item.ActualEntryDate?.ToString().Split(' ')[0]"
                                        asp-route-LastUpdatedbyEmpName="@item.LastUpdatedbyEmpName"
+                                       asp-route-LastUpdatedbyEmpId="@item.LastUpdatedbyEmpId"
+                                       asp-route-ActualEntryByEmpId="@item.ActualEntryByEmpId"
+                                       asp-route-ApprovedByEmpId="@item.ApprovedByEmpId"
                                        asp-route-LastupDationDate="@item.LastupDationDate?.ToString().Split(' ')[0]"
                                        asp-route-CC="@item.CC">
+                                        <span class="fa-stack">
+                                            <i class="fa fa-square fa-stack-2x"></i>
+                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                        </span>
+                                    </a>
+                                </div>
+                                <div id="editCursorDiv-@Cntr">
+
+                                    <a class="table-link link-primary" asp-action="DiscountCustomerCategoryMaster" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" asp-route-FromDate="@item.FromDate"
+                                    asp-route-ToDate="@item.ToDate"
+                                       asp-route-ID="@item.DiscountCustCatEntryId"
+                                       asp-route-YC="@item.DiscountCustCatYearCode"
+                                       asp-route-DiscountCategoryId="@item.DiscountCategory"
+                                       asp-route-DiscountCatSlipNo="@item.DiscountCatSlipNo"
+                                       asp-route-EffectiveFromDate="@item.EffectiveFromDate?.ToString().Split(' ')[0]"
+                                       asp-route-MinDiscountPer="@item.MinDiscountPer"
+                                       asp-route-MaxDiscountPer="@item.MaxDiscountPer"
+                                       asp-route-ApplicableMonthlyYearlyAfterEachSale="@item.ApplicableMonthlyYearlyAfterEachSale"
+                                       asp-route-ApplicableOnAdvancePayment="@item.ApplicableOnAdvancePayment"
+                                       asp-route-MinmumAdvancePaymentPercent="@item.MinmumAdvancePaymentPercent"
+                                       asp-route-CategoryActive="@item.CategoryActive"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-ActualEntryDate="@item.ActualEntryDate?.ToString().Split(' ')[0]"
+                                       asp-route-LastUpdatedbyEmpName="@item.LastUpdatedbyEmpName"
+                                       asp-route-LastUpdatedbyEmpId="@item.LastUpdatedbyEmpId"
+                                       asp-route-ActualEntryByEmpId="@item.ActualEntryByEmpId"
+                                       asp-route-ApprovedByEmpId="@item.ApprovedByEmpId"
+                                       asp-route-LastupDationDate="@item.LastupDationDate?.ToString().Split(' ')[0]"
+                                       asp-route-CC="@item.CC"
+                                       >
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

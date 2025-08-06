@@ -73,8 +73,7 @@ namespace eTactWeb.Data.DAL
 				if (model.Mode == "U" || model.Mode == "V")
 				{
 					sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-					//sqlParams.Add(new SqlParameter("@DiscountCustCatEntryId", model.DiscountCustCatEntryId));
-
+					sqlParams.Add(new SqlParameter("@DiscountCustCatEntryId", model.DiscountCustCatEntryId));
 					sqlParams.Add(new SqlParameter("@LastUpdatedbyEmpId", model.LastUpdatedbyEmpId));
 					sqlParams.Add(new SqlParameter("@LastupDationDate", model.LastupDationDate));
 				}
@@ -253,8 +252,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@flag", "VIEWBYID"));
-                SqlParams.Add(new SqlParameter("@MatConvEntryId", ID));
-                SqlParams.Add(new SqlParameter("@YearCode", YC));
+                SqlParams.Add(new SqlParameter("@DiscountCustCatEntryId", ID));
+                SqlParams.Add(new SqlParameter("@DiscountCustCatYearCode", YC));
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPSalesDiscountCustomerCategoryMaster", SqlParams);
 
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
