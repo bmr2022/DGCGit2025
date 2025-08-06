@@ -76,7 +76,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill)
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill,bool ShowZeroBal)
         {
             var resultList = new OutStandingModel();
             DataSet oDataSet = new DataSet();
@@ -99,7 +99,7 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@AccountNamwList", accountNameCsv);
                     command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
                     command.Parameters.AddWithValue("@ShowOnlyApprovedBill", ShowOnlyApprovedBill);
-
+                    command.Parameters.AddWithValue("@ShowZeroBal", ShowZeroBal);
 
                     await connection.OpenAsync();
 

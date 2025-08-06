@@ -14,7 +14,7 @@ namespace eTactWeb.Services.Interface
 
         Task<ResponseResult> GetGroupName(string outstandingType, string TillDate);
 
-        public Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill);
+        public Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill, bool ShowZeroBal);
 
     }
 }

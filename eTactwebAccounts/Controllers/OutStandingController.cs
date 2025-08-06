@@ -53,10 +53,10 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill)
+        public async Task<IActionResult> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill,bool ShowZeroBal)
         {
             var model = new OutStandingModel();
-            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList,AccountCode, ShowOnlyApprovedBill);
+            model = await _OutStanding.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList,AccountCode, ShowOnlyApprovedBill, ShowZeroBal);
 
 
 

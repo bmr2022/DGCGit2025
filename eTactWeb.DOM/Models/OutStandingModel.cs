@@ -34,7 +34,7 @@ namespace eTactWeb.DOM.Models
         public string AccYearCode { get; set; }
         public string SalesPersonName { get; set; }
         public bool IsVisible {  get; set; }
-
+        public bool ShowZeroBal {  get; set; }
 
 
         public IList<OutStandingModel> OutStandingGrid { get; set; }

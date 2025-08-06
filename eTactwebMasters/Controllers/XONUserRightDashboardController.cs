@@ -20,6 +20,7 @@ namespace eTactwebMasters.Controllers
         private readonly IDataLogic _IDataLogic;
         private readonly IWebHostEnvironment _IWebHostEnvironment;
         private readonly ILogger<XONUserRightDashboardController> _logger;
+        private dynamic Result;
         public XONUserRightDashboardController(ILogger<XONUserRightDashboardController> logger, IDataLogic iDataLogic, IWebHostEnvironment iWebHostEnvironment, IXONUserRightDashboardBLL IXONUserRightDashboardBLL)
         {
             _IDataLogic = iDataLogic;
@@ -407,6 +408,33 @@ namespace eTactwebMasters.Controllers
             catch (Exception ex)
             {
                 throw ex;
+            }
+        }
+        public async Task<IActionResult> XONUserRightDashboardData()
+        {
+            var model = new UserRightDashboardModel();
+            Result = await _IXONUserRightDashboardBLL.GetUserRightDashboard("Get");
+            model.UserRightsDashboard = Result;
+            if (Result.Count == 0)
+            {
+                model.UserRightsDashboard = new List<UserRightDashboardModel>();
+            }
+            return View(model);
+        }
+        public async Task<IActionResult> UserRightDashBoard(string Flag = "True", string Usertype = "", string EmpCode = "", string EmpName = "", string UserName = "")
+        {
+            UserRightDashboardModel model = new()
+            {
+                //dynamic dd = new ExpandoObject();
+                UserRightsDashboard = await _IXONUserRightDashboardBLL.GetDashBoardData("", Usertype, EmpCode, EmpName, UserName)
+            };
+            if (Flag == "False")
+            {
+                return PartialView("_UserGrid", model);
+            }
+            else
+            {
+                return View(model);
             }
         }
         public async Task<IActionResult> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen) 

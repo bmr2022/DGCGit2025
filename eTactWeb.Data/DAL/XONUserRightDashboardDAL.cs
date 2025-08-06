@@ -167,6 +167,114 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<List<UserRightDashboardModel>> GetUserRightDashboard(string Flag)
+        {
+            List<UserRightDashboardModel>? UserRightList = new List<UserRightDashboardModel>();
+            DataSet? oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SP_UserRightDashboard", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", Flag);
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    UserRightList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                     select new UserRightDashboardModel
+                                     {
+                                         UserId = string.IsNullOrEmpty(dr["UID"].ToString()) ? 0 : Convert.ToInt32(dr["UID"].ToString()),
+                                         EmpId = string.IsNullOrEmpty(dr["EmpID"].ToString()) ? 0 : Convert.ToInt32(dr["EmpID"].ToString()),
+                                         EmpName = dr["EmpName"].ToString(),
+                                         UserName = dr["UserName"].ToString()
+                                     }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+                return Error;
+            }
+            finally
+            {
+                if (Reader != null)
+                {
+                    Reader.Close();
+                    Reader.Dispose();
+                }
+            }
+            return UserRightList;
+        }
+        public async Task<IList<UserRightDashboardModel>> GetDashBoardData(string Flag, string Usertype, string EmpCode, string EmpName, string UserName)
+        {
+            var UserMasterList = new List<UserRightDashboardModel>();
+            var oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SP_UserMaster", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", Flag);
+                    oCmd.Parameters.AddWithValue("@UserType", Usertype);
+                    oCmd.Parameters.AddWithValue("@EmpCode", EmpCode);
+                    oCmd.Parameters.AddWithValue("@EmpName", EmpName);
+                    oCmd.Parameters.AddWithValue("@UserName", UserName);
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    UserMasterList = (from DataRow dr in oDataSet.Tables[0].Rows
+                                      select new UserRightDashboardModel
+                                      {
+                                          UserId = Convert.ToInt32(dr["UID"]),
+                                          EmpId = Convert.ToInt32(dr["EmpID"]),
+                                          UserName = dr["UserName"].ToString(),
+                                          CreatedById = string.IsNullOrEmpty(dr["CreatedBy"].ToString()) ? 0 : Convert.ToInt32(dr["CreatedBy"].ToString()),
+                                          CreatedByName = dr["CreatedByName"].ToString(),
+                                          CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["CreatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[0]["CreatedOn"]),
+                                          EmpName = string.IsNullOrEmpty(dr["EmpName"].ToString()) ? "" : dr["EmpName"].ToString()
+
+                                      }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                if (Reader != null)
+                {
+                    Reader.Close();
+                    Reader.Dispose();
+                }
+            }
+
+            return UserMasterList;
+        }
         public async Task<UserRightDashboardModel> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen)
         {
             DataSet? oDataSet = new DataSet();

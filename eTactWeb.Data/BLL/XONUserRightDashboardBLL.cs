@@ -38,9 +38,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _XONUserRightDashboardDAL.SaveUserRightDashboard(model, UserRightDashboardGrid);
         }
+        public async Task<IList<UserRightDashboardModel>> GetDashBoardData(string Flag, string Usertype, string EmpCode, string EmpName, string UserName)
+        {
+            return await _XONUserRightDashboardDAL.GetDashBoardData(Flag, Usertype, EmpCode, EmpName, UserName);
+        }
         public async Task<UserRightDashboardModel> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen)
         {
             return await _XONUserRightDashboardDAL.GetSearchData(EmpName, UserName, DashboardName, DashboardSubScreen);
+        }
+        public async Task<List<UserRightDashboardModel>> GetUserRightDashboard(string Flag)
+        {
+            return (await _XONUserRightDashboardDAL.GetUserRightDashboard(Flag)).ToList();
         }
     }
 }

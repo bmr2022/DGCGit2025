@@ -21,6 +21,7 @@ namespace eTactWeb.DOM.Models
         public string? DashboardSubScreen {  get; set; }
         public bool IsView {  get; set; }
         public int CreatedById {  get; set; }
+        public string? CreatedByName { get; set; }
         public DateTime CreatedOn { get; set; }
         public int UpdatedById {  get; set; }
         public DateTime UpdatedOn { get; set; }

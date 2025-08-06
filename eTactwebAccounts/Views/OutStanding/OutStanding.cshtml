@@ -20,8 +20,8 @@
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
     }
-        .multiselect-container
-    {
+
+    .multiselect-container {
         z-index: 1050; /* ensures it appears above modals etc. */
     }
 
@@ -74,7 +74,7 @@
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Party</label>
                                     <select class="form-control" asp-for="ReportType">
-                                        <option value="">-Select-</option>  
+                                        <option value="">-Select-</option>
                                         <option value="Receive Outstanding" selected>Receive Outstanding</option>
                                         <option value="Payable Outstanding">Payable Outstanding</option>
 
@@ -111,8 +111,9 @@
                                             <input class="form-check-input" type="checkbox" id="multiPartySwitch" onchange="toggleMultiSelect()">
                                         </div>
                                     </label>
-
-                                    <select class="form-control" id="PartyName" name="PartyName">
+                                    <select class="form-control" multiple="multiple" id="PartyNameMulti" asp-for="PartyName">
+                                    </select>
+                                    <select class="form-control" id="PartyNameSingle" asp-for="PartyName">
                                     </select>
                                 </div>
 
@@ -153,7 +154,13 @@
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
-
+                                <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
+                                    <div class="form-check mt-4">
+                                        <!-- Add spacing to align with other form fields -->
+                                        <input class="form-check-input" type="checkbox" id="ShowZeroBal" asp-for="ShowZeroBal">
+                                        <label class="form-check-label" for="ShowZeroBal">Show Zero Balance</label>
+                                    </div>
+                                </div>
                                 <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
 
                                     <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetDetailsData();">
@@ -237,9 +244,8 @@
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#PartyName').select2();
             $('#GroupName').select2();
-
+            $('#PartyNameSingle').select2();
 
             $('#ReportType').select2();
 
@@ -257,7 +263,7 @@
 
             FillGroupName();
             GetDetailsData();
-           // handleReportTypeChange();
+            // handleReportTypeChange();
 
             // When ReportType changes, automatically set Group_Ledger to 'Ledger' if required
             $("#ReportType").change(function () {
@@ -282,35 +288,27 @@
 
         function toggleMultiSelect() {
             var isMulti = $('#multiPartySwitch').is(':checked');
-            var $dropdown = $('#PartyName');
-
-            // Destroy previous multiselect instance if it exists
-            if ($dropdown.data('multiselect')) {
-                $dropdown.multiselect('destroy');
-            }
-
-            // Clear existing options
-            $dropdown.empty();
+            var PartynameSingleDropdown = $('#PartyNameSingle');
+            var PartynameMultiDropdown = $('#PartyNameMulti');
 
             if (isMulti) {
-                // Add multiple attribute
-                $dropdown.attr('multiple', 'multiple');
+                // Hide single-select and show multi-select
+                PartynameSingleDropdown.hide();
+                PartynameMultiDropdown.show();
+
+                // Destroy Select2 if initialized on single-select
+                if (PartynameSingleDropdown.hasClass("select2-hidden-accessible")) {
+                    PartynameSingleDropdown.select2('destroy');
+                }
 
                 // Load party options
                 FillPartyName();
 
-                // Initialize multiselect
-                $dropdown.multiselect({
-                    enableFiltering: true,
-                    enableCaseInsensitiveFiltering: true,
-                    includeSelectAllOption: true,
-                    buttonWidth: '100%',
-                    maxHeight: 300,
-                    nonSelectedText: 'Select Party',
-                    allSelectedText: 'All selected',
-                    numberDisplayed: 2,
+                // Initialize multiselect plugin
+                PartynameMultiDropdown.attr('multiple', 'multiple');
+                PartynameMultiDropdown.multiselect({
                     templates: {
-                        button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"><span class="multiselect-selected-text"></span></button>'
+                        button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false"><span class="multiselect-selected-text"></span></button>',
                     },
                     onChange: function (option, checked) {
                         var value = $(option).val();
@@ -330,21 +328,41 @@
                         });
                         console.log("All selected:", selectedPartyValues);
                     },
-                    onDeselectAll: function (options) {
+                    onDeselectAll: function () {
                         selectedPartyValues = [];
                         console.log("Deselected all:", selectedPartyValues);
-                    }
+                    },
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true,
+                    includeSelectAllOption: true,
+                    buttonWidth: '100%',
+                    maxHeight: 300,
+                    nonSelectedText: 'Select Party',
+                    allSelectedText: 'All selected',
+                    numberDisplayed: 2,
                 });
 
             } else {
-                // Remove multiple attribute
-                $dropdown.removeAttr('multiple');
+                // Hide multi-select and show single-select
+                PartynameMultiDropdown.hide();
+                PartynameSingleDropdown.show();
 
-                // Add default placeholder option
-                $dropdown.append('<option value="">--Select--</option>');
+                // Destroy multiselect if initialized
+                if (PartynameMultiDropdown.data('multiselect')) {
+                    PartynameMultiDropdown.multiselect('destroy');
+                }
+
+                selectedPartyValues = [];
 
                 // Load party options
                 FillPartyName();
+
+                // Re-initialize Select2 for single-select
+                PartynameSingleDropdown.select2({
+                    width: '100%',
+                    placeholder: 'Select Party',
+                    allowClear: true
+                });
             }
         }
 
@@ -366,7 +384,8 @@
             var OutStandingType = $('#ReportType').val();
             var TillDate = $('#TillDate').val();
             var isMulti = $('#multiPartySwitch').is(':checked');
-            var PartynameDropdown = $('#PartyName');
+            var PartynameSingleDropdown = $('#PartyNameSingle');
+            var PartynameMultiDropdown = $('#PartyNameMulti');
 
             $.ajax({
                 url: '@Url.Action("GetPartyName", "OutStanding")',
@@ -378,18 +397,21 @@
                 success: function (response) {
                     var obj = $.parseJSON(response);
 
-                    // DON'T call empty() again if already emptied in toggleMultiSelect
                     if (!isMulti) {
-                        PartynameDropdown.empty();
-                        PartynameDropdown.append('<option value="">--Select--</option>');
-                    }
+                        PartynameSingleDropdown.empty();
+                        PartynameSingleDropdown.append('<option value="">--Select--</option>');
 
-                    $.each(obj.Result, function (index, item) {
-                        PartynameDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
-                    });
+                        $.each(obj.Result, function (index, item) {
+                            PartynameSingleDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
+                        });
+                    } else {
+                        PartynameMultiDropdown.empty();
 
-                    if (isMulti) {
-                        PartynameDropdown.multiselect('rebuild');
+                        $.each(obj.Result, function (index, item) {
+                            PartynameMultiDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
+                        });
+
+                        PartynameMultiDropdown.multiselect('rebuild');
                     }
                 },
                 error: function () {
@@ -432,18 +454,19 @@
         function GetDetailsData() {
 
             var OutStandingType = $('#ReportType').val();
-
+            var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();
             var GroupName = $('#GroupName').val();
             var AccountNameList = selectedPartyValues;
             var AccountCode = 0;
+
             if (AccountNameList && AccountNameList.length > 0) {
                 AccountCode = 0;
             }
-            else{
-                 AccountCode = $('#PartyName').val();
+            else {
+                AccountCode = $('#PartyNameSingle').val();
             }
-            
+
             var ShowOnlyApprovedBill = $("input[name='Status']:checked").val();
 
 
@@ -457,8 +480,8 @@
                     "GroupName": GroupName,
                     "AccountNameList": AccountNameList,
                     "AccountCode": AccountCode,
-                    "ShowOnlyApprovedBill": ShowOnlyApprovedBill
-
+                    "ShowOnlyApprovedBill": ShowOnlyApprovedBill,
+                    "ShowZeroBal": ShowZeroBal
 
                 },
                 success: function (response) {
