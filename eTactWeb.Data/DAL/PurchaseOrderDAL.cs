@@ -1320,7 +1320,7 @@ public class PurchaseOrderDAL
             var RefDt =model.RefDate;
             var QuotDt = model.QuotDate;
             SqlParams.Add(new SqlParameter("@EntryDate", EntryDt == default ? string.Empty : CommonFunc.ParseFormattedDate( EntryDt)));
-            SqlParams.Add(new SqlParameter("@PODate", PoDt == default ? string.Empty : PoDt));
+            SqlParams.Add(new SqlParameter("@PODate", PoDt == default ? string.Empty : CommonFunc.ParseFormattedDate(PoDt)));
             SqlParams.Add(new SqlParameter("@WEF", WEFDate == default ? string.Empty : CommonFunc.ParseFormattedDate(WEFDate)));
             SqlParams.Add(new SqlParameter("@POCloseDate", PoCloseDt == default ? string.Empty : CommonFunc.ParseFormattedDate(PoCloseDt)));
             SqlParams.Add(new SqlParameter("@AmmEffDate", AmmDt == default ? string.Empty : CommonFunc.ParseFormattedDate(AmmDt)));
