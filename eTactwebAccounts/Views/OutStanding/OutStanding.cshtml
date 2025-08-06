@@ -320,18 +320,15 @@
                         } else {
                             selectedPartyValues = selectedPartyValues.filter(v => v !== value);
                         }
-                        console.log("Selected Parties:", selectedPartyValues);
                     },
-                    onSelectAll: function (options) {
+                    onSelectAll: function () {
                         selectedPartyValues = [];
-                        $(options).each(function () {
+                        $('#PartyNameMulti option').each(function () {
                             selectedPartyValues.push($(this).val());
                         });
-                        console.log("All selected:", selectedPartyValues);
                     },
                     onDeselectAll: function () {
                         selectedPartyValues = [];
-                        console.log("Deselected all:", selectedPartyValues);
                     },
                     enableFiltering: true,
                     enableCaseInsensitiveFiltering: true,
@@ -376,6 +373,8 @@
         $('#ReportType').change(function () {
             FillGroupName();
             FillPartyName();
+            selectedPartyValues = [];
+            $('#PartyNameSingle').val(0);
         });
 
         function FillPartyName() {
