@@ -2,6 +2,7 @@
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
@@ -26,11 +27,11 @@ namespace eTactWeb.Controllers
         }
 		[Route("{controller}/Index")]
 		public async Task<ActionResult> DiscountCustomerCategoryMaster(int ID, int YC, string Mode, string SlipNo,
-             string DiscountCategory, string DiscountCatSlipNo, string EffectiveFromDate,
+             int DiscountCategoryId, string DiscountCatSlipNo, string EffectiveFromDate,
 decimal MinDiscountPer, decimal MaxDiscountPer, string ApplicableMonthlyYearlyAfterEachSale,
 string ApplicableOnAdvancePayment, decimal MinmumAdvancePaymentPercent, string CategoryActive,
 string EntryByMachine, string ActualEntryByEmpName, string ActualEntryDate,
-string LastUpdatedbyEmpName, string LastupDationDate, string CC
+string LastUpdatedbyEmpName, string LastupDationDate, string CC,int LastUpdatedbyEmpId,int ApprovedByEmpId,int ActualEntryByEmpId
 )
         {
 			var MainModel = new DiscountCustomerCategoryMasterModel();
@@ -49,7 +50,7 @@ string LastUpdatedbyEmpName, string LastupDationDate, string CC
 				MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.DiscountCustCatEntryId = ID;
                 MainModel.DiscountCustCatYearCode = YC;
-                MainModel.DiscountCategory = DiscountCategory;
+                MainModel.DiscountCategoryId = DiscountCategoryId;
                 MainModel.DiscountCatSlipNo = DiscountCatSlipNo;
                 MainModel.EffectiveFromDate = EffectiveFromDate;
                 MainModel.MinDiscountPer = MinDiscountPer;
@@ -62,6 +63,10 @@ string LastUpdatedbyEmpName, string LastupDationDate, string CC
                 MainModel.ActualEntryByEmpName = ActualEntryByEmpName;
                 MainModel.ActualEntryDate = ActualEntryDate;
                 MainModel.LastUpdatedbyEmpName = LastUpdatedbyEmpName;
+                MainModel.LastUpdatedbyEmpId = LastUpdatedbyEmpId;
+                MainModel.ApprovedByEmpId = ApprovedByEmpId;
+                MainModel.ActualEntryByEmpId = ActualEntryByEmpId;
+
                 MainModel.LastupDationDate = LastupDationDate;
                 MainModel.CC = CC;
 

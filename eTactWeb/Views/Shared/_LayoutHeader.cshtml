@@ -955,11 +955,11 @@
                     </li>  @*//1 *@
                     <li>
                         @*//1 *@
-                        <a class="dropdown-item" id="ControlPlan" href="#">Sale&raquo;</a>
+                        <a class="dropdown-item" id="Sales" href="#">Sale&raquo;</a>
                         @*    <ul class="submenu dropdown-menu"> *@
                         <ul class="submenu dropdown-menu" data-bs-popper="static">
                             <li>
-                                <a class="dropdown-item" id="ControlPlan" href="#" style="background:#FFF8DC ; color :#000000">Discount Customer Category Master &raquo;</a>
+                                <a class="dropdown-item" id="DiscountCustomerCategoryMaster Discount" href="#" style="color :#000000">Discount Customer Category Master &raquo;</a>
                                 <ul class="submenu dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" asp-action="DiscountCustomerCategoryMaster" asp-route-ID="0" asp-controller="DiscountCustomerCategoryMaster" id="DiscountCustomerCategoryMaster">
@@ -971,6 +971,26 @@
                                   
                                     <li>
                                         <a class="dropdown-item DiscountCustomerCategoryMaster" asp-action="DiscountCustomerCategoryMasterDashBoard" asp-controller="DiscountCustomerCategoryMaster">
+                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                        </a>
+                                        <input class="userRightsPermission" type="hidden" value="Material Conversion" />
+
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" id="ControlPlan" href="#" style="color :#000000">Party Item Group Discount &raquo;</a>
+                                <ul class="submenu dropdown-menu dropdown-menu-end">
+                                    <li>
+                                        <a class="dropdown-item" asp-action="PartyItemGroupDiscount" asp-route-ID="0" asp-controller="PartyItemGroupDiscount" id="PartyItemGroupDiscount">
+                                            <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Party Item Group Discount
+                                        </a>
+
+
+                                    </li>
+                                  
+                                    <li>
+                                        <a class="dropdown-item PartyItemGroupDiscount" asp-action="PartyItemGroupDiscountDashBoard" asp-controller="PartyItemGroupDiscount">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Material Conversion" />

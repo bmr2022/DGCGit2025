@@ -36,8 +36,8 @@ public interface IProductionEntry
     Task<ResponseResult> FillOperation(int ItemCode, int WcId);
     Task<ResponseResult> FillMachineGroup();
     Task<ProductionEntryModel> GetChildData(string Flag, string SPName, int WcId, int YearCode, float ProdQty, int ItemCode, string ProdDate, int BomNo);
-    Task<ResponseResult> GetItems(string ProdAgainst, int YearCode);
-    Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode);
+    Task<ResponseResult> GetItems(string ProdAgainst, int YearCode, string ItemName);
+    Task<ResponseResult> GetPartCode(string ProdAgainst, int YearCode, string PartCode);
     Task<ResponseResult> FillMachineName();
     Task<ProductionEntryModel> FillScrapData(int FGItemCode, decimal FgProdQty, string BomNo);
     Task<ProductionEntryModel> FillProductDetail(int FGItemCode, decimal FgProdQty, string BomNo);
