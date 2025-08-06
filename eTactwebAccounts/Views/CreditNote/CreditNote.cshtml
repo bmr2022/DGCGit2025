@@ -506,6 +506,7 @@
             BasicItemGridTotal();
             GetCostCenter();
             DueDateCalculation();
+            FillSubVoucher();
 
             $('#GstRegUnreg').rules("remove", "required");
             $('#Transporter').rules("remove", "required");
@@ -638,6 +639,33 @@
                              
                             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
                             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
+                        }
+                    }
+                }
+            });
+        }
+
+        function FillSubVoucher() {
+            var YearCode = $('#CreditNoteYearCode').val();
+            $.ajax({
+                type: "POST",
+                data: { },
+                url: "@Url.Action("FillSubVoucher")",
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        debugger
+                        if (obj.Result != null) {
+                            $('#SubVoucherName').empty();
+                            $('#SubVoucherName').append('<option value="0">-Select-</option>');
+                            if (obj.StatusCode != 500) {
+                                $.each(obj.Result.Table, function (index, val) {
+                                    $('#SubVoucherName').append("<option value=" + val.PrefixEntryId + ">" + val.SubVoucherName + "</option>");
+                                });
+                            }
                         }
                     }
                 }

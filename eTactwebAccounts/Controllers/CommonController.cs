@@ -39,7 +39,7 @@ namespace eTactWeb.Controllers
             dynamic MainModel = new DirectPurchaseBillModel();
             dynamic TaxGrid = new List<TaxModel>();
             dynamic TdsGrid = new List<TDSModel>();
-
+           
             string modelTaxJson = HttpContext.Session.GetString("KeyTaxGrid");
             if (!string.IsNullOrEmpty(modelTaxJson))
             {
@@ -175,7 +175,7 @@ namespace eTactWeb.Controllers
                         MainModel = JsonConvert.DeserializeObject<JobWorkIssueModel>(modelJson);
                     }
                 }
-
+               // TaxGrid=JsonConvert.SerializeObject(MainModel.TaxDetailGridd);
                 TaxGridd = GetTaxDetailTable(TaxGrid);
             }
 
@@ -206,7 +206,7 @@ namespace eTactWeb.Controllers
             if (TaxDetailList != null && TaxDetailList.Count > 0)
             {
                 var groupedTaxDetails = TaxDetailList
-                .GroupBy(item => item.TxItemCode)
+                .GroupBy(item =>new { item.TxItemCode, item.TxTaxType, item.TxAccountCode })
                 .Select(group => new
                 {
                     FirstItem = group.First(),

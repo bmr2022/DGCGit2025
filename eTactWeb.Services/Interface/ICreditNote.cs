@@ -17,6 +17,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> SaveCreditNote(AccCreditNoteModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT,DataTable DTAgainstBillDetail);
         Task<ResponseResult> GetDashboardData(string summaryDetail,string fromdate, string toDate);
         Task<ResponseResult> DeleteByID(int ID, int YC,int accountCode, string machineName);
+        Task<ResponseResult> FillSubVoucher();
 
     }
 }

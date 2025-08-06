@@ -19,6 +19,16 @@
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
+    }
+        .multiselect-container
+    {
+        z-index: 1050; /* ensures it appears above modals etc. */
+    }
+
+    select[multiple].form-control {
+        display: none !important; /* force hide when multiselect is active */
+    }
+
 </style>
 <head>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
@@ -48,26 +58,26 @@
                                 <input type="hidden" value="@Model.Storeid" asp-for="Storeid" /> *@
 
                                 @* <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
-                                    <div class="row">
-                                        <div class="col">
-                                            <label class="form-label">From Date</label>
-                                            <input asp-for="FromDate" class="form-control" />
-                                        </div>
-                                        <div class="col">
-                                            <label class="form-label">To Date</label>
-                                            <input asp-for="ToDate" class="form-control" />
-                                        </div>
-                                    </div>
+                                <div class="row">
+                                <div class="col">
+                                <label class="form-label">From Date</label>
+                                <input asp-for="FromDate" class="form-control" />
                                 </div>
- *@
+                                <div class="col">
+                                <label class="form-label">To Date</label>
+                                <input asp-for="ToDate" class="form-control" />
+                                </div>
+                                </div>
+                                </div>
+                                *@
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-12 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">Party</label>
                                     <select class="form-control" asp-for="ReportType">
-                                        <option value="">-Select-</option>
+                                        <option value="">-Select-</option>  
                                         <option value="Receive Outstanding" selected>Receive Outstanding</option>
                                         <option value="Payable Outstanding">Payable Outstanding</option>
-                                        
+
 
 
                                     </select>
@@ -76,8 +86,8 @@
                                     <label asp-for="TillDate" class="form-label">OutStanding Upto</label>
 
                                     <input asp-for="TillDate" class="form-control" />
-                                    
-                                    
+
+
                                 </div>
 
 
@@ -95,34 +105,33 @@
                                 </div>
 
                                 <div class="col-xxl-2 col-xl-3 col-lg-4 col-md-4 col-sm-4 col-xs-6">
-                                    <label asp-for="PartyName" class="form-label">Party Name</label>
+                                    <label class="form-label d-flex justify-content-between align-items-center">
+                                        <span>Party Name</span>
+                                        <div class="form-check form-switch">
+                                            <input class="form-check-input" type="checkbox" id="multiPartySwitch" onchange="toggleMultiSelect()">
+                                        </div>
+                                    </label>
 
-                                    <select asp-for="PartyName" class="form-control">
-                                        @* <option value="@Model.AccountCode">-Select-</option> *@
-                                        <option value="@Model.PartyName">-Select-</option>
-                                        @if (Model.Mode == "U" || Model.Mode == "V")
-                                        {
-                                            <option value="@Model.PartyName" selected>@Model.PartyName</option>
-                                        }
+                                    <select class="form-control" id="PartyName" name="PartyName">
                                     </select>
                                 </div>
 
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
-                                    <label  class="form-label"></label>
+                                    <label class="form-label"></label>
                                     <div class="row" style="border: 2px solid #ccc;padding-top:5px; margin:0px;width:190px">
-                                    <div class="" style="">
-                                        <input type="radio" id="all" name="Status" value="all"
-                                                checked>
-                                        <label for="all" style="margin-left:5px">All</label>
-                                    
-                                        <input type="radio" id="approvedOnly" name="Status" value="N"
-                                               asp-for="ShowOnlyApprovedBill">
-                                        <label for="approvedOnly">Approved Only</label>
-                                    </div>
+                                        <div class="" style="">
+                                            <input type="radio" id="all" name="Status" value="all"
+                                                   checked>
+                                            <label for="all" style="margin-left:5px">All</label>
+
+                                            <input type="radio" id="approvedOnly" name="Status" value="N"
+                                                   asp-for="ShowOnlyApprovedBill">
+                                            <label for="approvedOnly">Approved Only</label>
+                                        </div>
                                     </div>
                                 </div>
 
-                                <div class="col-sm-2 col-md-6 col-lg-6 col-xl-2" >
+                                <div class="col-sm-2 col-md-6 col-lg-6 col-xl-2">
                                     <label class="form-label"></label>
                                     <div class="row" style="border: 2px solid #ccc;padding-top:5px;margin-right:10px ">
                                         <div class="" style="">
@@ -132,7 +141,7 @@
                                         </div>
 
                                         <div>
-                                        
+
                                             <input type="radio" id="approvedOnly" name="DateWise" value="Bill DateWise"
                                                    asp-for="ShowOnlyApprovedBill">
                                             <label for="BillDateWise">Bill DateWise</label>
@@ -222,15 +231,15 @@
         $(document).ready(function () {
             console.log("Ready");
             // GetServerDate();
-             
+
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
-           // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
+            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             $('#PartyName').select2();
             $('#GroupName').select2();
-           
+
 
             $('#ReportType').select2();
 
@@ -246,20 +255,19 @@
             //$('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", firstDayOfMonth); // Pass the Date object directly
             //$('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", currentDate);
 
-            FillPartyName();
             FillGroupName();
             GetDetailsData();
-            handleReportTypeChange();
+           // handleReportTypeChange();
 
             // When ReportType changes, automatically set Group_Ledger to 'Ledger' if required
             $("#ReportType").change(function () {
-                 
+
                 handleReportTypeChange();
             });
 
             // Function to handle the logic for setting 'Ledger' based on ReportType
             function handleReportTypeChange() {
-                 
+
                 var reportType = $("#ReportType").val().trim();
                 var reportTypesToCheck = ["Summary", "Detail", "IndentWithPODetail"];
 
@@ -268,68 +276,130 @@
                     $("#Group_Ledger").val("Ledger");
                 }
             }
-
-
         });
 
+        var selectedPartyValues = [];
 
-        // $('#LedgerName').change(function () {
-        //     $('#AccountCode').val($('#LedgerName').val());
-        // });
-        // $('#ParentLedgerName').change(function () {
-        //     $('#ParentAccountCode').val($('#ParentLedgerName').val());
-        // });
+        function toggleMultiSelect() {
+            var isMulti = $('#multiPartySwitch').is(':checked');
+            var $dropdown = $('#PartyName');
 
-        // $('#IndentNo').change(function () {
-        //     GetDetailsData();
-        // });
-        // $('#ReportType').change(function () {
+            // Destroy previous multiselect instance if it exists
+            if ($dropdown.data('multiselect')) {
+                $dropdown.multiselect('destroy');
+            }
 
-        //     GetDetailsData();
+            // Clear existing options
+            $dropdown.empty();
 
-        // });
+            if (isMulti) {
+                // Add multiple attribute
+                $dropdown.attr('multiple', 'multiple');
+
+                // Load party options
+                FillPartyName();
+
+                // Initialize multiselect
+                $dropdown.multiselect({
+                    enableFiltering: true,
+                    enableCaseInsensitiveFiltering: true,
+                    includeSelectAllOption: true,
+                    buttonWidth: '100%',
+                    maxHeight: 300,
+                    nonSelectedText: 'Select Party',
+                    allSelectedText: 'All selected',
+                    numberDisplayed: 2,
+                    templates: {
+                        button: '<button type="button" class="multiselect btn btn-sm btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown"><span class="multiselect-selected-text"></span></button>'
+                    },
+                    onChange: function (option, checked) {
+                        var value = $(option).val();
+                        if (checked) {
+                            if (!selectedPartyValues.includes(value)) {
+                                selectedPartyValues.push(value);
+                            }
+                        } else {
+                            selectedPartyValues = selectedPartyValues.filter(v => v !== value);
+                        }
+                        console.log("Selected Parties:", selectedPartyValues);
+                    },
+                    onSelectAll: function (options) {
+                        selectedPartyValues = [];
+                        $(options).each(function () {
+                            selectedPartyValues.push($(this).val());
+                        });
+                        console.log("All selected:", selectedPartyValues);
+                    },
+                    onDeselectAll: function (options) {
+                        selectedPartyValues = [];
+                        console.log("Deselected all:", selectedPartyValues);
+                    }
+                });
+
+            } else {
+                // Remove multiple attribute
+                $dropdown.removeAttr('multiple');
+
+                // Add default placeholder option
+                $dropdown.append('<option value="">--Select--</option>');
+
+                // Load party options
+                FillPartyName();
+            }
+        }
+
         function selection(CurrentRow) {
 
             $(CurrentRow).css({ 'background-color': '#00bcd4' });
             $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': '' });
         }
 
+        $('#ReportType').change(function () {
+            FillGroupName();
+        });
+
+        $('#GroupName').change(function () {
+            FillPartyName();
+        });
+
         function FillPartyName() {
             var OutStandingType = $('#ReportType').val();
-            
             var TillDate = $('#TillDate').val();
-            
+            var isMulti = $('#multiPartySwitch').is(':checked');
+            var PartynameDropdown = $('#PartyName');
+
             $.ajax({
                 url: '@Url.Action("GetPartyName", "OutStanding")',
-                data:
-                {
+                data: {
                     "OutStandingType": OutStandingType,
-                    
-                    "TillDate":TillDate
+                    "TillDate": TillDate
                 },
                 type: 'GET',
-                async: false,
-                success: function (response, status, error) {
-
-                    var PartynameDropdown = $('#PartyName');
+                success: function (response) {
                     var obj = $.parseJSON(response);
-                    PartynameDropdown.empty();
-                    PartynameDropdown.append('<option value="">--Select--</option>');
+
+                    // DON'T call empty() again if already emptied in toggleMultiSelect
+                    if (!isMulti) {
+                        PartynameDropdown.empty();
+                        PartynameDropdown.append('<option value="">--Select--</option>');
+                    }
 
                     $.each(obj.Result, function (index, item) {
-                        PartynameDropdown.append('<option value="' + item.PartyName + '">' + item.PartyName + '</option>');
+                        PartynameDropdown.append('<option value="' + item.Account_Code + '">' + item.PartyName + '</option>');
                     });
 
+                    if (isMulti) {
+                        PartynameDropdown.multiselect('rebuild');
+                    }
                 },
-                error: function (xhr, status, error) {
-                    alert('Failed to load groups.');
+                error: function () {
+                    alert('Failed to load party names.');
                 }
             });
         }
 
         function FillGroupName() {
             var OutStandingType = $('#ReportType').val();
-
             var TillDate = $('#TillDate').val();
 
             $.ajax({
@@ -360,15 +430,23 @@
             });
         }
         function GetDetailsData() {
-             
+
             var OutStandingType = $('#ReportType').val();
 
             var TillDate = $('#TillDate').val();
             var GroupName = $('#GroupName').val();
-            var AccountNamwList = $('#PartyName').val();
+            var AccountNameList = selectedPartyValues;
+            var AccountCode = 0;
+            if (AccountNameList && AccountNameList.length > 0) {
+                AccountCode = 0;
+            }
+            else{
+                 AccountCode = $('#PartyName').val();
+            }
+            
             var ShowOnlyApprovedBill = $("input[name='Status']:checked").val();
 
-            
+
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("GetDetailsData", "OutStanding")',
@@ -377,7 +455,8 @@
 
                     "TillDate": TillDate,
                     "GroupName": GroupName,
-                    "AccountNamwList": AccountNamwList,
+                    "AccountNameList": AccountNameList,
+                    "AccountCode": AccountCode,
                     "ShowOnlyApprovedBill": ShowOnlyApprovedBill
 
 
@@ -543,7 +622,7 @@
                 TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
                 TotBill += $('#totBillG-' + i).text() == '' ? 0 : parseFloat($('#totBillG-' + i).text());
                 TotPen += $('#totPenG-' + i).text() == '' ? 0 : parseFloat($('#totPenG-' + i).text());
-               
+
             }
 
 

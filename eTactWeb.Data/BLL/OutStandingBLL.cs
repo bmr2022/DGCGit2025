@@ -32,9 +32,9 @@ namespace eTactWeb.Data.BLL
             return await _OutStandingDAL.GetGroupName(outstandingType, TillDate);
         }
 
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string AccountNamwList,string ShowOnlyApprovedBill)
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill)
         {
-            return await _OutStandingDAL.GetDetailsData(outstandingType, TillDate, GroupName, AccountNamwList, ShowOnlyApprovedBill);
+            return await _OutStandingDAL.GetDetailsData(outstandingType, TillDate, GroupName, AccountNameList,AccountCode, ShowOnlyApprovedBill);
         }
     }
 }

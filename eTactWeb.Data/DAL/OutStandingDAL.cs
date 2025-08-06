@@ -60,11 +60,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "FillGroupName"));
                 SqlParams.Add(new SqlParameter("@outstandingType", outstandingType));
-                //SqlParams.Add(new SqlParameter("Debtors", underGroup));
                 SqlParams.Add(new SqlParameter("@TillDate", ParseFormattedDate(TillDate)));
-
-
-
+                SqlParams.Add(new SqlParameter("@ReportCallingFrom", "OutstandingForm"));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpLedgerOutstanding", SqlParams);
             }
             catch (Exception ex)
@@ -79,7 +76,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string AccountNamwList,string ShowOnlyApprovedBill)
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill)
         {
             var resultList = new OutStandingModel();
             DataSet oDataSet = new DataSet();
@@ -87,6 +84,7 @@ namespace eTactWeb.Data.DAL
             try
             {
                 var tillDt = CommonFunc.ParseFormattedDate(TillDate);
+                string accountNameCsv = string.Join(",", AccountNameList ?? new string[0]);
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand command = new SqlCommand("AccSpLedgerOutstanding", connection)
@@ -98,7 +96,8 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@outstandingType", outstandingType);
                     command.Parameters.AddWithValue("@TillDate", tillDt);
                     command.Parameters.AddWithValue("@Groupname", GroupName);
-                    command.Parameters.AddWithValue("@AccountNamwList", AccountNamwList);
+                    command.Parameters.AddWithValue("@AccountNamwList", accountNameCsv);
+                    command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
                     command.Parameters.AddWithValue("@ShowOnlyApprovedBill", ShowOnlyApprovedBill);
 
 

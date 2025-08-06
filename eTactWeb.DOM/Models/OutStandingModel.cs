@@ -33,7 +33,7 @@ namespace eTactWeb.DOM.Models
         public string AccEntryId { get; set; }
         public string AccYearCode { get; set; }
         public string SalesPersonName { get; set; }
-        
+        public bool IsVisible {  get; set; }
 
 
 
