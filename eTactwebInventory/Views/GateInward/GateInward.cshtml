@@ -1742,6 +1742,18 @@
             $('#PopupModel').modal("show");
         });
 
+        var currentSearchColumnOfDisplay = null;
+        $("#Displaysearch-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divDisplayGrid tr").filter(function () {
+                if (currentSearchColumnOfDisplay !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumnOfDisplay).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
         $('#sendToExcel').click(function () {
             $("#poPopUpData").table2excel({
                 filename: "POPopupData.xls"
