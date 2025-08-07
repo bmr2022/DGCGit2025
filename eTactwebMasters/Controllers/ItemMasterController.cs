@@ -370,7 +370,8 @@ public class ItemMasterController : Controller
         "DailyRequirment", "Stockable", "WipStockable", "Store", "ProductLifeInus", "ItemDesc", "MaxWipStock",
         "NeedSo", "BomRequired", "HSNNO", "Universal Part Code", "Universal Description", "WorkCenterDescription",
         "ProdInhouseJW", "BatchNO", "VoltageValue", "SerialNo", "OldPartCode", "Package",
-        "IsCustJWAdjMandatory", "Active", "JobWorkItem", "ItemServAssets"
+        "IsCustJWAdjMandatory", "Active", "JobWorkItem", "ItemServAssets","Branch","NoOfCavity","NoOfshotsHours","ChildBom",
+        "ProdInMachineGroup","ProdInMachine1","ProdInMachine2","ProdInMachine3","ProdInMachine4"
     };
 
         for (int i = 0; i < headers.Length; i++)
@@ -441,7 +442,15 @@ public class ItemMasterController : Controller
             sheet.Cell(row, col++).Value = item.Active;
             sheet.Cell(row, col++).Value = item.JobWorkItem;
             sheet.Cell(row, col++).Value = item.ItemServAssets;
-
+            sheet.Cell(row, col++).Value = item.BranchName;
+            sheet.Cell(row, col++).Value = item.NoOfCavity;
+            sheet.Cell(row, col++).Value = item.NoOfshotsHours;
+            sheet.Cell(row, col++).Value = item.ChildBom;
+            sheet.Cell(row, col++).Value = item.ProdInMachineGroupName;
+            sheet.Cell(row, col++).Value = item.ProdInMachineName1;
+            sheet.Cell(row, col++).Value = item.ProdInMachineName2;
+            sheet.Cell(row, col++).Value = item.ProdInMachineName3;
+            sheet.Cell(row, col++).Value = item.ProdInMachineName4;
             row++;
         }
     }
@@ -475,6 +484,24 @@ public class ItemMasterController : Controller
     public async Task<JsonResult> GetProdInWorkcenter()
     {
         var JSON = await _IItemMaster.GetProdInWorkcenter();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    } 
+    public async Task<JsonResult> GetBranchList()
+    {
+        var JSON = await _IItemMaster.GetBranchList();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> ProdInMachineGroupList()
+    {
+        var JSON = await _IItemMaster.ProdInMachineGroupList();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> ProdInMachineList(int MachGroupId)
+    {
+        var JSON = await _IItemMaster.ProdInMachineList(MachGroupId);
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
@@ -619,6 +646,7 @@ public class ItemMasterController : Controller
             model.LastUpdatedDate = DateTime.Today.ToString("dd/MM/yyyy").Replace("-", "/");
 
             model.BomRequired = "N";
+            model.ChildBom = "N";
             model.JobWorkItem = "N";
             model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
             model.Mode = null;
@@ -836,6 +864,8 @@ public class ItemMasterController : Controller
                 var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
                 var UnitList = _IItemMaster.GetUnitList();
 
+                var ProdInMachineGroupList= _IItemMaster.ProdInMachineGroupList();
+             
                 for (int row = 2; row <= worksheet.Dimension.Rows; row++)
                 {
                     //var cellValue = worksheet.Cells[row, 2].Value;
@@ -849,6 +879,11 @@ public class ItemMasterController : Controller
                     var workCenter = worksheet.Cells[row, headersMap["WorkCenterDescription"]].Text?.Trim();
                     var unit = worksheet.Cells[row, headersMap["Unit"]].Text?.Trim();
                     var Store = worksheet.Cells[row, headersMap["Store"]].Text?.Trim();
+                    var ProdInMachineGroup = worksheet.Cells[row, headersMap["ProdInMachineGroup"]].Text?.Trim();
+                    var ProdInMachine1 = worksheet.Cells[row, headersMap["ProdInMachine1"]].Text?.Trim();
+                    var ProdInMachine2 = worksheet.Cells[row, headersMap["ProdInMachine2"]].Text?.Trim();
+                    var ProdInMachine3 = worksheet.Cells[row, headersMap["ProdInMachine3"]].Text?.Trim();
+                    var ProdInMachine4 = worksheet.Cells[row, headersMap["ProdInMachine4"]].Text?.Trim();
 
                     var PurchaseAccount = worksheet.Cells[row, headersMap["PurchaseAccount"]].Text?.Trim();
                     var SaleAccount = worksheet.Cells[row, headersMap["SaleAccount"]].Text?.Trim();
@@ -862,6 +897,13 @@ public class ItemMasterController : Controller
                     var itemCatCode = _IItemMaster.GetItemCatCode(itemType);
                     var WorkCenterId = _IItemMaster.GetWorkCenterId(workCenter);
                     var StoreIdResult = _IItemMaster.GetStoreCode(Store);
+                    var ProdInMachineGroupId = _IItemMaster.ProdInMachineGroupId(ProdInMachineGroup);
+                    var ProdInMachineNameId1 = _IItemMaster.ProdInMachineNameId(ProdInMachine1);
+                    var ProdInMachineNameId2 = _IItemMaster.ProdInMachineNameId(ProdInMachine2);
+                    var ProdInMachineNameId3 = _IItemMaster.ProdInMachineNameId(ProdInMachine3);
+                    var ProdInMachineNameId4 = _IItemMaster.ProdInMachineNameId(ProdInMachine4);
+                   
+
                     var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 1 ? "Y" : "N";
                     var ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : (Convert.ToInt32(duplicateItemName.Result) > 1 ? "Y" : "N");
                     var ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim();
@@ -944,9 +986,6 @@ public class ItemMasterController : Controller
 
                     }
 
-
-
-
                     ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
                     int itemGCode = 1;
@@ -955,6 +994,8 @@ public class ItemMasterController : Controller
                     int itemStoreId = 0;
                     int itemPurchaseAccCode = 0;
                     int itemSaleAccCode = 0;
+                    int itemProdInmachineGroup = 0;
+
                     if (itemGroupCode.Result.Result != null && itemGroupCode.Result.Result.Rows.Count > 0)
                     {
                         itemGCode = (int)itemGroupCode.Result.Result.Rows[0].ItemArray[0];
@@ -981,8 +1022,152 @@ public class ItemMasterController : Controller
                     {
                         itemStoreId = (int)StoreIdResult.Result.Result.Rows[0].ItemArray[0];
                     }
+                    if (ProdInMachineGroupId.Result.Result != null && ProdInMachineGroupId.Result.Result.Rows.Count > 0)
+                    {
+                        itemProdInmachineGroup = (int)ProdInMachineGroupId.Result.Result.Rows[0].ItemArray[0];
+                    }
+                    int itemProdInmachine1 = 0;
+                    if (ProdInMachineNameId1.Result.Result != null && ProdInMachineNameId1.Result.Result.Rows.Count > 0)
+                    {
+                        itemProdInmachine1 = (int)ProdInMachineNameId1.Result.Result.Rows[0].ItemArray[0];
+                    }
+                    int itemProdInmachine2 = 0;
+                    if (ProdInMachineNameId2.Result.Result != null && ProdInMachineNameId2.Result.Result.Rows.Count > 0)
+                    {
+                        itemProdInmachine2 = (int)ProdInMachineNameId2.Result.Result.Rows[0].ItemArray[0];
+                    }   
+                    int itemProdInmachine3 = 0;
+                    if (ProdInMachineNameId3.Result.Result != null && ProdInMachineNameId3.Result.Result.Rows.Count > 0)
+                    {
+                        itemProdInmachine3 = (int)ProdInMachineNameId3.Result.Result.Rows[0].ItemArray[0];
+                    }
+                    int itemProdInmachine4 = 0;
+                    if (ProdInMachineNameId4.Result.Result != null && ProdInMachineNameId4.Result.Result.Rows.Count > 0)
+                    {
+                        itemProdInmachine4 = (int)ProdInMachineNameId4.Result.Result.Rows[0].ItemArray[0];
+                    }
 
+                    bool itemProdInmachineGroupExists = false;
 
+                    if (!string.IsNullOrWhiteSpace(ProdInMachineGroup))
+                    {
+                      
+                        var dataset = ProdInMachineGroupList.Result.Result;
+                        var Table = dataset.Tables[0];
+
+                        foreach (DataRow rows in Table.Rows)
+                        {
+                            if (rows["ProdInMachineGroup"].ToString().Trim().Equals(ProdInMachineGroup, StringComparison.OrdinalIgnoreCase))
+                            {
+                                itemProdInmachineGroupExists = true;
+                                break;
+                            }
+                        }
+
+                        if (!itemProdInmachineGroupExists)
+                        {
+                            errors.Add($"Invalid ProdInmachineGroup: {ProdInMachineGroup} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+                    bool itemProdInmachine1Exists = false;
+
+                    if (!string.IsNullOrWhiteSpace(ProdInMachine1))
+                    {
+                        var ProdInMachineList = _IItemMaster.ProdInMachineList(itemProdInmachineGroup);
+                        var dataset = ProdInMachineList.Result.Result;
+                        var Table = dataset.Tables[0];
+
+                        foreach (DataRow rows in Table.Rows)
+                        {
+                            if (rows["MachineName"].ToString().Trim().Equals(ProdInMachine1, StringComparison.OrdinalIgnoreCase))
+                            {
+                                itemProdInmachine1Exists = true;
+                                break;
+                            }
+                        }
+
+                        if (!itemProdInmachine1Exists)
+                        {
+                            errors.Add($"Invalid ProdInmachine1: {ProdInMachine1} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+                    bool itemProdInmachine2Exists = false;
+
+                    if (!string.IsNullOrWhiteSpace(ProdInMachine2))
+                    {
+                       
+                        var ProdInMachineList = _IItemMaster.ProdInMachineList(itemProdInmachineGroup);
+                        var dataset = ProdInMachineList.Result.Result;
+                        var Table = dataset.Tables[0];
+
+                        foreach (DataRow rows in Table.Rows)
+                        {
+                            if (rows["MachineName"].ToString().Trim().Equals(ProdInMachine2, StringComparison.OrdinalIgnoreCase))
+                            {
+                                itemProdInmachine2Exists = true;
+                                break;
+                            }
+                        }
+
+                        if (!itemProdInmachine2Exists)
+                        {
+                            errors.Add($"Invalid ProdInmachine2: {ProdInMachine2} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+                    bool itemProdInmachine3Exists = false;
+
+                    if (!string.IsNullOrWhiteSpace(ProdInMachine3))
+                    {
+                        var ProdInMachineList = _IItemMaster.ProdInMachineList(itemProdInmachineGroup);
+                        var dataset = ProdInMachineList.Result.Result;
+                        var Table = dataset.Tables[0];
+
+                        foreach (DataRow rows in Table.Rows)
+                        {
+                            if (rows["MachineName"].ToString().Trim().Equals(ProdInMachine3, StringComparison.OrdinalIgnoreCase))
+                            {
+                                itemProdInmachine3Exists = true;
+                                break;
+                            }
+                        }
+
+                        if (!itemProdInmachine3Exists)
+                        {
+                            errors.Add($"Invalid ProdInmachine3: {ProdInMachine3} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
+                    bool itemProdInmachine4Exists = false;
+
+                    if (!string.IsNullOrWhiteSpace(ProdInMachine4))
+                    {
+                        var ProdInMachineList = _IItemMaster.ProdInMachineList(itemProdInmachineGroup);
+                        var dataset = ProdInMachineList.Result.Result;
+                        var Table = dataset.Tables[0];
+
+                        foreach (DataRow rows in Table.Rows)
+                        {
+                            if (rows["MachineName"].ToString().Trim().Equals(ProdInMachine4, StringComparison.OrdinalIgnoreCase))
+                            {
+                                itemProdInmachine4Exists = true;
+                                break;
+                            }
+                        }
+
+                        if (!itemProdInmachine4Exists)
+                        {
+                            errors.Add($"Invalid ProdInmachine4: {ProdInMachine4} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                            //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        }
+                    }
                     bool WorkcenterExists = false;
 
                     if (!string.IsNullOrWhiteSpace(workCenter))
@@ -1142,6 +1327,16 @@ public class ItemMasterController : Controller
                         ItemGroupCode = itemGCode,
                         ItemCategoryCode = itemCCode,
                         ProdInWorkcenter = itemWorkCenterId,
+                        ProdInMachineGroupId= itemProdInmachineGroup,
+                        ProdInMachineGroup= ProdInMachineGroup,
+                        ProdInMachineName1= ProdInMachine1,
+                        ProdInMachineName2= ProdInMachine2,
+                        ProdInMachineName3= ProdInMachine3,
+                        ProdInMachineName4= ProdInMachine4,
+                        ProdInMachine1=itemProdInmachine1,
+                        ProdInMachine2=itemProdInmachine2,
+                        ProdInMachine3=itemProdInmachine3,
+                        ProdInMachine4=itemProdInmachine4,
                         PurchaseAccountcode = itemPurchaseAccCode.ToString(),
                         SaleAccountcode = itemSaleAccCode.ToString(),
                         Store = itemStoreId.ToString(),
@@ -1190,6 +1385,10 @@ public class ItemMasterController : Controller
                         Active = worksheet.Cells[row, headersMap["Active"]].Text?.Trim(),
                         JobWorkItem = worksheet.Cells[row, headersMap["JobWorkItem"]].Text?.Trim(),
                         ItemServAssets = worksheet.Cells[row, headersMap["ItemServAssets"]].Text?.Trim(),
+                        NoOfCavity = Convert.ToInt32(worksheet.Cells[row, headersMap["NoOfCavity"]].Text?.Trim()),
+                        NoOfshotsHours = Convert.ToInt32(worksheet.Cells[row, headersMap["NoOfshotsHours"]].Text?.Trim()),
+                        ChildBom = worksheet.Cells[row, headersMap["ChildBom"]].Text?.Trim(),
+                    
                         SeqNo = row - 1
                     });
 
@@ -2097,6 +2296,14 @@ public class ItemMasterController : Controller
         MRGrid.Columns.Add("OldPartCode", typeof(string));
         MRGrid.Columns.Add("Package", typeof(string));
         MRGrid.Columns.Add("IsCustJWAdjMandatory", typeof(string));
+        MRGrid.Columns.Add("NoOfCavity", typeof(string));
+        MRGrid.Columns.Add("NoOfshotsHours", typeof(string));
+        MRGrid.Columns.Add("ChildBom", typeof(string));
+        MRGrid.Columns.Add("ProdInMachineGroup", typeof(string));
+        MRGrid.Columns.Add("ProdInMachine1", typeof(string));
+        MRGrid.Columns.Add("ProdInMachine2", typeof(string));
+        MRGrid.Columns.Add("ProdInMachine3", typeof(string));
+        MRGrid.Columns.Add("ProdInMachine4", typeof(string));
 
         // === Add rows ===
         foreach (var item in DetailList)
@@ -2171,7 +2378,15 @@ public class ItemMasterController : Controller
                 item.SerialNo ?? "",
                 item.OldPartCode ?? "",
                 item.Package ?? "",
-                item.IsCustJWAdjMandatory ?? "N"
+                item.IsCustJWAdjMandatory ?? "N",
+                item.NoOfCavity,
+                item.NoOfshotsHours,
+                item.ChildBom??"N",
+                item.ProdInMachineGroupId,
+                item.ProdInMachine1,
+                item.ProdInMachine2,
+                item.ProdInMachine3,
+                item.ProdInMachine4
             );
         }
 

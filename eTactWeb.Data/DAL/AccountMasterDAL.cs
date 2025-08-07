@@ -33,7 +33,7 @@ namespace eTactWeb.Data.DAL
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
-                    SqlCommand oCmd = new SqlCommand("SP_AccountMasterz", myConnection)
+                    SqlCommand oCmd = new SqlCommand("SP_AccountMaster", myConnection)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
@@ -199,6 +199,7 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.MSMENo = dr["MSMENo"].ToString();
                         _AccountMasterModel.MSMEType = dr["MSMEType"].ToString();
                         _AccountMasterModel.DiscountCategory = dr["DiscountCategory"].ToString();
+                        _AccountMasterModel.GroupDiscountCategory = Convert.ToInt32(dr["GroupDiscountCategory"].ToString());
                         _AccountMasterModel.Region = dr["Region"].ToString();
                     }
                 }
@@ -604,6 +605,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@MSMEType", model.MSMEType);
                     oCmd.Parameters.AddWithValue("@Region", model.Region);
                     oCmd.Parameters.AddWithValue("@DiscountCategory", model.DiscountCategory);
+                    oCmd.Parameters.AddWithValue("@GroupDiscountCategory", model.GroupDiscountCategory);
 
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     if (model.Mode == "Update")

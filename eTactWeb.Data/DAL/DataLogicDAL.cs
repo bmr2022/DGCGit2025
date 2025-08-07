@@ -289,6 +289,14 @@ namespace eTactWeb.Data.DAL
                                     Text = Reader["DiscountCategory"].ToString(),
                                     Value = Reader["DiscountCategory"].ToString()
                                 };
+                            } 
+                            else if (Flag == "GetGroupDiscountCategory")
+                            {
+                                Listval = new TextValue()
+                                {
+                                    Text = Reader["DiscCategoryName"].ToString(),
+                                    Value = Reader["DiscCategoryEntryId"].ToString()
+                                };
                             }
                             else if (Flag == "GetRegion")
                             {

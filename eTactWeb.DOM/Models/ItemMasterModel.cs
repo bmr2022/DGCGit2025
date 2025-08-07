@@ -62,6 +62,7 @@ namespace eTactWeb.DOM.Models
         public IList<TextValue>? AltUnitList { get; set; }
         public string? BinNo { get; set; }
         public string? BomRequired { get; set; }
+        public string? ChildBom { get; set; }
         public string? CC { get; set; }
         public string? Colour { get; set; }
 
@@ -123,6 +124,8 @@ namespace eTactWeb.DOM.Models
         public string? NeedPO { get; set; }
         public string? NeedSo { get; set; }
         public decimal NoOfPcs { get; set; }
+        public int NoOfCavity { get; set; }
+        public int NoOfshotsHours { get; set; }
         public string? PackingType { get; set; }
         public decimal ParentCode { get; set; }
         public string? ParentName { get; set; }
@@ -203,6 +206,13 @@ namespace eTactWeb.DOM.Models
         public string? FinToDate { get; set; }
         public string? ItemServAssets { get; set; }
         public int? ProdInWorkcenter { get; set; }
+        public List<string>? Branch { get; set; }
+        public string BranchName { get; set; }
+        public int? ProdInMachineGroup { get; set; }
+        public int? ProdInMachine1 { get; set; }
+        public int? ProdInMachine2 { get; set; }
+        public int? ProdInMachine3 { get; set; }
+        public int? ProdInMachine4 { get; set; }
         public string? StoreName { get; set; }
         public string? SaleAccountName { get; set; }
         public string? PurchaseAccountName { get; set; }
@@ -217,6 +227,11 @@ namespace eTactWeb.DOM.Models
         }
         public List<ItemViewModel>? ExcelDataList { get; set; }
         public List<ImportItemViewModel>? ImportExcelDataList { get; set; }
+        public string? ProdInMachineGroupName { get; set; }
+        public string? ProdInMachineName1 { get; set; }
+        public string? ProdInMachineName2 { get; set; }
+        public string? ProdInMachineName3 { get; set; }
+        public string? ProdInMachineName4 { get; set; }
     }
     public class ImportItemViewModel
     {
@@ -234,6 +249,16 @@ namespace eTactWeb.DOM.Models
         public decimal MaximumLevel { get; set; }
         public int StdPacking { get; set; }
         public int ProdInWorkcenter { get; set; }
+        public int ProdInMachineGroupId { get; set; }
+        public string ProdInMachineGroup { get; set; }
+        public int ProdInMachine1 { get; set; }
+        public int ProdInMachine2 { get; set; }
+        public int ProdInMachine3 { get; set; }
+        public int ProdInMachine4 { get; set; }
+        public string ProdInMachineName1 { get; set; }
+        public string ProdInMachineName2 { get; set; }
+        public string ProdInMachineName3 { get; set; }
+        public string ProdInMachineName4 { get; set; }
         public string WorkCenter { get; set; }
         public string ProdInhouseJW { get; set; }
         public string BatchNO { get; set; }
@@ -281,6 +306,7 @@ namespace eTactWeb.DOM.Models
         public int MaxWipStock { get; set; }
         public string NeedSo { get; set; }
         public string BomRequired { get; set; }
+        public string ChildBom { get; set; }
         public string UniversalPartCode { get; set; }
         public string UniversalDescription { get; set; }
         public string IsCustJWAdjMandatory { get; set; }
@@ -290,6 +316,8 @@ namespace eTactWeb.DOM.Models
         public DateTime? UpdatedOn { get; set; }
         public string Active { get; set; }
         public string ItemServAssets { get; set; }
+        public int NoOfCavity { get; set; }
+        public int NoOfshotsHours { get; set; }
         public string JobWorkItem { get; set; }
         public string OldPartCode { get; set; }
         public string VoltageVlue { get; set; }
