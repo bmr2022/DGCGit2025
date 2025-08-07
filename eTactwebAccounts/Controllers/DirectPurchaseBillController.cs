@@ -1230,25 +1230,25 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("NewPoRate", typeof(float));
             Table.Columns.Add("PONo", typeof(string));
             Table.Columns.Add("POYearCode", typeof(int));
-            Table.Columns.Add("PODate", typeof(DateTime));
+            Table.Columns.Add("PODate", typeof(string));
             Table.Columns.Add("SchNo", typeof(string));
             Table.Columns.Add("SchYearCode", typeof(int));
-            Table.Columns.Add("SchDate", typeof(DateTime));
+            Table.Columns.Add("SchDate", typeof(string));
             Table.Columns.Add("POAmmNo", typeof(string));
             Table.Columns.Add("PoRate", typeof(float));
             Table.Columns.Add("POType", typeof(string));
             Table.Columns.Add("MIRNO", typeof(string));
             Table.Columns.Add("MIRYearCode", typeof(int));
-            Table.Columns.Add("MIRDate", typeof(DateTime));
+            Table.Columns.Add("MIRDate", typeof(string));
             Table.Columns.Add("AllowDebitNote", typeof(string));
             Table.Columns.Add("DebitNotePending", typeof(string));
             Table.Columns.Add("ProjectNo", typeof(string));
-            Table.Columns.Add("ProjectDate", typeof(DateTime));
+            Table.Columns.Add("ProjectDate", typeof(string));
             Table.Columns.Add("ProjectYearCode", typeof(int));
             Table.Columns.Add("AgainstImportAccountCode", typeof(int));
             Table.Columns.Add("AgainstImportInvoiceNo", typeof(string));
             Table.Columns.Add("AgainstImportYearCode", typeof(int));
-            Table.Columns.Add("AgainstImportInvDate", typeof(DateTime));
+            Table.Columns.Add("AgainstImportInvDate", typeof(string));
             Table.Columns.Add("HSNNO", typeof(string));
             Table.Columns.Add("AcceptedQty", typeof(float));
             Table.Columns.Add("ReworkQty", typeof(float));
@@ -1256,37 +1256,25 @@ namespace eTactWeb.Controllers
 
             foreach (DPBItemDetail Item in itemDetailList)
             {
-                DateTime poDate = new DateTime();
-                DateTime schDate = new DateTime();
-                DateTime MIRDate = new DateTime();
-                DateTime ProjectDate = new DateTime();
-                DateTime AgainstImportInvDate = new DateTime();
+               
                 string poDt = "";
                 string schDt = "";
                 string mirDt = "";
                 string projectDt = "";
                 string againstImportInvDt = "";
-                if (Item.PODate != null)
-                {
-                    poDate = DateTime.Parse(Item.PODate, new CultureInfo("en-GB"));
-                    poDt = poDate.ToString("yyyy/MM/dd");
-                }
-                else
-                {
-                    poDt = DateTime.Today.ToString();
-                }
-                if (Item.ScheduleDate != null)
-                {
-                    schDate = DateTime.Parse(Item.ScheduleDate, new CultureInfo("en-GB"));
-                    schDt = schDate.ToString("yyyy/MM/dd");
-                }
-                else
-                {
-                    schDt = DateTime.Today.ToString();
-                }
-                mirDt = DateTime.Today.ToString();
-                projectDt = DateTime.Today.ToString();
-                againstImportInvDt = DateTime.Today.ToString();
+               
+                    poDt = CommonFunc.ParseFormattedDate(Item.PODate);
+
+
+
+
+                schDt = CommonFunc.ParseFormattedDate(Item.ScheduleDate);
+                   
+               
+               
+                mirDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
+                projectDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
+                againstImportInvDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
 
                 Table.Rows.Add(
                     new object[]
@@ -1326,10 +1314,10 @@ namespace eTactWeb.Controllers
                     0f, // Item.NewPoRate
                     Item.PONo ?? string.Empty,
                     Item.POYear ?? 0,
-                    !string.IsNullOrEmpty(Item.PODate) ? poDate : poDt,
+                    poDt ?? "",
                     Item.ScheduleNo ?? string.Empty,
                     Item.ScheduleYear ?? 0,
-                    !string.IsNullOrEmpty(Item.ScheduleDate) ? schDate : schDt,
+                   schDt ?? "",
                     string.Empty, // Item.POAmmNo
                     0f, // Item.PoRate
                     string.Empty, // Item.POType
@@ -1362,7 +1350,7 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("PurchBillYearCode", typeof(int));
             Table.Columns.Add("SeqNo", typeof(int));
             Table.Columns.Add("InvoiceNo", typeof(string));
-            Table.Columns.Add("InvoiceDate", typeof(DateTime));
+            Table.Columns.Add("InvoiceDate", typeof(string));
             Table.Columns.Add("PurchVoucherNo", typeof(string));
             Table.Columns.Add("AccountCode", typeof(int));
             Table.Columns.Add("TaxTypeID", typeof(int));
@@ -1375,9 +1363,9 @@ namespace eTactWeb.Controllers
             Table.Columns.Add("Remark", typeof(string));
             Table.Columns.Add("TypePBDirectPBVouch", typeof(string));
             Table.Columns.Add("BankChallanNo", typeof(string));
-            Table.Columns.Add("challanDate", typeof(DateTime));
+            Table.Columns.Add("challanDate", typeof(string));
             Table.Columns.Add("BankVoucherNo", typeof(string));
-            Table.Columns.Add("BankVoucherDate", typeof(DateTime));
+            Table.Columns.Add("BankVoucherDate", typeof(string));
             Table.Columns.Add("BankVouchEntryId", typeof(int));
             Table.Columns.Add("BankYearCode", typeof(int));
             Table.Columns.Add("RemainingAmt", typeof(float));
@@ -1394,9 +1382,7 @@ namespace eTactWeb.Controllers
                     //string challanDt = "";
                     //string BankVoucherDt = "";
 
-                    DateTime InvoiceDate = new DateTime(2000, 1, 1);
-                    DateTime challanDate = new DateTime(2000, 1, 1);
-                    DateTime BankVoucherDate = new DateTime(2000, 1, 1);
+                    
                     string InvoiceDt = "";
                     string challanDt = "";
                     string BankVoucherDt = "";
@@ -1414,18 +1400,13 @@ namespace eTactWeb.Controllers
                 };
                     #endregion
 
-                    if (MainModel.InvDate != null)
-                    {
-                        DateTime.TryParseExact(MainModel.InvDate, formats, CultureInfo.InvariantCulture, DateTimeStyles.None, out InvoiceDate);
+
+                    InvoiceDt= CommonFunc.ParseFormattedDate(MainModel.InvDate);
                         //DateTime.TryParse(MainModel.InvDate, CultureInfo.InvariantCulture, out InvoiceDate);
-                        InvoiceDt = InvoiceDate.ToString("yyyy/MM/dd");
-                    }
-                    else
-                    {
-                        InvoiceDt = DateTime.Today.ToString();
-                    }
-                    challanDt = DateTime.Today.ToString();
-                    BankVoucherDt = DateTime.Today.ToString();
+                       
+                  
+                    challanDt =CommonFunc.ParseFormattedDate( DateTime.Today.ToString());
+                    BankVoucherDt = CommonFunc.ParseFormattedDate(DateTime.Today.ToString());
 
                     Table.Rows.Add(
                         new object[]
@@ -1434,7 +1415,7 @@ namespace eTactWeb.Controllers
                     MainModel.YearCode > 0 ? MainModel.YearCode : 0,
                     Item.TDSSeqNo,
                     MainModel.InvoiceNo ?? string.Empty,
-                    InvoiceDt,
+                    InvoiceDt ?? "",
                     !string.IsNullOrEmpty(MainModel.PurchVouchNo) ? MainModel.PurchVouchNo : string.Empty,
                     MainModel.AccountCode,
                     Item.TDSTaxType,

@@ -6,6 +6,10 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="staticBackdropLabel"></h5>
+                
+                    <label class="form-label" style="width:100px; margin-left:5px">Global search</label>
+                    <input type="text" class="form-control" id="Displaysearch-box" style="background-color:#FFFACD;width:200px" placeholder="Search...">
+              
                 <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
             </div>
             <div class="modal-body">
@@ -16,7 +20,7 @@
                                 <div class="card-body overflow-auto pb-0">
                                     <div class="table-responsive" style="max-height:250px;">
                                         <table class="table table-hover table-bordered table-striped" id="poPopUpData">
-                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap; position: sticky; top: 0; z-index: 2;">
                                                 <tr>
                                                     <th data-columnno="0" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Name</th>
                                                     <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Part Code</th>

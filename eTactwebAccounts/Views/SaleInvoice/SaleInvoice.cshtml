@@ -1138,8 +1138,7 @@
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
-                    GetTaxPartItem();
-                    GetDbCrDetail();
+                    
                     // ClearGrid();
                     $('.PendingItem').hide();
                     $('.newitems').show();
@@ -1157,7 +1156,11 @@
                     console.log('Done');
                     $('.Schedule').fadeIn();
                 }
-            });
+            }).done(function () {
+                GetTaxPartItem();
+                GetDbCrDetail();
+                AddAdjstmntDetail1();
+            })
         });
 
 
@@ -1849,6 +1852,7 @@
             $('#divAdjItemList').html(NoData);
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
+            AddAdjstmntDetail1();
         });
 
         function PasswordCheck() {
@@ -2528,6 +2532,7 @@
                         $('#Rate').val(parseFloat($('#Rate').val()).toFixed(2));
 
                         FillCurrentBatchINStore();
+                        
                     }
 
                 },
@@ -2539,6 +2544,7 @@
                 //alert('inside ajax');
                 GetTaxPartItem();
                 GetDbCrDetail();
+                AddAdjstmntDetail1();
             }).fail(function () {
                 alert("error");
             }).always(function () {
