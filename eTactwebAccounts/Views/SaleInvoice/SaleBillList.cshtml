@@ -44,7 +44,7 @@
                     <form id="SParam">
                         <div class="row">
 
-                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">From Date</label>
@@ -59,7 +59,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-4">
+                            <div class="col-sm-3 col-md-6 col-lg-2 col-xl-2">
                                 <div class="row">
                                     <div class="col">
                                         <label class="form-label">InvoiceDate</label>
@@ -108,7 +108,7 @@
                             </div>
                             <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                 <button class="btn btn-sm btn-outline-primary" style="margin-top:15px;height:30px;width:150px;margin-left:20px;" type="button" onclick="getCheckedRowData()">
-                                    <i class="fa fa-check-circle" aria-hidden="true"></i> Receive Material
+                                    <i class="fa fa-check-circle" aria-hidden="true"></i> Generate Sale Bill
                                 </button>
                             </div>
                         </div>
@@ -412,6 +412,10 @@
                     selectedData.push(rowData);
                 }
             });
+            if (selectedData.length === 0) {
+                notify("Please check at least one checkbox before proceeding.","error");
+                return;
+            }
 
             // AJAX call to send to session
             $.ajax({
