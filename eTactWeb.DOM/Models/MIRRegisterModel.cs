@@ -33,6 +33,8 @@ namespace eTactWeb.DOM.Models
     { 
         public int SeqNo { get; set; }
         public string? GateNo { get; set; }
+        public string? OK_MRN { get; set; }
+        public string? Rej_MRN { get; set; }
         //public string? MRNJWCustJW { get; set; }
         public string? MRNNo { get; set; }
         public string? MRNDate { get; set; }

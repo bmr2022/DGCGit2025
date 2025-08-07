@@ -30,7 +30,7 @@ namespace eTactWeb.Data.DAL
             _httpContextAccessor = httpContextAccessor;
         }
        
-        public async Task<MIRRegisterModel> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string MIRNo, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)
+        public async Task<MIRRegisterModel> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string MIRNo, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName, string MRNStatus)
         {
             DataSet? oDataSet = new DataSet();
             var model = new MIRRegisterModel();
@@ -72,6 +72,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Schno", Schno);
                     oCmd.Parameters.AddWithValue("@VendorName", VendorName);
                     oCmd.Parameters.AddWithValue("@InvNo", invoiceNo);
+                    oCmd.Parameters.AddWithValue("@MRNStatus", MRNStatus);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -124,6 +125,23 @@ namespace eTactWeb.Data.DAL
                                                     }).ToList();
                     }
                 }
+                if (ReportType == "MRNWiseSummary") //done&working
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.MIRRegisterDetail = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                   select new MIRRegisterDetail
+                                                   {
+
+                                                       VendorName = string.IsNullOrEmpty(dr["Account_Name"].ToString()) ? "" : dr["Account_Name"].ToString(),
+
+                                                       OK_MRN = string.IsNullOrEmpty(dr["OK_MRN"].ToString()) ? "" : dr["OK_MRN"].ToString(),
+                                                       Rej_MRN = string.IsNullOrEmpty(dr["Rej_MRN"].ToString()) ? "" : dr["Rej_MRN"].ToString(),
+                                                      
+                                                   }).ToList();
+                    }
+                }
+
 
                 else if (ReportType.ToString().ToUpper() == "ItemWiseConsolidated".ToUpper()) //done&working
                 {
