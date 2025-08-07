@@ -356,7 +356,7 @@ public class HomeController : Controller
         Constants.FinincialYear = model.YearCode;
         ClaimsIdentity identity = null;
         bool isAuthenticate = false;
-
+       
         #region dynamicConnection
 
         //string dbNameSql = "SELECT DataBase_Name FROM Company_Detail WHERE Company_Name = @CompanyName";

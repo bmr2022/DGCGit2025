@@ -84,5 +84,11 @@ public class AdminModuleBLL : IAdminModule
     public async Task<ResponseResult> SaveUserRights(UserRightModel model,DataTable URGRid)
     {
         return await _AdminModuleDAL.SaveUserRights(model,URGRid);
-    }   
+    }
+
+    public async Task<ResponseResult> GetUserCount()
+    {
+        return await _AdminModuleDAL.GetUserCount();
+    }
+
 }

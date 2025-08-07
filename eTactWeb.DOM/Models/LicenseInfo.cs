@@ -4,6 +4,7 @@
     {
         public string LicenseKey { get; set; }
         public DateTime ExpiryDate { get; set; }
+        public int NumberOfUser {  get; set; }
     }
 
 }

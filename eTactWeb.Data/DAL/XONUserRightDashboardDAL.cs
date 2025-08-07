@@ -284,7 +284,7 @@ namespace eTactWeb.Data.DAL
                 DataTable? oDataTable = new DataTable();
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
-                    SqlCommand oCmd = new SqlCommand("SP_UserRights", myConnection)
+                    SqlCommand oCmd = new SqlCommand("SP_UserRightDashboard ", myConnection)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
@@ -304,8 +304,8 @@ namespace eTactWeb.Data.DAL
                                                                     select new UserRightDashboardModel
                                                                     {
                                                                         UserId = string.IsNullOrEmpty(dr["UID"].ToString()) ? 0 : Convert.ToInt32(dr["UID"].ToString()),
-                                                                        EmpId = string.IsNullOrEmpty(dr["EmpID"].ToString()) ? 0 : Convert.ToInt32(dr["EmpID"].ToString()),
-                                                                        EmpName = dr["EmpName"].ToString(),
+                                                                        EmpId = string.IsNullOrEmpty(dr["Empid"].ToString()) ? 0 : Convert.ToInt32(dr["Empid"].ToString()),
+                                                                        EmpName = dr["Emp_Name"].ToString(),
                                                                         UserName = dr["UserName"].ToString()
                                                                     }).ToList();
                 }

@@ -28,5 +28,6 @@ namespace eTactWeb.Services.Interface
         Task<UserRightModel> GetSearchData(string EmpID,string UserName, string Module, string MainMenu);
         Task<UserRightModel> GetSearchData(int EmpID);
         Task<UserRightModel> GetSearchDetailData(string EmpName,string UserName);
+        Task<ResponseResult> GetUserCount();
     }
 }

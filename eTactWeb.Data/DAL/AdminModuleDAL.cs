@@ -1,6 +1,7 @@
 ﻿using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
+using Org.BouncyCastle.Ocsp;
 using System.Data;
 using System.Reflection;
 using static eTactWeb.DOM.Models.Common;
@@ -807,6 +808,26 @@ namespace eTactWeb.Data.DAL
                     Reader.Dispose();
                 }
             }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> GetUserCount()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "UserCount"));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_UserMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
             return _ResponseResult;
         }
     }

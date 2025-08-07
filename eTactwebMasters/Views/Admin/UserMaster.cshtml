@@ -212,36 +212,41 @@
 
 
         var checkAdmin = '';
-
+        var currentUserCount = @ViewBag.CurrentUserCount;
+        var licensedUserCount = @ViewBag.LicensedUserCount;
         $('#Save').click(function (event) {
             event.preventDefault();
             checkAdmin = '';
-            if ($('#UserType').val() == 'Admin')
+
+            // Check admin user rule
+            if ($('#UserType').val() == 'Admin') {
                 CheckAdminExists();
+            }
             if (checkAdmin == 'Exists') {
                 return false;
             }
-            else {
-                if ($('#Mode').val() == '') {
-                    if ($('#Password').val() == "") {
-                        $.notify('Password is required', "error");
-                        return false;
-                    }
-                    else if ($('#CnfPass').val() == "") {
-                        $.notify('Confirm password is required', "error");
-                        return false;
-                    }
-                    else if ($('#Password').val() != $('#CnfPass').val()) {
-                        $.notify('Passwords do not match', "error");
-                        return false;
-                    }
-                    else {
-                         
-                        var isActiveValue = $('#IsActive').is(':checked') ? 'Y' : 'N';
-                        $('#Active').val(isActiveValue);
 
-                        $('form').submit();
-                    }
+            // 🛑 Check user count against license
+            if (currentUserCount >= licensedUserCount && $('#Mode').val() == '') {
+                $.notify('User limit exceeded. Cannot create more than ' + licensedUserCount + ' users.', "error");
+                return false;
+            }
+
+            if ($('#Mode').val() == '') {
+                if ($('#Password').val() == "") {
+                    $.notify('Password is required', "error");
+                    return false;
+                } else if ($('#CnfPass').val() == "") {
+                    $.notify('Confirm password is required', "error");
+                    return false;
+                } else if ($('#Password').val() != $('#CnfPass').val()) {
+                    $.notify('Passwords do not match', "error");
+                    return false;
+                } else {
+                    var isActiveValue = $('#IsActive').is(':checked') ? 'Y' : 'N';
+                    $('#Active').val(isActiveValue);
+
+                    $('form').submit();
                 }
             }
         });

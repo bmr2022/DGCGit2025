@@ -6,12 +6,16 @@ using System.Threading.Tasks;
 
 namespace eTactWeb.DOM.Models
 {
+    public class OutStandingRow
+    {
+        public Dictionary<string, object> DynamicColumns { get; set; } = new();
+    }
+
     public class OutStandingModel
     {
         public string Flag { get; set; }
         public string ReportType { get; set; }
         public string PartyName { get; set; }
-
         public string GroupName { get; set; }
         public string FromDate { get; set; }
         public string TillDate { get; set; }
@@ -21,7 +25,6 @@ namespace eTactWeb.DOM.Models
         public string LedgerDescription { get; set; }
         public string VoucherNo { get; set; }
         public string VoucherDate { get; set; }
-        
         public string VoucherType { get; set; }
         public string DrAmt { get; set; }
         public string CrAmt { get; set; }
@@ -35,8 +38,8 @@ namespace eTactWeb.DOM.Models
         public string SalesPersonName { get; set; }
         public bool IsVisible {  get; set; }
         public bool ShowZeroBal {  get; set; }
-
-
+        public List<OutStandingRow> OutStandingRow { get; set; } = new();
+        public List<string> ColumnNames { get; set; } = new(); // for dynamic header rendering
         public IList<OutStandingModel> OutStandingGrid { get; set; }
     }
 }
