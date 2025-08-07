@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -25,6 +26,11 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _PartyItemGroupDiscountDAL.FillPartyName();
 		}
+		public async Task<ResponseResult> FillEntryID(string EntryDate)
+		{
+			return await _PartyItemGroupDiscountDAL.FillEntryID(EntryDate);
+		}
+
 		public async Task<ResponseResult> FillCategoryName()
 		{
 			return await _PartyItemGroupDiscountDAL.FillCategoryName();
@@ -41,6 +47,44 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _PartyItemGroupDiscountDAL.FillGroupCode();
 		}
+		public async Task<ResponseResult> FillPartyNameDashBoard()
+		{
+			return await _PartyItemGroupDiscountDAL.FillPartyNameDashBoard();
+		}
+		
 
-	}
+		public async Task<ResponseResult> FillCategoryNameDashBoard()
+		{
+			return await _PartyItemGroupDiscountDAL.FillCategoryNameDashBoard();
+		}
+		public async Task<ResponseResult> FillCategoryCodeDashBoard()
+		{
+			return await _PartyItemGroupDiscountDAL.FillCategoryCodeDashBoard();
+		}
+		public async Task<ResponseResult> FillGroupNameDashBoard()
+		{
+			return await _PartyItemGroupDiscountDAL.FillGroupNameDashBoard();
+		}
+		public async Task<ResponseResult> FillGroupCodeDashBoard()
+		{
+			return await _PartyItemGroupDiscountDAL.FillGroupCodeDashBoard();
+		}
+		public async Task<ResponseResult> SavePartyItemGroupDiscount(PartyItemGroupDiscountModel model, DataTable GIGrid)
+		{
+			return await _PartyItemGroupDiscountDAL.SavePartyItemGroupDiscount(model, GIGrid);
+		}
+        public async Task<ResponseResult> GetDashboardData(PartyItemGroupDiscountModel model)
+        {
+            return await _PartyItemGroupDiscountDAL.GetDashboardData(model);
+        }
+        public async Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        {
+            return await _PartyItemGroupDiscountDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+        }
+
+        public async Task<ResponseResult> DeleteByID(int EntryId, int AccountCode, string EntryDate)
+        {
+            return await _PartyItemGroupDiscountDAL.DeleteByID(EntryId, AccountCode, EntryDate);
+        }
+    }
 }

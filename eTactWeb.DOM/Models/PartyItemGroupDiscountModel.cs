@@ -10,7 +10,8 @@ namespace eTactWeb.DOM.Models
     {
         public int GroupId { get; set; }
         public string GroupName { get; set; }
-        public int GroupCode { get; set; }
+		public string GroupNameText { get; set; }
+		public string GroupCode { get; set; }
         public int SeqNo { get; set; }
         public decimal SaleDiscount { get; set; }
         public decimal PurchaseDiscount { get; set; }
@@ -20,7 +21,7 @@ namespace eTactWeb.DOM.Models
         public int EntryId { get; set; } 
         public int AccountCode { get; set; }
         public string CategoryName { get; set; }
-        public int CategoryCode { get; set; }
+        public string CategoryCode { get; set; }
         public int CategoryId { get; set; }
         public string ReportType { get; set; } 
 
@@ -34,7 +35,7 @@ namespace eTactWeb.DOM.Models
         public string CC { get; set; } 
         public string DiscCategoryCode { get; set; } 
 
-        public string? Fromdate { get; set; }
+        public string? FromDate { get; set; }
         public string? ToDate { get; set; }
 
    
@@ -49,6 +50,7 @@ namespace eTactWeb.DOM.Models
         public string ApprovedByEmpName { get; set; }
         public string Mode { get; set; }
         public int YearCode { get; set; }
+        public string Searchbox { get; set; }
 
         public IList<PartyItemGroupDiscountModel> PartyItemGroupDiscountGrid { get; set; }
     }
