@@ -205,6 +205,12 @@
                                     <div class="col-lg-4">
                                         <div class="card2 card border-0 px-4 py-5" style="width:300px;height:28rem">
                                             <div class="row px-3">
+                                    @if (ViewBag.LicenseExpiryWarning != null)
+                                    {
+                                        <div style="color: red; font-size: small; white-space: nowrap;">
+                                            @ViewBag.LicenseExpiryWarning
+                                        </div>
+                                    }
                                                 <label class="mb-1">
                                                     <h6 class="mb-0 text-sm">Server Name</h6>
                                                 </label>
@@ -281,6 +287,7 @@
                     }
                 </form>
             </div>
+          
             <div class="bg-blue py-2">
                 <div class="row px-3">
                     <small class="ml-4 ml-sm-5 mb-2  align-items-center"> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; Coyright &copy; 2021. All rights reserved to XON Cybernatics (P) Ltd.</small>
