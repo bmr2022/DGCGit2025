@@ -675,6 +675,12 @@
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                        <label asp-for="Group_Code" class="form-label">Group Name</label>
+                                        <select class="form-select" asp-for="Group_Code" style="width:170px">
+                                            <option value="0">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="PartCode" class="form-label" style="color:  red;">Part Code*</label>
                                         <input type="hidden" id="validPartCodes" value="@string.Join(",", Model.PartCodeList.Select(p => p.Value))" />
 
@@ -897,6 +903,7 @@
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Location</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Model</th>
                                                         <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Cust Item Category</th>
+                                                        <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>ItemGroup</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody id="divSaleItemGrid">
@@ -1748,9 +1755,11 @@
             //$('#MBillToAccountCode').select2();
             $('#PartCode').select2();
             $('#ItemCode').select2();
+            $('#Group_Code').select2();
 
             //fillSaleBill();
             GetFormRights();
+            GetItemGroup();
             ShowHideFields();
             if ($('#Mode').val() == 'SOA') {
                 var SOClosedate = $('#SOCloseDate').val().split(" ")[0].replace(/-/g, "/");
@@ -2615,6 +2624,34 @@
             //}
         });
 
+        function GetItemGroup() {
+           
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemGroup")",
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Group_Code').empty();
+                            $('#Group_Code').append('<option value="0"  selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#Group_Code').append('<option value="' + val.Group_Code + '">' + val.Group_name + '</option>');
+                            });
+                            if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                var Group_Code = "@Model.Group_Code";
+                                $('#Group_Code').val(Group_Code).trigger("change");
+                            }
+                        }
+                    }
+                }
+            });
+        }
         $('#OrderType').change(function () {
 
             SOOrder = false;
@@ -3096,6 +3133,43 @@
             });
         });
 
+        $('#Group_Code').change(function () {
+
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GETGROUPWISEITEM")",
+                Data: { Group_Code: $('#Group_Code').val() },
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value="0"  selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#PartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                            });
+                            
+
+                             $('#ItemCode').empty();
+                            $('#ItemCode').append('<option value="0"  selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemCode').append('<option value="' + val.Item_Code + '">' + val.ItemName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        });
+
+
+
         $('#IN1').change(function () {
             $('#Unit').val('0'), $('#HSNNo').val('0'), $('#AltUnit').val('NA');
 
@@ -3227,6 +3301,8 @@
                 "PartText": $('#PartCode option:selected').text(),
                 "ItemCode": $('#ItemCode').val(),
                 "ItemText": $('#ItemCode option:selected').text(),
+                "Group_Code": $('#Group_Code').val(),
+                "Group_name": $('#Group_Code option:selected').text(),
                 "HSNNo": $('#HSNNo').val(),
                 "Qty": $('#Qty').val(),
                 "Unit": $('#Unit').val(),
@@ -3468,8 +3544,10 @@
 
                             // $('#PartCode').val(obj[0].PartCode).trigger("change");
                             // $('#ItemCode').val(obj[0].ItemCode).trigger("change");
+                            $('#Group_Code').val(obj[0].Group_Code).trigger('select2:select');
                             $('#PartCode').val(obj[0].PartCode).trigger('select2:select');
                             $('#ItemCode').val(obj[0].ItemCode).trigger('select2:select');
+                           
                             $('#HSNNo').val(obj[0].HSNNo);
                             $('#Qty').val(obj[0].Qty);
                             $('#Unit').val(obj[0].Unit);

@@ -109,8 +109,17 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.GetItemPartCode(Code, Flag);
     }
+     public async Task<ResponseResult> GetItemGroup()
+    {
+        return await _SaleOrderDAL.GetItemGroup();
+    }
 
-	public async Task<ResponseResult> GetExcelData(string Code)
+    public async Task<ResponseResult> GETGROUPWISEITEM(int Group_Code)
+    {
+        return await _SaleOrderDAL.GETGROUPWISEITEM( Group_Code);
+    }
+
+    public async Task<ResponseResult> GetExcelData(string Code)
 	{
 		return await _SaleOrderDAL.GetExcelData(Code);
 	}
