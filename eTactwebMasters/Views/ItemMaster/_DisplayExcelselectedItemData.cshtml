@@ -47,6 +47,21 @@ else
                 <td class="col-workcenter">@item.ProdWorkCenterDescription</td>
                 <td id="ProdInWorkcenter-@Cntr" style="display: none;" class="">@item.ProdInWorkcenter</td>
             }
+            else if (flag == "productiondetail")
+            {
+                <td class="col-productiondetail" id="NoOfCavity-@Cntr">@item.NoOfCavity</td>
+                <td class="col-productiondetail" id="NoOfshotsHours-@Cntr">@item.NoOfshotsHours</td>
+                <td id="ProdInMachineGroupId-@Cntr" style="display:none;">@item.ProdInMachineGroupId</td>
+                <td class="col-productiondetail" id="ProdInMachineGroup-@Cntr">@item.ProdInMachineGroupName</td>
+                <td id="ProdInMachine1-@Cntr" style="display:none;">@item.ProdInMachine1</td>
+                <td class="col-productiondetail" id="ProdInMachineName1-@Cntr">@item.ProdInMachineName1</td>
+                <td id="ProdInMachine2-@Cntr" style="display:none;">@item.ProdInMachine2</td>
+                <td class="col-productiondetail" id="ProdInMachineName2-@Cntr">@item.ProdInMachineName2</td>
+                <td  id="ProdInMachine3-@Cntr" style="display:none;">@item.ProdInMachine3</td>
+                <td class="col-productiondetail" id="ProdInMachineName3-@Cntr">@item.ProdInMachineName3</td>
+                <td  id="ProdInMachine4-@Cntr" style="display:none;">@item.ProdInMachine4</td>
+                <td class="col-productiondetail" id="ProdInMachineName4-@Cntr">@item.ProdInMachineName4</td>
+            }
             else
             {
                 <td id="HSNNO-@Cntr" class="col-hsncode">@item.HSNNO</td>
@@ -59,6 +74,18 @@ else
                 <td id="CostPrice-@Cntr" class="col-price">@item.CostPrice</td>
                 <td id="MaximumLevel-@Cntr" class="col-minmaxlevel">@item.MaximumLevel</td>
                 <td id="MinimumLevel-@Cntr" class="col-minmaxlevel">@item.MinimumLevel</td>
+                <td class="col-productiondetail" id="NoOfCavity-@Cntr">@item.NoOfCavity</td>
+                <td class="col-productiondetail" id="NoOfshotsHours-@Cntr">@item.NoOfshotsHours</td>
+                <td id="ProdInMachineGroupId-@Cntr" style="display:none;">@item.ProdInMachineGroupId</td>
+                <td class="col-productiondetail" id="ProdInMachineGroup-@Cntr">@item.ProdInMachineGroupName</td>
+                <td id="ProdInMachine1-@Cntr" style="display:none;">@item.ProdInMachine1</td>
+                <td class="col-productiondetail" id="ProdInMachineName1-@Cntr">@item.ProdInMachineName1</td>
+                <td id="ProdInMachine2-@Cntr" style="display:none;">@item.ProdInMachine2</td>
+                <td class="col-productiondetail" id="ProdInMachineName2-@Cntr">@item.ProdInMachineName2</td>
+                <td id="ProdInMachine3-@Cntr" style="display:none;">@item.ProdInMachine3</td>
+                <td class="col-productiondetail" id="ProdInMachineName3-@Cntr">@item.ProdInMachineName3</td>
+                <td id="ProdInMachine4-@Cntr" style="display:none;">@item.ProdInMachine4</td>
+                <td class="col-productiondetail" id="ProdInMachineName4-@Cntr">@item.ProdInMachineName4</td>
             }
         </tr>
     }

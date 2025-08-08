@@ -394,6 +394,10 @@
                                         <label asp-for="MaterialIssueinStdPkgOnly" class="form-label">Issue in Std PKG</label>
                                         <select asp-for="MaterialIssueinStdPkgOnly" class="form-select" asp-items="@Model.YesNo"></select>
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ChildBom" class="form-label">Child Bom </label>
+                                        <select asp-for="ChildBom" class="form-select" asp-items="@Model.YesNo"></select>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -517,6 +521,75 @@
                                             </div>
                                         }
                                     }
+                               
+                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdInMachineGroup" class="form-label">Prod In Machine Group</label>
+                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <input type="hidden" id="hiddenProdInMachineGroup" value="@Model.ProdInMachineGroup" />
+                                            }
+                                        </div>
+                                        <select asp-for="ProdInMachineGroup" class="form-select">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdInMachine1" class="form-label">Prod In Machine1</label>
+                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <input type="hidden" id="hiddenProdInMachine1" value="@Model.ProdInMachine1" />
+                                            }
+                                        </div>
+                                        <select asp-for="ProdInMachine1" class="form-select">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdInMachine2" class="form-label">Prod In Machine2</label>
+                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <input type="hidden" id="hiddenProdInMachine2" value="@Model.ProdInMachine2" />
+                                            }
+                                        </div>
+                                        <select asp-for="ProdInMachine2" class="form-select">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                      <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdInMachine3" class="form-label">Prod In Machine3</label>
+                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <input type="hidden" id="hiddenProdInMachine3" value="@Model.ProdInMachine3" />
+                                            }
+                                        </div>
+                                        <select asp-for="ProdInMachine3" class="form-select">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="ProdInMachine4" class="form-label">Prod In Machine4</label>
+                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                <input type="hidden" id="hiddenProdInMachine4" value="@Model.ProdInMachine4" />
+                                            }
+                                        </div>
+                                        <select asp-for="ProdInMachine4" class="form-select">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="NoOfCavity" class="form-label">No Of Cavity</label>
+                                        <input asp-for="NoOfCavity" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="NoOfshotsHours" class="form-label">No Of shots/Hours</label>
+                                        <input asp-for="NoOfshotsHours" class="form-control" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -571,6 +644,21 @@
                                     <div class="col-xl-1 col-sm-2 col-md-2 col-xs-16">
                                         <label asp-for="Package" class="form-label">Package</label>
                                         <input asp-for="Package" class="form-control" />
+                                    </div>
+                                    <div class=" col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Branch" class="form-label">Branch</label>
+                                        <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                                            @if (Model.Mode == "U" || Model.Mode == "V")
+                                            {
+                                                foreach (var branch in @Model.Branch)
+                                                {
+                                                    <input type="hidden" class="hiddenBranch" value="@branch" />
+                                                }
+                                            }
+
+                                        </div>
+                                        <select class="form-select" multiple="multiple" asp-for="Branch" ></select>
+                                  
                                     </div>
                                 </div>
                             </div>
@@ -655,11 +743,32 @@
             document.getElementById('ParentCode').focus();
         }
         $(function () {
+             $('#Branch').select2({
+            placeholder: "-Select Branch-",
+            width: '100%'
+        });
+        GetBranchList();
+
+        // Set selected branches from hidden inputs
+        var selectedBranches = [];
+        $('.hiddenBranch').each(function () {
+            selectedBranches.push($(this).val());
+        });
+        $('#Branch').val(selectedBranches).trigger('change');
             AutoComplete('VItemMaster', 'Item_Name', 'Item_Name', null);
             GetProdInWorkcenter();
+            GetBranchList();
+            ProdInMachineGroupList();
+              $("#ProdInMachineGroup").change(function () {
+                ProdInMachineList();
+            });
+                  ProdInMachineList();
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                var ProdInWorkcenter = $('#hiddenProdInWorkcenter').val();
-                $('#ProdInWorkcenter').val(ProdInWorkcenter);
+                $('#ProdInWorkcenter').val($('#hiddenProdInWorkcenter').val());
+          
+                $('#ProdInMachineGroup').val($('#hiddenProdInMachineGroup').val());
+                ProdInMachineList();
+
             }
 
 
@@ -809,7 +918,7 @@
                 //procurment detail
                 $('#ReorderLevel,#LeadTime,#MinimumLevel, #MaximumLevel,#YearlyConsumedQty, #DailyRequirment, #MaxWipStock, #JobWorkItem, #PurchaseAccountcode,#SaleAccountcode, #ProductLifeInus, #Active').prop("disabled", true);
                 //inventory detail
-                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", true);
+                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired,#ChildBom, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", true);
                 //drawing detail
                 $('#ItemDesc,#DrawingNo,#UploadImage').prop("disabled", true);
             }
@@ -819,7 +928,7 @@
                 //procurment detail
                 $('#ReorderLevel,#LeadTime,#MinimumLevel, #MaximumLevel,#YearlyConsumedQty, #DailyRequirment, #MaxWipStock, #JobWorkItem, #PurchaseAccountcode,#SaleAccountcode, #ProductLifeInus, #Active').prop("disabled", true);
                 //inventory detail
-                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", true);
+                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired, #ChildBom,#StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", true);
                 //drawing detail
                 $('#ItemDesc,#DrawingNo,#UploadImage').prop("disabled", true);
             }
@@ -829,7 +938,7 @@
                 //procurment detail
                 $('#ReorderLevel,#LeadTime,#MinimumLevel, #MaximumLevel,#YearlyConsumedQty, #DailyRequirment, #MaxWipStock, #JobWorkItem, #PurchaseAccountcode,#SaleAccountcode, #ProductLifeInus, #Active').prop("disabled", false);
                 //inventory detail
-                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", false);
+                $('#Stockable,#WipStockable,#NeedPO, #QcReq,#NeedSo, #BomRequired,#ChildBom, #StdPacking, #PackingType, #ItemSize,#Colour, #RackID, #BinNo,#WastagePercent').prop("disabled", false);
                 //drawing detail
                 $('#ItemDesc,#DrawingNo,#UploadImage').prop("disabled", false);
             }
@@ -893,6 +1002,99 @@
                 }
             });
         }
+          function GetBranchList() {
+
+            $.ajax({
+                url: "@Url.Action("GetBranchList")",
+                data: {},
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                  var obj = $.parseJSON(data);
+
+            // Save selected values (if any) before refresh
+            var selectedValues = $('#Branch').val() || [];
+
+            $('#Branch').empty();
+
+            // Remove default -Select- if it's multi-select
+            for (var i = 0; i < obj.Result.Table.length; i++) {
+                var value = obj.Result.Table[i].BranchName;
+                $('#Branch').append('<option value="' + value + '">' + value + '</option>');
+            }
+
+            // Re-select previously selected values (if any)
+            $('#Branch').val(selectedValues);
+            $('#Branch').trigger('change');
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+        function ProdInMachineGroupList() {
+
+            $.ajax({
+                url: "@Url.Action("ProdInMachineGroupList")",
+                data: {},
+                type: "POST",
+                async: false,
+                success: function (data) {
+
+                    var obj = $.parseJSON(data);
+
+                    $('#ProdInMachineGroup').empty();
+                    $('#ProdInMachineGroup').append('<option disabled selected> -Select - </option>');
+
+                    for (i = 0; i < obj.Result.Table.length; i++) {
+                        $('#ProdInMachineGroup').append('<option value = "' + obj.Result.Table[i].ProdInMachineGroupId + '"> ' + obj.Result.Table[i].MachGroup + ' </option>');
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+        function ProdInMachineList() {
+            $.ajax({
+                url: "@Url.Action("ProdInMachineList")",
+                data: { MachGroupId: $("#ProdInMachineGroup").val() },
+                type: "POST",
+                async: false,
+                success: function (data) {
+                    var obj = $.parseJSON(data);
+
+                    // IDs of all 4 dropdowns
+                    var dropdownIds = ['#ProdInMachine1', '#ProdInMachine2', '#ProdInMachine3', '#ProdInMachine4'];
+
+                    // Clear and add default option to all dropdowns
+                    dropdownIds.forEach(function (id) {
+                        $(id).empty();
+                        $(id).append('<option disabled selected> -Select- </option>');
+                    });
+
+                    // Fill all dropdowns with same machine list
+                    for (var i = 0; i < obj.Result.Table.length; i++) {
+                        var option = '<option value="' + obj.Result.Table[i].MachineId + '">' + obj.Result.Table[i].MachineName + '</option>';
+                        dropdownIds.forEach(function (id) {
+                            $(id).append(option);
+                        });
+                    }
+                     if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                $('#ProdInMachine1').val($('#hiddenProdInMachine1').val());
+                $('#ProdInMachine2').val($('#hiddenProdInMachine2').val());
+                $('#ProdInMachine3').val($('#hiddenProdInMachine3').val());
+                $('#ProdInMachine4').val($('#hiddenProdInMachine4').val());
+            }
+                  
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
         function GetItemGroup() {
             $.ajax({
                 url: "@Url.Action("GetItemGroup")",
@@ -1031,8 +1233,35 @@
         });
 
         $('#confirmSave').click(function () {
+             var Err = 0;
+        let machine1 = $('#ProdInMachine1').val();
+        let machine2 = $('#ProdInMachine2').val();
+        let machine3 = $('#ProdInMachine3').val();
+        let machine4 = $('#ProdInMachine4').val();
 
-            var Err = 0;
+        let machines = [machine1, machine2, machine3, machine4];
+
+        let selectedMachines = machines.filter(x => x && x !== "");
+
+        let uniqueMachines = new Set(selectedMachines);
+
+        if (selectedMachines.length !== uniqueMachines.size) {
+
+            if (machine1 && (machine1 === machine2 || machine1 === machine3 || machine1 === machine4))
+               $('#ProdInMachine1').removeClass('valid').addClass('is-invalid');
+                    Err = 1;
+               
+
+            if (machine2 && (machine2 === machine3 || machine2 === machine4))
+                  $('#ProdInMachine2').removeClass('valid').addClass('is-invalid');
+                    Err = 1;
+
+            if (machine3 && machine3 === machine4)
+              $('#ProdInMachine3').removeClass('valid').addClass('is-invalid');
+                    Err = 1;
+
+        }
+           
             if ($('#AlternateUnit').val() != "") {
                 if ($('#WtSingleItem').val() == "0" || $('#WtSingleItem').val() == "") {
                     $('#WtSingleItem').removeClass('valid').addClass('is-invalid');
@@ -1062,9 +1291,31 @@
 
         $("button[type='submit']").click(function (e) {
             e.preventDefault();
+            var Err = 0;
+        let machine1 = $('#ProdInMachine1').val();
+        let machine2 = $('#ProdInMachine2').val();
+        let machine3 = $('#ProdInMachine3').val();
+        let machine4 = $('#ProdInMachine4').val();
+        let machines = [machine1, machine2, machine3, machine4];
+        let selectedMachines = machines.filter(x => x && x !== "");
 
+        let uniqueMachines = new Set(selectedMachines);
+
+        if (selectedMachines.length !== uniqueMachines.size) {
+            Err = 1;
+            if (machine1 && (machine1 === machine2 || machine1 === machine3 || machine1 === machine4))
+                 $('#ProdInMachine1').removeClass('valid').addClass('is-invalid');
+                 Err = 1;
+
+            if (machine2 && (machine2 === machine3 || machine2 === machine4))
+                $('#ProdInMachine2').removeClass('valid').addClass('is-invalid');
+                      Err = 1;
+            if (machine3 && machine3 === machine4)
+               $('#ProdInMachine3').removeClass('valid').addClass('is-invalid');
+                     Err = 1;
+        }
             if ($('#Mode').val() == "U") {
-                var Err = 0;
+              
                 if ($('#AlternateUnit').val() != "") {
                     if ($('#WtSingleItem').val() == "0" || $('#WtSingleItem').val() == "") {
                         $('#WtSingleItem').removeClass('valid').addClass('is-invalid');
@@ -1078,6 +1329,7 @@
                     if (Err === 1) {
                         return false;
                     }
+
                     else {
                         $('#WtSingleItem').removeClass('is-invalid');
                         RemoveErrorCls('WtSingleItem');

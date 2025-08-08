@@ -1,4 +1,6 @@
 ﻿using eTactWeb.DOM.Models;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using System.Security.Cryptography.X509Certificates;
 using static eTactWeb.DOM.Models.Common;
 
@@ -21,10 +23,15 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItemGroup(string ItemServAssets);
 		Task<ResponseResult> GetUnitList();
 		Task<ResponseResult> GetStoreCode( string StoreName);
+		Task<ResponseResult> ProdInMachineGroupId( string ProdInMachineGroup);
+		Task<ResponseResult> ProdInMachineNameId( string ProdInMachineName);
 		Task<ResponseResult> GetStoreList();
 		Task<ResponseResult> GetWorkCenterList();
 		Task<ResponseResult> GetProdInWorkcenter();
-		Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription);
+		Task<ResponseResult> GetBranchList();
+		Task<ResponseResult> ProdInMachineGroupList();
+		Task<ResponseResult> ProdInMachineList(int MachGroupId);
+        Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription);
         Task<ResponseResult> GetItemGroupCode(string GroupCode);
         Task<ResponseResult> GetAccountCode(string AccountName);
         Task<ResponseResult> GetItemCatCode(string CatCode);

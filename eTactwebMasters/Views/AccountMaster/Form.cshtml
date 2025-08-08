@@ -1,7 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.AccountMasterModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Account Master";
      Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 @*<div class="d-flex align-items-center p-3 my-2 text-white rounded shadow-sm bg-gradient" style="background-color:darkcyan;">
@@ -129,40 +129,12 @@
                                     <label asp-for="DisplayName" class="form-label">Display Name</label>
                                     <input asp-for="DisplayName" class="form-control" />
                                 </div>
-                                  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="MSMEType" class="form-label">MSME TYPE</label>
-                                    <select asp-for="MSMEType" class="form-control">
-                                        <option value="">-- Select MSME Type --</option>
-                                        <option>Micro</option>
-                                        <option>Small</option>
-                                        <option>Medium</option>
-                                    </select>
-                                </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="MSMENo" class="form-label">MSME No</label>
-                                    <input asp-for="MSMENo" minlength="19"  maxlength="19" class="form-control" />
-                                </div>
+                              
                                 <!-- Region Dropdown (editable) -->
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="Region" class="form-label">Region</label>
-                                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <select asp-for="Region" class="form-select editable-select" style="width:200px;"
-                                                asp-items="@(new SelectList(Model.RegionList, "Value", "Text"))">
-                                            <option value="">-Select-</option>
-                                        </select>
-                                    </div>
-                                </div>
+                           
 
                                 <!-- Discount Category Dropdown (editable) -->
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                    <label asp-for="DiscountCategory" class="form-label">Discount Category</label>
-                                    <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
-                                        <select asp-for="DiscountCategory" class="form-select editable-select" style="width:200px;"
-                                                asp-items="@(new SelectList(Model.DiscountCategoryList, "Value", "Text"))">
-                                            <option value="">-Select-</option>
-                                        </select>
-                                    </div>
-                                </div>
+                             
 
 
                             </div>
@@ -192,6 +164,7 @@
                                         <label asp-for="Country" class="form-label"></label>
                                         <input asp-for="Country" class="form-control" onkeypress="AutoComplete(this.id);" />
                                     </div>
+                                  
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="State" class="form-label"></label>
                                         <select asp-for="State" class="form-select" asp-items="@(new SelectList(Model.StateList,"Value", "Text"))">
@@ -213,6 +186,15 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="MobileNo" class="form-label">Mobile No</label>
                                         <input asp-for="MobileNo" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="Region" class="form-label">Region</label>
+                                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                            <select asp-for="Region" class="form-select editable-select" style="width:200px;"
+                                                    asp-items="@(new SelectList(Model.RegionList, "Value", "Text"))">
+                                                <option value="">-Select-</option>
+                                            </select>
+                                        </div>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="ContactPerson" class="form-label">Contact Person</label>
@@ -284,7 +266,21 @@
                                         <label asp-for="PANNO" class="form-label">PAN No</label>
                                         <input asp-for="PANNO" class="form-control" style="text-transform:uppercase" maxlength="10" />
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MSMEType" class="form-label">MSME TYPE</label>
+                                        <select asp-for="MSMEType" class="form-control">
+                                            <option value="">-- Select MSME Type --</option>
+                                            <option>Micro</option>
+                                            <option>Small</option>
+                                            <option>Medium</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="MSMENo" class="form-label">MSME No</label>
+                                        <input asp-for="MSMENo" minlength="19" maxlength="19" class="form-control" />
+                                    </div>
                                 </div>
+                            
                             </div>
                         </div>
                     </div>
@@ -309,6 +305,35 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="salesperson_name" class="form-label">Contact Person Name</label>
                                         <input asp-for="salesperson_name" class="form-control" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="accordion-item">
+                        <h2 class="accordion-header" id="H_SaleDetail">
+                            <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SaleDetail" aria-expanded="false" aria-controls="B_SaleDetail">
+                                <strong><i class="fa-solid fa-user-helmet-safety fa-fw pr35 fa-lg"></i>SALE  DETAIL</strong>
+                                <small class="p-3"></small>
+                            </button>
+                        </h2>
+                        <div id="B_SaleDetail" class="accordion-collapse pnl4 bg-gradient collapse" aria-labelledby="H_SaleDetail">
+                            <div class="accordion-body">
+                                <div class="row g-2 gx-3">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="GroupDiscountCategory" class="form-label"> Group Disc Category </label>
+                                        <select asp-for="GroupDiscountCategory" class="form-select" asp-items="@(new SelectList(Model.GroupDiscountCategoryList,"Value", "Text"))">
+                                            <option value="">-Select-</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="DiscountCategory" class="form-label">Discount Category</label>
+                                        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                            <select asp-for="DiscountCategory" class="form-select editable-select" style="width:200px;"
+                                                    asp-items="@(new SelectList(Model.DiscountCategoryList, "Value", "Text"))">
+                                                <option value="">-Select-</option>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -745,7 +770,7 @@
                                 $('#MainGroup').val(obj.Result.Table[0].MainGroup), $('#SubSubGroup').val(obj.Result.Table[0].SubSubGroup),
                                 $('#UnderGroup').val(obj.Result.Table[0].UnderGroup);
                             HideShow = obj.Result.Table[0].ShowHide, obj.Result.Table[0].ShowHide == 1 ? $('#divDetail').show(500) : $('#divDetail').hide(500);
-                            $('#SubGroup').val() == "Sundry Debtors" || $('#SubGroup').val() == "Sundry Creditors" ? IsSDSC = 1 : IsSDSC = 0;
+                            $('#SubGroup').val() == "Sundry Debtors" || $('#SubGroup').val() == "Sundry Creditors" || $('#SubGroup').val() =="Branch/Division (Assets)" ||  $('#SubGroup').val() =="Branch/Division (Liabilities)" ? IsSDSC = 1 : IsSDSC = 0;
 
                             $(".is-invalid").each(function () {
                                 $(this).removeClass('is-invalid');
