@@ -362,9 +362,24 @@
 				e.preventDefault();
 				$('form').submit();
 			});
-
+			
 
 		});
+
+
+		$(function () {
+			$('#SaleDiscount, #PurchaseDiscount').on('input', function () {
+				let value = $(this).val();
+
+				// Regex: start to end, digits optionally with one decimal point and digits after
+				if (!/^\d*\.?\d*$/.test(value)) {
+					$.notify("Please enter a valid positive number only.", "error");
+					$(this).val('');
+					return;
+				}
+			});
+		});
+
 		$('#CategoryCode').change(function () {
 			$('#CategoryId').val($('#CategoryCode').val());
 		});
@@ -437,7 +452,7 @@
 						Dropdown.append('<option value="' + Val.Group_code + '">' + Val.Group_name + '</option>');
 					});
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var GroupId = '@Model.GroupId';
+						var GroupId = '@Model.GroupCode';
 						$('#GroupName').val(GroupId).trigger("change");
 
 					}
@@ -466,7 +481,7 @@
 						Dropdown.append('<option value="' + Val.Group_code + '">' + Val.Group_code + '</option>');
 					});
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var GroupId = '@Model.GroupId';
+						var GroupId = '@Model.GroupCode';
 						$('#GroupCode').val(GroupId).trigger("change");
 
 					}

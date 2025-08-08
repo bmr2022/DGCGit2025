@@ -3,8 +3,9 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+    var YearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
+
 
 <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
     <thead class="bg-gradient card-headerBG text-light">
@@ -65,7 +66,21 @@
                             <div id="container">
 
                                 <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="ControlPlan" asp-route-Mode="V" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
+                                    <a class="table-link link-success" asp-action="PartyItemGroupDiscount" asp-route-Mode="V" asp-route-ID="@item.PartyWIseGrpDiscEntryId" asp-route-YC="@YearCode"
+                                       asp-route-EntryDate="@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])"
+                                       asp-route-AccountName="@item.AccountName"
+                                       asp-route-CategoryId="@item.CategoryId"
+                                       asp-route-CategoryName="@item.CategoryName"
+                                       asp-route-GroupName="@item.GroupName"
+                                       asp-route-GroupCode="@item.GroupCode"
+                                       asp-route-PartyWIseGrpDiscEntryId="@item.PartyWIseGrpDiscEntryId"
+                                       asp-route-AccountCode="@item.AccountCode"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-PurchaseDiscount="@item.PurchaseDiscount"
+                                       asp-route-SaleDiscount="@item.SaleDiscount"
+                                       asp-route-CC="@item.CC"
+                                    onclick="BackButtonData(event,'@item.EntryId','@item.YearCode');">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -74,7 +89,20 @@
                                 </div>
                                 <div id="editCursorDiv-@Cntr">
 
-                                    <a class="table-link link-primary" asp-action="ControlPlan" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.EntryId" asp-route-YC="@item.YearCode">
+                                    <a class="table-link link-primary" asp-action="PartyItemGroupDiscount" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.PartyWIseGrpDiscEntryId" asp-route-YC="@YearCode" v
+                                       asp-route-EntryDate="@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])"
+                                       asp-route-AccountName="@item.AccountName"
+                                       asp-route-CategoryName="@item.CategoryName"
+                                       asp-route-CategoryId="@item.CategoryId"
+                                       asp-route-GroupName="@item.GroupName"
+                                       asp-route-GroupCode="@item.GroupCode"
+                                       asp-route-PartyWIseGrpDiscEntryId="@item.PartyWIseGrpDiscEntryId"
+                                       asp-route-AccountCode="@item.AccountCode"
+                                       asp-route-ActualEntryByEmpName="@item.ActualEntryByEmpName"
+                                       asp-route-EntryByMachine="@item.EntryByMachine"
+                                       asp-route-PurchaseDiscount="@item.PurchaseDiscount"
+                                       asp-route-SaleDiscount="@item.SaleDiscount"
+                                       asp-route-CC="@item.CC">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

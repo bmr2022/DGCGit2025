@@ -650,7 +650,21 @@ public class SaleOrderController : Controller
         return Json(JsonConvert.SerializeObject(JsonString));
 	}
 
-	public async Task<IActionResult> GetItemPartList(string TF)
+    public async Task<JsonResult> GetItemGroup()
+    {
+        var JSON = await _ISaleOrder.GetItemGroup();
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+
+    public async Task<JsonResult> GETGROUPWISEITEM(int Group_Code)
+    {
+        var JSON = await _ISaleOrder.GETGROUPWISEITEM( Group_Code);
+        string JsonString = JsonConvert.SerializeObject(JSON);
+        return Json(JsonString);
+    }
+
+    public async Task<IActionResult> GetItemPartList(string TF)
 	{
 		dynamic PartCodeList = null;
 		dynamic ItemNameList = null;
@@ -1483,6 +1497,7 @@ public class SaleOrderController : Controller
         Table.Columns.Add("CustomerLocation", typeof(string));
         Table.Columns.Add("ItemModel", typeof(string));
         Table.Columns.Add("CustItemCategory", typeof(string));	
+        Table.Columns.Add("ItemGroupCode", typeof(int));	
 
         DataTable TblSch = new();
 
@@ -1529,6 +1544,7 @@ public class SaleOrderController : Controller
                     Item.CustomerLocation == null ? "" : Item.CustomerLocation,
                     Item.ItemModel == null ? "" : Item.ItemModel,
                     Item.CustItemCategory == null ? "" : Item.CustItemCategory,
+                    Item.Group_Code == null ? 0 : Item.Group_Code,
                 });
 
 			if (Item.DeliveryScheduleList != null && Item.DeliveryScheduleList.Count > 0)

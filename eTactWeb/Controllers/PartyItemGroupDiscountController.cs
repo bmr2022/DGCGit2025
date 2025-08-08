@@ -27,13 +27,9 @@ namespace eTactWeb.Controllers
 
 		}
         [Route("{controller}/Index")]
-        public async Task<ActionResult> PartyItemGroupDiscount(int ID, int YC, string Mode, string SlipNo,
-            int DiscountCategoryId, string DiscountCatSlipNo, string EffectiveFromDate,
-            decimal MinDiscountPer, decimal MaxDiscountPer, string ApplicableMonthlyYearlyAfterEachSale,
-            string ApplicableOnAdvancePayment, decimal MinmumAdvancePaymentPercent, string CategoryActive,
-            string EntryByMachine, string ActualEntryByEmpName, string ActualEntryDate,
-            string LastUpdatedbyEmpName, string LastupDationDate, string CC, int LastUpdatedbyEmpId, int ApprovedByEmpId, int ActualEntryByEmpId
-            )
+        public async Task<ActionResult> PartyItemGroupDiscount(int ID, int YC, string Mode, string AccountName,
+		string CategoryName,string GroupName,string GroupCode,int PartyWIseGrpDiscEntryId,int AccountCode,
+		string ActualEntryByEmpName,string EntryByMachine,string CC, int CategoryId,string CategoryCode,decimal PurchaseDiscount,decimal SaleDiscount)
         {
             var MainModel = new PartyItemGroupDiscountModel();
 
@@ -47,32 +43,25 @@ namespace eTactWeb.Controllers
             HttpContext.Session.Remove("KeyPartyItemGroupDiscountGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
             {
-                //MainModel = await _IDiscountCustomerCategoryMaster.GetViewByID(ID, YC).ConfigureAwait(false);
-                //MainModel.Mode = Mode; // Set Mode to Update
-                //MainModel.DiscountCustCatEntryId = ID;
-                //MainModel.DiscountCustCatYearCode = YC;
-                //MainModel.DiscountCategoryId = DiscountCategoryId;
-                //MainModel.DiscountCatSlipNo = DiscountCatSlipNo;
-                //MainModel.EffectiveFromDate = EffectiveFromDate;
-                //MainModel.MinDiscountPer = MinDiscountPer;
-                //MainModel.MaxDiscountPer = MaxDiscountPer;
-                //MainModel.ApplicableMonthlyYearlyAfterEachSale = ApplicableMonthlyYearlyAfterEachSale;
-                //MainModel.ApplicableOnAdvancePayment = ApplicableOnAdvancePayment;
-                //MainModel.MinmumAdvancePaymentPercent = MinmumAdvancePaymentPercent;
-                //MainModel.CategoryActive = CategoryActive;
-                //MainModel.EntryByMachine = EntryByMachine;
-                //MainModel.ActualEntryByEmpName = ActualEntryByEmpName;
-                //MainModel.ActualEntryDate = ActualEntryDate;
-                //MainModel.LastUpdatedbyEmpName = LastUpdatedbyEmpName;
-                //MainModel.LastUpdatedbyEmpId = LastUpdatedbyEmpId;
-                //MainModel.ApprovedByEmpId = ApprovedByEmpId;
-                //MainModel.ActualEntryByEmpId = ActualEntryByEmpId;
+				MainModel = await _IPartyItemGroupDiscount.GetViewByID(ID).ConfigureAwait(false);
+				MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.EntryId = ID;
+                MainModel.YearCode = YC;
+                MainModel.AccountName = AccountName;
+                MainModel.CategoryName = CategoryName;
+                MainModel.CategoryId = CategoryId;
+                MainModel.CategoryCode = CategoryCode;
+                MainModel.GroupName = GroupName;
+                MainModel.GroupCode = GroupCode;
+                MainModel.PartyWIseGrpDiscEntryId = PartyWIseGrpDiscEntryId;
+                MainModel.AccountCode = AccountCode;
+                MainModel.ActualEntryByEmpName = ActualEntryByEmpName;
+                MainModel.EntryByMachine = EntryByMachine;
+                MainModel.CC = CC;
+                MainModel.PurchaseDiscount = PurchaseDiscount;
+                MainModel.SaleDiscount = SaleDiscount;
 
-                //MainModel.LastupDationDate = LastupDationDate;
-                //MainModel.CC = CC;
-
-
-                if (Mode == "U")
+				if (Mode == "U")
                 {
                     MainModel.LastUpdatedbyEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     MainModel.LastUpdatedbyEmpName = HttpContext.Session.GetString("EmpName");

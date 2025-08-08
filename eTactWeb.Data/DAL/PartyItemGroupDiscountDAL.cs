@@ -330,6 +330,10 @@ namespace eTactWeb.Data.DAL
                                               ActualEntryByEmpName = dr["EmpName"] != DBNull.Value ? Convert.ToString(dr["EmpName"]) : string.Empty,
                                               EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
                                               CC = dr["Branch"] != DBNull.Value ? Convert.ToString(dr["Branch"]) : string.Empty,
+                                              CategoryCode = dr["DiscCategoryCode"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryCode"]) : string.Empty,
+                                              CategoryId = dr["DiscCategoryEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DiscCategoryEntryId"]) : 0,
+                                              PurchaseDiscount = dr["PurchaseDiscount"] != DBNull.Value ? Convert.ToInt32(dr["PurchaseDiscount"]) : 0,
+                                              SaleDiscount = dr["SaleDiscount"] != DBNull.Value ? Convert.ToInt32(dr["SaleDiscount"]) : 0,
 
                                           }).ToList();
 
@@ -353,6 +357,10 @@ namespace eTactWeb.Data.DAL
                                               CC = dr["Branch"] != DBNull.Value ? Convert.ToString(dr["Branch"]) : string.Empty,
                                               GroupCode = dr["Group_Code"] != DBNull.Value ? Convert.ToString(dr["Group_Code"]) : string.Empty,
                                               GroupName = dr["Group_name"] != DBNull.Value ? Convert.ToString(dr["Group_name"]) : string.Empty,
+                                              CategoryCode = dr["DiscCategoryCode"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryCode"]) : string.Empty,
+                                              CategoryId = dr["DiscCategoryEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DiscCategoryEntryId"]) : 0,
+                                              PurchaseDiscount = dr["PurchaseDiscount"] != DBNull.Value ? Convert.ToInt32(dr["PurchaseDiscount"]) : 0,
+                                              SaleDiscount = dr["SaleDiscount"] != DBNull.Value ? Convert.ToInt32(dr["SaleDiscount"]) : 0,
 
                                           }).ToList();
 
@@ -397,6 +405,84 @@ namespace eTactWeb.Data.DAL
             }
 
             return _ResponseResult;
+        }
+        public async Task<PartyItemGroupDiscountModel> GetViewByID(int ID)
+        {
+            var model = new PartyItemGroupDiscountModel();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@flag", "VIEWBYID"));
+                SqlParams.Add(new SqlParameter("@PartyWIseGrpDiscEntryId", ID));
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("SPPartyWiseItemGroupDiscountDetail", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+        private static PartyItemGroupDiscountModel PrepareView(DataSet DS, ref PartyItemGroupDiscountModel? model)
+        {
+            try
+            {
+                var ItemList = new List<PartyItemGroupDiscountModel>();
+                var DetailList = new List<PartyItemGroupDiscountModel>();
+                DS.Tables[0].TableName = "PartyItemGroupDiscount";
+                int cnt = 0;
+
+                model.EntryDate = DS.Tables[0].Rows[0]["EntryDate"].ToString();
+                model.EntryId = Convert.ToInt32(DS.Tables[0].Rows[0]["PartyWIseGrpDiscEntryId"]);
+                model.CategoryId = Convert.ToInt32(DS.Tables[0].Rows[0]["DiscCategoryEntryId"]);
+
+                model.AccountName = DS.Tables[0].Rows[0]["PartyName"].ToString();
+
+                model.CategoryName = DS.Tables[0].Rows[0]["DiscCategoryName"].ToString();
+                model.CategoryCode = DS.Tables[0].Rows[0]["DiscCategoryCode"].ToString();
+
+                model.GroupName = DS.Tables[0].Rows[0]["Group_name"].ToString();
+
+                model.GroupCode = DS.Tables[0].Rows[0]["Group_Code"].ToString();
+
+                model.AccountCode = Convert.ToInt32(DS.Tables[0].Rows[0]["AccountCode"]);
+
+                model.ActualEntryByEmpName = DS.Tables[0].Rows[0]["EmpName"].ToString();
+
+                model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
+
+                model.CC = DS.Tables[0].Rows[0]["Branch"].ToString();
+
+				if (DS.Tables.Count != 0 && DS.Tables[0].Rows.Count > 0)
+				{
+					foreach (DataRow row in DS.Tables[0].Rows)
+					{
+						ItemList.Add(new PartyItemGroupDiscountModel
+						{
+							GroupCode = row["Group_Code"].ToString(),
+							GroupName = row["Group_name"].ToString(),
+							SeqNo = Convert.ToInt32(row["SeqNo"].ToString()),
+							PurchaseDiscount = Convert.ToDecimal(row["PurchaseDiscount"].ToString()),
+							SaleDiscount = Convert.ToDecimal(row["SaleDiscount"].ToString()),
+
+						});
+					}
+					model.PartyItemGroupDiscountGrid = ItemList;
+				}
+				return model;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
         }
     }
 }

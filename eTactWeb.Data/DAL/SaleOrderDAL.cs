@@ -4,6 +4,7 @@ using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using Microsoft.SqlServer.Server;
 using Newtonsoft.Json;
+using System;
 using System.Globalization;
 using static eTactWeb.DOM.Models.Common;
 
@@ -397,7 +398,57 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-		public async Task<ResponseResult> GetExcelData(string Code)
+
+        public async Task<ResponseResult> GetItemGroup()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemGroup"));
+               
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> GETGROUPWISEITEM(int Group_Code)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GETGROUPWISEITEM"));
+                SqlParams.Add(new SqlParameter("@Group_Code",  Group_Code));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> GetExcelData(string Code)
 		{
 			var oDataTable = new DataTable();
 
@@ -1564,6 +1615,8 @@ namespace eTactWeb.Data.DAL
                                     CustomerLocation = row["CustomerLocation"].ToString(),
                                     ItemModel = row["ItemModel"].ToString(),
                                     CustItemCategory = row["CustItemCategory"].ToString(),
+                                    Group_Code = row["ItemGroupCode"] != DBNull.Value ? Convert.ToInt32(row["ItemGroupCode"]) : 0,
+                                    Group_name = row["Group_name"].ToString()??"",
                                     DeliveryScheduleList = listObject.Where(x => x.DPartCode == Convert.ToInt32(row["ItemCode"])).ToList(),
                                 });
 
