@@ -785,7 +785,7 @@ namespace eTactWeb.Controllers
         #endregion
 
         #region For Adjustment Grid
-        public IActionResult AddAdjstmntDetail(AdjustmentModel model)
+        public async Task<IActionResult> AddAdjstmntDetail(AdjustmentModel model)
         {
             var isDuplicate = false;
             var isExpAdded = isDuplicate;
@@ -943,10 +943,20 @@ namespace eTactWeb.Controllers
                 MainModel.adjustmentModel.AdjAdjustmentDetailGrid = _List;
                 //AdjustmentModel = MainModel.adjustmentModel.AdjAdjustmentDetailGrid;
 
-                StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
+                //StoreInSession("KeyAdjGrid", MainModel.adjustmentModel);
 
-                string serializedGrid = JsonConvert.SerializeObject(MainModel.adjustmentModel);
-                HttpContext.Session.SetString("KeyAdjGrid", serializedGrid);
+                if (MainModel.adjustmentModel != null)
+                {
+                    string serializedGrid = JsonConvert.SerializeObject(MainModel.adjustmentModel);
+                    HttpContext.Session.SetString("KeyAdjGrid", serializedGrid);
+                    await Task.Delay(100);
+                }
+                else
+                {
+                    // Log or debug
+                    Console.WriteLine("adjustmentModel is NULL");
+                    return StatusCode(500, "Adjustment model is null.");
+                }
             }
             else
             {
