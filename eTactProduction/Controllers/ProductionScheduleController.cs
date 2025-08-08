@@ -461,7 +461,7 @@ namespace eTactWeb.Controllers
                                 "RevNo", "Revdate", "CC", "UID", "actualEntryDate", "ActualEntryBy", "LastUpdateDate", "EntryByMachineName",
                                 "Closed", "Completed", "ForTheMonth", "Remark", "ShowWOWithOrWOItem", "FromSchDate", "ToSchDate", "PlanForNoOFDays", "EntryID",
                                 "YearCode", "ItemCode", "PartCode", "ItemName", "BOMNO", "BOMEffDate", "SchDate", "ShiftID", "ShiftName",
-                                "ProdInWC", "WorkCenter", "Qty", "Originalqty", "PlannedMachineid1", "PlannedMachineid2", "PlannedMachineid3", "SchForTheDate",
+                                "ProdInWC","WorkCenter", "Qty", "Originalqty", "PlannedMachineid1", "PlannedMachineid2", "PlannedMachineid3", "SchForTheDate",
                                 "PlanNo", "PlanNoYearCode", "PlanNoDate", "CustOrderNo", "SOYearCode", "SODate", "SubBOM", "InhouseJOBProd",
                                 "DrawingNo", "RemarkItem", "ProdCompleted", "ProdCanceled", "QCMandatory", "ProdSeq",
                                 "AccountCode", "SaleSchNo", "SaleSchDate", "SaleSchYearCode", "ProdSchDate", "ActualEntryByName",

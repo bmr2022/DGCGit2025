@@ -1516,11 +1516,20 @@
             //alert('rowCount' + rowCount);
              
             for (var i = 0; i < rowCount; i++) {
-              //  var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                              var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                                       var noOfCavity = parseFloat($('#itemGrid-' + (i + 1)).find('#NoOfCavity').val()) || 0;
+                                     var noOfShotsHours = parseFloat($('#itemGrid-' + (i + 1)).find('#NoOfshotsHours').val()) || 0;
 
+
+                      //  var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                         var dailyCapacity = (noOfCavity * noOfShotsHours) > 0
+                                                ? (noOfCavity * noOfShotsHours)
+                                                        : (totalWOQty / PlanNoOfDays).toFixed(2); // fallback if no capacity
+
+                                                                 var remainingQty = totalWOQty;
                 for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
                     // alert('parseDateToFormates(EffDate[dayIndex]).split("/")[0];   ' + parseDateToFormates(EffDate[dayIndex]).split("/")[0]);
-                              var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                           
                                   //   alert('(totalWOQty) sumu :-  '+ totalWOQty) ;
                                        //      alert('PlanNoOfDays' + PlanNoOfDays);
                     //var idEffDate = parseDateToFormat(EffDate[dayIndex]).split("/")[0];
@@ -1528,13 +1537,19 @@
                             // alert('idEffDate  :-' +idEffDate);
                     var rowIndex = i + 1;
                     var inputId = `dayValus-${idEffDate}-${rowIndex}`;
-                    
+                             var qtyForDay = 0;
+        if (remainingQty > 0) {
+            qtyForDay = Math.min(dailyCapacity, remainingQty);
+            remainingQty -= qtyForDay;
+        }
+
+        $('#' + inputId).val(qtyForDay.toFixed(2));
                     //$('#' + inputId).val((totalWOQty / PlanNoOfDays).toFixed(2));
                             var calculatedValue = (totalWOQty / PlanNoOfDays).toFixed(2);
                     //alert("Calculated Value: " + calculatedValue);
                                     //alert('inputId' + inputId );
                                     //value of  quatity is set here
-                    $('#' + inputId).val(calculatedValue);
+                 //   $('#' + inputId).val(calculatedValue);
                     //alert('i value'+i);
                 }
             }
@@ -2354,8 +2369,7 @@
                 }
             }
         });
-
-        function GetMachineName(row) {
+                function GetMachineName(row) {
             var RowCount = $('#divProductionSchGrid tr').length;
 
             $.ajax({
@@ -2363,54 +2377,99 @@
                 url: "@Url.Action("GetMachineName")",
                 dataType: "json",
                 async: false,
-                success: function (result, status, error) {
+                success: function (result) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode === 200 && obj.StatusText === 'Success') {
 
-                    if (row == 0) {
-                        for (var i = 1; i <= RowCount; i++) {
-                            $('#Machine1-' + i).empty();
-                            $('#Machine1-' + i).append('<option value="0" selected>-Select-</option>');
-                            $('#Machine2-' + i).empty();
-                            $('#Machine2-' + i).append('<option value="0" selected>-Select-</option>');
-                            $('#Machine3-' + i).empty();
-                            $('#Machine3-' + i).append('<option value="0" selected>-Select-</option>');
-                            if (result != null) {
-                                var obj = $.parseJSON(result);
-                                if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                                    $.each(obj.Result, function (index, val) {
-                                        $('#Machine1-' + i).append('<option value="' + val.EntryId +
-                                            '">' + val.MachineName + '</option>');
-                                        $('#Machine2-' + i).append('<option value="' + val.EntryId +
-                                            '">' + val.MachineName + '</option>');
-                                        $('#Machine3-' + i).append('<option value="' + val.EntryId +
-                                            '">' + val.MachineName + '</option>');
-                                    });
-                                }
-                            }
-                        }
-                    } else {
-                        $('#Machine1-' + row).empty();
-                        $('#Machine1-' + row).append('<option value="0" selected>-Select-</option>');
-                        $('#Machine2-' + row).empty();
-                        $('#Machine2-' + row).append('<option value="0" selected>-Select-</option>');
-                        $('#Machine3-' + row).empty();
-                        $('#Machine3-' + row).append('<option value="0" selected>-Select-</option>');
-                        if (result != null) {
-                            var obj = $.parseJSON(result);
-                            if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            // Decide which rows to update
+                            var rowsToUpdate = row === 0 ? Array.from({ length: RowCount }, (_, i) => i + 1) : [row];
+
+                            rowsToUpdate.forEach(function (r) {
+                                var m1 = $('#Machine1-' + r);
+                                var m2 = $('#Machine2-' + r);
+                                var m3 = $('#Machine3-' + r);
+
+                                // Reset dropdowns
+                                m1.empty().append('<option value="0">-Select-</option>');
+                                m2.empty().append('<option value="0">-Select-</option>');
+                                m3.empty().append('<option value="0">-Select-</option>');
+
+                                // Fill with machine names
                                 $.each(obj.Result, function (index, val) {
-                                    $('#Machine1-' + row).append('<option value="' + val.EntryId +
-                                        '">' + val.MachineName + '</option>');
-                                    $('#Machine2-' + row).append('<option value="' + val.EntryId +
-                                        '">' + val.MachineName + '</option>');
-                                    $('#Machine3-' + row).append('<option value="' + val.EntryId +
-                                        '">' + val.MachineName + '</option>');
+                                    var option = '<option value="' + val.EntryId + '">' + val.MachineName + '</option>';
+                                    m1.append(option);
+                                    m2.append(option);
+                                    m3.append(option);
                                 });
-                            }
+
+                                // Restore selected values from data-selected attributes
+                                m1.val(m1.data("selected"));
+                                m2.val(m2.data("selected"));
+                                m3.val(m3.data("selected"));
+                            });
                         }
                     }
                 }
             });
         }
+
+        // function GetMachineName(row) {
+        //     var RowCount = $('#divProductionSchGrid tr').length;
+
+        //     $.ajax({
+        //         type: "POST",
+        //         url: "@Url.Action("GetMachineName")",
+        //         dataType: "json",
+        //         async: false,
+        //         success: function (result, status, error) {
+
+        //             if (row == 0) {
+        //                 for (var i = 1; i <= RowCount; i++) {
+        //                     $('#Machine1-' + i).empty();
+        //                     $('#Machine1-' + i).append('<option value="0" selected>-Select-</option>');
+        //                     $('#Machine2-' + i).empty();
+        //                     $('#Machine2-' + i).append('<option value="0" selected>-Select-</option>');
+        //                     $('#Machine3-' + i).empty();
+        //                     $('#Machine3-' + i).append('<option value="0" selected>-Select-</option>');
+        //                     if (result != null) {
+        //                         var obj = $.parseJSON(result);
+        //                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                             $.each(obj.Result, function (index, val) {
+        //                                 $('#Machine1-' + i).append('<option value="' + val.EntryId +
+        //                                     '">' + val.MachineName + '</option>');
+        //                                 $('#Machine2-' + i).append('<option value="' + val.EntryId +
+        //                                     '">' + val.MachineName + '</option>');
+        //                                 $('#Machine3-' + i).append('<option value="' + val.EntryId +
+        //                                     '">' + val.MachineName + '</option>');
+        //                             });
+        //                         }
+        //                     }
+        //                 }
+        //             } else {
+        //                 $('#Machine1-' + row).empty();
+        //                 $('#Machine1-' + row).append('<option value="0" selected>-Select-</option>');
+        //                 $('#Machine2-' + row).empty();
+        //                 $('#Machine2-' + row).append('<option value="0" selected>-Select-</option>');
+        //                 $('#Machine3-' + row).empty();
+        //                 $('#Machine3-' + row).append('<option value="0" selected>-Select-</option>');
+        //                 if (result != null) {
+        //                     var obj = $.parseJSON(result);
+        //                     if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+        //                         $.each(obj.Result, function (index, val) {
+        //                             $('#Machine1-' + row).append('<option value="' + val.EntryId +
+        //                                 '">' + val.MachineName + '</option>');
+        //                             $('#Machine2-' + row).append('<option value="' + val.EntryId +
+        //                                 '">' + val.MachineName + '</option>');
+        //                             $('#Machine3-' + row).append('<option value="' + val.EntryId +
+        //                                 '">' + val.MachineName + '</option>');
+        //                         });
+        //                     }
+        //                 }
+        //             }
+        //         }
+        //     });
+        // }
                          function fillWorkCenter() {
                     $.ajax({
                         type: "POST",
@@ -3056,8 +3115,17 @@
                                 ItemName: $('#itemGrid-' + i).find('.ItemName').text(),
                                 PartCode: $('#GridPartCode-' + i).text()
                             });
-
+                                   
                             var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                                      var noOfCavity = parseFloat($('#itemGrid-' + (i + 1)).find('#NoOfCavity').val()) || 0;
+                            var noOfShotsHours = parseFloat($('#itemGrid-' + (i + 1)).find('#NoOfshotsHours').val()) || 0;
+
+                            var dailyCapacity = (noOfCavity * noOfShotsHours) > 0
+                                                ? (noOfCavity * noOfShotsHours)
+                                                        : (totalWOQty / PlanNoOfDays).toFixed(2); // fallback if no capacity
+                                    var remainingQty = totalWOQty;
+                     
+
                                         //    alert('totalWOQty/PLANDAYS'+(totalWOQty / PlanNoOfDays));
                             for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
                              //   alert('EffDate[dayIndex] nusrat :' + EffDate[dayIndex]);
@@ -3070,7 +3138,15 @@
                                 var rowIndex = i + 1;
                                         var inputId = `dayValus-${idEffDate.split("/")[0]}-${rowIndex}`;
                                      //   alert('inputId  ====>'+ inputId);
-                                $('#' + inputId).val((totalWOQty / PlanNoOfDays).toFixed(2));
+                                        //     $('#' + inputId).val(calcValue.toFixed(2));
+                                                  var qtyForDay = 0;
+                if (remainingQty > 0) {
+                    qtyForDay = Math.min(dailyCapacity, remainingQty);
+                    remainingQty -= qtyForDay;
+                }
+
+                $('#' + inputId).val(qtyForDay.toFixed(2));
+                              // $('#' + inputId).val((totalWOQty / PlanNoOfDays).toFixed(2));
                             }
                         }
 
