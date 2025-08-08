@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <Content Remove="Views\MIRRegister\PrintReport.cshtml" />
+    <Content Remove="Views\MIRRegister\_MRNWiseSummary.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
@@ -28,10 +29,16 @@
 
   <ItemGroup>
     <_ContentIncludedByDefault Remove="Views\MIRRegister\PrintReport.cshtml" />
+    <_ContentIncludedByDefault Remove="Views\MIRRegister\_MRNWiseSummary.cshtml" />
   </ItemGroup>
 
   <ItemGroup>
     <None Include="Views\MIRRegister\PrintReport.cshtml" />
+    <None Include="Views\MIRRegister\_MRNWiseSummary.cshtml" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <UpToDateCheckInput Remove="Views\MIRRegister\_MRNWiseSummary.cshtml" />
   </ItemGroup>
 
 </Project>

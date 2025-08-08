@@ -13,6 +13,7 @@ using static eTactWeb.DOM.Models.Common;
 using eTactWeb.DOM.Models;
 using Newtonsoft.Json;
 using ClosedXML.Excel;
+using eTactWeb.Helpers;
 
 namespace eTactWeb.Controllers;
 
@@ -317,6 +318,23 @@ public class HomeController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         LoginModel model = GeteDTRModel();
+        
+        if (!System.IO.File.Exists("license.lic"))
+            return Content("No license found. Contact admin.");
+        var encrypted = System.IO.File.ReadAllText("license.lic");
+        var plain = LicenseCrypto.Decrypt(encrypted);
+        var lic = System.Text.Json.JsonSerializer.Deserialize<LicenseInfo>(plain);
+        if (DateTime.UtcNow > lic.ExpiryDate)
+            return Content("License expired!");
+        // Proceed with login...
+        // return Content("Login successful, license valid until: " + lic.ExpiryDate.ToShortDateString());
+
+        var daysLeft = (lic.ExpiryDate - DateTime.UtcNow).TotalDays;
+        if (daysLeft <= 15)
+        {
+            // Pass a message to the view about upcoming expiry
+            ViewBag.LicenseExpiryWarning = $"Warning: License will expire in {Math.Ceiling(daysLeft)} day(s). Please renew soon.";
+        }
         return View(model);
     }
     [HttpPost]
@@ -338,7 +356,7 @@ public class HomeController : Controller
         Constants.FinincialYear = model.YearCode;
         ClaimsIdentity identity = null;
         bool isAuthenticate = false;
-
+       
         #region dynamicConnection
 
         //string dbNameSql = "SELECT DataBase_Name FROM Company_Detail WHERE Company_Name = @CompanyName";
@@ -728,52 +746,14 @@ public class HomeController : Controller
             ModelState.AddModelError(string.Empty, "Invalid Username or Password");
             return View(model);
         }
+
+        
+
+
+
+
         return RedirectToAction("Dashboard", "Home");
-        /*var model1 = GeteDTRModel();
-        model.AccList = model1.AccList;
-        model.StoreLst = model1.StoreLst;
-        model.ItemList = model1.ItemList;
-
-            //    ModelState.Clear();
-            //    ModelState.AddModelError(string.Empty, "All Fields are Mandatory & Cannot be Blank.");
-            //    return View(model);
-            //}
-            //else
-            //{
-            ClaimsIdentity identity = null;
-            bool isAuthenticate = false;
-
-            if (model.UserName == "admin" && model.Password == "a")
-            {
-                identity = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.Name, model.UserName),
-                        new Claim(ClaimTypes.Role, "Admin")
-                    }, CookieAuthenticationDefaults.AuthenticationScheme);
-                isAuthenticate = true;
-            }
-
-            if (model.UserName == "demo" && model.Password == "c")
-            {
-                identity = new ClaimsIdentity(new[]
-                    {
-                        new Claim(ClaimTypes.Name, model.UserName),
-                        new Claim(ClaimTypes.Role, "User")
-                    }, CookieAuthenticationDefaults.AuthenticationScheme);
-                isAuthenticate = true;
-            }
-
-            if (isAuthenticate)
-            {
-                ClaimsPrincipal principal = new(identity);
-                //Task login = HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-                await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-            }
-            else
-            {
-                return View(model);
-            }
-        */
+        
 
     }
     public async Task<IActionResult> Logout()

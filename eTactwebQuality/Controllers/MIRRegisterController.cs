@@ -37,7 +37,7 @@ namespace eTactWeb.Controllers
             model.MIRRegisterDetail = new List<MIRRegisterDetail>();
             return View(model);
         }
-        public async Task<IActionResult> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName)
+        public async Task<IActionResult> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName,string MRNStatus)
         {
             var model = new MIRRegisterModel();
             if (string.IsNullOrEmpty(gateno)||gateno == "0" )
@@ -59,7 +59,7 @@ namespace eTactWeb.Controllers
             if (string.IsNullOrEmpty(VendorName) || VendorName == "0")
             { VendorName = ""; }
        
-            model = await _IMIRRegister.GetRegisterData(MRNType,ReportType,  FromDate,  ToDate,  gateno,  MRNno,docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName);
+            model = await _IMIRRegister.GetRegisterData(MRNType,ReportType,  FromDate,  ToDate,  gateno,  MRNno,docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName,MRNStatus);
             model.ReportMode= ReportType;
             return PartialView("_MIRRegisterGrid", model);
         }

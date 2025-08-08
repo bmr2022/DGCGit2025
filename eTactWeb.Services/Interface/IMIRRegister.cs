@@ -10,7 +10,7 @@ namespace eTactWeb.Services.Interface
 {
     public interface IMIRRegister
     { 
-        Task<MIRRegisterModel> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno, string MRNno,string MIRNO, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName);
+        Task<MIRRegisterModel> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno, string MRNno,string MIRNO, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName,string MRNStatus);
         Task<ResponseResult> FillMIRNo(string FromDate, string ToDate);
         Task<ResponseResult> FillMRNNo(string FromDate, string ToDate);
         Task<ResponseResult> FillGateNo(string FromDate, string ToDate);

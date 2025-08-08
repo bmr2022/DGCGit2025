@@ -61,3 +61,67 @@
 
     </div>
 </div>
+
+@section Scripts{
+    <script>
+        $(function () {
+            GetSearchData();
+        });
+
+        function GetSearchData() {
+
+            if ($('#Type').val() == "Summary") {
+                GetSearchSummaryData(); //just simple dashboard
+
+            } else {
+                GetSearchDetailData(); // detail dashboar
+            }
+        }
+
+        function GetSearchSummaryData() {
+            $.ajax({
+                url: '@Url.Action("GetSearchData")',
+                type: "POST",
+                async: false,
+                data: { "EmpName": $('#EmpName').val(), "UserName": $('#UserName').val(), "Module": $('#Module').val(), "MainMenu": $("#MainMenu").val() },
+                success: function (data) {
+
+                    $('#divDashboard').empty();
+                    $('#divDashboard').html(data);
+                    var dashGrid = $('#UserData tr').length - 1;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+        function GetSearchDetailData() {
+
+            $.ajax({
+                url: '@Url.Action("GetSearchDetailData")',
+                type: "POST",
+                async: false,
+                data: { "EmpName": $('#EmpName').val(), "UserName": $('#UserName').val() },
+                success: function (data) {
+
+                    $('#divDashboard').empty();
+                    $('#divDashboard').html(data);
+                    var dashGrid = $('#UserData tr').length - 1;
+                    $('#totalRows').text(dashGrid);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
+
+    </script>
+}

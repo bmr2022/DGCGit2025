@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
+using eTactWeb.Helpers;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -94,6 +95,20 @@ public class AdminController : Controller, IAsyncDisposable
     public async Task<IActionResult> UserMaster(int ID, string Mode)
     {
         UserMasterModel model = new();
+        var encrypted = System.IO.File.ReadAllText("license.lic");
+        var plain = LicenseCrypto.Decrypt(encrypted);
+        var lic = System.Text.Json.JsonSerializer.Deserialize<LicenseInfo>(plain);
+        var jsonResult = await GetUserCount();
+
+        var response = jsonResult.Value as ResponseResult;
+        int userCount = 0;
+
+        if (response?.Result is DataTable dt && dt.Rows.Count > 0)
+        {
+            userCount = Convert.ToInt32(dt.Rows[0]["TotalUser"]);
+        }
+        ViewBag.CurrentUserCount = userCount;
+        ViewBag.LicensedUserCount = lic.NumberOfUser;
         HttpContext.Session.Remove("KeyUserRightsList");
         if (ID == 0)
         {
@@ -120,7 +135,7 @@ public class AdminController : Controller, IAsyncDisposable
         //if (ModelState.IsValid)
         //{
         model.Mode = model.ID == 0 ? "Insert" : "Update";
-
+       
         if (model.Password == model.CnfPass)
         {
             //    if (!string.IsNullOrEmpty(model.CnfPass))
@@ -254,7 +269,6 @@ public class AdminController : Controller, IAsyncDisposable
     public async Task<IActionResult> UserRights(UserRightModel model)
     {
         model.Mode = model.ModelMode == "U" ? "Update" : "Insert";
-
         if (model.EmpID != 0)
         {
             var UserRightGrid = new DataTable();
@@ -673,5 +687,10 @@ public class AdminController : Controller, IAsyncDisposable
             HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(MainModel.UserRights));
         }
         return PartialView("_UserRightGrid", MainModel);
+    }
+    public async Task<JsonResult> GetUserCount()
+    {
+        var Result = await _IAdminModule.GetUserCount();
+        return Json(Result);
     }
 }
