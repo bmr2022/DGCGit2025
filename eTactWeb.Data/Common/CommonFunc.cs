@@ -1536,7 +1536,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "WOEntryId" && typeProperty.PropertyInfo.Name != "SOEntryId"
                     && typeProperty.PropertyInfo.Name != "Active" && typeProperty.PropertyInfo.Name != "CreatedBy" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "Mode"
                     && typeProperty.PropertyInfo.Name != "UpdatedOn" && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "CreatedOn"
-                    && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "BomDatamodel" && typeProperty.PropertyInfo.Name != "WONo" && typeProperty.PropertyInfo.Name != "WOYearCode" && typeProperty.PropertyInfo.Name != "WODate")
+                    && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "BomDatamodel" && typeProperty.PropertyInfo.Name != "WONo" && typeProperty.PropertyInfo.Name != "WOYearCode" && typeProperty.PropertyInfo.Name != "WODate" && typeProperty.PropertyInfo.Name != "NoOfCavity" && typeProperty.PropertyInfo.Name != "NoOfshotsHours")
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
                         object? safeValue = value == null || DBNull.Value.Equals(value) ? null : Convert.ChangeType(value, typeProperty.Type);
