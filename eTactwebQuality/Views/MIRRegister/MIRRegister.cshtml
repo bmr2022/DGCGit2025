@@ -65,6 +65,17 @@
                                         <option value="MRNWiseSummary">MRNWiseSummary</option>
                                     </select>
                                 </div>
+
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+
+                                    <label  class="form-label" style="color: blue;">MRN Status</label>
+                                    <select id="MRNStatus" class="form-select" style="background-color:#f8aa86;">
+                                        <option value="">--Select--</option>
+                                        <option  value="OKMRN">OK MRN</option>
+                                        <option  value="REJMRN">REJ MRN</option>
+                                       
+                                    </select>
+                                </div>
                                 <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="VendorName" class="form-label">VendorName</label>
                                     <div class="form-check form-switch mx-3 w-auto position-absolute d-inline"> 
@@ -301,7 +312,7 @@
                 url: "@Url.Action("GetRegisterData")",
                 async: false,
                 data: {
-                    "MRNType": $('#MRNType').val(), "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": "", "MRNno": $('#MRNno').val() == '0' ? '' : $('#MRNno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val()
+                    "MRNType": $('#MRNType').val(), "ReportType": $('#ReportType').val(), "FromDate": $('#FromDate').val(), "ToDate": $('#ToDate').val(), "gateno": "", "MRNno": $('#MRNno').val() == '0' ? '' : $('#MRNno').val(), "docname": $('#docname').val() == '0' ? '' : $('#docname').val(), "PONo": $('#PONo').val() == '0' ? '' : $('#PONo').val(), "SchNo": $('#SchNo').val() == '0' ? '' : $('#SchNo').val(), "PartCode": $('#PartCode').val() == '0' ? '' : $('#PartCode').val(), "ItemName": $('#ItemName').val() == '0' ? '' : $('#ItemName').val(), "invoiceNo": $('#invoiceNo').val() == '0' ? '' : $('#invoiceNo').val(), "VendorName": $('#VendorName').val() == '0' ? '' : $('#VendorName').val(), "MRNStatus": $('#MRNStatus').val()
                 },
                 success: function (result, status, error) {
                      $('#divStockMainRegister').empty();

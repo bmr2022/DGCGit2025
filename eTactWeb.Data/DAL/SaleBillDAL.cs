@@ -26,6 +26,55 @@ namespace eTactWeb.Data.DAL
         public IConfiguration? Configuration { get; }
 
         private string DBConnectionString { get; }
+
+        public async Task<ResponseResult> GetItemGroup()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemGroup"));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
+
+        public async Task<ResponseResult> GETGROUPWISEITEM(int Group_Code)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", "GETGROUPWISEITEM"));
+                SqlParams.Add(new SqlParameter("@Group_Code", Group_Code));
+
+
+
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> FillStoreList()
         {
             var _ResponseResult = new ResponseResult();
@@ -1172,7 +1221,9 @@ namespace eTactWeb.Data.DAL
                             ProdSchEntryId = row["prodSchEntryId"] != DBNull.Value ? Convert.ToInt32(row["prodSchEntryId"]) : 0,
                             ProdSchDate = row["ProdSchDate"]?.ToString(),
                             SchdeliveryDate = row["SchdeliveryDate"]?.ToString(),
-                            CostCenterId = row["CostCenterid"] != DBNull.Value ? Convert.ToInt32(row["CostCenterid"]) : 0
+                            CostCenterId = row["CostCenterid"] != DBNull.Value ? Convert.ToInt32(row["CostCenterid"]) : 0,
+                            Group_Code = row["ItemGroupCode"] != DBNull.Value ? Convert.ToInt32(row["ItemGroupCode"]) : 0,
+                            Group_name = row["Group_name"].ToString() ?? "",
                         });
                     }
                     SaleBillGrid = SaleBillGrid.OrderBy(item => item.SeqNo).ToList();
