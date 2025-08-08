@@ -228,6 +228,7 @@ namespace eTactWeb.DOM.Models
         public List<ItemViewModel>? ExcelDataList { get; set; }
         public List<ImportItemViewModel>? ImportExcelDataList { get; set; }
         public string? ProdInMachineGroupName { get; set; }
+        public int? ProdInMachineGroupId { get; set; }
         public string? ProdInMachineName1 { get; set; }
         public string? ProdInMachineName2 { get; set; }
         public string? ProdInMachineName3 { get; set; }
@@ -250,7 +251,7 @@ namespace eTactWeb.DOM.Models
         public int StdPacking { get; set; }
         public int ProdInWorkcenter { get; set; }
         public int ProdInMachineGroupId { get; set; }
-        public string ProdInMachineGroup { get; set; }
+        public string ProdInMachineGroupName { get; set; }
         public int ProdInMachine1 { get; set; }
         public int ProdInMachine2 { get; set; }
         public int ProdInMachine3 { get; set; }
@@ -320,6 +321,7 @@ namespace eTactWeb.DOM.Models
         public int NoOfshotsHours { get; set; }
         public string JobWorkItem { get; set; }
         public string OldPartCode { get; set; }
+        public string Branch { get; set; }
         public string VoltageVlue { get; set; }
         public string SerialNo { get; set; }
         public string Package { get; set; }

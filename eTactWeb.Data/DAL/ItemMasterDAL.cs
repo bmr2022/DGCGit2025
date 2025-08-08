@@ -4,6 +4,7 @@ using System.Reflection;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -602,6 +603,14 @@ namespace eTactWeb.Data.DAL
                         ProdInMachineName4 = oDataSet.Tables[0].Rows[i].ItemArray[79].ToString(),
                         NoOfshotsHours = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[80].ToString()),
                         ChildBom = (oDataSet.Tables[0].Rows[i].ItemArray[81].ToString()),
+                        ProdInMachineGroupId = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[82].ToString()),
+                        ProdInMachine1 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[83].ToString()),
+                        ProdInMachine2 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[84].ToString()),
+                        ProdInMachine3 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[85].ToString()),
+                        ProdInMachine4= Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[86].ToString())
+                       
+                        
+                        
 
                         //HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
                         //CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
@@ -858,7 +867,7 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
-                    string branchlist = string.Join(",", model.Branch);
+                    string branchlist = string.Join(",", model.Branch   ?? new List<string>());
 
                     oCmd.Parameters.AddWithValue("@Flag", model.Mode);
                     oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
@@ -926,7 +935,6 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
                     oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
                     oCmd.Parameters.AddWithValue("@package", model.Package);
-
                     oCmd.Parameters.AddWithValue("@Branch", branchlist);
                     oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
                     oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);

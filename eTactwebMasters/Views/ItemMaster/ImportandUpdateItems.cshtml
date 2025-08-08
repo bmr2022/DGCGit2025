@@ -83,6 +83,7 @@
                                     <option value="store">Store</option>
                                     <option value="minmaxlevel">Min & Max Level</option>
                                     <option value="workcenter">Workcenter</option>
+                                    <option value="productiondetail">ProductionDetail</option>
                                 </select>
                                 </div>
                             <div class="col-sm-auto d-flex gap-2 align-items-center ms-3">
@@ -113,6 +114,19 @@
                                                         <th class="col-price">CostPrice</th>
                                                         <th class="col-minmaxlevel">MaximumLevel</th>
                                                         <th class="col-minmaxlevel">MinimumLevel</th>
+                                                        <th class="col-productiondetail">NoOfCavity</th>
+                                                        <th class="col-productiondetail">NoOfshotsHours</th>
+                                                        <th class="" style="display: none;">ProdInMachineGroupId</th>
+                                                        <th class="col-productiondetail">ProdInMachineGroup</th>
+                                                        <th class="" style="display: none;">ProdInMachine1Id</th>
+                                                        <th class="col-productiondetail">ProdInMachine1</th>
+                                                        <th class="" style="display: none;">ProdInMachine2Id</th>
+                                                        <th class="col-productiondetail">ProdInMachine2</th>
+                                                        <th class="" style="display: none;">ProdInMachine3Id</th>
+                                                        <th class="col-productiondetail">ProdInMachine3</th>
+                                                        <th class="" style="display: none;">ProdInMachine4Id</th>
+                                                        <th class="col-productiondetail">ProdInMachine4</th>
+                                                       
                                                     </tr>
                                                 </thead>
                                                 <tbody id="divItemList1">
@@ -221,6 +235,7 @@
                                                         <th>ProdInMachine2</th>
                                                         <th>ProdInMachine3</th>
                                                         <th>ProdInMachine4</th>
+                                                        <th>Branch</th>
                                                     </tr>
                                                 </thead>
 
@@ -577,6 +592,7 @@
                     ProdInMachine2: $(divSelector).find('#ProdInMachine2-' + i).text(),
                     ProdInMachine3: $(divSelector).find('#ProdInMachine3-' + i).text(),
                     ProdInMachine4: $(divSelector).find('#ProdInMachine4-' + i).text(),
+                    Branch: $(divSelector).find('#Branch-' + i).text(),
                 });
             }
         } else {
@@ -596,7 +612,14 @@
                     SalePrice: parseFloat($(divSelector).find('#SalePrice-' + i).text()) || 0,
                     PurchasePrice: parseFloat($(divSelector).find('#PurchasePrice-' + i).text()) || 0,
                     CostPrice: parseFloat($(divSelector).find('#CostPrice-' + i).text()) || 0,
-                    Store: $(divSelector).find('#StoreId-' + i).text()
+                    Store: $(divSelector).find('#StoreId-' + i).text(),
+                    NoOfCavity: $(divSelector).find('#NoOfCavity-' + i).text(),
+                    NoOfshotsHours: $(divSelector).find('#NoOfshotsHours-' + i).text(),
+                    ProdInMachineGroupId: $(divSelector).find('#ProdInMachineGroupId-' + i).text(),
+                    ProdInMachine1: $(divSelector).find('#ProdInMachine1-' + i).text(),
+                    ProdInMachine2: $(divSelector).find('#ProdInMachine2-' + i).text(),
+                    ProdInMachine3: $(divSelector).find('#ProdInMachine3-' + i).text(),
+                    ProdInMachine4: $(divSelector).find('#ProdInMachine4-' + i).text(),
                 });
             }
         }
