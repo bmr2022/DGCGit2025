@@ -38,7 +38,7 @@ namespace eTactWeb.DOM.Models
         public string SalesPersonName { get; set; }
         public bool IsVisible {  get; set; }
         public bool ShowZeroBal {  get; set; }
-        public List<OutStandingRow> OutStandingRow { get; set; } = new();
+        public IList<OutStandingRow> OutStandingRow { get; set; }
         public List<string> ColumnNames { get; set; } = new(); // for dynamic header rendering
         public IList<OutStandingModel> OutStandingGrid { get; set; }
     }
