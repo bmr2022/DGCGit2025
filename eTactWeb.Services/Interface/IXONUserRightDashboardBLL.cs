@@ -17,5 +17,6 @@ namespace eTactWeb.Services.Interface
         Task<List<UserRightDashboardModel>> GetUserRightDashboard(string Flag);
         Task<IList<UserRightDashboardModel>> GetDashBoardData(string Flag, string Usertype, string EmpCode, string EmpName, string UserName);
         Task<UserRightDashboardModel> GetSearchData(string EmpName, string UserName, string DashboardName, string DashboardSubScreen);
+        Task<UserRightDashboardModel> GetSearchDetailData(string EmpName, string UserName);
     }
 }

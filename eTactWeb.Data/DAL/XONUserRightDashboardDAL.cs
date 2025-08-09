@@ -328,5 +328,65 @@ namespace eTactWeb.Data.DAL
 
             return _UserRightDashboardModel;
         }
+        public async Task<UserRightDashboardModel> GetSearchDetailData(string EmpName, string UserName)
+        {
+            DataSet? oDataSet = new DataSet();
+            var _UserRightModel = new UserRightDashboardModel();
+            try
+            {
+                DataTable? oDataTable = new DataTable();
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("SP_UserRightDashboard", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@EmpName", EmpName);
+                    oCmd.Parameters.AddWithValue("@UserName", UserName);
+                    oCmd.Parameters.AddWithValue("@Flag", "DetailDashboard");
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                _UserRightModel.UserRightsDashboard = new List<UserRightDashboardModel>();
+                int Cntr = 1;
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    _UserRightModel.UserRightsDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                  select new UserRightDashboardModel
+                                                  {
+                                                      SeqNo = Cntr++,
+                                                      UserId = Convert.ToInt32(dr["UID"]),
+                                                      EmpId = Convert.ToInt32(dr["EmpID"].ToString()),
+                                                      EmpName = dr["Emp_Name"].ToString(),
+                                                      UserName = dr["UserName"].ToString(),
+                                                      DashboardName = dr["DashboardName"].ToString(),
+                                                      DashboardSubScreen = dr["DashboardSubScreen"].ToString(),
+                                                      IsView = (bool)dr["IsView"],
+                                                      CreatedById = string.IsNullOrEmpty(dr["CreatedBy"].ToString()) ? 0 : Convert.ToInt32(dr["CreatedBy"].ToString()),
+                                                      CreatedOn = string.IsNullOrEmpty(dr["CreatedOn"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["CreatedOn"]),
+                                                  }).ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+                return Error;
+            }
+            finally
+            {
+                if (Reader != null)
+                {
+                    Reader.Close();
+                    Reader.Dispose();
+                }
+            }
+
+            return _UserRightModel;
+        }
     }
 }

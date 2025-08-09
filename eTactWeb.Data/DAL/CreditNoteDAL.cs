@@ -325,7 +325,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@CreditNoteYearCode", YearCode));
                 SqlParams.Add(new SqlParameter("@CreditNoteVoucherDate", ParseFormattedDate(CreditNoteVoucherDate)));
-                SqlParams.Add(new SqlParameter("@SubVoucherName", "Credit-Note"));
+                SqlParams.Add(new SqlParameter("@SubVoucherName", SubVoucherName));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSP_CreditNoteMainDetail", SqlParams);
             }
             catch (Exception ex)
