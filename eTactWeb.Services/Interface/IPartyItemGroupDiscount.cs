@@ -24,7 +24,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillEntryID(string EntryDate);
 		Task<ResponseResult> SavePartyItemGroupDiscount(PartyItemGroupDiscountModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashboardData(PartyItemGroupDiscountModel model);
-        Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType);
+        Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, int AccountCode, int CategoryId, string GroupName);
         Task<ResponseResult> DeleteByID(int EntryId, int AccountCode, string EntryDate);
 		Task<PartyItemGroupDiscountModel> GetViewByID(int ID);
 	}

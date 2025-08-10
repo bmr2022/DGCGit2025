@@ -77,9 +77,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _PartyItemGroupDiscountDAL.GetDashboardData(model);
         }
-        public async Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, int AccountCode, int CategoryId, string GroupName)
         {
-            return await _PartyItemGroupDiscountDAL.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            return await _PartyItemGroupDiscountDAL.GetDashboardDetailData(FromDate, ToDate, ReportType, AccountCode, CategoryId, GroupName);
         }
 
         public async Task<ResponseResult> DeleteByID(int EntryId, int AccountCode, string EntryDate)

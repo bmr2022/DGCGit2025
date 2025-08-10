@@ -292,7 +292,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType,int AccountCode,int CategoryId,string GroupName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new PartyItemGroupDiscountModel();
@@ -308,6 +308,8 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ReportType", ReportType);
                     oCmd.Parameters.AddWithValue("@fromdate", FromDate);
                     oCmd.Parameters.AddWithValue("@todate", ToDate);
+                    oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+                    oCmd.Parameters.AddWithValue("@DiscCategoryEntryId", CategoryId);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))

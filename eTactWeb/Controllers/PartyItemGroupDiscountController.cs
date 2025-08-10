@@ -41,8 +41,8 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             HttpContext.Session.Remove("KeyPartyItemGroupDiscountGrid");
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
-            {
+			if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
+			{
 				MainModel = await _IPartyItemGroupDiscount.GetViewByID(ID).ConfigureAwait(false);
 				MainModel.Mode = Mode; // Set Mode to Update
                 MainModel.EntryId = ID;
@@ -367,11 +367,11 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType, int AccountCode, int CategoryId, string GroupName)
         {
             //model.Mode = "Search";
             var model = new PartyItemGroupDiscountModel();
-            model = await _IPartyItemGroupDiscount.GetDashboardDetailData(FromDate, ToDate, ReportType);
+            model = await _IPartyItemGroupDiscount.GetDashboardDetailData(FromDate, ToDate, ReportType,  AccountCode,  CategoryId,  GroupName);
 			if (ReportType == "SUMMARY")
 			{
                 return PartialView("_PartyItemGroupDiscountDashBoardSummaryGrid", model);
