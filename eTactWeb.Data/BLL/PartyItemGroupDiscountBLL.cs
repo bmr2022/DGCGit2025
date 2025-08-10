@@ -90,5 +90,10 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _PartyItemGroupDiscountDAL.GetViewByID(ID);
 		}
-    }
+		public async Task<(bool Exists, int EntryId, int AccountCode, string AccountName, string CategoryCode, string CategoryName, int CategoryId)> CheckPartyExists(int AccountCode)
+		{
+			return await _PartyItemGroupDiscountDAL.CheckPartyExists(AccountCode);
+		}
+
+	}
 }

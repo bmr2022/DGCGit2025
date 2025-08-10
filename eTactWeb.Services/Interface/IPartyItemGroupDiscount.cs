@@ -27,5 +27,7 @@ namespace eTactWeb.Services.Interface
         Task<PartyItemGroupDiscountModel> GetDashboardDetailData(string FromDate, string ToDate, string ReportType, int AccountCode, int CategoryId, string GroupName);
         Task<ResponseResult> DeleteByID(int EntryId, int AccountCode, string EntryDate);
 		Task<PartyItemGroupDiscountModel> GetViewByID(int ID);
+		Task<(bool Exists, int EntryId, int AccountCode, string AccountName, string CategoryCode, string CategoryName, int CategoryId)> CheckPartyExists(int AccountCode);
+
 	}
 }

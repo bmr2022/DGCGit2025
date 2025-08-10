@@ -20,8 +20,12 @@
                 <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Party Name
             </th>
             <th data-columnno="3" data-sortorder="asc" class="sortCol">
-                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Discount Category
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>  Category Name
             </th>
+            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>  Category Code
+            </th>
+
             <th data-columnno="4" data-sortorder="asc" class="sortCol">
                 <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Group Name
             </th>
@@ -29,11 +33,12 @@
                 <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Group Code
             </th>
             <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Party WIse Grp Disc EntryId
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Purchase Discount
             </th>
-             <th data-columnno="5" data-sortorder="asc" class="sortCol">
-                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Account Code
+            <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sales Discount
             </th>
+
 
             <th data-columnno="6" data-sortorder="asc" class="sortCol">
                 <span class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By
@@ -126,10 +131,11 @@
                         <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td>
                         <td>@item.AccountName</td>
                         <td>@item.CategoryName</td>
+                        <td>@item.CategoryCode</td>
                         <td>@item.GroupName</td>
                         <td>@item.GroupCode</td>
-                        <td>@item.PartyWIseGrpDiscEntryId</td>
-                        <td>@item.AccountCode</td>
+                        <td>@item.PurchaseDiscount</td>
+                        <td>@item.SaleDiscount</td>
                         <td>@item.ActualEntryByEmpName</td>
                         <td>@item.EntryByMachine</td>
                         <td>@item.CC</td>
