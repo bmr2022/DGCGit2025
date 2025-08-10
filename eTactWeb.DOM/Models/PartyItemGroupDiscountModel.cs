@@ -31,7 +31,7 @@ namespace eTactWeb.DOM.Models
         public string AccountName { get; set; } 
 
         public string? Updateddate { get; set; }
-        public string EntryByMachine { get; set; }
+        public string ? EntryByMachine { get; set; }
         public string CC { get; set; } 
         public string DiscCategoryCode { get; set; } 
 

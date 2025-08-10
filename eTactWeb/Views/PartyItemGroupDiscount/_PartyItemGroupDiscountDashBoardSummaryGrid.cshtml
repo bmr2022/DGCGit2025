@@ -19,14 +19,13 @@
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Party Name
             </th>
             <th data-columnno="2" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Discount Category
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category Name
             </th>
-            <th data-columnno="3" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry ID
+              <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Category Code
             </th>
-            <th data-columnno="4" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Account Code
-            </th>
+
+            
             <th data-columnno="5" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Emp Name
             </th>
@@ -118,8 +117,7 @@
                         <td>@(item.EntryDate == null ? string.Empty : item.EntryDate.Split(" ")[0])</td>
                         <td>@item.AccountName</td>
                         <td>@item.CategoryName</td>
-                        <td>@item.PartyWIseGrpDiscEntryId</td>
-                        <td>@item.AccountCode</td>
+                        <td>@item.CategoryCode</td>
                         <td>@item.ActualEntryByEmpName</td>
                         <td>@item.EntryByMachine</td>
                         <td>@item.CC</td>

@@ -41,6 +41,7 @@ namespace eTactWeb.Controllers
             MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
             HttpContext.Session.Remove("KeyPartyItemGroupDiscountGrid");
+			//bool partyExists = await _IPartyItemGroupDiscount.CheckPartyExists(AccountCode,ID);
 			if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
 			{
 				MainModel = await _IPartyItemGroupDiscount.GetViewByID(ID).ConfigureAwait(false);
@@ -408,5 +409,21 @@ namespace eTactWeb.Controllers
             return RedirectToAction("PartyItemGroupDiscountDashBoard");
 
         }
-    }
+		public async Task<JsonResult> CheckParty(int AccountCode)
+		{
+			var result = await _IPartyItemGroupDiscount.CheckPartyExists(AccountCode);
+			return Json(new
+			{
+				exists = result.Exists,
+				entryId = result.EntryId,
+				accountCode = result.AccountCode,
+				accountName = result.AccountName,
+				categoryCode = result.CategoryCode,
+				categoryName = result.CategoryName,
+				categoryId = result.CategoryId
+			});
+		}
+
+
+	}
 }

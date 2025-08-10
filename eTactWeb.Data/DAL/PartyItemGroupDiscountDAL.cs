@@ -327,16 +327,14 @@ namespace eTactWeb.Data.DAL
                                               EntryDate = dr["EntryDate"] != DBNull.Value ? Convert.ToString(dr["EntryDate"]) : string.Empty,
                                               AccountName = dr["PartyName"] != DBNull.Value ? Convert.ToString(dr["PartyName"]) : string.Empty,
                                               CategoryName = dr["DiscCategoryName"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryName"]) : string.Empty,
+                                              CategoryCode = dr["DiscCategoryCode"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryCode"]) : string.Empty,
+                                              CategoryId = dr["DiscCategoryEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DiscCategoryEntryId"]) : 0,
                                               PartyWIseGrpDiscEntryId = dr["PartyWIseGrpDiscEntryId"] != DBNull.Value ? Convert.ToInt32(dr["PartyWIseGrpDiscEntryId"]) : 0,
                                               AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
                                               ActualEntryByEmpName = dr["EmpName"] != DBNull.Value ? Convert.ToString(dr["EmpName"]) : string.Empty,
                                               EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
                                               CC = dr["Branch"] != DBNull.Value ? Convert.ToString(dr["Branch"]) : string.Empty,
-                                              CategoryCode = dr["DiscCategoryCode"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryCode"]) : string.Empty,
-                                              CategoryId = dr["DiscCategoryEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DiscCategoryEntryId"]) : 0,
-                                              PurchaseDiscount = dr["PurchaseDiscount"] != DBNull.Value ? Convert.ToInt32(dr["PurchaseDiscount"]) : 0,
-                                              SaleDiscount = dr["SaleDiscount"] != DBNull.Value ? Convert.ToInt32(dr["SaleDiscount"]) : 0,
-
+                                              
                                           }).ToList();
 
 
@@ -352,18 +350,20 @@ namespace eTactWeb.Data.DAL
                                               EntryDate = dr["EntryDate"] != DBNull.Value ? Convert.ToString(dr["EntryDate"]) : string.Empty,
                                               AccountName = dr["PartyName"] != DBNull.Value ? Convert.ToString(dr["PartyName"]) : string.Empty,
                                               CategoryName = dr["DiscCategoryName"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryName"]) : string.Empty,
+                                              CategoryCode = dr["DiscCategoryCode"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryCode"]) : string.Empty,
+                                              CategoryId = dr["DiscCategoryEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DiscCategoryEntryId"]) : 0,
                                               PartyWIseGrpDiscEntryId = dr["PartyWIseGrpDiscEntryId"] != DBNull.Value ? Convert.ToInt32(dr["PartyWIseGrpDiscEntryId"]) : 0,
                                               AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
                                               ActualEntryByEmpName = dr["EmpName"] != DBNull.Value ? Convert.ToString(dr["EmpName"]) : string.Empty,
-                                              EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
-                                              CC = dr["Branch"] != DBNull.Value ? Convert.ToString(dr["Branch"]) : string.Empty,
                                               GroupCode = dr["Group_Code"] != DBNull.Value ? Convert.ToString(dr["Group_Code"]) : string.Empty,
                                               GroupName = dr["Group_name"] != DBNull.Value ? Convert.ToString(dr["Group_name"]) : string.Empty,
-                                              CategoryCode = dr["DiscCategoryCode"] != DBNull.Value ? Convert.ToString(dr["DiscCategoryCode"]) : string.Empty,
-                                              CategoryId = dr["DiscCategoryEntryId"] != DBNull.Value ? Convert.ToInt32(dr["DiscCategoryEntryId"]) : 0,
+                                              GroupId = dr["GroupId"] != DBNull.Value ? Convert.ToInt32(dr["GroupId"]) : 0,
                                               PurchaseDiscount = dr["PurchaseDiscount"] != DBNull.Value ? Convert.ToInt32(dr["PurchaseDiscount"]) : 0,
                                               SaleDiscount = dr["SaleDiscount"] != DBNull.Value ? Convert.ToInt32(dr["SaleDiscount"]) : 0,
-
+                                              EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
+                                              CC = dr["Branch"] != DBNull.Value ? Convert.ToString(dr["Branch"]) : string.Empty
+											  
+											  
                                           }).ToList();
 
 
@@ -486,5 +486,34 @@ namespace eTactWeb.Data.DAL
                 throw;
             }
         }
-    }
+		public async Task<(bool Exists, int EntryId, int AccountCode, string AccountName, string CategoryCode, string CategoryName, int CategoryId)> CheckPartyExists(int AccountCode)
+		{
+			using (SqlConnection con = new SqlConnection(DBConnectionString))
+			{
+				SqlCommand cmd = new SqlCommand("SPPartyWiseItemGroupDiscountDetail", con);
+				cmd.CommandType = CommandType.StoredProcedure;
+				cmd.Parameters.AddWithValue("@Flag", "CheckPartyExists");
+				cmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+
+				await con.OpenAsync();
+				using var reader = await cmd.ExecuteReaderAsync();
+				if (await reader.ReadAsync())
+				{
+					bool exists = Convert.ToInt32(reader["PartyExists"]) == 1;
+					int entryId = Convert.ToInt32(reader["EntryId"]);
+					int accountCode = Convert.ToInt32(reader["AccountCode"]);
+					string accountName = reader["AccountName"].ToString();
+					string categoryCode = reader["CategoryCode"].ToString();
+					string categoryName = reader["CategoryName"].ToString();
+					int categoryId = Convert.ToInt32(reader["CategoryId"]);
+
+					return (exists, entryId, accountCode, accountName, categoryCode, categoryName, categoryId);
+				}
+				return (false, 0, 0, "", "", "", 0);
+			}
+		}
+
+
+
+	}
 }
