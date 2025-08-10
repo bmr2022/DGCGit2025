@@ -219,7 +219,24 @@ namespace eTactWeb.Controllers
                 {
                     DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(modelDrCrJson);
                 }
-
+                string serializedGrid = HttpContext.Session.GetString("KeyAdjGrid");
+                List<AdjustmentModel> adjustmentModel = new List<AdjustmentModel>();
+                if (serializedGrid.TrimStart().StartsWith("["))
+                {
+                    // JSON is an array
+                    adjustmentModel = JsonConvert.DeserializeObject<List<AdjustmentModel>>(serializedGrid);
+                }
+                else
+                {
+                    // JSON is a full model
+                    var mainModel = JsonConvert.DeserializeObject<AdjustmentModel>(serializedGrid);
+                    adjustmentModel = mainModel?.AdjAdjustmentDetailGrid ?? new List<AdjustmentModel>();
+                }
+                //if (!string.IsNullOrEmpty(serializedGrid))
+                //{
+                //    adjustmentModel = JsonConvert.DeserializeObject<List<AdjustmentModel>>(serializedGrid);
+                //    // Use adjustmentModel as needed
+                //}
                 if (CreditNoteDetail == null)
                 {
                     ModelState.Clear();
@@ -264,9 +281,9 @@ namespace eTactWeb.Controllers
                         DrCrDetailDT = CommonController.GetDrCrDetailTable(DrCrGrid);
                     }
 
-                    if (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0)
+                    if (adjustmentModel != null || (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid.Count > 0))
                     {
-                        AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.CreditNoteEntryId, model.CreditNoteYearCode, model.AccountCode);
+                        AdjDetailDT = CommonController.GetAdjDetailTable(adjustmentModel, model.CreditNoteEntryId, model.CreditNoteYearCode, model.AccountCode);
                     }
                     string serverFolderPath = Path.Combine(_IWebHostEnvironment.WebRootPath, "Uploads", "SaleBill");
                     if (!Directory.Exists(serverFolderPath))
