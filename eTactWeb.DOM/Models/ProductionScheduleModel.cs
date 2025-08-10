@@ -62,6 +62,8 @@ namespace eTactWeb.DOM.Models
         public string SchDate { get; set; }
         public int ShiftID { get; set; }
         public int ProdInWC { get; set; }
+        public int NoOfCavity { get; set; }
+        public int NoOfshotsHours { get; set; }
         public float Qty { get; set; }
         public float ProdPendQty { get; set; }
         public float Originalqty { get; set; }

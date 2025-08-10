@@ -494,6 +494,10 @@
                 $('#divAddCreditNotePopupDataGrid').empty();
             }
 
+            $('#SubVoucherName').change(function () {
+                NewEntryId();
+            })
+
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#AccountCode').select2();
@@ -549,21 +553,21 @@
             $('#NetTotal').val(txTotal.toFixed(2));
             $('#AdjPendAmt').val($('#NetTotal').val());
             $('#CostCenterId').select2();
-             
+
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
 
         });
 
         $('#AdjModeOfAdjstment').change(function () {
-             
+
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
             $('#AdjPendAmt').val($('#NetTotal').val());
         });
 
         $('#CreditNoteInvoiceNo').change(function () {
-             
+
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
         });
@@ -623,20 +627,21 @@
             var YearCode = $('#CreditNoteYearCode').val();
             $.ajax({
                 type: "POST",
-                data: { "YearCode": YearCode, "CreditNoteVoucherDate": $('#CreditNoteInvoiceDate').val() },
+                data: { "YearCode": YearCode, "CreditNoteVoucherDate": $('#CreditNoteInvoiceDate').val(), "SubVoucherName": $('#SubVoucherName').find(':selected').text() },
                 url: "@Url.Action("NewEntryId")",
                 dataType: "json",
                 async: false,
                 success: function (result, status, error) {
-                     
+
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
                             $('#CreditNoteEntryId').val("");
                             $('#CreditNoteEntryId').val(obj.Result.Table[0].EntryId);
+                            $('#CreditNoteInvoiceNo').val("");
+                            $('#CreditNoteInvoiceNo').val(obj.Result.Table[0].InvoiceNo);
                             $('#CreditNoteVoucherNo').val("");
-                            $('#CreditNoteInvoiceNo').val(obj.Result.Table[0].creditNoteNo);
-                             
+                            $('#CreditNoteVoucherNo').val(obj.Result.Table[0].CreditNoteVoucherNo);
                             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
                             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
                         }
@@ -649,7 +654,7 @@
             var YearCode = $('#CreditNoteYearCode').val();
             $.ajax({
                 type: "POST",
-                data: { },
+                data: {},
                 url: "@Url.Action("FillSubVoucher")",
                 dataType: "json",
                 async: false,
@@ -872,7 +877,7 @@
         }
 
         function ValidateSubmit() {
-           if ($('#PaymentCreditDay').val() == '') {
+            if ($('#PaymentCreditDay').val() == '') {
                 $.notify("Please enter payment Credit days..!", "error");
                 return false;
             }
@@ -981,7 +986,7 @@
                                 var poDate = val.PODate == null ? "" : val.PODate.split("T")[0];
 
                                 html += '<tr id="CNPopUpRow-' + i + '" style="font-size: 12px;">' +
-                                    '<td><input type="checkBox" id="chkCreditNote-' + i + '" value="'+i+'" onchange="BasicPopUpItemGrid()"/></td>' +
+                                    '<td><input type="checkBox" id="chkCreditNote-' + i + '" value="' + i + '" onchange="BasicPopUpItemGrid()"/></td>' +
                                     '<td>' + i + '</td>' +
                                     '<td id="saleBillEntryId-' + i + '">' + val.SaleBillEntryId + '<input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
                                     '<td id="SaleBillYearCode-' + i + '">' + val.SaleBillYearCode + '</td>' +
@@ -1016,7 +1021,7 @@
                                 '</tr>';
                         }
                         $('#divCreditNoteDataGrid').append(html);
-                         
+
                         if (EditEachItem) {
                             var popUpGrid = creditNotePopupGrid.length;
                             for (var j = 0; j < popUpGrid; j++) {
@@ -1089,7 +1094,7 @@
                 if ($('#chkCreditNote-' + i).is(':checked')) {
 
                     let dataObj = {
-                        "CheckBoxNo": $('#chkCreditNote-'+i).val(),
+                        "CheckBoxNo": $('#chkCreditNote-' + i).val(),
                         "CreditNoteInvoiceNo": $('#CreditNoteEntryId').val() || "",
                         "CreditNoteVoucherNo": $('#CreditNoteVoucherNo').val() || "",
                         "AgainstSaleBillBillNo": row.find('#SaleBillNo').text() || "",
@@ -1281,7 +1286,7 @@
                     error = true;
                     Err = 1;
                     break;
-                }else{
+                } else {
                     error = false;
                 }
             }
@@ -1347,7 +1352,7 @@
                 type: "POST",
                 url: '@Url.Action("AddCreditNoteDetail")',
                 data: creditNoteData,
-                async:false,
+                async: false,
                 statusCode: {
                     207: function () {
                         $.notify('Duplicate Item...!', "info");
@@ -1523,7 +1528,7 @@
                 data: { SessionName: "CreditNote", Mode: $('#Mode').val() },
                 dataType: "json",
                 success: await function (data, status, error) {
-                     
+
                     $('#TxPartCode').empty();
                     $('#TxPartCode').append('<option>-Select-</option>');
                     var PartCode = 0;
@@ -1699,7 +1704,7 @@
                     var formattedYear = parseDateToFormat(new Date(past2Year).toISOString().split("T")[0]);
 
                     // $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", {changeMonth: true,changeYear: true});
+                    $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
                     ;
                     $('#fromBillDate').datepicker("option", "minDate", formattedYear);

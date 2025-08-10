@@ -20,18 +20,18 @@
 <div class="accordion-body">
     <div class="row g-2 gx-3">
 
-        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12" style="">
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12" style="width:70px;">
             <input type="hidden" asp-for="FinFromDate" />
             <input type="hidden" asp-for="FinToDate" />
             <input type="hidden" id="GSTRegistered" value="" />
             <label asp-for="CreditNoteEntryId" class="form-label">Entry Id</label>
             <input asp-for="CreditNoteEntryId" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12" style="width:80px;">
             <label asp-for="CreditNoteYearCode" class="form-label">Year Code</label>
             <input asp-for="CreditNoteYearCode" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:90px;">
             <label asp-for="AgainstSalePurchase" class="form-label" style="color: red;">Against</label>
             <select asp-for="AgainstSalePurchase" class="form-control">
                 <option value="">-Select-</option>
@@ -40,7 +40,7 @@
             </select>
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:170px;">
             <label asp-for="SubVoucherName" class="form-label" style="color: red;">Sub Voucher Name</label>
             <select asp-for="SubVoucherName" class="form-control">
                 <option value="0">-Select-</option>
@@ -53,16 +53,16 @@
             </select>
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:170px;">
             <label asp-for="CreditNoteInvoiceNo" class="form-label" style="color: red;">Invoice No*</label>
             <input asp-for="CreditNoteInvoiceNo" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:100px;">
             <label asp-for="CreditNoteInvoiceDate" class="form-label" style="color: red;">Invoice Date*</label>
             <input asp-for="CreditNoteInvoiceDate" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:170px;">
             <label asp-for="CreditNoteVoucherNo" class="form-label" style="color: red;">Voucher No*</label>
             <input asp-for="CreditNoteVoucherNo" class="form-control" readonly style="background-color: lightblue !important;" />
         </div>

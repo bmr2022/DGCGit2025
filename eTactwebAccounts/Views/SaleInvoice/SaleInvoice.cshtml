@@ -635,6 +635,9 @@
 
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
+            $('#Group_Code').select2();
+            GetItemGroup();
+
 
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
@@ -949,6 +952,7 @@
                 else {
                     $('.PendingItem').hide();
                     $('.newitems').show();
+                   
                     // FillWorkCenter();
                 }
             } else {
@@ -959,6 +963,70 @@
 
             }
         });
+
+
+        function GetItemGroup() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemGroup")",
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Group_Code').empty();
+                            $('#Group_Code').append('<option value="0"  selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#Group_Code').append('<option value="' + val.Group_Code + '">' + val.Group_name + '</option>');
+                            });
+                            
+                        }
+                    }
+                }
+            });
+        }
+
+
+        $('#Group_Code').change(function () {
+            var Group_Code=$('#Group_Code').val() ;
+            
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GETGROUPWISEITEM")",
+                data: { Group_Code: Group_Code },
+                dataType: "json",
+                async: false,
+       
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#PartCode').empty();
+                            $('#PartCode').append('<option value="0"  selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#PartCode').append('<option value="' + val.Item_Code + '">' + val.PartCode + '</option>');
+                            });
+
+
+                            $('#ItemCode').empty();
+                            $('#ItemCode').append('<option value="0"  selected>-Select-</option>');
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#ItemCode').append('<option value="' + val.Item_Code + '">' + val.ItemName + '</option>');
+                            });
+                        }
+                    }
+                }
+            });
+        });
+
         $('#DomesticExportNEPZ').change(function () {
             updateSupplyTypeOptions();
         });
@@ -1157,9 +1225,10 @@
                     $('.Schedule').fadeIn();
                 }
             }).done(function () {
+                GetItemGroup();
                 GetTaxPartItem();
                 GetDbCrDetail();
-                AddAdjstmntDetail1();
+                 AddAdjstmntDetail1();
             })
         });
 
@@ -2372,6 +2441,8 @@
                 "SOYearCode": $('#SOYearCode').val(),
                 "SODate": $('#SODate').val(),
                 "CustOrderNo": $('#CustOrderNo').val(),
+                "Group_Code": $('#Group_Code').val(),
+                "Group_name": $('#Group_Code option:selected').text(),
                 "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
                 "ItemCode": $('#ItemCode').val(),
                 "ItemName": $('#ItemCode').find(':selected').text() == '-Select-' ? "" : $('#ItemCode').find(':selected').text(),
@@ -2544,7 +2615,7 @@
                 //alert('inside ajax');
                 GetTaxPartItem();
                 GetDbCrDetail();
-                AddAdjstmntDetail1();
+                 AddAdjstmntDetail1();
             }).fail(function () {
                 alert("error");
             }).always(function () {
@@ -3373,6 +3444,7 @@
                             $('#BomNo').val(obj[0].BomNo);
                             $('#SeqNo').val(obj[0].SeqNo);
                             $('#ProducedUnprod').val(obj[0].ProducedUnprod);
+                            $('#Group_Code').val(obj[0].Group_Code).trigger('select2:select');
                             $('#BOMInd').val(obj[0].BOMInd);
                             $('#CustOrderNo').val(obj[0].CustOrderNo);
                             $('#SODate').val(obj[0].SODate);

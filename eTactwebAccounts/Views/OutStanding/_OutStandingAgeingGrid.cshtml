@@ -1,0 +1,36 @@
+﻿@model eTactWeb.DOM.Models.OutStandingModel
+
+<div class="card-body table-responsive" style="max-height:300px;overflow-y:auto;">
+    <table class="table table-responsive table-hover table-bordered PMRPGrid TbCss text-nowrap mb-0" id="ReportTable">
+        <thead class="bg-gradient card-headerBG text-light PMRPThead" style="position:static;" id="dashRThead">
+            <tr>
+                @foreach (var colName in Model.OutStandingRow.FirstOrDefault()?.DynamicColumns.Keys.ToList() ?? new List<string>())
+                {
+                    <th>@colName</th>
+                }
+            </tr>
+        </thead>
+        <tbody id="divStockRegisterBody">
+            @{
+                var @Cntr = 0;
+                if (Model.OutStandingRow == null)
+                {
+                    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+                }
+                else
+                {
+                    @foreach (var row in Model.OutStandingRow)
+                    {
+                        <tr>
+                            @foreach (var colName in row.DynamicColumns.Keys)
+                            {
+                                <td>@row.DynamicColumns[colName]</td>
+                            }
+                        </tr>
+                    }
+                }
+            }
+
+        </tbody>
+    </table>
+</div>

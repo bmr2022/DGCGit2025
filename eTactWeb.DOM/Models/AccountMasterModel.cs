@@ -60,12 +60,14 @@ namespace eTactWeb.DOM.Models
         public string? ParentAccountName { get; set; }
         public IList<TextValue>? ParentGroupList { get; set; }
         public IList<TextValue>? DiscountCategoryList { get; set; }
+        public IList<TextValue>? GroupDiscountCategoryList { get; set; }
         public IList<TextValue>? RegionList { get; set; }
         public string? Party_Code { get; set; }
         public string? MSMEType { get; set; }
         public string? MSMENo { get; set; }
         public string? Region { get; set; }
         public string? DiscountCategory { get; set; }
+        public int? GroupDiscountCategory { get; set; }
         public string? PartyType { get; set; }
 
         public IList<SelectListItem> PartyTypeList { get; set; } =

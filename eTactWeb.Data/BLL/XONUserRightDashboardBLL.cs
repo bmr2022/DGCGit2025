@@ -50,5 +50,9 @@ namespace eTactWeb.Data.BLL
         {
             return (await _XONUserRightDashboardDAL.GetUserRightDashboard(Flag)).ToList();
         }
+        public async Task<UserRightDashboardModel> GetSearchDetailData(string EmpName, string UserName)
+        {
+            return await _XONUserRightDashboardDAL.GetSearchDetailData(EmpName, UserName);
+        }
     }
 }

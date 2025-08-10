@@ -76,7 +76,7 @@ namespace eTactWeb.Data.DAL
         }
 
 
-        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate,string GroupName,string[] AccountNameList,int AccountCode,string ShowOnlyApprovedBill,bool ShowZeroBal)
+        public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, string GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
         {
             var resultList = new OutStandingModel();
             DataSet oDataSet = new DataSet();
@@ -108,33 +108,53 @@ namespace eTactWeb.Data.DAL
                         dataAdapter.Fill(oDataSet);
                     }
                 }
-                
-                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    if (outstandingType == "Receive Outstanding" || outstandingType == "Payable Outstanding")
                     {
                         resultList.OutStandingGrid = (from DataRow row in oDataSet.Tables[0].Rows
-                                                         select new OutStandingModel
-                                                         {
-                                                             LedgerDescription = row["LedgerDescription"] == DBNull.Value ? string.Empty : row["LedgerDescription"].ToString(),
-                                                             VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
+                                                      select new OutStandingModel
+                                                      {
+                                                          LedgerDescription = row["LedgerDescription"] == DBNull.Value ? string.Empty : row["LedgerDescription"].ToString(),
+                                                          VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
 
-                                                             VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
-                                                             VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
-                                                             DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
-                                                             CrAmt = row["CrAmt"] == DBNull.Value ? string.Empty : row["CrAmt"].ToString(),
-                                                             BillAmt = row["BillAmt"] == DBNull.Value ? string.Empty : row["BillAmt"].ToString(),
-                                                             PendingAmt = row["PendingAmt"] == DBNull.Value ? string.Empty : row["PendingAmt"].ToString(),
-                                                             DueDate = row["DueDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["DueDate"]).ToString("dd-MM-yyyy"),
+                                                          VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
+                                                          VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
+                                                          DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
+                                                          CrAmt = row["CrAmt"] == DBNull.Value ? string.Empty : row["CrAmt"].ToString(),
+                                                          BillAmt = row["BillAmt"] == DBNull.Value ? string.Empty : row["BillAmt"].ToString(),
+                                                          PendingAmt = row["PendingAmt"] == DBNull.Value ? string.Empty : row["PendingAmt"].ToString(),
+                                                          DueDate = row["DueDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["DueDate"]).ToString("dd-MM-yyyy"),
 
-                                                             OverDueDays = row["OverDueDays"] == DBNull.Value ? string.Empty : row["OverDueDays"].ToString(),
-                                                             TotBalanceAmt = row["TotBalanceAmt"] == DBNull.Value ? string.Empty : row["TotBalanceAmt"].ToString(),
-                                                             AccEntryId = row["AccEntryId"] == DBNull.Value ? string.Empty : row["AccEntryId"].ToString(),
-                                                             AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
-                                                             SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
-                                                            
+                                                          OverDueDays = row["OverDueDays"] == DBNull.Value ? string.Empty : row["OverDueDays"].ToString(),
+                                                          TotBalanceAmt = row["TotBalanceAmt"] == DBNull.Value ? string.Empty : row["TotBalanceAmt"].ToString(),
+                                                          AccEntryId = row["AccEntryId"] == DBNull.Value ? string.Empty : row["AccEntryId"].ToString(),
+                                                          AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
+                                                          SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
 
-                                                         }).ToList();
+
+                                                      }).ToList();
                     }
-                
+                    else
+                    {
+                        var table = oDataSet.Tables[0];
+                        resultList.OutStandingRow = new List<OutStandingRow>();
+
+                        foreach (DataRow dr in table.Rows)
+                        {
+                            var rowData = new OutStandingRow();
+
+                            foreach (DataColumn col in table.Columns)
+                            {
+                                rowData.DynamicColumns[col.ColumnName] = dr[col] == DBNull.Value ? null : dr[col];
+                            }
+
+                            resultList.OutStandingRow.Add(rowData);
+                        }
+                    }
+                }
+
             }
             catch (Exception ex)
             {

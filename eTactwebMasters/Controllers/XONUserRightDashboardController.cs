@@ -445,5 +445,13 @@ namespace eTactwebMasters.Controllers
             model.Mode = "Summary";
             return PartialView("_SearchFieldDashboard", model);
         }
+        public async Task<IActionResult> GetSearchDetailData(string EmpName, string UserName) // for detail dashboard only
+        {
+            var model = new UserRightDashboardModel();
+            model.UserRightsDashboard = new List<UserRightDashboardModel>();
+            model = await _IXONUserRightDashboardBLL.GetSearchDetailData(EmpName, UserName);
+            model.Mode = "Detail";
+            return PartialView("_SearchFieldDashboard", model);
+        }
     }
 }

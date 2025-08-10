@@ -4,6 +4,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System.Reflection;
+using System.Security.Cryptography.X509Certificates;
 using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL;
@@ -47,6 +48,15 @@ public class ItemMasterBLL : IItemMaster
     {
         return await _ItemMasterDAL.GetStoreCode(StoreName);
     }
+  public async Task<ResponseResult> ProdInMachineGroupId(string ProdInMachineGroup)
+    {
+        return await _ItemMasterDAL.ProdInMachineGroupId(ProdInMachineGroup);
+    }
+    public async Task<ResponseResult> ProdInMachineNameId(string ProdInMachineName)
+    {
+        return await _ItemMasterDAL.ProdInMachineNameId(ProdInMachineName);
+
+    }
     public async Task<ResponseResult> GetUnitList()
 	{
 		return await _ItemMasterDAL.GetUnitList();
@@ -62,7 +72,21 @@ public class ItemMasterBLL : IItemMaster
 	public async Task<ResponseResult> GetProdInWorkcenter()
     {
         return await _ItemMasterDAL.GetProdInWorkcenter();
-    }public async Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription)
+    }
+    public async Task<ResponseResult> GetBranchList()
+    {
+        return await _ItemMasterDAL.GetBranchList();
+    }
+    public async Task<ResponseResult> ProdInMachineGroupList()
+    {
+        return await _ItemMasterDAL.ProdInMachineGroupList();
+    }
+    public async Task<ResponseResult> ProdInMachineList(int MachGroupId)
+    {
+        return await _ItemMasterDAL.ProdInMachineList(MachGroupId);
+    }
+  
+    public async Task<ResponseResult> GetWorkCenterId(string WorkCenterDescription)
     {
         return await _ItemMasterDAL.GetWorkCenterId(WorkCenterDescription);
     }

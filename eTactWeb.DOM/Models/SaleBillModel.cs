@@ -64,6 +64,8 @@ namespace eTactWeb.DOM.Models
         //public int SaleBillEntryId { get; set; }
         //public int SaleBillYearCode { get; set; }
         public int SeqNo { get; set; }
+        public int Group_Code { get; set; }
+        public string Group_name { get; set; }
         public string BOMInd { get; set; }
         public string ProducedUnprod { get; set; }
         public string? SONO { get; set; }

@@ -4,6 +4,7 @@ using System.Reflection;
 using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 using Microsoft.Extensions.Configuration;
 using static eTactWeb.DOM.Models.Common;
 using static Org.BouncyCastle.Crypto.Engines.SM2Engine;
@@ -177,6 +178,58 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        public async Task<ResponseResult> ProdInMachineList( int MachGroupId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ProdInMachineList"));
+                SqlParams.Add(new SqlParameter("@MachGrouId", MachGroupId));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> GetBranchList()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetBranchList"));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> ProdInMachineGroupList()
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "ProdInMachineGroupList"));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
         public async Task<ResponseResult> GetItemGroupCode(string GName)
         {
             var _ResponseResult = new ResponseResult();
@@ -221,6 +274,44 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetStoreCode"));
                 SqlParams.Add(new SqlParameter("@StoreIdName", StoreName));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+    
+        public async Task<ResponseResult> ProdInMachineNameId(string ProdInMachineName)
+       
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetProdInMachineNameId"));
+                SqlParams.Add(new SqlParameter("@MachineName", ProdInMachineName));
+                _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ResponseResult> ProdInMachineGroupId(string ProdInMachineGroup)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetProdInMachineGroupId"));
+                SqlParams.Add(new SqlParameter("@MachineGroupName", ProdInMachineGroup));
                 _ResponseResult = await _DataLogicDAL.ExecuteDataTable("SP_ItemMasterData", SqlParams);
             }
             catch (Exception ex)
@@ -366,6 +457,7 @@ namespace eTactWeb.Data.DAL
                                 MaxWipStock = Convert.ToInt32(dr["MaxWipStock"]),
                                 NeedSo = dr["NeedSo"].ToString(),
                                 BomRequired = dr["BomRequired"].ToString(),
+                                ChildBom = dr["ChildBom"].ToString(),
                                 JobWorkItem = dr["JobWorkItem"].ToString(),
                                 HSNNO = Convert.ToInt32(dr["HsnNo"]),
                                 CreatedBy = Convert.ToInt32(dr["CreatedBy"]),
@@ -479,6 +571,7 @@ namespace eTactWeb.Data.DAL
                         MaxWipStock = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[48]),
                         NeedSo = oDataSet.Tables[0].Rows[i].ItemArray[49].ToString(),
                         BomRequired = oDataSet.Tables[0].Rows[i].ItemArray[50].ToString(),
+                     
                         HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
                         JobWorkItem = oDataSet.Tables[0].Rows[i].ItemArray[51].ToString(),
                         CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
@@ -500,7 +593,25 @@ namespace eTactWeb.Data.DAL
                         ProdInWorkcenter = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[61]),
                         StoreName = oDataSet.Tables[0].Rows[i].ItemArray[70].ToString(),
                         SaleAccountName = oDataSet.Tables[0].Rows[i].ItemArray[71].ToString(),
-                        PurchaseAccountName = oDataSet.Tables[0].Rows[i].ItemArray[72].ToString()
+                        PurchaseAccountName = oDataSet.Tables[0].Rows[i].ItemArray[72].ToString(),
+                        BranchName = oDataSet.Tables[0].Rows[i].ItemArray[73].ToString(),
+                        NoOfCavity = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[74].ToString()),
+                        ProdInMachineGroupName= oDataSet.Tables[0].Rows[i].ItemArray[75].ToString(),
+                        ProdInMachineName1 = oDataSet.Tables[0].Rows[i].ItemArray[76].ToString(),
+                        ProdInMachineName2 = oDataSet.Tables[0].Rows[i].ItemArray[77].ToString(),
+                        ProdInMachineName3 = oDataSet.Tables[0].Rows[i].ItemArray[78].ToString(),
+                        ProdInMachineName4 = oDataSet.Tables[0].Rows[i].ItemArray[79].ToString(),
+                        NoOfshotsHours = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[80].ToString()),
+                        ChildBom = (oDataSet.Tables[0].Rows[i].ItemArray[81].ToString()),
+                        ProdInMachineGroupId = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[82].ToString()),
+                        ProdInMachine1 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[83].ToString()),
+                        ProdInMachine2 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[84].ToString()),
+                        ProdInMachine3 = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[85].ToString()),
+                        ProdInMachine4= Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[86].ToString())
+                       
+                        
+                        
+
                         //HSNNO = Convert.ToInt32(oDataSet.Tables[0].Rows[i].ItemArray[52]),
                         //CreatedByName = oDataSet.Tables[0].Rows[i].ItemArray[53].ToString(),
                         //CreatedOn = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()) ? new DateTime() : Convert.ToDateTime(oDataSet.Tables[0].Rows[i].ItemArray[54].ToString()),
@@ -626,6 +737,7 @@ namespace eTactWeb.Data.DAL
                 {
                     foreach (DataRow dr in oDataTable.Rows)
                     {
+                        string branchCsv = dr["Branch"].ToString(); // "Surat,Ahmedabad"
                         model.IsDelete = Convert.ToInt32(dr["IsDelete"]);
                         model.Item_Code = Convert.ToInt32(dr["Item_Code"]);
                         model.PartCode = dr["PartCode"].ToString();
@@ -677,6 +789,7 @@ namespace eTactWeb.Data.DAL
                         model.MaxWipStock = Convert.ToDecimal(dr["MaxWipStock"]);
                         model.NeedSo = dr["NeedSo"].ToString();
                         model.BomRequired = dr["BomRequired"].ToString();
+                        model.ChildBom = dr["ChildBom"].ToString();
                         model.JobWorkItem = dr["JobWorkItem"].ToString();
                         model.HSNNO = Convert.ToInt32(dr["HsnNo"]);
                         model.ItemServAssets = dr["ItemServAssets"].ToString();
@@ -693,8 +806,15 @@ namespace eTactWeb.Data.DAL
                         model.VoltageVlue = dr["VoltageValue"].ToString();
                         model.OldPartCode = dr["OldPartCode"].ToString();
                         model.SerialNo = dr["SerialNo"].ToString();
+                        model.Branch = branchCsv.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
+                        model.ProdInMachineGroup = dr["ProdInMachineGroup"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachineGroup"].ToString());
+                        model.ProdInMachine1 = dr["ProdInMachine1"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine1"].ToString());
+                        model.ProdInMachine2 = dr["ProdInMachine2"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine2"].ToString());
+                        model.ProdInMachine3 = dr["ProdInMachine3"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine3"].ToString());
+                        model.ProdInMachine4 = dr["ProdInMachine4"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine4"].ToString());
                         model.Package = dr["Package"].ToString();
-
+                        model.NoOfCavity = dr["NoOfCavity"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfCavity"].ToString());
+                        model.NoOfshotsHours = dr["NoOfshotsHours"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfshotsHours"].ToString());
 
                         if (!string.IsNullOrEmpty(dr["UpdatedByName"].ToString()))
                         {
@@ -747,6 +867,7 @@ namespace eTactWeb.Data.DAL
                     {
                         CommandType = CommandType.StoredProcedure
                     };
+                    string branchlist = string.Join(",", model.Branch   ?? new List<string>());
 
                     oCmd.Parameters.AddWithValue("@Flag", model.Mode);
                     oCmd.Parameters.AddWithValue("@Item_Code", model.Item_Code);
@@ -799,6 +920,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@MaxWipStock", model.MaxWipStock);
                     oCmd.Parameters.AddWithValue("@NeedSo", model.NeedSo);
                     oCmd.Parameters.AddWithValue("@BomRequired", model.BomRequired);
+                    oCmd.Parameters.AddWithValue("@ChildBom", model.ChildBom);
                     oCmd.Parameters.AddWithValue("@JobWorkItem", model.JobWorkItem);
                     oCmd.Parameters.AddWithValue("@HsnNo", model.HSNNO);
                     oCmd.Parameters.AddWithValue("@Active", model.Active);
@@ -813,7 +935,14 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@SerialNo", model.SerialNo);
                     oCmd.Parameters.AddWithValue("@OldPartCode", model.OldPartCode);
                     oCmd.Parameters.AddWithValue("@package", model.Package);
-
+                    oCmd.Parameters.AddWithValue("@Branch", branchlist);
+                    oCmd.Parameters.AddWithValue("@NoOfCavity", model.NoOfCavity);
+                    oCmd.Parameters.AddWithValue("@ProdInMachineGroup", model.ProdInMachineGroup);
+                    oCmd.Parameters.AddWithValue("@ProdInMachine1", model.ProdInMachine1);
+                    oCmd.Parameters.AddWithValue("@ProdInMachine2", model.ProdInMachine2);
+                    oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
+                    oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
+                    oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     if (model.Mode == "Update")
                     {

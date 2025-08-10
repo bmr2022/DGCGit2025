@@ -56,7 +56,19 @@ namespace eTactWeb.Controllers
             _MemoryCache = iMemoryCache;
             _ICommon = ICommon;
         }
+        public async Task<JsonResult> GetItemGroup()
+        {
+            var JSON = await _SaleBill.GetItemGroup();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
 
+        public async Task<JsonResult> GETGROUPWISEITEM(int Group_Code)
+        {
+            var JSON = await _SaleBill.GETGROUPWISEITEM(Group_Code);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> SaleBillList()
         {
             ViewData["Title"] = "Pending SaleBill List";
@@ -1279,6 +1291,8 @@ namespace eTactWeb.Controllers
             DTSSGrid.Columns.Add("BomNo", typeof(int));
             DTSSGrid.Columns.Add("CustJWmanadatory", typeof(string));
             DTSSGrid.Columns.Add("StockableNonStockable", typeof(string));
+            DTSSGrid.Columns.Add("ItemGroupCode", typeof(int));
+
             //DateTime DeliveryDt = new DateTime();
             foreach (var Item in DetailList)
             {
@@ -1349,6 +1363,7 @@ namespace eTactWeb.Controllers
                     Item.BomNo,
                     Item.CustJwAdjustmentMandatory ?? string.Empty,
                     Item.StockableNonStockable ?? string.Empty,
+                    Item.Group_Code == null ? 0 : Item.Group_Code,
                     });
             }
             DTSSGrid.Dispose();

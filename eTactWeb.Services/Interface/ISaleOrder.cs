@@ -35,6 +35,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> NewAmmEntryId(int YearCode);
 
         Task<ResponseResult> GetItemPartCode(string Code, string Flag);
+        Task<ResponseResult> GetItemGroup();
+        Task<ResponseResult> GETGROUPWISEITEM(int Group_Code);
 
 		Task<ResponseResult> GetExcelData(string Code);
 
