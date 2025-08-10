@@ -140,12 +140,14 @@ namespace eTactWeb.Controllers
                 }
                 else if (PageName == "CreditNote")
                 {
-                    string modelJson = HttpContext.Session.GetString("CreditNoteModel");
+                    string modelJson = HttpContext.Session.GetString("CreditNoteModel");    
                     if (!string.IsNullOrEmpty(modelJson))
                     {
                         MainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelJson);
                     }
+                    MainModel.AccountCode = AccountCode;
                     DbCrGridd = GetCNDbCrDetailTable(MainModel);
+                    HttpContext.Session.SetString("CreditNoteModel", JsonConvert.SerializeObject((AccCreditNoteModel)MainModel));
                     //TdsGridd = GetTDSDetailTableForDPB(TdsGrid, MainModel);
                 }
                 else if (PageName == "PurchaseRejection")

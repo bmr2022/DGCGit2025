@@ -332,7 +332,7 @@
 		});
 
 		$('.submitBTN').click(function (e) {
-			debugger
+			 
 			console.log("SubmitButton Click");
 			e.preventDefault();
 			//$(this).off('click');
@@ -402,7 +402,7 @@
 		$('#ShowAllCust').change(function () {
 			FillCustomerList();
 		});
-		debugger
+		 
 		$('#ShowAllEmp').change(function () {
 			FillNewSalesEmpName();
 			FillNewSalesCode();
@@ -631,7 +631,7 @@
 
 		function FillOldSalesEmpName() {
 			//var ShowAllEmp = $('#ShowAllOldEmp').is(':checked') ? "Y" : "N";
-			debugger
+			 
 			if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 				var ShowAllEmp = "Y";
 			}
@@ -936,7 +936,7 @@
 		// }
 
 		function FillDesignation() {
-			debugger
+			 
 			var NewSalesEmpId = $('#NewSalesEmpName').val();
 			var OldSalesEmpId = $('#OldSalesEmpName').val();
 			if (!$('#OldSalesEmpName').val() && !$('#NewSalesEmpName').val()) {

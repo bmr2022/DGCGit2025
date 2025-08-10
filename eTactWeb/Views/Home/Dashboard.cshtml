@@ -1907,7 +1907,7 @@
     <script>
 
         $(".table-link").on("click", function () {
-            debugger
+             
             var approvalType = $(this).data("approvaltype"); // get data-approvalType
             if (approvalType) {
                 $("#ApprovalTypeHidden").val(approvalType); // set value in hidden input
@@ -2366,7 +2366,7 @@
         }
 
         function FillNoOfItemInStock() {
-            debugger
+             
             $.ajax({
                 url: '@Url.Action("NoOfItemInStock", "XONDashboard")',
                 type: 'POST',
@@ -3997,7 +3997,7 @@
                 async: false,
                 data: {},
                 success: function (response, status, error) {
-                    debugger
+                     
                     var obj = $.parseJSON(response);
                     if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
                         if ($('#RefreshSalesAllData').val() == "false") {

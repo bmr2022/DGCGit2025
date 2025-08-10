@@ -2372,7 +2372,7 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                            debugger
+                             
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -3283,7 +3283,7 @@
 }
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-            debugger;
+             ;
             e.preventDefault();
 
             ValidateSubmitWrapper(function (isValid) {
@@ -3369,7 +3369,7 @@
         var EditEachItem = false;
         var EditDeleteBatchValidation = false;
         function EditItemRows(SeqNo) {
-            debugger
+             
             var RowCount = $('#divSaleBillList tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");

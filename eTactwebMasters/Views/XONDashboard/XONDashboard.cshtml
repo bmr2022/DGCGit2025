@@ -987,7 +987,7 @@
 				async: false,
 				data: {},
 				success: function (response, status, error) {
-					debugger
+					 
 					var obj = $.parseJSON(response);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						if ($('#RefreshSalesAllData').val() == "false") {

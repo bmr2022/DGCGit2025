@@ -91,9 +91,22 @@ namespace eTactWeb.Controllers
                 List<AccCreditNoteDetail> creditNotelModel = new List<AccCreditNoteDetail>();
                 if (!string.IsNullOrEmpty(modelCreditJson))
                 {
-                    creditNotelModel = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelCreditJson);
+                    if (modelCreditJson.TrimStart().StartsWith("["))
+                    {
+                        // JSON is an array
+                        creditNotelModel = JsonConvert.DeserializeObject<List<AccCreditNoteDetail>>(modelCreditJson);
+                    }
+                    else
+                    {
+                        // JSON is a full model
+                        var mainModel = JsonConvert.DeserializeObject<AccCreditNoteModel>(modelCreditJson);
+                        creditNotelModel = mainModel?.AccCreditNoteDetails ?? new List<AccCreditNoteDetail>();
+                    }
                 }
-
+                else
+                {
+                    creditNotelModel = new List<AccCreditNoteDetail>();
+                }
                 var MainModel = new AccCreditNoteModel();
                 var creditNoteDetail = new List<AccCreditNoteDetail>();
                 var rangeSaleBillGrid = new List<AccCreditNoteDetail>();
@@ -128,6 +141,7 @@ namespace eTactWeb.Controllers
 
                     MainModel.AccCreditNoteDetails = creditNoteDetail;
                     MainModel.ItemDetailGrid = creditNoteDetail;
+
                     string serializedCreditGrid = JsonConvert.SerializeObject(MainModel);
                     HttpContext.Session.SetString("CreditNoteModel", serializedCreditGrid);
                     MainModel.AccCreditNoteDetails = creditNoteDetail;
@@ -166,7 +180,7 @@ namespace eTactWeb.Controllers
         [HttpPost]
         [Route("{controller}/Index")]
         public async Task<IActionResult> CreditNote(AccCreditNoteModel model)
-        {
+        {  
             try
             {
                 var CNGrid = new DataTable();
@@ -201,9 +215,9 @@ namespace eTactWeb.Controllers
                 }
                 string modelDrCrJson = HttpContext.Session.GetString("KeyDrCrGrid");
                 List<DbCrModel> DrCrGrid = new List<DbCrModel>();
-                if (!string.IsNullOrEmpty(modelTaxJson))
+                if (!string.IsNullOrEmpty(modelDrCrJson))
                 {
-                    DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(modelTaxJson);
+                    DrCrGrid = JsonConvert.DeserializeObject<List<DbCrModel>>(modelDrCrJson);
                 }
 
                 if (CreditNoteDetail == null)
@@ -303,16 +317,6 @@ namespace eTactWeb.Controllers
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
-                            var errNum = Result.Result.Message.ToString().Split(":")[1];
-                            model.adjustmentModel = model.adjustmentModel ?? new AdjustmentModel();
-                            if (errNum == " 2627")
-                            {
-                                ViewBag.isSuccess = false;
-                                TempData["2627"] = "2627";
-                                _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
-
-                                return View(model);
-                            }
 
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
