@@ -274,7 +274,10 @@ namespace eTactWeb.Controllers
 					}
 					else
 					{
-						int nextSeqNo = GridDetail.Count > 0 ? GridDetail.Max(x => x.SeqNo) + 1 : 1;
+						//int nextSeqNo = GridDetail.Count > 0 ? GridDetail.Max(x => x.SeqNo) + 1 : 1;
+						int nextSeqNo = Enumerable.Range(1, GridDetail.Count + 1)
+							   .Except(GridDetail.Select(x => x.SeqNo))
+							   .First();
 						model.SeqNo = nextSeqNo;
 
 						GridDetail.Add(model);

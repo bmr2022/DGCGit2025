@@ -55,7 +55,8 @@ public class Common
         public dynamic? Result { get; set; }
         public HttpStatusCode StatusCode { get; set; }
         public string? StatusText { get; set; }
-    }
+		public object Rows { get; set; }
+	}
 
     public class TaxModel : TimeStamp
     {
