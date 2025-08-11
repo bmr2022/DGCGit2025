@@ -1474,7 +1474,7 @@
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("GetItemRate")",
-                    data: { ItemCode: $('#ItemCode').val(), TillDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#uniquebatchno').val(), accountcode: $('#AccountCode').val() },
+                    data: { ItemCode: $('#ItemCode').val(), TillDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo option:selected').text().trim(), UniqueBatchNo: $('#uniquebatchno option:selected').text().trim(), accountcode: $('#AccountCode').val() },
                     dataType: "json",
                     async: false,
                     success: function (result, status, error) {
@@ -2710,7 +2710,7 @@
                 $.ajax({
                     type: "POST",
                     url: "@Url.Action("GetBatchStockQty")",
-                    data: { ItemCode: $('#ItemCode').val(), StoreId: $('#Storeid').val(), TillDate: $('#ChallanDate').val(), BatchNo: $('#BatchNo').val(), UniqueBatchNo: $('#uniquebatchno').val() },
+                data: { ItemCode: $('#ItemCode').val(), StoreId: $('#Storeid').val(), TillDate: $('#ChallanDate').val(), BatchNo: $('#BatchNo option:selected').text().trim(), UniqueBatchNo: $('#uniquebatchno option:selected').text().trim() },
                     dataType: "json",
                     async: false,
                     success: function (result, status, error) {
@@ -2767,7 +2767,7 @@
                     type: "POST",
                     /* url: '@Url.Action("GetBatchNumber")', */
                     url: '@Url.Action("FillStockBatchNo", "InterStoreTransfer")',
-                    data: { StoreId: $('#Storeid').val(), StoreName: $('#Storeid').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo').val() },
+                    data: { StoreId: $('#Storeid').val(), StoreName: $('#Storeid').find(':selected').text(), ItemCode: $('#ItemCode').val(), TransDate: $('#ChallanDate').val(), YearCode: $('#YearCode').val(), BatchNo: $('#BatchNo option:selected').text().trim() },
                     dataType: "json",
                     success: function (result, status, error) {
 
