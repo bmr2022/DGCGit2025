@@ -103,7 +103,7 @@ namespace eTactWeb.Data.DAL
                                                        PartCode = string.IsNullOrEmpty(dr["PartCode"].ToString()) ? "" : dr["PartCode"].ToString(),
                                                        ItemName = string.IsNullOrEmpty(dr["ItemName"].ToString()) ? "" : dr["ItemName"].ToString(),
                                                        FOC = string.IsNullOrEmpty(dr["FOC"].ToString()) ? "" : dr["FOC"].ToString(),
-
+                                                       AcceptedQty = string.IsNullOrEmpty(dr["OkQty"].ToString()) ? 0 : Convert.ToDecimal(dr["OkQty"].ToString()),
                                                        BillQty = Convert.ToDecimal(dr["BillQty"].ToString()),
                                                        RecQty = Convert.ToDecimal(dr["RecQty"].ToString()),
                                                        ShortExcessQty = Convert.ToDecimal(dr["ShortExcessQty"].ToString()),

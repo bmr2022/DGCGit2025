@@ -99,6 +99,10 @@ else
                         Rec Qty  </th>
                     <th data-columnno="13" data-sortorder="asc" class="sortCol">
                         <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                        OK Qty
+                    </th>
+                    <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                        <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
                         Short/Excess Qty
                     </th>
                     <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
@@ -215,6 +219,7 @@ else
                                 <td>@item.ItemName</td>
                                 <td id="opnStk-@Cntr">@item.BillQty</td>
                                 <td id="recQty-@Cntr">@item.RecQty</td>
+                                <td id="">@item.AcceptedQty</td>
                                 <td id="shortexcessQty-@Cntr">@item.ShortExcessQty</td>
                                  <td>@item.Unit</td>
                                 <td>@item.Rate</td>
