@@ -42,6 +42,7 @@ else
                     <th data-columnno="22" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>1stlvlApproved</th>
                     <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>1stlvlApprovedBy</th>
                     <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>EnntryByMachine</th>
+                    <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>POComplete</th>
 
                 </tr>
             </thead>
@@ -114,7 +115,7 @@ else
                                                 </a>
                                             </div>
                                         }
-                                        @if (@item.Approved == "Y" || item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || item.YearCode != yearCode)
+                                        @if (@item.Approved == "Y" || item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || item.YearCode != yearCode || @item.POComplete =="Y")
                                         {
                                             <div>
                                                 <a class="table-link link-primary noCursor">
@@ -136,7 +137,7 @@ else
                                                 </a>
                                             </div>
                                         }
-                                        @if (@item.Approved == "Y" || item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || item.YearCode != yearCode)
+                                        @if (@item.Approved == "Y" || item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || item.YearCode != yearCode || @item.POComplete == "Y")
                                         {
                                             <div>
                                                 <a class="table-link link-danger noCursor">
@@ -205,6 +206,7 @@ else
                                 <td>@item.Approval1Levelapproved</td>
                                 <td>@item.EnteredBy</td>
                                 <td>@item.EntryByMachineName</td>
+                                <td>@item.POComplete</td>
 
 
                             </tr>

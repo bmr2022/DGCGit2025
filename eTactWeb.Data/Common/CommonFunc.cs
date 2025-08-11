@@ -660,7 +660,7 @@ public static class CommonFunc
               typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName"
               && typeProperty.PropertyInfo.Name != "DeliveryDate" && typeProperty.PropertyInfo.Name != "PODashboard" && typeProperty.PropertyInfo.Name != "PONoList"
               && typeProperty.PropertyInfo.Name != "PSDashboard"
-              && typeProperty.PropertyInfo.Name != "POComplete"
+              //&& typeProperty.PropertyInfo.Name != "POComplete"
                && typeProperty.PropertyInfo.Name != "ApprovedDate"
                //&& typeProperty.PropertyInfo.Name != "Approved"
                && typeProperty.PropertyInfo.Name != "SchQty"
@@ -712,7 +712,7 @@ public static class CommonFunc
               && typeProperty.PropertyInfo.Name != "FromDate" && typeProperty.PropertyInfo.Name != "ToDate" && typeProperty.PropertyInfo.Name != "Mode" &&
               typeProperty.PropertyInfo.Name != "PartCode" && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "ApproveAmm" && typeProperty.PropertyInfo.Name != "Approval1Levelapproved"
               && typeProperty.PropertyInfo.Name != "DeliveryDate" && typeProperty.PropertyInfo.Name != "PODashboard" && typeProperty.PropertyInfo.Name != "PONoList"
-              && typeProperty.PropertyInfo.Name != "PSDashboard" && typeProperty.PropertyInfo.Name != "POComplete"
+              && typeProperty.PropertyInfo.Name != "PSDashboard" //&& typeProperty.PropertyInfo.Name != "POComplete"
                && typeProperty.PropertyInfo.Name != "ApprovedDate" && typeProperty.PropertyInfo.Name != "Approved" && typeProperty.PropertyInfo.Name != "SchQty" && typeProperty.PropertyInfo.Name != "UserName" && typeProperty.PropertyInfo.Name != "DashboardType"
                      && typeProperty.PropertyInfo.Name != "QuotNo" && typeProperty.PropertyInfo.Name != "QuotYear" && typeProperty.PropertyInfo.Name != "BasicAmount"
                      && typeProperty.PropertyInfo.Name != "NetAmount" && typeProperty.PropertyInfo.Name != "RateInOtherCurr"

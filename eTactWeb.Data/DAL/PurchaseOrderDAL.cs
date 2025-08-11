@@ -572,7 +572,7 @@ public class PurchaseOrderDAL
                     "POTypeServItem", "CC", "OrderType", "PaymentTerms", "POCloseDate", "PODate", "VendorName", "VendorAddress", "YearCode", "Approved",
                   "CreatedBy", "UpdatedBy", "Active", "UpdatedOn", "CreatedOn", "OrderAmt", "OrderNetAmt",
                   "Approval1Levelapproved", "ApproveAmm", "AmmNo", "EnteredBy", "UpdatedByName", "DeliveryTerms", "ApproveddByEmp", "ApproveddByLevel1Emp",
-                  "EntryByMachineName");
+                  "EntryByMachineName","POComplete");
                 oDT.TableName = "PODASHBOARD";
 
 
@@ -738,7 +738,7 @@ public class PurchaseOrderDAL
                         "WEF", "POCloseDate", "OrderType", "POType", "POFor", "POTypeServItem", "Currency", "ItemName", "rate", "OldRate",
                          "POQty", "PendQty", "unit", "DiscPer", "DiscRs", "Amount", "AltPOQty", "PendAltQty", "AltUnit", "AdditionalRate", "HSNNo", "TolLimitQty",
                          "TolLimitPercentage", "Description", "orderamt", "OrderNetAmt", "ApproveddByEmp", "ApprovedDate", "ActualEntryBY", "ApproveAmm", "EntryID", "YearCode",
-                         "Branch", "DeliveryTerms", "PaymentTerms", "UpdatedBy", "UpdatedOn");
+                         "Branch", "DeliveryTerms", "PaymentTerms", "UpdatedBy", "UpdatedOn","POComplete");
 
                         //var oDT = ResponseResult.Result.DefaultView.ToTable(true, "EntryID", "AmmNo", "PONo", "POType", "POFor", "YearCode", "FOC", "Currency",
                         //"POTypeServItem", "CC", "OrderType", "PaymentTerms", "POCloseDate", "PODate", "VendorName", "VendorAddress", "WEF", "Approved",
