@@ -19,7 +19,7 @@
 				<h5>
 					<strong>Machine Group Master</strong>
 					<span class="d-flex float-end" style="margin-top:-2px;">
-						<a asp-controller="MachineGroupMaster" asp-action="MachineGroupMasterMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+						<a asp-controller="MachineGroupMaster" asp-action="MachineGroupMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
 							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
 							Dashboard
 						</a>
@@ -93,14 +93,54 @@
 									<input asp-for="EntryDate" class="form-control" readonly />
 									</div>
 									
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
+									@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
 									<label asp-for="MachineGroup" class="form-label">Machine Group</label>
 									<input type="hidden" asp-for="MachineId" />
 									<select class="form-select" asp-for="MachineGroup">
 											<option value="">-Select-</option>
 										</select>
+									</div> *@
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="MachineGroup" class="form-label">Machine Group</label>
+										
+										<input asp-for="MachineGroup" class="form-control"  />
 									</div>
-									
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="ApprovedByEmpId" class="form-label">ApprovedBy</label>
+										<input type="hidden" asp-for="ApprovedByEmpId" />
+										<input asp-for="ApprovedByEmpName" class="form-control" readonly />
+									</div>
+
+
+
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="CC" class="form-label">CC</label>
+										<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
+									</div>
+
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="ActualEntryBy" class="form-label">Actual Entry By</label>
+										<input asp-for="ActualEntryByName " class="form-control" readonly />
+									</div>
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
+										<input asp-for="ActualEntryDate " class="form-control" readonly />
+									</div>
+
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="LastUpdatedByName" class="form-label">Updated By</label>
+										<input type="hidden" asp-for="LastUpdatedBy" />
+										<input asp-for="LastUpdatedByName" class="form-control" readonly />
+									</div>
+
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="LastUpdationDate" class="form-label">UpdationDate</label>
+										<input asp-for="LastUpdationDate" class="form-control" readonly />
+									</div>
+									<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+										<label asp-for="EntryByMachine" class="form-label">Machine Name</label>
+										<input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+									</div>
 								</div>
 							</div>
 							<div class="accordion-item">
@@ -115,42 +155,7 @@
 										<div class="row g-2 gx-3" id="_ItemGrid">
 
 											
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ApprovedByEmpId" class="form-label">ApprovedBy</label>
-												<input type="hidden" asp-for="ApprovedByEmpId" />
-												<input asp-for="ApprovedByEmpName" class="form-control" readonly />
-											</div>
-
-
-
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="CC" class="form-label">CC</label>
-												<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
-											</div>
-
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ActualEntryBy" class="form-label">Actual Entry By</label>
-												<input asp-for="ActualEntryByName " class="form-control" readonly />
-											</div>
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ActualEntryDate" class="form-label">Actual Entry Date</label>
-												<input asp-for="ActualEntryDate " class="form-control" readonly />
-											</div>
-
-										<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-											<label asp-for="LastUpdatedByName" class="form-label">Updated By</label>
-											<input type="hidden" asp-for="LastUpdatedBy" />
-											<input asp-for="LastUpdatedByName" class="form-control" readonly />
-										</div>
-
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="LastUpdationDate" class="form-label">UpdationDate</label>
-											<input asp-for="LastUpdationDate" class="form-control" readonly />
-											</div>
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="EntryByMachine" class="form-label">Machine Name</label>
-												<input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
-											</div>
+											
 
 										</div>
 									</div>
@@ -232,11 +237,26 @@
 				FillEntryID();
 				TotalNoOfRows();
 			}
-			FillMachineGroup();
-			$('#DiscountCustCatEntryId').rules("remove", "required");
+			//FillMachineGroup();
+			$('#EntryId').rules("remove", "required");
+			$('#YearCode').rules("remove", "required");
+			$('#EntryDate').rules("remove", "required");
+			$('#MachineGroup').rules("remove", "required");
+			$('#MachineId').rules("remove", "required");
+			$('#ApprovedByEmpId').rules("remove", "required");
+			$('#ApprovedByEmpName').rules("remove", "required");
+			$('#CC').rules("remove", "required");
+			$('#ActualEntryBy').rules("remove", "required");
+			$('#ActualEntryByName').rules("remove", "required");
+			$('#ActualEntryDate').rules("remove", "required");
+			$('#LastUpdatedBy').rules("remove", "required");
+			$('#LastUpdatedBy').rules("remove", "required");
+			$('#LastUpdatedByName').rules("remove", "required");
+			$('#EntryByMachine').rules("remove", "required");
+			$('#Mode').rules("remove", "required");
+			$('#MachineName').rules("remove", "required");
 
-
-			$('#MachineGroup').select2();
+			//$('#MachineGroup').select2();
 
 			$('#totalRows').text($('#divStockGrid tr').length);
 

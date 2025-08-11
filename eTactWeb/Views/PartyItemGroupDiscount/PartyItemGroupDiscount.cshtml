@@ -94,8 +94,8 @@
 										<input asp-for="EntryDate" class="form-control" />
 									</div>
 									
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;">
-										<label asp-for="AccountName" class="form-label">Party Name</label>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:250px;" >
+										<label asp-for="AccountName" class="form-label" style="color:red;">Party Name*</label>
 										<input type="hidden" asp-for="AccountCode" />
 										<select class="form-select" asp-for="AccountName" style="width:230px;">
 											<option value="">-Select-</option>
@@ -104,7 +104,7 @@
 									
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="CategoryName" class="form-label">Category Name</label>
+										<label asp-for="CategoryName" class="form-label" style="color:red;">Category Name</label>
 										<input type="hidden" asp-for="CategoryId" />
 										<select class="form-select" asp-for="CategoryName">
 											<option value="">-Select-</option>
@@ -359,6 +359,10 @@
 
 			$('.submitBTN').click(function (e) {
 				console.log("SubmitButton Click");
+				if ($('#divPartyItemGroupDiscountGrid tr').length === 0) {
+					$.notify("Please add at least one row in the grid before submitting.", "error");
+					return; 
+				}
 				e.preventDefault();
 				$('form').submit();
 			});
@@ -374,6 +378,11 @@
 				// Regex: start to end, digits optionally with one decimal point and digits after
 				if (!/^\d*\.?\d*$/.test(value)) {
 					$.notify("Please enter a valid positive number only.", "error");
+					$(this).val('');
+					return;
+				}
+				if (parseFloat(value) > 100) {
+					$.notify("Discount cannot be more than 100%", "error");
 					$(this).val('');
 					return;
 				}
