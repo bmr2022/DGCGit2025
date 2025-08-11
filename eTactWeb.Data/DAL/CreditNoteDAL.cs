@@ -31,8 +31,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
 
                 SqlParams.Add(new SqlParameter("@Flag", "VIEWBYID"));
-                SqlParams.Add(new SqlParameter("@EntryID", ID));
-                SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@CreditNoteEntryId", ID));
+                SqlParams.Add(new SqlParameter("@CreditNoteYearCode", YearCode));
                 var _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSP_CreditNoteMainDetail", SqlParams);
 
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
@@ -61,9 +61,9 @@ namespace eTactWeb.Data.DAL
             DS.Tables[0].TableName = "CreditNoteModel";
             DS.Tables[1].TableName = "CreditNoteDetail";
             DS.Tables[2].TableName = "CreditNoteAgainstBillGrid";
-            DS.Tables[2].TableName = "CreditNoteTaxDetail";
-            DS.Tables[3].TableName = "DRCRDetail";
-            DS.Tables[4].TableName = "AdjustmentDetail";
+            DS.Tables[3].TableName = "CreditNoteTaxDetail";
+            DS.Tables[4].TableName = "DRCRDetail";
+            DS.Tables[5].TableName = "AdjustmentDetail";
             int cnt = 0;
 
             model.CreditNoteEntryId = DS.Tables[0].Rows[0]["CreditNoteEntryId"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["CreditNoteEntryId"]) : 0;
@@ -162,9 +162,9 @@ namespace eTactWeb.Data.DAL
                 model.ItemDetailGrid = creditNoteGrid;
             }
 
-              if (DS.Tables.Count != 0 && DS.Tables[1].Rows.Count > 0)
+              if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
             {
-                foreach (DataRow row in DS.Tables[1].Rows)
+                foreach (DataRow row in DS.Tables[2].Rows)
                 {
                     creditNoteAgainstBillGrid.Add(new AccCreditNoteAgainstBillDetail
                     {
@@ -212,20 +212,20 @@ namespace eTactWeb.Data.DAL
                 model.AccCreditNoteAgainstBillDetails = creditNoteAgainstBillGrid;
             }
 
-            if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
+            if (DS.Tables.Count != 0 && DS.Tables[3].Rows.Count > 0)
             {
-                foreach (DataRow row in DS.Tables[2].Rows)
+                foreach (DataRow row in DS.Tables[3].Rows)
                 {
                     TaxGrid.Add(new TaxModel
                     {
                         TxSeqNo = row["SeqNo"] != DBNull.Value ? Convert.ToInt32(row["SeqNo"]) : 0,
                         TxType = row["Type"]?.ToString(),
                         TxPartName = row["PartCode"]?.ToString(),
-                        TxItemName = row["Item_Name"]?.ToString(),
+                        TxItemName = row["itemName"]?.ToString(),
                         TxItemCode = row["ItemCode"] != DBNull.Value ? Convert.ToInt32(row["ItemCode"]) : 0,
                         TxTaxTypeName = row["TaxTypeID"]?.ToString(),
                         TxAccountCode = row["TaxAccountCode"] != DBNull.Value ? Convert.ToInt32(row["TaxAccountCode"]) : 0,
-                        TxAccountName = row["TaxAccountName"]?.ToString(),
+                        TxAccountName = row["TaxName"]?.ToString(),
                         TxPercentg = row["TaxPer"] != DBNull.Value ? Convert.ToDecimal(row["TaxPer"]) : 0,
                         TxRoundOff = row["RoundOff"]?.ToString(),
                         TxAmount = row["Amount"] != DBNull.Value ? Convert.ToDecimal(row["Amount"]) : 0,
@@ -242,6 +242,32 @@ namespace eTactWeb.Data.DAL
             {
                 var cnt1 = 1;
                 foreach (DataRow row in DS.Tables[4].Rows)
+                {
+                    DRCRGrid.Add(new DbCrModel
+                    {
+                        AccountCode = row["Accountcode"] != DBNull.Value ? Convert.ToInt32(row["Accountcode"]) : 0,
+                        AccountName = row["Account_Name"]?.ToString(),
+                        DrAmt = row["DrAmt"] != DBNull.Value ? Convert.ToInt32(row["DrAmt"]) : 0,
+                        CrAmt = row["CrAmt"] != DBNull.Value ? Convert.ToInt32(row["CrAmt"]) : 0,
+                        AccEntryId = row["AccEntryId"] != DBNull.Value ? Convert.ToInt32(row["AccEntryId"]) : 0,
+                        AccYearCode = row["AccYearCode"] != DBNull.Value ? Convert.ToInt32(row["AccYearCode"]) : 0,
+                        VoucherNo = row["BillVouchNo"]?.ToString(),
+                    });
+                    cnt1++;
+                }
+
+                if (model.DRCRGrid == null)
+                {
+                    model.DRCRGrid = new DbCrModel();
+                }
+
+                model.DRCRGrid.DbCrDetailGrid = DRCRGrid;
+            }
+
+            if (DS.Tables.Count != 0 && DS.Tables[5].Rows.Count > 0)
+            {
+                var cnt1 = 1;
+                foreach (DataRow row in DS.Tables[5].Rows)
                 {
                     adjustGrid.Add(new AdjustmentModel
                     {
@@ -580,7 +606,6 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", CNGrid));
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
-
                 SqlParams.Add(new SqlParameter("@DRCRDATA", DrCrDetailDT));
                 SqlParams.Add(new SqlParameter("@AgainstRef", AdjDetailDT));
                 SqlParams.Add(new SqlParameter("@dtAgaintBillNo", DTAgainstBillDetail));

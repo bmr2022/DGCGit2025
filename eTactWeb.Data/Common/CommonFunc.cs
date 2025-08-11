@@ -513,7 +513,7 @@ public static class CommonFunc
                                  && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "EID"
                                  && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "Mode"
                                  && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "UpdatedBy"
-                                 && typeProperty.PropertyInfo.Name != "UpdatedOn"
+                                 && typeProperty.PropertyInfo.Name != "UpdatedOn" && typeProperty.PropertyInfo.Name != "DRCRGrid"
                                     )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

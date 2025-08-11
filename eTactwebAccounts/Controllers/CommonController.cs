@@ -612,7 +612,7 @@ namespace eTactWeb.Controllers
                     Math.Round(Item.CRNRate, 2, MidpointRounding.AwayFromZero), // creditnote rate
                     Math.Round(Item.DiscountPer, 2, MidpointRounding.AwayFromZero),
                     Math.Round(Item.DiscountAmt, 2, MidpointRounding.AwayFromZero), //DisRs
-                    Math.Round(Item.Amount ?? 0, 2, MidpointRounding.AwayFromZero),
+                    Math.Round(Item.Amount , 2, MidpointRounding.AwayFromZero),
                     "CR",
                         });
                 }

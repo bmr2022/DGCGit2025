@@ -103,6 +103,7 @@ namespace eTactWeb.DOM.Models
         public string ItemSize { get; set; } = string.Empty;
         public string ItemDescription { get; set; } = string.Empty;
         public string Remark { get; set; } = string.Empty;
+        public DbCrModel DRCRGrid { get; set; }
     }
     public class AccCreditNoteAgainstBillDetail : TaxModel
     {
@@ -124,27 +125,27 @@ namespace eTactWeb.DOM.Models
         public int ItemCode { get; set; }
         public string PartCode { get; set; }
         public string ItemName { get; set; }
-        public float? BillQty { get; set; }
+        public float BillQty { get; set; }
         public string? Unit { get; set; }
-        public float? BillRate { get; set; }
-        public float? DiscountPer { get; set; }
-        public float? DiscountAmt { get; set; }
+        public float BillRate { get; set; }
+        public float DiscountPer { get; set; }
+        public float DiscountAmt { get; set; }
         public string? ItemSize { get; set; }
-        public decimal? Amount { get; set; }
+        public decimal Amount { get; set; }
         public string? PONO { get; set; }
         public string? PODate { get; set; }
-        public int? POEntryId { get; set; }
-        public int? POYearCode { get; set; }
-        public float? PoRate { get; set; }
+        public int POEntryId { get; set; }
+        public int POYearCode { get; set; }
+        public float PoRate { get; set; }
         public string? PoAmmNo { get; set; }
         public string? SONO { get; set; }
-        public int? SOYearCode { get; set; }
+        public int SOYearCode { get; set; }
         public string? SODate { get; set; }
         public string? CustOrderNo { get; set; }
-        public int? SOEntryId { get; set; }
+        public int SOEntryId { get; set; }
         public string? BatchNo { get; set; }
         public string? UniqueBatchNo { get; set; }
-        public float? AltQty { get; set; }
+        public float AltQty { get; set; }
         public string? AltUnit { get; set; }
 
         [Column(TypeName = "decimal(10, 4)")]

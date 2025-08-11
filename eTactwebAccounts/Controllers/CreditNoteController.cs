@@ -71,6 +71,9 @@ namespace eTactWeb.Controllers
             var taxGrid = model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd;
             string serializedTaxGrid = JsonConvert.SerializeObject(taxGrid);
             HttpContext.Session.SetString("KeyTaxGrid", serializedTaxGrid);
+            var drCrGrid = model.DRCRGrid == null ? new DbCrModel() : model.DRCRGrid;
+            string serializedDrCrGrid = JsonConvert.SerializeObject(drCrGrid);
+            HttpContext.Session.SetString("KeyDrCrGrid", serializedDrCrGrid);
             string serializedCreditGrid = JsonConvert.SerializeObject(model.AccCreditNoteDetails);
             HttpContext.Session.SetString("CreditNoteModel", serializedCreditGrid);
             HttpContext.Session.SetString("CreditNote", JsonConvert.SerializeObject(model));
@@ -572,37 +575,37 @@ namespace eTactWeb.Controllers
                     Item.AgainstSaleBillDate == null ? string.Empty : (Item.AgainstSaleBillDate.Split(" ")[0]),
                     Item.AgainstSaleBillEntryId,
                     Item.AgainstSaleBillVoucherNo,
-                    Item.SaleBillType,
+                    Item.SaleBillType == null ? string.Empty : Item.SaleBillType,
                     Item.AgainstPurchaseBillBillNo,
                     Item.AgainstPurchaseBillYearCode,
                     Item.AgainstPurchaseBillDate == null ? string.Empty : (Item.AgainstPurchaseBillDate.Split(" ")[0]),
                     Item.AgainstPurchaseBillEntryId,
                     Item.AgainstPurchaseVoucherNo,
-                    Item.PurchaseBillType,
+                    Item.PurchaseBillType == null ? string.Empty : Item.SaleBillType,
                     Item.ItemCode, //CreditNoteItemCode
                     Item.ItemCode, // BillItemCode
                     Item.BillQty,
-                    Item.Unit,
+                    Item.Unit == null ? string.Empty : Item.Unit,
                     Item.AltQty,
-                    Item.AltUnit,
+                    Item.AltUnit == null ? string.Empty : Item.AltUnit,
                     Item.BillRate,
                     Item.DiscountPer,
                     Item.DiscountAmt,
-                    Item.ItemSize,
+                    Item.ItemSize == null ? string.Empty : Item.ItemSize,
                     Item.Amount,
-                    Item.PONO,
+                    Item.PONO == null ? string.Empty : Item.PONO,
                     Item.PODate == null ? string.Empty :(Item.PODate.Split(" ")[0]),
                     Item.POEntryId,
                     Item.POYearCode,
                     Item.PoRate,
-                    Item.PoAmmNo,
-                    Item.SONO,
+                    Item.PoAmmNo == null ? string.Empty : Item.PoAmmNo,
+                    Item.SONO == null ? string.Empty : Item.SONO,
                     Item.SOYearCode,
                     Item.SODate == null ? string.Empty : (Item.SODate.Split(" ")[0]),
-                    Item.CustOrderNo,
+                    Item.CustOrderNo == null ? string.Empty : Item.CustOrderNo,
                     Item.SOEntryId,
-                    Item.BatchNo,
-                    Item.UniqueBatchNo
+                    Item.BatchNo == null ? string.Empty : Item.BatchNo,
+                    Item.UniqueBatchNo == null ? string.Empty : Item.UniqueBatchNo
                     });
             }
             DTSSGrid.Dispose();
@@ -737,7 +740,7 @@ namespace eTactWeb.Controllers
                    Item.AgainstSaleBillDate == null ? string.Empty : ParseFormattedDate(Item.AgainstSaleBillDate),
                    Item.AgainstSaleBillEntryId,
                    Item.AgainstSaleBillVoucherNo ?? string.Empty,
-                   Item.SaleBillType ?? string.Empty,
+                   Item.SaleBillType == null ? string.Empty : Item.SaleBillType,
                    Item.AgainstPurchaseBillBillNo ?? string.Empty,
                    Item.AgainstPurchaseBillYearCode,
                    Item.AgainstPurchaseBillDate == null ? string.Empty : ParseFormattedDate(Item.AgainstPurchaseBillDate),

@@ -668,8 +668,13 @@
                             $('#SubVoucherName').append('<option value="0">-Select-</option>');
                             if (obj.StatusCode != 500) {
                                 $.each(obj.Result.Table, function (index, val) {
-                                    $('#SubVoucherName').append("<option value=" + val.PrefixEntryId + ">" + val.SubVoucherName + "</option>");
+                                    $('#SubVoucherName').append("<option value=" + val.SubVoucherName + ">" + val.SubVoucherName + "</option>");
                                 });
+                                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                    var SubVoucherName = "@Model.SubVoucherName";
+                                    $('#SubVoucherName').val(SubVoucherName).trigger("change");
+                                }
                             }
                         }
                     }
@@ -1585,6 +1590,11 @@
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#AccountCode').append("<option value=" + val.account_code + ">" + val.CustomerName + "</option>");
                                 });
+                                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                                    var AccountCode ="@Model.AccountCode";
+                                    $('#AccountCode').val(AccountCode).trigger("change");
+                                }
                             }
                         }
                     }
