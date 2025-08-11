@@ -161,9 +161,9 @@ namespace eTactWeb.Controllers
             }
         }
 
-        public async Task<IActionResult> DeleteByID(int ID, int YC,int accountCode, string entryByMachineName)
+        public async Task<IActionResult> DeleteByID(int ID, int YearCode, int accountCode, string entryByMachineName)
         {
-            var Result = await _creditNote.DeleteByID(ID, YC,accountCode, entryByMachineName).ConfigureAwait(false);
+            var Result = await _creditNote.DeleteByID(ID, YearCode, accountCode, entryByMachineName).ConfigureAwait(false);
 
             if (Result.StatusText == "Deleted" || Result.StatusCode == HttpStatusCode.Gone || Result.StatusText == "Success")
             {

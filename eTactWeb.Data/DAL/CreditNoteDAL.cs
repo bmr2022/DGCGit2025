@@ -510,7 +510,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
 
-                SqlParams.Add(new SqlParameter("@Flag", "delete"));
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@CreditNoteEntryId", ID));
                 SqlParams.Add(new SqlParameter("@CreditNoteYearCode", YC));
                 SqlParams.Add(new SqlParameter("@Accountcode", accountCode));
