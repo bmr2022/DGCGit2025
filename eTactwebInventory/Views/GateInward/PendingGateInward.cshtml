@@ -54,7 +54,7 @@
 												<div class="row">
 													<div class="col">
 														<label class="form-label">From Date</label>
-														<input asp-for="FromDate" class="form-control" />
+														<input asp-for="FromDate" value="@Model.FromDate" class="form-control" />
 													</div>
 													<div class="col">
 														<label class="form-label">To Date</label>
@@ -257,10 +257,32 @@
 				
 			}
 			//$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+			  var finFromDate = $('#FromDate').val().split(" ")[0];
+			
+			var dateParts1 = finFromDate.split("/");
+			
+			var monthNames = {
+				"Jan": "01",
+				"Feb": "02",
+				"Mar": "03",
+				"Apr": "04",
+				"May": "05",
+				"Jun": "06",
+				"Jul": "07",
+				"Aug": "08",
+				"Sep": "09",
+				"Oct": "10",
+				"Nov": "11",
+				"Dec": "12"
+			};
 
-			$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate(firstDayOfMonth));
+			var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+			 $('#FromDate').val(formattedDate1);
+			$('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", (formattedDate1));
+					console.log($('#ToDate').val());
 			$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-		AutoComplete('VGateMainDetail', 'VendorName', 'Account_Name', null);
+				console.log($('#ToDate').val());
+		  AutoComplete('VGateMainDetail', 'VendorName', 'Account_Name', null);
 		  AutoComplete('VGateMainDetail', 'ItemName', 'Item_Name', null);
 		  AutoComplete('VGateMainDetail', 'PartCode', 'PartCode', null);
 		  AutoComplete('VGateMainDetail', 'PONO', 'PONo', null);
@@ -308,7 +330,26 @@
 			$("#docTypeId").change(function () {
 			fillPONumber();
 		})
+		  $("#search-box").on("input", function () {
 
+			var searchString = $(this).val().trim();
+
+			$.ajax({
+				url: "/GateInward/PendingGateEntryGlobalSearch?searchString=" + searchString,
+				type: "GET",
+				data: { searchString: searchString },
+				success: function (data) {
+
+					$('#divPendingEntryDashboardGrid').empty();
+					$('#divPendingEntryDashboardGrid').html(data);
+					$('#totalRows').text($('#PendinggateDashboardtable tr').length);
+					//countAllTotal();
+				},
+				error: function () {
+					console.log("Error fetching search results.");
+				}
+			});
+		});
 			 function GetServerDate() {
 			$.ajax({
 				type: "GET",
@@ -317,7 +358,11 @@
 				success: function (result, status, error) {
 					console.log(result);
 					if (result != null) {
-						$('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+						var parts = result.split("-"); // ["2025", "08", "12"]
+				var formatted = parts[2] + "/" + parts[1] + "/" + parts[0]; // "12/08/2025"
+				 $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatted);
+						console.log($('#ToDate').val());
+						/* $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result); */
 					}
 				}
 			});
@@ -359,8 +404,8 @@
 	
 			   function GetSearchData(){
 					   let vendorName = $('#VendorName').val();
-		let docType = $('#docTypeId').val();
-					let searchBox = $('#search-box').val();
+					   let docType = $('#docTypeId').val();
+					   let searchBox = $('#search-box').val();
 						if (!vendorName) {
 			alert("Please select Vendor Name.");
 			$('#VendorName').focus();
