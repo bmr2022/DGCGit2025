@@ -64,8 +64,7 @@
                 </th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
                     Sch Date </th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol">   <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
-                    MRN Type </th>
+               
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"> <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
                     Item QC Status
                 </th>
@@ -78,6 +77,8 @@
         <tbody id="divStockRegisterBody">
             @{
                 var @Cntr = 0;
+                int srNoStart = (Model.PageNumber - 1) * Model.PageSize;
+                int srNo = srNoStart + 1;
                 if (Model.MRNRegisterDetail == null)
                 {
                             <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -97,12 +98,13 @@
                                 </a>
                                             </td>
                         
-                                            <th>@Cntr</th>
+                                            <th>@srNo</th>
                             <td style="background-color: #e09ef0;">@item.VendorName </td>
 
                             <td>@item.MRNNo </td>
                             <td>@item.MRNDate</td>
-                                            <td>@item.GateNo </td> <td>@item.GDate</td>
+                                            <td>@item.GateNo </td> 
+                                            <td>@item.GDate</td>
                                              
                                             <td>@item.InvoiceNo</td>
                                             <td>@item.InvoiceDate</td>
@@ -123,6 +125,7 @@
                             <td>@item.PurchaseBillPosted</td>
 
                         </tr>
+                        srNo++;
                     }
                 }
             }
