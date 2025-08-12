@@ -73,7 +73,7 @@ namespace eTactWeb.Controllers
         //    return PartialView("_MRNRegisterGrid", model);
         //}
         public async Task<IActionResult> GetMRNRegisterData(string MRNType,string ReportType,string FromDate,string ToDate,string gateno,string MRNno,string docname,
-               string PONo,string Schno,string PartCode,string ItemName,string invoiceNo,string VendorName,int pageNumber = 1,int pageSize = 2,string SearchBox = "")
+               string PONo,string Schno,string PartCode,string ItemName,string invoiceNo,string VendorName,int pageNumber = 1,int pageSize = 100,string SearchBox = "")
         {
             
             gateno = string.IsNullOrEmpty(gateno) || gateno == "0" ? "" : gateno;
@@ -131,7 +131,7 @@ namespace eTactWeb.Controllers
             return PartialView("_MRNRegisterGrid", model);
         }
         [HttpGet]
-        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 2)
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 100)
         {
             MRNRegisterModel model = new MRNRegisterModel();
             model.ReportType = dashboardType;
