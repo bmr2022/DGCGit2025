@@ -592,8 +592,6 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@MachineName", model.MachineName ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@ActualEntryDate", actualDt == default ? string.Empty : actualDt));
                 SqlParams.Add(new SqlParameter("@ActualEnteredBy", model.ActualEnteredBy));
-                SqlParams.Add(new SqlParameter("@LastUpdatedBy", model.LastUpdatedBy));
-                SqlParams.Add(new SqlParameter("@LastUpdationDate", lastUpdationDt == default ? string.Empty : lastUpdationDt));
                 SqlParams.Add(new SqlParameter("@EntryFreezToAccounts", model.EntryFreezToAccounts));
                 SqlParams.Add(new SqlParameter("@BalanceSheetClosed", model.BalanceSheetClosed));
                 SqlParams.Add(new SqlParameter("@EInvNo", model.EInvNo ?? string.Empty));
@@ -602,7 +600,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@AttachmentFilePath2", model.AttachmentFilePath2 ?? string.Empty));
                 SqlParams.Add(new SqlParameter("@AttachmentFilePath3", model.AttachmentFilePath3 ?? string.Empty));
 
-                //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.SaleBillEntryId));
+                //SqlParams.Add(new SqlParameter("@BooktrnsEntryId", model.CreditNoteEntryId));
 
                 SqlParams.Add(new SqlParameter("@DTItemGrid", CNGrid));
                 SqlParams.Add(new SqlParameter("@DTTaxGrid", TaxDetailDT));
