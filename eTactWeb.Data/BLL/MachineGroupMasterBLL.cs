@@ -46,5 +46,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MachineGroupMasterDAL.GetViewByID(ID);
         }
+        public async Task<(bool Exists, int EntryId, string MachGroup, long UId, string CC)> CheckMachineGroupExists(string machGroup)
+        {
+            return await _MachineGroupMasterDAL.CheckMachineGroupExists(machGroup);
+        }
     }
 }

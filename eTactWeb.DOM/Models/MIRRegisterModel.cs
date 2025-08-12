@@ -25,7 +25,10 @@ namespace eTactWeb.DOM.Models
         public string? PONo { get; set; }
         public string? Schno { get; set; }
         public string? VendorName { get; set; }
-        public string? invoiceNo { get; set; } 
+        public string? invoiceNo { get; set; }
+        public int TotalRecords { get; set; }
+        public int PageNumber { get; set; }
+        public int PageSize { get; set; }
         public IList<MIRRegisterDetail>? MIRRegisterDetail { get; set; }
         //public IList<GateEntryRegisterDetail>? GateEntryRegisterDetail { get; set; }
     }

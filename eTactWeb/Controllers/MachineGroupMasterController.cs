@@ -183,5 +183,17 @@ namespace eTactWeb.Controllers
             return RedirectToAction("MachineGroupMasterDashBoard");
 
         }
+        public async Task<JsonResult> CheckMachineGroup(string machGroup)
+        {
+            var result = await _IMachineGroupMaster.CheckMachineGroupExists(machGroup);
+            return Json(new
+            {
+                exists = result.Exists,
+                entryId = result.EntryId,
+                machGroup = result.MachGroup,
+                uId = result.UId,
+                cc = result.CC
+            });
+        }
     }
 }

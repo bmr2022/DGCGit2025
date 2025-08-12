@@ -261,5 +261,30 @@ namespace eTactWeb.Data.DAL
                 throw;
             }
         }
+        public async Task<(bool Exists, int EntryId, string MachGroup, long UId, string CC)> CheckMachineGroupExists(string machGroup)
+        {
+            using (SqlConnection con = new SqlConnection(DBConnectionString))
+            {
+                SqlCommand cmd = new SqlCommand("SPMachineGroupMaster", con);
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.AddWithValue("@Flag", "CheckPartyExists");
+                cmd.Parameters.AddWithValue("@MachGroup", machGroup);
+
+                await con.OpenAsync();
+                using var reader = await cmd.ExecuteReaderAsync();
+                if (await reader.ReadAsync())
+                {
+                    bool exists = true; // since it returned a row
+                    int entryId = Convert.ToInt32(reader["EntryId"]);
+                    string machGroupVal = reader["MachGroup"].ToString();
+                    long uId = Convert.ToInt64(reader["UId"]);
+                    string cc = reader["CC"].ToString();
+
+                    return (exists, entryId, machGroupVal, uId, cc);
+                }
+
+                return (false, 0, "", 0, "");
+            }
+        }
     }
 }

@@ -16,5 +16,6 @@ namespace eTactWeb.Services.Interface
         Task<MachineGroupMasterModel> GetDashboardDetailData(string FromDate, string ToDate);
         Task<ResponseResult> DeleteByID(int EntryId);
         Task<MachineGroupMasterModel> GetViewByID(int ID);
+        Task<(bool Exists, int EntryId, string MachGroup, long UId, string CC)> CheckMachineGroupExists(string MachGroup);
     }
 }

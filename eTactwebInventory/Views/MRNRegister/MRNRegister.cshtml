@@ -598,7 +598,7 @@
             return firstDayOfMonth;
         }
 
-        $('#sendToExcel').click(function () {
+       /*  $('#sendToExcel').click(function () {
             let table = $("#ReportTable");
             console.log(table);
             TableToExcel.convert(table[0], {
@@ -607,6 +607,11 @@
                     name: 'ReportTable'
                 }
             });
+        }); */
+
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportType').val();
+            window.location.href = '/MRNRegister/ExportIMRNRegisterToExcel?ReportType=' + encodeURIComponent(reportType);
         });
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
@@ -634,7 +639,110 @@
                 }
             });
         }
-      
+        var isGlobalSearch = false;
+        var globalSearchString = "";
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
+            var dashboardType = $('#ReportType').val();
+            $.ajax({
+                url: "/MRNRegister/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                success: function (data) {
+
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(data);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                    countAllTotal();
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+       /*  function loadPage(pageNumber) {
+
+            var url = '';
+            var ReportType = $('#ReportType').val();
+            var formData = $('#SParam').serializeArray();
+            if (isGlobalSearch) {
+                url = '/MRNRegister/GlobalSearch';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            }
+            else {
+                url = '@Url.Action("GetMRNRegisterData", "MRNRegister")';
+            }
+
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                    //countAllTotal();
+                }
+            });
+        } */
+        function loadPage(pageNumber) {
+            var url = '';
+            var type = ''; // <-- will set conditionally
+            var ReportType = $('#ReportType').val();
+            var formData = $('#SParam').serializeArray();
+
+            if (isGlobalSearch) {
+                url = '/MRNRegister/GlobalSearch';
+                type = 'GET';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            } else {
+                url = '@Url.Action("GetMRNRegisterData", "MRNRegister")';
+                type = 'POST';
+            }
+
+            // Push common params
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+
+            $.ajax({
+                type: type, // <-- conditionally set
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divStockMainRegister').empty().html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                }
+            });
+        }
+
+       /*  function loadPage(pageNumber) {
+            var formData = $('#SParam').serializeArray();
+            var ReportType = $('#ReportType').val();
+            formData.push({ name: 'searchString', value: globalSearchString });
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            if (isGlobalSearch) {
+               
+
+                $.ajax({
+                    type: 'GET',
+                    url: '/MRNRegister/MRNGlobalSearch',
+                    data: formData,
+                    success: function (result) {
+                        $('#divStockMainRegister').empty().html(result);
+                        $('#totalRows').text($('#divStockMainRegister tr').length - 1);
+                    }
+                });
+            } else {
+                GetMRNRegisterData(pageNumber);
+            }
+        } */
         
         function FillGateNo() {
             var FromDate = $('#FromDate').val();
@@ -965,7 +1073,7 @@
 
         var currentSearchColumn = null;
 
-        $("#search-box").on("keyup", function () {
+      /*   $("#search-box").on("keyup", function () {
             var value = $(this).val().toLowerCase();
             $("#divStockRegisterBody tr").filter(function () {
                 if (currentSearchColumn !== null) {
@@ -980,7 +1088,7 @@
         $(document).on("click", "th[data-columnno]", function () {
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
-        });
+        }); */
 
         function DeleteRow(i){
              
