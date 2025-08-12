@@ -135,6 +135,7 @@ namespace eTactWeb.DOM.Models
         public string ReqDate { get; set; }
         public string EntryDate { get; set; }
         public string WorkCenter { get; set; }
+        public string DeptName { get; set; }
         public string WONo { get; set; }
         public string BranchName { get; set; }
         public string Reason { get; set; }

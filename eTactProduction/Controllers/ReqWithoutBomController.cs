@@ -324,7 +324,7 @@ namespace eTactWeb.Controllers
                     DataSet DS = Result.Result;
                     if (DS != null)
                     {
-                        var DT = DS.Tables[0].DefaultView.ToTable(false, "REQNo", "ReqDate", "EntryDate", "WorkCenter", "WONO",
+                        var DT = DS.Tables[0].DefaultView.ToTable(false, "REQNo", "ReqDate", "EntryDate", "WorkCenter", "DeptName","WONO",
                            "BranchName", "Reason", "Cancel", "MachName", "WOYearcode", "EntryId","YearCode","TotalReqQty","TotalPendQty","Completed", "CreatedByName", "UpdatedByName");
                         model.ReqMainDashboard = CommonFunc.DataTableToList<RWBDashboard>(DT, "ReqDashboard");
                     }

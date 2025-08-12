@@ -334,6 +334,7 @@ namespace eTactWeb.Data.DAL
                                                   ReqDate = dr["ReqDate"].ToString(),
                                                   EntryDate = dr["EntryDate"].ToString(),
                                                   WorkCenter = dr["WorkCenter"].ToString(),
+                                                  DeptName = dr["DeptName"].ToString(),
                                                   WONo = dr["WONO"].ToString(),
                                                   BranchName = dr["BranchName"].ToString(),
                                                   Reason = dr["Reason"].ToString(),

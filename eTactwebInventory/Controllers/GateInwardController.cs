@@ -495,7 +495,56 @@ namespace eTactWeb.Controllers
             return PartialView("_GateInwardDisplayDataDetail", model);
             }
 
-            
+        [HttpGet]
+        public IActionResult PendingGateEntryGlobalSearch(string searchString, int pageNumber = 1, int pageSize = 10)
+        {
+            PendingGateInwardDashboard model = new PendingGateInwardDashboard();
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_GateInwardDisplayDataDetail", new List<GateInwardDashboard>());
+            }
+
+            string modelJson = HttpContext.Session.GetString("KeyPendingGateInwardList");
+            List<PendingGateInwardDashboard> gateInwardDashboard = new List<PendingGateInwardDashboard>();
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                gateInwardDashboard = JsonConvert.DeserializeObject<List<PendingGateInwardDashboard>>(modelJson);
+            }
+            if (gateInwardDashboard == null)
+            {
+                return PartialView("_GateInwardDisplayDataDetail", new List<PendingGateInwardDashboard>());
+            }
+
+            List<PendingGateInwardDashboard> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = gateInwardDashboard.ToList();
+            }
+            else
+            {
+                filteredResults = gateInwardDashboard
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = gateInwardDashboard.ToList();
+                }
+            }
+            model.TotalRecords = filteredResults.Count;
+            model.PageNumber = pageNumber;
+            model.PendingGateEntryDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageSize = pageSize;
+          
+
+            return PartialView("_GateInwardDisplayDataDetail", model);
+        }
 
         public async Task<IActionResult> GetDetailData(string VendorName, string Gateno, string ItemName, string PartCode, string DocName, string PONO, string ScheduleNo, string FromDate, string ToDate, int pageNumber = 1, int pageSize = 10, string SearchBox = "")
         {
@@ -607,6 +656,7 @@ namespace eTactWeb.Controllers
 
             return PartialView("_GateInwardDashboardGrid", model);
         }
+     
         public async Task<JsonResult> ClearGridAjax(int AccountCode, int docType, int ItemCode)
         {
             HttpContext.Session.Remove("KeyGateInwardGrid");
@@ -1142,7 +1192,7 @@ namespace eTactWeb.Controllers
             var model = new PendingGateEntryDashboard();
             model.PendingGateEntryDashboard = new List<PendingGateInwardDashboard>();
             model = await PendingBindModel(model);
-
+            model.FromDate=HttpContext.Session.GetString("FromDate");
             return View(model);
         }
 
