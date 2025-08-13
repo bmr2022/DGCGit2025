@@ -172,16 +172,32 @@
                                     <label asp-for="ControlMethod" class="form-label" style="color:red">Control Method*</label>
                                     <input asp-for="ControlMethod" class="form-control" />
                                 </div>
-                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
+                               @*  <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
                                     <label asp-for="SpecificationFrom" class="form-label" style="color:red">Specification From*</label>
                                     <input asp-for="SpecificationFrom" class="form-control" />
                                 </div>
-                                 
-                                 
+                                  *@
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:140px;">
+                                    <label asp-for="SpecificationFrom" class="form-label" style="color:red">Specification From*</label>
+
+                                    <!-- Checkbox to enable multiline -->
+                                    <div class="form-check">
+                                        <input type="checkbox" id="isMultiline" class="form-check-input" />
+                                        <label class="form-check-label" for="isMultiline">Multiple Lines</label>
+                                    </div>
+
+                                    <!-- Single-line input -->
+                                    <input asp-for="SpecificationFrom" class="form-control" id="singleLineInput" />
+
+                                    <!-- Multi-line textarea (hidden by default) -->
+                                    <textarea asp-for="SpecificationFrom" class="form-control" id="multiLineInput" style="display:none;"></textarea>
+                                </div>
+
+                                
                                
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:90px;">
                                     <label asp-for="Operator" class="form-label">Operator</label>
-                                    <select class="form-control" id="Operator" asp-for="Operator" >
+                                    <select class="form-control" asp-for="Operator" style="width:80px;">
                                         <option value="">-Select-</option>
                                         <option value="+">+</option>
                                         <option value="*">*</option>
@@ -654,6 +670,15 @@
                 $('#PartCode').val(itemCode).trigger("change");
                 $('#ItemName').val(itemCode).trigger("change");
             }
+            $('#isMultiline').change(function () {
+                if ($(this).is(':checked')) {
+                    $('#singleLineInput').hide();
+                    $('#multiLineInput').show();
+                } else {
+                    $('#multiLineInput').hide();
+                    $('#singleLineInput').show();
+                }
+            });
         });
 
         $('#ItemName').change(function () {
@@ -662,6 +687,7 @@
         $('#PartCode').change(function () {
             $('#ItemCode').val($('#PartCode').val());
         });
+
         if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
             // var itemCode = '@Model.ItemCode';
             // $('#PartCode').val(itemCode).trigger("change");
@@ -1482,7 +1508,7 @@
             var ItemData = {
                 "Characteristic": $('#Characteristic').val(),
                 "EvalutionMeasurmentTechnique": $('#EvalutionMeasurmentTechnique').val(),
-                "SpecificationFrom": $('#SpecificationFrom').val(),
+                "SpecificationFrom": $('#isMultiline').is(':checked') ? $('#multiLineInput').val() : $('#singleLineInput').val(),
                 "SpecificationTo": $('#SpecificationTo').val(),
                 "Operator": $('#Operator').val(),
                 "OperatorText": $('#Operator').find(':selected').text() == "-Select-" ? "" : $('#Operator').find(':selected').text(),
@@ -1577,9 +1603,17 @@
                             EditEachItem = true;
                             $('#Characteristic').val(obj[0].Characteristic).trigger("change");
                             $('#EvalutionMeasurmentTechnique').val(obj[0].EvalutionMeasurmentTechnique).trigger("change");
-                            $('#SpecificationFrom').val(obj[0].SpecificationFrom).trigger("change");
+                            //$('#SpecificationFrom').val(obj[0].SpecificationFrom).trigger("change");
+                            if (obj[0].SpecificationFrom && obj[0].SpecificationFrom.includes('\n')) {
+                                $('#isMultiline').prop('checked', true).trigger('change');
+                                $('#multiLineInput').val(obj[0].SpecificationFrom);
+                            } else {
+                                $('#isMultiline').prop('checked', false).trigger('change');
+                                $('#singleLineInput').val(obj[0].SpecificationFrom);
+                            }
                             $('#SpecificationTo').val(obj[0].SpecificationTo).trigger("change");
-                            $('#Operator').val(obj[0].Operator).trigger("change");
+                            //$('#Operator').val(obj[0].Operator).trigger("change");
+                            $('#Operator').val(obj[0].Operator?.trim()).trigger("change");
                             $('#FrequencyofTesting').val(obj[0].FrequencyofTesting).trigger("change");
                             $('#InspectionBy').val(obj[0].InspectionBy).trigger("change");
                             $('#ControlMethod').val(obj[0].ControlMethod).trigger("change");

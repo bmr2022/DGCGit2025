@@ -266,8 +266,9 @@
             }
         });
         $('#WorkCenter').change(function () {
-                var selectedId = $(this).val();
-             $('#WorkCenterId').val(selectedId);
+             
+                $('#WorkCenterId').val($('#WorkCenter').val());
+          
         });
         function FillMachineGroup() {
             $.ajax({
@@ -310,7 +311,6 @@
                     });
 
                     if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-
                         var WorkCenter = '@Model.WorkCenterId';
                         $('#WorkCenter').val(WorkCenter).trigger("change");
                         $('#WorkCenter').val(WorkCenter);
