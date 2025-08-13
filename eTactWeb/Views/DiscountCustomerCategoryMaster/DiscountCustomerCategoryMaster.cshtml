@@ -273,7 +273,7 @@
 		$(document).ready(function () {
 			//GetFormRights();
 			if ($('#Mode').val() !== "U") {
-
+				setFormattedDate();
 				FillEntryID();
 				TotalNoOfRows();
 				FillSlipNo();
@@ -311,7 +311,7 @@
 			$('#totalRows').text($('#divStockGrid tr').length);
 
 
-			setFormattedDate();
+			
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
@@ -338,13 +338,53 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#DiscountCatSlipDate,#LastupDationDate,#EffectiveFromDate,#ActualEntryDate')
+			$('#LastupDationDate,#ActualEntryDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
 		}
 
-	
-		
+
+		$(function () {
+			var today = new Date();
+			var oneMonthLater = new Date();
+			oneMonthLater.setMonth(oneMonthLater.getMonth() + 1);
+
+			$('#DiscountCatSlipDate, #EffectiveFromDate').datepicker({
+				dateFormat: 'dd/M/yy',
+				minDate: today,           
+				maxDate: oneMonthLater,  
+			});
+
+			$('#DiscountCatSlipDate, #EffectiveFromDate').each(function () {
+				if (!$(this).val()) {
+					var day = ('0' + today.getDate()).slice(-2);
+					var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+					var month = monthNames[today.getMonth()];
+					var year = today.getFullYear();
+					var formattedDate = day + '/' + month + '/' + year;
+					$(this).val(formattedDate);
+				}
+			});
+
+			
+			$('#DiscountCatSlipDate, #EffectiveFromDate').on('blur', function () {
+				var inputDate = $(this).datepicker('getDate');
+				if (!inputDate) {
+					$.notify('Invalid date entered', 'error');
+					$(this).val('');
+					return;
+				}
+				if (inputDate < today) {
+					$.notify('Date cannot be before today', 'error');
+					$(this).val('');
+				}
+				else if (inputDate > oneMonthLater) {
+					$.notify('Date cannot be more than 1 month ahead', 'error');
+					$(this).val('');
+				}
+			});
+		});
+
 
 
 		function FillDiscountCategory() {

@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
         public async Task<ActionResult> CurrencyMaster(int ID, string Mode, string Currency, string IsDefault, string EntryDate)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
-            TempData.Clear();
+            //TempData.Clear();
             var MainModel = new CurrencyMasterModel();
             MainModel.FromDate = HttpContext.Session.GetString("FromDate");
             MainModel.ToDate = HttpContext.Session.GetString("ToDate");
@@ -56,8 +56,7 @@ namespace eTactWeb.Controllers
                 };
             }
 
-
-
+            ViewBag.Message = TempData.Peek("Message");
             return View(MainModel);
         }
 
@@ -83,6 +82,11 @@ namespace eTactWeb.Controllers
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+                    }
+                    else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+                    {
+                        ViewBag.isSuccess = true;
+                        TempData["Message"] = Result.Result;
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -129,6 +133,7 @@ namespace eTactWeb.Controllers
                         model.CurrencyMasterDashBoardGrid = CommonFunc.DataTableToList<CurrencyMasterModel>(dt, "CurrencyMasterDashBoard");
                     }
                 }
+                ViewBag.Message = TempData.Peek("Message");
                 return View(model);
             }
             catch (Exception ex)

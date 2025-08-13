@@ -27,6 +27,7 @@ using System.Globalization;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using eTactWeb.Data.DAL;
+using ClosedXML.Excel;
 
 namespace eTactWeb.Controllers;
 
@@ -652,7 +653,7 @@ public class PurchaseBillController : Controller
         _MemoryCache.Set("KeyPurchaseBillList_Summary", modelList, cacheEntryOptions);
         return PartialView("_DashBoardGrid", model);
     }
-    public async Task<IActionResult> GetDetailData(PBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+    public async Task<IActionResult> GetDetailData(PBDashBoard model, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
     {
         model.Mode = "SEARCH";
         var type = model.DashboardType;
@@ -769,6 +770,227 @@ public class PurchaseBillController : Controller
             return PartialView("_DashboardDetailGrid", model);
         }
     }
+    public async Task<IActionResult> ExportPurchaseBillToExcel(string ReportType)
+    {
+        // Determine the cache key based on dashboard type
+        string cacheKey = ReportType switch
+        {
+            "Summary" => "KeyPurchaseBillList_Summary",
+            "TAXDetail" => "KeyPurchaseBillList_TAXDetail",
+            _ => "KeyPurchaseBillList_Detail"
+        };
+
+        if (!_MemoryCache.TryGetValue(cacheKey, out List<PBDashBoard> modelList))
+        {
+            return NotFound("No data available to export.");
+        }
+
+        using var workbook = new XLWorkbook();
+        var worksheet = workbook.Worksheets.Add("Purchase Bill Report");
+
+        // Define export methods for different dashboard types if needed
+        var reportGenerators = new Dictionary<string, Action<IXLWorksheet, IList<PBDashBoard>>>
+        {
+            { "Summary", EXPORT_PurchaseBillSummaryGrid },
+            { "TAXDetail", EXPORT_PurchaseBillTaxDetailGrid },
+            { "Detail", EXPORT_PurchaseBillDetailGrid },
+        };
+
+        if (reportGenerators.TryGetValue(ReportType, out var generator))
+        {
+            generator(worksheet, modelList);
+        }
+        else
+        {
+            return BadRequest("Invalid dashboard type.");
+        }
+
+        worksheet.Columns().AdjustToContents();
+
+        using var stream = new MemoryStream();
+        workbook.SaveAs(stream);
+        stream.Position = 0;
+
+        string fileName = $"PurchaseBill_{ReportType}_{DateTime.Now:yyyyMMddHHmmss}.xlsx";
+
+        return File(
+            stream.ToArray(),
+            "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+            fileName
+        );
+    }
+    private void EXPORT_PurchaseBillSummaryGrid(IXLWorksheet sheet, IList<PBDashBoard> list)
+    {
+        string[] headers = {
+                "#Sr","Entry ID", "Entry Date", "Voucher No", "Voucher Date", "Invoice No", "Invoice Date",
+    "Vendor Name", "Vendor Address", "Document Name", "MRN Type", "MRN No", "Gate No",
+    "Part Code", "Item Name", "HSN No", "GST Type", "State Name", "Domestic/Import",
+    "Item/Service", "Transporter", "Vehicle No", "Payment Term", "Currency",
+    "Bill Amount", "Net Amount", "Pending Amount", "Paid Amount", "Created On",
+    "Updated On", "Entered By", "Updated By"
+            };
+
+
+
+        for (int i = 0; i < headers.Length; i++)
+            sheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2, srNo = 1;
+        foreach (var item in list)
+        {
+            sheet.Cell(row, 1).Value = srNo++;
+            sheet.Cell(row, 2).Value = item.EntryID;
+            sheet.Cell(row, 3).Value = item.EntryDate.HasValue
+                ? item.EntryDate.Value.ToString("dd/MM/yyyy")
+                : string.Empty;
+            sheet.Cell(row, 4).Value = item.VoucherNo;
+            sheet.Cell(row, 5).Value = DateTime.TryParse(item.VoucherDate, out DateTime parsedDate)
+                ? parsedDate.ToString("dd/MM/yyyy")
+                : string.Empty;
+            sheet.Cell(row, 6).Value = item.InvoiceNo;
+            sheet.Cell(row, 7).Value = item.InvoiceDate.HasValue
+                ? item.InvoiceDate.Value.ToString("dd/MM/yyyy")
+                : string.Empty;
+            sheet.Cell(row, 8).Value = item.VendorName;
+            sheet.Cell(row, 9).Value = item.VendorAddress;
+            sheet.Cell(row, 10).Value = item.DocumentName;
+            sheet.Cell(row, 11).Value = item.MRNType;
+            sheet.Cell(row, 12).Value = item.MRNNo;
+            sheet.Cell(row, 13).Value = item.GateNo;
+            sheet.Cell(row, 14).Value = item.PartCode;
+            sheet.Cell(row, 15).Value = item.ItemName;
+            sheet.Cell(row, 16).Value = item.HSNNO;
+            sheet.Cell(row, 17).Value = item.GSTType;
+            sheet.Cell(row, 18).Value = item.StateName;
+            sheet.Cell(row, 19).Value = item.DomesticImport;
+            sheet.Cell(row, 20).Value = item.ItemOrService;
+            sheet.Cell(row, 21).Value = item.Transporter;
+            sheet.Cell(row, 22).Value = item.VehicleNo;
+            sheet.Cell(row, 23).Value = item.PaymentTerm;
+            sheet.Cell(row, 24).Value = item.Currency;
+            sheet.Cell(row, 25).Value = item.BillAmount;
+            sheet.Cell(row, 26).Value = item.NetAmt;
+            sheet.Cell(row, 27).Value = item.PendAmt;
+            sheet.Cell(row, 28).Value = item.PaidAmt;
+            sheet.Cell(row, 29).Value = item.CreatedOn.HasValue
+                ? item.CreatedOn.Value.ToString("dd/MM/yyyy")
+                : string.Empty;
+            sheet.Cell(row, 30).Value = item.UpdatedOn.HasValue
+                ? item.UpdatedOn.Value.ToString("dd/MM/yyyy")
+                : string.Empty;
+            sheet.Cell(row, 31).Value = item.EnteredBy;
+            sheet.Cell(row, 32).Value = item.UpdatedByName;
+            row++;
+        }
+    }
+    private void EXPORT_PurchaseBillTaxDetailGrid(IXLWorksheet sheet, IList<PBDashBoard> list)
+    {
+        string[] headers = {
+                "#Sr","Vendor Name", "Voucher No", "Invoice No", "Invoice Date",
+    "Part Code", "Item Name", "Bill Amount", "GST Amount", "Taxable Amount",
+    "Expense Head", "Expense Amount", "CGST Head", "CGST %", "CGST Amount",
+    "SGST Head", "SGST %", "SGST Amount", "IGST Head", "IGST %", "IGST Amount",
+    "Net Amount"
+            };
+
+
+
+        for (int i = 0; i < headers.Length; i++)
+            sheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2, srNo = 1;
+        foreach (var item in list)
+        {
+            sheet.Cell(row, 1).Value = srNo++;
+            sheet.Cell(row, 2).Value = item.VendorName;
+            sheet.Cell(row, 3).Value = item.VoucherNo;
+            sheet.Cell(row, 4).Value = item.InvoiceNo;
+            sheet.Cell(row, 5).Value = item.InvoiceDate.HasValue
+                ? item.InvoiceDate.Value.ToString("dd/MM/yyyy")
+                : string.Empty;
+            sheet.Cell(row, 6).Value = item.PartCode;
+            sheet.Cell(row, 7).Value = item.ItemName;
+            sheet.Cell(row, 8).Value = item.BillAmount;
+            sheet.Cell(row, 9).Value = item.GSTAmount;
+            sheet.Cell(row, 10).Value = item.TaxableAmount;
+            sheet.Cell(row, 11).Value = item.ExpenseHead;
+            sheet.Cell(row, 12).Value = item.ExpenseAmt;
+            sheet.Cell(row, 13).Value = item.CGSTHead;
+            sheet.Cell(row, 14).Value = item.CGSTper;
+            sheet.Cell(row, 15).Value = item.CGSTAmt;
+            sheet.Cell(row, 16).Value = item.SGSTHead;
+            sheet.Cell(row, 17).Value = item.SGSTper;
+            sheet.Cell(row, 18).Value = item.SGSTAmt;
+            sheet.Cell(row, 19).Value = item.IGSTHead;
+            sheet.Cell(row, 20).Value = item.IGSTper;
+            sheet.Cell(row, 21).Value = item.IGSTAmt;
+            sheet.Cell(row, 22).Value = item.NetAmt;
+            row++;
+        }
+    }
+     private void EXPORT_PurchaseBillDetailGrid(IXLWorksheet sheet, IList<PBDashBoard> list)
+    {
+        string[] headers = {
+                "#Sr","Entry ID", "Vendor Name", "Voucher No", "Invoice No", "Document Name",
+    "Part Code", "Item Name", "MRN Type", "MRN No", "Gate No", "PO No", "PO Year Code",
+    "PO Date", "Sch No", "Sch Year Code", "Sch Date", "HSN No", "Received Qty", "Unit",
+    "Bill Qty", "Rate", "Amount in Other Currency", "Discount %", "Discount Amount",
+    "Amount", "Remark", "Net Amount", "Entered By", "Updated By", "Purchase Bill Year Code"
+            };
+
+
+
+        for (int i = 0; i < headers.Length; i++)
+            sheet.Cell(1, i + 1).Value = headers[i];
+
+        int row = 2, srNo = 1;
+        foreach (var item in list)
+        {
+            sheet.Cell(row, 1).Value = srNo++;
+            sheet.Cell(row, 2).Value = item.EntryID;
+            sheet.Cell(row, 3).Value = item.VendorName;
+            sheet.Cell(row, 4).Value = item.VoucherNo;
+            sheet.Cell(row, 5).Value = item.InvoiceNo;
+            sheet.Cell(row, 6).Value = item.DocumentName;
+            sheet.Cell(row, 7).Value = item.PartCode;
+            sheet.Cell(row, 8).Value = item.ItemName;
+            sheet.Cell(row, 9).Value = item.MRNType;
+            sheet.Cell(row, 10).Value = item.MRNNo;
+            sheet.Cell(row, 11).Value = item.GateNo;
+            sheet.Cell(row, 12).Value = item.PONo;
+            sheet.Cell(row, 13).Value = item.POYearCode;
+
+            // PODate
+            sheet.Cell(row, 14).Value = DateTime.TryParse(item.PODate, out DateTime poDate)
+                ? poDate.ToString("dd/MM/yyyy")
+                : string.Empty;
+
+            sheet.Cell(row, 15).Value = item.SchNo;
+            sheet.Cell(row, 16).Value = item.SchYearCode;
+
+            // SchDate
+            sheet.Cell(row, 17).Value = DateTime.TryParse(item.SchDate, out DateTime schDate)
+                ? schDate.ToString("dd/MM/yyyy")
+                : string.Empty;
+
+            sheet.Cell(row, 18).Value = item.HSNNO;
+            sheet.Cell(row, 19).Value = item.RecQty;
+            sheet.Cell(row, 20).Value = item.Unit;
+            sheet.Cell(row, 21).Value = item.BillQty;
+            sheet.Cell(row, 22).Value = item.Rate;
+            sheet.Cell(row, 23).Value = item.AmtinOtherCurr;
+            sheet.Cell(row, 24).Value = item.DiscountPer;
+            sheet.Cell(row, 25).Value = item.DiscountAmt;
+            sheet.Cell(row, 26).Value = item.Amount;
+            sheet.Cell(row, 27).Value = item.Remark;
+            sheet.Cell(row, 28).Value = item.NetAmt;
+            sheet.Cell(row, 29).Value = item.EnteredBy;
+            sheet.Cell(row, 30).Value = item.UpdatedByName;
+            sheet.Cell(row, 31).Value = item.PurchBillYearCode;
+            row++;
+        }
+    }
+
     // GET: PurchaseOrderController
     [HttpGet]
     [Route("{controller}/Index")]

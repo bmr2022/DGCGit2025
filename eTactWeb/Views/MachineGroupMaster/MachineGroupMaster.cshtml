@@ -275,6 +275,24 @@
 				.val(formattedDate);
 		}
 
+		$('#MachineGroup').change(function () {
+			var machGroup = $(this).val();
+			if (machGroup) {
+				$.get('/MachineGroupMaster/CheckMachineGroup', { MachGroup: machGroup }, function (res) {
+					if (res.exists) {
+						
+						$.notify("Machine Group already exists, switching to update mode.", "info");
+
+						$('#EntryId').val(res.entryId);
+						$('#UId').val(res.uId);
+						$('#CC').val(res.cc);
+						$('#Mode').val('U'); 
+					} else {
+						$('#Mode').val('');
+					}
+				});
+			}
+		});
 
 
 

@@ -69,13 +69,16 @@ namespace eTactWeb.Data.DAL
 			try
 			{
 				var sqlParams = new List<dynamic>();
-
+                var slipDate =CommonFunc.ParseFormattedDate(model.DiscountCatSlipDate);
+                var actualentDate =CommonFunc.ParseFormattedDate(model.ActualEntryDate);
+                var effectiveFromDate =CommonFunc.ParseFormattedDate(model.EffectiveFromDate);
+                var updationDate =CommonFunc.ParseFormattedDate(model.LastupDationDate);
 				if (model.Mode == "U" || model.Mode == "V")
 				{
 					sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
 					sqlParams.Add(new SqlParameter("@DiscountCustCatEntryId", model.DiscountCustCatEntryId));
 					sqlParams.Add(new SqlParameter("@LastUpdatedbyEmpId", model.LastUpdatedbyEmpId));
-					sqlParams.Add(new SqlParameter("@LastupDationDate", model.LastupDationDate));
+					sqlParams.Add(new SqlParameter("@LastupDationDate", updationDate));
 				}
 				else
 				{
@@ -84,7 +87,7 @@ namespace eTactWeb.Data.DAL
 				}
 					
 					sqlParams.Add(new SqlParameter("@DiscountCustCatYearCode", model.DiscountCustCatYearCode));
-					sqlParams.Add(new SqlParameter("@EffectiveFromDate", model.EffectiveFromDate));
+					sqlParams.Add(new SqlParameter("@EffectiveFromDate", effectiveFromDate));
 					sqlParams.Add(new SqlParameter("@DiscountCategory", model.DiscountCategory));
 					sqlParams.Add(new SqlParameter("@DiscountCatSlipNo", model.DiscountCatSlipNo));
 					sqlParams.Add(new SqlParameter("@MaxDiscountPer", model.MaxDiscountPer));
@@ -94,8 +97,9 @@ namespace eTactWeb.Data.DAL
 					sqlParams.Add(new SqlParameter("@CategoryActive", model.CategoryActive));
 					sqlParams.Add(new SqlParameter("@ApplicableMonthlyYearlyAfterEachSale", model.ApplicableMonthlyYearlyAfterEachSale));
 					
+					sqlParams.Add(new SqlParameter("@DiscountCatSlipDate", slipDate));
 					sqlParams.Add(new SqlParameter("@ActualEntryByEmpId", model.ApprovedByEmpId));
-					sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
+					sqlParams.Add(new SqlParameter("@ActualEntryDate", actualentDate));
 					sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
 					sqlParams.Add(new SqlParameter("@CC", model.CC));
 					sqlParams.Add(new SqlParameter("@ApprovedByEmpId", model.ApprovedByEmpId));
@@ -186,6 +190,7 @@ namespace eTactWeb.Data.DAL
                                                             DiscountCategory = dr["DiscountCategory"] != DBNull.Value ? Convert.ToString(dr["DiscountCategory"]) : string.Empty,
                                                             DiscountCatSlipNo = dr["DiscountCatSlipNo"] != DBNull.Value ? Convert.ToString(dr["DiscountCatSlipNo"]) : string.Empty,
                                                             EffectiveFromDate = dr["EffectiveFromDate"] != DBNull.Value ? Convert.ToDateTime(dr["EffectiveFromDate"]).ToString("dd/MM/yyyy") : string.Empty,
+															DiscountCatSlipDate = dr["DiscountCatSlipDate"] != DBNull.Value ? Convert.ToDateTime(dr["DiscountCatSlipDate"]).ToString("dd/MM/yyyy") : string.Empty,
                                                             MinDiscountPer = dr["MinDiscountPer"] != DBNull.Value ? Convert.ToDecimal(dr["MinDiscountPer"]) : 0,
                                                             MaxDiscountPer = dr["MaxDiscountPer"] != DBNull.Value ? Convert.ToDecimal(dr["MaxDiscountPer"]) : 0,
                                                             ApplicableMonthlyYearlyAfterEachSale = dr["ApplicableMonthlyYearlyAfterEachSale"] != DBNull.Value ? Convert.ToString(dr["ApplicableMonthlyYearlyAfterEachSale"]) : string.Empty,
@@ -293,6 +298,7 @@ namespace eTactWeb.Data.DAL
                 model.EntryByMachine = DS.Tables[0].Rows[0]["EntryByMachine"].ToString();
                 model.ActualEntryByEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEntryByEmpId"].ToString());
                 model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"].ToString();
+                model.DiscountCatSlipDate = DS.Tables[0].Rows[0]["DiscountCatSlipDate"].ToString();
                 model.LastUpdatedbyEmpId = Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedbyEmpId"].ToString());
                 model.LastupDationDate = DS.Tables[0].Rows[0]["LastupDationDate"].ToString();
                 model.CC = DS.Tables[0].Rows[0]["CC"].ToString();
