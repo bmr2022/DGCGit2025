@@ -26,6 +26,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> FillMachineGroup()
         {
             return await _MachineMasterDAL.FillMachineGroup();
+        } 
+        public async Task<ResponseResult> FillMachineWorkCenter()
+        {
+            return await _MachineMasterDAL.FillMachineWorkCenter();
         }
         public async Task<ResponseResult> SaveMachineMaster(MachineMasterModel model)
         {
