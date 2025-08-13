@@ -82,6 +82,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@EntryId", model.EntryId > 0 ? model.MachineId : (object)DBNull.Value));
                 }
                     SqlParams.Add(new SqlParameter("@MachGroupId", model.MachGroupId > 0 ? model.MachGroupId : (object)DBNull.Value));
+                    SqlParams.Add(new SqlParameter("@WorkCenterId", model.WorkCenterId > 0 ? model.WorkCenterId : (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@MachineCode", string.IsNullOrEmpty(model.MachineCode) ? (object)DBNull.Value : model.MachineCode));
                     SqlParams.Add(new SqlParameter("@MachineName", string.IsNullOrEmpty(model.MachineName) ? (object)DBNull.Value : model.MachineName));
                     SqlParams.Add(new SqlParameter("@LabourCost", model.LabourCost > 0 ? model.LabourCost : (object)DBNull.Value));
@@ -158,6 +159,8 @@ namespace eTactWeb.Data.DAL
                                                {
                                                    MachineId = dr["MachineId"] != DBNull.Value ? Convert.ToInt32(dr["MachineId"]) : 0,
                                                    MachGroupId = dr["MachGroupId"] != DBNull.Value ? Convert.ToInt32(dr["MachGroupId"]) : 0,
+                                                   WorkCenterId = dr["WorkCenterId"] != DBNull.Value ? Convert.ToInt32(dr["WorkCenterId"]) : 0,
+                                                   WorkCenter = dr["WorkCenter"] != DBNull.Value ? dr["WorkCenter"].ToString() : string.Empty,
                                                    MachineGroup = dr["MachineGroup"] != DBNull.Value ? dr["MachineGroup"].ToString() : string.Empty,
                                                    MachineCode = dr["MachineCode"] != DBNull.Value ? dr["MachineCode"].ToString() : string.Empty,
                                                    MachineName = dr["MachineName"] != DBNull.Value ? dr["MachineName"].ToString() : string.Empty,
@@ -271,6 +274,7 @@ namespace eTactWeb.Data.DAL
                         //Group_Code,Group_name,Entry_date,GroupCatCode,ItemCategory,Main_Category_Type ,Under_GroupCode,UnderCategoryId
                         _MachineMasterModel.MachineId = Convert.ToInt32(dr["MachineId"].ToString());
                         _MachineMasterModel.MachGroupId = Convert.ToInt32(dr["MachGroupId"].ToString());
+                        _MachineMasterModel.WorkCenterId = Convert.ToInt32(dr["WorkCenterId"].ToString());
                         _MachineMasterModel.MachineCode = dr["MachineCode"].ToString();
                         _MachineMasterModel.MachineName = dr["MachineName"].ToString();
                         
@@ -310,6 +314,7 @@ namespace eTactWeb.Data.DAL
 
                 SqlParams.Add(new SqlParameter("@Entryid", model.MachineId));
                 SqlParams.Add(new SqlParameter("@MachGroupId", model.MachGroupId));
+                SqlParams.Add(new SqlParameter("@WorkCenterId", model.WorkCenterId));
                 SqlParams.Add(new SqlParameter("@MachineCode", model.MachineCode));
                 SqlParams.Add(new SqlParameter("@MachineName", model.MachineName));
 

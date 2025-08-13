@@ -31,7 +31,7 @@ namespace eTactWeb.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> MachineMaster(int ID, string Mode, int MachineId, int MachGroupId, string MachineCode, string MachineName,
+        public async Task<ActionResult> MachineMaster(int ID, string Mode, int MachineId, int MachGroupId, int WorkCenterId, string MachineCode, string MachineName,
                                    double LabourCost, string NeedHelper, int TotalHelper, double HelperCost,
                                    double ElectricityCost, double OtherCost, double TotalCost, string EntryDate,
                                    string Make, string Location, string TechSpecification, string LastCalibraDate,
@@ -53,6 +53,7 @@ namespace eTactWeb.Controllers
                 MainModel.ID = ID;
                 MainModel.MachineId = MachineId;
                 MainModel.MachGroupId = MachGroupId;
+                MainModel.WorkCenterId = WorkCenterId;
                 MainModel.MachineCode = MachineCode;
                 MainModel.MachineName = MachineName;
                 MainModel.LabourCost = LabourCost;

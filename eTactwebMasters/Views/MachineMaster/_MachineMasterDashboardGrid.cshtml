@@ -7,6 +7,7 @@
                 <th style="width:50px !important">Action</th>
                 <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine ID</th>
                 <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Group Name</th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center Name</th>
                 <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Name</th>
                 <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Machine Code</th>
                 <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Labour Cost</th>
@@ -62,6 +63,7 @@
                                            asp-route-ID="@Cntr"
                                            asp-route-MachineId="@item.MachineId"
                                            asp-route-MachGroupId="@item.MachGroupId"
+                                           asp-route-WorkCenterId="@item.WorkCenterId"
                                            asp-route-MachineCode="@item.MachineCode"
                                            asp-route-MachineName="@item.MachineName"
                                            asp-route-LabourCost="@item.LabourCost"
@@ -99,6 +101,7 @@
                             </td>
                             <td>@item.MachineId</td>
                             <td>@item.MachineGroup<input type="hidden" asp-for="@item.MachGroupId" /></td>
+                            <td>@item.WorkCenter<input type="hidden" asp-for="@item.WorkCenterId" /></td>
                             <td>@item.MachineName</td>
                             <td>@item.MachineCode</td>
                             <td>@item.LabourCost</td>

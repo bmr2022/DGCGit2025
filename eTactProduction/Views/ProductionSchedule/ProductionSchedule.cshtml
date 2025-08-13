@@ -755,7 +755,7 @@
             if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
                 NewEntryId();
             } else {
-                GetMachineName(0);
+                GetMachineName(0,0);
                 GetWorkCenter(0);
                                // alert('prodplanqty'+$('#PlanForNoOFDays').val());
                 SetViewQty();
@@ -907,13 +907,18 @@
 
 
         function workCenterChange(i) {
-            
+                    var WCValue = parseInt($('#WorkCenter-' + i).val());
+
             if (WCSameStore) {
-                var WCValue = parseInt($('#WorkCenter-' + i).val());
                 var rowCount = $('#divProductionSchGrid tr').length;
                 for (var j = 1; j <= rowCount; j++) {
                     $('#WorkCenter-' + j).val(WCValue);
+                             GetMachineName(j, WCValue);
                 }
+                       
+            }
+            else{
+                          GetMachineName(i, WCValue);
             }
             ClearBomGrid();
             // PSBomSummary();
@@ -978,7 +983,7 @@
                 success: function (response) {
                    // alert(response);
                     $('#divProductionSchGrid').html(response);
-                    GetMachineName(0);
+                    
                     GetWorkCenter(0);
                     SetColumnsDaywise();
                     TotalnoOfItems();
@@ -991,7 +996,8 @@
                     for (var rowIndex = 1; rowIndex <= rowCount; rowIndex++) {
                         var Row = $('#itemGrid-' + rowIndex);
                         var itemCode = Row.find('input[id^="GridItemCode-"]').val();
-
+                                                                var WorkCenterId=   $('#WorkCenter-' + rowIndex).val();
+                                        GetMachineName(0,WorkCenterId);
                         for (var dayIndex = 0; dayIndex < PlanNoOfDays; dayIndex++) {
                             var idEffDate = EffDate[dayIndex].split("/")[0];
                                     //                 alert(' item.schDate.split(" ")[0]'+ item.schDate.split(" ")[0]);
@@ -1285,8 +1291,9 @@
                             tableBody.append(newRow);
                             var EffDate = EffDates();
                             var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
-                            GetMachineName(currentIndex);
+                         
                             GetWorkCenter(currentIndex);
+                              GetMachineName(currentIndex,  $('#WorkCenter-' + currentIndex).val());
                             $('#Machine1-' + currentIndex).val(item.plannedMachineid1);
                             $('#Machine2-' + currentIndex).val(item.plannedMachineid2);
                             $('#Machine3-' + currentIndex).val(item.plannedMachineid3);
@@ -2369,12 +2376,13 @@
                 }
             }
         });
-                function GetMachineName(row) {
+                        function GetMachineName(row,workCenterId) {
             var RowCount = $('#divProductionSchGrid tr').length;
 
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GetMachineName")",
+                         data: { workCenterId: workCenterId },
                 dataType: "json",
                 async: false,
                 success: function (result) {
@@ -2735,7 +2743,7 @@
 
                     TotalnoOfItems();
                     SetColumnsDaywise();
-                    GetMachineName(0);
+                    GetMachineName(0,0);
                      GetWorkCenter(0);
                     if ($('#divProductionSchGrid tr td').length == 1) {
                         $('#divPendWOGrid tr:visible').each(function () {
@@ -3098,7 +3106,7 @@
 
                         $('#divProductionSchGrid').empty();
                         $('#divProductionSchGrid').append(result);
-                        GetMachineName(0);
+                       
                         GetWorkCenter(0);
                         TotalnoOfItems();
                         var PlanNoOfDays = parseInt($('#PlanForNoOFDays').val());
@@ -3115,8 +3123,9 @@
                                 ItemName: $('#itemGrid-' + i).find('.ItemName').text(),
                                 PartCode: $('#GridPartCode-' + i).text()
                             });
-                                   
-                            var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
+                                               var  WorkCenter=    $('#WorkCenter-' + (i + 1)).val();
+                                                GetMachineName( (i + 1),WorkCenter);
+                                    var totalWOQty = $('#itemGrid-' + (i + 1)).find('.TotalWOQty').text() != '' ? parseFloat($('#itemGrid-' + (i + 1)).find('.TotalWOQty').text()) : 0;
                                       var noOfCavity = parseFloat($('#itemGrid-' + (i + 1)).find('#NoOfCavity').val()) || 0;
                             var noOfShotsHours = parseFloat($('#itemGrid-' + (i + 1)).find('#NoOfshotsHours').val()) || 0;
 

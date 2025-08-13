@@ -80,7 +80,8 @@ namespace eTactWeb.DOM.Models
         public string? ItemModel { get; set; }
         public string? CustItemCategory { get; set; }
         //public int AccountCode { get; set; }
-        //public string AccountName { get; set; }
+        public string? AccountName { get; set; }
+        public string? DiscCategoryName { get; set; }
     }
 
     [Serializable()]

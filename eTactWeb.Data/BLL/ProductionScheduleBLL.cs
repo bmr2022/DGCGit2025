@@ -48,9 +48,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _ProductionScheduleDAL.GetPendWOData(PendWoType,YearCode,SOEffFromDate,CurrentDate);
         }
-        public async Task<ResponseResult> GetMachineName()
+        public async Task<ResponseResult> GetMachineName(int WorkCenterId)
         {
-            return await _ProductionScheduleDAL.GetMachineName();
+            return await _ProductionScheduleDAL.GetMachineName(WorkCenterId);
         }
         public async Task<ResponseResult> GetWorkCenter()
         {
