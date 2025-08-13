@@ -27,7 +27,7 @@ namespace eTactWeb.Controllers
         }
 		[Route("{controller}/Index")]
 		public async Task<ActionResult> DiscountCustomerCategoryMaster(int ID, int YC, string Mode, string SlipNo,
-             int DiscountCategoryId, string DiscountCatSlipNo, string EffectiveFromDate,
+             int DiscountCategoryId, string DiscountCatSlipNo, string EffectiveFromDate,string DiscountCatSlipDate,
 decimal MinDiscountPer, decimal MaxDiscountPer, string ApplicableMonthlyYearlyAfterEachSale,
 string ApplicableOnAdvancePayment, decimal MinmumAdvancePaymentPercent, string CategoryActive,
 string EntryByMachine, string ActualEntryByEmpName, string ActualEntryDate,
@@ -52,6 +52,7 @@ string LastUpdatedbyEmpName, string LastupDationDate, string CC,int LastUpdatedb
                 MainModel.DiscountCustCatYearCode = YC;
                 MainModel.DiscountCategoryId = DiscountCategoryId;
                 MainModel.DiscountCatSlipNo = DiscountCatSlipNo;
+                MainModel.DiscountCatSlipDate = DiscountCatSlipDate;
                 MainModel.EffectiveFromDate = EffectiveFromDate;
                 MainModel.MinDiscountPer = MinDiscountPer;
                 MainModel.MaxDiscountPer = MaxDiscountPer;

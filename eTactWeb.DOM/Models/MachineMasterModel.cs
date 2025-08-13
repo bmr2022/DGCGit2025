@@ -12,10 +12,12 @@ namespace eTactWeb.DOM.Models.Master
         public string Flag { get; set; }
         public int EntryId { get; set; } 
         public int MachGroupId { get; set; }
+        public int WorkCenterId { get; set; }
         public int MachineId { get; set; }
         public string MachineCode { get; set; } 
         public string MachineGroup { get; set; } 
         public string MachineName { get; set; } 
+        public string WorkCenter { get; set; } 
         public string Searchbox { get; set; } 
         public double LabourCost { get; set; }
         public string NeedHelper { get; set; } 

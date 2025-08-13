@@ -102,6 +102,7 @@
                                        asp-route-ActualEntryByEmpId="@item.ActualEntryByEmpId"
                                        asp-route-ApprovedByEmpId="@item.ApprovedByEmpId"
                                        asp-route-LastupDationDate="@item.LastupDationDate?.ToString().Split(' ')[0]"
+                                       asp-route-DiscountCatSlipDate="@item.DiscountCatSlipDate?.ToString().Split(' ')[0]"
                                        asp-route-CC="@item.CC">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
@@ -132,8 +133,8 @@
                                        asp-route-ActualEntryByEmpId="@item.ActualEntryByEmpId"
                                        asp-route-ApprovedByEmpId="@item.ApprovedByEmpId"
                                        asp-route-LastupDationDate="@item.LastupDationDate?.ToString().Split(' ')[0]"
-                                       asp-route-CC="@item.CC"
-                                       >
+                                       asp-route-CC="@item.CC" 
+                                       asp-route-DiscountCatSlipDate="@item.DiscountCatSlipDate?.ToString().Split(' ')[0]">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

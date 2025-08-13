@@ -133,6 +133,12 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> FillMachineWorkCenter()
+        {
+            var JSON = await _IMachineMaster.FillMachineWorkCenter();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<IActionResult> MachineMasterDashboard()
         {
             try

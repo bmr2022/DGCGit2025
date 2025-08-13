@@ -1,7 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.Master.MachineMasterModel
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "Machine Master";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <form asp-action="MachineMaster" asp-controller="MachineMaster" autocomplete="on" class="form-horizontal">
@@ -75,6 +75,17 @@
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="MachineName" class="form-label" style="color:red;"> Machine Name*</label>
                                     <input asp-for="MachineName" class="form-control" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                    <label asp-for="WorkCenter" class="form-label" style="color:red;">Machine WorkCenter*</label>
+                                    <input asp-for="WorkCenterId" class="form-control" type="hidden" />
+                                    <select class="form-control" asp-for="WorkCenter" required>
+                                        <option value="@Model.WorkCenter">-Select-</option>
+                                        @if (Model.Mode == "U" || Model.Mode == "V")
+                                        {
+                                            <option value="@Model.WorkCenter" selected>@Model.WorkCenter</option>
+                                        }
+                                    </select>
                                 </div>
                                 <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                     <label asp-for="MachineGroup" class="form-label" style="color:red;">Machine Group*</label>
@@ -240,12 +251,10 @@
             $('#EntryDate').val(formattedToday);
             $('#LastcalibraDate').val(formattedToday);
 
-
-
-
-
             $('#MachineGroup').select2();
+             $('#WorkCenter').select2();
              FillMachineGroup();
+             FillMachineWorkCenter();
         });
         if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
            // FillMachineGroupID();
@@ -256,8 +265,10 @@
                 $('#MachGroupId').val($('#MachineGroup').val());
             }
         });
-        $('#MachineGroup').change(function () {
-           // FillMachineGroupID();
+        $('#WorkCenter').change(function () {
+             if ($('#Mode').val() !== "U") {
+                $('#WorkCenterId').val($('#WorkCenter').val());
+            }
         });
         function FillMachineGroup() {
             $.ajax({
@@ -285,7 +296,32 @@
                 }
             });
         }
+          function FillMachineWorkCenter() {
+            $.ajax({
+                url: '@Url.Action("FillMachineWorkCenter", "MachineMaster")',
+                type: 'POST',
+                async: false,
+                success: function (response, status, error) {
+                    var WorkCenterDropdown = $('#WorkCenter');
+                    var obj = $.parseJSON(response);
+                    WorkCenterDropdown.empty();
+                    WorkCenterDropdown.append('<option value="">--Select--</option>');
+                    $.each(obj.Result, function (index, WorkCenter) {
+                        WorkCenterDropdown.append('<option value="' + WorkCenter.WorkCenterId + '">' + WorkCenter.WorkCenter + '</option>');
+                    });
 
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+
+                        var WorkCenter = '@Model.WorkCenterId';
+                        $('#WorkCenter').val(WorkCenter).trigger("change");
+                        $('#WorkCenter').val(WorkCenter);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
         // function CheckBeforeUpdate() {
         //     $.ajax({
         //         url: '@Url.Action("CheckBeforeUpdate")',

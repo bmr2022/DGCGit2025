@@ -195,7 +195,7 @@
 							</div>
 							<div class="accordion-item">
 								<h2 class="accordion-header" id="HPanel2">
-									<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#ODGrid" aria-expanded="false" aria-controls="ODGrid">
+									<button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="false" aria-controls="OtherGridDetail">
 										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
 									</button>
 								</h2>
@@ -343,6 +343,10 @@
 			$('#LastUpdatedbyEmpName').rules("remove", "required");
 			$('#LastupDationDate').rules("remove", "required");
 			$('#EntryByMachine').rules("remove", "required");
+			$('#SaleDiscount').rules("remove", "required");
+			$('#PurchaseDiscount').rules("remove", "required");
+			$('#GroupName').rules("remove", "required");
+			$('#GroupCode').rules("remove", "required");
 
 
 			$('#GroupName').select2();

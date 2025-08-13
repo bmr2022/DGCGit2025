@@ -184,12 +184,22 @@
 
         $('.submitBTN').click(function (e) {
             e.preventDefault();
+            if ($("#Currency").val() == "") {
+                $.notify("Currency Can not be Blanck", "error");
+                return;
+            }
             $('form').submit();
         });
 
+        
 
         $(document).ready(function () {
 
+            var message = '@Html.Raw(ViewBag.Message ?? "")';
+            if (message) {
+                $.notify(message, { position: "top center", className: "error" });
+            }
+           
             $('#IsDefault').rules("remove", "required");
             $('#IsDefault').select2();
             // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
@@ -198,10 +208,8 @@
 
         
             //FillStoreType();
-            if ($("#Currency").val() == "") {
-                $.notify("Currency Can not be Blanck", "error");
-            }
-            var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
+          
+            var EntryDate = parseDateToFormat($('#EntryDate').val());
             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 //     FillStoreType();
                     // if ($("#Store_Name").val() == "") {
