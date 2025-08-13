@@ -35,7 +35,7 @@ namespace eTactWeb.Controllers
                                    double LabourCost, string NeedHelper, int TotalHelper, double HelperCost,
                                    double ElectricityCost, double OtherCost, double TotalCost, string EntryDate,
                                    string Make, string Location, string TechSpecification, string LastCalibraDate,
-                                   double CalibraDur, string UId, string CC,int WorkCenterId)
+                                   double CalibraDur, string UId, string CC)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -71,7 +71,6 @@ namespace eTactWeb.Controllers
                 MainModel.CalibraDur = CalibraDur;
                 MainModel.UId = UId;
                 MainModel.CC = CC;
-                MainModel.WorkCenterId = WorkCenterId;
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(60),

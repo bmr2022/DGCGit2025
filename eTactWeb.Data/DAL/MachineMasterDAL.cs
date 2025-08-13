@@ -177,9 +177,7 @@ namespace eTactWeb.Data.DAL
                                                    TechSpecification = dr["Techspecification"] != DBNull.Value ? dr["Techspecification"].ToString() : string.Empty,
                                                    LastCalibraDate = dr["LastCalibraDate"] != DBNull.Value ? dr["LastCalibraDate"].ToString() : string.Empty,
                                                    CalibraDur = dr["CalibraDur"] != DBNull.Value ? Convert.ToDouble(dr["CalibraDur"]) : 0.0,
-                                                   WorkCenterId = dr["WorkCenterId"] != DBNull.Value ? Convert.ToInt32(dr["WorkCenterId"]) : 0,
                                                    CC = dr["CC"] != DBNull.Value ? dr["CC"].ToString() : string.Empty,
-                                                   WorkCenter = dr["WorkCenter"] != DBNull.Value ? dr["WorkCenter"].ToString() : string.Empty,
                                                    UId = dr["UId"] != DBNull.Value ? dr["UId"].ToString() : string.Empty
 
                                                }).ToList();
