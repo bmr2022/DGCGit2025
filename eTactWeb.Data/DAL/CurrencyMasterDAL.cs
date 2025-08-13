@@ -25,45 +25,135 @@ namespace eTactWeb.Data.DAL
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
-
-
         public async Task<ResponseResult> SaveCurrencyMaster(CurrencyMasterModel model)
         {
-            var _ResponseResult = new ResponseResult();
+            var response = new ResponseResult();
+
             try
             {
-                var SqlParams = new List<dynamic>();
-                if (model.Mode == "U" || model.Mode == "V")
+                using (var conn = new SqlConnection(DBConnectionString)) // Use your actual connection string
+                using (var cmd = new SqlCommand("SPCurrencyMaster", conn))
                 {
-                    SqlParams.Add(new SqlParameter("@Flag", "Update"));
-                    SqlParams.Add(new SqlParameter("@currencyId", model.CurrencyId > 0 ? model.CurrencyId : (object)DBNull.Value));
-                    SqlParams.Add(new SqlParameter("@Currency", string.IsNullOrEmpty(model.Currency) ? DBNull.Value : model.Currency));
-                    SqlParams.Add(new SqlParameter("@IsDefault", string.IsNullOrEmpty(model.IsDefault) ? DBNull.Value : model.IsDefault));
-                   
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    if (model.Mode == "U" || model.Mode == "V")
+                    {
+                        cmd.Parameters.AddWithValue("@Flag", "Update");
+                        cmd.Parameters.AddWithValue("@currencyId", model.CurrencyId > 0 ? model.CurrencyId : (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Currency", string.IsNullOrEmpty(model.Currency) ? DBNull.Value : model.Currency);
+                        cmd.Parameters.AddWithValue("@IsDefault", string.IsNullOrEmpty(model.IsDefault) ? DBNull.Value : model.IsDefault);
+                    }
+                    else
+                    {
+                        cmd.Parameters.AddWithValue("@Flag", "Insert");
+                        cmd.Parameters.AddWithValue("@currencyId", model.CurrencyId > 0 ? model.CurrencyId : (object)DBNull.Value);
+                        cmd.Parameters.AddWithValue("@Currency", string.IsNullOrEmpty(model.Currency) ? DBNull.Value : model.Currency);
+                        cmd.Parameters.AddWithValue("@StageShortName", string.IsNullOrEmpty(model.IsDefault) ? DBNull.Value : model.IsDefault);
+                    }
+
+                    await conn.OpenAsync();
+
+                    using (var reader = await cmd.ExecuteReaderAsync())
+                    {
+                        if (await reader.ReadAsync())
+                        {
+                            response.StatusText = reader["StatusText"].ToString();
+                            response.StatusCode = (HttpStatusCode)Convert.ToInt32(reader["StatusCode"]);
+                            response.Result = reader["Result"];
+                        }
+                        else
+                        {
+                            response.StatusText = "Error";
+                            response.StatusCode = HttpStatusCode.InternalServerError;
+                            response.Result = "No response from stored procedure.";
+                        }
+                    }
+                }
+            }
+            catch (SqlException sqlEx)
+            {
+                if (sqlEx.Message.Contains("is already set as default"))
+                {
+                    response.StatusCode = HttpStatusCode.BadRequest;
+                    response.StatusText = "Error";
+                    response.Result = new { Message = sqlEx.Message };
                 }
                 else
                 {
-                    SqlParams.Add(new SqlParameter("@Flag", "Insert"));
-                    SqlParams.Add(new SqlParameter("@currencyId", model.CurrencyId > 0 ? model.CurrencyId : (object)DBNull.Value));
-                    SqlParams.Add(new SqlParameter("@Currency", string.IsNullOrEmpty(model.Currency) ? DBNull.Value : model.Currency));
-                    SqlParams.Add(new SqlParameter("@StageShortName", string.IsNullOrEmpty(model.IsDefault) ? DBNull.Value : model.IsDefault));
-                   
+                    response.StatusCode = HttpStatusCode.InternalServerError;
+                    response.StatusText = "Error";
+                    response.Result = new { Message = sqlEx.Message };
                 }
-
-
-                // Call the stored procedure with the provided parameters
-                _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCurrencyMaster", SqlParams);
             }
             catch (Exception ex)
             {
-                // Handle exceptions and prepare the error response
-                _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
-                _ResponseResult.StatusText = "Error";
-                _ResponseResult.Result = new { ex.Message, ex.StackTrace };
+                response.StatusCode = HttpStatusCode.InternalServerError;
+                response.StatusText = "Error";
+                response.Result = new { Message = ex.Message };
             }
 
-            return _ResponseResult;
+            return response;
         }
+
+
+        //     public async Task<ResponseResult> SaveCurrencyMaster(CurrencyMasterModel model)
+        //     {
+        //         var _ResponseResult = new ResponseResult();
+        //         try
+        //         {
+        //             var SqlParams = new List<dynamic>();
+        //             if (model.Mode == "U" || model.Mode == "V")
+        //             {
+        //                 SqlParams.Add(new SqlParameter("@Flag", "Update"));
+        //                 SqlParams.Add(new SqlParameter("@currencyId", model.CurrencyId > 0 ? model.CurrencyId : (object)DBNull.Value));
+        //                 SqlParams.Add(new SqlParameter("@Currency", string.IsNullOrEmpty(model.Currency) ? DBNull.Value : model.Currency));
+        //                 SqlParams.Add(new SqlParameter("@IsDefault", string.IsNullOrEmpty(model.IsDefault) ? DBNull.Value : model.IsDefault));
+
+        //             }
+        //             else
+        //             {
+        //                 SqlParams.Add(new SqlParameter("@Flag", "Insert"));
+        //                 SqlParams.Add(new SqlParameter("@currencyId", model.CurrencyId > 0 ? model.CurrencyId : (object)DBNull.Value));
+        //                 SqlParams.Add(new SqlParameter("@Currency", string.IsNullOrEmpty(model.Currency) ? DBNull.Value : model.Currency));
+        //                 SqlParams.Add(new SqlParameter("@StageShortName", string.IsNullOrEmpty(model.IsDefault) ? DBNull.Value : model.IsDefault));
+
+        //             }
+
+
+        //             // Call the stored procedure with the provided parameters
+        //             _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCurrencyMaster", SqlParams);
+        //         }
+        ////catch (Exception ex)
+        ////{
+        ////    // Handle exceptions and prepare the error response
+        ////    _ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+        ////    _ResponseResult.StatusText = "Error";
+        ////    _ResponseResult.Result = new { ex.Message, ex.StackTrace };
+        ////}
+        //catch (SqlException sqlEx)
+        //{
+        //	// Check for your custom error message text pattern
+        //	if (sqlEx.Message.Contains("is already set as default"))
+        //	{
+        //		_ResponseResult.StatusCode = HttpStatusCode.BadRequest;
+        //		_ResponseResult.StatusText = "Error";
+        //		_ResponseResult.Result = new { Message = sqlEx.Message };
+        //	}
+        //	else
+        //	{
+        //		_ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+        //		_ResponseResult.StatusText = "Error";
+        //		_ResponseResult.Result = new { Message = sqlEx.Message };
+        //	}
+        //}
+        //catch (Exception ex)
+        //{
+        //	_ResponseResult.StatusCode = HttpStatusCode.InternalServerError;
+        //	_ResponseResult.StatusText = "Error";
+        //	_ResponseResult.Result = new { Message = ex.Message };
+        //}
+        //return _ResponseResult;
+        //     }
 
 
         public async Task<ResponseResult> GetDashBoardData()

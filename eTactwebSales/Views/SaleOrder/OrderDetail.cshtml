@@ -678,7 +678,7 @@
                                         <label asp-for="Group_Code" class="form-label">Group Name</label>
                                         @* <button id="ShowGroupItem" onclick="AddMultipleItems()">Show All</button> *@
                                         <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
-                                            <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> ShowAllItem
+                                            <i class="bi bi-list"></i> 
                                         </button>
                                         <select class="form-select" asp-for="Group_Code" style="width:170px">
                                             <option value="0">-Select-</option>
@@ -1249,10 +1249,15 @@
                         <div class="row g-2 gx-3">
 
                             <div class="card-body text-center overflow-auto pb-0   ">
+                                <div class="d-flex align-items-center mb-2">
                                 <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
                                     <i class="fa fa-check-square" aria-hidden="true"></i>
                                     <span style="margin-left: 5px;">Ch/UnCh All</span>
                                 </button>
+                                <div class="col-md-2 me-3" style="margin-left:50px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                </div>
                                 <div class="table-responsive" style="max-height:350px;">
                                     <table class="table table-hover table-bordered table-striped mb-0">
                                         <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
@@ -1263,11 +1268,14 @@
                                                 <th>Item Name</th>
                                                 <th>Qty</th>
                                                 <th>Rate</th>
-                                                <th>Unit</th>
-                                                <th>HSNNO</th>
                                                 <th>Discount %</th>
                                                 <th>Discount Amt</th>
                                                 <th>Amount</th>
+                                                <th>partyName</th>
+                                                <th>DisCategory</th>
+                                                <th>Unit</th>
+                                                <th>HSNNO</th>
+                                               
                                                 
                                             </tr>
                                         </thead>
@@ -1829,6 +1837,7 @@
             $('#PartCode').select2();
             $('#ItemCode').select2();
             $('#Group_Code').select2();
+            $('#Group_Code1').select2();
 
             //fillSaleBill();
             GetFormRights();
@@ -2215,7 +2224,7 @@
                             "AltQty": $('#AltQty').val(),
                             "AltUnit": $('#AltUnit').val(),
                             "Rate": $('#Rate-' + i).val(),
-                            "OtherRateCurr": $('#OtherRateCurr').val(),
+                            "OtherRateCurr": $('#Rate-' + i).val(),
                             "StoreName": $('#StoreName').val() == '' ? null : JSON.stringify(parseInt($('#StoreName').val())),
                             "StockQty": $('#StockQty').val(),
                             "UnitRate": $('#UnitRate').val(),
@@ -2308,6 +2317,35 @@
                     $(this).toggle(columnText.indexOf(value) > -1);
                 } else {
                     $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $("#search-box1").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#MultiItemBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    // var columnText = $(this).find('input').eq(currentSearchColumn).text().toLowerCase();
+                    var columnValue = $(this)
+                        .find('td')
+                        .eq(currentSearchColumn)
+                        .find('input')
+                        .val()
+                        .toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    // $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                     var rowText = $(this)
+                .find('input')
+                .map(function () {
+                    return $(this).val();
+                })
+                .get()
+                .join(" ")
+                .toLowerCase();
+
+            $(this).toggle(rowText.indexOf(value) > -1);
                 }
             });
         });
@@ -4110,6 +4148,7 @@
 
     </script>
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
 
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>

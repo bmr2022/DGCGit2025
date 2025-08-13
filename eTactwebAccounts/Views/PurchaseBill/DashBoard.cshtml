@@ -283,13 +283,16 @@
             });
         }
 
+        // $('#sendToExcel').click(function () {
+        //     $("#PBDashboardGrid").table2excel({
+        //         filename: "PurchaseBillTable.xls"
+        //     });
+        // });
+
         $('#sendToExcel').click(function () {
-            $("#PBDashboardGrid").table2excel({
-                filename: "PurchaseBillTable.xls"
-            });
+            var reportType = $('#DashboardType').val(); // assuming there's a dropdown or input with id="ReportType"
+            window.location.href = '/PurchaseBill/ExportPurchaseBillToExcel?ReportType=' + encodeURIComponent(reportType);
         });
-
-
 
         // function confirmDelete(event, ID, YC, PurchVoucherNo, InvNo, EntryBy, EntryByMachineName, EntryDate) {
         //     event.preventDefault();
