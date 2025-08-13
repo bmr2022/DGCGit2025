@@ -499,7 +499,8 @@ namespace eTactWeb.Data.DAL
                 {
                     SqlCommand oCmd = new SqlCommand("SP_FiletrItemMaster", myConnection)
                     {
-                        CommandType = CommandType.StoredProcedure
+                        CommandType = CommandType.StoredProcedure,
+                           CommandTimeout = 400
                     };
                     oCmd.Parameters.AddWithValue("@ItemName", ItemName);
                     oCmd.Parameters.AddWithValue("@PartCode", PartCode);
