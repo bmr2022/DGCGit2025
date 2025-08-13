@@ -37,7 +37,15 @@ public class TaxController : Controller
     {
         var _List = new List<TaxModel>();
         int accountCodeCallCount = 0;
-        var rowIndex = accountCodeCallCount % CgstSgst.Rows.Count; // 0 first time, 1 second time
+        int rowIndex = 0;
+        if (CgstSgst != null && CgstSgst.Rows != null && CgstSgst.Rows.Count > 0)
+        {
+            rowIndex = accountCodeCallCount % CgstSgst.Rows.Count;
+        }
+        else
+        {
+            rowIndex = 0;
+        }
         accountCodeCallCount++;
         _List.Add(new TaxModel
         {
@@ -49,10 +57,10 @@ public class TaxController : Controller
             TxItemName = model.TxItemName,
             TxTaxType = model.TxTaxType,
             TxTaxTypeName = model.TxTaxTypeName,
-            TxAccountCode = ToInt32(CgstSgst.Rows[rowIndex]["Account_Code"]),
-            TxAccountName = CgstSgst.Rows[rowIndex]["Tax_Name"].ToString(),
-            //TxAccountCode = CgstSgst != null && CgstSgst.Rows.Count > 0 ? ToInt32(CgstSgst.Rows[1]["Account_Code"]) : model.TxAccountCode,
-            //TxAccountName = CgstSgst != null && CgstSgst.Rows.Count > 0 ? CgstSgst.Rows[1]["Tax_Name"].ToString() : model.TxAccountName,
+            //TxAccountCode = ToInt32(CgstSgst.Rows[rowIndex]["Account_Code"]),
+            //TxAccountName = CgstSgst.Rows[rowIndex]["Tax_Name"].ToString(),
+            TxAccountCode = CgstSgst != null && CgstSgst.Rows.Count > 0 ? ToInt32(CgstSgst.Rows[1]["Account_Code"]) : model.TxAccountCode,
+            TxAccountName = CgstSgst != null && CgstSgst.Rows.Count > 0 ? CgstSgst.Rows[1]["Tax_Name"].ToString() : model.TxAccountName,
             TxPercentg = model.TxPercentg,
             TxAdInTxable = model.TxAdInTxable,
             TxRoundOff = model.TxRoundOff,

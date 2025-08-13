@@ -997,14 +997,14 @@
                                 var poDate = val.PODate == null ? "" : val.PODate.split("T")[0];
 
                                 html += '<tr id="CNPopUpRow-' + i + '" style="font-size: 12px;">' +
-                                    '<td><input type="checkBox" id="chkCreditNote-' + i + '" value="' + i + '" onchange="BasicPopUpItemGrid()"/></td>' +
                                     '<td>' + i + '</td>' +
+                                    '<td><input type="checkBox" id="chkCreditNote-' + i + '" value="' + i + '" onchange="BasicPopUpItemGrid()"/></td>' +
                                     '<td id="saleBillEntryId-' + i + '">' + val.SaleBillEntryId + '<input type="hidden" id="itemCode-' + i + '" value="' + val.ItemCode + '"/></td>' +
                                     '<td id="SaleBillYearCode-' + i + '">' + val.SaleBillYearCode + '</td>' +
                                     '<td id="SaleBillNo-' + i + '">' + val.SaleBillNo + '</td>' +
                                     '<td id="SaleBillDate-' + i + '">' + saleBillDate + '</td>' +
-                                    '<td id="PurchBillEntryId-' + i + '">' + val.PurchBillEntryId + '</td>' +
-                                    '<td id="PurchBillYearCode-' + i + '">' + val.PurchBillYearCode + '</td>' +
+                                    '<td id="PurchBillEntryId-' + i + '" class="hnPOfields">' + val.PurchBillEntryId + '</td>' +
+                                    '<td id="PurchBillYearCode-' + i + '" class="hnPOfields">' + val.PurchBillYearCode + '</td>' +
                                     '<td id="InvoiceNo-' + i + '">' + val.InvoiceNo + '</td>' +
                                     '<td id="InvoiceDate-' + i + '">' + invoiceDate + '</td>' +
                                     '<td id="INVNetAmt-' + i + '">' + val.INVNetAmt + '</td>' +
@@ -1108,11 +1108,11 @@
                         "CheckBoxNo": $('#chkCreditNote-' + i).val(),
                         "CreditNoteInvoiceNo": $('#CreditNoteEntryId').val() || "",
                         "CreditNoteVoucherNo": $('#CreditNoteVoucherNo').val() || "",
-                        "AgainstSaleBillBillNo": row.find('#SaleBillNo').text() || "",
-                        "AgainstSaleBillYearCode": row.find('#SaleBillYearCode').text() || "",
-                        "AgainstSaleBillDate": row.find('#SaleBillDate').text() || "",
-                        "AgainstSaleBillEntryId": row.find('#saleBillEntryId').text() || "",
-                        "AgainstSaleBillVoucherNo": "",
+                        "AgainstSaleBillBillNo": row.find('#SaleBillNo-'+i).text() || "",
+                        "AgainstSaleBillYearCode": row.find('#SaleBillYearCode-'+i).text() || "",
+                        "AgainstSaleBillDate": row.find('#SaleBillDate-'+i).text() || "",
+                        "AgainstSaleBillEntryId": row.find('#saleBillEntryId-'+i).text() || "",
+                        "AgainstSaleBillVoucherNo": row.find('#InvoiceNo-' + i).text() || "",
                         "SaleBillType": "",
                         "AgainstPurchaseBillBillNo": "",
                         "AgainstPurchaseBillYearCode": row.find('#PurchBillYearCode').text() || "",
@@ -1123,17 +1123,17 @@
                         "ItemCode": $('#ItemCode').val() || "",
                         "PartCode": $('#PartCode').find(':selected').text() !== '-Select-' ? $('#PartCode').find(':selected').text() : "",
                         "ItemName": $('#ItemName').find(':selected').text() !== '-Select-' ? $('#ItemName').find(':selected').text() : "",
-                        "BillQty": row.find('#BillQty').text() || "",
+                        "BillQty": row.find('#BillQty-'+i).text() || "",
                         "Unit": $('#Unit').val() || "",
-                        "BillRate": row.find('#BillRate').text() || "",
-                        "DiscountPer": row.find('#disPer').text() || "",
-                        "DiscountAmt": row.find('#DisAmt').text() || "",
+                        "BillRate": row.find('#BillRate-'+i).text() || "",
+                        "DiscountPer": row.find('#disPer-'+i).text() || "",
+                        "DiscountAmt": row.find('#DisAmt-'+i).text() || "",
                         "ItemSize": $('#ItemSize').val() || "",
-                        "Amount": $('#ItemAmount').val() || "",
-                        "PONO": row.find('#pono').text() || "",
-                        "PODate": row.find('#poDate').text() || "",
-                        "POEntryId": row.find('#poEntryId').text() || "",
-                        "POYearCode": row.find('#poYearCode').text() || "",
+                        "Amount": $('#ItemAmount-'+i).val() || "",
+                        "PONO": row.find('#pono-'+i).text() || "",
+                        "PODate": row.find('#poDate-'+i).text() || "",
+                        "POEntryId": row.find('#poEntryId-'+i).text() || "",
+                        "POYearCode": row.find('#poYearCode-'+i).text() || "",
                         "PoRate": 0,
                         "PoAmmNo": "",
                         "SONO": "",
@@ -1474,7 +1474,7 @@
 
         function BasicPopUpItemGrid() {
             var columnCount = $('#divCreditNoteDataGrid tr td').length;
-            var invAmount = 0;
+            var ItemAmount = 0;
             var totalBillQty = 0;
             //noofitems
             var checkedRowCount = $('#divCreditNoteDataGrid tr input[type="checkbox"]:checked').length;
@@ -1488,12 +1488,12 @@
             var rowCount = $('#divCreditNoteDataGrid tr').length;
             for (var i = 1; i <= rowCount; i++) {
                 if ($('#chkCreditNote-' + i).is(':checked')) {
-                    invAmount += parseFloat($('#INVNetAmt-' + i).text() == '.00' ? 0 : $('#INVNetAmt-' + i).text());
+                    ItemAmount += parseFloat($('#ItemAmount-' + i).text() == '.00' ? 0 : $('#ItemAmount-' + i).text());
                     totalBillQty += parseFloat($('#BillQty-' + i).text() == '.00' ? 0 : $('#BillQty-' + i).text());
                 }
             }
 
-            $('#lblItemPopupNetInvAmount').text(invAmount.toFixed(2));
+            $('#lblItemPopupItemAmount').text(ItemAmount.toFixed(2));
             $('#lblItemPopupTotalBillQty').text(totalBillQty.toFixed(2));
         }
 
