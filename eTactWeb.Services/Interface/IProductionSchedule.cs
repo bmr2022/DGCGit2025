@@ -15,7 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItems();
         Task<ResponseResult> GetBomMultiLevelGrid();
         Task<ResponseResult> SaveProductionSchedule(ProductionScheduleModel model, DataTable PSGrid,DataTable prodPlanDetail,DataTable bomChildDetail,DataTable bomSummaryDetail);
-        Task<ResponseResult> GetMachineName();
+        Task<ResponseResult> GetMachineName(int WorkCenterId);
         Task<ResponseResult> GetWorkCenter();
         Task<ProductionScheduleModel> PSBomDetail(int YearCode,DataTable itemGrid);
         Task<ResponseResult> GetPendWOData(string PendWoType,int YearCode,string SOEffFromDate,string CurrentDate);

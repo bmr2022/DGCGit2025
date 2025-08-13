@@ -819,9 +819,9 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<JsonResult> GetMachineName()
+        public async Task<JsonResult> GetMachineName(int WorkCenterId)
         {
-            var JSON = await _IProductionSchedule.GetMachineName();
+            var JSON = await _IProductionSchedule.GetMachineName(WorkCenterId);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

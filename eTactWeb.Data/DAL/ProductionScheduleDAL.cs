@@ -472,13 +472,14 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> GetMachineName()
+        public async Task<ResponseResult> GetMachineName(int WorkCenterId)
         {
             var _ResponseResult = new ResponseResult();
             try
             {
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "GetMachineName"));
+                SqlParams.Add(new SqlParameter("@WorkCenterId", WorkCenterId));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_ProductionSchedule", SqlParams);
             }
             catch (Exception ex)

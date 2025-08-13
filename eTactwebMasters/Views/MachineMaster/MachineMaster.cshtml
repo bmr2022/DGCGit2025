@@ -266,9 +266,8 @@
             }
         });
         $('#WorkCenter').change(function () {
-             if ($('#Mode').val() !== "U") {
-                $('#WorkCenterId').val($('#WorkCenter').val());
-            }
+                var selectedId = $(this).val();
+             $('#WorkCenterId').val(selectedId);
         });
         function FillMachineGroup() {
             $.ajax({
