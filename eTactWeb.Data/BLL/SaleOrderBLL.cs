@@ -37,9 +37,9 @@ public class SaleOrderBLL : ISaleOrder
         return await _SaleOrderDAL.GetAddress(Code);
     }
 
-    public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code)
+    public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code, int AccountCode)
     {
-        return await _SaleOrderDAL.ShowGroupWiseItems(Group_Code);
+        return await _SaleOrderDAL.ShowGroupWiseItems(Group_Code, AccountCode);
     }
     public async Task<ResponseResult> GetFillCurrency(string CTRL)
     {

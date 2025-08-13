@@ -362,10 +362,10 @@ public class SaleOrderController : Controller
 	}
 
 
-    public async Task<IActionResult> ShowGroupWiseItems(int Group_Code)
+    public async Task<IActionResult> ShowGroupWiseItems(int Group_Code,int AccountCode)
     {
         var model = new SaleOrderModel();
-        model = await _ISaleOrder.ShowGroupWiseItems(Group_Code);
+        model = await _ISaleOrder.ShowGroupWiseItems(Group_Code, AccountCode);
 
         
             return PartialView("_SaleOrderGroupWiseItems", model);

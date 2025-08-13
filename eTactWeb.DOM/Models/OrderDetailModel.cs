@@ -79,6 +79,8 @@ namespace eTactWeb.DOM.Models
         public string? CustomerLocation { get; set; }
         public string? ItemModel { get; set; }
         public string? CustItemCategory { get; set; }
+        //public int AccountCode { get; set; }
+        //public string AccountName { get; set; }
     }
 
     [Serializable()]

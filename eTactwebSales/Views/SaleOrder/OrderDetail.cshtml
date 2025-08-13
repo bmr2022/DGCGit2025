@@ -2115,12 +2115,14 @@
 
             //var reportType = $('#ReportType').val();
             var Group_Code = $('#Group_Code1').val();
+            var AccountCode = $('#AccountCode').val();
             
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("ShowGroupWiseItems", "SaleOrder")",
                 data: {
                     Group_Code: Group_Code,
+                    AccountCode: AccountCode
                     
                 },
                 success: function (response) {

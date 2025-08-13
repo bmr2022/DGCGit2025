@@ -117,7 +117,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code)
+        public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code,int AccountCode)
         {
             var resultList = new SaleOrderModel();
             DataSet oDataSet = new DataSet();
@@ -134,6 +134,7 @@ namespace eTactWeb.Data.DAL
                    
                     command.Parameters.AddWithValue("@Flag", "ShowGroupWiseItems");
                     command.Parameters.AddWithValue("@Group_Code", Group_Code);
+                    command.Parameters.AddWithValue("@AccountCode", AccountCode);
 
                     await connection.OpenAsync();
 
@@ -148,12 +149,17 @@ namespace eTactWeb.Data.DAL
                         resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
                                                          select new ItemDetail
                                                          {
-                                                             ItemCode = row["Item_Code"] == DBNull.Value ? 0 : Convert.ToInt32(row["Item_Code"]), 
+                                                             ItemCode = row["Item_Code"] == DBNull.Value ? 0 : Convert.ToInt32(row["Item_Code"]),
+                                                             //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
                                                              PartText = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
                                                              ItemText = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
+                                                             //AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+                                                             CustItemCategory = row["DiscCategoryName"] == DBNull.Value ? string.Empty : row["DiscCategoryName"].ToString(),
                                                              Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
                                                              HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
-                                                             Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Rate"])
+                                                             Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Rate"]),
+                                                             DiscPer = row["SaleDiscount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["SaleDiscount"]),
+
                                                              
                                                          }).ToList();
                     }
