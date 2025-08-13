@@ -551,7 +551,7 @@
             var totAmount = 0;
             for (var i = 1; i <= rowCount; i++) {
                 OpnStk += $('#opnStk-' + i).text() == '' ? 0 : parseFloat($('#opnStk-' + i).text());
-                TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text());
+                /* TotStk += $('#totStk-' + i).text() == '' ? 0 : parseFloat($('#totStk-' + i).text()); */
                 IssQty += $('#issQty-' + i).text() == '' ? 0 : parseFloat($('#issQty-' + i).text());
                 RecQty += $('#recQty-' + i).text() == '' ? 0 : parseFloat($('#recQty-' + i).text());
                 //rate += $('#rate-' + i).text() == '' ? 0 : parseFloat($('#rate-' + i).text());
@@ -560,6 +560,7 @@
                 //    $('#SAGridRow-' + i).css('background-color', 'red');
                 //}
             }
+            TotStk = OpnStk + RecQty - IssQty;
 
             $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2));
             $('#totRecQty').val(isNaN(RecQty) ? 0 : RecQty.toFixed(2));

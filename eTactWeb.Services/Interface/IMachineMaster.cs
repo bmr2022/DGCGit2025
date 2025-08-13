@@ -13,6 +13,7 @@ namespace eTactWeb.Services.Interface
     {
         //Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName);
         Task<ResponseResult> FillMachineGroup();
+        Task<ResponseResult> FillMachineWorkCenter();
         Task<ResponseResult> SaveMachineMaster(MachineMasterModel model);
         Task<ResponseResult> GetDashBoardData();
         Task<MachineMasterModel> GetDashBoardDetailData();

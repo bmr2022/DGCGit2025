@@ -594,7 +594,7 @@
                 $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrGateDate);
 
                 var StrVouchDate = $('#VouchDate').val()?.split("-").join("/");
-                StrVouchDate = ValidateNull(StrVouchDate) ? parseDateToFormat(StrVouchDate.split(" ")[0]) : 'now';
+                StrVouchDate = ValidateNull(StrVouchDate) ? (StrVouchDate.split(" ")[0]) : 'now';
                 $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrVouchDate);
 
                 var AdjDueDate = $('#AdjDueDate').val()?.split("-").join("/");

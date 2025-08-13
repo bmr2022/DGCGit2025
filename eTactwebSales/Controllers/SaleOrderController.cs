@@ -361,7 +361,17 @@ public class SaleOrderController : Controller
         return View(model);
 	}
 
-	public async Task<IActionResult> DeleteByID(int ID, int YC)
+
+    public async Task<IActionResult> ShowGroupWiseItems(int Group_Code,int AccountCode)
+    {
+        var model = new SaleOrderModel();
+        model = await _ISaleOrder.ShowGroupWiseItems(Group_Code, AccountCode);
+
+        
+            return PartialView("_SaleOrderGroupWiseItems", model);
+        
+    }
+    public async Task<IActionResult> DeleteByID(int ID, int YC)
 	{
 		var Result = await _ISaleOrder.DeleteByID(ID, YC, "DELETEBYID");
 
@@ -713,24 +723,95 @@ public class SaleOrderController : Controller
 		return PartialView("_SOAmmListGrid", model);
 	}
 
-	//public JsonResult GetTaxPartItem()
-	//{
-	//    List<TextValue> PartCode = new();
-	//    List<TextValue> ItemCode = new();
+    //public JsonResult GetTaxPartItem()
+    //{
+    //    List<TextValue> PartCode = new();
+    //    List<TextValue> ItemCode = new();
 
-	// if (!string.IsNullOrEmpty(HttpContext.Session.GetString("ItemList"))) { List<ItemDetail>
-	// model = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString("ItemList"));
+    // if (!string.IsNullOrEmpty(HttpContext.Session.GetString("ItemList"))) { List<ItemDetail>
+    // model = JsonConvert.DeserializeObject<List<ItemDetail>>(HttpContext.Session.GetString("ItemList"));
 
-	// if (model != null && model.Count > 0) { foreach (ItemDetail item in model) { PartCode.Add(new
-	// TextValue { Text = item.PartText, Value = item.PartCode.ToString() });
+    // if (model != null && model.Count > 0) { foreach (ItemDetail item in model) { PartCode.Add(new
+    // TextValue { Text = item.PartText, Value = item.PartCode.ToString() });
 
-	// ItemCode.Add(new TextValue { Text = item.ItemText, Value = item.ItemCode.ToString() }); } } }
+    // ItemCode.Add(new TextValue { Text = item.ItemText, Value = item.ItemCode.ToString() }); } } }
 
-	//    _logger.LogError(JsonConvert.SerializeObject(PartCode));
-	//    return Json(new { PartCode, ItemCode });
-	//}
+    //    _logger.LogError(JsonConvert.SerializeObject(PartCode));
+    //    return Json(new { PartCode, ItemCode });
+    //}
 
-	public async Task<IActionResult> ItemGrid(ItemDetail model)
+    public IActionResult AddMultipleItemDetail(List<ItemDetail> model)
+    {
+        try
+        {
+            var MainModel = new SaleOrderModel();
+            var StockGrid = new List<ItemDetail>();
+            var StockAdjustGrid = new List<ItemDetail>();
+
+            var SeqNo = 1;
+            foreach (var item in model)
+            {
+                string modelJson = HttpContext.Session.GetString("ItemList");
+                //IList<ItemDetail> ItemDetail = new List<ItemDetail>();
+                //if (!string.IsNullOrEmpty(modelJson))
+                //{
+                //    ItemDetail = JsonConvert.DeserializeObject<List<ItemDetail>>(modelJson);
+                //}
+
+                _MemoryCache.TryGetValue("ItemList", out List<ItemDetail> ItemDetail);
+
+
+                if (model != null)
+                {
+                    if (ItemDetail == null)
+                    {
+                        item.SeqNo = SeqNo++;
+                        StockGrid.Add(item);
+                    }
+                    else
+                    {
+
+
+						if (ItemDetail.Any(x => x.PartCode == item.PartCode && x.ItemCode == item.ItemCode))
+						{
+							return StatusCode(207, "Duplicate");
+						}
+
+
+						item.SeqNo = ItemDetail.Count + 1;
+                        StockGrid = ItemDetail.Where(x => x != null).ToList();
+                        StockAdjustGrid.AddRange(StockGrid);
+                        StockGrid.Add(item);
+                    }
+                    MainModel.ItemDetailGrid = StockGrid;
+                    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                    {
+                        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        SlidingExpiration = TimeSpan.FromMinutes(55),
+                        Size = 1024,
+                    };
+
+                    _MemoryCache.Set("ItemList", MainModel.ItemDetailGrid, cacheEntryOptions);
+                    //HttpContext.Session.SetString("KeyStockMultiBatchAdjustGrid", JsonConvert.SerializeObject(MainModel.StockAdjustModelGrid));
+                    HttpContext.Session.SetString("ItemList", JsonConvert.SerializeObject(MainModel.ItemDetailGrid));
+                }
+                else
+                {
+                    ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                }
+            }
+
+
+            return PartialView("_SaleItemGrid", MainModel);
+        }
+        catch (Exception ex)
+        {
+            throw ex;
+        }
+    }
+
+
+    public async Task<IActionResult> ItemGrid(ItemDetail model)
 	{
 		if (model.Mode == "SOA")
 		{

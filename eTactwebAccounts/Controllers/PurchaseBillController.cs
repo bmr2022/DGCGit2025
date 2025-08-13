@@ -1459,8 +1459,18 @@ public class PurchaseBillController : Controller
                         {
                             Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                         }
+                        // Get extension safely
+                        string extension = Path.GetExtension(model.PathOfFile1.FileName)?.ToLowerInvariant();
 
-                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile1.FileName;
+                        // Build safe parts
+                        string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
+                       
+                        string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
+                   
+                        // Combine into filename
+                        ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + extension;
+
+                    
                         model.PathOfFile1URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
@@ -1468,6 +1478,7 @@ public class PurchaseBillController : Controller
                             await model.PathOfFile1.CopyToAsync(FileStream);
                         }
                     }
+
 
                     if (model.PathOfFile2 != null)
                     {
@@ -1477,8 +1488,18 @@ public class PurchaseBillController : Controller
                         {
                             Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                         }
+                        string extension = Path.GetExtension(model.PathOfFile2.FileName)?.ToLowerInvariant();
 
-                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
+                        // Build safe parts
+                        string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
+
+                        string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
+
+                        // Combine into filename
+                        ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "2"+ extension;
+
+
+                        //ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
                         model.PathOfFile2URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
@@ -1495,8 +1516,18 @@ public class PurchaseBillController : Controller
                         {
                             Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                         }
+                        string extension = Path.GetExtension(model.PathOfFile3.FileName)?.ToLowerInvariant();
 
-                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
+                        // Build safe parts
+                        string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
+
+                        string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
+
+                        // Combine into filename
+                        ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "3" + extension;
+
+
+                     //   ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
                         model.PathOfFile3URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))

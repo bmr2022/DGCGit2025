@@ -1,0 +1,31 @@
+﻿@model eTactWeb.DOM.Models.SaleOrderModel
+
+
+ @{
+ var @Cntr = 0;
+ if (Model.ItemDetailGrid == null)
+ {
+    <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
+ }
+ else
+ {
+        foreach (var item in Model.ItemDetailGrid)
+            {
+            Cntr = Cntr + 1;
+            <tr>
+                <td>@Cntr</td>
+                <td><input type="checkbox" id="MBCheckbox-@Cntr" /></td>
+                <td style="background-color: #e09ef0;"><input type="text" id="PartText-@Cntr" value="@item.PartText" readonly></input><input id="ItemCode-@Cntr" type="hidden" value="@item.ItemCode" /></td>
+                <td><input type="text" id="ItemText-@Cntr" value="@item.ItemText" readonly></td>
+                <td><input id="Qty-@Cntr" type="text" style="width:80px" onkeyup="CalculateRateForMalti(@Cntr)" value="@item.Qty" /></td>
+                <td><input type="text" id="Rate-@Cntr" style="width:80px" value="@item.Rate" readonly></td>
+                <td><input type="text" id="Unit-@Cntr" style="width:80px" value="@item.Unit" readonly></td>
+                <td><input type="text" id="HSNNo-@Cntr" value="@item.HSNNo" readonly></td>
+                <td><input type="text" id="DiscPer-@Cntr" style="width:80px" value="@item.DiscPer" onkeyup="CalculateRateForMalti(@Cntr)" /></td>
+                <td><input type="text" id="DiscRs-@Cntr" style="width:80px" value="@item.DiscRs" /></td>
+                <td><input type="text" style="width:80px" id="Amount-@Cntr" value="@item.Amount" readonly></td>
+                                                            
+            </tr>
+        }
+ }
+}                                      

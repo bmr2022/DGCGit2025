@@ -194,7 +194,8 @@ namespace eTactWeb.Controllers
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             HttpContext.Session.Remove("keyAddedMRPGrid");
-                            return View(model1);
+                            //return View(model1);
+                            return RedirectToAction(nameof(Dashboard));
                         }
                         if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                         {
@@ -208,7 +209,8 @@ namespace eTactWeb.Controllers
                             //model1.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
                             model1.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                             HttpContext.Session.Remove("keyAddedMRPGrid");
-                            return View(model1);
+                            //return View(model1);
+                            return RedirectToAction(nameof(Dashboard));
                         }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
@@ -225,17 +227,21 @@ namespace eTactWeb.Controllers
                                 model2.CC = HttpContext.Session.GetString("Branch");
                                 model2.CreatedByEmpName = HttpContext.Session.GetString("EmpName");
                                 model2.CreatedByEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
-                                return View(model2);
+                                //return View(model2);
+                               return RedirectToAction(nameof(Dashboard));
                             }
 
                             ViewBag.isSuccess = false;
                             TempData["500"] = "500";
                             Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             // return View("Error", Result);
-                            return View(model);
+                            //return View(model);
+                            return RedirectToAction(nameof(Dashboard));
                         }
                     }
-                    return View(model);
+                    //return View(model);
+                    return RedirectToAction(nameof(Dashboard));
+                   
                 }
             }
             catch (Exception ex)

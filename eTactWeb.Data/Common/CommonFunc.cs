@@ -1527,7 +1527,7 @@ public static class CommonFunc
                 }
                 else if (Tbname == "ProductionSchTable")
                 {
-                    if (typeProperty.PropertyInfo.Name != "productionScheduleDashboards" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "SearchBox"
+                    if (typeProperty.PropertyInfo.Name != "productionScheduleDashboards" && typeProperty.PropertyInfo.Name != "SummaryDetail" && typeProperty.PropertyInfo.Name != "SearchBox" 
                         && typeProperty.PropertyInfo.Name != "EffectiveTill" && typeProperty.PropertyInfo.Name != "FinFromDate" && typeProperty.PropertyInfo.Name != "FinToDate"
                         && typeProperty.PropertyInfo.Name != "FinToDate" && typeProperty.PropertyInfo.Name != "ProductionScheduleDetails" && typeProperty.PropertyInfo.Name != "ProdSchNoBack"
                         && typeProperty.PropertyInfo.Name != "FromDateBack" && typeProperty.PropertyInfo.Name != "ToDateBack" && typeProperty.PropertyInfo.Name != "PartCodeBack" && typeProperty.PropertyInfo.Name != "ItemNameBack"
@@ -1575,7 +1575,7 @@ public static class CommonFunc
 
                        && typeProperty.PropertyInfo.Name != "LastUpdatedBy" && typeProperty.PropertyInfo.Name != "AgstInvNo" && typeProperty.PropertyInfo.Name != "AgstInvDate"
                        && typeProperty.PropertyInfo.Name != "SaleQuotyearCode" && typeProperty.PropertyInfo.Name != "TotalRoundOffAmt" && typeProperty.PropertyInfo.Name != "AgstInvYearCode"
-                       && typeProperty.PropertyInfo.Name != "TaxDetailGridd" && typeProperty.PropertyInfo.Name != "TaxList" && typeProperty.PropertyInfo.Name != "DT"
+                       && typeProperty.PropertyInfo.Name != "TaxDetailGridd" && typeProperty.PropertyInfo.Name != "TaxList" && typeProperty.PropertyInfo.Name != "DT" && typeProperty.PropertyInfo.Name != "Group_Code"
 
                        && typeProperty.PropertyInfo.Name != "ToDate1" && typeProperty.PropertyInfo.Name != "FromDate1"
                        && typeProperty.PropertyInfo.Name != "FromDateBack" && typeProperty.PropertyInfo.Name != "ToDateBack" && typeProperty.PropertyInfo.Name != "PartCodeBack" && typeProperty.PropertyInfo.Name != "ItemNameBack" && typeProperty.PropertyInfo.Name != "SaleBillNoBack" && typeProperty.PropertyInfo.Name != "CustNameBack" && typeProperty.PropertyInfo.Name != "SonoBack" && typeProperty.PropertyInfo.Name != "CustOrderNoBack"
@@ -1606,7 +1606,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "YesNo" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "CreatedBy" && typeProperty.PropertyInfo.Name != "CreatedOn" && typeProperty.PropertyInfo.Name != "EID" && typeProperty.PropertyInfo.Name != "ID" && typeProperty.PropertyInfo.Name != "Mode"
                         && typeProperty.PropertyInfo.Name != "TxPageName" && typeProperty.PropertyInfo.Name != "UpdatedBy" && typeProperty.PropertyInfo.Name != "UpdatedOn"
-                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords"
+                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "Group_name"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];
@@ -1666,7 +1666,7 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "SaleQuoteNoBack" && typeProperty.PropertyInfo.Name != "DashboardTypeBack" && typeProperty.PropertyInfo.Name != "BOMInd"
                         && typeProperty.PropertyInfo.Name != "DomesticExportNEPZBack" && typeProperty.PropertyInfo.Name != "AttachmentFile1" && typeProperty.PropertyInfo.Name != "AttachmentFile2" && typeProperty.PropertyInfo.Name != "AttachmentFile3"
                         && typeProperty.PropertyInfo.Name != "SearchBoxBack" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "SaleBillDataDashboard"
-                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "ProducedUnprod" && typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory"
+                        && typeProperty.PropertyInfo.Name != "PageNumber" && typeProperty.PropertyInfo.Name != "SummaryDetailBack" && typeProperty.PropertyInfo.Name != "PageSize" && typeProperty.PropertyInfo.Name != "TotalRecords" && typeProperty.PropertyInfo.Name != "ProducedUnprod" && typeProperty.PropertyInfo.Name != "CustJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "StockableNonStockable" && typeProperty.PropertyInfo.Name != "VendJwAdjustmentMandatory" && typeProperty.PropertyInfo.Name != "Group_Code" && typeProperty.PropertyInfo.Name != "Group_name"
                         )
                     {
                         object value = row[typeProperty.PropertyInfo.Name];

@@ -676,6 +676,10 @@
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Group_Code" class="form-label">Group Name</label>
+                                        @* <button id="ShowGroupItem" onclick="AddMultipleItems()">Show All</button> *@
+                                        <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
+                                            <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> ShowAllItem
+                                        </button>
                                         <select class="form-select" asp-for="Group_Code" style="width:170px">
                                             <option value="0">-Select-</option>
                                         </select>
@@ -1224,8 +1228,77 @@
             }
             </div>*@
             <partial name="_SOmodal" />
+           
         </div>
     </form>
+</div>
+
+<div class="modal fade" style="display:none" id="SaleOrderGroupWiseItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl" >
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Group Name</h5>
+                <select class="form-select" asp-for="Group_Code" id="Group_Code1" style="width:170px">
+                    <option value="0">-Select-</option>
+                </select>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body" >
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                                <button class="btn btn-sm btn-outline-warning mb-2" type="button" id="CheckAll" style="display: flex; align-items: center;">
+                                    <i class="fa fa-check-square" aria-hidden="true"></i>
+                                    <span style="margin-left: 5px;">Ch/UnCh All</span>
+                                </button>
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <table class="table table-hover table-bordered table-striped mb-0">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                                <th>Sr#</th>
+                                                <th>Action</th>
+                                                <th>Part Code</th>
+                                                <th>Item Name</th>
+                                                <th>Qty</th>
+                                                <th>Rate</th>
+                                                <th>Unit</th>
+                                                <th>HSNNO</th>
+                                                <th>Discount %</th>
+                                                <th>Discount Amt</th>
+                                                <th>Amount</th>
+                                                
+                                            </tr>
+                                        </thead>
+                                        <tbody id="MultiItemBody">
+                                            <partial name="_SaleOrderGroupWiseItems" />
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="GridMultiItemBtn btn btn-sm btn-outline-success me-2">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <style>
@@ -2038,7 +2111,183 @@
 
         });//ready end here
 
-        $('#SODate').change(function () {
+        function ShowGroupWiseItems() {
+
+            //var reportType = $('#ReportType').val();
+            var Group_Code = $('#Group_Code1').val();
+            var AccountCode = $('#AccountCode').val();
+            
+            $.ajax({
+                type: 'POST',
+                url: "@Url.Action("ShowGroupWiseItems", "SaleOrder")",
+                data: {
+                    Group_Code: Group_Code,
+                    AccountCode: AccountCode
+                    
+                },
+                success: function (response) {
+                    // Clear the existing items in the table body
+                    $('#MultiItemBody').empty(); // Clear existing items
+                    $('#MultiItemBody').html(response);
+
+                    var totalRows = $('#MultiItemBody tr').length;
+                    $('#totalRows').text(totalRows);
+
+                   
+                },
+                error: function (xhr, status, error) {
+                    console.error("Error fetching BOM tree data:", error);
+                }
+            });
+        }
+
+
+        function AddMultipleItems()
+        {
+            $('#SaleOrderGroupWiseItem').modal('show');
+            $('#MultiItemBody').empty();
+            GetMultiItemGroup();
+        }
+
+        $('#Group_Code1').change(function () {
+            ShowGroupWiseItems();
+        })
+
+        $('.GridMultiItemBtn').click(function (e) {
+            e.preventDefault();
+            var CheckboxArr = [];
+            var RowCount = $('#MultiItemBody tr').length;
+
+            for (var i = 0; i <= RowCount; i++) {
+                if ($('#MBCheckbox-' + i).prop("checked")) {
+                    CheckboxArr.push(i);
+                }
+            }
+
+            if (CheckboxArr.length === 0) {
+                $.notify('Please select any item.', 'error');
+            } else {
+
+               
+                var RowCount = $('#MultiItemBody tr').length;
+                for (var i = 0; i < RowCount; i++) {
+                    if ($('#MBCheckbox-' + i).prop("checked")) {
+                        if ($('#Qty-' + i).val() == 0) {
+                            $.notify('Please enter quantity for ' + $('#PartText-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Rate-' + i).val() == 0) {
+                            $.notify('Please enter rate for ' + $('#PartText-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Unit-' + i).val() == '') {
+                            $.notify('Please select unit for ' + $('#PartText-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#HSNNo-' + i).val() == '') {
+                            $.notify('Please enter HSN for ' + $('#PartText-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Amount-' + i).val() == '') {
+                            $.notify('amount can not be 0 ' + $('#PartText-' + i).val(), 'error');
+                            return;
+                        }
+
+                        
+
+
+                    }
+                }
+                var ArrMultiBatch = [];
+                for (var i = 0; i < RowCount; i++) {
+                    if ($('#MBCheckbox-' + i).prop("checked")) {
+                        
+                        ArrMultiBatch.push({
+                            "PartCode": $('#ItemCode-' + i).val(),
+                            "PartText": $('#PartText-' + i).val(),
+                            "ItemCode": $('#ItemCode-' + i).val(),
+                            "ItemText": $('#ItemText-' + i).val(),
+                            "Group_Code": $('#Group_Code1').val(),
+                            "Group_name": $('#Group_Code1 option:selected').text(),
+                            "HSNNo": $('#HSNNo-' + i).val(),
+                            "Qty": $('#Qty-' + i).val(),
+                            "Unit": $('#Unit-' + i).val(),
+                            "AltQty": $('#AltQty').val(),
+                            "AltUnit": $('#AltUnit').val(),
+                            "Rate": $('#Rate-' + i).val(),
+                            "OtherRateCurr": $('#OtherRateCurr').val(),
+                            "StoreName": $('#StoreName').val() == '' ? null : JSON.stringify(parseInt($('#StoreName').val())),
+                            "StockQty": $('#StockQty').val(),
+                            "UnitRate": $('#UnitRate').val(),
+                            "DiscPer": $('#DiscPer-' + i).val(),
+                            "DiscRs": $('#DiscRs-' + i).val(),
+                            "Amount": $('#Amount-' + i).val(),
+                            "TolLimit": $('#TolLimit').val(),
+                            "Description": $('#Description').val(),
+                            "Remark": $('#Remark').val(),
+                            "AmendmentNo": $('#AmmNo').val(),
+                            "AmendmentDate": $('#AmmEffDate').val(),
+                            "AmendmentReason": $('#AmendmentReason').val(),
+                            "MRP": $('#MRP').val(),
+                            "PoNo": $('#PoNo').val(),
+                            "PoDate": $('#PoDate').val(),
+                            "Color": $('#Color').val(),
+                            "Rejper": $('#Rejper').val(),
+                            "Excessper": $('#Excessper').val(),
+                            "ProjQty1": $('#ProjQty1').val(),
+                            "ProjQty2": $('#ProjQty2').val(),
+                            "DeliveryDate": $('#DeliveryDate').val(),
+                            "CustomerSaleOrder": $('#CustomerSaleOrder').val(),
+                            "CustomerLocation": $('#CustomerLocation').val(),
+                            "ItemModel": $('#ItemModel').val(),
+                            "CustItemCategory": $('#CustItemCategory').val()
+                        });
+                    }
+                }
+
+                $.ajax({
+                    type: "POST",
+                    url: '@Url.Action("AddMultipleItemDetail")',
+                    data: { "model": ArrMultiBatch },
+                    statusCode: {
+                        207: function () {
+                            $.notify('Duplicate Item...!', "info");
+                        }
+                    },
+                    success: function (result, status, xhr) {
+                        if (xhr.status == 200 && xhr.responseText == result) {
+                            $('#divSaleItemGrid').html(result);
+
+                            $('#SaleOrderGroupWiseItem').modal('hide');
+
+
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify('Something Went Wrong, Please Try Again.', "error");
+                    }
+                }).done(function () {
+                    
+                    GetTaxPartItem();
+                });
+            }
+        });
+        $('#CheckAll').click(function () {
+
+            var RowCount = $('#MultiItemBody tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 0; i <= RowCount; i++) {
+                var checkbox = $('#MBCheckbox-' + i);
+                checkbox.prop("checked", !checkbox.prop("checked"));
+
+                if ($('#MBCheckbox-' + i).prop("checked")) {
+                    TotalNoOfRows++;
+                }
+            }
+            $('#lblTotalNoOfItems').text(TotalNoOfRows);
+        });
+
+                $('#SODate').change(function () {
             var today = new Date();
             mindate = $('#SODate').val();
             $("#DeliveryDate").datepicker({
@@ -2639,6 +2888,7 @@
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
                             $('#Group_Code').empty();
                             $('#Group_Code').append('<option value="0"  selected>-Select-</option>');
+                          
 
                             $.each(obj.Result, function (index, val) {
                                 $('#Group_Code').append('<option value="' + val.Group_Code + '">' + val.Group_name + '</option>');
@@ -2647,6 +2897,33 @@
                                 var Group_Code = "@Model.Group_Code";
                                 $('#Group_Code').val(Group_Code).trigger("change");
                             }
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetMultiItemGroup() {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetItemGroup")",
+                dataType: "json",
+                async: false,
+
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            $('#Group_Code1').empty();
+                            $('#Group_Code1').append('<option value="0"  selected>-Select-</option>');
+
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#Group_Code1').append('<option value="' + val.Group_Code + '">' + val.Group_name + '</option>');
+                            });
+                           
                         }
                     }
                 }
@@ -3485,6 +3762,33 @@
             // $('#Amount').val(Amount.toFixed(2));
 
         }
+
+
+        function CalculateRateForMalti(i) {
+
+            var Amount = 0;
+            const OC = $('#SOType').val();
+            const UnitRate = $('#UnitRate').val();
+            const Rate = $('#Rate-'+i).val() === "0" || $('#Rate-'+i).val() === "" ? 0 : parseFloat($('#Rate-'+i).val());
+            const DP = $('#DiscPer-'+i) === "0" || $('#DiscPer-'+i).val() === "" ? 0 : parseFloat($('#DiscPer-'+i).val());
+
+            
+                const Qty = $('#Qty-'+i).val() == "0" || $('#Qty-'+i).val() == "" ? 0 : parseFloat($('#Qty-'+i).val());
+                Amount = OC == 'CLOSE' ? Qty * Rate : Amount;
+          
+
+            if (DP !== 0) {
+                const DA = ((Amount * DP) / 100);
+                $('#DiscRs-'+i).val(DA);
+                Amount = Amount - DA;
+            }
+           
+                $('#Amount-'+i).val(Amount.toFixed(2));
+            
+            // $('#Amount').val(Amount.toFixed(2));
+
+        }
+
 
         async function CalculateRateA() {
 
