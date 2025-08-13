@@ -79,8 +79,8 @@ namespace eTactWeb.Data.DAL
                 else
                 {
                     SqlParams.Add(new SqlParameter("@Flag", "Insert"));
-                }
                     SqlParams.Add(new SqlParameter("@EntryId", model.EntryId > 0 ? model.MachineId : (object)DBNull.Value));
+                }
                     SqlParams.Add(new SqlParameter("@MachGroupId", model.MachGroupId > 0 ? model.MachGroupId : (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@MachineCode", string.IsNullOrEmpty(model.MachineCode) ? (object)DBNull.Value : model.MachineCode));
                     SqlParams.Add(new SqlParameter("@MachineName", string.IsNullOrEmpty(model.MachineName) ? (object)DBNull.Value : model.MachineName));
@@ -96,6 +96,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@TechSpecification", string.IsNullOrEmpty(model.TechSpecification) ? (object)DBNull.Value : model.TechSpecification));
                     SqlParams.Add(new SqlParameter("@LastCalibraDate", model.LastCalibraDate ?? (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@CalibraDur", model.CalibraDur > 0 ? model.CalibraDur : (object)DBNull.Value));
+                    SqlParams.Add(new SqlParameter("@WorkCenterId", model.WorkCenterId > 0 ? model.WorkCenterId : (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? (object)DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@UId", string.IsNullOrEmpty(model.UId) ? (object)DBNull.Value : model.UId));
                
@@ -173,7 +174,9 @@ namespace eTactWeb.Data.DAL
                                                    TechSpecification = dr["Techspecification"] != DBNull.Value ? dr["Techspecification"].ToString() : string.Empty,
                                                    LastCalibraDate = dr["LastCalibraDate"] != DBNull.Value ? dr["LastCalibraDate"].ToString() : string.Empty,
                                                    CalibraDur = dr["CalibraDur"] != DBNull.Value ? Convert.ToDouble(dr["CalibraDur"]) : 0.0,
+                                                   WorkCenterId = dr["WorkCenterId"] != DBNull.Value ? Convert.ToInt32(dr["WorkCenterId"]) : 0,
                                                    CC = dr["CC"] != DBNull.Value ? dr["CC"].ToString() : string.Empty,
+                                                   WorkCenter = dr["WorkCenter"] != DBNull.Value ? dr["WorkCenter"].ToString() : string.Empty,
                                                    UId = dr["UId"] != DBNull.Value ? dr["UId"].ToString() : string.Empty
 
                                                }).ToList();

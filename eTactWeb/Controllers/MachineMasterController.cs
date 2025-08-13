@@ -35,7 +35,7 @@ namespace eTactWeb.Controllers
                                    double LabourCost, string NeedHelper, int TotalHelper, double HelperCost,
                                    double ElectricityCost, double OtherCost, double TotalCost, string EntryDate,
                                    string Make, string Location, string TechSpecification, string LastCalibraDate,
-                                   double CalibraDur, string UId, string CC)
+                                   double CalibraDur, string UId, string CC,int WorkCenterId)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
@@ -70,6 +70,7 @@ namespace eTactWeb.Controllers
                 MainModel.CalibraDur = CalibraDur;
                 MainModel.UId = UId;
                 MainModel.CC = CC;
+                MainModel.WorkCenterId = WorkCenterId;
                 MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
                 {
                     AbsoluteExpiration = DateTime.Now.AddMinutes(60),
@@ -135,6 +136,7 @@ namespace eTactWeb.Controllers
         }
         public async Task<JsonResult> FillMachineWorkCenter()
         {
+            //change here ---janvi
             var JSON = await _IMachineMaster.FillMachineWorkCenter();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
