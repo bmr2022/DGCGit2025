@@ -116,6 +116,56 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+
+        public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code)
+        {
+            var resultList = new SaleOrderModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("SP_SaleOrder", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    ;
+                   
+                    command.Parameters.AddWithValue("@Flag", "ShowGroupWiseItems");
+                    command.Parameters.AddWithValue("@Group_Code", Group_Code);
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+               
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                         select new ItemDetail
+                                                         {
+                                                             ItemCode = row["Item_Code"] == DBNull.Value ? 0 : Convert.ToInt32(row["Item_Code"]), 
+                                                             PartText = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
+                                                             ItemText = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
+                                                             Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
+                                                             HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
+                                                             Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Rate"])
+                                                             
+                                                         }).ToList();
+                    }
+                
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
         public async Task<ResponseResult> NewAmmEntryId(int YearCode)
         {
             var _ResponseResult = new ResponseResult();

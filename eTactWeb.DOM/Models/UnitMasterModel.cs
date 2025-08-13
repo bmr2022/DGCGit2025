@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -9,6 +10,7 @@ namespace eTactWeb.DOM.Models
 {
     public class UnitMasterModel: TimeStamp
     {
+        [RegularExpression("^[a-zA-Z0-9]{3}")]
         public string Unit_Name { get; set; }
         public string CC { get; set; }
         public string Round_Off { get; set; }
