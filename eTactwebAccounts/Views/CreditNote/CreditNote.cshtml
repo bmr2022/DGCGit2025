@@ -494,8 +494,11 @@
                 $('#divAddCreditNotePopupDataGrid').empty();
             }
 
+
             $('#SubVoucherName').change(function () {
-                NewEntryId();
+                 if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
+                    NewEntryId();
+                 }
             })
 
             $('#PartCode').select2();
@@ -557,6 +560,9 @@
             $('#AdjNewRefNo').val($('#CreditNoteInvoiceNo').val());
             $('#AdjDescription').val($('#CreditNoteInvoiceNo').val());
 
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") {
+                GetDbCrDetail();
+            }
         });
 
         $('#AdjModeOfAdjstment').change(function () {

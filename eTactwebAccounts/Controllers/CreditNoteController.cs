@@ -74,9 +74,11 @@ namespace eTactWeb.Controllers
             var drCrGrid = model.DRCRGrid == null ? new DbCrModel() : model.DRCRGrid;
             string serializedDrCrGrid = JsonConvert.SerializeObject(drCrGrid);
             HttpContext.Session.SetString("KeyDrCrGrid", serializedDrCrGrid);
-            string serializedCreditGrid = JsonConvert.SerializeObject(model.AccCreditNoteDetails);
-            HttpContext.Session.SetString("CreditNoteModel", serializedCreditGrid);
+            HttpContext.Session.SetString("CreditNoteModel", JsonConvert.SerializeObject(model == null ? new AccCreditNoteModel() : model));
             HttpContext.Session.SetString("CreditNote", JsonConvert.SerializeObject(model));
+            var popupGrid = model.AccCreditNoteAgainstBillDetails ?? new List<AccCreditNoteAgainstBillDetail>();
+            string serializedPopupGrid = JsonConvert.SerializeObject(popupGrid);
+            HttpContext.Session.SetString("KeyCreditNotePopupGrid", serializedPopupGrid);
             return View(model);
         }
 
