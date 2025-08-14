@@ -206,6 +206,7 @@ namespace eTactWeb
             services.TryAddScoped<ICommon,CommonBLL>();
             services.TryAddScoped<IPartyItemGroupDiscount,PartyItemGroupDiscountBLL>();
             services.TryAddScoped<IMachineGroupMaster,MachineGroupMasterBLL>();
+            services.TryAddScoped<IAssetsMaster,AssetsMasterBLL>();
 
 
 

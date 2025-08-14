@@ -198,11 +198,11 @@
                                 </ul>
                             </li>
                             <li>
-                                <a class="dropdown-item" href="#">Features_Options &raquo;</a>
+                                <a class="dropdown-item" href="#">Features Options &raquo;</a>
                                 <ul class="submenu dropdown-menu">
                                     <li>
                                         <a class="dropdown-item" asp-controller="Features_Options" asp-action="Features_Options" id="FeaturesOptions">
-                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i>  Features_Options
+                                            <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i>  Features Options
                                         </a>
                                     </li>
                                     <li>
@@ -660,6 +660,26 @@
                                             </li>
                                         </ul>
                                     </li>
+                                     <li>
+                                        <a class="dropdown-item" id="Bank Master" href="#" style="background:#FFF8DC ; color : #000000">Assets Master &raquo;</a>
+
+                                        <ul class="submenu dropdown-menu">
+                                            <li>
+                                                <a class="dropdown-item" asp-action="AssetsMaster" asp-route-ID="0" asp-controller="AssetsMaster" id="AssetsMaster">
+                                                    <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Assets Master
+                                                </a>
+                                            </li>
+                                            <li>
+                                                <a class="dropdown-item AssetsMaster" asp-action="AssetsMasterDashBoard" asp-controller="AssetsMaster">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+                                                <input class="userRightsPermission" type="hidden" value="CostCenter Master" />
+
+                                            </li>
+                                        </ul>
+                                    </li>
+
+
                                 </ul>  @*//put menu above it *@
 
                             </li>  @*//1 *@
