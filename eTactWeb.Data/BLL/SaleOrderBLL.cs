@@ -36,6 +36,10 @@ public class SaleOrderBLL : ISaleOrder
     {
         return await _SaleOrderDAL.GetAddress(Code);
     }
+    public async Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode)
+    {
+        return await _SaleOrderDAL.getdiscCategoryName( Group_Code,  AccountCode);
+    }
 
     public async Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code, int AccountCode)
     {

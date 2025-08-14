@@ -423,9 +423,14 @@
                                         <label asp-for="ConsigneeAddress" class="form-label">Consignee Address</label>
                                         <input asp-for="ConsigneeAddress" class="form-control" />
                                     </div>
-                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
                                         <button type="button" class="MultiBuyers btn btn-sm btn-outline-success mt-3">
                                             <i class="fa-solid fa-calendar-clock fa-fw fa-lg"></i> Multiple Buyers
+                                        </button>
+                                    </div>
+                                    <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="width:12%">
+                                        <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success mt-3">
+                                            <i class="bi bi-list"></i>ShowGroupItem
                                         </button>
                                     </div>
                                 </div>
@@ -677,9 +682,7 @@
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Group_Code" class="form-label">Group Name</label>
                                         @* <button id="ShowGroupItem" onclick="AddMultipleItems()">Show All</button> *@
-                                        <button type="button" id="ShowGroupItem" onclick="AddMultipleItems()" class=" btn btn-sm btn-outline-success">
-                                            <i class="bi bi-list"></i> 
-                                        </button>
+                                        
                                         <select class="form-select" asp-for="Group_Code" style="width:170px">
                                             <option value="0">-Select-</option>
                                         </select>
@@ -1241,6 +1244,10 @@
                 <select class="form-select" asp-for="Group_Code" id="Group_Code1" style="width:170px">
                     <option value="0">-Select-</option>
                 </select>
+                <label style="margin-left:3px;margin-right:3px" for="PartName">Party Name</label>
+                <input type="text" id="PartyName" style="width:200px" class="form-control" readonly />
+                <label for="PartName" style="margin-left:3px;margin-right:3px">Disc Category</label>
+                <input type="text" id="DiscCategory" style="width:200px" class="form-control" readonly />
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body" >
@@ -1271,8 +1278,7 @@
                                                 <th>Discount %</th>
                                                 <th>Discount Amt</th>
                                                 <th>Amount</th>
-                                                <th>partyName</th>
-                                                <th>DisCategory</th>
+                                               
                                                 <th>Unit</th>
                                                 <th>HSNNO</th>
                                                
@@ -1293,7 +1299,7 @@
                     </div>
                     <div class="row g-2 gx-3">
                         <div class="col-12 text-center">
-                            <strong>Total No Of Items : <span id="lblTotalNoOfItems"></span></strong>
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
                         </div>
                     </div>
                 </div>
@@ -2138,14 +2144,28 @@
                     // Clear the existing items in the table body
                     $('#MultiItemBody').empty(); // Clear existing items
                     $('#MultiItemBody').html(response);
-
+                    
+                    
                     var totalRows = $('#MultiItemBody tr').length;
-                    $('#totalRows').text(totalRows);
+                    $('#lblTotalNoOfItems1').text(totalRows);
 
                    
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching BOM tree data:", error);
+                }
+            });
+            $.getJSON({
+                url: "@Url.Action("getdiscCategoryName")",
+                data: {
+                    Group_Code: Group_Code,
+                    AccountCode: AccountCode
+
+                },
+                success: function (result, status, xhr) {
+
+                    $('#DiscCategory').val(result.result);
+                    
                 }
             });
         }
@@ -2269,6 +2289,34 @@
 
                             $('#SaleOrderGroupWiseItem').modal('hide');
 
+                            $('#TotalRoundOff').prop('selectedIndex', 0);
+                            var INA = parseFloat($('#ItemNetAmount').val());
+                            var rowCount = $('#divSaleItemGrid tr').length;
+                            var taxRowCount = $('#divTaxGrid tr').length;
+                            var sum = 0.00;
+                            for (var i = 1; i <= rowCount; i++) {
+
+                                sum += parseFloat($('#GridAmount-' + i).text() == '.00' || $('#GridAmount-' + i).text() == '' ? 0 : $('#GridAmount-' + i).text());
+                            }
+
+                            $('#ItemNetAmount').val(sum);
+                            if (rowCount >= 1) {
+                                $('#lblTotalNoOfItems').text(rowCount);
+                            } else {
+                                $('#lblTotalNoOfItems').text(0);
+                            }
+                            var txSum = 0.00;
+                            if ($('#divTaxGrid tr td').length > 1) {
+
+                                for (var i = 1; i <= taxRowCount; i++) {
+                                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                                }
+                            }
+                            $('#lblItemNetAmount').text(sum.toFixed(2));
+                            var txTotal = sum + txSum;
+                            $('#NetTotal').val(txTotal.toFixed(2));
+                            $('#TotalDiscountPercentage').val(0);
+                            $('#TotalAmtAftrDiscount').val(0);
 
                         }
                     },
@@ -3386,6 +3434,7 @@
                 });
             }
             else $('#Address').val(''), $('#DeliveryAddress').val('');
+            $('#PartyName').val($('#AccountCode option:selected').text());
         });
 
 
