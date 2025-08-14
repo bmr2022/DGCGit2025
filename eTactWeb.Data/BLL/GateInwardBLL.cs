@@ -99,9 +99,9 @@ namespace eTactWeb.Data.BLL
             return await _GateInwardDAL.SaveGateInward(model, GIGrid);
         }
 
-        public async Task<ResponseResult> DeleteByID(int ID, int YC)
+        public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy, string EntryByMachineName, string gateno)
         {
-            return await _GateInwardDAL.DeleteByID(ID, YC);
+            return await _GateInwardDAL.DeleteByID(ID, YC, ActualEnteredBy,  EntryByMachineName,  gateno);
         }
         public async Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName)
         {

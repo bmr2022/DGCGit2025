@@ -153,8 +153,7 @@ namespace eTactWeb.Data.DAL
                                                              //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
                                                              PartText = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
                                                              ItemText = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
-                                                             AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
-                                                             DiscCategoryName = row["DiscCategoryName"] == DBNull.Value ? string.Empty : row["DiscCategoryName"].ToString(),
+                                                             
                                                              Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
                                                              HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
                                                              Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToDecimal(row["Rate"]),
@@ -340,6 +339,54 @@ namespace eTactWeb.Data.DAL
                                 StatusCode = HttpStatusCode.OK,
                                 StatusText = "Success",
                                 Result = oDataTable.Rows[0]["Address"]
+                            };
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                if (oDataTable != null)
+                {
+                    oDataTable.Dispose();
+                }
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode)
+        {
+            var oDataTable = new DataTable();
+
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    using (SqlCommand oCmd = new SqlCommand("SP_SaleOrder", myConnection))
+                    {
+                        oCmd.CommandType = CommandType.StoredProcedure;
+                        oCmd.Parameters.AddWithValue("@Flag", "getdiscCategoryName");
+                        oCmd.Parameters.AddWithValue("@Group_Code", Group_Code);
+                        oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+                        await myConnection.OpenAsync();
+                        using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                        {
+                            oDataAdapter.Fill(oDataTable);
+                        }
+
+                        if (oDataTable.Rows.Count > 0)
+                        {
+                            _ResponseResult = new ResponseResult()
+                            {
+                                StatusCode = HttpStatusCode.OK,
+                                StatusText = "Success",
+                                Result = oDataTable.Rows[0]["DiscCategoryName"]
                             };
                         }
                     }

@@ -20,7 +20,7 @@ public interface IGateInward
 
     Task<ResponseResult> SaveGateInward(GateInwardModel model, DataTable GIGrid);
 
-    Task<ResponseResult> DeleteByID(int ID, int YC);
+    Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno);
     Task<ResponseResult> FillEntryandGate(string Flag, int YearCode, string SPName);
     Task<ResponseResult> CheckEditOrDelete(string GateNo, int YearCode);
     Task<ResponseResult> FillPendQty(int ItemCode, int PartyCode, string PONO, int POYear, int Year, string SchNo, int SchYearCode, int ProcessId, int EntryId, int YearCode);

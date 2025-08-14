@@ -85,7 +85,7 @@ else
                                                 </a>
                                             </div>
                                             <div id="deleteCursorDiv-@Cntr">
-                                                <a class="table-link link-danger" onclick="confirmDelete(event,'@item.Gateno','@item.yearcode')" id="deleteCursor-@Cntr" asp-action="DeleteByID" asp-route-ID="@item.entryId" asp-route-YC="@item.yearcode">
+                                                <a class="table-link link-danger" onclick="confirmDelete(event,'@item.Gateno','@item.yearcode')" id="deleteCursor-@Cntr" asp-action="DeleteByID" asp-route-ID="@item.entryId" asp-route-YC="@item.yearcode" asp-route-GateNo="@item.Gateno" >
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>

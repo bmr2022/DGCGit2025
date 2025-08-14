@@ -62,6 +62,15 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<IActionResult> ShowGroupWiseItems(int Group_Code, int AccountCode)
+        {
+            var model = new SaleBillModel();
+            model = await _SaleBill.ShowGroupWiseItems(Group_Code, AccountCode);
+
+
+            return PartialView("_SaleBillGroupWiseItems", model);
+
+        }
 
         public async Task<JsonResult> GETGROUPWISEITEM(int Group_Code)
         {
@@ -1005,6 +1014,79 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(SAGrid);
             return Json(JsonString);
         }
+        public IActionResult AddMultipleItemDetail(List<SaleBillDetail> model)
+        {
+            try
+            {
+                var MainModel = new SaleBillModel();
+                var StockGrid = new List<SaleBillDetail>();
+                var StockAdjustGrid = new List<SaleBillDetail>();
+
+                var SeqNo = 1;
+                foreach (var item in model)
+                {
+                    string modelJson = HttpContext.Session.GetString("KeySaleBillGrid");
+                    IList<SaleBillDetail> ItemDetail = new List<SaleBillDetail>();
+                    if (!string.IsNullOrEmpty(modelJson))
+                    {
+                        ItemDetail = JsonConvert.DeserializeObject<List<SaleBillDetail>>(modelJson);
+                    }
+
+                    //_MemoryCache.TryGetValue("ItemList", out List<SaleBillDetail> ItemDetail);
+
+
+                    if (model != null)
+                    {
+                        if (ItemDetail == null)
+                        {
+                            item.SeqNo = SeqNo++;
+                            StockGrid.Add(item);
+                        }
+                        else
+                        {
+
+
+                            if (ItemDetail.Any(x => x.ItemCode == item.ItemCode))
+                            {
+                                return StatusCode(207, "Duplicate");
+                            }
+
+
+                            item.SeqNo = ItemDetail.Count + 1;
+                            StockGrid = ItemDetail.Where(x => x != null).ToList();
+                            StockAdjustGrid.AddRange(StockGrid);
+                            StockGrid.Add(item);
+                        }
+                        MainModel.ItemDetailGrid = StockGrid;
+                        MainModel.saleBillDetails = StockGrid;
+                        //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                        //{
+                        //    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                        //    SlidingExpiration = TimeSpan.FromMinutes(55),
+                        //    Size = 1024,
+                        //};
+
+                        HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
+                        
+                       
+                        HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(MainModel.saleBillDetails));
+                        HttpContext.Session.SetString("SaleBillModel", JsonConvert.SerializeObject(MainModel));
+                    }
+                    else
+                    {
+                        ModelState.TryAddModelError("Error", "Schedule List Cannot Be Empty...!");
+                    }
+                }
+
+
+                return PartialView("_SaleBillGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public IActionResult AddSaleBillDetail(SaleBillDetail model)
         {
             try

@@ -608,7 +608,14 @@ public class SaleOrderController : Controller
 		_logger.LogError(JsonConvert.SerializeObject(JsonString));
 		return Json(JsonString);
 	}
-	public async Task<JsonResult> GetClearTxGrid(string Code)
+
+    public async Task<JsonResult> getdiscCategoryName(int Group_Code, int AccountCode)
+    {
+        ResponseResult JsonString = await _ISaleOrder.getdiscCategoryName(Group_Code, AccountCode);
+        _logger.LogError(JsonConvert.SerializeObject(JsonString));
+        return Json(JsonString);
+    }
+    public async Task<JsonResult> GetClearTxGrid(string Code)
 	{
 		_MemoryCache.Remove("KeyTaxGrid");
 		ResponseResult JsonString = await _ISaleOrder.GetAddress(Code);

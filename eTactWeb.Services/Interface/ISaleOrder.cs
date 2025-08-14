@@ -13,7 +13,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> CheckOrderNo(int year,int accountcode,int entryid, string custorderno);
         Task<ResponseResult> GetFillCurrency(string CTRL);
         Task<SaleOrderModel> ShowGroupWiseItems(int Group_Code,int AccountCode);
-		Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode);
+        Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode);
+        Task<string> GetSOItem(int AccountCode, int SONO, int Year, int ItemCode);
 
 
 		Task<SaleOrderDashboard> GetAmmDashboardData();

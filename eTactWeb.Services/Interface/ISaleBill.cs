@@ -13,6 +13,8 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetItemGroup();
         Task<ResponseResult> GETGROUPWISEITEM(int Group_Code);
         Task<ResponseResult> GetReportName();
+        Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode);
+
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);

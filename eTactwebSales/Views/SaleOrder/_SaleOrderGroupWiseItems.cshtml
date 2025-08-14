@@ -19,11 +19,10 @@
                 <td><input type="text" id="ItemText-@Cntr" value="@item.ItemText" readonly></td>
                 <td><input id="Qty-@Cntr" type="number" style="width:70px" onkeyup="CalculateRateForMalti(@Cntr)" value="@item.Qty" /></td>
                 <td><input type="number" id="Rate-@Cntr" style="width:70px" value="@item.Rate" readonly></td>
-                <td><input type="number" id="DiscPer-@Cntr" style="width:70px" value="@item.DiscPer" onkeyup="CalculateRateForMalti(@Cntr)" /></td>
-                <td><input type="number" id="DiscRs-@Cntr" style="width:70px" value="@item.DiscRs" /></td>
+                <td><input type="number" id="DiscPer-@Cntr" style="width:70px" value="@item.DiscPer" readonly onkeyup="CalculateRateForMalti(@Cntr)" /></td>
+                <td><input type="number" id="DiscRs-@Cntr" style="width:70px" value="@item.DiscRs" readonly /></td>
                 <td><input type="number" style="width:70px" id="Amount-@Cntr" value="@item.Amount" readonly></td>
-                <td><input type="text" style="width:150px"  value="@item.AccountName" readonly></td>
-                <td><input type="text" style="width:70px" value="@item.DiscCategoryName" readonly></td>
+                
                 <td><input type="text" id="Unit-@Cntr" style="width:50px" value="@item.Unit" readonly></td>
                 <td><input type="text" id="HSNNo-@Cntr" style="width:90px" value="@item.HSNNo" readonly></td>
                 

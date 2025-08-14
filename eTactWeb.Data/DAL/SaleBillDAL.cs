@@ -27,6 +27,62 @@ namespace eTactWeb.Data.DAL
 
         private string DBConnectionString { get; }
 
+        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode)
+        {
+            var resultList = new SaleBillModel();
+            DataSet oDataSet = new DataSet();
+
+            try
+            {
+                using (SqlConnection connection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand command = new SqlCommand("SP_SaleOrder", connection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    ;
+
+                    command.Parameters.AddWithValue("@Flag", "ShowGroupWiseItems");
+                    command.Parameters.AddWithValue("@Group_Code", Group_Code);
+                    command.Parameters.AddWithValue("@AccountCode", AccountCode);
+
+                    await connection.OpenAsync();
+
+                    using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+                    {
+                        dataAdapter.Fill(oDataSet);
+                    }
+                }
+
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+                    resultList.ItemDetailGrid = (from DataRow row in oDataSet.Tables[0].Rows
+                                                 select new SaleBillDetail
+                                                 {
+                                                     ItemCode = row["Item_Code"] == DBNull.Value ? 0 : Convert.ToInt32(row["Item_Code"]),
+                                                     //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
+                                                     PartCode = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
+                                                     ItemName = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
+                                                     AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+                                                     //DiscCategoryName = row["DiscCategoryName"] == DBNull.Value ? string.Empty : row["DiscCategoryName"].ToString(),
+                                                     Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
+                                                     HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
+                                                     Rate = row["Rate"] == DBNull.Value ? 0 : Convert.ToSingle(row["Rate"]),
+                                                     DiscountPer = row["SaleDiscount"] == DBNull.Value ? 0 : Convert.ToSingle(row["SaleDiscount"]),
+
+
+                                                 }).ToList();
+                }
+
+            }
+            catch (Exception ex)
+            {
+                throw new Exception("Error fetching data.", ex);
+            }
+
+            return resultList;
+        }
+
         public async Task<ResponseResult> GetItemGroup()
         {
             var _ResponseResult = new ResponseResult();
