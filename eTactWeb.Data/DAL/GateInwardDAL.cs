@@ -35,7 +35,7 @@ public class GateInwardDAL
 
         //DBConnectionString = configuration.GetConnectionString("eTactDB");
     }
-    public async Task<ResponseResult> DeleteByID(int ID, int YC)
+    public async Task<ResponseResult> DeleteByID(int ID, int YC,int ActualEnteredBy,string EntryByMachineName,string gateno)
     {
         var _ResponseResult = new ResponseResult();
         try
@@ -44,6 +44,10 @@ public class GateInwardDAL
             SqlParams.Add(new SqlParameter("@Flag", "DELETEBYID"));
             SqlParams.Add(new SqlParameter("@EntryID", ID));
             SqlParams.Add(new SqlParameter("@YearCode", YC));
+            SqlParams.Add(new SqlParameter("@ActualEnteredBy", ActualEnteredBy));
+            SqlParams.Add(new SqlParameter("@EntryByMachineName", EntryByMachineName));
+            SqlParams.Add(new SqlParameter("@gateno", gateno));
+           
             _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_GateMainDetail", SqlParams);
         }
         catch (Exception ex)
