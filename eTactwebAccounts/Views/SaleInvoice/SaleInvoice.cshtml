@@ -14,7 +14,7 @@
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_saleBillDisplaySODetail" />
     <partial name="_SaleBillTaxPassword" />
-    <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" id="saleInvoiceForm" enctype="multipart/form-data">
+    <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" id="saleInvoiceForm" method="post"  enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <input type="hidden" asp-for="EInvNo" />
@@ -732,13 +732,14 @@
             function submitForm(ShouldEinvoice, printWindow) {
                 $('#ShouldEinvoice').val(ShouldEinvoice);
 
-                const formData = $('form').serialize();
+                        var formData = new FormData(document.getElementById('saleInvoiceForm'));
 
-                $.ajax({
-                    type: "POST",
-                    url: $('form').attr('action'),
-                    data: formData,
-                    dataType: 'json', // Expect JSON response
+                    $.ajax({
+                        type: "POST",
+                        url: $('#saleInvoiceForm').attr('action'),
+                        data: formData,
+                        processData: false,
+                        contentType: false,
                     success: function (res) {
                         if (res && res.status === "Success") {
                             if (ShouldEinvoice && res.entryId && res.yearCode) {

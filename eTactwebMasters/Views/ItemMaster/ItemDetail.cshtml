@@ -1317,6 +1317,15 @@
                $('#ProdInMachine3').removeClass('valid').addClass('is-invalid');
                      Err = 1;
         }
+           var hsn = $('#HSNNO').val().trim();
+                if (hsn !== "" && hsn !== "0" && !/^\d{6}$/.test(hsn)) {
+            $('#HSNNO').removeClass('valid').addClass('is-invalid');
+            Err = 1;
+        }
+
+                    if (Err === 1) {
+                        return false;
+                    }
             if ($('#Mode').val() == "U") {
               
                 if ($('#AlternateUnit').val() != "") {

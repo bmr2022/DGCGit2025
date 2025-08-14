@@ -333,37 +333,61 @@ namespace eTactWeb.Controllers
 
                 if (model.AttachmentFile1 != null)
                 {
-                    var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile1.FileName);
+                    
+                    string ImagePath = "Uploads/SaleBill/";
+                    string extension = Path.GetExtension(model.AttachmentFile1.FileName)?.ToLowerInvariant();
+                    string VouchNo = model.SaleBillNo.Replace("\\", "_").Replace("/", "_");
+                    ImagePath += VouchNo + "_" + model.SaleBillYearCode + "_" + model.SaleBillEntryDate.Replace("\\", "_").Replace("/", "_") + "_" + Guid.NewGuid().ToString() + extension;
 
                     string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                     using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                     {
                         await model.AttachmentFile1.CopyToAsync(FileStream);
                     }
-                    model.AttachmentFilePath1 = ImagePath;
+                    model.AttachmentFilePath1 = "/" + ImagePath;
+                }
+                else
+                {
+                    model.AttachmentFilePath1 = MainModel.AttachmentFilePath1;
                 }
 
                 if (model.AttachmentFile2 != null)
                 {
-                    var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile2.FileName);
+                    string ImagePath = "Uploads/SaleBill/";
+                    string extension = Path.GetExtension(model.AttachmentFile2.FileName)?.ToLowerInvariant();
+                    string VouchNo = model.SaleBillNo.Replace("\\", "_").Replace("/", "_");
+                    ImagePath += VouchNo + "_" + model.SaleBillYearCode + "_" + model.SaleBillEntryDate.Replace("\\", "_").Replace("/", "_") + "_" + "2" + "_" + Guid.NewGuid().ToString() + extension;
+                    //var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile2.FileName);
                     string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                     using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                     {
                         await model.AttachmentFile2.CopyToAsync(FileStream);
                     }
-                    model.AttachmentFilePath2 = ImagePath;
+                    model.AttachmentFilePath2 = "/" + ImagePath;
+                }
+                else
+                {
+                    model.AttachmentFilePath2 = MainModel.AttachmentFilePath2;
                 }
 
                 if (model.AttachmentFile3 != null)
                 {
-                    var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile3.FileName);
+                    //var ImagePath = Path.Combine("Uploads", "SaleBill", Guid.NewGuid().ToString() + "_" + model.AttachmentFile3.FileName);
+                    string ImagePath = "Uploads/SaleBill/";
+                    string extension = Path.GetExtension(model.AttachmentFile3.FileName)?.ToLowerInvariant();
+                    string VouchNo = model.SaleBillNo.Replace("\\", "_").Replace("/", "_");
+                    ImagePath += VouchNo + "_" + model.SaleBillYearCode + "_" + model.SaleBillEntryDate.Replace("\\", "_").Replace("/", "_") + "_" + "3" + "_" + Guid.NewGuid().ToString() + extension;
 
                     string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                     using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                     {
                         await model.AttachmentFile3.CopyToAsync(FileStream);
                     }
-                    model.AttachmentFilePath3 = ImagePath;
+                    model.AttachmentFilePath3 = "/" + ImagePath;
+                }
+                else
+                {
+                    model.AttachmentFilePath2 = MainModel.AttachmentFilePath2;
                 }
 
                 var Result = await _SaleBill.SaveSaleBill(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT, AdjChallanDetailDT);

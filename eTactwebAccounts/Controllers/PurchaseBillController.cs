@@ -1450,8 +1450,10 @@ public class PurchaseBillController : Controller
                         model.Mode = "INSERT";
                     }
                     //model.Mode = model.Mode == "U" ? "UPDATE" : "INSERT";
+                   
 
-                    if (model.PathOfFile1 != null)
+                    
+                     if (model.PathOfFile1 != null)
                     {
                         string ImagePath = "Uploads/PurchaseBill/";
 
@@ -1464,13 +1466,13 @@ public class PurchaseBillController : Controller
 
                         // Build safe parts
                         string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
-                       
-                        string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
-                   
-                        // Combine into filename
-                        ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + extension;
 
-                    
+                        string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
+
+                        // Combine into filename
+                        ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "_" + Guid.NewGuid().ToString() + extension;
+
+
                         model.PathOfFile1URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
@@ -1478,8 +1480,10 @@ public class PurchaseBillController : Controller
                             await model.PathOfFile1.CopyToAsync(FileStream);
                         }
                     }
-
-
+                    else
+                    {
+                        model.PathOfFile1URL = MainModel.PathOfFile1URL;
+                    }
                     if (model.PathOfFile2 != null)
                     {
                         string ImagePath = "Uploads/PurchaseBill/";
@@ -1494,9 +1498,8 @@ public class PurchaseBillController : Controller
                         string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
 
                         string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
+                        ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") +"_"+ "2" + "_" + Guid.NewGuid().ToString() + extension;
 
-                        // Combine into filename
-                        ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "2"+ extension;
 
 
                         //ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
@@ -1507,7 +1510,10 @@ public class PurchaseBillController : Controller
                             await model.PathOfFile2.CopyToAsync(FileStream);
                         }
                     }
-
+                    else
+                    {
+                        model.PathOfFile2URL = MainModel.PathOfFile2URL;
+                    }
                     if (model.PathOfFile3 != null)
                     {
                         string ImagePath = "Uploads/PurchaseBill/";
@@ -1523,8 +1529,9 @@ public class PurchaseBillController : Controller
 
                         string safeInvNo = model.InvNo.Replace("\\", "_").Replace("/", "_");
 
+                        ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "_" + "3" + "_" + Guid.NewGuid().ToString() + extension;
                         // Combine into filename
-                        ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "3" + extension;
+                        //ImagePath += Guid.NewGuid().ToString() + "_" + safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "3" + extension;
 
 
                      //   ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
@@ -1535,7 +1542,10 @@ public class PurchaseBillController : Controller
                             await model.PathOfFile3.CopyToAsync(FileStream);
                         }
                     }
-
+                    else
+                    {
+                        model.PathOfFile3URL = MainModel.PathOfFile3URL;
+                    }
                     model.FinFromDate = HttpContext.Session.GetString("FromDate");
                     model.FinToDate = HttpContext.Session.GetString("ToDate");
                     model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));

@@ -1141,16 +1141,28 @@ public class PurchaseOrderController : Controller
                         {
                             Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                         }
+                        // Get extension safely
+                        string extension = Path.GetExtension(model.PathOfFile1.FileName)?.ToLowerInvariant();
 
-                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile1.FileName;
+                        // Build safe parts
+                        string safePurchVouchNo = model.PONo.Replace("\\", "_").Replace("/", "_");
+
+
+                        // Combine into filename
+                        ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + model.PODate.Replace("\\", "_").Replace("/", "_") + "_" + Guid.NewGuid().ToString() + extension;
+
                         model.PathOfFile1URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                         {
                             await model.PathOfFile1.CopyToAsync(FileStream);
                         }
+                       
                     }
-
+                    else
+                    {
+                        model.PathOfFile1URL = MainModel.PathOfFile1URL;
+                    }
                     if (model.PathOfFile2 != null)
                     {
                         string ImagePath = "Uploads/PurchaseOrder/";
@@ -1159,14 +1171,28 @@ public class PurchaseOrderController : Controller
                         {
                             Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                         }
+                        string extension = Path.GetExtension(model.PathOfFile2.FileName)?.ToLowerInvariant();
 
-                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
+                        // Build safe parts
+                        string safePurchVouchNo = model.PONo.Replace("\\", "_").Replace("/", "_");
+
+                     
+                        ImagePath += safePurchVouchNo + "_" + model.YearCode +  "_" + model.PODate.Replace("\\", "_").Replace("/", "_") + "_" + "2" + "_" + Guid.NewGuid().ToString() + extension;
+
+                        //ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
                         model.PathOfFile2URL = "/" + ImagePath;
+
+                        //ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
+                        //model.PathOfFile2URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                         {
                             await model.PathOfFile2.CopyToAsync(FileStream);
                         }
+                    }
+                    else
+                    {
+                        model.PathOfFile2URL = MainModel.PathOfFile2URL;
                     }
 
                     if (model.PathOfFile3 != null)
@@ -1177,8 +1203,15 @@ public class PurchaseOrderController : Controller
                         {
                             Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                         }
+                        string extension = Path.GetExtension(model.PathOfFile2.FileName)?.ToLowerInvariant();
 
-                        ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
+                        // Build safe parts
+                        string safePurchVouchNo = model.PONo.Replace("\\", "_").Replace("/", "_");
+
+
+                        ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + model.PODate.Replace("\\", "_").Replace("/", "_") + "_" + "3" + "_" + Guid.NewGuid().ToString() + extension;
+
+                      //  ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
                         model.PathOfFile3URL = "/" + ImagePath;
                         string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                         using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
@@ -1186,14 +1219,18 @@ public class PurchaseOrderController : Controller
                             await model.PathOfFile3.CopyToAsync(FileStream);
                         }
                     }
+                    else
+                    {
+                        model.PathOfFile3URL = MainModel.PathOfFile3URL;
+                    }
 
-                    //model.FinFromDate = HttpContext.Session.GetString("FromDate");
-                    //model.FinToDate = HttpContext.Session.GetString("ToDate");
-                    //model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-                    //model.CC = HttpContext.Session.GetString("Branch");
-                    //model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
-                    //model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
-                    model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                        //model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                        //model.FinToDate = HttpContext.Session.GetString("ToDate");
+                        //model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                        //model.CC = HttpContext.Session.GetString("Branch");
+                        //model.PreparedByEmp = HttpContext.Session.GetString("EmpName");
+                        //model.ActualEnteredByName = HttpContext.Session.GetString("EmpName");
+                        model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
                     Result = await IPurchaseOrder.SavePurchaseOrder(ItemDetailDT, DelieveryScheduleDT, TaxDetailDT, IndentDetailDT, model);
                 }
 

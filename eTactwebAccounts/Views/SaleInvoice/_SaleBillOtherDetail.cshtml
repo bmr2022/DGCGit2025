@@ -104,22 +104,46 @@
             <input asp-for="DispatchDelayReason" class="form-control" />
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AttachmentFile1" class="form-label">Attachment File Path 1</label>
-            <input type="file" asp-for="AttachmentFile1" class="form-control" />
+            <div class="input-group">
+                <input type="file" name="AttachmentFile1" id="AttachmentFile1" class="form-control">
+                @if (Model.AttachmentFilePath1 != null && Model.AttachmentFilePath1 != "")
+                {
+                    <a href="@Model.AttachmentFilePath1" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+           @*  <label asp-for="AttachmentFile1" class="form-label">Attachment File Path 1</label>
+            <input type="file" asp-for="AttachmentFile1" class="form-control" /> *@
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="AttachmentFile2" class="form-label">Attachment File Path 2</label>
-            <input type="file" asp-for="AttachmentFile2" class="form-control" />
+            <div class="input-group">
+                <input type="file" asp-for="AttachmentFile2" class="form-control" />
+                @if (Model.AttachmentFilePath2 != null && Model.AttachmentFilePath2 != "")
+                {
+                    <a href="@Model.AttachmentFilePath2" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+        @*     <label asp-for="AttachmentFile2" class="form-label">Attachment File Path 2</label>
+            <input type="file" asp-for="AttachmentFile2" class="form-control" /> *@
+        </div>
+
+        <div class="col-xl-3 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="AttachmentFile3" class="form-label">Attachment File Path 3</label>
+            <div class="input-group">
+                <input type="file" asp-for="AttachmentFile3" class="form-control" />
+                @if (Model.AttachmentFilePath3 != null && Model.AttachmentFilePath3 != "")
+                {
+                    <a href="@Model.AttachmentFilePath3" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
+           @*  <label asp-for="AttachmentFile3" class="form-label">Attachment File Path 3</label>
+            <input type="file" asp-for="AttachmentFile3" class="form-control" /> *@
         </div>
 
         <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
-            <label asp-for="AttachmentFile3" class="form-label">Attachment File Path 3</label>
-            <input type="file" asp-for="AttachmentFile3" class="form-control" />
-        </div>
-
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="DocketNo" class="form-label">Docket No</label>
             <input asp-for="DocketNo" class="form-control" />
         </div>
@@ -129,7 +153,7 @@
             <input asp-for="DispatchDelayreson" class="form-control" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="Commodity" class="form-label">Commodity</label>
             <input asp-for="Commodity" class="form-control" />
         </div>
@@ -193,11 +217,11 @@
         </div>
 
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-1 col-lg-3 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="EInvNo" class="form-label">E-Inv No</label>
             <input asp-for="EInvNo" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="EinvGenerated" class="form-label">E-Inv Generated</label>
             <input asp-for="EinvGenerated" class="form-control" readonly />
         </div>
@@ -216,7 +240,7 @@
             <input type="hidden" asp-for="ActualEnteredBy" class="form-control" />
             <input asp-for="ActualEnteredByName" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="Uid" class="form-label">UID</label>
             <input asp-for="Uid" class="form-control" readonly />
         </div>
@@ -253,7 +277,7 @@
             <input asp-for="ChallanYearCode" class="form-control" readonly />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-6 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-6 col-sm-6 col-xs-12">
             <label asp-for="ChallanEntryid" class="form-label">Challan Entry ID</label>
             <input asp-for="ChallanEntryid" class="form-control" readonly />
         </div>

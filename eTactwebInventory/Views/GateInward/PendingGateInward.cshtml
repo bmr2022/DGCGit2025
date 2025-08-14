@@ -239,7 +239,20 @@
 				$('#checkuncheck').prop('checked', false)
 			}
 		}
+			$(document).on('change', '#checkuncheck', function () {
 
+			var rowCount = $('#PendinggateDashboardtable tr').length;
+			if ($('#checkuncheck').is(':checked') == true) {
+				for (let i = 1; i <= rowCount; i++) {
+					$('#AcceptedQtySHA-' + i).prop('checked', true)
+				}
+			}
+			else {
+				for (let i = 1; i <= rowCount; i++) {
+					$('#AcceptedQtySHA-' + i).prop('checked', false)
+				}
+			}
+		})
 		$(function ()
 		   {
 				  GetServerDate();
@@ -316,7 +329,7 @@
 				$('#ToDate').val(convertedToDateText);
 
 			}
-
+				
 		   });
 			$('#sendToExcel').click(function () {
 			$("#GateDataTable").table2excel({

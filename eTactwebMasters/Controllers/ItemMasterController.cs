@@ -23,6 +23,7 @@ using DocumentFormat.OpenXml.Wordprocessing;
 using System.IO.Packaging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 
 namespace eTactWeb.Controllers;
 
@@ -945,20 +946,29 @@ public class ItemMasterController : Controller
                         errors.Add($"Invalid ItemServAssets: {ItemServAssets} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                         continue;
                     }
+                    string hsnString = worksheet.Cells[row, headersMap["HSNNO"]] .Value?.ToString().Trim() ?? string.Empty;
+                    if (!string.IsNullOrEmpty(hsnString))
+                    {
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(hsnString, @"^\d{6}$"))
+                        {
+                            errors.Add($"Invalid HSNNo: {hsnString} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
 
-                    //if (PartCodeExists == "Y")
-                    //{
-                    //    errors.Add($"Duplicate PartCode found: {partCode} at row {row} (ItemName: {ItemName})");
-                    //    continue;
-                    //}
+                        }
+                    }
+                        //if (PartCodeExists == "Y")
+                        //{
+                        //    errors.Add($"Duplicate PartCode found: {partCode} at row {row} (ItemName: {ItemName})");
+                        //    continue;
+                        //}
 
-                    //if (ItemNameExists == "Y")
-                    //{
-                    //    errors.Add($"Duplicate ItemName found: {ItemName} at  row {row} (PartCode: {partCode})");
-                    //    continue;
-                    //}
+                        //if (ItemNameExists == "Y")
+                        //{
+                        //    errors.Add($"Duplicate ItemName found: {ItemName} at  row {row} (PartCode: {partCode})");
+                        //    continue;
+                        //}
 
-                    var ItemGroupList = _IItemMaster.GetItemGroup(ItemServAssets);
+                        var ItemGroupList = _IItemMaster.GetItemGroup(ItemServAssets);
                     var ItemCategoryList = _IItemMaster.GetItemCategory(ItemServAssets);
 
                     var unitdataset = UnitList.Result.Result;
@@ -979,32 +989,33 @@ public class ItemMasterController : Controller
                         continue;
 
                     }
-                 
-                    var branchList = Branch?.Split(',') ?? Array.Empty<string>();
-
-                    var Branchdataset = Branchlist.Result.Result;
-                    var BranchTable = Branchdataset.Tables[0];
-
-                    foreach (var branchName in branchList)
+                    if (!string.IsNullOrWhiteSpace(Branch))
                     {
-                        bool exists = false;
+                        var branchList = Branch?.Split(',') ?? Array.Empty<string>();
 
-                        foreach (DataRow rows in BranchTable.Rows)
+                        var Branchdataset = Branchlist.Result.Result;
+                        var BranchTable = Branchdataset.Tables[0];
+
+                        foreach (var branchName in branchList)
                         {
-                            if (rows["BranchName"].ToString().Trim()
-                                .Equals(branchName.Trim(), StringComparison.OrdinalIgnoreCase))
+                            bool exists = false;
+
+                            foreach (DataRow rows in BranchTable.Rows)
                             {
-                                exists = true;
-                                break;
+                                if (rows["BranchName"].ToString().Trim()
+                                    .Equals(branchName.Trim(), StringComparison.OrdinalIgnoreCase))
+                                {
+                                    exists = true;
+                                    break;
+                                }
+                            }
+
+                            if (!exists)
+                            {
+                                errors.Add($"Invalid Branch: {branchName.Trim()} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                             }
                         }
-
-                        if (!exists)
-                        {
-                            errors.Add($"Invalid Branch: {branchName.Trim()} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
-                        }
                     }
-
                     var Groupdataset = ItemGroupList.Result.Result;
                     var GroupTable = Groupdataset.Tables[0];
 
@@ -1318,30 +1329,34 @@ public class ItemMasterController : Controller
                     }
 
                     bool StoreExists = false;
-                    if (!string.IsNullOrWhiteSpace(Store))
+
+                    // Store is mandatory — check blank first
+                    if (string.IsNullOrWhiteSpace(Store))
                     {
-                        var StoreList = _IItemMaster.GetStoreList();
-                        var Storedataset = StoreList.Result.Result;
-                        var StoreTable = Storedataset.Tables[0];
-                        foreach (DataRow rows in StoreTable.Rows)
-                        {
-                            if (rows["Store_Name"].ToString().Trim().Equals(Store, StringComparison.OrdinalIgnoreCase))
-                            {
-                                StoreExists = true;
-                                break;
-                            }
-                        }
-
-
-                        if (!StoreExists)
-                        {
-                            errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
-                            continue;
-                            //  return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
-
-                        }
-
+                        errors.Add($"Store is mandatory at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
                     }
+
+                    // If not blank, check if it exists in DB
+                    var StoreList = _IItemMaster.GetStoreList();
+                    var Storedataset = StoreList.Result.Result;
+                    var StoreTable = Storedataset.Tables[0];
+
+                    foreach (DataRow rows in StoreTable.Rows)
+                    {
+                        if (rows["Store_Name"].ToString().Trim().Equals(Store, StringComparison.OrdinalIgnoreCase))
+                        {
+                            StoreExists = true;
+                            break;
+                        }
+                    }
+
+                    if (!StoreExists)
+                    {
+                        errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                        continue;
+                    }
+
 
                     decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0);
                     decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
@@ -1515,15 +1530,33 @@ public class ItemMasterController : Controller
                 var ItemName = worksheet.Cells[row, 4].Value?.ToString().Trim();
                 switch (flag?.ToLower())
                 {
-                    case "hsncode":
-                        model.HSNNO = Convert.ToInt32(worksheet.Cells[row, 5].Value ?? 0);
+                   case "hsncode":
+                    string hsnString = worksheet.Cells[row, 5].Value?.ToString().Trim() ?? string.Empty;
+
+                    if (!string.IsNullOrEmpty(hsnString))
+                    {
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(hsnString, @"^\d{6}$"))
+                        {
+                                errors.Add($"Invalid HSNNo: {hsnString} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                                continue;
+                             
+                        }
+
+                       
+                    }
+                        model.HSNNO = Convert.ToInt32(hsnString);
                         break;
+
 
                     case "store":
                         var Store = worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
                         bool StoreExists = false;
-                        if (!string.IsNullOrWhiteSpace(Store))
+                        if (string.IsNullOrWhiteSpace(Store))
                         {
+                            errors.Add($"Store is mandatory at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                            continue;
+                        }
+                       
                             var StoreList = _IItemMaster.GetStoreList();
                             var Storedataset = StoreList.Result.Result;
                             var StoreTable = Storedataset.Tables[0];
@@ -1544,7 +1577,7 @@ public class ItemMasterController : Controller
                                 errors.Add($"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                                 continue;
                             }
-                        }
+                        
                         model.StoreName = Store;
                         var StoreIdResult = _IItemMaster.GetStoreCode(Store);
                         if (StoreIdResult.Result.Result.Rows.Count > 0)
@@ -1851,10 +1884,6 @@ public class ItemMasterController : Controller
         ViewData["Flag"] = flag;
         return PartialView("_DisplayExcelselectedItemData", result);
     }
-
-
-
-
     [HttpPost]
     public IActionResult UploadExcel(IFormFile excelFile)
     {
@@ -1888,6 +1917,29 @@ public class ItemMasterController : Controller
                 var StoreIdResult = _IItemMaster.GetStoreCode(Store);
                 var partCode = worksheet.Cells[row, 1].Value.ToString().Trim();
                 var ItemName = worksheet.Cells[row, 2].Value.ToString().Trim();
+
+
+                string hsnNoValue = worksheet.Cells[row, 4].Value?.ToString().Trim() ?? string.Empty;
+
+                if (!string.IsNullOrEmpty(hsnNoValue))
+                {
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(hsnNoValue, @"^\d{6}$"))
+                    {
+                        return StatusCode(207, $"Invalid HSNNo: {hsnNoValue} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+
+                        //return StatusCode(207, $"Invalid Workcenter: {workCenter} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                    }
+                   
+                }
+              
+                var ItemServAssets = GetCellValue(worksheet, row, 14);
+                var validItemServAssetsOptions = new List<string> { "Item", "Service", "Asset" };
+
+                if (!validItemServAssetsOptions.Contains(ItemServAssets, StringComparer.OrdinalIgnoreCase))
+                {
+                    return StatusCode(207, $"Invalid ItemServAssets: {ItemServAssets} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+
+                }
 
                 var unit = worksheet.Cells[row, 3].Value?.ToString()?.Trim() ?? "";
 
@@ -1943,9 +1995,11 @@ public class ItemMasterController : Controller
                 }
 
                 bool StoreExists = false;
-                if (!string.IsNullOrWhiteSpace(Store))
+                if (string.IsNullOrWhiteSpace(Store))
                 {
-                    var StoreList = _IItemMaster.GetStoreList();
+                    return StatusCode(207, $"Store is mandatory at row: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
+                }
+                var StoreList = _IItemMaster.GetStoreList();
                     var Storedataset = StoreList.Result.Result;
                     var StoreTable = Storedataset.Tables[0];
                     foreach (DataRow rows in StoreTable.Rows)
@@ -1966,7 +2020,7 @@ public class ItemMasterController : Controller
 
                     }
 
-                }
+
                 ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
                 int itemGCode = 1;

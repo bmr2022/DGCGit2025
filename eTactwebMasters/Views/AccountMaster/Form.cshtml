@@ -770,7 +770,8 @@
                                 $('#MainGroup').val(obj.Result.Table[0].MainGroup), $('#SubSubGroup').val(obj.Result.Table[0].SubSubGroup),
                                 $('#UnderGroup').val(obj.Result.Table[0].UnderGroup);
                             HideShow = obj.Result.Table[0].ShowHide, obj.Result.Table[0].ShowHide == 1 ? $('#divDetail').show(500) : $('#divDetail').hide(500);
-                            $('#SubGroup').val() == "Sundry Debtors" || $('#SubGroup').val() == "Sundry Creditors" || $('#SubGroup').val() =="Branch/Division (Assets)" ||  $('#SubGroup').val() =="Branch/Division (Liabilities)" ? IsSDSC = 1 : IsSDSC = 0;
+                            $('#SubGroup').val() == "Sundry Debtors" || $('#SubGroup').val() == "Sundry Creditors" || $('#SubGroup').val() =="Branch/Division (Assets)" ||  
+                            $('#SubGroup').val() =="Branch/Division (Liabilities)" ? IsSDSC = 1 : IsSDSC = 0;
 
                             $(".is-invalid").each(function () {
                                 $(this).removeClass('is-invalid');
