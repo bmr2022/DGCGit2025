@@ -49,7 +49,7 @@
             <label asp-for="Clause" class="form-label">Clause</label>
             <input asp-for="Clause" class="form-control" />
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="ManufTrade" class="form-label">Manuf Trade</label>
             <select class="form-select" asp-for="ManufTrade" asp-items="Model.ManufTradeList"></select>
         </div>
@@ -105,17 +105,36 @@
             <label asp-for="POPrefix" class="form-label">PO Prefix</label>
             <input asp-for="POPrefix" class="form-control" readonly disabled />
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+        <div class="col-xl-3 col-lg-3 col-md-4 col-sm-6 col-xs-12">
             <label asp-for="PathOfFile1" class="form-label">PathOfFile1</label>
-            <input class="form-control form-control" asp-for="PathOfFile1" type="file" data-val="false">
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile1" type="file" data-val="false">
+                @if (Model.PathOfFile1URL != null && Model.PathOfFile1URL != "")
+                {
+                    <a href="@Model.PathOfFile1URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
         </div>
+
         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
             <label asp-for="PathOfFile2" class="form-label">PathOfFile2</label>
-            <input class="form-control form-control" asp-for="PathOfFile2" type="file" data-val="false">
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile2" type="file" data-val="false">
+                @if (Model.PathOfFile2URL != null && Model.PathOfFile2URL != "")
+                {
+                    <a href="@Model.PathOfFile2URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
         </div>
         <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
             <label asp-for="PathOfFile3" class="form-label">PathOfFile3</label>
-            <input class="form-control form-control" asp-for="PathOfFile3" type="file" data-val="false">
+            <div class="input-group">
+                <input class="form-control form-control" asp-for="PathOfFile3" type="file" data-val="false">
+                @if (Model.PathOfFile3URL != null && Model.PathOfFile3URL != "")
+                {
+                    <a href="@Model.PathOfFile3URL" class="btn btn-link" target="_blank"><i class="fas fa-download"></i></a>
+                }
+            </div>
         </div>
         <div class="col-xl-4 col-lg-3 col-md-4 col-sm-6 col-xs-12">
             <label class="form-label">Remarks</label>
