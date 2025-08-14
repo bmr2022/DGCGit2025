@@ -754,8 +754,15 @@ public class ItemMasterController : Controller
             {
                 Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
             }
+            string extension = Path.GetExtension(model.UploadImage.FileName)?.ToLowerInvariant();
 
-            ImagePath += Guid.NewGuid().ToString() + "_" + model.UploadImage.FileName;
+            // Build safe parts
+            string safePurchVouchNo = model.Item_Name.Replace("\\", "_").Replace("/", "_");
+
+            string safeInvNo = model.PartCode.Replace("\\", "_").Replace("/", "_");
+            ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.EntryDate.Replace("\\", "_").Replace("/", "_") + "_" + "DrawimgImage" + "_" + Guid.NewGuid().ToString() + extension;
+
+            //ImagePath += Guid.NewGuid().ToString() + "_" + model.UploadImage.FileName;
             model.ImageURL = "/" + ImagePath;
             string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
             //await model.UploadImage.CopyToAsync(new FileStream(ServerPath, FileMode.Create));
@@ -775,6 +782,10 @@ public class ItemMasterController : Controller
             //    await model.UploadImage.CopyToAsync(FileStream);
             //}
         }
+        else
+        {
+            model.ImageURL = model.ImageURL;
+        }
         if (model.ItemImage != null)
         {
             //string ImagePath = "UploadedImages/";
@@ -784,8 +795,15 @@ public class ItemMasterController : Controller
             {
                 Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
             }
+            string extension = Path.GetExtension(model.UploadImage.FileName)?.ToLowerInvariant();
 
-            ImagePath += Guid.NewGuid().ToString() + "_" + model.ItemImage.FileName;
+            // Build safe parts
+            string safePurchVouchNo = model.Item_Name.Replace("\\", "_").Replace("/", "_");
+
+            string safeInvNo = model.PartCode.Replace("\\", "_").Replace("/", "_");
+            ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.EntryDate.Replace("\\", "_").Replace("/", "_") + "_" + "ItemImage" + "_" + Guid.NewGuid().ToString() + extension;
+
+            //   ImagePath += Guid.NewGuid().ToString() + "_" + model.ItemImage.FileName;
             model.ItemImageURL = "/" + ImagePath;
             string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
             //await model.UploadImage.CopyToAsync(new FileStream(ServerPath, FileMode.Create));
@@ -794,6 +812,10 @@ public class ItemMasterController : Controller
                 await model.ItemImage.CopyToAsync(FileStream);
             }
 
+        }
+        else
+        {
+            model.ItemImageURL = model.ItemImageURL;
         }
         //else
         //{
