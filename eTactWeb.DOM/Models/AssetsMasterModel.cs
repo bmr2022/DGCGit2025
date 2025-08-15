@@ -77,6 +77,7 @@ namespace eTactWeb.DOM.Models
         public string LastUpdatedbyEmpName { get; set; }
         public string LastupDationDate { get; set; }
         public string Mode { get; set; }
+        public string Searchbox { get; set; }
         public IList<AssetsMasterModel> AssetsMasterGrid { get; set; }
     }
 }

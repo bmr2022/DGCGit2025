@@ -39,10 +39,7 @@
         </div>
         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="PurchVouchNo" class="form-label">Voucher No*</label>
-            @{
-                <input asp-for="PurchVouchNo" class="form-control" readonly style="background-color: lightblue !important;" />
-
-            }
+                <input asp-for="PurchVouchNo" value="@Model.PurchVouchNo" class="form-control" readonly style="background-color: lightblue !important;" />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="VouchDate" class="form-label">Date*</label>
@@ -60,11 +57,11 @@
         </div>
         <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="InvoiceNo" class="form-label">Vend Invoice No*</label>
-            @{
-                <input asp-for="InvoiceNo" class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
+         
+                <input asp-for="InvoiceNo" value="@Model.InvoiceNo"
+                class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
 
-            }
-        </div>
+          </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="InvDate" class="form-label">Inv Date*</label>
             <input asp-for="InvDate" tabindex="7" class="form-control datePickerControl" />

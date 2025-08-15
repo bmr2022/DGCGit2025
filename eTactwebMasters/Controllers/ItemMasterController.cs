@@ -24,6 +24,7 @@ using System.IO.Packaging;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
+using System.Text.Json;
 
 namespace eTactWeb.Controllers;
 
@@ -754,8 +755,15 @@ public class ItemMasterController : Controller
             {
                 Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
             }
+            string extension = Path.GetExtension(model.UploadImage.FileName)?.ToLowerInvariant();
 
-            ImagePath += Guid.NewGuid().ToString() + "_" + model.UploadImage.FileName;
+            // Build safe parts
+            string safePurchVouchNo = model.Item_Name.Replace("\\", "_").Replace("/", "_");
+
+            string safeInvNo = model.PartCode.Replace("\\", "_").Replace("/", "_");
+            ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.EntryDate.Replace("\\", "_").Replace("/", "_") + "_" + "DrawimgImage" + "_" + Guid.NewGuid().ToString() + extension;
+
+            //ImagePath += Guid.NewGuid().ToString() + "_" + model.UploadImage.FileName;
             model.ImageURL = "/" + ImagePath;
             string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
             //await model.UploadImage.CopyToAsync(new FileStream(ServerPath, FileMode.Create));
@@ -775,6 +783,10 @@ public class ItemMasterController : Controller
             //    await model.UploadImage.CopyToAsync(FileStream);
             //}
         }
+        else
+        {
+            model.ImageURL = model.ImageURL;
+        }
         if (model.ItemImage != null)
         {
             //string ImagePath = "UploadedImages/";
@@ -784,8 +796,15 @@ public class ItemMasterController : Controller
             {
                 Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
             }
+            string extension = Path.GetExtension(model.UploadImage.FileName)?.ToLowerInvariant();
 
-            ImagePath += Guid.NewGuid().ToString() + "_" + model.ItemImage.FileName;
+            // Build safe parts
+            string safePurchVouchNo = model.Item_Name.Replace("\\", "_").Replace("/", "_");
+
+            string safeInvNo = model.PartCode.Replace("\\", "_").Replace("/", "_");
+            ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.EntryDate.Replace("\\", "_").Replace("/", "_") + "_" + "ItemImage" + "_" + Guid.NewGuid().ToString() + extension;
+
+            //   ImagePath += Guid.NewGuid().ToString() + "_" + model.ItemImage.FileName;
             model.ItemImageURL = "/" + ImagePath;
             string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
             //await model.UploadImage.CopyToAsync(new FileStream(ServerPath, FileMode.Create));
@@ -794,6 +813,10 @@ public class ItemMasterController : Controller
                 await model.ItemImage.CopyToAsync(FileStream);
             }
 
+        }
+        else
+        {
+            model.ItemImageURL = model.ItemImageURL;
         }
         //else
         //{
@@ -1898,13 +1921,15 @@ public class ItemMasterController : Controller
             var UnitList = _IItemMaster.GetUnitList();
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
-                var cellValue = worksheet.Cells[row, 1].Value;
+                var cellValue = worksheet.Cells[row, 2].Value;
 
                 if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
                     break; // Stop when column 1 is empty
                 var itemGroupCode = _IItemMaster.GetItemGroupCode(worksheet.Cells[row, 5].Value.ToString().Trim() ?? "");
                 var itemCatCode = _IItemMaster.GetItemCatCode(worksheet.Cells[row, 6].Value.ToString().Trim()?? "");
-                var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString().Trim() ?? "", "PartCode", "Item_Master");
+                var dupPartCode = worksheet.Cells[row, 1].Value?.ToString().Trim() ?? "";
+                var duplicatePartCode = _IDataLogic.isDuplicate(dupPartCode, "PartCode", "Item_Master");
+                //var duplicatePartCode = _IDataLogic.isDuplicate(worksheet.Cells[row, 1].Value.ToString().Trim() ?? "", "PartCode", "Item_Master");
                 var duplicateItemName = _IDataLogic.isDuplicate(worksheet.Cells[row, 2].Value.ToString().Trim() ?? "", "Item_Name", "Item_Master");
                 var workCenter = worksheet.Cells[row, 15].Value?.ToString().Trim() ?? "";
                 var Store = worksheet.Cells[row, 16].Value?.ToString().Trim() ?? "";
@@ -1914,11 +1939,14 @@ public class ItemMasterController : Controller
                 var PartCodeExists = Convert.ToInt32(duplicatePartCode.Result) > 0 ? "Y" : "N";
                 var ItemNameExists = Convert.ToInt32(duplicateItemName.Result) > 0 ? "Y" : "N";
                 var WorkCenterId = _IItemMaster.GetWorkCenterId(workCenter);
+               
                 var StoreIdResult = _IItemMaster.GetStoreCode(Store);
-                var partCode = worksheet.Cells[row, 1].Value.ToString().Trim();
+                
+                var partCode = worksheet.Cells[row, 1].Value?.ToString().Trim() ?? "";
+
                 var ItemName = worksheet.Cells[row, 2].Value.ToString().Trim();
-
-
+                var featureOption = _IItemMaster.GetFeatureOption();
+               
                 string hsnNoValue = worksheet.Cells[row, 4].Value?.ToString().Trim() ?? string.Empty;
 
                 if (!string.IsNullOrEmpty(hsnNoValue))
@@ -2010,8 +2038,6 @@ public class ItemMasterController : Controller
                             break;
                         }
                     }
-
-
                     if (!StoreExists)
                     {
                         return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
@@ -2019,8 +2045,6 @@ public class ItemMasterController : Controller
                         //  return StatusCode(207, $"Invalid StoreName: {Store} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
 
                     }
-
-
                 ItemNameExists = dupeItemNameFeatureOpt.DuplicateItemName ? "N" : ItemNameExists;
 
                 int itemGCode = 1;
@@ -2036,16 +2060,26 @@ public class ItemMasterController : Controller
 
                 }
 
-                string GetCellValue(ExcelWorksheet sheet, int r, int c) =>
-    sheet.Cells[r, c].Value?.ToString().Trim() ?? string.Empty;
+                string GetCellValue(ExcelWorksheet sheet, int r, int c) =>sheet.Cells[r, c].Value?.ToString().Trim() ?? string.Empty;
 
                 int GetCellIntValue(ExcelWorksheet sheet, int r, int c) =>
                     int.TryParse(sheet.Cells[r, c].Value?.ToString().Trim(), out int result) ? result : 0;
 
+                var result =  GetPartCode(itemGCode, itemCCode);
+
+                var partCodeResult = (result.Result.Value != null) ? result.Result.Value.ToString() : string.Empty;
+                using JsonDocument doc = JsonDocument.Parse(partCodeResult);
+                JsonElement root = doc.RootElement;
+
+                string partCodestring = root.GetProperty("Result")  .GetProperty("Table")[0].GetProperty("partcode").GetString();
+                string PcValue = GetCellValue(worksheet, row, 1);
+
+               var PC = !string.IsNullOrEmpty(PcValue)? PcValue : (featureOption != null && featureOption.AllowPartCode == false? partCodestring  : PcValue);
 
                 data.Add(new ItemViewModel()
                 {
-                    PartCode = GetCellValue(worksheet, row, 1),
+                   PartCode= PC,
+                    //PartCode = GetCellValue(worksheet, row, 1),
                     PartCodeExists = PartCodeExists,
                     ItemNameExists = ItemNameExists,
                     ItemName = GetCellValue(worksheet, row, 2),
