@@ -748,7 +748,6 @@
             width: '100%'
         });
         GetBranchList();
-
         // Set selected branches from hidden inputs
         var selectedBranches = [];
         $('.hiddenBranch').each(function () {
@@ -770,11 +769,8 @@
                 ProdInMachineList();
 
             }
-
-
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
-
             var dateParts1 = finFromDate.split("/");
             var monthNames = {
                 "Jan": "01",
@@ -790,21 +786,16 @@
                 "Nov": "11",
                 "Dec": "12"
             };
-
             var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
             var dateParts2 = finToDate.split("/");
-
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-
             console.log(formattedDate1);
             console.log(formattedDate2);
             $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
             $('#EntryDate').datepicker("option", "minDate", formattedDate1);
             $('#EntryDate').datepicker("option", "maxDate", formattedDate2);
             $('#Item_Name').focus();
             $("#LastUpdatedDate").datepicker({ minDate: 0, dateFormat: 'mm/dd/yy' });
-
             $('#Item_Name').change(function () {
 
                 const format = /['\']/;
@@ -825,10 +816,8 @@
                 // }
 
             });
-
             $('#ParentCode').select2();
             $('#ItemType').select2();
-
             $("#Item_Name").autocomplete({
                 source: function (request, response) {
                     $.ajax({
@@ -854,7 +843,6 @@
                 minLength: 1
             });
         });
-
         function simulateBackspace(element) {
             var event = new KeyboardEvent("keydown", {
                 key: "Backspace",
@@ -867,7 +855,6 @@
 
             element.dispatchEvent(event);
         }
-
         function GetFormRights() {
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
@@ -909,7 +896,6 @@
                 }
             });
         }
-
         $('#ItemServAssets').change(function () {
             var itemServAssets = $(this).val();
             if (itemServAssets == "Service") {
@@ -945,16 +931,12 @@
             GetItemCategory();
             GetItemGroup();
         });
-
         $('#ChangePartCode').change(function () {
             if ($('#ChangePartCode').is(":checked")) {
                 $('#ItemType,#ParentCode').prop("disabled", false);
                 $('#ItemType,#ParentCode').removeAttr("style");
-
-
             }
         });
-
         function GetItemCategory() {
             $.ajax({
                 url: "@Url.Action("GetItemCategory")",
@@ -1002,7 +984,7 @@
                 }
             });
         }
-          function GetBranchList() {
+        function GetBranchList() {
 
             $.ajax({
                 url: "@Url.Action("GetBranchList")",
@@ -1094,7 +1076,6 @@
                 }
             });
         }
-
         function GetItemGroup() {
             $.ajax({
                 url: "@Url.Action("GetItemGroup")",
@@ -1114,7 +1095,6 @@
                 }
             });
         }
-
         $(document).ready(function () {
             $('#Item_Name').css('background-color', 'rgb(248 255 178)');
 
@@ -1154,7 +1134,6 @@
             });
 
         });
-
         function CheckDuplicate(n, v) {
              
             $.ajax({
@@ -1177,7 +1156,6 @@
             });
             // $('#Item_Name').select2('open').select2('focus');
         }
-
         $('#ParentCode').change(function () {
 
             if ($('#ItemType').prop('selectedIndex') == 0) {
@@ -1209,7 +1187,6 @@
             }
 
         });
-
         $('#ItemType').change(function () {
             if ($('#ParentCode').prop('selectedIndex') == 0) {
                 // do nothing
@@ -1234,7 +1211,6 @@
                 });
             }
         });
-
         $('#confirmSave').click(function () {
              var Err = 0;
         let machine1 = $('#ProdInMachine1').val();
@@ -1291,7 +1267,6 @@
                 $('form').submit();
             }
         });
-
         $("button[type='submit']").click(function (e) {
             e.preventDefault();
             var Err = 0;
@@ -1320,6 +1295,11 @@
            var hsn = $('#HSNNO').val().trim();
                 if (hsn !== "" && hsn !== "0" && !/^\d{6}$/.test(hsn)) {
             $('#HSNNO').removeClass('valid').addClass('is-invalid');
+            Err = 1;
+        }
+         var Store = $('#Store').val().trim();
+                if (Store === "" || Store === "0") {
+            $('#Store').removeClass('valid').addClass('is-invalid');
             Err = 1;
         }
 
