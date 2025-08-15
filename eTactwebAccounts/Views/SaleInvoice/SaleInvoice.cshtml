@@ -476,14 +476,24 @@
     </div>
 </div> *@
 <div class="modal fade" style="display:none" id="SaleOrderGroupWiseItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl" role="document"">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="staticBackdropLabel">Group Name</h5>
+                <label style="margin-left:3px;margin-right:3px" for="Group_Code1">Group_Code</label>
                 <select class="form-select" asp-for="Group_Code" id="Group_Code1" style="width:170px">
                     <option value="0">-Select-</option>
                 </select>
+                <label style="margin-left:3px;margin-right:3px" for="StoreName">Store Name</label>
+                <select class="form-select" asp-for="StoreId" id="MultiStoreName" style="width:170px">
+                    <option value="0">-Select-</option>
+                </select>
+                <label style="margin-left:3px;margin-right:3px" for="PartName">Party Name</label>
+                <input type="text" id="PartyName" style="width:200px" class="form-control" readonly />
+                <label for="PartName" style="margin-left:3px;margin-right:3px">Disc Category</label>
+                <input type="text" id="DiscCategory" style="width:200px" class="form-control" readonly />
+                
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+
             </div>
             <div class="modal-body">
                 <div class="card">
@@ -499,6 +509,10 @@
                                     <div class="col-md-2 me-3" style="margin-left:50px">
                                         <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
                                     </div>
+                                    <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowGroupWiseItems()"  style="display: flex; align-items: center;">
+                                        <i class="fa fa-eye" aria-hidden="true"></i>
+                                        <span style="margin-left: 5px;">Show</span>
+                                    </button>
                                 </div>
                                 <div class="table-responsive" style="max-height:350px;">
                                     <table class="table table-hover table-bordered table-striped mb-0">
@@ -508,13 +522,17 @@
                                                 <th>Action</th>
                                                 <th>Part Code</th>
                                                 <th>Item Name</th>
+                                               
                                                 <th>Qty</th>
                                                 <th>Rate</th>
                                                 <th>Discount %</th>
                                                 <th>Discount Amt</th>
                                                 <th>Amount</th>
-                                                <th>partyName</th>
-                                                <th>DisCategory</th>
+                                                <th>TotalStock</th>
+                                                <th>Lot Stock</th>
+                                                <th>Batch No</th>
+                                                <th>Unique Batch No</th>
+                                                
                                                 <th>Unit</th>
                                                 <th>HSNNO</th>
 
@@ -535,7 +553,7 @@
                     </div>
                     <div class="row g-2 gx-3">
                         <div class="col-12 text-center">
-                            <strong>Total No Of Items : <span id="lblTotalNoOfItems"></span></strong>
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
                         </div>
                     </div>
                 </div>
@@ -649,6 +667,39 @@
         </div>
     </div>
 </div> *@
+<style>
+    .modal-fullscreen .modal-content {
+    height: 80%;
+    border: 0;
+    border-radius: 0;
+}
+
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+    }
+
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 3px 8px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* above the input */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+</style>
 
 @section Scripts
 {
@@ -725,7 +776,7 @@
 
         $(document).ready(function () {
             const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
-            $('#Group_Code').select2();
+            // $('#Group_Code').select2();
             // $('#Group_Code1').select2();
             GetItemGroup();
 
@@ -1056,26 +1107,186 @@
             }
         });
 
+        $(document).on('mouseover', 'input[type="text"]', function () {
+            $(this).attr('title', $(this).val());
+        });
+// Attach autocomplete when StoreName input is focused
+$(document).on("focus", "input[id^='StoreName-']", function () {
+    var $this = $(this);
+
+    // Prevent initializing autocomplete multiple times
+    if ($this.data("ui-autocomplete")) return;
+
+    $this.autocomplete({
+        minLength: 1,
+        autoFocus: true,
+        source: function (request, response) {
+            $.ajax({
+                url: '@Url.Action("AutoFillStore")',
+                type: 'POST',
+                data: { SearchStoreName: request.term },
+                success: function (result) {
+                    var data = typeof result === "string" ? JSON.parse(result) : result;
+
+                    if (data.StatusCode === 200 && data.StatusText === 'Success' && Array.isArray(data.Result.Table)) {
+                        var filtered = data.Result.Table.filter(function (item) {
+                            return item.Store_Name.toLowerCase().includes(request.term.toLowerCase());
+                        });
+
+                        response($.map(filtered, function (item) {
+                            return {
+                                label: item.Store_Name,
+                                value: item.Store_Name,
+                                StoreId: item.StoreId
+                            };
+                        }));
+                    } else {
+                        response([]);
+                    }
+                },
+                error: function () {
+                    response([]);
+                }
+            });
+        },
+        select: function (event, ui) {
+            $this.val(ui.item.label);
+
+            // Set corresponding StoreId hidden field
+            var id = $this.attr("id").split("-")[1];
+            $("#StoreId-" + id).val(ui.item.StoreId);
+
+            return false;
+        }
+    });
+});
+
+//        function AutoFillStore(i) {
+//     $("#StoreName-" + i).autocomplete({
+//         minLength: 1,
+//         autoFocus: true,
+//         source: function (request, response) {
+//             $.ajax({
+//                 url: '@Url.Action("AutoFillStore")',
+//                 type: 'POST',
+//                 data: { SearchStoreName: request.term },
+//                 success: function (result) {
+//                     // Controller returns string -> must parse
+//                     let obj = JSON.parse(result);
+
+//                     if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+//                         let filtered = obj.Result.Table.filter(function (item) {
+//                             return item.Store_Name.toLowerCase().includes(request.term.toLowerCase());
+//                         });
+
+//                         response($.map(filtered, function (item) {
+//                             return {
+//                                 label: item.Store_Name,
+//                                 value: item.Store_Name,
+//                                 StoreId: item.StoreId
+//                             };
+//                         }));
+//                     } else {
+//                         response([]);
+//                     }
+//                 },
+//                 error: function (xhr, status, error) {
+//                     console.error("Autocomplete error:", error);
+//                     response([]);
+//                 }
+//             });
+//         },
+//         select: function (event, ui) {
+//             $("#StoreName-" + i).val(ui.item.label);
+//             $("#StoreId" + i).val(ui.item.StoreId);
+//             return false;
+//         }
+//     });
+// }
+
+
+        //     // Autocomplete for StoreName
+        //     $("#StoreName-"+i).autocomplete({
+        //         source: StoreNameSource,
+        //         select: function (event, ui) {
+        //             $("#StoreName-" + i).val(ui.item.value).data("StoreId", ui.item.StoreId);
+
+        //             $('#StoreId-' + i).val(ui.item.StoreId);
+                 
+        //             return false;
+        //         },
+        //         focus: function (event, ui) {
+        //             $("#StoreName-" + i).val(ui.item.value);
+        //             return false;
+        //         },
+        //         minLength: 2
+        //     });
+
+            
+        // }
+
+        // function AutoFillStore(rowIndex) {
+        //     $("#StoreName-" + rowIndex).autocomplete({
+        //         minLength: 1,
+        //         source: function (request, response) {
+        //             $.ajax({
+        //                 url: '@Url.Action("AutoFillStore")',
+        //                 type: 'GET',
+        //                 dataType: 'json',
+        //                 data: { SearchStoreName: request.term },
+        //                 success: function (data) {
+        //                     if (data && data.Result && data.Result.Table) {
+        //                         response($.map(data.Result.Table, function (item) {
+        //                             return {
+        //                                 label: item.Store_Name, // what is shown in dropdown
+        //                                 value: item.Store_Name, // what is filled in input
+        //                                 storeId: item.StoreId   // extra field for hidden input
+        //                             };
+        //                         }));
+        //                     } else {
+        //                         response([]);
+        //                     }
+        //                 },
+        //                 error: function () {
+        //                     response([]);
+        //                 }
+        //             });
+        //         },
+        //         select: function (event, ui) {
+        //             $("#StoreName-" + rowIndex).val(ui.item.value);
+        //             $("#StoreId-" + rowIndex).val(ui.item.storeId); // Fill hidden field with ID
+        //             return false;
+        //         }
+        //     });
+        // }
+
+
         function AddMultipleItems() {
             $('#SaleOrderGroupWiseItem').modal('show');
             $('#MultiItemBody').empty();
             GetMultiItemGroup();
+            FillStore();
         }
-        $('#Group_Code1').change(function () {
-            ShowGroupWiseItems();
-        })
+        $('#MultiStoreName, #Group_Code1').change(function () {
+            $('#MultiItemBody').empty();
+        });
+
+
+       
         function ShowGroupWiseItems() {
 
             //var reportType = $('#ReportType').val();
             var Group_Code = $('#Group_Code1').val();
             var AccountCode = $('#AccountCode').val();
+            var storeid = $('#MultiStoreName').val();
 
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("ShowGroupWiseItems")",
                 data: {
                     Group_Code: Group_Code,
-                    AccountCode: AccountCode
+                    AccountCode: AccountCode,
+                    storeid:storeid
 
                 },
                 success: function (response) {
@@ -1084,12 +1295,28 @@
                     $('#MultiItemBody').html(response);
 
                     var totalRows = $('#MultiItemBody tr').length;
-                    $('#totalRows').text(totalRows);
+                    $('#lblTotalNoOfItems1').text(totalRows);
 
-
+                    for (let i = 1; i <= totalRows; i++) {
+                        FillTotalStockForGroupWiseItem(i);
+                        FillLotStockForGroupWiseItem(i);
+                    }
                 },
                 error: function (xhr, status, error) {
                     console.error("Error fetching BOM tree data:", error);
+                }
+            });
+            $.getJSON({
+                url: "@Url.Action("getdiscCategoryName")",
+                data: {
+                    Group_Code: Group_Code,
+                    AccountCode: AccountCode
+
+                },
+                success: function (result, status, xhr) {
+
+                    $('#DiscCategory').val(result.result);
+
                 }
             });
         }
@@ -2227,6 +2454,9 @@
         });
         var isAccountCodeClear = false;
         $('#AccountCode').change(function () {
+            $('#PartyName').val($('#AccountCode option:selected').text());
+
+
             $.getJSON({
                 url: '@Url.Action("GetGstRegister", "PurchaseOrder")',
                 data: { Code: $('#AccountCode').val() },
@@ -2602,23 +2832,27 @@
                 for (var i = 0; i < RowCount; i++) {
                     if ($('#MBCheckbox-' + i).prop("checked")) {
                         if ($('#Qty-' + i).val() == 0) {
-                            $.notify('Please enter quantity for ' + $('#PartText-' + i).val(), 'error');
+                            $.notify('Please enter quantity for ' + $('#PartCode-' + i).val(), 'error');
+                            return;
+                        }
+                        if ($('#Qty-' + i).val() > $('#LotStock-' + i).val()) {
+                            $.notify('Please enter Valid quantity for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
                         if ($('#Rate-' + i).val() == 0) {
-                            $.notify('Please enter rate for ' + $('#PartText-' + i).val(), 'error');
+                            $.notify('Please enter rate for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
                         if ($('#Unit-' + i).val() == '') {
-                            $.notify('Please select unit for ' + $('#PartText-' + i).val(), 'error');
+                            $.notify('Please select unit for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
                         if ($('#HSNNo-' + i).val() == '') {
-                            $.notify('Please enter HSN for ' + $('#PartText-' + i).val(), 'error');
+                            $.notify('Please enter HSN for ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
                         if ($('#Amount-' + i).val() == '') {
-                            $.notify('amount can not be 0 ' + $('#PartText-' + i).val(), 'error');
+                            $.notify('amount can not be 0 ' + $('#PartCode-' + i).val(), 'error');
                             return;
                         }
 
@@ -2644,15 +2878,15 @@
                             "SchNo": $('#SchNo').val(),
                             "SaleSchYearCode": $('#SaleSchYearCode').val(),
                             "Schdate": $('#Schdate').val(),
-                            "StoreId": $('#StoreId').val(),
-                            "StoreName": $('#Storeid').find(':selected').text() == '-Select-' ? "" : $('#StoreId').find(':selected').text(),
+                            "StoreId": $('#MultiStoreName').val(),
+                            "StoreName": $('#MultiStoreName').find(':selected').text() == '-Select-' ? "" : $('#MultiStoreName').find(':selected').text(),
                             "HSNNo": $('#HSNNo-' + i).val(),
                             "Unit": $('#Unit-' + i).val(),
 
-                            "Batchno": $('#Batchno').find(':selected').text().trim(),
-                            "Uniquebatchno": $('#Uniquebatchno').find(':selected').text().trim(),
-                            "LotStock": $('#LotStock').val(),
-                            "TotalStock": $('#TotalStock').val(),
+                            "Batchno": $('#Batchno-'+i).val(),
+                            "Uniquebatchno": $('#Uniquebatchno-'+i).val(),
+                            "LotStock": $('#LotStock-'+i).val(),
+                            "TotalStock": $('#TotalStock-'+i).val(),
                             "SOPendQty": $('#SOPendQty').val(),
                             "Qty": $('#Qty-' + i).val(),
                             "Rate": $('#Rate-' + i).val(),
@@ -2710,9 +2944,32 @@
                     },
                     success: function (result, status, xhr) {
                         if (xhr.status == 200 && xhr.responseText == result) {
+                            $('.gridHiddenField').show();
                             $('#divSaleBillList').html(result);
 
                             $('#SaleOrderGroupWiseItem').modal('hide');
+                            BasicTotal();
+                            ClearAdjustmentGrid();
+                            // ResetPendQty();
+                            FillSOPendQty();
+
+                            $('#ItemNetAmount').val(sum);
+
+                            // $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                            var txSum = 0;
+                            if ($('#divTaxGrid tr td').length > 1) {
+                                for (var i = 1; i <= taxRowCount; i++) {
+                                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                                }
+                            }
+
+                            var txTotal = sum + txSum;
+                            $('#NetTotal').val(txTotal.toFixed(2));
+                            $('#AdjPendAmt').val($('#NetTotal').val());
+                            $('#TotalDiscountPercentage').val(0);
+                            $('#TotalAmtAftrDiscount').val(0);
+
 
 
                         }
@@ -2723,6 +2980,8 @@
                 }).done(function () {
 
                     GetTaxPartItem();
+                    GetDbCrDetail();
+                    AddAdjstmntDetail1();
                 });
             }
         });
@@ -3259,6 +3518,10 @@
                         if (obj.StatusCode != 500) {
                             $.each(obj.Result, function (index, val) {
                                 $('#StoreId').append("<option value=" + val.StoreId + ">" + val.Store_Name + "</option>");
+                            });
+
+                            $.each(obj.Result, function (index, val) {
+                                $('#MultiStoreName').append("<option value=" + val.StoreId + ">" + val.Store_Name + "</option>");
                             });
                         }
                     }
@@ -4543,6 +4806,27 @@
             });
         }
 
+        function FillLotStockForGroupWiseItem(i) {
+
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("FillLotStock", "StockAdjustment")",
+                data: { ItemCode: $('#ItemCode-' + i).val(), StoreId: $('#MultiStoreName').val(), TillDate: $('#SaleBillDate').val(), BatchNo: $('#Batchno-' + i).val(), UniqueBatchNo: $('#Uniquebatchno-' + i).val() },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#LotStock-' + i).val($.parseJSON(result).Result[0].STOCK);
+                        BatchStock = $.parseJSON(result).Result[0].STOCK;
+                    }
+                    // SetminQty();
+                    CalculateAmount();
+                }
+            });
+        }
+
         function DiscountPerCalculation() {
 
             CalculateAmount();
@@ -4629,6 +4913,21 @@
             });
         }
 
+        function FillTotalStockForGroupWiseItem(i) {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreTotalStock", "NRGP")",
+                data: { ItemCode: $('#ItemCode-' + i).val(), StoreId: $('#MultiStoreName').val(), TillDate: $('#SaleBillDate').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#TotalStock-' + i).val(obj.Result[0].STOCK);
+                    }
+                }
+            });
+        }
+
         function FillCurrentBatchINStore() {
 
             var ItemCode = $('#ItemCode').val();
@@ -4705,7 +5004,7 @@
             var YearCode = $('#SaleBillYearCode').val();
             var StoreName = $('#StoreName-' + i).val();
             var batchno = "";
-            if ($('#Batchno').prop('selectedIndex') != 0) {
+            if ($('#Batchno-'+i).prop('selectedIndex') != 0) {
                 batchno = $('#Batchno').val();
             }
             $.ajax({
@@ -4718,49 +5017,27 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#Batchno').empty();
-                            $('#Batchno').append('<option value="0" selected>-Select-</option>');
+                            $('#Batchno-'+i).empty();
+                            $('#Batchno-'+i).append('<option value="0" selected>-Select-</option>');
 
                             var seenValues = {};
                             $.each(obj.Result, function (index, val) {
                                 if (!seenValues[val.batchno]) {
                                     seenValues[val.batchno] = true;
-                                    $('#Batchno').append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                    $('#Batchno-'+i).append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
                                 }
                             });
 
 
                             GetBatchInventory();
 
-                            var selectListLength = $('#Batchno option').length - 1;
-                            var itemArrayLength = itemBatchArray.length;
-                            if (itemArrayLength > 0) {
-                                var itemsWithCode16 = itemBatchArray.filter(function (item) {
-                                    return item.itemcode === parseInt(ItemCode);
-                                });
-                                var selectList = $('#Batchno');
-                                selectList.find('option').each(function () {
-                                    var optionValue = $(this).val();
-                                    var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-                                        return item.batchno === optionValue;
-                                    });
-
-                                    if (existsInItemsWithCode16) {
-                                        $(this).remove();
-                                    }
-                                });
-
-                                //}
-                                //if (itemBatchArray.length > 0) {
-                                //    $('#BatchNo option[value="' + itemBatchArray[0].batchno + '"]').remove();
-                                //    $('#uniquebatchno option[value="' + itemBatchArray[0].uniquebatchno + '"]').remove();
-                                //}
-                            }
+                            
+                            
                         } else {
-                            $('#Batchno').empty();
-                            $('#Batchno').append('<option value="0" disabled selected>-Select-</option>');
-                            $('#Uniquebatchno').empty();
-                            $('#Uniquebatchno').append('<option value="0" disabled selected>-Select-</option>');
+                            $('#Batchno-'+i).empty();
+                            $('#Batchno-'+i).append('<option value="0" disabled selected>-Select-</option>');
+                            $('#Uniquebatchno-'+i).empty();
+                            $('#Uniquebatchno-'+i).append('<option value="0" disabled selected>-Select-</option>');
                         }
 
                     }
@@ -5067,8 +5344,18 @@
 
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.2/xlsx.full.min.js"></script>
+        @*<script src="~/Scripts/table2excel.js"></script>*@
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.16.9/xlsx.full.min.js"></script>
+
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+   
 
 
 }

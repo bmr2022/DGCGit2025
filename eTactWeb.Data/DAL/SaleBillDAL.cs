@@ -26,8 +26,56 @@ namespace eTactWeb.Data.DAL
         public IConfiguration? Configuration { get; }
 
         private string DBConnectionString { get; }
+        public async Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode)
+        {
+            var oDataTable = new DataTable();
+            var _ResponseResult = new ResponseResult();
 
-        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode)
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    using (SqlCommand oCmd = new SqlCommand("SP_SaleBillMainDetail", myConnection))
+                    {
+                        oCmd.CommandType = CommandType.StoredProcedure;
+                        oCmd.Parameters.AddWithValue("@Flag", "getdiscCategoryName");
+                        oCmd.Parameters.AddWithValue("@Group_Code", Group_Code);
+                        oCmd.Parameters.AddWithValue("@AccountCode", AccountCode);
+                        await myConnection.OpenAsync();
+                        using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                        {
+                            oDataAdapter.Fill(oDataTable);
+                        }
+
+                        if (oDataTable.Rows.Count > 0)
+                        {
+                            _ResponseResult = new ResponseResult()
+                            {
+                                StatusCode = HttpStatusCode.OK,
+                                StatusText = "Success",
+                                Result = oDataTable.Rows[0]["DiscCategoryName"]
+                            };
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                if (oDataTable != null)
+                {
+                    oDataTable.Dispose();
+                }
+            }
+            return _ResponseResult;
+        }
+
+        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid)
         {
             var resultList = new SaleBillModel();
             DataSet oDataSet = new DataSet();
@@ -36,7 +84,7 @@ namespace eTactWeb.Data.DAL
             {
                 using (SqlConnection connection = new SqlConnection(DBConnectionString))
                 {
-                    SqlCommand command = new SqlCommand("SP_SaleOrder", connection)
+                    SqlCommand command = new SqlCommand("SP_SaleBillMainDetail", connection)
                     {
                         CommandType = CommandType.StoredProcedure
                     };
@@ -45,6 +93,7 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@Flag", "ShowGroupWiseItems");
                     command.Parameters.AddWithValue("@Group_Code", Group_Code);
                     command.Parameters.AddWithValue("@AccountCode", AccountCode);
+                    command.Parameters.AddWithValue("@Storeid", storeid);
 
                     await connection.OpenAsync();
 
@@ -63,7 +112,10 @@ namespace eTactWeb.Data.DAL
                                                      //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
                                                      PartCode = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
                                                      ItemName = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
-                                                     AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+                                                     //AccountName = row["Account_Name"] == DBNull.Value ? string.Empty : row["Account_Name"].ToString(),
+                                                     Batchno = row["BatchNo"] == DBNull.Value ? string.Empty : row["BatchNo"].ToString(),
+                                                     Uniquebatchno = row["UniqueBatchNo"] == DBNull.Value ? string.Empty : row["UniqueBatchNo"].ToString(),
+
                                                      //DiscCategoryName = row["DiscCategoryName"] == DBNull.Value ? string.Empty : row["DiscCategoryName"].ToString(),
                                                      Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
                                                      HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),
@@ -103,6 +155,27 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
 
+            return _ResponseResult;
+        }
+
+        public async Task<ResponseResult> AutoFillStore(string SearchStoreName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "AutoFillStore"));
+               
+                SqlParams.Add(new SqlParameter("@SearchStoreName", SearchStoreName ?? ""));
+               
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_GetDropDownList", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
             return _ResponseResult;
         }
 

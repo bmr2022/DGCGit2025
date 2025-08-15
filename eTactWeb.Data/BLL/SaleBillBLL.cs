@@ -22,9 +22,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode);
         }
-        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode)
+        public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid)
         {
-            return await _SaleBillDAL.ShowGroupWiseItems(Group_Code, AccountCode);
+            return await _SaleBillDAL.ShowGroupWiseItems(Group_Code, AccountCode,storeid);
         }
         public async Task<ResponseResult> GetReportName()
         {
@@ -39,7 +39,14 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.NewEntryId(YearCode);
         }
-
+        public async Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode)
+        {
+            return await _SaleBillDAL.getdiscCategoryName(Group_Code, AccountCode);
+        }
+        public async Task<ResponseResult> AutoFillStore( string SearchStoreName)
+        {
+            return await _SaleBillDAL.AutoFillStore(SearchStoreName);
+        }
         public async Task<ResponseResult> GetItemGroup()
         {
             return await _SaleBillDAL.GetItemGroup();

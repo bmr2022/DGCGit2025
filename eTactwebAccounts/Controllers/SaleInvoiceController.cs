@@ -62,16 +62,22 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> ShowGroupWiseItems(int Group_Code, int AccountCode)
+        public async Task<IActionResult> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid)
         {
             var model = new SaleBillModel();
-            model = await _SaleBill.ShowGroupWiseItems(Group_Code, AccountCode);
+            model = await _SaleBill.ShowGroupWiseItems(Group_Code, AccountCode,storeid);
 
 
             return PartialView("_SaleBillGroupWiseItems", model);
 
         }
 
+        public async Task<JsonResult> getdiscCategoryName(int Group_Code, int AccountCode)
+        {
+            ResponseResult JsonString = await _SaleBill.getdiscCategoryName(Group_Code, AccountCode);
+            _logger.LogError(JsonConvert.SerializeObject(JsonString));
+            return Json(JsonString);
+        }
         public async Task<JsonResult> GETGROUPWISEITEM(int Group_Code)
         {
             var JSON = await _SaleBill.GETGROUPWISEITEM(Group_Code);
@@ -228,7 +234,12 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-
+        public async Task<JsonResult> AutoFillStore(string SearchStoreName)
+        {
+            var JSON = await _SaleBill.AutoFillStore(SearchStoreName);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         [HttpPost]
         public async Task<IActionResult> SaleInvoice(SaleBillModel model, string ShouldEinvoice)
         {
