@@ -1,5 +1,6 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.Data.DAL;
+using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.Extensions.Configuration;
 using System;
@@ -33,6 +34,17 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _AssetsMasterDAL.FillDepartmentName();
 		}
-
+		public async Task<ResponseResult> FillParentAccountName()
+		{
+			return await _AssetsMasterDAL.FillParentAccountName();
+		}
+		public async Task<ResponseResult> FillParentGoupDetail(int ParentAccountCode)
+		{
+			return await _AssetsMasterDAL.FillParentGoupDetail(ParentAccountCode);
+		}
+		public async Task<ResponseResult> SaveAssetsMaster(AssetsMasterModel model)
+		{
+			return await _AssetsMasterDAL.SaveAssetsMaster(model);
+		}
 	}
 }
