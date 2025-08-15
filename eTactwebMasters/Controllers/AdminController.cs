@@ -263,6 +263,51 @@ public class AdminController : Controller, IAsyncDisposable
         model.EmpID = ID;
         return View(model);
     }
+    [HttpPost]
+    public IActionResult UpdateAllUserRightsInSession(string field, bool value)
+    {
+        string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+        var userRights = string.IsNullOrEmpty(modelJson)
+            ? new List<UserRightModel>()
+            : JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+
+        foreach (var right in userRights)
+        {
+            switch (field)
+            {
+                case "All": right.All = value.ToString().ToLower(); break;
+                case "Update": right.Update = value.ToString().ToLower(); break;
+                case "Save": right.Save = value.ToString().ToLower(); break;
+                case "Delete": right.Delete = value.ToString().ToLower(); break;
+                case "View": right.View = value.ToString().ToLower(); break;
+            }
+        }
+
+        HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(userRights));
+        return Json(new { success = true });
+    }
+
+    [HttpPost]
+    public IActionResult UpdateAllPermissionsInSession(bool value)
+    {
+        string modelJson = HttpContext.Session.GetString("KeyUserRightsDetail");
+        var userRights = string.IsNullOrEmpty(modelJson)
+            ? new List<UserRightModel>()
+            : JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
+
+        foreach (var right in userRights)
+        {
+            right.All = value.ToString().ToLower();
+            right.Update = value.ToString().ToLower();
+            right.Save = value.ToString().ToLower();
+            right.Delete = value.ToString().ToLower();
+            right.View = value.ToString().ToLower();
+        }
+
+        HttpContext.Session.SetString("KeyUserRightsDetail", JsonConvert.SerializeObject(userRights));
+        return Json(new { success = true });
+    }
+
 
     [HttpPost]
     [ValidateAntiForgeryToken]
@@ -278,6 +323,8 @@ public class AdminController : Controller, IAsyncDisposable
             {
                 UserRightDetail = JsonConvert.DeserializeObject<List<UserRightModel>>(modelJson);
             }
+
+            
 
             UserRightGrid = GetDetailTable(UserRightDetail);
             Common.ResponseResult Result = await _IAdminModule.SaveUserRights(model, UserRightGrid);

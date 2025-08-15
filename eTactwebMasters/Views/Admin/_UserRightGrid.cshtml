@@ -49,19 +49,19 @@ else
                 }
             </td>
 
-            <td>@Html.DisplayFor(modelItem => item.EmpName)</td>
-            <td>@Html.DisplayFor(modelItem => item.Module)</td>
-            <td>@Html.DisplayFor(modelItem => item.MainMenu)</td>
+            <td id="EmpName-@Cntr">@Html.DisplayFor(modelItem => item.EmpName)</td>
+            <td id="Module-@Cntr">@Html.DisplayFor(modelItem => item.Module)</td>
+            <td id="MainMenu-@Cntr">@Html.DisplayFor(modelItem => item.MainMenu)</td>
             @*<td>@Html.DisplayFor(modelItem => item.SubMenu)</td>*@
             <td>
                 <div class="form-check form-switch">
                     @if (item.All == "true")
                     {
-                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                        <input class="form-check-input allCheck allCheck-@Cntr" disabled checked type="checkbox" role="switch">
                     }
                     else
                     {
-                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                        <input class="form-check-input allCheck allCheck-@Cntr" disabled type="checkbox" role="switch">
                     }
                 </div>
             </td>
@@ -69,11 +69,11 @@ else
                 <div class="form-check form-switch">
                     @if (item.Update == "true")
                     {
-                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                        <input class="form-check-input allCheck UpdateCheck UpdateCheck-@Cntr" disabled checked type="checkbox" role="switch">
                     }
                     else
                     {
-                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                        <input class="form-check-input allCheck UpdateCheck UpdateCheck-@Cntr" disabled type="checkbox" role="switch">
                     }
                 </div>
             </td>
@@ -81,11 +81,11 @@ else
                 <div class="form-check form-switch">
                     @if (item.Save == "true")
                     {
-                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                        <input class="form-check-input allCheck SaveCheck SaveCheck-@Cntr" disabled checked type="checkbox" role="switch">
                     }
                     else
                     {
-                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                        <input class="form-check-input allCheck SaveCheck SaveCheck-@Cntr" disabled type="checkbox" role="switch">
                     }
                 </div>
             </td>
@@ -93,11 +93,11 @@ else
                 <div class="form-check form-switch">
                     @if (item.Delete == "true")
                     {
-                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                        <input class="form-check-input allCheck DeleteCheck DeleteCheck-@Cntr" disabled checked type="checkbox" role="switch">
                     }
                     else
                     {
-                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                        <input class="form-check-input allCheck DeleteCheck DeleteCheck-@Cntr" disabled type="checkbox" role="switch">
                     }
                 </div>
             </td>
@@ -105,11 +105,11 @@ else
                 <div class="form-check form-switch">
                     @if (item.View == "true")
                     {
-                        <input class="form-check-input" disabled checked type="checkbox" role="switch">
+                        <input class="form-check-input allCheck ViewCheck ViewCheck-@Cntr" disabled checked type="checkbox" role="switch">
                     }
                     else
                     {
-                        <input class="form-check-input" disabled type="checkbox" role="switch">
+                        <input class="form-check-input allCheck ViewCheck @Cntr" disabled type="checkbox" role="switch">
                     }
                 </div>
             </td>

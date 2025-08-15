@@ -174,21 +174,78 @@
                         <tr>
                             <th style="display:none">@Html.DisplayNameFor(model => model.EmpID)</th>
                             <th>Action</th>
-                            @*<th>Sr#</th>*@
-                            <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>@Html.DisplayNameFor(model => model.EmpName)</th>
-                            <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>@Html.DisplayNameFor(model => model.Module)</th>
-                            <th data-columnno="4" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>@Html.DisplayNameFor(model => model.MainMenu)</th>
-                            <th>@Html.DisplayNameFor(model => model.All)</th>
-                            <th>@Html.DisplayNameFor(model => model.Update)</th>
-                            <th>@Html.DisplayNameFor(model => model.Save)</th>
-                            <th>@Html.DisplayNameFor(model => model.Delete)</th>
-                            <th>@Html.DisplayNameFor(model => model.View)</th>
+
+                            <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                                <i class="fa sort-icon" aria-hidden="true"></i>
+                                @Html.DisplayNameFor(model => model.EmpName)
+                            </th>
+
+                            <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                                <i class="fa sort-icon" aria-hidden="true"></i>
+                                @Html.DisplayNameFor(model => model.Module)
+                            </th>
+
+                            <th data-columnno="4" data-sortorder="asc" class="sortCol">
+                                <i class="fa sort-icon" aria-hidden="true"></i>
+                                @Html.DisplayNameFor(model => model.MainMenu)
+                            </th>
+
+                            <th>
+                                <div class="d-inline-flex align-items-center">
+                                    @Html.DisplayNameFor(model => model.All)
+                                    <div class="form-check form-switch ms-2">
+                                        <input class="form-check-input" id="AllGrid" type="checkbox" role="switch">
+                                    </div>
+                                </div>
+                            </th>
+
+                            <th>
+                                <div class="d-inline-flex align-items-center">
+                                    @Html.DisplayNameFor(model => model.Update)
+                                    <div class="form-check form-switch ms-2">
+                                        <input class="form-check-input" id="UpdateGrid" type="checkbox" role="switch">
+                                    </div>
+                                </div>
+                            </th>
+
+                            <th>
+                                <div class="d-inline-flex align-items-center">
+                                    @Html.DisplayNameFor(model => model.Save)
+                                    <div class="form-check form-switch ms-2">
+                                        <input class="form-check-input" id="SaveGrid" type="checkbox" role="switch">
+                                    </div>
+                                </div>
+                            </th>
+
+                            <th>
+                                <div class="d-inline-flex align-items-center">
+                                    @Html.DisplayNameFor(model => model.Delete)
+                                    <div class="form-check form-switch ms-2">
+                                        <input class="form-check-input" id="DeleteGrid" type="checkbox" role="switch">
+                                    </div>
+                                </div>
+                            </th>
+
+                            <th>
+                                <div class="d-inline-flex align-items-center">
+                                    @Html.DisplayNameFor(model => model.View)
+                                    <div class="form-check form-switch ms-2">
+                                        <input class="form-check-input" id="ViewGrid" type="checkbox" role="switch">
+                                    </div>
+                                </div>
+                            </th>
                         </tr>
                     </thead>
+
                     <tbody id="UserRightsGrid">
                         <partial name="_UserRightGrid" />
                     </tbody>
                 </table>
+                
+            </div>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 8px;">
+                <label style="margin: 0;">Total Rows</label>
+                <label id="TotalRows" class="badge bg-primary" style="font-size: 1rem; font-weight: 600;">0</label>
             </div>
         </div>
 
@@ -266,8 +323,159 @@
 
                 GetSearchData();
             }
+            var TotalRows = $('#UserRightsGrid tr').length;
+            $('#TotalRows').text(TotalRows);
+        });
+
+       /*  $('#AllGrid').click(function () {
+
+            var RowCount = $('#UserRightsGrid tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 0; i <= RowCount; i++) {
+                var checkbox = $('.allCheck');
+                checkbox.prop("checked", !checkbox.prop("checked"));
+            }
+                
+        });
+
+        $('#UpdateGrid').click(function () {
+
+            var RowCount = $('#UserRightsGrid tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 0; i <= RowCount; i++) {
+                var checkbox = $('.UpdateCheck');
+                checkbox.prop("checked", !checkbox.prop("checked"));
+            }
 
         });
+        $('#SaveGrid').click(function () {
+
+            var RowCount = $('#UserRightsGrid tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 0; i <= RowCount; i++) {
+                var checkbox = $('.SaveCheck');
+                checkbox.prop("checked", !checkbox.prop("checked"));
+            }
+
+        });
+        $('#DeleteGrid').click(function () {
+
+            var RowCount = $('#UserRightsGrid tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 0; i <= RowCount; i++) {
+                var checkbox = $('.DeleteCheck');
+                checkbox.prop("checked", !checkbox.prop("checked"));
+            }
+
+        });
+        $('#ViewGrid').click(function () {
+
+            var RowCount = $('#UserRightsGrid tr').length;
+            var TotalNoOfRows = 0;
+            for (var i = 0; i <= RowCount; i++) {
+                var checkbox = $('.ViewCheck');
+                checkbox.prop("checked", !checkbox.prop("checked"));
+            }
+
+        });
+
+        function updateSession(rowIndex, field, value) {
+            $.ajax({
+                url: "@Url.Action("UpdateUserRightInSession")",
+                type: 'POST',
+                data: { rowIndex: rowIndex, field: field, value: value },
+                success: function (res) {
+                    console.log("Session updated:", res);
+                }
+            });
+        }
+
+        $(document).on('change', '.allCheck, .UpdateCheck, .SaveCheck, .DeleteCheck, .ViewCheck', function () {
+            var classes = $(this).attr('class').split(/\s+/);
+            var rowIndex = null;
+            var field = null;
+
+            classes.forEach(function (c) {
+                if (c.includes('-')) {
+                    rowIndex = c.split('-')[1]; // e.g., allCheck-2 => 2
+                }
+                if (c.includes('allCheck')) field = 'All';
+                if (c.includes('UpdateCheck')) field = 'Update';
+                if (c.includes('SaveCheck')) field = 'Save';
+                if (c.includes('DeleteCheck')) field = 'Delete';
+                if (c.includes('ViewCheck')) field = 'View';
+            });
+
+            if (rowIndex != null && field != null) {
+                updateSession(parseInt(rowIndex) - 1, field, $(this).prop('checked'));
+            }
+        }); */
+
+        function toggleAllAndUpdateAllPermissions() {
+            var allChecked = !$('.allCheck').first().prop("checked"); // Decide new state
+
+            // Update UI for all permission columns
+            $('.allCheck, .UpdateCheck, .SaveCheck, .DeleteCheck, .ViewCheck')
+                .prop("checked", allChecked);
+
+            // Send one request to update all fields in the session
+            $.ajax({
+                url: "@Url.Action("UpdateAllPermissionsInSession")",
+                type: 'POST',
+                data: {
+                    value: allChecked
+                },
+                success: function (res) {
+                    if (!res.success) {
+                        console.error("Failed to update session for all permissions.");
+                    }
+                }
+            });
+        }
+
+
+        function toggleAllAndUpdate(fieldClass, fieldName) {
+            var checkboxes = $(fieldClass);
+            var newValue = !checkboxes.first().prop("checked"); // Decide new state
+            checkboxes.prop("checked", newValue); // Update UI
+
+            // Send one bulk update to server
+            $.ajax({
+                url: "@Url.Action("UpdateAllUserRightsInSession")",
+                type: 'POST',
+                data: {
+                    field: fieldName,
+                    value: newValue
+                },
+                success: function (res) {
+                    if (!res.success) {
+                        console.error("Failed to update session for all rows.");
+                    }
+                }
+            });
+        }
+
+        $('#AllGrid').click(function () {
+            toggleAllAndUpdateAllPermissions();
+        });
+
+        $('#UpdateGrid').click(function () {
+            toggleAllAndUpdate('.UpdateCheck', 'Update');
+        });
+
+        $('#SaveGrid').click(function () {
+            toggleAllAndUpdate('.SaveCheck', 'Save');
+        });
+
+        $('#DeleteGrid').click(function () {
+            toggleAllAndUpdate('.DeleteCheck', 'Delete');
+        });
+
+        $('#ViewGrid').click(function () {
+            toggleAllAndUpdate('.ViewCheck', 'View');
+        });
+
+
 
         $('.btnClearGrid').click(function (e) {
             ClearGrid();
@@ -360,6 +568,9 @@
                 data: { "EmpID": $('#EmpID').val(), "EmpName": $('#EmpID').find(":selected").text(), "Module": $('#Module').val(), "MainMenu": $('#MainMenu').val(), "All": all, "Save": save, "Update": update, "Delete": delete1, "View": view },
                 success: function (data) {
                              $('#UserRightsGrid').empty().html(data);
+
+                    var TotalRows = $('#UserRightsGrid tr').length;
+                    $('#TotalRows').text(TotalRows);
                                         var msg = $('#UserRightsGrid').find('#duplicateMessage').data("msg");
                                                 if (msg) {
                 $.notify(msg, "info");
