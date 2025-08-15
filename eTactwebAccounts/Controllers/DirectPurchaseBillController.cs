@@ -280,14 +280,22 @@ namespace eTactWeb.Controllers
                             {
                                 Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                             }
-
-                            ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile1.FileName;
+                            string extension = Path.GetExtension(model.PathOfFile1.FileName)?.ToLowerInvariant();
+                            string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
+                            string safeInvNo = model.InvoiceNo.Replace("\\", "_").Replace("/", "_");
+                            ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "_" + Guid.NewGuid().ToString() + extension;
                             model.PathOfFile1URL = "/" + ImagePath;
+                            //ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile1.FileName;
+                            //model.PathOfFile1URL = "/" + ImagePath;
                             string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                             using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                             {
                                 await model.PathOfFile1.CopyToAsync(FileStream);
                             }
+                        }
+                        else
+                        {
+                            model.PathOfFile1URL = MainModel.PathOfFile1URL;
                         }
 
                         if (model.PathOfFile2 != null)
@@ -298,14 +306,23 @@ namespace eTactWeb.Controllers
                             {
                                 Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                             }
-
-                            ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
+                            string extension = Path.GetExtension(model.PathOfFile2.FileName)?.ToLowerInvariant();
+                            string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
+                            string safeInvNo = model.InvoiceNo.Replace("\\", "_").Replace("/", "_");
+                            ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "_" + "2" + "_" + Guid.NewGuid().ToString() + extension;
                             model.PathOfFile2URL = "/" + ImagePath;
+                            //ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile2.FileName;
+                            //model.PathOfFile2URL = "/" + ImagePath;
                             string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                             using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                             {
                                 await model.PathOfFile2.CopyToAsync(FileStream);
                             }
+                        }
+
+                        else
+                        {
+                            model.PathOfFile2URL = MainModel.PathOfFile2URL;
                         }
 
                         if (model.PathOfFile3 != null)
@@ -316,14 +333,22 @@ namespace eTactWeb.Controllers
                             {
                                 Directory.CreateDirectory(_IWebHostEnvironment.WebRootPath + "\\" + ImagePath);
                             }
-
-                            ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
+                            string extension = Path.GetExtension(model.PathOfFile3.FileName)?.ToLowerInvariant();
+                            string safePurchVouchNo = model.PurchVouchNo.Replace("\\", "_").Replace("/", "_");
+                            string safeInvNo = model.InvoiceNo.Replace("\\", "_").Replace("/", "_");
+                            ImagePath += safePurchVouchNo + "_" + model.YearCode + "_" + safeInvNo + "_" + model.VouchDate.Replace("\\", "_").Replace("/", "_") + "_" + "3" + "_" + Guid.NewGuid().ToString() + extension;
                             model.PathOfFile3URL = "/" + ImagePath;
+                            //ImagePath += Guid.NewGuid().ToString() + "_" + model.PathOfFile3.FileName;
+                            //model.PathOfFile3URL = "/" + ImagePath;
                             string ServerPath = Path.Combine(_IWebHostEnvironment.WebRootPath, ImagePath);
                             using (FileStream FileStream = new FileStream(ServerPath, FileMode.Create))
                             {
                                 await model.PathOfFile3.CopyToAsync(FileStream);
                             }
+                        }
+                        else
+                        {
+                            model.PathOfFile3URL = MainModel.PathOfFile3URL;
                         }
 
                         model.FinFromDate = HttpContext.Session.GetString("FromDate");
