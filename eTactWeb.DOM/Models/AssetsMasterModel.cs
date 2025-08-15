@@ -78,6 +78,8 @@ namespace eTactWeb.DOM.Models
         public string LastupDationDate { get; set; }
         public string Mode { get; set; }
         public string Searchbox { get; set; }
+        public int DiscountCustCatEntryId { get; set; }
+        public int DiscountCustCatYearCode { get; set; }
         public IList<AssetsMasterModel> AssetsMasterGrid { get; set; }
     }
 }
