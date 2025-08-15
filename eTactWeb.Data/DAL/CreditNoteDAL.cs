@@ -386,7 +386,6 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-
         public async Task<ResponseResult> FillCustomerName(string againstSalePurchase)
         {
             var _ResponseResult = new ResponseResult();

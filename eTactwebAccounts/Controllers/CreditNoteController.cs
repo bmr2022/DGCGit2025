@@ -53,6 +53,8 @@ namespace eTactWeb.Controllers
 
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "V" || Mode == "U"))
             {
+                model.FinFromDate = HttpContext.Session.GetString("FromDate");
+                model.FinToDate = HttpContext.Session.GetString("ToDate");
                 model = await _creditNote.GetViewByID(ID, YearCode, Mode);
                 model.Mode = Mode;
                 model.ID = ID;
@@ -66,7 +68,7 @@ namespace eTactWeb.Controllers
             };
 
             model.AccCreditNoteAgainstBillDetails = model.AccCreditNoteAgainstBillDetails == null ? new List<AccCreditNoteAgainstBillDetail>() : model.AccCreditNoteAgainstBillDetails;
-            HttpContext.Session.SetString("KeySaleBillGrid", JsonConvert.SerializeObject(model.ItemDetailGrid));
+            HttpContext.Session.SetString("KeyCreditNoteGrid", JsonConvert.SerializeObject(model.ItemDetailGrid));
             HttpContext.Session.SetString("KeyCreditNotePopupGrid", JsonConvert.SerializeObject(model.AccCreditNoteAgainstBillDetails));
             HttpContext.Session.SetString("KeyAdjGrid", JsonConvert.SerializeObject(model.adjustmentModel == null ? new AdjustmentModel() : model.adjustmentModel));
             HttpContext.Session.SetString("KeyTaxGrid", JsonConvert.SerializeObject(model.TaxDetailGridd == null ? new List<TaxModel>() : model.TaxDetailGridd));
@@ -567,13 +569,13 @@ namespace eTactWeb.Controllers
                     Item.CreditNoteVoucherNo,
                     Item.AgainstSaleBillBillNo,
                     Item.AgainstSaleBillYearCode,
-                    Item.AgainstSaleBillDate == null ? string.Empty : (Item.AgainstSaleBillDate.Split(" ")[0]),
+                    FormatDateOrEmpty(Item.AgainstSaleBillDate),
                     Item.AgainstSaleBillEntryId,
                     Item.AgainstSaleBillVoucherNo,
                     Item.SaleBillType == null ? string.Empty : Item.SaleBillType,
                     Item.AgainstPurchaseBillBillNo,
                     Item.AgainstPurchaseBillYearCode,
-                    Item.AgainstPurchaseBillDate == null ? string.Empty : (Item.AgainstPurchaseBillDate.Split(" ")[0]),
+                    FormatDateOrEmpty(Item.AgainstPurchaseBillDate),
                     Item.AgainstPurchaseBillEntryId,
                     Item.AgainstPurchaseVoucherNo,
                     Item.PurchaseBillType == null ? string.Empty : Item.SaleBillType,
@@ -589,14 +591,14 @@ namespace eTactWeb.Controllers
                     Item.ItemSize == null ? string.Empty : Item.ItemSize,
                     Item.Amount,
                     Item.PONO == null ? string.Empty : Item.PONO,
-                    Item.PODate == null ? string.Empty :(Item.PODate.Split(" ")[0]),
+                    FormatDateOrEmpty(Item.PODate),
                     Item.POEntryId,
                     Item.POYearCode,
                     Item.PoRate,
                     Item.PoAmmNo == null ? string.Empty : Item.PoAmmNo,
                     Item.SONO == null ? string.Empty : Item.SONO,
                     Item.SOYearCode,
-                    Item.SODate == null ? string.Empty : (Item.SODate.Split(" ")[0]),
+                    FormatDateOrEmpty(Item.SODate),
                     Item.CustOrderNo == null ? string.Empty : Item.CustOrderNo,
                     Item.SOEntryId,
                     Item.BatchNo == null ? string.Empty : Item.BatchNo,

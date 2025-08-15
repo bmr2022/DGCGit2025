@@ -124,7 +124,21 @@ public static class CommonFunc
         }
     }
 
+    public static  string FormatDateOrEmpty(string? date)
+    {
+        if (string.IsNullOrWhiteSpace(date))
+            return string.Empty;
 
+        if (DateTime.TryParse(date, out DateTime parsedDate))
+        {
+            if (parsedDate.Date == new DateTime(1900, 1, 1) || parsedDate.Date == DateTime.MinValue)
+                return string.Empty;
+
+            return ParseFormattedDate(date);
+        }
+
+        return string.Empty; // In case parsing fails
+    }
 
 
     public static string ParseFormattedDateForView(string dateString)
