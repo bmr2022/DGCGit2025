@@ -270,6 +270,7 @@
                 data: { SummaryDetail: $('#SummaryDetail').val(), WONO: $('#WONO').val(), CC: $('#CC').val(), SONO: $('#SONO').val(), SchNo: $('#SchNo').val(), AccountName: $('#AccountName').val(), PartCode: $('#PartCode').val(), ItemName: $('#ItemName').val(), FromDate: $('#FromDate').val(), ToDate: $('#ToDate').val() },
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);

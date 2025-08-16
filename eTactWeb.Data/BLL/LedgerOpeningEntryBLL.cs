@@ -22,7 +22,10 @@ namespace eTactWeb.Data.BLL
             _LedgerOpeningEntryDAL = new LedgerOpeningEntryDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _LedgerOpeningEntryDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> GetLedgersByGroup(string groupAccountCode)
         {
             return await _LedgerOpeningEntryDAL.GetLedgersByGroup( groupAccountCode);

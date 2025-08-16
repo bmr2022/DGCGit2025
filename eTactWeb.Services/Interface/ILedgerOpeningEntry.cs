@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface ILedgerOpeningEntry
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> GetGroupByAccountCode(int AccountCode); 
         Task<ResponseResult> GetAmountAndType(int AccountCode, int OpeningForYear, string ActualEntryDate);
         Task<ResponseResult> GetLedgersALLGroup();
