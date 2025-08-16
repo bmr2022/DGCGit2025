@@ -22,7 +22,11 @@ namespace eTactWeb.Data.BLL
 			_MachineGroupMasterDAL = new MachineGroupMasterDAL(config, dataLogicDAL, connectionStringService);
 			_DataLogicDAL = dataLogicDAL;
 		}
-		public async Task<ResponseResult> FillMachineGroup()
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _MachineGroupMasterDAL.GetFormRights(ID);
+        }
+        public async Task<ResponseResult> FillMachineGroup()
 		{
 			return await _MachineGroupMasterDAL.FillMachineGroup();
 		}
