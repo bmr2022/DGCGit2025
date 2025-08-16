@@ -27,6 +27,27 @@ namespace eTactWeb.Data.DAL
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
         }
+        public async Task<ResponseResult> GetFormRights(int userId)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
+                SqlParams.Add(new SqlParameter("@EmpId", userId));
+                SqlParams.Add(new SqlParameter("@MainMenu", "CostCenter Master"));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+
         public async Task<ResponseResult> FillCostCenterID()
         {
             var _ResponseResult = new ResponseResult();

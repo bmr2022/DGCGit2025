@@ -23,6 +23,10 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = dataLogicDAL;
 
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _CostCenterMasterDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> FillCostCenterID()
         {
             return await _CostCenterMasterDAL.FillCostCenterID();
