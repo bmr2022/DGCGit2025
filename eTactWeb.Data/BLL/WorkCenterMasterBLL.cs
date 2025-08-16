@@ -27,6 +27,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _WorkCenterMasterDAL.GetDashboardData(model);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _WorkCenterMasterDAL.GetFormRights(ID);
+        }
 
         public async Task<ResponseResult> SaveData(WorkCenterMasterModel model)
         {

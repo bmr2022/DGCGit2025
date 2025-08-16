@@ -16,5 +16,7 @@ namespace eTactWeb.Services.Interface
         Task<WorkCenterMasterModel> GetDashboardData(WorkCenterMasterModel model);
         Task<ResponseResult> SaveData(WorkCenterMasterModel model);
         Task<ResponseResult> DeleteMachine(string WorkCenterDescription);
+        Task<ResponseResult> GetFormRights(int uId);
+
     }
 }
