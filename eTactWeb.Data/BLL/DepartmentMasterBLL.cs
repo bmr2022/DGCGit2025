@@ -22,7 +22,10 @@ namespace eTactWeb.Data.BLL
             _DepartmentMasterDAL = new DepartmentMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _DepartmentMasterDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> FillDeptType()
         {
             return await _DepartmentMasterDAL.FillDeptType();

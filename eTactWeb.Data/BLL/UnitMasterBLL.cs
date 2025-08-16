@@ -22,7 +22,10 @@ namespace eTactWeb.Data.BLL
             _UnitMasterDAL = new UnitMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _UnitMasterDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> SaveUnitMaster(UnitMasterModel model)
         {
             return await _UnitMasterDAL.SaveUnitMaster(model);

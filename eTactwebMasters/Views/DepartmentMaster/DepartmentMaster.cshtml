@@ -196,7 +196,7 @@
 
 
         $(document).ready(function () {
-
+            GetFormRights();
             $('#DeptType').rules("remove", "required");
             $('#DeptType').select2();
             // if ($('#SaleBillNo').val() === "") { // Assuming an input field for Center Name
@@ -218,6 +218,41 @@
 
         });
 
+        function GetFormRights() {
+
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        console.log(obj);
+                        var optAll = obj.Result.Table[0].OptAll;
+                        var optSave = obj.Result.Table[0].OptSave;
+                        var optUpdate = obj.Result.Table[0].OptUpdate;
+                        var optDelete = obj.Result.Table[0].OptDelete;
+                        var optView = obj.Result.Table[0].OptView;
+                        if (!optAll) {
+                            if (!optSave) {
+                                $(".submitBTN").prop("disabled", true);
+                            }
+                            if (!(optUpdate || optDelete || optView)) {
+                                $(".DashBoard")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+            calculateSumAndSetValues();
+        }
 
         if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
             FillDeptID();

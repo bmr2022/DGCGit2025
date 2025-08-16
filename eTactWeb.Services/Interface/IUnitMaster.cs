@@ -16,5 +16,7 @@ namespace eTactWeb.Services.Interface
 
         Task<UnitMasterModel> GetViewByID(String Unit_Name);
         Task<ResponseResult> DeleteByID(String Unit_Name);
+        Task<ResponseResult> GetFormRights(int uId);
+
     }
 }

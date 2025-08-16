@@ -26,6 +26,13 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IUnitMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> UnitMaster(string Unit_Name, string Mode, string UnitDetail, string CC,String Round_Off)
