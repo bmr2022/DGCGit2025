@@ -61,7 +61,7 @@ public class DirectPurchaseBillDAL
             var SqlParams = new List<dynamic>();
             SqlParams.Add(new SqlParameter("@Flag", "GetRights"));
             SqlParams.Add(new SqlParameter("@EmpId", userId));
-            SqlParams.Add(new SqlParameter("@MainMenu", "PO"));
+            SqlParams.Add(new SqlParameter("@MainMenu", "Direct Purchase Bill"));
 
             _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
         }

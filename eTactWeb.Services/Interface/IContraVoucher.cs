@@ -17,6 +17,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillCostCenterName();
         Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate);
         Task<ResponseResult> FillCurrency();
+        Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
         Task<ResponseResult> SaveContraVoucher(ContraVoucherModel model, DataTable GIGrid);
         Task<ResponseResult> GetDashBoardData(string FromDate, string ToDate);

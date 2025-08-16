@@ -25,6 +25,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _JournalVoucherDAL.FillLedgerName(VoucherType, Type);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _JournalVoucherDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> FillSubVoucherName(string VoucherType)
         {
             return await _JournalVoucherDAL.FillSubVoucherName(VoucherType);

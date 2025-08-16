@@ -25,6 +25,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleRejectionDAL.FillSaleRejectionGrid(mrnNo, mrnEntryId, mrnYC,yearCode);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _SaleRejectionDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> FillCustomerName(string fromDate, string toDate)
         {
             return await _SaleRejectionDAL.FillCustomerName(fromDate, toDate);

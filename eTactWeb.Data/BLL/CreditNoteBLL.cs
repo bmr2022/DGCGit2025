@@ -51,6 +51,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _creditNoteDAL.GetCostCenter();
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _creditNoteDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> SaveCreditNote(AccCreditNoteModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable DTAgainstBillDetail)
         {
             return await _creditNoteDAL.SaveCreditNote(model, SBGrid, TaxDetailDT, DrCrDetailDT, AdjDetailDT,DTAgainstBillDetail);

@@ -29,6 +29,7 @@ namespace eTactwebAccounts.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
+        
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
         {
             string my_connection_string;
@@ -49,6 +50,13 @@ namespace eTactwebAccounts.Controllers
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
             webReport.Report.Refresh();
             return View(webReport);
+        }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _ICashPayment.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
         [Route("{controller}/Index")]
         [HttpGet]

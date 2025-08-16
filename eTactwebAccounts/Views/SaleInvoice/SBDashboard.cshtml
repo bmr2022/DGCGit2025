@@ -10,7 +10,7 @@
             <h5>
                 Sale Bill - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-action="SaleInvoice" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" onclick="location.href=$('form')[0].action">
+                    <a asp-action="SaleInvoice" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn" onclick="location.href=$('form')[0].action">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Add New
                     </a>
@@ -211,7 +211,6 @@
             }
              
             GetSearchData();
-
             sessionStorage.removeItem('FromDateBack');
             sessionStorage.removeItem('ToDateBack');
             sessionStorage.removeItem('PartCodeBack');
@@ -230,7 +229,111 @@
             $('#PartCode').rules('remove', 'required');
 
         });
+                  function GetFormRights() {
 
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                async:false,
+                success: function (data) {
+
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#viewCursorDiv-' + i).empty();
+                                $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                                                <span class="fa-stack">
+                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                </span>
+                                                                                            </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#editCursorDiv-' + i).empty();
+                                $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
+                            }
+                            for (var i = 0; i < rowCounter; i++) {
+                                $('#deleteCursorDiv-' + i).empty();
+                                $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                                                        <span class="fa-stack">
+                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                            <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                                                        </span>
+                                                                                                    </a>`);
+                            }
+                            $("#divDashboardGrid").css("display", "none");
+                            $(".totalrows").css("display", "none");
+                            $("#SParam").hide();
+                        }else{
+
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            var rowCounter = $('#divDashboardGrid tr').length;
+                            if (!optAll) {
+                                if (!optSave) {
+
+                                    $("#savebtn").css("pointer-events", "none");
+                                }else{
+                                    $("#savebtn").css("pointer-events", "");
+                                }
+                                if (!optView) {
+
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#viewCursorDiv-' + i).empty();
+                                        $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
+                                    }
+                                }
+                                if (!optUpdate) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#editCursorDiv-' + i).empty();
+                                        $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
+                                    }
+                                }
+                                if (!optDelete) {
+                                    for (var i = 0; i < rowCounter; i++) {
+                                        $('#deleteCursorDiv-' + i).empty();
+                                        $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
+                                    }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
         function GetServerDate() {
             $.ajax({
                 type: "GET",
@@ -458,6 +561,7 @@
                 data: formData,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
+                      GetFormRights();
                     CheckInv();
                     YearEditDeleteRight();
                 },
@@ -486,6 +590,7 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
+                     GetFormRights();
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                 }

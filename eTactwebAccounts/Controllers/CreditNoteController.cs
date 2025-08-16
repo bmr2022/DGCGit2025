@@ -363,7 +363,13 @@ namespace eTactWeb.Controllers
                 //return View(model);
             }
         }
-
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _creditNote.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         [HttpGet]
         [Route("{controller}/Dashboard")]
         public async Task<IActionResult> CNDashboard()

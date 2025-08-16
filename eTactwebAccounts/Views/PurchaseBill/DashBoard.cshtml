@@ -12,7 +12,7 @@
             <h5>
                 PURCHASE BILL - <strong>Dashboard</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
-                    <a asp-controller="PurchaseBill" asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient">
+                    <a asp-controller="PurchaseBill" asp-action="PurchaseBillList" class="btn btn-sm btn-outline-light bg-gradient" id="savebtn">
                         <i class="fa fa-plus-circle fafw fa-lg" aria-hidden="true"></i>
                         Pend Purchase Bill
                     </a>
@@ -48,7 +48,6 @@
 {
     <script>
         $(function () {
-            GetFormRights();
             LockedFinancialYear();
             CheckApprovedOrNot();
             var currentDate = new Date();
@@ -139,6 +138,7 @@
                 $('#search-box').val(GlobalSearchBack);
             }
             GetSearchData();
+               GetFormRights();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
 
             sessionStorage.removeItem('FromDateBack');
@@ -191,25 +191,26 @@
             }
         }
 
-        function GetFormRights() {
+           function GetFormRights() {
 
             $.ajax({
                 url: "@Url.Action("GetFormRights")",
                 type: "POST",
+                async:false,
                 success: function (data) {
-                    if (data != null) {
 
+                    if (data != null) {
                         var obj = $.parseJSON(data);
                         if (obj.Result.Table.length == 0) {
                             var rowCounter = $('#divDashboardGrid tr').length;
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#viewCursorDiv-' + i).empty();
                                 $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                        <span class="fa-stack">
-                                                                                                            <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                            <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                        </span>
-                                                                                                    </a>`);
+                                                                                                <span class="fa-stack">
+                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                                                </span>
+                                                                                            </a>`);
                             }
                             for (var i = 0; i < rowCounter; i++) {
                                 $('#editCursorDiv-' + i).empty();
@@ -229,9 +230,11 @@
                                                                                                         </span>
                                                                                                     </a>`);
                             }
-                        } else {
+                            $("#divDashboardGrid").css("display", "none");
+                            $(".totalrows").css("display", "none");
+                            $("#SParam").hide();
+                        }else{
 
-                            console.log(obj);
                             var optAll = obj.Result.Table[0].OptAll;
                             var optSave = obj.Result.Table[0].OptSave;
                             var optUpdate = obj.Result.Table[0].OptUpdate;
@@ -239,39 +242,50 @@
                             var optView = obj.Result.Table[0].OptView;
                             var rowCounter = $('#divDashboardGrid tr').length;
                             if (!optAll) {
+                                if (!optSave) {
+
+                                    $("#savebtn").css("pointer-events", "none");
+                                }else{
+                                    $("#savebtn").css("pointer-events", "");
+                                }
                                 if (!optView) {
 
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#viewCursorDiv-' + i).empty();
                                         $('#viewCursorDiv-' + i).append(`<a class="table-link link-success noCursor" id="viewNoCursor"">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
                                     }
                                 }
                                 if (!optUpdate) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#editCursorDiv-' + i).empty();
                                         $('#editCursorDiv-' + i).append(`<a class="table-link link-primary noCursor">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
                                     }
                                 }
                                 if (!optDelete) {
                                     for (var i = 0; i < rowCounter; i++) {
                                         $('#deleteCursorDiv-' + i).empty();
                                         $('#deleteCursorDiv-' + i).append(`<a class="table-link link-danger noCursor">
-                                                                                                <span class="fa-stack">
-                                                                                                    <i class="fa fa-square fa-stack-2x"></i>
-                                                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
-                                                                                                </span>
-                                                                                            </a>`);
+                                                                <span class="fa-stack">
+                                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                                    <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
+                                                                </span>
+                                                            </a>`);
                                     }
+                                }
+                                if (!(optUpdate || optDelete || optView)) {
+                                    $("#divDashboardGrid").css("display", "none");
+                                    $(".totalrows").css("display", "none");
+                                    $("#SParam").hide();
                                 }
                             }
                         }
@@ -336,8 +350,10 @@
         function GetSearchData() {
             if ($('#DashboardType').val() == "Summary") {
                 GetSummaryData();
+                   GetFormRights();
             } else {
                 GetDetailData();
+                   GetFormRights();
             }
         }
 
@@ -349,6 +365,7 @@
                 success: function (data) {
                     LockedFinancialYear();
                     $('#divDashboardGrid').empty().append(data);
+                      GetFormRights();
                     CheckApprovedOrNot();
                     var dashGrid = $('#PBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
@@ -384,7 +401,9 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
+
                     $('#totalRows').text($('#gateDashboardtable tr').length);
+                      GetFormRights();
                     //countAllTotal();
                 }
             });
@@ -401,6 +420,8 @@
 
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(data);
+                      GetFormRights();
+
                     $('#totalRows').text($('#gateDashboardtable tr').length);
                     //countAllTotal();
                 },
@@ -418,9 +439,12 @@
                 success: function (data) {
                     LockedFinancialYear();
                     $('#divDashboardGrid').empty().append(data);
+             
                     CheckApprovedOrNot();
                     var dashGrid = $('#PBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
+
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -442,6 +466,8 @@
                     CheckApprovedOrNot();
                     var dashGrid = $('#PBDashboardGrid tr').length - 1;
                     $('#totalRows').text(dashGrid);
+                      GetFormRights();
+
                 },
                 error: function (response) {
                     alert(response.responseText);

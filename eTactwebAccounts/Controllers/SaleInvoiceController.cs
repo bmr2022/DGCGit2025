@@ -71,7 +71,13 @@ namespace eTactWeb.Controllers
             return PartialView("_SaleBillGroupWiseItems", model);
 
         }
-
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _SaleBill.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> getdiscCategoryName(int Group_Code, int AccountCode)
         {
             ResponseResult JsonString = await _SaleBill.getdiscCategoryName(Group_Code, AccountCode);

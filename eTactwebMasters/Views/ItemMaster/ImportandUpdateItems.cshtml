@@ -4,7 +4,12 @@
     ViewData["Title"] = Model.Item_Code == 0 ? "Item Master" : "Update/Edit Item Master";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
-
+<style>
+    #selecteditemtable tbody tr:hover td {
+        background-color: #2E7D32;
+        color: #fff; /* optional: makes text readable on cyan */
+    }
+</style>
 <div class="rounded shadow-lg">
     <form enctype="multipart/form-data" autocomplete="off" class="form-horizontal">
         @Html.AntiForgeryToken()
@@ -21,14 +26,7 @@
                         Dashboard
                         </a>*@
                       
-                        <div class="col-auto">
-                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                            <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
-                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                IMPORT
-                            </a>
-                        </div>
+                        
                         <div class="row justify-content-between g-2">
                             <div class="col-auto">
                                 @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
@@ -68,9 +66,9 @@
                 <div class="accordion shadow-lg" id="SelectedParameter">
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="H1_BasicParameter">
-                            <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B1_BasicParameter" aria-expanded="true" aria-controls="B1_BasicParameter">
+                            <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B1_BasicParameter" aria-expanded="true" aria-controls="B1_BasicParameter">
                                 <strong style="text-transform:uppercase">
-                                    <i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic Parameter
+                                    <i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Update Selected Parameter
                                 </strong>
 
                                
@@ -78,6 +76,7 @@
                             <div class="d-flex gap-2 align-items-center ms-3">
                                 <select id="columnSelector" class="form-select form-select-sm w-auto" onchange="toggleColumn()">
                                     <option value="">-- Select Column --</option>
+                                    <option value="">-- Show All --</option>
                                     <option value="price">Price</option>
                                     <option value="hsncode">HSNCODE</option>
                                     <option value="store">Store</option>
@@ -86,19 +85,15 @@
                                     <option value="productiondetail">ProductionDetail</option>
                                 </select>
                                 </div>
-                            <div class="col-sm-auto d-flex gap-2 align-items-center ms-3">
-                                <a class="btn btn-secondary btn-sm" onclick="exportTableToExcel()">
-                                    <i class="fa-solid fa-upload fa-fw fa-lg"></i> EXCEL
-                                </a>
-                            </div>
+                           
                         </h2>
                         <div id="B1_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H1_BasicParameter">
                             <div class="accordion-body">
                                 <div class="card">
                                     <div class="card-body overflow-auto pb-0">
                                         <div class="table-responsive" style="max-height:350px;">
-                                            <table class="table table-hover table-bordered table-striped" id="selecteditemtable" border="1">
-                                                <thead class="bg-gradient card-headerBG text-light small" id="ItemHead1" style="white-space:nowrap;position: sticky;top: 0;z-index: 10;">
+                                            <table class="table table-hover table-bordered table-striped" style=""id="selecteditemtable" border="1">
+                                                <thead class="bg-gradient card-headerBG text-light small" style="background-color:#2E7D32" id="ItemHead1" style="white-space:nowrap;position: sticky;top: 0;z-index: 10;">
                                                     <tr id="headerRow">
                                                         <th>Sr</th>
                                                         <th>Item_Code</th>
@@ -136,9 +131,28 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <center>
-                                        <input class="form-control" type="file" id="ExcelFile1" />
-                                    </center>
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <div>
+                                            <button type="button" class="btn btn-secondary btn-sm" onclick="exportTableToExcel()">
+                                                <i class="fa-solid fa-upload me-1"></i> Export Excel
+                                            </button>
+                                        </div>
+                                        <!-- File input -->
+                                        <div>
+                                            <input type="file" class="form-control form-control-sm" id="ExcelFile1" />
+                                        </div>
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                                IMPORT FORMAT
+                                            </a>
+                                        </div>
+                                        <!-- Upload button -->
+                                     
+                                    </div>
+
                                 </div>
                             </div>
                         </div>
@@ -150,7 +164,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="H_BasicParameter">
                             <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_BasicParameter">
-                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Basic Parameter</strong>
+                                <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Update All Parameter</strong>
                             </button>
                         </h2>
                         <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
@@ -245,9 +259,17 @@
                                             </table>
                                         </div>
                                     </div>
-                                    <center>
+                                    <div class="d-flex align-items-center gap-3 mb-3">
                                         <input class="form-control" type="file" id="ExcelFile" />
-                                    </center>
+                                        <div class="col-auto">
+                                            @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+                                            <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
+                                                @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+                                                <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
+                                                IMPORT
+                                            </a>
+                                        </div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -272,14 +294,7 @@
                                     Dashboard
                                     </a>*@
                                  
-                                    <div class="col-auto">
-                                        @*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-                                        <a class="btn btn-secondary btn-sm" onclick="UploadButton();">
-                                            @* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-                                            <i class="fa-solid fa-file-import" style="--fa-secondary-color: crimson; --fa-secondary-opacity: 1.0;"></i>
-                                            IMPORT
-                                        </a>
-                                    </div>
+                                  
                                     <div class="row justify-content-between g-2">
                                         <div class="col-auto">
                                             @*<a href="#" class="btn offer-listbtn hvr-sweep-to-right btn-sm btn-secondary" onclick="back();">*@
@@ -343,7 +358,33 @@
                 document.querySelectorAll('.col-' + selected).forEach(el => el.style.display = '');
             }
         }
-               function exportTableToExcel() {
+               let isFirstLoad = true; // track first time
+
+        $("#columnSelector").on("change", function () {
+            let selected = $(this).val();
+
+            if (selected) {
+                if (!isFirstLoad) {
+                    toggleColumn();
+                } else {
+                    $("#ajaxLoader").show();
+                    $.ajax({
+                        url: '@Url.Action("GetUpdateandImportDashBoardData", "ItemMaster")',
+                        type: "GET",
+                        data: { Flag: selected },
+                        success: function (data) {
+                            $("#divItemList1").html(data);
+                            toggleColumn();
+                            isFirstLoad = false;
+                        },
+                        complete: function () {
+                            $("#ajaxLoader").hide();
+                        }
+                    });
+                }
+            }
+        });
+            function exportTableToExcel() {
             var selectedColumn = document.getElementById("columnSelector").value;
             window.location.href = '/ItemMaster/ExportSelectedItemToExcel?flag=' + selectedColumn;
         }
@@ -640,6 +681,7 @@
         },
                 success: function (data, status, xhr) {
                      $('#ajaxLoader').hide();
+                     $.notify("Data Update Successfully!!", "info");
                   if (data && (data.statusCode === 200 || data.statusCode === 202 )) {
                window.location.href = data.RedirectUrl;
             } else {

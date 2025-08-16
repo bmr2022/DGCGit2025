@@ -534,13 +534,16 @@ namespace eTactWeb.Data.DAL
                 DateTime? dojDt = new DateTime();
                 DateTime? dorDt = new DateTime();
                 DateTime? dobDt = new DateTime();
+                DateTime? DateOfProbation = new DateTime();
+                DateTime? DateOfConfirm = new DateTime();
 
                 entDt = ParseDate(model.EntryDate);
                 dojDt = ParseDate(model.DateOfJoining);
                 dorDt = ParseDate(model.DateOfResignation);
                 dobDt = ParseDate(model.DOB);
-
-
+                DateOfProbation = ParseDate(model.ProbationStartDate);
+                DateOfConfirm = ParseDate(model.DateOfConfirmation);
+               
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
                     SqlCommand oCmd = new SqlCommand("HREmployeeMaster", myConnection)
@@ -643,9 +646,9 @@ namespace eTactWeb.Data.DAL
                         //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.JObShift);
                         //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.EmpGrade);
                         oCmd.Parameters.AddWithValue("@ProbationPeriod", model.JobProbationPeriod);
-                        oCmd.Parameters.AddWithValue("@DateOfProbation", model.ProbationStartDate);
+                        oCmd.Parameters.AddWithValue("@DateOfProbation", DateOfProbation);
                         //oCmd.Parameters.AddWithValue("@FixSalaryAmount", model.ProbationEndDate);
-                        oCmd.Parameters.AddWithValue("@DateOfConfirm", model.DateOfConfirmation);
+                        oCmd.Parameters.AddWithValue("@DateOfConfirm", DateOfConfirm);
                         oCmd.Parameters.AddWithValue("@Referance1", model.JobReference1);
                         oCmd.Parameters.AddWithValue("@Referencetwo", model.JobReference2);
                         oCmd.Parameters.AddWithValue("@Through", model.JoiningThrough);

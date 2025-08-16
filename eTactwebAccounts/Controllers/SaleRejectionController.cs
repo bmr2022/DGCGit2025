@@ -71,7 +71,14 @@ namespace eTactWeb.Controllers
         //    string JsonString = JsonConvert.SerializeObject(SAGrid);
         //    return Json(JsonString);
         //}
-
+     
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _saleRejection.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         [HttpGet]
         public async Task<IActionResult> SaleRejectionEdit(int ID, string Mode, int YearCode)
         {

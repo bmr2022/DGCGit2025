@@ -28,7 +28,14 @@ namespace eTactwebAccounts.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
-		public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IContraVoucher.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string VoucherName = "")
 		{
 			string my_connection_string;
 			string contentRootPath = _IWebHostEnvironment.ContentRootPath;

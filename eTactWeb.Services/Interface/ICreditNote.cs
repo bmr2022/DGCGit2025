@@ -14,6 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillCreditNotePopUp(string againstSalePurchase, string fromBillDate, string toBillDate,int itemCode, int accountCode, int yearCode,string showAllBill);
         Task<ResponseResult> FillItems(string fromSaleBillDate, string toSaleBillDate,int accountCode, string showAllItems);
         Task<ResponseResult> GetCostCenter();
+        Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> SaveCreditNote(AccCreditNoteModel model, DataTable SBGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT,DataTable DTAgainstBillDetail);
         Task<ResponseResult> GetDashboardData(string summaryDetail,string fromdate, string toDate);
         Task<ResponseResult> DeleteByID(int ID, int YC,int accountCode, string machineName);

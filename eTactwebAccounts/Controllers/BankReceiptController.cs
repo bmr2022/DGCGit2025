@@ -161,6 +161,13 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IBankReceipt.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         private static DataTable GetDetailTable(IList<BankReceiptModel> DetailList)
         {
             try

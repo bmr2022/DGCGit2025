@@ -15,6 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillIntrument(string VoucherType);
         Task<ResponseResult> FillModeofAdjust(string VoucherType);
         Task<ResponseResult> FillCostCenterName();
+        Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> FillEntryID(int YearCode, string VoucherDate);
         Task<ResponseResult> FillCurrency();
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);

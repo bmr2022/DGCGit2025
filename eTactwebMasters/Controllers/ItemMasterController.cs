@@ -25,6 +25,8 @@ using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
+using Microsoft.AspNetCore.Http.HttpResults;
+using DocumentFormat.OpenXml.EMMA;
 
 namespace eTactWeb.Controllers;
 
@@ -883,13 +885,27 @@ public class ItemMasterController : Controller
         var model = new ItemMasterModel();
         model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
-        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HSNNO, UniversalPartCode, Flag);
+        //model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HSNNO, UniversalPartCode, Flag);
 
-        HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(model.MasterList));
+        //HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(model.MasterList));
 
         return View(model);
     }
-
+    public async Task<IActionResult> GetUpdateandImportDashBoardData()
+    {
+        string? Item_Name = "";
+        string? PartCode = "";
+        string? ParentCode = "";
+        string? ItemType = "";
+        string? HSNNO = "";
+        string? UniversalPartCode = "";
+        string? Flag = "";
+         var model = new ItemMasterModel();
+        model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+        model.MasterList = await _IItemMaster.GetDashBoardData(Item_Name, PartCode, ParentCode, ItemType, HSNNO, UniversalPartCode, Flag);
+        HttpContext.Session.SetString("KeyItemListSearch", JsonConvert.SerializeObject(model.MasterList));
+        return PartialView("_DisplayExcelselectedItemData", model);
+    }
 
     [HttpPost]
     public async Task<IActionResult> UpdateUploadExcel(IFormFile excelFile)
@@ -1919,6 +1935,8 @@ public class ItemMasterController : Controller
             var worksheet = package.Workbook.Worksheets[0];
             var dupeItemNameFeatureOpt = _IItemMaster.GetFeatureOption();
             var UnitList = _IItemMaster.GetUnitList();
+            Dictionary<string, int> partCodeTracker = new Dictionary<string, int>();
+
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var cellValue = worksheet.Cells[row, 2].Value;
@@ -2064,22 +2082,49 @@ public class ItemMasterController : Controller
 
                 int GetCellIntValue(ExcelWorksheet sheet, int r, int c) =>
                     int.TryParse(sheet.Cells[r, c].Value?.ToString().Trim(), out int result) ? result : 0;
+               // string PcValue = GetCellValue(worksheet, row, 1);
+               // string newPartCode ="";
+               //if (string.IsNullOrEmpty(PcValue))
+               // {
+               //     var result = GetPartCode(itemGCode, itemCCode);
 
-                var result =  GetPartCode(itemGCode, itemCCode);
+               //     var partCodeResult = (result.Result.Value != null) ? result.Result.Value.ToString() : string.Empty;
+               //     using JsonDocument doc = JsonDocument.Parse(partCodeResult);
+               //     JsonElement root = doc.RootElement;
 
-                var partCodeResult = (result.Result.Value != null) ? result.Result.Value.ToString() : string.Empty;
-                using JsonDocument doc = JsonDocument.Parse(partCodeResult);
-                JsonElement root = doc.RootElement;
+               //     string dbCode = doc.RootElement
+               //           .GetProperty("Result")
+               //           .GetProperty("Table")[0]
+               //           .GetProperty("partcode")
+               //           .GetString();  // Example: "1ASS78589"
 
-                string partCodestring = root.GetProperty("Result")  .GetProperty("Table")[0].GetProperty("partcode").GetString();
-                string PcValue = GetCellValue(worksheet, row, 1);
+               //     // Split numeric suffix
+               //     string numberPart = new string(dbCode.Reverse().TakeWhile(char.IsDigit).Reverse().ToArray());
+               //     string prefix = dbCode.Substring(0, dbCode.Length - numberPart.Length);
 
-               var PC = !string.IsNullOrEmpty(PcValue)? PcValue : (featureOption != null && featureOption.AllowPartCode == false? partCodestring  : PcValue);
+               //     int lastNum = string.IsNullOrEmpty(numberPart) ? 0 : int.Parse(numberPart);
 
+               //     if (!partCodeTracker.ContainsKey(prefix))
+               //     {
+               //         partCodeTracker[prefix] = lastNum;
+               //     }
+               //     else
+               //     {
+               //         partCodeTracker[prefix]++;
+               //     }
+
+               //      newPartCode = prefix + partCodeTracker[prefix];
+               // }
+              
+               // // If Excel already has a PartCode, use it; else use generated
+               
+               // string finalPartCode = !string.IsNullOrEmpty(PcValue) ? PcValue : newPartCode;
+
+            
                 data.Add(new ItemViewModel()
                 {
-                   PartCode= PC,
-                    //PartCode = GetCellValue(worksheet, row, 1),
+                  // PartCode= finalPartCode,
+                    PartCode = GetCellValue(worksheet, row, 1),
                     PartCodeExists = PartCodeExists,
                     ItemNameExists = ItemNameExists,
                     ItemName = GetCellValue(worksheet, row, 2),

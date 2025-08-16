@@ -22,6 +22,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _SaleBillDAL.ShowPendingSaleorderforBill( Flag,  CurrentYear,  FromDate,  Todate,  InvoiceDate,  BillFromStoreId,  accountCode);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _SaleBillDAL.GetFormRights(ID);
+        }
         public async Task<SaleBillModel> ShowGroupWiseItems(int Group_Code, int AccountCode, int storeid)
         {
             return await _SaleBillDAL.ShowGroupWiseItems(Group_Code, AccountCode,storeid);

@@ -23,6 +23,10 @@ namespace eTactWeb.Data.BLL
             _ContraVoucherDAL = new ContraVoucherDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _ContraVoucherDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> FillLedgerName(string VoucherType, string Type)
         {
             return await _ContraVoucherDAL.FillLedgerName(VoucherType, Type);

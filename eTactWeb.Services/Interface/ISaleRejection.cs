@@ -10,6 +10,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData(string summaryDetail, string custInvoiceNo, string custName, string mrnNo, string gateNo, string partCode, string itemName, string againstBillNo, string docName, string voucherNo, string fromdate, string toDate);
         Task<SaleRejectionModel> GetViewByID(int ID, string Mode, int YC);
         Task<ResponseResult> FillCustomerName(string fromDate, string toDate);
+        Task<ResponseResult> GetFormRights(int uId);
         Task<ResponseResult> FillItemName(string fromDate, string toDate);
         Task<ResponseResult> FillPartCode(string fromDate, string toDate);
         Task<ResponseResult> FillInvoiceNo(string fromDate, string toDate);

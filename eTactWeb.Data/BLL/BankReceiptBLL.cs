@@ -38,6 +38,11 @@ namespace eTactWeb.Data.BLL
         {
             return await _BankReceiptDAL.FillIntrument(VoucherType);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _BankReceiptDAL.GetFormRights(ID);
+        }
+
         public async Task<ResponseResult> FillModeofAdjust(string VoucherType)
         {
             return await _BankReceiptDAL.FillModeofAdjust(VoucherType);

@@ -26,6 +26,10 @@ namespace eTactWeb.Data.BLL
         {
             return await _CashPaymentDAL.FillLedgerName(VoucherType, Type);
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _CashPaymentDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> FillSubVoucherName(string VoucherType)
         {
             return await _CashPaymentDAL.FillSubVoucherName(VoucherType);

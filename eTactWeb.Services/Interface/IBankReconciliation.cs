@@ -14,5 +14,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetBankName(string DateFrom, string DateTo,string NewOrEdit);
         Task<ResponseResult> GetLedgerBalance(int OpeningYearCode, int AccountCode, string VoucherDate);
         public Task<BankReconciliationModel> GetDetailsData(string DateFrom, string DateTo, string chequeNo,string NewOrEdit,string Account_Code);
+        Task<ResponseResult> GetFormRights(int uId);
     }
 }
