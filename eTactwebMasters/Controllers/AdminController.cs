@@ -90,6 +90,12 @@ public class AdminController : Controller, IAsyncDisposable
         {
             HttpContext.Session.Remove("KeyUserRightsList");
         }
+        HttpContext.Session.Remove("KeyUserRightsDetail");
+    }
+    public string ClearGrid()
+    {
+        HttpContext.Session.Remove("KeyUserRightsDetail");
+        return "OK";
     }
 
     public async Task<IActionResult> UserMaster(int ID, string Mode)

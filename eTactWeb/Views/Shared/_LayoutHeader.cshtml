@@ -661,7 +661,7 @@
                                         </ul>
                                     </li>
                                      <li>
-                                        <a class="dropdown-item" id="Bank Master" href="#">Assets Master &raquo;</a>
+                                        <a class="dropdown-item" id="" href="#">Assets Master &raquo;</a>
 
                                         <ul class="submenu dropdown-menu">
                                             <li>
@@ -673,7 +673,7 @@
                                                 <a class="dropdown-item AssetsMaster" asp-action="AssetsMasterDashBoard" asp-controller="AssetsMaster">
                                                     <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                                 </a>
-                                                <input class="userRightsPermission" type="hidden" value="CostCenter Master" />
+                                                <input class="userRightsPermission" type="hidden" value="Assets Master" />
 
                                             </li>
                                         </ul>
@@ -945,27 +945,27 @@
                         @*    <ul class="submenu dropdown-menu"> *@
                         <ul class="submenu dropdown-menu" data-bs-popper="static">
                             <li>
-                                <a class="dropdown-item" id="ControlPlan" href="#" >Control plan &raquo;</a>
+                                <a class="dropdown-item" id="" href="#" >Control plan &raquo;</a>
                                 <ul class="submenu dropdown-menu dropdown-menu-end">
                                     <li>
-                                        <a class="dropdown-item" asp-action="ControlPlan" asp-route-ID="0" asp-controller="ControlPlan" id="ControlPlan">
+                                        <a class="dropdown-item" asp-action="ControlPlan" asp-route-ID="0" asp-controller="ControlPlan" id="Controlplan">
                                             <i class="fa fa-book fa-fw fa-lg" aria-hidden="true"></i> Control plan
                                         </a>
 
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item ControlPlan" asp-action="ImportControlPlann" asp-route-ID="0" asp-controller="ControlPlan">
+                                        <a class="dropdown-item Controlplan" asp-action="ImportControlPlann" asp-route-ID="0" asp-controller="ControlPlan">
                                             <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> Import Control Plan
                                         </a>
                                         <input class="userRightsPermission" type="hidden" value="Item Master" />
 
                                     </li>
                                     <li>
-                                        <a class="dropdown-item ControlPlan" asp-action="ControlPlanDashBoard" asp-controller="ControlPlan">
+                                        <a class="dropdown-item Controlplan" asp-action="ControlPlanDashBoard" asp-controller="ControlPlan">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Operation Master" />
+                                        <input class="userRightsPermission" type="hidden" value="Control plan" />
 
                                     </li>
                                 </ul>
@@ -977,11 +977,11 @@
                     </li>  @*//1 *@
                     <li>
                         @*//1 *@
-                        <a class="dropdown-item" id="Sales" href="#">Sale&raquo;</a>
+                        <a class="dropdown-item" id="" href="#">Sale&raquo;</a>
                         @*    <ul class="submenu dropdown-menu"> *@
                         <ul class="submenu dropdown-menu" >
                             <li>
-                                <a class="dropdown-item" id="DiscountCustomerCategoryMaster Discount" href="#" >Discount Customer Category Master &raquo;</a>
+                                <a class="dropdown-item" id="" href="#" >Discount Customer Category Master &raquo;</a>
                                 <ul class="submenu dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" asp-action="DiscountCustomerCategoryMaster" asp-route-ID="0" asp-controller="DiscountCustomerCategoryMaster" id="DiscountCustomerCategoryMaster">
@@ -995,13 +995,13 @@
                                         <a class="dropdown-item DiscountCustomerCategoryMaster" asp-action="DiscountCustomerCategoryMasterDashBoard" asp-controller="DiscountCustomerCategoryMaster">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Material Conversion" />
+                                        <input class="userRightsPermission" type="hidden" value="Discount Customer Category Master" />
 
                                     </li>
                                 </ul>
                             </li>
                             <li>
-                                <a class="dropdown-item" id="ControlPlan" href="#" >Party Item Group Discount &raquo;</a>
+                                <a class="dropdown-item" id="" href="#" >Party Item Group Discount &raquo;</a>
                                 <ul class="submenu dropdown-menu dropdown-menu-end">
                                     <li>
                                         <a class="dropdown-item" asp-action="PartyItemGroupDiscount" asp-route-ID="0" asp-controller="PartyItemGroupDiscount" id="PartyItemGroupDiscount">
@@ -1015,7 +1015,7 @@
                                         <a class="dropdown-item PartyItemGroupDiscount" asp-action="PartyItemGroupDiscountDashBoard" asp-controller="PartyItemGroupDiscount">
                                             <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                         </a>
-                                        <input class="userRightsPermission" type="hidden" value="Material Conversion" />
+                                        <input class="userRightsPermission" type="hidden" value="Party Item Group Discount" />
 
                                     </li>
                                 </ul>
@@ -1108,7 +1108,7 @@
                                     <a class="dropdown-item SalesPersonTransfer" asp-action="SalesPersonTransferDashBoard" asp-controller="SalesPersonTransfer" id="SalesPersonTransfer">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="Sale Order Amendment" />
+                                    <input class="userRightsPermission" type="hidden" value="Sales Person Transfer" />
 
                                 </li>
                             </ul>
@@ -1164,10 +1164,10 @@
                                     </a>
                                 </li> *@
                                 <li>
-                                    <a class="dropdown-item CustomerSaleRate" asp-action="Index" asp-controller="CustSaleNewRate" id="CustomerSaleRateDash">
+                                    <a class="dropdown-item CustomerSaleRate" asp-action="Index" asp-controller="CustSaleNewRate" id="">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="Sale Schedule Amendment" />
+                                    <input class="userRightsPermission" type="hidden" value="Customer Sale Rate" />
                                 </li>
                             </ul>
                         </li>
@@ -1466,17 +1466,17 @@
                             <ul class="submenu dropdown-menu">
 
                                 <li>
-                                    <a class="dropdown-item" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="PendingProductionSchedule">
+                                    <a class="dropdown-item" asp-action="PendingProductionSchedule" asp-controller="PendingProductionSchedule" id="IssueAgainstProdSchedule">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Pending Production Schedule
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item IssueAgainstProdScheduleDashboard" asp-action="IssueAgainstProdScheduleDashboard" asp-controller="IssueAgainstProdSchedule" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
+                                    <a class="dropdown-item IssueAgainstProdSchedule" asp-action="IssueAgainstProdScheduleDashboard" asp-controller="IssueAgainstProdSchedule" asp-route-FromDate="@DateTime.Now.AddDays(1 - DateTime.Now.Day)" asp-route-Todate="@DateTime.Today" asp-route-Flag="True">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="Work Order" />
+                                    <input class="userRightsPermission" type="hidden" value="IssueAgainstProdSchedule" />
                                
                          
                                 </li>
@@ -1523,7 +1523,7 @@
                             </ul>
                         </li>
                         <li><hr class="dropdown-divider"></li>
-                        <li>
+                       @*  <li>
                             <a class="dropdown-item" href="#">Requisition Without BOM &raquo; </a>
                             <ul class="submenu dropdown-menu">
                                 <li>
@@ -1559,7 +1559,7 @@
                                 </li>
                                 <li>
                             </ul>
-                        </li>
+                        </li> *@
                         
                         <li>
                             <a class="dropdown-item" href="#">Job Work Issue &raquo; </a>
@@ -1738,10 +1738,10 @@
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item ReceiveItemInStore" asp-action="DeassembleDashBoard" asp-controller="DeassembleItem">
+                                    <a class="dropdown-item DeassembleItem" asp-action="DeassembleDashBoard" asp-controller="DeassembleItem">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="Receive Item In Store" />
+                                    <input class="userRightsPermission" type="hidden" value="Deassemble Item" />
                                 </li>
                             </ul>
                         </li>
@@ -1873,7 +1873,7 @@
                             <a class="dropdown-item" href="#">Transfer from WC &raquo; </a>
                             <ul class="submenu dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" asp-action="PendingToTransferMaterial" asp-controller="TransferFromWorkCenter" id="TransferfromWCtoWC">
+                                    <a class="dropdown-item TransferfromWCtoWC" asp-action="PendingToTransferMaterial" asp-controller="TransferFromWorkCenter">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Pending To Transfer Material
@@ -1890,7 +1890,7 @@
                                     <a class="dropdown-item TransferfromWCtoWC" asp-action="TransferFromWorkCenterDashboard" asp-controller="TransferFromWorkCenter">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
-                                    <input class="TransferFromWc" type="hidden" value="Transfer from WC to WC" />
+                                    <input class="userRightsPermission" type="hidden" value="Transfer from WC to WC" />
                                 </li>
                             </ul>
                         </li>
@@ -1978,14 +1978,14 @@
                             <a class="dropdown-item" href="#">ReOffer Item &raquo; </a>
                             <ul class="submenu dropdown-menu">
                                 <li>
-                                    <a class="dropdown-item" asp-action="ReOfferItem" asp-controller="ReOfferItem" id="">
+                                    <a class="dropdown-item" asp-action="ReOfferItem" asp-controller="ReOfferItem" id="ReOfferItem">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         ReOffer 
                                     </a>
                                 </li>
                                 <li>
-                                    <a class="dropdown-item " asp-action="ReOfferItemDashBoard" asp-controller="ReOfferItem">
+                                    <a class="dropdown-item  ReOfferItem" asp-action="ReOfferItemDashBoard" asp-controller="ReOfferItem">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
                                     <input class="userRightsPermission" type="hidden" value="ReOfferItem" />
@@ -2022,10 +2022,10 @@
 
                                 </li>
                                 <li>
-                                    <a class="dropdown-item" asp-action="InProcessInspectionDashBoard" asp-controller="InProcessInspection">
+                                    <a class="dropdown-item InProcessInspection" asp-action="InProcessInspectionDashBoard" asp-controller="InProcessInspection">
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="PrimaryAccountGroupMaster" />
+                                    <input class="userRightsPermission" type="hidden" value="InProcessInspection" />
 
                                 </li>
                             </ul>
@@ -2139,6 +2139,7 @@
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> DashBoard
                                     </a>
                                 </li>
+                                <input class="userRightsPermission" type="hidden" value="JournalVoucher" />
                             </ul>
                         </li>
 
@@ -2155,6 +2156,7 @@
                                         <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> DashBoard
                                     </a>
                                 </li>
+                                <input class="userRightsPermission" type="hidden" value="ContraVoucher" />
                             </ul>
                         </li>
                         <li><hr class="dropdown-divider"></li>
@@ -2164,7 +2166,7 @@
                             <ul class="submenu dropdown-menu">
                                 <li>
                                     @*  <a class="dropdown-item" href="/FinancialManagement">New DPB</a> *@
-                                    <a class="dropdown-item" asp-controller="SaleInvoice" asp-action="SaleBillList">
+                                    <a class="dropdown-item SaleBill" asp-controller="SaleInvoice" asp-action="SaleBillList">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i> Sale Bill List
                                     </a>
@@ -2353,14 +2355,14 @@
                                 <input class="userRightsPermission" type="hidden" value="SaleBillRegister" />
                                 <li><hr class="dropdown-divider"></li>
 
-                                <li>
-                                    <a class="dropdown-item StockRegister" asp-action="StockRegister" asp-controller="StockRegister" id="StockRegister">
+                             @*    <li>
+                                    <a class="dropdown-item StockRegister" asp-action="StockRegister" asp-controller="StockRegister" id="">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         SO Register
                                     </a>
-                                </li>
-                                <input class="userRightsPermission" type="hidden" value="Stock Register" />
+                                </li> *@
+                                <input class="userRightsPermission" type="hidden" value="SO Register" />
 
                                 <li>
                                     <a class="dropdown-item " asp-action="SaleOrderAmendHistory" asp-controller="SaleOrderAmendHistory" id="SaleOrderAmendHistory">
@@ -2369,15 +2371,15 @@
                                         Sale Order Amend History
                                     </a>
                                 </li>
-                                <input class="userRightsPermission" type="hidden" value="SSaleOrderAmendHistory" />
+                                <input class="userRightsPermission" type="hidden" value="SaleOrderAmendHistory" />
                               <li>
-                                    <a class="dropdown-item " asp-action="SaleOrderRegister" asp-controller="SaleOrderRegister">
+                                    <a class="dropdown-item SaleOrderRegister" asp-action="SaleOrderRegister" asp-controller="SaleOrderRegister">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Sale Order Register
                                     </a>
                                 </li>
-                                <input class="userRightsPermission" type="hidden" value="Sale Order Amend History" />
+                                <input class="userRightsPermission" type="hidden" value="SaleOrderRegister" />
                             
                             </ul>
                         </li>
@@ -2541,61 +2543,63 @@
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Sale  Register
                                     </a>
+                                    <input class="userRightsPermission" type="hidden" value="SaleBillRegister" />
                                 </li>
                                 <li>
-                                    <a class="dropdown-item ReportsRequsition" asp-action="DayBook" asp-controller="DayBook">
+                                    <a class="dropdown-item DayBook" asp-action="DayBook" asp-controller="DayBook">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Day Book
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
+                                    <input class="userRightsPermission" type="hidden" value="DayBook" />
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item ReportsRequsition" asp-action="AccGroupLedger" asp-controller="AccGroupLedger">
+                                    <a class="dropdown-item AccGroupLedger" asp-action="AccGroupLedger" asp-controller="AccGroupLedger">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Group Ledger
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
+                                    <input class="userRightsPermission" type="hidden" value="AccGroupLedger" />
                                 </li>
 
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item ReportsRequsition" asp-action="TrailBalance" asp-controller="TrailBalance">
+                                    <a class="dropdown-item TrailBalance" asp-action="TrailBalance" asp-controller="TrailBalance">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Trail Balance
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
+                                    <input class="userRightsPermission" type="hidden" value="TrailBalance" />
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
 
 
                                 <li>
-                                    <a class="dropdown-item ReportsRequsition" asp-action="StockValuation" asp-controller="StockValuation" id="StockValuation">
+                                    <a class="dropdown-item StockValuation" asp-action="StockValuation" asp-controller="StockValuation" id="StockValuation">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         Stock Valuation
                                     </a>
+                                    <input class="userRightsPermission" type="hidden" value="StockValuation" />
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
                                     <a class="dropdown-item ReportsRequsition" asp-action="TransactionLedger" asp-controller="TransactionLedger">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
-                                        Transaction Ledger
+                                        TransactionLedger
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
+                                    <input class="userRightsPermission" type="hidden" value="TransactionLedger" />
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
                                 <li>
-                                    <a class="dropdown-item ReportsRequsition" asp-action="OutStanding" asp-controller="OutStanding">
+                                    <a class="dropdown-item OutStanding" asp-action="OutStanding" asp-controller="OutStanding">
                                         <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         OutStanding
                                     </a>
-                                    <input class="userRightsPermission" type="hidden" value="ReportsRequsition" />
+                                    <input class="userRightsPermission" type="hidden" value="OutStanding" />
                                 </li>
                             </ul>
                         </li>
@@ -2610,32 +2614,40 @@
                                            style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                         WIP Stock Register
                                     </a>
+                                    <input class="userRightsPermission" type="hidden" value="WIPStockRegister" />
                                 </li>
-                                <a class="dropdown-item ProductionEntry" asp-action="ProductionEntryReport" asp-controller="ProductionEntryReport">
+                                <a class="dropdown-item ProductionEntryReport" asp-action="ProductionEntryReport" asp-controller="ProductionEntryReport">
                                     <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                        style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                     Production Entry
                                 </a>
+                                <input class="userRightsPermission" type="hidden" value="ProductionEntryReport" />
                                 <a class="dropdown-item TransferMaterialReport" asp-action="TransferMaterialReport" asp-controller="TransferMaterialReport">
                                     <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                        style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                     Transfer Material
                                 </a>
-                                <a class="dropdown-item TransferMaterialReport" asp-action="ProdPlanStatus" asp-controller="ProdPlanStatus">
+                                <input class="userRightsPermission" type="hidden" value="TransferMaterialReport" />
+                                <a class="dropdown-item ProdPlanStatusReport" asp-action="ProdPlanStatus" asp-controller="ProdPlanStatus">
                                     <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                        style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                     ProdPlan Status
                                 </a>
-                                <a class="dropdown-item " asp-action="RecChallanReport" asp-controller="RecChallanReport">
+                                <input class="userRightsPermission" type="hidden" value="ProdPlanStatusReport" />
+                                <a class="dropdown-item RecChallanReport" asp-action="RecChallanReport" asp-controller="RecChallanReport">
                                     <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                        style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                     RecChallanReport
                                 </a>
-                                <a class="dropdown-item " asp-action="OrderBasedProdPlan" asp-controller="OrderBasedProdPlan">
+                                <input class="userRightsPermission" type="hidden" value="RecChallanReport" />
+
+                                <a class="dropdown-item OrderBasedProdPlanReport" asp-action="OrderBasedProdPlan" asp-controller="OrderBasedProdPlan">
                                     <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                        style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                     Order Based Prod Plan
                                 </a>
+                                <input class="userRightsPermission" type="hidden" value="OrderBasedProdPlanReport" />
+
 
                         </li>
                     </ul>
@@ -2648,12 +2660,13 @@
                     <a class="dropdown-item" href="#">Quality &raquo; </a>
                     <ul class="submenu dropdown-menu">
                         <li>
-                            <a class="dropdown-item ReportsMRN" asp-action="MIRRegister" asp-controller="MIRRegister">
+                            <a class="dropdown-item MIRRegister" asp-action="MIRRegister" asp-controller="MIRRegister">
                                 <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                    style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                 MIR  Register
                             </a>
                         </li>
+                        <input class="userRightsPermission" type="hidden" value="MIRRegister" />
                         <li>
                     </ul>
                 </li>
@@ -2664,35 +2677,39 @@
                     <a class="dropdown-item" href="#">MIS Reports &raquo; </a>
                     <ul class="submenu dropdown-menu">
                         <li>
-                            <a class="dropdown-item ReportsMRN" asp-action="ConsumptionReport" asp-controller="ConsumptionReport">
+                            <a class="dropdown-item ConsumptionReport" asp-action="ConsumptionReport" asp-controller="ConsumptionReport">
                                 <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                    style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                 Consumption Report
                             </a>
+                            <input class="userRightsPermission" type="hidden" value="ConsumptionReport" />
                         </li>
                         <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item ReportsMRN" asp-action="InventoryAgingReport" asp-controller="InventoryAgingReport">
+                            <a class="dropdown-item InventoryAgingReport" asp-action="InventoryAgingReport" asp-controller="InventoryAgingReport">
                                 <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                    style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                 Inventory Aging Report
                             </a>
+                            <input class="userRightsPermission" type="hidden" value="InventoryAgingReport" />
                         </li>
                          <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item ReportsMRN" asp-action="PurchaseMIS" asp-controller="PurchaseMIS">
+                            <a class="dropdown-item PurchaseMIS" asp-action="PurchaseMIS" asp-controller="PurchaseMIS">
                                 <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                    style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                 Purchase MIS Report
                             </a>
+                            <input class="userRightsPermission" type="hidden" value="PurchaseMIS" />
                         </li>
                          <li><hr class="dropdown-divider"></li>
                         <li>
-                            <a class="dropdown-item ReportsMRN" asp-action="VendoreRatingAnalysisReport" asp-controller="VendoreRatingAnalysisReport">
+                            <a class="dropdown-item VendoreRatingAnalysisReport" asp-action="VendoreRatingAnalysisReport" asp-controller="VendoreRatingAnalysisReport">
                                 <i class="fa-solid fa-money-check-dollar fa-fw fa-lg" aria-hidden="true"
                                    style="--fa-secondary-opacity: 1.0; --fa-primary-color: red; --fa-secondary-color: limegreen;"></i>
                                 Vendore Rating Analysis Report
                             </a>
+                            <input class="userRightsPermission" type="hidden" value="VendoreRatingAnalysisReport" />
                         </li>
 
                     </ul>
@@ -2749,7 +2766,10 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <input class="userRightsPermission" type="hidden" value="ReturnFromDepartmentMain" />
+
                             </ul>
+
                         </li>
                         <li><hr class="dropdown-divider"></li>
 
