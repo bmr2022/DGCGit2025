@@ -24,7 +24,14 @@ namespace eTactWeb.Controllers
 			_IWebHostEnvironment = iWebHostEnvironment;
 			this.iconfiguration = iconfiguration;
 		}
-		[Route("{controller}/Index")]
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IMachineGroupMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        [Route("{controller}/Index")]
 		public async Task<ActionResult> MachineGroupMaster(int ID, int YC, string Mode,string MachineGroup,string CC,int UId)
 		{
 			var MainModel = new MachineGroupMasterModel();

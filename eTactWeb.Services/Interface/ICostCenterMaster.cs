@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface ICostCenterMaster
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> FillCostCenterID();
         Task<ResponseResult> FillCostCenterGroupName();
         Task<ResponseResult> FillDeptName();

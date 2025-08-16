@@ -22,6 +22,10 @@ namespace eTactWeb.Data.BLL
             _StoreMasterDAL = new StoreMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _StoreMasterDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> FillStoreType()
         {
             return await _StoreMasterDAL.FillStoreType();

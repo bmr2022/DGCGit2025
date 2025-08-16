@@ -484,7 +484,7 @@
         function ClearGrid() {
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("GetClearGrid")",
+                url: "@Url.Action("ClearGrid")",
                 success: function () {
                     $('#UserRightsGrid').empty();  // Clears the grid
                 },

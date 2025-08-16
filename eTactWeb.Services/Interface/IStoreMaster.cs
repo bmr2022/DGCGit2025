@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface IStoreMaster
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> FillStoreType();
         Task<ResponseResult> FillStoreID();
         Task<ResponseResult> SaveStoreMaster(StoreMasterModel model);

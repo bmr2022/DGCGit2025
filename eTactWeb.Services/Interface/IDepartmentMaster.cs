@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface IDepartmentMaster
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> FillDeptType();
         Task<ResponseResult> FillDeptID();
 

@@ -1,6 +1,7 @@
 ﻿using eTactWeb.DOM.Models.Master;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 
 namespace eTactWeb.Controllers
 {
@@ -16,6 +17,13 @@ namespace eTactWeb.Controllers
             _IWorkCenterMaster = iWorkCenterMaster;
         }
 
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IWorkCenterMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult Index()
         {
             return View();

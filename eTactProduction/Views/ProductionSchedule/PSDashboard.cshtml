@@ -362,6 +362,7 @@
                 data: formData,
                 success: function (data) {
                     $('#divDashboardGrid').empty().append(data);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
