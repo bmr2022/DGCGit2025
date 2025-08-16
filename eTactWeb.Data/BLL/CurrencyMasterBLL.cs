@@ -23,6 +23,10 @@ namespace eTactWeb.Data.BLL
             _DataLogicDAL = dataLogicDAL;
         }
 
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _CurrencyMasterDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> SaveCurrencyMaster(CurrencyMasterModel model)
         {
             return await _CurrencyMasterDAL.SaveCurrencyMaster(model);

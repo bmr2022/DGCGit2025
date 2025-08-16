@@ -11,6 +11,8 @@ namespace eTactWeb.Services.Interface
     public interface ICurrencyMaster
     {
         //Task<ResponseResult> FillCurrencyID();
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> SaveCurrencyMaster(CurrencyMasterModel model);
         Task<ResponseResult> GetDashBoardData() ;
 
