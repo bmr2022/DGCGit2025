@@ -1241,7 +1241,7 @@
         });
 
         function ValidateGrid() {
-
+            debugger
             var Err = 0;
 
             if ($('#PartCode').prop('selectedIndex') == 0) {
@@ -1280,7 +1280,7 @@
                 RemoveErrorCls('ItemAmount');
             }
 
-            if ($('#BillQty').val() < $('#RejectedQty').val()) {
+            if (parseInt($('#BillQty').val()) < parseInt($('#RejectedQty').val())) {
                 AddErrorCls('RejectedQty');
                 $.notify('Rej Qty can not greter then billQty...!', "error");
                 Err = 1;

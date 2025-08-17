@@ -827,7 +827,9 @@ public class TaxController : Controller
                         TxPercentg = TxModel.TxPercentg,
                         TxAdInTxable = TxModel.TxAdInTxable,
                         TxRoundOff = TxModel.TxRoundOff,
-                        TxAmount = TxModel.TxRoundOff == "Y" ? Math.Floor(TaxAmount) : Math.Round(TaxAmount, 2),
+                        TxAmount = TxModel.TxRoundOff == "Y"
+    ? Math.Round(TaxAmount, MidpointRounding.AwayFromZero)
+    : Math.Round(TaxAmount, 2),
                         TxRefundable = TxModel.TxRefundable,
                         TxOnExp = TaxOnExp,
                         TxRemark = TxModel.TxRemark,
