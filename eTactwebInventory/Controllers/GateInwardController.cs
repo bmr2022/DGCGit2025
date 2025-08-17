@@ -1070,8 +1070,8 @@ namespace eTactWeb.Controllers
                     if (DS != null)
                     {
                         var DT = DS.Tables[0].DefaultView.ToTable(true, "GateNo", "GDATE", "VendorName", "address",
-  "Invoiceno", "InvoiceDate", "DocName", "CompGateNo", "POTypeServItem", "entryId", "yearcode",
-   "MRNNO", "MRNYEARCODE", "MRNDate", "EnteredBy", "UpdatedBy");
+                          "Invoiceno", "InvoiceDate", "DocName", "CompGateNo", "POTypeServItem", "entryId", "yearcode",
+                           "MRNNO", "MRNYEARCODE", "MRNDate", "EnteredBy", "UpdatedBy");
                         model.GateDashboard = CommonFunc.DataTableToList<GateInwardDashboard>(DT, "GateInward");
                         foreach (var row in DS.Tables[0].AsEnumerable())
                         {

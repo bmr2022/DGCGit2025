@@ -19,6 +19,6 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetDashboardData(string summaryDetail,string fromdate, string toDate);
         Task<ResponseResult> DeleteByID(int ID, int YC,int accountCode, string machineName);
         Task<ResponseResult> FillSubVoucher();
-
+        Task<AccCreditNoteDashboard> GetDashboardData(string FromDate, string ToDate, string ItemName, string PartCode, string CustomerName, string CreditNoteInvoiceNumber, string CreditNoteVoucherNo, string DashboardType);
     }
 }

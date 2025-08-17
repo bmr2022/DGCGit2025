@@ -26,13 +26,13 @@ namespace eTactWeb.DOM.Models
         public string GstRegUnreg { get; set; } = string.Empty;
         public string Transporter { get; set; } = string.Empty;
         public string Vehicleno { get; set; } = string.Empty;
-        public float BillAmt { get; set; }
-        public float RoundOffAmt { get; set; }
+        public decimal BillAmt { get; set; }
+        public decimal RoundOffAmt { get; set; }
         public string RoundoffType { get; set; } = string.Empty;
-        public float Taxableamt { get; set; }
-        public float ToatlDiscountPercent { get; set; }
-        public float TotalDiscountAmount { get; set; }
-        public float NetAmt { get; set; }
+        public decimal Taxableamt { get; set; }
+        public decimal ToatlDiscountPercent { get; set; }
+        public decimal TotalDiscountAmount { get; set; }
+        public decimal NetAmt { get; set; }
         public string Remark { get; set; } = string.Empty;
         public string CC { get; set; } = string.Empty;
         public int Uid { get; set; }
@@ -54,6 +54,9 @@ namespace eTactWeb.DOM.Models
         public string AttachmentFilePath3 { get; set; } = string.Empty;
         public string FinFromDate { get; set; }
         public string FinToDate { get; set; }
+        public int PageNumber {  get; set; }
+        public int TotalRecords {  get; set; }
+        public int PageSize { get; set; }
 
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
         {

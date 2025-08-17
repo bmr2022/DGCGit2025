@@ -11,6 +11,7 @@ using System.Net;
 using System.Data;
 using System.Globalization;
 using Microsoft.AspNetCore.Mvc;
+using System.Runtime.Caching;
 
 namespace eTactWeb.Controllers
 {
@@ -19,14 +20,12 @@ namespace eTactWeb.Controllers
         private readonly ICreditNote _creditNote;
         private readonly ILogger<CreditNoteController> _logger;
         public IWebHostEnvironment _IWebHostEnvironment { get; }
-
         public CreditNoteController(ICreditNote creditNote, IWebHostEnvironment IWebHostEnvironment, ILogger<CreditNoteController> logger)
         {
             _creditNote = creditNote;
             _IWebHostEnvironment = IWebHostEnvironment;
             _logger = logger;
         }
-
         [HttpGet]
         [Route("{controller}/Index")]
         public async Task<IActionResult> CreditNote(int ID, string Mode, int YearCode)
@@ -93,7 +92,6 @@ namespace eTactWeb.Controllers
             //HttpContext.Session.SetString("KeyCreditNotePopupGrid", serializedPopupGrid);
             return View(model);
         }
-
         public IActionResult AddCreditNoteDetail(AccCreditNoteDetail model)
         {
             try
@@ -162,7 +160,6 @@ namespace eTactWeb.Controllers
                 throw ex;
             }
         }
-
         public async Task<IActionResult> DeleteByID(int ID, int YearCode, int accountCode, string entryByMachineName)
         {
             var Result = await _creditNote.DeleteByID(ID, YearCode, accountCode, entryByMachineName).ConfigureAwait(false);
@@ -179,9 +176,6 @@ namespace eTactWeb.Controllers
             }
             return RedirectToAction("CNDashboard");
         }
-
-
-
         [HttpPost]
         [Route("{controller}/Index")]
         public async Task<IActionResult> CreditNote(AccCreditNoteModel model)
@@ -380,11 +374,15 @@ namespace eTactWeb.Controllers
                 HttpContext.Session.Remove("KeyTaxGrid");
                 var model = new AccCreditNoteDashboard();
 
-                var FromDt = HttpContext.Session.GetString("FromDate");
-                model.FinFromDate = Convert.ToDateTime(FromDt).ToString("dd/MM/yyyy");
-                //DateTime ToDate = DateTime.Today;
-                var ToDt = HttpContext.Session.GetString("ToDate");
-                model.FinToDate = Convert.ToDateTime(ToDt).ToString("dd/MM/yyyy");
+                // 1st day of current month as string
+                string fromDate = new DateTime(DateTime.Today.Year, DateTime.Today.Month, 1)
+                                     .ToString("dd/MM/yyyy");
+
+                // Today's date as string
+                string toDate = DateTime.Today.ToString("dd/MM/yyyy");
+
+                model.FinFromDate = fromDate;
+                model.FinToDate = toDate;
 
                 model.CreditNoteYearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                 model.SummaryDetail = "Summary";
@@ -414,8 +412,6 @@ namespace eTactWeb.Controllers
             }
 
         }
-
-
         private static DataTable GetTaxDetailTable(List<TaxModel> TaxDetailList)
         {
             DataTable Table = new();
@@ -454,8 +450,6 @@ namespace eTactWeb.Controllers
 
             return Table;
         }
-
-
         private static DataTable GetDetailTable(IList<AccCreditNoteDetail> DetailList)
         {
             var DTSSGrid = new DataTable();
@@ -614,7 +608,6 @@ namespace eTactWeb.Controllers
             DTSSGrid.Dispose();
             return DTSSGrid;
         }
-
         public IActionResult DeleteItemRow(int itemCode, string Mode)
         {
             var MainModel = new AccCreditNoteModel();
@@ -658,7 +651,6 @@ namespace eTactWeb.Controllers
 
             return PartialView("_CreditNoteGrid", MainModel);
         }
-
         public async Task<JsonResult> EditItemRows(int itemCode)
         {
             var MainModel = new AccCreditNoteModel();
@@ -784,7 +776,6 @@ namespace eTactWeb.Controllers
                 throw;
             }
         }
-
         public async Task<JsonResult> FillDetailFromPopupGrid(List<AccCreditNoteAgainstBillDetail> model, int itemCode, int popCt)
         {
             // 1. Load old session data if available
@@ -808,7 +799,6 @@ namespace eTactWeb.Controllers
             // 6. Return JSON result
             return Json(JsonConvert.SerializeObject(JSON));
         }
-
         public async Task<JsonResult> GetHSNUNIT(int itemCode)
         {
             var JSON = await _creditNote.GetHSNUNIT(itemCode);
@@ -827,7 +817,6 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        //"AgainstSalePurchase": $('#AgainstSalePurchase').val(), "fromBillDate": $('#fromBillDate').val(), "toBillDate": $('#toBillDate').val(), "accountCode": $('#AccountCode').val(), "yearCode": $('#CreditNoteYearCode').val()
         public async Task<JsonResult> FillCreditNotePopUp(string againstSalePurchase, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill)
         {
             fromBillDate = ParseFormattedDate(fromBillDate);
@@ -855,6 +844,61 @@ namespace eTactWeb.Controllers
             var JSON = await _creditNote.FillSubVoucher();
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
+        }
+        public async Task<IActionResult> GetSearchData(string FinFromDate, string FinToDate, string ItemName, string PartCode, string AccountName, string CreditNoteInvoiceNo, string CreditNoteVoucherNo, string SummaryDetail, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
+        {
+            //model.Mode = "Search";
+            var model = new AccCreditNoteDashboard();
+            model = await _creditNote.GetDashboardData(FinFromDate, FinToDate, ItemName, PartCode, AccountName, CreditNoteInvoiceNo, CreditNoteVoucherNo, SummaryDetail);
+            var modelList = model?.CreditNoteDashboard ?? new List<AccCreditNoteDashboard>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.CreditNoteDashboard = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<AccCreditNoteDashboard> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.CreditNoteDashboard = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+            return PartialView("_CNDashboardGrid", model);
         }
     }
 }

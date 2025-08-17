@@ -71,5 +71,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _creditNoteDAL.FillSubVoucher();
         }
+        public async Task<AccCreditNoteDashboard> GetDashboardData(string FromDate, string ToDate, string ItemName, string PartCode, string CustomerName, string CreditNoteInvoiceNumber, string CreditNoteVoucherNo, string DashboardType)
+        {
+            return await _creditNoteDAL.GetDashboardData(FromDate, ToDate, ItemName,PartCode,CustomerName,CreditNoteInvoiceNumber,CreditNoteVoucherNo,DashboardType);
+        }
     }
 }

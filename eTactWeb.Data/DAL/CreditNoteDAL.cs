@@ -23,7 +23,7 @@ namespace eTactWeb.Data.DAL
             _IDataLogic = iDataLogic;
         }
 
-        public async Task<AccCreditNoteModel> GetViewByID(int ID, int YearCode,string mode)
+        public async Task<AccCreditNoteModel> GetViewByID(int ID, int YearCode, string mode)
         {
             var model = new AccCreditNoteModel();
             try
@@ -37,7 +37,7 @@ namespace eTactWeb.Data.DAL
 
                 if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
                 {
-                    PrepareView(_ResponseResult.Result, ref model,mode);
+                    PrepareView(_ResponseResult.Result, ref model, mode);
                 }
             }
             catch (Exception ex)
@@ -101,7 +101,7 @@ namespace eTactWeb.Data.DAL
             model.INVOICETYPE = DS.Tables[0].Rows[0]["INVOICETYPE"]?.ToString();
             model.MachineName = DS.Tables[0].Rows[0]["MachineName"]?.ToString();
             model.ActualEntryDate = DS.Tables[0].Rows[0]["ActualEntryDate"]?.ToString();
-            model.ActualEnteredBy = DS.Tables[0].Rows[0]["ActualEnteredBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]) : 0 ;
+            model.ActualEnteredBy = DS.Tables[0].Rows[0]["ActualEnteredBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["ActualEnteredBy"]) : 0;
             model.ActualEnteredByName = DS.Tables[0].Rows[0]["ActualEntryByEmp"]?.ToString();
             model.LastUpdatedBy = DS.Tables[0].Rows[0]["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(DS.Tables[0].Rows[0]["LastUpdatedBy"]) : 0;
             model.LastUpdatedByName = DS.Tables[0].Rows[0]["LastUpdatedByEmp"]?.ToString();
@@ -147,7 +147,7 @@ namespace eTactWeb.Data.DAL
                         CostCenterId = row["CostcenetrId"] != DBNull.Value ? Convert.ToInt32(row["CostcenetrId"]) : 0,
                         DocAccountCode = row["DocAccountCode"] != DBNull.Value ? Convert.ToInt32(row["DocAccountCode"]) : 0,
                         DocAccountName = row["DocAccountName"]?.ToString(),
-                        ItemAmount =  row["ItemAmount"]  != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0,
+                        ItemAmount = row["ItemAmount"] != DBNull.Value ? Convert.ToInt32(row["ItemAmount"]) : 0,
                         DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
                         DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
                         StoreId = row["StoreId"] != DBNull.Value ? Convert.ToInt32(row["StoreId"]) : 0,
@@ -162,7 +162,7 @@ namespace eTactWeb.Data.DAL
                 model.ItemDetailGrid = creditNoteGrid;
             }
 
-              if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
+            if (DS.Tables.Count != 0 && DS.Tables[2].Rows.Count > 0)
             {
                 foreach (DataRow row in DS.Tables[2].Rows)
                 {
@@ -171,41 +171,41 @@ namespace eTactWeb.Data.DAL
                         //CreditNoteInvoiceNo = row["SchdeliveryDate"]?.ToString(),
                         //CreditNoteVoucherNo = row["SchdeliveryDate"]?.ToString(),
                         AgainstSaleBillBillNo = row["AgainstSalebillBillNo"]?.ToString(),
-                        AgainstSaleBillYearCode = row["AgainstSaleBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillYearCode"]):0,
+                        AgainstSaleBillYearCode = row["AgainstSaleBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillYearCode"]) : 0,
                         AgainstSaleBillDate = row["AgainstSaleBilldate"]?.ToString(),
-                        AgainstSaleBillEntryId =row["AgainstSaleBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillEntryId"]):0,
+                        AgainstSaleBillEntryId = row["AgainstSaleBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstSaleBillEntryId"]) : 0,
                         AgainstSaleBillVoucherNo = row["AgainstSalebillVoucherNo"]?.ToString(),
                         SaleBillType = row["SaleBillTYpe"]?.ToString(),
                         AgainstPurchaseBillBillNo = row["AgainstPurchasebillBillNo"]?.ToString(),
-                        AgainstPurchaseBillYearCode =row["AgainstPurchaseBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillYearCode"]):0,
+                        AgainstPurchaseBillYearCode = row["AgainstPurchaseBillYearCode"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillYearCode"]) : 0,
                         AgainstPurchaseBillDate = row["AgainstPurchaseBilldate"]?.ToString(),
-                        AgainstPurchaseBillEntryId =row["AgainstPurchaseBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillEntryId"]):0,
+                        AgainstPurchaseBillEntryId = row["AgainstPurchaseBillEntryId"] != DBNull.Value ? Convert.ToInt32(row["AgainstPurchaseBillEntryId"]) : 0,
                         AgainstPurchaseVoucherNo = row["AgainstPurchaseVoucherNo"]?.ToString(),
                         PurchaseBillType = row["PurchaseBilltype"]?.ToString(),
-                        ItemCode =row["BillItemCode"] != DBNull.Value ? Convert.ToInt32(row["BillItemCode"]):0,
+                        ItemCode = row["BillItemCode"] != DBNull.Value ? Convert.ToInt32(row["BillItemCode"]) : 0,
                         //PartCode = row["SchdeliveryDate"]?.ToString(),
                         //ItemName = row["BillQty"]?.ToString(),
-                        BillQty =row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]):0,
+                        BillQty = row["BillQty"] != DBNull.Value ? Convert.ToInt32(row["BillQty"]) : 0,
                         Unit = row["Unit"]?.ToString(),
-                        BillRate =row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]):0,
-                        DiscountPer = row["DiscountPer"] != DBNull.Value ?  Convert.ToInt32(row["DiscountPer"]) : 0,
-                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ?  Convert.ToInt32(row["DiscountAmt"]) : 0,
+                        BillRate = row["BillRate"] != DBNull.Value ? Convert.ToInt32(row["BillRate"]) : 0,
+                        DiscountPer = row["DiscountPer"] != DBNull.Value ? Convert.ToInt32(row["DiscountPer"]) : 0,
+                        DiscountAmt = row["DiscountAmt"] != DBNull.Value ? Convert.ToInt32(row["DiscountAmt"]) : 0,
                         ItemSize = row["Itemsize"]?.ToString(),
-                        Amount = row["Amount"] != DBNull.Value ?  Convert.ToInt32(row["Amount"]) : 0,
+                        Amount = row["Amount"] != DBNull.Value ? Convert.ToInt32(row["Amount"]) : 0,
                         PONO = row["PONO"]?.ToString(),
                         PODate = row["PODate"]?.ToString(),
-                        POEntryId = row["POEntryId"] != DBNull.Value ?  Convert.ToInt32(row["POEntryId"]) : 0,
+                        POEntryId = row["POEntryId"] != DBNull.Value ? Convert.ToInt32(row["POEntryId"]) : 0,
                         POYearCode = row["POYearCode"] != DBNull.Value ? Convert.ToInt32(row["POYearCode"]) : 0,
-                        PoRate = row["PoRate"] != DBNull.Value ?  Convert.ToInt32(row["PoRate"]) : 0,
+                        PoRate = row["PoRate"] != DBNull.Value ? Convert.ToInt32(row["PoRate"]) : 0,
                         PoAmmNo = row["poammno"]?.ToString(),
                         SONO = row["SONO"]?.ToString(),
-                        SOYearCode = row["SOYearcode"] != DBNull.Value ?  Convert.ToInt32(row["SOYearcode"]) : 0,
+                        SOYearCode = row["SOYearcode"] != DBNull.Value ? Convert.ToInt32(row["SOYearcode"]) : 0,
                         SODate = row["SODate"]?.ToString(),
                         CustOrderNo = row["CustOrderNo"]?.ToString(),
-                        SOEntryId = row["SOEntryId"] != DBNull.Value ?  Convert.ToInt32(row["SOEntryId"]) : 0,
+                        SOEntryId = row["SOEntryId"] != DBNull.Value ? Convert.ToInt32(row["SOEntryId"]) : 0,
                         BatchNo = row["BatchNo"]?.ToString(),
                         UniqueBatchNo = row["UniqueBatchNo"]?.ToString(),
-                        AltQty = row["AltQty"] != DBNull.Value ?  Convert.ToInt32(row["AltQty"]) : 0,
+                        AltQty = row["AltQty"] != DBNull.Value ? Convert.ToInt32(row["AltQty"]) : 0,
                         AltUnit = row["AltUnit"]?.ToString(),
                     });
                 }
@@ -342,7 +342,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode,string CreditNoteVoucherDate,string SubVoucherName)
+        public async Task<ResponseResult> NewEntryId(int YearCode, string CreditNoteVoucherDate, string SubVoucherName)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -364,7 +364,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public async Task<ResponseResult> FillDetailFromPopupGrid(DataTable model,int itemCode,int popCt)
+        public async Task<ResponseResult> FillDetailFromPopupGrid(DataTable model, int itemCode, int popCt)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -405,7 +405,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> FillCreditNotePopUp(string againstSalePurchase, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode,string showAllBill)
+        public async Task<ResponseResult> FillCreditNotePopUp(string againstSalePurchase, string fromBillDate, string toBillDate, int itemCode, int accountCode, int yearCode, string showAllBill)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -497,8 +497,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-
-        public async Task<ResponseResult> GetDashboardData(string summaryDetail,string fromdate, string toDate)
+        public async Task<ResponseResult> GetDashboardData(string summaryDetail, string fromdate, string toDate)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -521,8 +520,157 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
+        public async Task<AccCreditNoteDashboard> GetDashboardData(string FromDate, string ToDate, string ItemName, string PartCode, string CustomerName, string CreditNoteInvoiceNumber, string CreditNoteVoucherNo, string DashboardType)
+        {
+            DataSet? oDataSet = new DataSet();
+            var model = new AccCreditNoteDashboard();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("AccSP_CreditNoteMainDetail", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
 
-        internal async Task<ResponseResult> DeleteByID(int ID, int YC,int accountCode, string machineName)
+                    var fromDt = CommonFunc.ParseFormattedDate(FromDate);
+                    var toDt = CommonFunc.ParseFormattedDate(ToDate);
+                    oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@SummDetail", DashboardType);
+                    oCmd.Parameters.AddWithValue("@Fromdate", fromDt);
+                    oCmd.Parameters.AddWithValue("@toDate", toDt);
+                    oCmd.Parameters.AddWithValue("@CreditNoteInvoiceNo", CreditNoteInvoiceNumber);
+                    oCmd.Parameters.AddWithValue("@CreditNoteVoucherNo", CreditNoteVoucherNo);
+                    oCmd.Parameters.AddWithValue("@partcode", PartCode);
+                    oCmd.Parameters.AddWithValue("@ItemName", ItemName);
+                    oCmd.Parameters.AddWithValue("@CustVendName", CustomerName);
+
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (DashboardType == "Summary")
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.CreditNoteDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                     select new AccCreditNoteDashboard
+                                                     {
+                                                         AccountName = dr["AccountName"].ToString(),
+                                                         AccountCode = Convert.ToInt32(dr["AccountCode"]),
+                                                         GSTNO = dr["GSTNO"].ToString(),
+                                                         CreditNoteEntryId = Convert.ToInt32(dr["CreditNoteEntryId"]),
+                                                         CreditNoteInvoiceNo = dr["CreditNoteInvoiceNo"].ToString(),
+                                                         CreditNoteInvoiceDate = dr["CreditNoteInvoiceDate"].ToString().Split(" ")[0],
+                                                         SubVoucherName = dr["SubVoucherName"].ToString(),
+                                                         CreditNoteVoucherNo = dr["CreditNoteVoucherNo"].ToString(),
+                                                         CreditNoteVoucherDate = dr["CreditNoteVoucherDate"].ToString(),
+                                                         AgainstSalePurchase = dr["AgainstSalePurchase"].ToString(),
+                                                         Taxableamt = Convert.ToDecimal(dr["Taxableamt"]),
+                                                         BillAmt = Convert.ToDecimal(dr["BillAmt"]),
+                                                         NetAmt = Convert.ToDecimal(dr["NetAmt"]),
+                                                         ItemService = dr["ItemService"].ToString(),
+                                                         INVOICETYPE = dr["INVOICETYPE"].ToString(),
+                                                         EInvNo = dr["EInvNo"].ToString(),
+                                                         EinvGenerated = dr["EinvGenerated"].ToString(),
+                                                         MachineName = dr["MachineName"].ToString(),
+                                                         ActualEnteredByName = dr["ActualEntryByEmp"].ToString(),
+                                                         ActualEntryDate = dr["ActualEntryDate"].ToString(),
+                                                         LastUpdatedByName = dr["LastUpdatedByEmp"].ToString(),
+                                                         LastUpdationDate = dr["LastUpdationDate"].ToString(),
+                                                         RoundoffType = dr["RoundoffType"].ToString(),
+                                                         CustVendAddress = dr["CustVendAddress"].ToString(),
+                                                         StateNameofSupply = dr["StateNameofSupply"].ToString(),
+                                                         StateCode = dr["StateCode"].ToString(),
+                                                         CityofSupply = dr["CityofSupply"].ToString(),
+                                                         CountryOfSupply = dr["CountryOfSupply"].ToString(),
+                                                         PaymentTerm = dr["PaymentTerm"].ToString(),
+                                                         Transporter = dr["Transporter"].ToString(),
+                                                         ToatlDiscountPercent = Convert.ToDecimal(dr["ToatlDiscountPercent"]),
+                                                         RoundOffAmt = Convert.ToDecimal(dr["RoundOffAmt"]),
+                                                         Vehicleno = dr["Vehicleno"].ToString(),
+                                                         TotalDiscountAmount = Convert.ToDecimal(dr["TotalDiscountAmount"]),
+                                                         Remark = dr["Remark"].ToString(),
+                                                         CC = dr["CC"].ToString(),
+                                                         Uid = Convert.ToInt32(dr["Uid"]),
+                                                         EntryFreezToAccounts = dr["EntryFreezToAccounts"].ToString(),
+                                                         BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
+                                                         AttachmentFilePath1 = dr["AttachmentFilePath1"].ToString(),
+                                                         AttachmentFilePath2 = dr["AttachmentFilePath2"].ToString(),
+                                                         AttachmentFilePath3 = dr["AttachmentFilePath3"].ToString(),
+                                                         CreditNoteYearCode = Convert.ToInt32(dr["CreditNoteYearCode"])
+                                                     }).ToList();
+                    }
+                }
+                else
+                {
+                    if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                    {
+                        model.CreditNoteDashboard = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                     select new AccCreditNoteDashboard
+                                                     {
+                                                         AccountName = dr["AccountName"].ToString(),
+                                                         AccountCode = Convert.ToInt32(dr["AccountCode"]),
+                                                         GSTNO = dr["GSTNO"].ToString(),
+                                                         CreditNoteEntryId = Convert.ToInt32(dr["CreditNoteEntryId"]),
+                                                         CreditNoteInvoiceNo = dr["CreditNoteInvoiceNo"].ToString(),
+                                                         CreditNoteInvoiceDate = dr["CreditNoteInvoiceDate"].ToString().Split(" ")[0],
+                                                         SubVoucherName = dr["SubVoucherName"].ToString(),
+                                                         CreditNoteVoucherNo = dr["CreditNoteVoucherNo"].ToString(),
+                                                         CreditNoteVoucherDate = dr["CreditNoteVoucherDate"].ToString(),
+                                                         AgainstSalePurchase = dr["AgainstSalePurchase"].ToString(),
+                                                         Taxableamt = Convert.ToDecimal(dr["Taxableamt"]),
+                                                         BillAmt = Convert.ToDecimal(dr["BillAmt"]),
+                                                         NetAmt = Convert.ToDecimal(dr["NetAmt"]),
+                                                         ItemService = dr["ItemService"].ToString(),
+                                                         INVOICETYPE = dr["INVOICETYPE"].ToString(),
+                                                         EInvNo = dr["EInvNo"].ToString(),
+                                                         EinvGenerated = dr["EinvGenerated"].ToString(),
+                                                         MachineName = dr["MachineName"].ToString(),
+                                                         ActualEnteredByName = dr["ActualEntryByEmp"].ToString(),
+                                                         ActualEntryDate = dr["ActualEntryDate"].ToString(),
+                                                         LastUpdatedByName = dr["LastUpdatedByEmp"].ToString(),
+                                                         LastUpdationDate = dr["LastUpdationDate"].ToString(),
+                                                         RoundoffType = dr["RoundoffType"].ToString(),
+                                                         CustVendAddress = dr["CustVendAddress"].ToString(),
+                                                         StateNameofSupply = dr["StateNameofSupply"].ToString(),
+                                                         StateCode = dr["StateCode"].ToString(),
+                                                         CityofSupply = dr["CityofSupply"].ToString(),
+                                                         CountryOfSupply = dr["CountryOfSupply"].ToString(),
+                                                         PaymentTerm = dr["PaymentTerm"].ToString(),
+                                                         Transporter = dr["Transporter"].ToString(),
+                                                         ToatlDiscountPercent = Convert.ToDecimal(dr["ToatlDiscountPercent"]),
+                                                         RoundOffAmt = Convert.ToDecimal(dr["RoundOffAmt"]),
+                                                         Vehicleno = dr["Vehicleno"].ToString(),
+                                                         TotalDiscountAmount = Convert.ToDecimal(dr["TotalDiscountAmount"]),
+                                                         Remark = dr["Remark"].ToString(),
+                                                         CC = dr["CC"].ToString(),
+                                                         Uid = Convert.ToInt32(dr["Uid"]),
+                                                         EntryFreezToAccounts = dr["EntryFreezToAccounts"].ToString(),
+                                                         BalanceSheetClosed = dr["BalanceSheetClosed"].ToString(),
+                                                         AttachmentFilePath1 = dr["AttachmentFilePath1"].ToString(),
+                                                         AttachmentFilePath2 = dr["AttachmentFilePath2"].ToString(),
+                                                         AttachmentFilePath3 = dr["AttachmentFilePath3"].ToString(),
+                                                         CreditNoteYearCode = Convert.ToInt32(dr["CreditNoteYearCode"])
+                                                     }).ToList();
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
+            return model;
+        }
+        internal async Task<ResponseResult> DeleteByID(int ID, int YC, int accountCode, string machineName)
         {
             var ResponseResult = new ResponseResult();
             try
@@ -548,7 +696,7 @@ namespace eTactWeb.Data.DAL
             return ResponseResult;
         }
 
-        internal async Task<ResponseResult> SaveCreditNote(AccCreditNoteModel model, DataTable CNGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT,DataTable DTAgainstBillDetail)
+        internal async Task<ResponseResult> SaveCreditNote(AccCreditNoteModel model, DataTable CNGrid, DataTable TaxDetailDT, DataTable DrCrDetailDT, DataTable AdjDetailDT, DataTable DTAgainstBillDetail)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -574,7 +722,7 @@ namespace eTactWeb.Data.DAL
                 var creditNoteInvoiceDt = CommonFunc.ParseFormattedDate(model.CreditNoteInvoiceDate);
                 var creditNoteVoucherDt = CommonFunc.ParseFormattedDate(model.CreditNoteVoucherDate);
                 var actualDt = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
-                var lastUpdationDt= CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
+                var lastUpdationDt = CommonFunc.ParseFormattedDate(DateTime.Now.ToString("dd/MM/yyyy"));
 
                 SqlParams.Add(new SqlParameter("@CreditNoteEntryId", model.CreditNoteEntryId));
                 SqlParams.Add(new SqlParameter("@CreditNoteYearCode", model.CreditNoteYearCode));

@@ -11,6 +11,7 @@ using static eTactWeb.Data.Common.CommonFunc;
 using eTactWeb.Services.Interface;
 using System.Data;
 using System.Globalization;
+using eTactWeb.Data.Common;
 
 namespace eTactWeb.Controllers
 {
@@ -26,7 +27,24 @@ namespace eTactWeb.Controllers
 
         public IDataLogic IDataLogic { get; }
         public ILogger<CommonController> Logger { get; }
+        public async Task<JsonResult> GetServerDate()
+        {
+            try
+            {
+                var now = DateTime.Now;
 
+                // if you need your CommonFunc logic
+                var parsedDate = CommonFunc.ParseFormattedDate(now.ToString());
+
+                // return awaited Task
+                return await Task.FromResult(Json(now.ToString("yyyy-MM-dd")));
+            }
+            catch (Exception ex)
+            {
+                // Optional: return error as JSON
+                return await Task.FromResult(Json(new { error = ex.Message }));
+            }
+        }
         public void StoreInSession(string sessionKey, object sessionObject)
         {
             string serializedObject = JsonConvert.SerializeObject(sessionObject);
