@@ -29,7 +29,7 @@ else
             <td>@item.SrNO</td>
             <td id="GridLedgerName-@Cntr">@item.LedgerName<input type="hidden" id="AccountCode-@Cntr" value="@item.AccountCode" /><input type="hidden" id="BankType-@Cntr" value="@item.BankType" /></td>
             <td>
-                <p class="inline-text" id="BalanceG-@Cntr">@item.Balance</p>
+                <p class="inline-text" id="BalanceG-@Cntr">@Math.Round(item.Balance, 2) </p>
                 <p class="inline-text" id="DrCrG-@Cntr">@item.DRCR</p>
             </td>
             <td id="ModeOfAdjustment-@Cntr">@item.ModeOfAdjustment</td>

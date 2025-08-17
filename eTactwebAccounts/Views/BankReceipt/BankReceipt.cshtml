@@ -1911,14 +1911,14 @@
 					return true;
 				}
 
-				function GridButton() {
-					if (!Validate_GridButton()) return;
-
-					function roundVal(val) {
+				function roundVal(val) {
 						var num = parseFloat(val);
 						if (isNaN(num)) return 0;       // if blank or invalid, return 0
 						return Math.round(num * 100) / 100;  // round to 2 decimals
-					}
+				}
+
+				function GridButton() {
+					if (!Validate_GridButton()) return;
 
 					var SchData = {
 						"AccountCode": $('#AccountCode').val(),

@@ -1881,6 +1881,12 @@
             });
         }
 
+        function roundVal(val) {
+            var num = parseFloat(val);
+            if (isNaN(num)) return 0;       // if blank or invalid, return 0
+            return Math.round(num * 100) / 100;  // round to 2 decimals
+        }
+
         function Validate_GridButton() {
 
             var Err = 0;
@@ -1942,27 +1948,27 @@
             if (!Validate_GridButton()) return;
             var SchData = {
                 "AccountCode": $('#AccountCode').val(),
-                "Balance": $('#Balance').val(),
+                "Balance": roundVal($('#Balance').val()),
                 "BankType": $('#BankType').val(),
                 "DRCR": $('#DRCR').val(),
                 "InsNo": $('#InsNo').val(),
                 "InsDate": $('#InsDate').val(),
-                "AdjustmentAmt": $('#AdjustmentAmt').val(),
-                "AdjustmentAmtOthCur": $('#AdjustmentAmtOthCur').val(),
+                "AdjustmentAmt": roundVal($('#AdjustmentAmt').val()),
+                "AdjustmentAmtOthCur": roundVal($('#AdjustmentAmtOthCur').val()),
                 "PartyWiseNaration": $('#PartyWiseNaration').val(),
                 "AgainstVoucherNo": $('#AgainstVoucherNo').val(),
                 "AgainstVoucherCode": $('#AgainstVoucherCode').val(),
                 "AgainstVoucherDate": $('#AgainstVoucherDate').val(),
                 "AgainstVoucherType": $('#AgainstVoucherType').val(),
                 "AgainstVoucherEntryId": $('#AgainstVoucherEntryId').val(),
-                "VoucherBillAmt": $('#VoucherBillAmt').val(),
-                "PendBillAmt": $('#PendBillAmt').val(),
+                "VoucherBillAmt": roundVal($('#VoucherBillAmt').val()),
+                "PendBillAmt": roundVal($('#PendBillAmt').val()),
                 "SeqNo": $('#SeqNo').val(),
                 "CustOrderNo": $('#CustOrderNo').val(),
                 "SoDate": $('#SoDate').val(),
                 "SOYear": $('#SOYear').val(),
-                "DrAmt": $('#DrAmt').val(),
-                "CrAmt": $('#CrAmt').val(),
+                "DrAmt": roundVal($('#DrAmt').val()),
+                "CrAmt": roundVal($('#CrAmt').val()),
                 "ActualEntryby": parseInt($('#ActualEntryby').val()),
                 "UID": parseInt($('#UID').val()),
                 "EntryByMachine": $('#EntryByMachine').val(),
