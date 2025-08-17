@@ -14,11 +14,13 @@
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_saleBillDisplaySODetail" />
     <partial name="_SaleBillTaxPassword" />
-    <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" id="saleInvoiceForm" method="post"  enctype="multipart/form-data">
+    <form asp-action="SaleInvoice" autocomplete="off" class="form-horizontal" id="saleInvoiceForm" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <input type="hidden" asp-for="EInvNo" />
         <input type="hidden" asp-for="EinvGenerated" />
+        <input type="hidden" asp-for="MaxSaleInvoiceEntryDate" />
+        <input type="hidden" asp-for="AllowBackDateSALEBILL" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 <strong>@ViewData["Title"] - @Model.SaleBillYearCode</strong>
@@ -476,7 +478,7 @@
     </div>
 </div> *@
 <div class="modal fade" style="display:none" id="SaleOrderGroupWiseItem" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-xl" role="document"">
+    <div class="modal-dialog modal-xl" role="document" ">
         <div class="modal-content">
             <div class="modal-header">
                 <label style="margin-left:3px;margin-right:3px" for="Group_Code1">Group_Code</label>
@@ -491,7 +493,7 @@
                 <input type="text" id="PartyName" style="width:200px" class="form-control" readonly />
                 <label for="PartName" style="margin-left:3px;margin-right:3px">Disc Category</label>
                 <input type="text" id="DiscCategory" style="width:200px" class="form-control" readonly />
-                
+
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
 
             </div>
@@ -509,7 +511,7 @@
                                     <div class="col-md-2 me-3" style="margin-left:50px">
                                         <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
                                     </div>
-                                    <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowGroupWiseItems()"  style="display: flex; align-items: center;">
+                                    <button class="btn btn-sm btn-outline-success mb-2" type="button" onclick="ShowGroupWiseItems()" style="display: flex; align-items: center;">
                                         <i class="fa fa-eye" aria-hidden="true"></i>
                                         <span style="margin-left: 5px;">Show</span>
                                     </button>
@@ -522,7 +524,7 @@
                                                 <th>Action</th>
                                                 <th>Part Code</th>
                                                 <th>Item Name</th>
-                                               
+
                                                 <th>Qty</th>
                                                 <th>Rate</th>
                                                 <th>Discount %</th>
@@ -532,7 +534,7 @@
                                                 <th>Lot Stock</th>
                                                 <th>Batch No</th>
                                                 <th>Unique Batch No</th>
-                                                
+
                                                 <th>Unit</th>
                                                 <th>HSNNO</th>
 
@@ -648,7 +650,7 @@
     </div>
 </div>
 
-@* <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    @* <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -669,10 +671,10 @@
 </div> *@
 <style>
     .modal-fullscreen .modal-content {
-    height: 80%;
-    border: 0;
-    border-radius: 0;
-}
+        height: 80%;
+        border: 0;
+        border-radius: 0;
+    }
 
     .tooltip-container {
         position: relative;
@@ -701,8 +703,8 @@
         }
 </style>
 
-@section Scripts
-{
+    @section Scripts
+    {
     <script>
         var exportSupplyTypes = [
             "EXPORT WITH PAYMENT",
@@ -780,14 +782,13 @@
             // $('#Group_Code1').select2();
             GetItemGroup();
 
-
             const domesticExport = $('#DomesticExportNEPZ').val();
             const $supplyType = $('#SupplyType');
             GetSONoFormRights();
             // Only for Update/View mode
             if (mode === "U" || mode === "V") {
-                                                 var SaleBillEntryDate = $('#SaleBillEntryDate').val().split(" ")[0];
-                                                          $('#SaleBillEntryDate').datepicker("setDate", SaleBillEntryDate);
+                var SaleBillEntryDate = $('#SaleBillEntryDate').val().split(" ")[0];
+                $('#SaleBillEntryDate').datepicker("setDate", SaleBillEntryDate);
                 if (domesticExport === "EXPORT") {
                     $supplyType.empty();
                     $supplyType.append($('<option>', { value: "", text: "-- Select --" }));
@@ -804,6 +805,7 @@
                 const supplyTypeFromModel = "@Model.SupplyType";
                 $supplyType.val(supplyTypeFromModel);
             }
+
             GetServerDate();
             // Initialize validator only once
             //   $form.validate();
@@ -824,7 +826,8 @@
                     });
                 }, 300);
             });
-
+            GetFeatureOption();
+            GetMaxSaleInvoiceEntryDate();
             // When user clicks "Print"
             $('#btngenrateEinvoice').click(function () {
                 $('#EinvoicePopup').modal("hide");
@@ -874,14 +877,14 @@
             function submitForm(ShouldEinvoice, printWindow) {
                 $('#ShouldEinvoice').val(ShouldEinvoice);
 
-                        var formData = new FormData(document.getElementById('saleInvoiceForm'));
+                var formData = new FormData(document.getElementById('saleInvoiceForm'));
 
-                    $.ajax({
-                        type: "POST",
-                        url: $('#saleInvoiceForm').attr('action'),
-                        data: formData,
-                        processData: false,
-                        contentType: false,
+                $.ajax({
+                    type: "POST",
+                    url: $('#saleInvoiceForm').attr('action'),
+                    data: formData,
+                    processData: false,
+                    contentType: false,
                     success: function (res) {
                         if (res && res.status === "Success") {
                             if (ShouldEinvoice && res.entryId && res.yearCode) {
@@ -1083,7 +1086,7 @@
             //         });
             //     }
             // }
-            
+
             FillSaleBillGridFromMemoryCache();
             var rowCounter = $('#divMultiItemGrid tr').length;
             if ($('#Mode').val() != 'U' && $('#Mode').val() != 'V') {
@@ -1095,7 +1098,7 @@
                 else {
                     $('.PendingItem').hide();
                     $('.newitems').show();
-                   
+
                     // FillWorkCenter();
                 }
             } else {
@@ -1110,99 +1113,99 @@
         $(document).on('mouseover', 'input[type="text"]', function () {
             $(this).attr('title', $(this).val());
         });
-// Attach autocomplete when StoreName input is focused
-$(document).on("focus", "input[id^='StoreName-']", function () {
-    var $this = $(this);
+        // Attach autocomplete when StoreName input is focused
+        $(document).on("focus", "input[id^='StoreName-']", function () {
+            var $this = $(this);
 
-    // Prevent initializing autocomplete multiple times
-    if ($this.data("ui-autocomplete")) return;
+            // Prevent initializing autocomplete multiple times
+            if ($this.data("ui-autocomplete")) return;
 
-    $this.autocomplete({
-        minLength: 1,
-        autoFocus: true,
-        source: function (request, response) {
-            $.ajax({
-                url: '@Url.Action("AutoFillStore")',
-                type: 'POST',
-                data: { SearchStoreName: request.term },
-                success: function (result) {
-                    var data = typeof result === "string" ? JSON.parse(result) : result;
+            $this.autocomplete({
+                minLength: 1,
+                autoFocus: true,
+                source: function (request, response) {
+                    $.ajax({
+                        url: '@Url.Action("AutoFillStore")',
+                        type: 'POST',
+                        data: { SearchStoreName: request.term },
+                        success: function (result) {
+                            var data = typeof result === "string" ? JSON.parse(result) : result;
 
-                    if (data.StatusCode === 200 && data.StatusText === 'Success' && Array.isArray(data.Result.Table)) {
-                        var filtered = data.Result.Table.filter(function (item) {
-                            return item.Store_Name.toLowerCase().includes(request.term.toLowerCase());
-                        });
+                            if (data.StatusCode === 200 && data.StatusText === 'Success' && Array.isArray(data.Result.Table)) {
+                                var filtered = data.Result.Table.filter(function (item) {
+                                    return item.Store_Name.toLowerCase().includes(request.term.toLowerCase());
+                                });
 
-                        response($.map(filtered, function (item) {
-                            return {
-                                label: item.Store_Name,
-                                value: item.Store_Name,
-                                StoreId: item.StoreId
-                            };
-                        }));
-                    } else {
-                        response([]);
-                    }
+                                response($.map(filtered, function (item) {
+                                    return {
+                                        label: item.Store_Name,
+                                        value: item.Store_Name,
+                                        StoreId: item.StoreId
+                                    };
+                                }));
+                            } else {
+                                response([]);
+                            }
+                        },
+                        error: function () {
+                            response([]);
+                        }
+                    });
                 },
-                error: function () {
-                    response([]);
+                select: function (event, ui) {
+                    $this.val(ui.item.label);
+
+                    // Set corresponding StoreId hidden field
+                    var id = $this.attr("id").split("-")[1];
+                    $("#StoreId-" + id).val(ui.item.StoreId);
+
+                    return false;
                 }
             });
-        },
-        select: function (event, ui) {
-            $this.val(ui.item.label);
+        });
 
-            // Set corresponding StoreId hidden field
-            var id = $this.attr("id").split("-")[1];
-            $("#StoreId-" + id).val(ui.item.StoreId);
+        //        function AutoFillStore(i) {
+        //     $("#StoreName-" + i).autocomplete({
+        //         minLength: 1,
+        //         autoFocus: true,
+        //         source: function (request, response) {
+        //             $.ajax({
+        //                 url: '@Url.Action("AutoFillStore")',
+        //                 type: 'POST',
+        //                 data: { SearchStoreName: request.term },
+        //                 success: function (result) {
+        //                     // Controller returns string -> must parse
+        //                     let obj = JSON.parse(result);
 
-            return false;
-        }
-    });
-});
+        //                     if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
+        //                         let filtered = obj.Result.Table.filter(function (item) {
+        //                             return item.Store_Name.toLowerCase().includes(request.term.toLowerCase());
+        //                         });
 
-//        function AutoFillStore(i) {
-//     $("#StoreName-" + i).autocomplete({
-//         minLength: 1,
-//         autoFocus: true,
-//         source: function (request, response) {
-//             $.ajax({
-//                 url: '@Url.Action("AutoFillStore")',
-//                 type: 'POST',
-//                 data: { SearchStoreName: request.term },
-//                 success: function (result) {
-//                     // Controller returns string -> must parse
-//                     let obj = JSON.parse(result);
-
-//                     if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result.Table)) {
-//                         let filtered = obj.Result.Table.filter(function (item) {
-//                             return item.Store_Name.toLowerCase().includes(request.term.toLowerCase());
-//                         });
-
-//                         response($.map(filtered, function (item) {
-//                             return {
-//                                 label: item.Store_Name,
-//                                 value: item.Store_Name,
-//                                 StoreId: item.StoreId
-//                             };
-//                         }));
-//                     } else {
-//                         response([]);
-//                     }
-//                 },
-//                 error: function (xhr, status, error) {
-//                     console.error("Autocomplete error:", error);
-//                     response([]);
-//                 }
-//             });
-//         },
-//         select: function (event, ui) {
-//             $("#StoreName-" + i).val(ui.item.label);
-//             $("#StoreId" + i).val(ui.item.StoreId);
-//             return false;
-//         }
-//     });
-// }
+        //                         response($.map(filtered, function (item) {
+        //                             return {
+        //                                 label: item.Store_Name,
+        //                                 value: item.Store_Name,
+        //                                 StoreId: item.StoreId
+        //                             };
+        //                         }));
+        //                     } else {
+        //                         response([]);
+        //                     }
+        //                 },
+        //                 error: function (xhr, status, error) {
+        //                     console.error("Autocomplete error:", error);
+        //                     response([]);
+        //                 }
+        //             });
+        //         },
+        //         select: function (event, ui) {
+        //             $("#StoreName-" + i).val(ui.item.label);
+        //             $("#StoreId" + i).val(ui.item.StoreId);
+        //             return false;
+        //         }
+        //     });
+        // }
 
 
         //     // Autocomplete for StoreName
@@ -1212,7 +1215,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
         //             $("#StoreName-" + i).val(ui.item.value).data("StoreId", ui.item.StoreId);
 
         //             $('#StoreId-' + i).val(ui.item.StoreId);
-                 
+
         //             return false;
         //         },
         //         focus: function (event, ui) {
@@ -1222,7 +1225,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
         //         minLength: 2
         //     });
 
-            
+
         // }
 
         // function AutoFillStore(rowIndex) {
@@ -1272,7 +1275,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
         });
 
 
-       
+
         function ShowGroupWiseItems() {
 
             //var reportType = $('#ReportType').val();
@@ -1286,7 +1289,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                 data: {
                     Group_Code: Group_Code,
                     AccountCode: AccountCode,
-                    storeid:storeid
+                    storeid: storeid
 
                 },
                 success: function (response) {
@@ -1320,7 +1323,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                 }
             });
         }
-      
+
 
         function GetMultiItemGroup() {
 
@@ -1369,7 +1372,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                             $.each(obj.Result, function (index, val) {
                                 $('#Group_Code').append('<option value="' + val.Group_Code + '">' + val.Group_name + '</option>');
                             });
-                            
+
                         }
                     }
                 }
@@ -1378,15 +1381,15 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
 
 
         $('#Group_Code').change(function () {
-            var Group_Code=$('#Group_Code').val() ;
-            
+            var Group_Code = $('#Group_Code').val();
+
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("GETGROUPWISEITEM")",
                 data: { Group_Code: Group_Code },
                 dataType: "json",
                 async: false,
-       
+
                 success: function (result, status, error) {
 
                     if (result != null) {
@@ -1453,10 +1456,10 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                                 }
                             });
                             FillDistance();
-                            
+
                             FillCurrency();
-            FillCustomerAddress();
-                            
+                            FillCustomerAddress();
+
                             btnClearTax();
                             ClearAdjustmentGrid();
                             ClearDRCRGrid();
@@ -1568,7 +1571,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                     BasicTotal();
                     ClearAdjustmentGrid();
                     // ResetPendQty();
-                    
+
                     // var rowCount = $('#divSaleBillList tr').length;
 
                     // for (var i = 1; i <= rowCount; i++) {
@@ -1591,7 +1594,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                     $('#AdjPendAmt').val($('#NetTotal').val());
                     $('#TotalDiscountPercentage').val(0);
                     $('#TotalAmtAftrDiscount').val(0);
-                    
+
                     // ClearGrid();
                     $('.PendingItem').hide();
                     $('.newitems').show();
@@ -1613,7 +1616,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                 GetItemGroup();
                 GetTaxPartItem();
                 GetDbCrDetail();
-                 AddAdjstmntDetail1();
+                AddAdjstmntDetail1();
             })
         });
 
@@ -1766,9 +1769,10 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
 
         GetTaxPartItem();
 
-        if ($('#Mode').val() == "V" || $('#Mode').val() == "U") { GetDbCrDetail(); FillCurrency(); FillSONO(); BomAdjustChallanGrid();
-                     var InvDate = ($('#SaleBillDate').val().split(" ")[0]);
-                $('#RemovalDate').datepicker("option", "minDate", InvDate);
+        if ($('#Mode').val() == "V" || $('#Mode').val() == "U") {
+            GetDbCrDetail(); FillCurrency(); FillSONO(); BomAdjustChallanGrid();
+            var InvDate = ($('#SaleBillDate').val().split(" ")[0]);
+            $('#RemovalDate').datepicker("option", "minDate", InvDate);
         }
 
         DueDateCalculation();
@@ -2283,21 +2287,30 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
         // }
 
         function DueDateCalculation() {
+            var saleBillDateVal = $('#SaleBillDate').val();
 
-            var dueDate = $('#AdjDueDate').val();
-            // var SaleBillDate = new Date($('#SaleBillDate').val());
+            if (!saleBillDateVal) {
+                console.warn("SaleBillDate is empty, skipping DueDateCalculation");
+                return;
+            }
 
-            var dateStr = parseDateToFormat($('#SaleBillDate').val().split(" ")[0]);
-            var [day, month, year] = dateStr.split('/').map(Number);
+            // If value is like "31/08/2025" → no need to split
+            var [day, month, year] = saleBillDateVal.split('/').map(Number);
             var SaleBillDate = new Date(year, month - 1, day);
 
-            var creaditDays = $('#PaymentCreditDay').val() == "" ? 0 : parseInt($('#PaymentCreditDay').val(), 10);
+            var creditDays = $('#PaymentCreditDay').val() == "" ? 0 : parseInt($('#PaymentCreditDay').val(), 10);
 
-            SaleBillDate.setDate(SaleBillDate.getDate() + creaditDays);
+            // Add credit days
+            SaleBillDate.setDate(SaleBillDate.getDate() + creditDays);
 
+            // Format as dd/mm/yy
             var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', SaleBillDate);
+
+            // Set in AdjDueDate
             $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
-            $('#AdjDueDate').datepicker("option", "minDate", ($('#SaleBillDate').val()).split(" ")[0]);
+
+            // Restrict min date to SaleBillDate
+            $('#AdjDueDate').datepicker("option", "minDate", saleBillDateVal);
         }
 
         $('#PaymentCreditDay').change(function () {
@@ -2758,7 +2771,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
 
 
             const Qty = $('#Qty-' + i).val() == "0" || $('#Qty-' + i).val() == "" ? 0 : parseFloat($('#Qty-' + i).val());
-            Amount =  Qty * Rate ;
+            Amount = Qty * Rate;
 
 
             if (DP !== 0) {
@@ -2784,7 +2797,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.Result != null) {
-                             
+
                             $('#SOPendQty').val("");
                             $('#SOPendQty').val(obj.Result[0].PendQty);
                             $('#Qty').val("");
@@ -2883,10 +2896,10 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                             "HSNNo": $('#HSNNo-' + i).val(),
                             "Unit": $('#Unit-' + i).val(),
 
-                            "Batchno": $('#Batchno-'+i).val(),
-                            "Uniquebatchno": $('#Uniquebatchno-'+i).val(),
-                            "LotStock": $('#LotStock-'+i).val(),
-                            "TotalStock": $('#TotalStock-'+i).val(),
+                            "Batchno": $('#Batchno-' + i).val(),
+                            "Uniquebatchno": $('#Uniquebatchno-' + i).val(),
+                            "LotStock": $('#LotStock-' + i).val(),
+                            "TotalStock": $('#TotalStock-' + i).val(),
                             "SOPendQty": $('#SOPendQty').val(),
                             "Qty": $('#Qty-' + i).val(),
                             "Rate": $('#Rate-' + i).val(),
@@ -3187,7 +3200,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                         $('#Rate').val(parseFloat($('#Rate').val()).toFixed(2));
 
                         FillCurrentBatchINStore();
-                        
+
                     }
 
                 },
@@ -3199,7 +3212,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                 //alert('inside ajax');
                 GetTaxPartItem();
                 GetDbCrDetail();
-                 AddAdjstmntDetail1();
+                AddAdjstmntDetail1();
             }).fail(function () {
                 alert("error");
             }).always(function () {
@@ -3466,6 +3479,81 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                             $('#AdjDescription').val($('#SaleBillNo').val());
                             $('#AdjNewRefNo').val($('#SaleBillNo').val());
 
+                        }
+                    }
+                }
+            });
+        }
+
+        function GetMaxSaleInvoiceEntryDate() {
+            var YearCode = parseInt($('#SaleBillYearCode').val());
+            $.ajax({
+                type: "POST",
+                data: { "YearCode": YearCode },
+                url: "@Url.Action("GetMaxSaleInvoiceEntryDate")",
+                dataType: "json",
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#MaxSaleInvoiceEntryDate').val("");
+                            var lastSaleBillDate = obj.Result[0].SaleBillDate; // comes in dd/MM/yyyy format?
+                            $('#MaxSaleInvoiceEntryDate').val(lastSaleBillDate);
+
+                            // Convert to date object
+                            var maxSaleBillDate = toDateObject(lastSaleBillDate);
+
+                            // If back date not allowed → enforce restriction
+                            if ($('#AllowBackDateSALEBILL').val() != "Y") {
+                                $('#SaleBillDate').datepicker("option", "minDate", maxSaleBillDate);
+                                $('#SaleBillEntryDate').datepicker("option", "minDate", maxSaleBillDate);
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function toDateObject(dateStr) {
+            if (!dateStr) return null;
+            dateStr = dateStr.trim();
+
+            let d;
+
+            if (dateStr.includes("T")) {
+                // ISO format: yyyy-MM-ddTHH:mm:ss
+                d = new Date(dateStr);
+            } else if (dateStr.includes("-")) {
+                // yyyy-MM-dd
+                let parts = dateStr.split("-");
+                d = new Date(parts[0], parts[1] - 1, parts[2]);
+            } else if (dateStr.includes("/")) {
+                // dd/MM/yyyy
+                let parts = dateStr.split("/");
+                d = new Date(parts[2], parts[1] - 1, parts[0]);
+            } else {
+                console.error("Unknown date format:", dateStr);
+                return null;
+            }
+
+            return isNaN(d.getTime()) ? null : d;
+        }
+
+
+        function GetFeatureOption() {
+
+            $.ajax({
+                type: "POST",
+                data: {},
+                url: "@Url.Action("GetFeatureOption")",
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        if (obj.Result != null) {
+                            $('#AllowBackDateSALEBIL').val("");
+                            $('#AllowBackDateSALEBILL').val(obj.Result[0].AllowBackDateSALEBILL);
                         }
                     }
                 }
@@ -3833,45 +3921,45 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
         }
 
         function CheckFinYearBeforeSave(callback) {
-    $.ajax({
-        type: "POST",
-        url: "@Url.Action("CheckFinYearBeforeSave")",
-        data: {
-            YearCode: @yearCode,
-            Date: $('#SaleBillEntryDate').val(),
-            DateName: ""
-        },
-        dataType: "json",
-        success: function (result, textStatus, jqXHR) {
-            if (jqXHR.status === 200) {
-                if (result != null) {
-                    var obj = $.parseJSON(result);
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("CheckFinYearBeforeSave")",
+                data: {
+                    YearCode: @yearCode,
+                    Date: $('#SaleBillEntryDate').val(),
+                    DateName: ""
+                },
+                dataType: "json",
+                success: function (result, textStatus, jqXHR) {
+                    if (jqXHR.status === 200) {
+                        if (result != null) {
+                            var obj = $.parseJSON(result);
 
-                    // Check the response value
-                    if (obj.Result && obj.Result.length > 0 && obj.Result[0].Result === 'Correct date') {
-                        callback(true); // ✅ Valid date
+                            // Check the response value
+                            if (obj.Result && obj.Result.length > 0 && obj.Result[0].Result === 'Correct date') {
+                                callback(true); // ✅ Valid date
+                            } else {
+                                $.notify(obj.Result[0].Result || "Invalid response!", "error");
+                                callback(false); // ❌ Invalid
+                            }
+                        } else {
+                            $.notify("Empty response from server!", "error");
+                            callback(false);
+                        }
                     } else {
-                        $.notify(obj.Result[0].Result || "Invalid response!", "error");
-                        callback(false); // ❌ Invalid
+                        $.notify("Unexpected server response!", "error");
+                        callback(false);
                     }
-                } else {
-                    $.notify("Empty response from server!", "error");
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    $.notify("Error checking financial year!", "error");
                     callback(false);
                 }
-            } else {
-                $.notify("Unexpected server response!", "error");
-                callback(false);
-            }
-        },
-        error: function (jqXHR, textStatus, errorThrown) {
-            $.notify("Error checking financial year!", "error");
-            callback(false);
+            });
         }
-    });
-}
 
         $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-             ;
+            ;
             e.preventDefault();
 
             ValidateSubmitWrapper(function (isValid) {
@@ -3957,7 +4045,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
         var EditEachItem = false;
         var EditDeleteBatchValidation = false;
         function EditItemRows(SeqNo) {
-             
+
             var RowCount = $('#divSaleBillList tr').length;
             if (EditEachItem) {
                 $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
@@ -5004,7 +5092,7 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
             var YearCode = $('#SaleBillYearCode').val();
             var StoreName = $('#StoreName-' + i).val();
             var batchno = "";
-            if ($('#Batchno-'+i).prop('selectedIndex') != 0) {
+            if ($('#Batchno-' + i).prop('selectedIndex') != 0) {
                 batchno = $('#Batchno').val();
             }
             $.ajax({
@@ -5017,27 +5105,27 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
-                            $('#Batchno-'+i).empty();
-                            $('#Batchno-'+i).append('<option value="0" selected>-Select-</option>');
+                            $('#Batchno-' + i).empty();
+                            $('#Batchno-' + i).append('<option value="0" selected>-Select-</option>');
 
                             var seenValues = {};
                             $.each(obj.Result, function (index, val) {
                                 if (!seenValues[val.batchno]) {
                                     seenValues[val.batchno] = true;
-                                    $('#Batchno-'+i).append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
+                                    $('#Batchno-' + i).append('<option value="' + val.batchno + '">' + val.batchno + '</option>');
                                 }
                             });
 
 
                             GetBatchInventory();
 
-                            
-                            
+
+
                         } else {
-                            $('#Batchno-'+i).empty();
-                            $('#Batchno-'+i).append('<option value="0" disabled selected>-Select-</option>');
-                            $('#Uniquebatchno-'+i).empty();
-                            $('#Uniquebatchno-'+i).append('<option value="0" disabled selected>-Select-</option>');
+                            $('#Batchno-' + i).empty();
+                            $('#Batchno-' + i).append('<option value="0" disabled selected>-Select-</option>');
+                            $('#Uniquebatchno-' + i).empty();
+                            $('#Uniquebatchno-' + i).append('<option value="0" disabled selected>-Select-</option>');
                         }
 
                     }
@@ -5184,26 +5272,29 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                 url: "@Url.Action("GetServerDate", "WorkOrder")",
                 async: false,
                 success: function (result, status, error) {
-                    // alert(result);
                     var FinFromDate = parseDateToFormat($('#FinFromDate').val().split(" ")[0]);
                     var FinToDate = parseDateToFormat($('#FinToDate').val().split(" ")[0]);
-                    
+
                     if ($('#Mode').val() != "U" && $('#Mode').val() != "V") {
-                        //  alert('right');
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                         $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", FinFromDate);
                         $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", FinToDate);
                         $('#SaleBillDate').prop("disabled", false);
+                        $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     } else {
                         let d = $('#SaleBillEntryDate').val().split(" ")[0].split("-");
                         $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })
                             .datepicker("setDate", parseDateToFormat(`${d[1]}-${d[0]}-${d[2]}`));
-                              $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
-                        $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
-                                let hiddenDate =  $('#hiddenSaleBillDate').val().split(" ")[0];
+                        $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                            .datepicker("setDate", parseDateToFormat($('#SaleBillEntryDate').val().split(" ")[0]));
                         $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' })
-                                    .datepicker("setDate", hiddenDate);
+                            .datepicker("setDate", parseDateToFormat($('#hiddenSaleBillDate').val().split(" ")[0]));
+                        let hiddenDate = $('#hiddenSaleBillDate').val().split(" ")[0];
+                        $('#SaleBillDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                            .datepicker("setDate", hiddenDate);
+                        $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' })
+                            .datepicker("setDate", parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]));
 
                         var currentYear = getFinancialYear();
                         if ($('#SaleBillYearCode').val() == currentYear) {
@@ -5212,56 +5303,42 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                             $('#SaleBillDate').prop("disabled", true);
                         }
                     }
-                    // $('#InvoiceTime').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
+                    // Other dates default set to server date
                     $('#PerformaInvDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#RemovalDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    // $('#RemovalTime').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SoDelTime').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#Shippingdate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#Canceldate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    // $('#SODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#Schdate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SOAmendDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#AdviseDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#AgaisntProdPlanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ProdSchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#SchdeliveryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+
                     $('#SaleQuotDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
                     $('#ApprovDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                    // $('#SaleBillEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
 
-                    var saleBillEntryDate = parseDateToFormat($('#SaleBillEntryDate').val());
-                    let dateParts = saleBillEntryDate.split("/");
-                    let day = parseInt(dateParts[0], 10);
-                    let month = parseInt(dateParts[1], 10) - 1;
-                    let year = parseInt(dateParts[2], 10);
-
-                    let date = new Date(year, month, day);
-                    var minEntryDate = date.setDate(date.getDate() - 1);
-                    var maxEntryDate = date.setDate(date.getDate() + 2);
-
-                    minEntryDate = new Date(minEntryDate);
-                    maxEntryDate = new Date(maxEntryDate);
-
-                    minEntryDate = minEntryDate.toLocaleDateString('en-GB');
-                    maxEntryDate = maxEntryDate.toLocaleDateString('en-GB');
-
-                    // $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "minDate", minEntryDate);
-                    // $('#SaleBillEntryDate,#SaleBillDate').datepicker("option", "maxDate", maxEntryDate);
-
+                    // =========================
+                    // ✅ Restrict Removal Date
+                    // =========================
                     var saleBillDate = $('#SaleBillDate').datepicker('getDate');
-                    var newDate = addDays(saleBillDate, 1);
+                    let minRemovalDate = new Date(saleBillDate);
+                    let maxRemovalDate = addDays(saleBillDate, 1);
 
-                    var maxRemovalDate = newDate.toLocaleDateString('en-GB');
-                    // $('#RemovalDate').datepicker("option", "minDate", minEntryDate);
-
+                    $('#RemovalDate').datepicker("option", "minDate", minRemovalDate);
                     $('#RemovalDate').datepicker("option", "maxDate", maxRemovalDate);
-                    $('#AdjDueDate').datepicker("option", "minDate", ($('#SaleBillDate').val()).split(" ")[0]);
 
-                    // $('#RemovalDate').datepicker("option", "minDate",);
-                    // $('#RemovalDate').datepicker("option", "minDate", FinFromDate);
+                    // If RemovalDate is outside range → reset to SaleBillDate
+                    let currentRemoval = $('#RemovalDate').datepicker("getDate");
+                    if (!currentRemoval || currentRemoval < minRemovalDate || currentRemoval > maxRemovalDate) {
+                        $('#RemovalDate').datepicker("setDate", saleBillDate);
+                    }
+
+                    // AdjDueDate cannot be less than SaleBillDate
+                    $('#AdjDueDate').datepicker("option", "minDate", ($('#SaleBillDate').val()).split(" ")[0]);
                 }
             });
 
@@ -5270,7 +5347,6 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
                 result.setDate(result.getDate() + days);
                 return result;
             }
-
         }
 
         function getFinancialYear() {
@@ -5281,6 +5357,25 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
             return month < 4 ? year - 1 : year;
         }
 
+        $('#SaleBillEntryDate').change(function () {
+            let entryDate = $(this).datepicker("getDate");
+            $('#SaleBillDate').datepicker("setDate", entryDate);
+
+            $('#AdjDueDate').datepicker("option", "minDate", entryDate);
+
+            let minRemovalDate = new Date(entryDate);
+            let maxRemovalDate = new Date(entryDate);
+            maxRemovalDate.setDate(maxRemovalDate.getDate() + 1);
+
+            $('#RemovalDate').datepicker("option", "minDate", minRemovalDate);
+            $('#RemovalDate').datepicker("option", "maxDate", maxRemovalDate);
+
+            let currentRemoval = $('#RemovalDate').datepicker("getDate");
+            if (!currentRemoval || currentRemoval < minRemovalDate || currentRemoval > maxRemovalDate) {
+                $('#RemovalDate').datepicker("setDate", entryDate);
+            }
+        });
+
         $('#SaleBillDate').change(function () {
             ClearGrid();
             btnClearTax();
@@ -5288,13 +5383,25 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
             ClearDRCRGrid();
             ClearCustomerJWGrid();
 
-            $('#AdjDueDate').datepicker("option", "minDate", ($('#SaleBillDate').val()).split(" ")[0]);
-            var saleBillDate = parseDateToFormat($(this).val());
-            var RemovalTime = $('#RemovalTime').val();
-            if (saleBillDate > RemovalTime) {
-                $('#RemovalTime').datepicker("option", "minDate", saleBillDate);
-            }
+            let billDate = $(this).datepicker("getDate");
+            $('#SaleBillEntryDate').datepicker("setDate", billDate);
 
+            // Set minDate for AdjDueDate = SaleBillDate
+            $('#AdjDueDate').datepicker("option", "minDate", billDate);
+
+            // Restrict RemovalDate between SaleBillDate and SaleBillDate + 1 day
+            let minRemovalDate = new Date(billDate);
+            let maxRemovalDate = new Date(billDate);
+            maxRemovalDate.setDate(maxRemovalDate.getDate() + 1);
+
+            $('#RemovalDate').datepicker("option", "minDate", minRemovalDate);
+            $('#RemovalDate').datepicker("option", "maxDate", maxRemovalDate);
+
+            // If current RemovalDate is outside range → reset to SaleBillDate
+            let currentRemoval = $('#RemovalDate').datepicker("getDate");
+            if (!currentRemoval || currentRemoval < minRemovalDate || currentRemoval > maxRemovalDate) {
+                $('#RemovalDate').datepicker("setDate", billDate);
+            }
         });
 
         $('#RemovalDate').change(function () {
@@ -5355,9 +5462,9 @@ $(document).on("focus", "input[id^='StoreName-']", function () {
 
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
-   
 
 
-}
+
+    }
 
 

@@ -1993,5 +1993,17 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> GetMaxSaleInvoiceEntryDate(int YearCode)
+        {
+            var JSON = await _SaleBill.GetMaxSaleInvoiceEntryDate(YearCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> GetFeatureOption()
+        {
+            var JSON = await _SaleBill.GetFeatureOption();
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
     }
 }

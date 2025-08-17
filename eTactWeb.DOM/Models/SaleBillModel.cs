@@ -295,7 +295,8 @@ namespace eTactWeb.DOM.Models
         public List<SaleBillDetail>? saleBillDetails { get; set; }
         public IList<SaleBillDetail>? ItemDetailGrid { get; set; }
         public IList<DPBItemDetail>? DPBItemDetails { get; set; }
-
+        public string? MaxSaleInvoiceEntryDate {  get; set; }
+        public string? AllowBackDateSALEBILL {  get; set; }
         private IList<SelectListItem> _YesNo = new List<SelectListItem>()
         {
             new() { Value = "Y", Text = "Yes" },

@@ -17,7 +17,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> getdiscCategoryName(int Group_Code, int AccountCode);
         Task<ResponseResult> AutoFillStore( string SearchStoreName);
         Task<ResponseResult> GetFormRights(int uId);
-
+        Task<ResponseResult> GetMaxSaleInvoiceEntryDate(int YearCode);
         Task<ResponseResult> NewEntryId(int YearCode);
         Task<ResponseResult> GetBatchInventory();
         Task<ResponseResult> GetCustomerBasedDetails(int Code);
@@ -54,6 +54,6 @@ namespace eTactWeb.Services.Interface
         Task<AdjChallanDetail> GetAdjustedChallanDetailsData(DataTable adjustedData, int YearCode, string EntryDate, string ChallanDate, int AccountCode);
         //Task<ResponseResult> GetReportName();
         Task<ResponseResult> ShowPendingSaleorderforBill(string Flag, int CurrentYear, string FromDate, string Todate, string InvoiceDate, int BillFromStoreId,int accountCode);
-
+        Task<ResponseResult> GetFeatureOption();
     }
 }
