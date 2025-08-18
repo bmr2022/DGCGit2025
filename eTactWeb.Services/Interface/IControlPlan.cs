@@ -10,6 +10,8 @@ namespace eTactWeb.Services.Interface
 {
     public interface IControlPlan
     {
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> GetNewEntryId(int Yearcode);
         Task<ResponseResult> GetItemName();
         Task<ResponseResult> GetPartCode();

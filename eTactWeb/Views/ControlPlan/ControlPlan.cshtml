@@ -44,7 +44,7 @@
                                 <div class="col-auto">
                                     @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
                                     <input type="hidden" id="Mode" name="Mode" asp-for="Mode" value="U" />
-                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="updateBtnHeader">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="updateBtnHeader">
                                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                         UPDATE
                                     </button>
@@ -55,7 +55,7 @@
                             {
                                 <div class="col-auto">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                    <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                                         <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                         SUBMIT
                                     </button>
@@ -546,7 +546,7 @@
                                             @*Model.Mode = "U";*@
                                             <div class="col-auto">
                                                 @* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="updateBtnFooter">
+                                                <button type="submit" class="btn btn-sm btn-outline-light bg-gradient submitBTN" id="updateBtnFooter">
                                                     <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                                                     UPDATE
                                                 </button>
@@ -557,7 +557,7 @@
                                         {
                                             <div class="col-auto">
                                                 @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                                <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                                <button type="submit" class="btn btn-primary btn-sm submitBTN" id="submitBTN">
                                                     <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                                     SUBMIT
                                                 </button>
@@ -1382,31 +1382,32 @@
                 }
             });
         }
-        
+
         function GetFormRights() {
+
             $.ajax({
-                url: "@Url.Action("GetFormRights", "AccountMaster")",
+                url: "@Url.Action("GetFormRights")",
                 type: "POST",
                 success: function (data) {
+
                     if (data != null) {
-
                         var obj = $.parseJSON(data);
-                        if (obj.Result.Table.length == 0) {
-                            $("button[type='submit']").prop("disabled", true);
-
-                        } else {
-                            console.log(obj);
-                            if (obj.Result.Table[0] != undefined) {
-                                var optAll = obj.Result.Table[0].OptAll;
-                                var optSave = obj.Result.Table[0].OptSave;
-                                var optUpdate = obj.Result.Table[0].OptUpdate;
-                                var optDelete = obj.Result.Table[0].OptDelete;
-                                var optView = obj.Result.Table[0].OptView;
-                                if (!optAll) {
-                                    if (!optSave) {
-                                        $("button[type='submit']").prop("disabled", true);
-                                    }
-                                }
+                        console.log(obj);
+                        var optAll = obj.Result.Table[0].OptAll;
+                        var optSave = obj.Result.Table[0].OptSave;
+                        var optUpdate = obj.Result.Table[0].OptUpdate;
+                        var optDelete = obj.Result.Table[0].OptDelete;
+                        var optView = obj.Result.Table[0].OptView;
+                        if (!optAll) {
+                            if (!optSave) {
+                                $(".submitBTN").prop("disabled", true);
+                            }
+                            if (!(optUpdate || optDelete || optView)) {
+                                $(".DashBoard")
+                                    .addClass("disabled-link")
+                                    .on("click", function (e) {
+                                        e.preventDefault(); // Prevents clicking the link
+                                    });
                             }
                         }
                     }
@@ -1415,6 +1416,7 @@
                     $.notify(errMsg, { position: "top center", className: "error" });
                 }
             });
+            calculateSumAndSetValues();
         }
 
         function AutoComplete(ID) {

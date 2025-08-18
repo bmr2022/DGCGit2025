@@ -27,6 +27,14 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IControlPlan.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> ControlPlan(int ID, string Mode, int YC,string FromDate,string ToDate, string EntryDate, string ItemName, string PartCode,

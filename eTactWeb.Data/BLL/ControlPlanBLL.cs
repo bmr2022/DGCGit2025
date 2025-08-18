@@ -22,6 +22,10 @@ namespace eTactWeb.Data.BLL
             _ControlPlanDAL = new ControlPlanDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
+        public async Task<ResponseResult> GetFormRights(int ID)
+        {
+            return await _ControlPlanDAL.GetFormRights(ID);
+        }
         public async Task<ResponseResult> GetNewEntryId(int Yearcode)
         {
             return await _ControlPlanDAL.GetNewEntryId(Yearcode);
