@@ -734,8 +734,8 @@
 				let value = $(this).val();
 
 
-				if (!/^\d*$/.test(value)) {
-					$(this).val(value.replace(/[^0-9]/g, ""));
+				if (!/^\d*\.?\d*$/.test(value)) {
+					$(this).val(value.replace(/[^0-9.]/g, ""));
 					$.notify("Only numbers (0-9) are allowed!", "error");
 				}
 
