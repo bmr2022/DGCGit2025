@@ -3967,8 +3967,8 @@
 
                 if ($('#divSaleBillList tr td').length <= 1) {
                     $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
-                } else if ($('#GSTNO').val() != "") {
-                    if ($('#divTaxGrid tr td').length <= 1) {
+                } else if ($('#GSTNO').val() != "" ) {
+                    if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                     } else {
                         if ($('#divAdjItemList tr td').length <= 1) {
