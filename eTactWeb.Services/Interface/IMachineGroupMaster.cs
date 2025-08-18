@@ -13,7 +13,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillMachineGroup();
 		Task<ResponseResult> SaveMachineGroupMaster(MachineGroupMasterModel model);
         Task<ResponseResult> GetDashboardData(MachineGroupMasterModel model);
-        Task<MachineGroupMasterModel> GetDashboardDetailData(string FromDate, string ToDate);
+        Task<MachineGroupMasterModel> GetDashboardDetailData();
         Task<ResponseResult> DeleteByID(int EntryId);
         Task<MachineGroupMasterModel> GetViewByID(int ID);
         Task<ResponseResult> GetFormRights(int uId);

@@ -131,16 +131,16 @@ namespace eTactWeb.Controllers
         {
             var model = new MachineGroupMasterModel();
             var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            DateTime now = DateTime.Now;
-            DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
-            Dictionary<int, string> monthNames = new Dictionary<int, string>
-            {
-                {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
-                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
-            };
+            //DateTime now = DateTime.Now;
+            //DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            //Dictionary<int, string> monthNames = new Dictionary<int, string>
+            //{
+            //    {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+            //    {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            //};
 
-            model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
-            model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+            //model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            //model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
 
 
             var Result = await _IMachineGroupMaster.GetDashboardData(model);
@@ -159,11 +159,11 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData()
         {
             //model.Mode = "Search";
             var model = new MachineGroupMasterModel();
-            model = await _IMachineGroupMaster.GetDashboardDetailData(FromDate, ToDate);
+            model = await _IMachineGroupMaster.GetDashboardDetailData();
 
             return PartialView("_MachineGroupMasterDashBoardGrid", model);
         }
