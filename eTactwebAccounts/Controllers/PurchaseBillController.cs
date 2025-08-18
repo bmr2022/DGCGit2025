@@ -1550,6 +1550,7 @@ public class PurchaseBillController : Controller
                     model.FinToDate = HttpContext.Session.GetString("ToDate");
                     model.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
                     model.Branch = HttpContext.Session.GetString("Branch");
+                    model.EntryDate =MainModel.EntryDate;
                     model.EntryByMachineName = GetEmpByMachineName();
                     model.PreparedByName = GetEmpByMachineName();
                     model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
