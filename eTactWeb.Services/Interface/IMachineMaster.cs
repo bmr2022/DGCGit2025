@@ -12,6 +12,8 @@ namespace eTactWeb.Services.Interface
     public interface IMachineMaster
     {
         //Task<ResponseResult> GetNewEntry(string Flag, int YearCode, string SPName);
+        Task<ResponseResult> GetFormRights(int uId);
+
         Task<ResponseResult> FillMachineGroup();
         Task<ResponseResult> FillMachineWorkCenter();
         Task<ResponseResult> SaveMachineMaster(MachineMasterModel model);

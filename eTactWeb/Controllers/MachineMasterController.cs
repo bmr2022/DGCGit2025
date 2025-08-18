@@ -29,6 +29,14 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
 
         }
+        public async Task<JsonResult> GetFormRights()
+        {
+            var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var JSON = await _IMachineMaster.GetFormRights(userID);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+
         [Route("{controller}/Index")]
         [HttpGet]
         public async Task<ActionResult> MachineMaster(int ID, string Mode, int MachineId, int MachGroupId, int WorkCenterId, string MachineCode, string MachineName,
