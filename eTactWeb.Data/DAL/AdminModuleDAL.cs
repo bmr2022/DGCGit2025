@@ -74,7 +74,7 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
-        public ResponseResult DeleteUserByID(int ID)
+        public async Task<ResponseResult> DeleteUserByID(int ID)
         {
             dynamic _ResponseResult = null;
 
@@ -82,29 +82,13 @@ namespace eTactWeb.Data.DAL
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
-                    SqlCommand oCmd = new SqlCommand("SP_UserMaster", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    oCmd.Parameters.AddWithValue("@RowID", ID);
-                    oCmd.Parameters.AddWithValue("@Flag", "DeleteByID");
+                    var SqlParams = new List<dynamic>();
+                    SqlParams.Add(new SqlParameter("@Flag", "DeleteByID"));
+                    SqlParams.Add(new SqlParameter("@RowID", ID));
+                    
 
-                    myConnection.Open();
-                    Reader = oCmd.ExecuteReader();
-                    if (Reader != null)
-                    {
-                        while (Reader.Read())
-                        {
-                            _ResponseResult = new ResponseResult()
-                            {
-                                StatusCode = Convert.ToInt32(Reader["StatusCode"].ToString()) == 410
-                                    ? HttpStatusCode.Gone
-                                    : HttpStatusCode.BadRequest,
-                                StatusText = "Success",
-                                Result = Reader["Result"].ToString()
-                            };
-                        }
-                    }
+                   
+                   _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_UserMaster", SqlParams);
                 }
             }
             catch (Exception ex)
@@ -613,6 +597,7 @@ namespace eTactWeb.Data.DAL
                                                       UserName = dr["UserName"].ToString(),
                                                       Module = dr["Module"].ToString(),
                                                       MainMenu = dr["MainMenu"].ToString(),
+                                                      UserType = dr["UserType"].ToString(),
                                                       //SubMenu = dr["SubMenu"].ToString(),
                                                       All = dr["OptAll"].ToString() == "True" ? "true" : "false",
                                                       Save = dr["OptSave"].ToString() == "True" ? "true" : "false",

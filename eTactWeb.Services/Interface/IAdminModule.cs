@@ -8,7 +8,7 @@ namespace eTactWeb.Services.Interface
     {
         ResponseResult DeleteRightByID(int ID);
 
-        ResponseResult DeleteUserByID(int ID);
+        Task<ResponseResult> DeleteUserByID(int ID);
 
         Task<IList<UserMasterModel>> GetDashBoardData(string Flag,string Usertype,string EmpCode, string EmpName,string UserName);
 
