@@ -64,7 +64,7 @@
                                     </span>
                                 </a>
                                 <a class="table-link link-danger" asp-controller="EmployeeMaster" onclick="confirmDelete(event)" asp-action="DeleteByID"
-                                   asp-route-ID="@employee.EmpId">
+                                   asp-route-ID="@employee.EmpId" asp-route-EmpName="@employee.Name">
                                     <span class="fa-stack">
                                         <i class="fa fa-square fa-stack-2x"></i>
                                         <i class="fa fa-trash fa-stack-1x fa-inverse"></i>

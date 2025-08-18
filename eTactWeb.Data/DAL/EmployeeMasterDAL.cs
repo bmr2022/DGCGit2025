@@ -259,29 +259,32 @@ namespace eTactWeb.Data.DAL
             {
                 using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
                 {
-                    SqlCommand oCmd = new SqlCommand("HREmployeeMaster", myConnection)
-                    {
-                        CommandType = CommandType.StoredProcedure
-                    };
-                    oCmd.Parameters.AddWithValue("@empid", ID);
-                    oCmd.Parameters.AddWithValue("@EmpName", EmpName);
-                    oCmd.Parameters.AddWithValue("@Flag", "DELETE");
-                    await myConnection.OpenAsync();
-                    Reader = await oCmd.ExecuteReaderAsync();
-                    if (Reader != null)
-                    {
-                        while (Reader.Read())
-                        {
-                            _ResponseResult = new ResponseResult()
-                            {
-                                StatusCode = Convert.ToInt32(Reader["StatusCode"].ToString()) == 410
-                                    ? HttpStatusCode.Gone
-                                    : HttpStatusCode.BadRequest,
-                                StatusText = "Success",
-                                Result = Reader["Result"].ToString() ?? string.Empty
-                            };
-                        }
-                    }
+                    //SqlCommand oCmd = new SqlCommand("HREmployeeMaster", myConnection)
+                    //{
+                    //    CommandType = CommandType.StoredProcedure
+                    //};
+                    var SqlParams = new List<dynamic>();
+                    SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                    SqlParams.Add(new SqlParameter("@empid", ID));
+                    SqlParams.Add(new SqlParameter("@EmpName", EmpName));
+                   
+                    
+                    //Reader = await oCmd.ExecuteReaderAsync();
+                    //if (Reader != null)
+                    //{
+                    //    while (Reader.Read())
+                    //    {
+                    //        _ResponseResult = new ResponseResult()
+                    //        {
+                    //            StatusCode = Convert.ToInt32(Reader["StatusCode"].ToString()) == 410
+                    //                ? HttpStatusCode.Gone
+                    //                : HttpStatusCode.BadRequest,
+                    //            StatusText = "Success",
+                    //            Result = Reader["Result"].ToString() ?? string.Empty
+                    //        };
+                    //    }
+                    //}
+                    _ResponseResult = await _IDataLogic.ExecuteDataTable("HREmployeeMaster", SqlParams);
                 }
             }
             catch (Exception ex)
