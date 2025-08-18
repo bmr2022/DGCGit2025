@@ -369,7 +369,7 @@ namespace eTactWeb.Data.DAL
             {
                 var SqlParams = new List<dynamic>();
 
-                SqlParams.Add(new SqlParameter("@Flag", "GetAllUserRights"));
+                SqlParams.Add(new SqlParameter("@Flag", "GetAllUserRights1"));
                 SqlParams.Add(new SqlParameter("@EmpID", EmpId));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_UserMaster", SqlParams);
             }
