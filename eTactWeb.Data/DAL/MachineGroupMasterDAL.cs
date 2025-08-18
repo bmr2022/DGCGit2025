@@ -123,7 +123,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<MachineGroupMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
+        public async Task<MachineGroupMasterModel> GetDashboardDetailData()
         {
             DataSet? oDataSet = new DataSet();
             var model = new MachineGroupMasterModel();

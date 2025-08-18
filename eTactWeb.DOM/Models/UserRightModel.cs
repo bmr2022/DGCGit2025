@@ -10,6 +10,7 @@ namespace eTactWeb.DOM.Models
         public IList<TextValue>? UserList { get; set; }
         public string? EmpName { get; set; }
         public string? UserName { get; set; }
+        public string? UserType { get; set; }
         public string? MainMenu { get; set; }
         public IList<TextValue>? MainMenuList { get; set; }
         public string? Module { get; set; }

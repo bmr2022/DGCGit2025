@@ -22,7 +22,7 @@ public class AdminModuleBLL : IAdminModule
         return _AdminModuleDAL.DeleteRightByID(ID);
     }
 
-    public ResponseResult DeleteUserByID(int ID)
+    public Task<ResponseResult> DeleteUserByID(int ID)
     {
         return _AdminModuleDAL.DeleteUserByID(ID);
     }

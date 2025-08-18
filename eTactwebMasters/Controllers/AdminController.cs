@@ -53,14 +53,20 @@ public class AdminController : Controller, IAsyncDisposable
 
     #region UserMaster
 
-    public IActionResult DeleteUserByID(int ID)
+    public async Task<IActionResult> DeleteUserByID(int ID)
     {
-        Result = _IAdminModule.DeleteUserByID(ID);
+       // Result = _IAdminModule.DeleteUserByID(ID);
+        var Result = await _IAdminModule.DeleteUserByID(ID).ConfigureAwait(true);
 
         if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.OK)
         {
             ViewBag.isSuccess = true;
             TempData["410"] = "410";
+        }
+        else
+        {
+            ViewBag.isSuccess = false;
+            TempData["403"] = "403";
         }
 
         return RedirectToAction(nameof(UserDashBoard));
