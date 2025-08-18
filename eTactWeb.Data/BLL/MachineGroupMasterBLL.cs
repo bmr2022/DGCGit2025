@@ -38,9 +38,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _MachineGroupMasterDAL.GetDashboardData(model);
         }
-        public async Task<MachineGroupMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
+        public async Task<MachineGroupMasterModel> GetDashboardDetailData()
         {
-            return await _MachineGroupMasterDAL.GetDashboardDetailData(FromDate, ToDate);
+            return await _MachineGroupMasterDAL.GetDashboardDetailData();
         }
         public async Task<ResponseResult> DeleteByID(int EntryId)
         {
