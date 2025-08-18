@@ -85,15 +85,32 @@ namespace eTactWeb.Controllers
 
             return View(MainModel); 
         }
+        [HttpPost]
+        public IActionResult SaveSelectedRowsToSession(string selectedRows)
+        {
+            if (!string.IsNullOrEmpty(selectedRows))
+            {
+                HttpContext.Session.SetString("KeyCloseProductionPlanGrid", selectedRows);
+            }
+            return Json(new { success = true });
+        }
         [Route("{controller}/Index")]
         [HttpPost]
         public async Task<IActionResult> CloseProductionPlan(CloseProductionPlanModel model)
         {
             try
             {
-                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
 
-                var Result = await _ICloseProductionPlan.SaveCloseProductionPlan(model);
+                string modelJson = HttpContext.Session.GetString("KeyCloseProductionPlanGrid");
+                List<CloseProductionPlanModel> CloseProductionPlanDetail = new List<CloseProductionPlanModel>();
+
+                if (!string.IsNullOrEmpty(modelJson))
+                {
+                    CloseProductionPlanDetail = JsonConvert.DeserializeObject<List<CloseProductionPlanModel>>(modelJson);
+                }
+                model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+                var GIGrid = GetDetailTable(CloseProductionPlanDetail);
+                var Result = await _ICloseProductionPlan.SaveCloseProductionPlan(model,GIGrid);
                 if (Result != null)
                 {
                     if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
@@ -132,7 +149,47 @@ namespace eTactWeb.Controllers
                 return View("Error", ResponseResult);
             }
         }
+        private static DataTable GetDetailTable(IList<CloseProductionPlanModel> DetailList)
+        {
+            try
+            {
+                var GIGrid = new DataTable();
 
+                GIGrid.Columns.Add("PlanNoEntryId", typeof(long));
+                GIGrid.Columns.Add("PlanNoYearCode", typeof(long));
+                GIGrid.Columns.Add("PlanNo", typeof(string));
+                GIGrid.Columns.Add("SONO", typeof(string));
+                GIGrid.Columns.Add("SOYearCode", typeof(long));
+                GIGrid.Columns.Add("CustomerOrderNo", typeof(string));
+                GIGrid.Columns.Add("SchNo", typeof(string));
+                GIGrid.Columns.Add("SchYearCode", typeof(long));
+                GIGrid.Columns.Add("Itemcode", typeof(long));
+
+                foreach (var Item in DetailList)
+                {
+                    GIGrid.Rows.Add(
+                        new object[]
+                        {
+                    Item.EntryId,
+                    Item.YearCode,
+                    Item.WONO,
+                    Item.SONO ,
+                    Item.YearCode ,
+                    Item.CustomerOrderNo ,
+                    Item.SchNo ,
+                    Item.YearCode ,
+                    Item.ItemCode ,
+
+                        });
+                }
+                GIGrid.Dispose();
+                return GIGrid;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
         public async Task<JsonResult> GetOpenItemName(int EmpId, int ActualEntryId)
         {
             var JSON = await _ICloseProductionPlan.GetOpenItemName( EmpId,  ActualEntryId);
@@ -157,7 +214,7 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
-        public async Task<IActionResult> GetDetailData(int EmpId, string ActualEntryByEmpName, string ReportType, string FromDate, string ToDate)
+        public async Task<IActionResult> GetDetailData(int EmpId, string ActualEntryByEmpName, string ReportType, string FromDate, string ToDate, string CloseOpen)
         {
             //model.Mode = "Search";
             var model = new CloseProductionPlanModel();
@@ -165,7 +222,7 @@ namespace eTactWeb.Controllers
             ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
             EmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             ReportType ??= "SUMMARY";
-            model = await _ICloseProductionPlan.GetGridDetailData(EmpId, ActualEntryByEmpName, ReportType, FromDate, ToDate);
+            model = await _ICloseProductionPlan.GetGridDetailData(EmpId, ActualEntryByEmpName, ReportType, FromDate, ToDate,  CloseOpen);
             if(ReportType== "SUMMARY")
             {
                 return PartialView("_CloseProductionPlanSummaryGrid", model);

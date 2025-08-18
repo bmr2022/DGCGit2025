@@ -199,5 +199,126 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
-	}
+        public async Task<ResponseResult> GetDashboardData(AssetsMasterModel model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                SqlParams.Add(new SqlParameter("@fromDate", model.FromDate));
+                SqlParams.Add(new SqlParameter("@toDate", model.ToDate));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpAssetsMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
+        {
+            DataSet? oDataSet = new DataSet();
+            var model = new AssetsMasterModel();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("AccSpAssetsMaster", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@fromDate", FromDate);
+                    oCmd.Parameters.AddWithValue("@toDate", ToDate);
+
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+
+                    model.AssetsMasterGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                                                select new AssetsMasterModel
+                                                                {
+                                                                    AssetsEntryId = dr["AssetsEntryId"] != DBNull.Value ? Convert.ToInt32(dr["AssetsEntryId"]) : 0,
+                                                                    AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
+                                                                    EntryDate = dr["EntryDate"] != DBNull.Value ? Convert.ToString(dr["EntryDate"]) : "",
+                                                                    AssetsCode = dr["AssetsCode"] != DBNull.Value ? Convert.ToString(dr["AssetsCode"]) : string.Empty,
+                                                                    AssetsName = dr["AssetsName"] != DBNull.Value ? Convert.ToString(dr["AssetsName"]) : string.Empty,
+                                                                    ItemCode = dr["ItemCode"] != DBNull.Value ? Convert.ToInt32(dr["ItemCode"]) : 0,
+                                                                    AssetsCateogryId = dr["AssetsCateogryId"] != DBNull.Value ? Convert.ToInt32(dr["AssetsCateogryId"]) : 0,
+                                                                    ParentAccountName = dr["ParentAccountName"] != DBNull.Value ? Convert.ToString(dr["ParentAccountName"]) : string.Empty,
+                                                                    ParentAccountCode = dr["ParentAccountCode"] != DBNull.Value ? Convert.ToInt32(dr["ParentAccountCode"]) : 0,
+                                                                    MainGroup = dr["MainGroup"] != DBNull.Value ? Convert.ToString(dr["MainGroup"]) : string.Empty,
+                                                                    SubGroup = dr["SubGroup"] != DBNull.Value ? Convert.ToString(dr["SubGroup"]) : string.Empty,
+                                                                    UnderGroup = dr["UnderGroup"] != DBNull.Value ? Convert.ToString(dr["UnderGroup"]) : string.Empty,
+                                                                    SubSubGroup = dr["SubSubGroup"] != DBNull.Value ? Convert.ToInt32(dr["SubSubGroup"]) : 0,
+                                                                    CostCenterId = dr["CostCenterId"] != DBNull.Value ? Convert.ToInt32(dr["CostCenterId"]) : 0,
+                                                                    FiscalYear = dr["Fiscalyear"] != DBNull.Value ? Convert.ToInt32(dr["Fiscalyear"]) : 0,
+                                                                    //Vend = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : string.Empty,
+                                                                    VendoreAccountCode = dr["VendoreAccountCode"] != DBNull.Value ? Convert.ToInt32(dr["VendoreAccountCode"]) : 0,
+                                                                    PONO = dr["PONO"] != DBNull.Value ? Convert.ToString(dr["PONO"]) : string.Empty,
+                                                                    PODate = dr["PODate"] != DBNull.Value ? Convert.ToString(dr["PODate"]) : "",
+                                                                    POYear = dr["POYear"] != DBNull.Value ? Convert.ToInt32(dr["POYear"]) : 0,
+                                                                    InvoiceNo = dr["InvoiceNo"] != DBNull.Value ? Convert.ToString(dr["InvoiceNo"]) : string.Empty,
+                                                                    InvoiceDate = dr["InvoiceDate"] != DBNull.Value ? Convert.ToString(dr["InvoiceDate"]) : "",
+                                                                    InvoiceYearCode = dr["InvoiceYearCode"] != DBNull.Value ? Convert.ToInt32(dr["InvoiceYearCode"]) : 0,
+                                                                    NetBookValue = dr["NetBookValue"] != DBNull.Value ? Convert.ToDecimal(dr["NetBookValue"]) : 0,
+                                                                    PurchaseValue = dr["PurchaseValue"] != DBNull.Value ? Convert.ToDecimal(dr["PurchaseValue"]) : 0,
+                                                                    ResidualValue = dr["ResidualValue"] != DBNull.Value ? Convert.ToDecimal(dr["ResidualValue"]) : 0,
+                                                                    DepreciationMethod = dr["DepreciationMethod"] != DBNull.Value ? Convert.ToString(dr["DepreciationMethod"]) : string.Empty,
+                                                                    PurchaseNewUsed = dr["PurchaseNewUsed"] != DBNull.Value ? Convert.ToString(dr["PurchaseNewUsed"]) : string.Empty,
+                                                                    CountryOfOrigin = dr["CountryOfOrigin"] != DBNull.Value ? Convert.ToString(dr["CountryOfOrigin"]) : string.Empty,
+                                                                    FirstAqusitionOn = dr["FirstAqusitionOn"] != DBNull.Value ? Convert.ToString(dr["FirstAqusitionOn"]) : "",
+                                                                    OriginalValue = dr["OriginalValue"] != DBNull.Value ? Convert.ToDecimal(dr["OriginalValue"]) : 0,
+                                                                    CapatalizationDate = dr["CapatalizationDate"] != DBNull.Value ? Convert.ToString(dr["CapatalizationDate"]) : "",
+                                                                    BarCode = dr["BarCode"] != DBNull.Value ? Convert.ToString(dr["BarCode"]) : string.Empty,
+                                                                    SerialNo = dr["SerialNo"] != DBNull.Value ? Convert.ToString(dr["SerialNo"]) : string.Empty,
+                                                                    LocationOfInsallation = dr["LocationOfInsallation"] != DBNull.Value ? Convert.ToString(dr["LocationOfInsallation"]) : string.Empty,
+                                                                    ForDepartmentId = dr["ForDepartmentId"] != DBNull.Value ? Convert.ToInt32(dr["ForDepartmentId"]) : 0,
+                                                                    Technician = dr["Technician"] != DBNull.Value ? Convert.ToString(dr["Technician"]) : string.Empty,
+                                                                    TechnicialcontactNo = dr["TechnicialcontactNo"] != DBNull.Value ? Convert.ToString(dr["TechnicialcontactNo"]) : string.Empty,
+                                                                    TechEmployeeName = dr["TechEmployeeName"] != DBNull.Value ? Convert.ToString(dr["TechEmployeeName"]) : string.Empty,
+                                                                    //Custo = dr["CustodiaEmployee"] != DBNull.Value ? Convert.ToString(dr["CustodiaEmployee"]) : string.Empty,
+                                                                    CustoidianEmpId = dr["CustoidianEmpId"] != DBNull.Value ? Convert.ToInt32(dr["CustoidianEmpId"]) : 0,
+                                                                    ConsiderInInvetory = dr["ConsiderInInvetory"] != DBNull.Value ? Convert.ToString(dr["ConsiderInInvetory"]) : string.Empty,
+                                                                    InsuranceCompany = dr["InsuranceCompany"] != DBNull.Value ? Convert.ToString(dr["InsuranceCompany"]) : string.Empty,
+                                                                    InsuredAmount = dr["InsuredAmount"] != DBNull.Value ? Convert.ToDecimal(dr["InsuredAmount"]) : 0,
+                                                                    InsuranceDetail = dr["InsuranceDetail"] != DBNull.Value ? Convert.ToString(dr["InsuranceDetail"]) : string.Empty,
+                                                                    CC = dr["CC"] != DBNull.Value ? Convert.ToString(dr["CC"]) : string.Empty,
+                                                                    UID = dr["UID"] != DBNull.Value ? Convert.ToInt32(dr["UID"]) : 0,
+                                                                    ActualEntryBy = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
+                                                                    ActualEntryByEmpName = dr["ActualEntryByEmployee"] != DBNull.Value ? Convert.ToString(dr["ActualEntryByEmployee"]) : string.Empty,
+                                                                    ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToString(dr["ActualEntryDate"]) : "",
+                                                                    LastupdatedBy = dr["LastupdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["LastupdatedBy"]) : 0,
+                                                                    LastUpdatedDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedDate"]) : "",
+                                                                    EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
+                                                                    LastUpdatedbyEmpName = dr["UpdatedByEmployee"] != DBNull.Value ? Convert.ToString(dr["UpdatedByEmployee"]) : string.Empty,
+
+                                                                }).ToList();
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
+            return model;
+        }
+    }
 }

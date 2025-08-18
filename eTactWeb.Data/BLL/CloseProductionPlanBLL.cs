@@ -38,13 +38,13 @@ namespace eTactWeb.Data.BLL
         {
             return await _CloseProductionPlanDAL.GetClosePlanNo( EmpId,  ActualEntryId);
         }
-        public async Task<CloseProductionPlanModel> GetGridDetailData(int EmpId, string ActualEntryByEmpName, string ReportType, string FromDate, string ToDate)
+        public async Task<CloseProductionPlanModel> GetGridDetailData(int EmpId, string ActualEntryByEmpName, string ReportType, string FromDate, string ToDate, string CloseOpen)
         {
-            return await _CloseProductionPlanDAL.GetGridDetailData( EmpId, ActualEntryByEmpName, ReportType,  FromDate,  ToDate);
+            return await _CloseProductionPlanDAL.GetGridDetailData( EmpId, ActualEntryByEmpName, ReportType,  FromDate,  ToDate,  CloseOpen);
         }
-        public async Task<ResponseResult> SaveCloseProductionPlan(CloseProductionPlanModel model)
+        public async Task<ResponseResult> SaveCloseProductionPlan(CloseProductionPlanModel model, DataTable GIGrid)
         {
-            return await _CloseProductionPlanDAL.SaveCloseProductionPlan(model);
+            return await _CloseProductionPlanDAL.SaveCloseProductionPlan(model, GIGrid);
         }
 
     }

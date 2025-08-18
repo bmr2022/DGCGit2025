@@ -15,7 +15,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetOpenPlanNo(int EmpId,int ActualEntryId);
         Task<ResponseResult> GetCloseItemName(int EmpId,int ActualEntryId);
         Task<ResponseResult> GetClosePlanNo(int EmpId,int ActualEntryId);
-        Task<CloseProductionPlanModel> GetGridDetailData(int EmpId, string ActualEntryByEmpName, string ReportType, string FromDate, string ToDate);
-        Task<ResponseResult> SaveCloseProductionPlan(CloseProductionPlanModel model);
+        Task<CloseProductionPlanModel> GetGridDetailData(int EmpId, string ActualEntryByEmpName, string ReportType, string FromDate, string ToDate, string CloseOpen);
+        Task<ResponseResult> SaveCloseProductionPlan(CloseProductionPlanModel model, DataTable GIGrid);
     }
 }

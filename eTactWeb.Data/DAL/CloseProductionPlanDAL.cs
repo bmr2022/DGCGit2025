@@ -105,19 +105,18 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<ResponseResult> SaveCloseProductionPlan(CloseProductionPlanModel model)
+        public async Task<ResponseResult> SaveCloseProductionPlan(CloseProductionPlanModel model, DataTable GIGrid)
         {
             var _ResponseResult = new ResponseResult();
 
             try
             {
                 var sqlParams = new List<dynamic>();
-                
                     sqlParams.Add(new SqlParameter("@Flag", "Insert"));
                     sqlParams.Add(new SqlParameter("@CloseOpen", model.CloseOpen));
                     sqlParams.Add(new SqlParameter("@Approvedby", model.EmpId));
-                    sqlParams.Add(new SqlParameter("@ApprovalDate", model.ApprovalDate));
-               
+                    sqlParams.Add(new SqlParameter("@ApprovalDate", model.EntryDate));
+                sqlParams.Add(new SqlParameter("@dt", GIGrid));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("SPCloseOpenProdPlanProdSch", sqlParams);
 
             }
@@ -131,7 +130,7 @@ namespace eTactWeb.Data.DAL
 
             return _ResponseResult;
         }
-        public async Task<CloseProductionPlanModel> GetGridDetailData(int EmpId, string ActualEntryByEmpName, string ReportType,string FromDate,string ToDate)
+        public async Task<CloseProductionPlanModel> GetGridDetailData(int EmpId, string ActualEntryByEmpName, string ReportType,string FromDate,string ToDate,string CloseOpen)
         {
 
             DataSet? oDataSet = new DataSet();
@@ -158,6 +157,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ActualEntryByEmpName", ActualEntryByEmpName);
                     oCmd.Parameters.AddWithValue("@FromDate", FromDate);
                     oCmd.Parameters.AddWithValue("@ToDate", ToDate);
+                    oCmd.Parameters.AddWithValue("@CloseOpen", CloseOpen);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -174,7 +174,7 @@ namespace eTactWeb.Data.DAL
                                                          {
                                                              WONO = dr["WONO"].ToString(),
                                                              WODate = DateTime.Parse(dr["WODate"].ToString()).ToString("dd/MM/yyyy"),
-                                                             WOStatus = dr["WoStataus"].ToString(),
+                                                             CloseOpen = dr["WoStataus"].ToString(),
                                                              EntryDate = dr["EntryDate"].ToString(),
                                                              EffectiveFrom = dr["EffectiveFrom"].ToString(),
                                                              EffectiveTill = DateTime.Parse(dr["EffectiveTill"].ToString()).ToString("dd/MM/yyyy"),
@@ -184,7 +184,10 @@ namespace eTactWeb.Data.DAL
                                                              Approved = dr["Approved"].ToString(),
                                                              ApprovedDate = DateTime.Parse(dr["ApprovedDate"].ToString()).ToString("dd/MM/yyyy"),
                                                              CloseWO = dr["CloseWo"].ToString(),
-                                                             CloseDate = DateTime.Parse(dr["CloseDate"].ToString()).ToString("dd/MM/yyyy"),
+                                                             CloseDate = dr["CloseDate"] == DBNull.Value || string.IsNullOrWhiteSpace(dr["CloseDate"].ToString())
+    ? null
+    : DateTime.Parse(dr["CloseDate"].ToString()).ToString("dd/MM/yyyy"),
+
                                                              DeactivateWO = dr["DeactivateWo"].ToString(),
                                                              DeactivateDate = DateTime.Parse(dr["Deactivatedate"].ToString()).ToString("dd/MM/yyyy"),
                                                              MachineName = dr["MachineName"].ToString(),
@@ -210,7 +213,7 @@ namespace eTactWeb.Data.DAL
                                                          {
                                                              WONO = dr["WONO"].ToString(),
                                                              WODate = DateTime.Parse(dr["WODate"].ToString()).ToString("dd/MM/yyyy"),
-                                                             WOStatus = dr["WoStataus"].ToString(),
+                                                             CloseOpen = dr["WoStataus"].ToString(),
                                                              AccountName = dr["Account_Name"].ToString(),
                                                              ItemName = dr["ItemName"].ToString(),
                                                              PartCode = dr["PartCode"].ToString(),
@@ -235,7 +238,9 @@ namespace eTactWeb.Data.DAL
                                                              EffectiveTill = DateTime.Parse(dr["EffectiveTill"].ToString()).ToString("dd/MM/yyyy"),
                                                              ForMonth = dr["ForMonth"].ToString(),
                                                              CloseWO = dr["CloseWo"].ToString(),
-                                                             CloseDate = DateTime.Parse(dr["CloseDate"].ToString()).ToString("dd/MM/yyyy"),
+                                                             CloseDate = dr["CloseDate"] == DBNull.Value || string.IsNullOrWhiteSpace(dr["CloseDate"].ToString())
+    ? null
+    : DateTime.Parse(dr["CloseDate"].ToString()).ToString("dd/MM/yyyy"),
                                                              CloseBy = dr["CloseBy"].ToString(),
                                                              RemarkProductSupplyStage = dr["Remarkproductsupplystage"].ToString(),
                                                              RemarkForProduction = dr["RemarkForProduction"].ToString(),

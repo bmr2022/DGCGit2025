@@ -46,5 +46,13 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _AssetsMasterDAL.SaveAssetsMaster(model);
 		}
-	}
+        public async Task<ResponseResult> GetDashboardData(AssetsMasterModel model)
+        {
+            return await _AssetsMasterDAL.GetDashboardData(model);
+        }
+        public async Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
+        {
+            return await _AssetsMasterDAL.GetDashboardDetailData(FromDate, ToDate);
+        }
+    }
 }
