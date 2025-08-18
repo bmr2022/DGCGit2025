@@ -214,11 +214,14 @@
 	<script>
 		$(document).ready(function () {
 			GetFormRights();
+			GetServerDate();
+
 			if ($('#Mode').val() !== "U") {
 
 				FillEntryID();
 				TotalNoOfRows();
 			}
+
 			//FillMachineGroup();
 			$('#EntryId').rules("remove", "required");
 			$('#YearCode').rules("remove", "required");
@@ -242,12 +245,15 @@
 
 			$('#totalRows').text($('#divStockGrid tr').length);
 
-
-			setFormattedDate();
+			
 			$('#GridButton').click(function (e) {
-				setFormattedDate();
+				GetServerDate();
 			});
 
+		
+
+
+		});
 			$('.submitBTN').click(function (e) {
 
 				console.log("SubmitButton Click");
@@ -255,9 +261,35 @@
 				//$(this).off('click');
 				$('form').submit();
 			});
+		function GetServerDate() {
 
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("GetServerDate", "GateInward")",
+				async: false,
+				success: function (result, status, error) {
+					if (result != null) {
 
-		});
+						var today = new Date();
+						if ($('#Mode').val() != "U" && $('#Mode').val() != "V")
+						{
+							$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+							$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+							$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+						
+						}
+						else
+						{
+							var EntryDate = parseDateToFormat($('#EntryDate').val().split("-").join("/"));
+							$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
+							$('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
+							$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(EntryDate));
+						}
+					}
+				}
+			});
+		}
+
 		function GetFormRights() {
 
 			$.ajax({
@@ -291,13 +323,14 @@
 					$.notify(errMsg, { position: "top center", className: "error" });
 				}
 			});
-			calculateSumAndSetValues();
+		
 		}
 
 		$('#MachineGroup').change(function () {
 			$('#MachineId').val($('#MachineGroup').val());
 		});
 		function setFormattedDate() {
+
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
 			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -449,7 +482,7 @@
 					FillAltStock();
 					GetUnitAltUnit($('#OriginalItemCode').val());
 
-					setFormattedDate();
+					GetServerDate();
 					if ($('#IssueToStoreWC').val() == 'W') {
 						FillCurrentWIPBatchINStore();
 					}
@@ -481,7 +514,7 @@
 					FillAltStock();
 					GetUnitAltUnit($('#OriginalItemCode').val());
 
-					setFormattedDate();
+					GetServerDate();
 					if ($('#IssueToStoreWC').val() == 'W') {
 						FillCurrentWIPBatchINStore();
 					}

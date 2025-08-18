@@ -988,7 +988,7 @@ public class ItemMasterController : Controller
                     string hsnString = worksheet.Cells[row, headersMap["HSNNO"]] .Value?.ToString().Trim() ?? string.Empty;
                     if (!string.IsNullOrEmpty(hsnString))
                     {
-                        if (!System.Text.RegularExpressions.Regex.IsMatch(hsnString, @"^\d{6}$"))
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(hsnString, @"^\d{8}$"))
                         {
                             errors.Add($"Invalid HSNNo: {hsnString} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                             continue;
@@ -1574,7 +1574,7 @@ public class ItemMasterController : Controller
 
                     if (!string.IsNullOrEmpty(hsnString))
                     {
-                        if (!System.Text.RegularExpressions.Regex.IsMatch(hsnString, @"^\d{6}$"))
+                        if (!System.Text.RegularExpressions.Regex.IsMatch(hsnString, @"^\d{8}$"))
                         {
                                 errors.Add($"Invalid HSNNo: {hsnString} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
                                 continue;
@@ -1969,7 +1969,7 @@ public class ItemMasterController : Controller
 
                 if (!string.IsNullOrEmpty(hsnNoValue))
                 {
-                    if (!System.Text.RegularExpressions.Regex.IsMatch(hsnNoValue, @"^\d{6}$"))
+                    if (!System.Text.RegularExpressions.Regex.IsMatch(hsnNoValue, @"^\d{8}$"))
                     {
                         return StatusCode(207, $"Invalid HSNNo: {hsnNoValue} at row {row} (PartCode: {partCode}, ItemName: {ItemName})");
 

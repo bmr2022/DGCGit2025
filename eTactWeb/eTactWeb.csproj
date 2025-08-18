@@ -218,4 +218,10 @@
 	  <UpToDateCheckInput Remove="Views\CustSaleNewRate\_CustSaleNewRateGrid.cshtml" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <None Update="license.lic">
+	    <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
