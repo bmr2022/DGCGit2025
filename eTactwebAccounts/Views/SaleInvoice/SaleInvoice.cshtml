@@ -816,7 +816,7 @@
                 $('#btnClose').prop('disabled', true);
 
                 // Wait a bit, then submit the form
-                setTimeout(() => {
+              //  setTimeout(() => {
                     submitForm(false, null).then(() => {
                         // After async process completes
                         $('#EinvoicePopup').modal("hide");
@@ -824,7 +824,7 @@
                         $('#btnCloseSpinner').addClass('d-none');
                         $('#btnClose').prop('disabled', false);
                     });
-                }, 300);
+              //  }, 300);
             });
             GetFeatureOption();
             GetMaxSaleInvoiceEntryDate();
@@ -856,9 +856,9 @@
                     sendInvoiceRequest();
                 }
                 else {
-                    setTimeout(() => {
+                 //   setTimeout(() => {
                         submitForm(true, null); // no print
-                    }, 300);
+                   // }, 300);
                 }
             });
 
@@ -869,9 +869,9 @@
                     sendInvoiceRequest();
                 }
                 else {
-                    setTimeout(() => {
+                   // setTimeout(() => {
                         submitForm(true, null); // no print
-                    }, 300);
+                   // }, 300);
                 }
             });
             function submitForm(ShouldEinvoice, printWindow) {
@@ -3958,8 +3958,7 @@
             });
         }
 
-        $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
-            ;
+             $('#submitBTN,#submitBTNfooter,#UpdateButton').click(function (e) {
             e.preventDefault();
 
             ValidateSubmitWrapper(function (isValid) {
@@ -3967,7 +3966,7 @@
 
                 if ($('#divSaleBillList tr td').length <= 1) {
                     $.notify('Sale Bill Grid Should Have Atleast 1 Item...!', "error");
-                } else if ($('#GSTNO').val() != "" ) {
+                } else if ($('#GSTRegistered').val() == 'Y') {
                     if ($('#divTaxGrid tr td').length <= 1 && $('#DomesticExportNEPZ').val() == "DOMESTIC") {
                         $.notify('Tax Grid Should Have Atleast 1 Item...!', "error");
                     } else {
@@ -4038,9 +4037,14 @@
                             }
                         }
                     }
+                } else {
+                    if (confirm("Are you sure you want to save this entry?")) {
+                        $('#EinvoicePopup').modal('show');
+                    }
                 }
             });
         });
+
 
         var EditEachItem = false;
         var EditDeleteBatchValidation = false;
@@ -4521,7 +4525,7 @@
             } else {
                $('#Group_CodeDiv').show();
             }
-        })
+        });
 
         function FillCurrency() {
 
@@ -4662,7 +4666,8 @@
             FillSOItemRate();
         });
 
-        $('#SONO').change(function () {
+        $('#SONO').change(function (event) {
+             event.preventDefault();
             $('#CustOrderNo').val('0');
             FillSOYearCode();
 
@@ -4744,7 +4749,6 @@
                     }
 
                     $('#SchNo,#SaleSchYearCode,#SOPendQty,#Rate').val(0);
-
                     $('#PartCode,#ItemCode').val(0).trigger("change");
                     $('#Batchno,#Uniquebatchno').val("");
                 }
