@@ -831,7 +831,26 @@
                 },
                 minLength: 2
             });
+
+
+            // 🔹 Clear dependent values when user clears text
+            $("#FgPartCodeText").on("input", function () {
+                if ($(this).val().trim() === "") {
+                    $('#FgPartCode').val("");
+                    $('#ItemCode').val("");
+                    $('#FgItemNameText').val("");
+                }
+            });
+
+            $("#FgItemNameText").on("input", function () {
+                if ($(this).val().trim() === "") {
+                    $('#FgPartCode').val("");
+                    $('#ItemCode').val("");
+                    $('#FgPartCodeText').val("");
+                }
+            });
         }
+
          function FillRMItems() {
             
             // Autocomplete for PartCodeText
@@ -866,7 +885,7 @@
                 select: function (event, ui) {
                     $("#RmPartCodeText").val(ui.item.value);
                     $('#RMPartCode').val(ui.item.value);
-                    $('#ItemCode').val(ui.item.itemCode);
+                    /* $('#ItemCode').val(ui.item.itemCode); */
 
                     // Now fetch ItemName for selected PartCode
                     $.ajax({
@@ -889,7 +908,7 @@
                     return false;
                 },
                 focus: function (event, ui) {
-                    $("#FgPartCodeText").val(ui.item.value);
+                    $("#RmPartCodeText").val(ui.item.value);
                     return false;
                 },
                 minLength: 2
@@ -926,7 +945,7 @@
                 },
                 select: function (event, ui) {
                     $("#RmItemNameText").val(ui.item.value);
-                    $('#ItemCode').val(ui.item.itemCode);
+                    /* $('#ItemCode').val(ui.item.itemCode); */
 
                     // Now fetch PartCode for selected ItemName
                     $.ajax({
@@ -1174,7 +1193,7 @@
             var toDate = $('#ToDate').val();
             var FGItemCode = $('#ItemCode').val();
             //var FGItemName = $('#FGItemName').val();
-            var RMPartCode = $('#RMPartCode').val();
+            var RMPartCode = $('#RmPartCodeText').val();
             var Yearcode = $('#YearCode').val();
             var Storeid = $('#StoreName').val();
             var calculateQty = $('#calculateQty').val();
