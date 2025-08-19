@@ -61,7 +61,14 @@ namespace eTactWeb.Controllers
             return PartialView("_TransactionLedgerMonthlySummaryGrid", model);
 
         }
-        public async Task<JsonResult> FillVoucherName()
+		public async Task<IActionResult> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, int LedgerGroup, int AccountCode, string VoucherType)
+		{
+			var model = new TransactionLedgerModel();
+			model = await _TransactionLedger.GetTransactionLedgerGroupSummaryDetailsData(FromDate, ToDate, ReportType, LedgerGroup, AccountCode, VoucherType);
+			return PartialView("_TransactionLedgerGroupSummaryGrid", model);
+
+		}
+		public async Task<JsonResult> FillVoucherName()
         {
             var JSON = await _TransactionLedger.FillVoucherName();
             string JsonString = JsonConvert.SerializeObject(JSON);

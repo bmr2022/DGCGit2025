@@ -468,7 +468,7 @@ public static class CommonFunc
                 }
                 else if (table.TableName == "CreditNoteSummTable" || Tbname == "CreditNoteSummTable")
                 {
-                    if (typeProperty.PropertyInfo.Name != "AccountName" && typeProperty.PropertyInfo.Name != "CheckBoxNo"
+                    if ( typeProperty.PropertyInfo.Name != "CheckBoxNo"
                         && typeProperty.PropertyInfo.Name != "PaymentCreditDay" && typeProperty.PropertyInfo.Name != "GstRegUnreg"
                         && typeProperty.PropertyInfo.Name != "ActualEnteredBy" && typeProperty.PropertyInfo.Name != "ActualEnteredByName"
                         && typeProperty.PropertyInfo.Name != "LastUpdatedBy" && typeProperty.PropertyInfo.Name != "LastUpdatedByName"

@@ -130,9 +130,6 @@ namespace eTactWeb.Data.DAL
                     command.Parameters.AddWithValue("@FromentryDate", ParseFormattedDate(FromentryDate));
                     command.Parameters.AddWithValue("@ToEntryDate", ParseFormattedDate(ToEntryDate));
                     command.Parameters.AddWithValue("@ACCOUNTCODE", AccountCode);
-
-
-
                     await connection.OpenAsync();
 
                     using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
@@ -167,7 +164,67 @@ namespace eTactWeb.Data.DAL
 
             return resultList;
         }
-        public async Task<ResponseResult> FillVoucherName()
+
+		public async Task<TransactionLedgerModel> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, int LedgerGroup,int AccountCode, string VoucherType)
+		{
+			var resultList = new TransactionLedgerModel();
+			DataSet oDataSet = new DataSet();
+
+			try
+			{
+				using (SqlConnection connection = new SqlConnection(DBConnectionString))
+				{
+					SqlCommand command = new SqlCommand("AccSpTrailBalancesheetProfitLossGroupLedger", connection)
+					{
+						CommandType = CommandType.StoredProcedure
+					};
+					command.Parameters.AddWithValue("@FromDate", ParseFormattedDate(FromDate));
+					command.Parameters.AddWithValue("@ToDate", ParseFormattedDate(ToDate));
+					command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
+					if (LedgerGroup > 0)
+					{
+						command.Parameters.AddWithValue("@GroupCode", LedgerGroup);
+					}
+					command.Parameters.AddWithValue("@FromFormName", "GROUPSUMMARYFORM");
+
+					await connection.OpenAsync();
+
+					using (SqlDataAdapter dataAdapter = new SqlDataAdapter(command))
+					{
+						dataAdapter.Fill(oDataSet);
+					}
+
+
+					if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+					{
+						resultList.TransactionLedgerGrid = (from DataRow row in oDataSet.Tables[0].Rows
+															select new TransactionLedgerModel
+															{
+																ParentLedgerName = row["ParentGroupName"] == DBNull.Value ? string.Empty : row["ParentGroupName"].ToString(),
+																AccountName = row["AccountName"] == DBNull.Value ? string.Empty : row["AccountName"].ToString(),
+																OpnDr = row["OpnDr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnDr"]),
+																OpnCr = row["OpnCr"] == DBNull.Value ? 0 : Convert.ToDecimal(row["OpnCr"]),
+																TotalOpening = row["TotalOpening"] == DBNull.Value ? 0 : Convert.ToDecimal(row["TotalOpening"]),
+																CurrDrAmt = row["CurrDrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrDrAmt"]),
+																CurrCrAmt = row["CurrCrAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrAmt"]),
+																NetCurrentAmt = row["NetCurrentAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NetCurrentAmt"]),
+																NetAmount = row["NetAmount"] == DBNull.Value ? 0 : Convert.ToDecimal(row["NetAmount"]),
+																GroupLedger = row["GroupLedger"] == DBNull.Value ? string.Empty : row["GroupLedger"].ToString()
+
+															}).ToList();
+					}
+				}
+
+			}
+			catch (Exception ex)
+			{
+				// Handle exception (log it or rethrow)
+				throw new Exception("Error fetching BOM tree data.", ex);
+			}
+
+			return resultList;
+		}
+		public async Task<ResponseResult> FillVoucherName()
         {
             var _ResponseResult = new ResponseResult();
             try

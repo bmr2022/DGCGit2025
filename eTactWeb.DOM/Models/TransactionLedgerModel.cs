@@ -30,7 +30,7 @@ namespace eTactWeb.DOM.Models
         public string Dr { get; set; }
         public string Cr { get; set; }
         public string Mode { get; set; }
-
+        public string AccountName {  get; set; }
         public int AccEntryId { get; set; }
         public int AccEntryYearCode { get; set; }
         public string VoucherDocDate { get; set; }
@@ -52,6 +52,14 @@ namespace eTactWeb.DOM.Models
         public decimal ClosingAmt { get; set; }
         public string Dr_CR { get; set; }
         public int  SeqNo{ get; set; }
-        public IList<TransactionLedgerModel> TransactionLedgerGrid{ get;set; }
+        public decimal OpnDr {  get; set; }
+        public decimal OpnCr {  get; set; }
+        public decimal TotalOpening {  get; set; }
+        public decimal CurrDrAmt {  get; set; }
+        public decimal CurrCrAmt {  get; set; }
+        public decimal NetCurrentAmt {  get; set; }
+        public decimal NetAmount {  get; set; }
+        public string? GroupLedger {  get; set; }
+		public IList<TransactionLedgerModel> TransactionLedgerGrid{ get;set; }
     } 
 }

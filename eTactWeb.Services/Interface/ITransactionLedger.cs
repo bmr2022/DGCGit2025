@@ -14,6 +14,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> FillLedgerName();
         public Task<TransactionLedgerModel> GetDetailsData(string FromDate, string ToDate, int AccountCode,string ReportType, int Ledger, string VoucherType);
         public Task<TransactionLedgerModel> GetTransactionLedgerMonthlySummaryDetailsData(string FromentryDate,string ToEntryDate,int AccountCode);
-        public Task<ResponseResult> FillVoucherName();
+        Task<TransactionLedgerModel> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, int LedgerGroup, int AccountCode, string VoucherType);
+		public Task<ResponseResult> FillVoucherName();
     }
 }
