@@ -1171,8 +1171,8 @@
                         if (data != null) {
                             console.log("@Model.FeatureOption.AllowPartCode")
                             // if (@Model.FeatureOption.AllowPartCode != True || "@Model.FeatureOption.AllowPartCode" != "True") {
-                            if ("@Model.FeatureOption.AllowPartCode" != true || "@Model.FeatureOption.AllowPartCode" != "True") {
-
+                          //  if ("@Model.FeatureOption.AllowPartCode" != true || "@Model.FeatureOption.AllowPartCode" != "True") {
+                            if ("@Model.FeatureOption.AllowPartCode".toLowerCase() === "false") {
                                 var obj = $.parseJSON(data);
                                 // alert(obj.Result.Table[0].partcode);
                                 console.log("obj"+obj);
