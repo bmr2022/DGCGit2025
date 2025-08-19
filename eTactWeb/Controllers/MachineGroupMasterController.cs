@@ -129,35 +129,43 @@ namespace eTactWeb.Controllers
 		}
         public async Task<IActionResult> MachineGroupMasterDashBoard(string FromDate, string ToDate)
         {
-            var model = new MachineGroupMasterModel();
-            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
-            //DateTime now = DateTime.Now;
-            //DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
-            //Dictionary<int, string> monthNames = new Dictionary<int, string>
-            //{
-            //    {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
-            //    {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
-            //};
+			try
+			{
+				var model = new MachineGroupMasterModel();
+				var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+				//DateTime now = DateTime.Now;
+				//DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+				//Dictionary<int, string> monthNames = new Dictionary<int, string>
+				//{
+				//    {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+				//    {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+				//};
 
-            //model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
-            //model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+				//model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+				//model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
 
 
-            var Result = await _IMachineGroupMaster.GetDashboardData(model);
+				var Result = await _IMachineGroupMaster.GetDashboardData(model);
 
-            if (Result.Result != null)
+				if (Result.Result != null)
+				{
+					var _List = new List<TextValue>();
+					DataSet DS = Result.Result;
+					if (DS != null && DS.Tables.Count > 0)
+					{
+						var dt = DS.Tables[0];
+						model.MachineGroupGrid = CommonFunc.DataTableToList<MachineGroupMasterModel>(dt, "MachineGroupMasterDashBoard");
+					}
+
+				}
+
+				return View(model);
+            }
+            catch (Exception ex)
             {
-                var _List = new List<TextValue>();
-                DataSet DS = Result.Result;
-                if (DS != null && DS.Tables.Count > 0)
-                {
-                    var dt = DS.Tables[0];
-                    model.MachineGroupGrid = CommonFunc.DataTableToList<MachineGroupMasterModel>(dt, "MachineGroupMasterDashBoard");
-                }
-
+                throw ex;
             }
 
-            return View(model);
         }
         public async Task<IActionResult> GetDetailData()
         {
