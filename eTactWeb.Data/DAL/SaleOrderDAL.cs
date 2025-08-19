@@ -153,6 +153,7 @@ namespace eTactWeb.Data.DAL
                                                              //AccountCode = row["AccountCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["AccountCode"]), 
                                                              PartText = row["Partcode"] == DBNull.Value ? string.Empty : row["Partcode"].ToString(),
                                                              ItemText = row["Item_Name"] == DBNull.Value ? string.Empty : row["Item_Name"].ToString(),
+                                                             Vehicle = row["usedinMachorVehicle"] == DBNull.Value ? string.Empty : row["usedinMachorVehicle"].ToString(),
                                                              
                                                              Unit = row["Unit"] == DBNull.Value ? string.Empty : row["Unit"].ToString(),
                                                              HSNNo = row["HsnNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["HsnNo"]),

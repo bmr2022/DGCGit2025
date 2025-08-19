@@ -29,6 +29,45 @@
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
     }
+
+ 
+    .modal-fullscreen .modal-content {
+        height: 80%;
+        border: 0;
+        border-radius: 0;
+    }
+
+    .tooltip-container {
+        position: relative;
+        display: inline-block;
+    }
+
+        .tooltip-container .tooltip-text {
+            visibility: hidden;
+            background-color: black;
+            color: #fff;
+            text-align: center;
+            padding: 3px 8px;
+            border-radius: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%; /* above the input */
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .tooltip-container:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+    .highlight-row {
+        background-color: #ffe8a1 !important; /* light yellow highlight */
+    }
+
+
 </style>
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_SODelivery" />
@@ -681,8 +720,7 @@
                                 <div class="row g-2 gx-3" id="_ItemGrid">
                                     <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                         <label asp-for="Group_Code" class="form-label">Group Name</label>
-                                        @* <button id="ShowGroupItem" onclick="AddMultipleItems()">Show All</button> *@
-                                        
+                                      
                                         <select class="form-select" asp-for="Group_Code" style="width:170px">
                                             <option value="0">-Select-</option>
                                         </select>
@@ -1278,9 +1316,10 @@
                                                 <th>Discount %</th>
                                                 <th>Discount Amt</th>
                                                 <th>Amount</th>
-                                               
+                                                <th>Vehicle</th>
                                                 <th>Unit</th>
                                                 <th>HSNNO</th>
+                                               
                                                
                                                 
                                             </tr>
@@ -2126,6 +2165,17 @@
 
         });//ready end here
 
+        $(document).on('mouseover', 'input[type="text"]', function () {
+            $(this).attr('title', $(this).val());
+        });
+        $(document).on("change", ".row-select", function () {
+            let row = $(this).closest("tr");
+            if ($(this).is(":checked")) {
+                row.addClass("highlight-row");
+            } else {
+                row.removeClass("highlight-row");
+            }
+        });
         function ShowGroupWiseItems() {
 
             //var reportType = $('#ReportType').val();
@@ -2179,6 +2229,7 @@
         }
 
         $('#Group_Code1').change(function () {
+            $('#MultiItemBody').empty();
             ShowGroupWiseItems();
         })
 
