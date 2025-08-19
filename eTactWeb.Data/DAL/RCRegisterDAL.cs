@@ -65,7 +65,7 @@ namespace eTactWeb.Data.DAL
                         oDataAdapter.Fill(oDataSet);
                     }
 
-                    if (ReportMode == "ISSUEDETAIL" || ReportMode == "ISSUESUMMARY"|| ReportMode == "ISSUEPARTYSUMMARY" || ReportMode == "ISSUEITEMSUMMARY" || ReportMode == "RECSUMMARY" || ReportMode == "RECDETAIL"|| ReportMode == "RECPARTYSUMMARY" || ReportMode == "RECITEMSUMMARY" || ReportMode == "RECONCILATIONSUMMARY" || ReportMode == "RECONCILATIONDETAIL")
+                    if (ReportMode == "ISSUEDETAIL" || ReportMode == "ISSUESUMMARY"|| ReportMode == "ISSUEPARTYSUMMARY" || ReportMode == "ISSUEITEMSUMMARY" || ReportMode == "RECSUMMARY" || ReportMode == "RECDETAIL"|| ReportMode == "RECPARTYSUMMARY" || ReportMode == "RECITEMSUMMARY" || ReportMode == "RECONCILATIONSUMMARY" || ReportMode == "RECONCILATIONDETAIL"|| ReportMode == "RECONCILATIONSUMMARY(Only Pending)")
                     {
                         if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
                         {
