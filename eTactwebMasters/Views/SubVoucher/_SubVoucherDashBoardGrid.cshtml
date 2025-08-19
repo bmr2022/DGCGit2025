@@ -52,7 +52,26 @@
                                         </a>
                                     </div>
                                     <div id="viewCursorDiv-@Cntr">
-                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="SubVoucher" asp-route-Mode="V" asp-route-ID="@item.PrefixEntryId"  onclick="BackButtonData(event);">
+                                        <a class="table-link link-success" id="viewCursor-@Cntr" asp-action="SubVoucher" asp-route-Mode="V" asp-route-ID="@item.PrefixEntryId"  onclick="BackButtonData(event);"
+                                           asp-route-PrefixEntryId="@item.PrefixEntryId"
+                                           asp-route-MainVoucherName="@item.MainVoucherName"
+                                           asp-route-MainVoucherTableName="@item.MainVoucherTableName"
+                                           asp-route-SubVoucherName="@item.SubVoucherName"
+                                           asp-route-VoucherRotationType="@item.VoucherRotationType"
+                                           asp-route-StartSubVouchDiffSeries="@item.StartSubVouchDiffSeries"
+                                           asp-route-SubVouchPrefix="@item.SubVouchPrefix"
+                                           asp-route-FromYearPrefix="@item.FromYearPrefix"
+                                           asp-route-ToYearPrefix="@item.ToYearPreFix"
+                                           asp-route-MonthPrefix="@item.MonthPrefix"
+                                           asp-route-DayPrefix="@item.DayPrefix"
+                                           asp-route-SeparatorApplicable="@item.SeparatorApplicable"
+                                           asp-route-Separator="@item.Separator"
+                                           asp-route-TotalLength="@item.TotalLength"
+                                           asp-route-ActualEntryBy="@item.ActualEntryBy"
+                                           asp-route-ActualEntryDate="@item.ActualEntryDate"
+                                           asp-route-UpdatedBy="@item.UpdatedBy"
+                                           asp-route-UpdationDate="@item.UpdationDate"
+                                           asp-route-EntryByMachine="@item.EntryByMachine">
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -131,7 +150,7 @@
                             <td>@item.SubVoucherName</td>
                             <td>@item.VoucherRotationType</td>
                             <td>@item.StartSubVouchDiffSeries</td>
-                            <td>@item.SubVouchPrefix</td>
+                            <td>@item.SubVouchPrefix</td> 
                             <td>@item.FromYearPrefix</td>
                             <td>@item.ToYearPreFix</td>
                             <td>@item.MonthPrefix</td>

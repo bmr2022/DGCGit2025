@@ -111,6 +111,12 @@ namespace eTactWeb.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
+        public async Task<JsonResult> FillEntryId(int YearCode, string EntryDate)
+		{
+			var JSON = await _IAssetsMaster.FillEntryId(YearCode, EntryDate);
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
         public async Task<JsonResult> FillCostCenterName()
 		{
 			var JSON = await _IAssetsMaster.FillCostCenterName();

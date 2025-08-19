@@ -40,6 +40,11 @@ else if (Model.ReportMode == "RECONCILATIONDETAIL")
 {
     <partial name="_ReconctiolationDetail" />
 }
+else if (Model.ReportMode == "RECONCILATIONSUMMARY(Only Pending)")
+{
+    <partial name="_ReconctiolationSummaryOnlyPending" />
+}
+
 else
 {
     <div class="table-responsive" style="max-height:300px;overflow-y:auto;">
