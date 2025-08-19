@@ -4515,6 +4515,14 @@
             });
         }
 
+        $('#SONO').change(function(){
+            if ($('#SONO').val() != '0') {
+                $('#Group_CodeDiv').hide();
+            } else {
+               $('#Group_CodeDiv').show();
+            }
+        })
+
         function FillCurrency() {
 
             var accountCode = $('#AccountCode').val();
