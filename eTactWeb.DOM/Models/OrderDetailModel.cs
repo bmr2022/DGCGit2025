@@ -53,6 +53,7 @@ namespace eTactWeb.DOM.Models
         public int Excessper { get; set; }
         public decimal ExRate { get; set; }
         public int HSNNo { get; set; }
+        public string? Vehicle { get; set; }
         public int ItemCode { get; set; }
 
         [Column(TypeName = "decimal(10, 2)")]
@@ -180,12 +181,14 @@ namespace eTactWeb.DOM.Models
         public  int  UpdatedBy{ get; set; }
         public  string  EntryByMachineName{ get; set; }
         public  string  SummaryDetail{ get; set; }
+      
         public IList<TextValue>? BranchList { get; set; }
     }
 
     [Serializable()]
     public class SaleOrderModel : ItemDetail
     {
+       
         private IList<SelectListItem> _FreightPaidBy = new List<SelectListItem>()
         {
             new() { Value = "By US", Text = "By US" },

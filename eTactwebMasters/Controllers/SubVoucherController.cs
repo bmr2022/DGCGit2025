@@ -42,7 +42,7 @@ namespace eTactWeb.Controllers
             MainModel.EntryByEmpName = HttpContext.Session.GetString("EmpName");
             HttpContext.Session.Remove("KeySubVoucherGrid");
 
-            if (!string.IsNullOrEmpty(Mode) && PrefixEntryId > 0 && Mode == "U")
+            if (!string.IsNullOrEmpty(Mode) && PrefixEntryId > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _ISubVoucher.GetViewByID(PrefixEntryId, MainVoucherName, MainVoucherTableName).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update

@@ -807,12 +807,15 @@ namespace eTactWeb.Data.DAL
                         model.VoltageVlue = dr["VoltageValue"].ToString();
                         model.OldPartCode = dr["OldPartCode"].ToString();
                         model.SerialNo = dr["SerialNo"].ToString();
+                        model.usedinMachorVehicle = dr["usedinMachorVehicle"].ToString();
+
                         model.Branch = branchCsv.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
                         model.ProdInMachineGroup = dr["ProdInMachineGroup"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachineGroup"].ToString());
                         model.ProdInMachine1 = dr["ProdInMachine1"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine1"].ToString());
                         model.ProdInMachine2 = dr["ProdInMachine2"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine2"].ToString());
                         model.ProdInMachine3 = dr["ProdInMachine3"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine3"].ToString());
                         model.ProdInMachine4 = dr["ProdInMachine4"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachine4"].ToString());
+                       
                         model.Package = dr["Package"].ToString();
                         model.NoOfCavity = dr["NoOfCavity"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfCavity"].ToString());
                         model.NoOfshotsHours = dr["NoOfshotsHours"].ToString() == "" ? 0 : Convert.ToInt32(dr["NoOfshotsHours"].ToString());
@@ -944,6 +947,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ProdInMachine3", model.ProdInMachine3);
                     oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
                     oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
+                    oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     if (model.Mode == "Update")
                     {

@@ -26,6 +26,10 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _AssetsMasterDAL.FillItemName();
 		}
+		public async Task<ResponseResult> FillEntryId(int YearCode, string EntryDate)
+		{
+			return await _AssetsMasterDAL.FillEntryId( YearCode,  EntryDate);
+		}
         public async Task<ResponseResult> FillCostCenterName()
 		{
 			return await _AssetsMasterDAL.FillCostCenterName();

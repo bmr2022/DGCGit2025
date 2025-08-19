@@ -41,6 +41,26 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
+		public async Task<ResponseResult> FillEntryId(int YearCode, string EntryDate)
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
+				SqlParams.Add(new SqlParameter("@Fiscalyear", YearCode));
+				SqlParams.Add(new SqlParameter("@EntryDate", EntryDate));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpAssetsMaster", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
 		public async Task<ResponseResult> FillCostCenterName()
 		{
 			var _ResponseResult = new ResponseResult();

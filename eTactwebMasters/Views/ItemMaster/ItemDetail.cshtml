@@ -108,7 +108,7 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="PartCode" class="form-label">Part Code</label>
+                                        <label asp-for="PartCode" class="form-label">Part Code<span style="color:red">*</span></label>
                                         @if (string.IsNullOrEmpty(Model.Mode))
                                         {
                                             if (Model.FeatureOption.AllowPartCode == false)
@@ -133,12 +133,12 @@
                                         }
                                     </div>
                                     <div class="col-xl-3 col-lg-6 col-md-8 col-sm-6 col-xs-12">
-                                        <label asp-for="Item_Name" class="form-label">Item Name</label>
+                                        <label asp-for="Item_Name" class="form-label">Item Name<span style="color:red">*</span></label>
                                         <input asp-for="Item_Name" class="form-control" onchange="CheckDuplicate('Item_Name',this.id);" />
                                     </div>
 
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ItemType" class="form-label">Item Category</label>
+                                        <label asp-for="ItemType" class="form-label">Item Category<span style="color:red">*</span></label>
                                         <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                             <select asp-for="ItemType" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ItemTypeList,"Value", "Text"))">
                                                 <option value="">-Select-</option>
@@ -146,7 +146,7 @@
                                         </div>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="ParentCode" class="form-label">Item Group</label>
+                                        <label asp-for="ParentCode" class="form-label">Item Group<span style="color:red">*</span></label>
                                         <div class="col-xl-4  col-lg-6 col-md-6 col-sm-6 col-xs-12">
                                             <select asp-for="ParentCode" class="form-select" data-abcd="14" style="width:200px;" asp-items="@(new SelectList(Model.ParentGroupList,"Value", "Text"))" onfocus=" setFocus()">
                                                 <option value="">-Select-</option>
@@ -158,7 +158,7 @@
                                         <input asp-for="HSNNO" class="form-control" required />
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="Unit" class="form-label">Unit</label>
+                                        <label asp-for="Unit" class="form-label">Unit<span style="color:red">*</span></label>
                                         <select asp-for="Unit" class="form-select" asp-items="@(new SelectList(Model.UnitList,"Value", "Text"))">
                                             <option value="">-Select-</option>
                                         </select>
@@ -184,9 +184,9 @@
                                         </select>
                                     </div>
                                     <div class="col-xl-1 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="Store" class="form-label">Store</label>
+                                        <label asp-for="Store" class="form-label">Store<span style="color:red">*</span></label>
                                         <select asp-for="Store" class="form-select" data-val="false" asp-items="@(new SelectList(Model.StoreList,"Value", "Text"))">
-                                            <option value="">-Select-</option>
+                                            @* <option value="">-Select-</option> *@
                                         </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
@@ -589,6 +589,10 @@
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="NoOfshotsHours" class="form-label">No Of shots/Hours</label>
                                         <input asp-for="NoOfshotsHours" class="form-control" />
+                                    </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
+                                        <label asp-for="usedinMachorVehicle" class="form-label">used in Mach/Vehicle</label>
+                                        <input asp-for="usedinMachorVehicle" class="form-control" />
                                     </div>
                                 </div>
                             </div>

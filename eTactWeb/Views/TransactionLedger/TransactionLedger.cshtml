@@ -774,27 +774,31 @@
 				 table.children('#divStockRegisterBody').append(row);
 			 });
 		 }
-		 function countAllTotal() {
-			  
-			 var rowCount = $('#divStockRegisterBody tr').length;
+		function countAllTotal() {
+			var rowCount = $('#divStockRegisterBody tr').length;
 
-			 var TotCr = 0;
-			 var TotDr = 0;
-			 var TotBal = 0;
-			 for (var i = 1; i <= rowCount; i++) {
+			var TotCr = 0;
+			var TotDr = 0;
 
-				 TotCr += $('#totCrG-' + i).text() == '' ? 0 : parseFloat($('#totCrG-' + i).text());
-				 TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
-				 TotBal += $('#totBalG-' + i).text() == '' ? 0 : parseFloat($('#totBalG-' + i).text());
-			 }
+			for (var i = 1; i <= rowCount; i++) {
+				TotCr += $('#totCrG-' + i).text() == '' ? 0 : parseFloat($('#totCrG-' + i).text());
+				TotDr += $('#totDrG-' + i).text() == '' ? 0 : parseFloat($('#totDrG-' + i).text());
+			}
 
+			
+			var TotBal = TotDr - TotCr;
+
+			
 			$('#totCr').val(0);
 			$('#totDr').val(0);
 			$('#totBal').val(0);
-			 $('#totCr').val(isNaN(TotCr) ? 0 : TotCr.toFixed(2));
-			 $('#totDr').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
-			 $('#totBal').val(isNaN(TotBal) ? 0 : TotBal.toFixed(2));
-		 }
+
+			
+			$('#totCr').val(isNaN(TotCr) ? 0 : TotCr.toFixed(2));
+			$('#totDr').val(isNaN(TotDr) ? 0 : TotDr.toFixed(2));
+			$('#totBal').val(isNaN(TotBal) ? 0 : TotBal.toFixed(2));
+		}
+
 
 		function countGroupAllTotal() {
 

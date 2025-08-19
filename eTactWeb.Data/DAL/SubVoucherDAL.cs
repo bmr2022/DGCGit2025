@@ -293,6 +293,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Separator", model.Separator ?? ""));
                 SqlParams.Add(new SqlParameter("@TotalLength", model.TotalLength == 0 ? 0 : model.TotalLength));
                 SqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine ?? ""));
+                SqlParams.Add(new SqlParameter("@VoucherInvoice", "Voucher"));
 
                
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpSubVoucherPrefixSetting", SqlParams);

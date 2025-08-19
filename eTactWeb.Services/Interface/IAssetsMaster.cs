@@ -15,6 +15,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillCostCenterName();
 		Task<ResponseResult> FillDepartmentName();
 		Task<ResponseResult> FillParentAccountName();
+		Task<ResponseResult> FillEntryId(int YearCode,string EntryDate);
 		Task<ResponseResult> FillParentGoupDetail(int ParentAccountCode);
 		Task<ResponseResult> SaveAssetsMaster(AssetsMasterModel model);
         Task<ResponseResult> GetDashboardData(AssetsMasterModel model);

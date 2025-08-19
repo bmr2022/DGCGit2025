@@ -125,7 +125,7 @@
                                         <input asp-for="MainVoucherTableName" id="MainVoucherTableName" class="form-control" value="@Model.MainVoucherTableName" readonly/>
                                     </div>
                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label for="SubVoucherName" class="form-label">SubVoucher Name</label>
+                                        <label asp-for="SubVoucherName" class="form-label">SubVoucher Name</label>
                                         <input asp-for="SubVoucherName" class="form-control" value="@Model.SubVoucherName" />
                                    </div> 
                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
@@ -204,8 +204,10 @@
                                         <select asp-for="VoucherRotationType" id="VoucherRotationType" class="form-control">
                                             <option value="">-Select-</option>
                                             <option value="Yearly">Yearly</option>
-                                            <option value="DayPrefix">Daily</option>
-                                            <option value="MonthPrefix">Monthly</option>
+                                          @*   <option value="DayPrefix">Daily</option>
+                                            <option value="MonthPrefix">Monthly</option>  *@
+                                            <option value="Daily">Daily</option>
+                                            <option value="Monthly">Monthly</option>
                                         </select>
                                     </div> 
                                    
@@ -377,10 +379,18 @@
 
             $('#MainVoucherName').rules("remove", "required");
             $('#SubVoucherName').rules("remove", "required");
+            $('#MainVoucherTableName').rules("remove", "required");
             $('#StartSubVouchDiffSeries').rules("remove", "required");
             $('#VoucherRotationType').rules("remove", "required");
+            $('#SubVouchPrefix').rules("remove", "required");
             $('#FromYearPrefix').rules("remove", "required");
             $('#FromYearPrefix').rules("remove", "required");
+            $('#TotalLength').rules("remove", "required");
+            $('#EntryByEmpName').rules("remove", "required");
+            $('#ActualEntryBy').rules("remove", "required");
+            $('#ActualEntryDate').rules("remove", "required");
+            $('#UpdateByEmpName').rules("remove", "required");
+            $('#UpdatedBy').rules("remove", "required");
             $('#MainVoucherName').select2();
             $('#StartSubVouchDiffSeries').select2();
             $('#VoucherRotationType').select2();
@@ -423,7 +433,13 @@
             $('#ActualEntryBy').change(function () {
                 var ActualEntryBy = $(this).val();
             });
-            
+            debugger
+            var mode = "@Model.Mode";
+            var oldValue = "@Model.VoucherRotationType"; 
+
+            if (mode === "U") {
+                $("#VoucherRotationType").val(oldValue);
+            }
         });
 
         function getPrefixEntryId(mainVoucherName) {
@@ -454,6 +470,10 @@
                     $.each(obj.Result, function (index, value) {
                                 dropdown.append('<option value="' + value.MainVoucherName + '">' + value.MainVoucherName + '</option>');
                     });
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var MainVoucherName = '@Model.MainVoucherName';
+                        $('#MainVoucherName').val(MainVoucherName);
+                    }
                 },
                 error: function (jqXHR, textStatus, errorThrown) {
                     console.error('AJAX error: ', textStatus, errorThrown);

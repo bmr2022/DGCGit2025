@@ -31,6 +31,7 @@ namespace eTactWeb.DOM.Models
         public int TotalLength { get; set; }
         public int ActualEntryBy { get; set; }
         public string ActualEntryDate { get; set; }
+        public string VoucherInvoice { get; set; }
         public int UpdatedBy { get; set; }
         public string UpdationDate { get; set; }
         public string EntryByMachine { get; set; }
