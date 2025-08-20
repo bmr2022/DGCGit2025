@@ -67,7 +67,8 @@ namespace eTactWeb.Controllers
 		{
 			try
 			{
-				var Result = await _IAssetsMaster.SaveAssetsMaster(model);
+                 model.ActualEntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var Result = await _IAssetsMaster.SaveAssetsMaster(model);
 				if (Result != null)
 				{
 					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
