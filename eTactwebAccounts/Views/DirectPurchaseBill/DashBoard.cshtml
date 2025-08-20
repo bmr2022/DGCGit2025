@@ -122,7 +122,7 @@
             GetSearchData();
                GetFormRights();
             $("#search-box").val($('#search-box').val()).trigger('keyup');
-            
+
             setTimeout(function () {
                 $("#search-box").trigger('keyup');
             }, 500);
@@ -139,7 +139,7 @@
             sessionStorage.removeItem('ItemNameBack');
             sessionStorage.removeItem('HSNNoBack');
             sessionStorage.removeItem('GlobalSearchBack');
-            
+
             AutoComplete('VDirectPurchaseBillMain', 'VendorName', 'VendorName', null);
             AutoComplete('VDirectPurchaseBillMain', 'DocumentType', 'DocumentType', null);
             AutoComplete('VDirectPurchaseBillMain', 'PartCode', 'PartCode', null);
@@ -149,15 +149,46 @@
             AutoComplete('VDirectPurchaseBillMain', 'HSNNo', 'HSNNO', null);
             AutoComplete('VDirectPurchaseBillMain', 'HSNNo', 'hsnno', null);
         });
-             
-        function BackButtonData(event) {
-            event.preventDefault();
-            var urlHref = $(event.currentTarget).attr("href");
-            var linkUrl = urlHref;
-            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&TypeITEMSERVASSETS=" + $('#TypeITEMSERVASSETS').val() + "&DocumentType=" + $('#DocumentType').val() + "&VendorName=" + $('#VendorName').val() + "&PurchVouchNo=" + $('#PurchVouchNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
-            window.location.href = linkUrl;
-        }
 
+        function BackButtonData(event,EntryId,YearCode) {
+            event.preventDefault();
+             var urlHref = $(event.currentTarget).attr("href");
+        CheckEditOrDelete(urlHref, EntryId, YearCode);
+            // var urlHref = $(event.currentTarget).attr("href");
+            // var linkUrl = urlHref;
+            // linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&TypeITEMSERVASSETS=" + $('#TypeITEMSERVASSETS').val() + "&DocumentType=" + $('#DocumentType').val() + "&VendorName=" + $('#VendorName').val() + "&PurchVouchNo=" + $('#PurchVouchNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
+            // window.location.href = linkUrl;
+        }
+               function CheckEditOrDelete(urlHref, EntryId, YearCode) {
+            $.ajax({
+                url: '@Url.Action("CheckEditOrDelete")',
+                type: "POST",
+                data: { "EntryId": EntryId, "YearCode": YearCode },
+                async: false,
+                success: function (response) {
+                    if (response != null && response != undefined && response != '') {
+                         if (response.message== "" ) {
+                            var linkUrl = urlHref;
+                            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&TypeITEMSERVASSETS=" + $('#TypeITEMSERVASSETS').val() + "&DocumentType=" + $('#DocumentType').val() + "&VendorName=" + $('#VendorName').val() + "&PurchVouchNo=" + $('#PurchVouchNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
+                            window.location.href = linkUrl;
+                        }
+                        else{
+                               $.notify(response.message, "error");
+                                        return false;
+                        }
+
+                    }
+
+
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        }
         function CheckApprovedOrNot() {
             var columnLength = $('#divDashboardGrid tr td').length;
             var rowLength = $('#divDashboardGrid tr').length;

@@ -672,7 +672,15 @@
             $('#AdjNewRefNo').val($('#PurchVouchNo').val());
             $('#AdjDescription').val($('#PurchVouchNo').val());
         });
+                $("#VouchDate").on("change", function () {
+            var invoiceDate = $("#InvDate").datepicker("getDate");
+            var voucherDate = $(this).datepicker("getDate");
 
+            if (invoiceDate && voucherDate && voucherDate < invoiceDate) {
+                $.notify("Voucher Date should be greater than or equal to Invoice Date", "error");
+                $(this).val(""); // optional: clear invalid date
+            }
+        });
 
         // Function to format Date object to dd/mm/yy
         function formatDateToDDMMYY(date) {
@@ -1595,6 +1603,7 @@
                                 $('#VendorStateName').val('');
                                 $('#VendorAddress').val('');
                             }
+                               DueDateCalculation();
                         }
                         else {
                             $('#GstType').val('');
@@ -2052,7 +2061,7 @@
             $("form").submit();
         });
 
-
+       
         function checkPartCodeMusthaveAtLeastOneTax() {
             var errorPartCode = [];
             $('.divPOItemListPartCode').each(function (i, data) {
@@ -2115,6 +2124,10 @@
             }
             else if ($('#AccountCode').val() == '0') {
                 $.notify("Vendor Name is required", "error");
+            }
+             else if (parseInt($("#PaymentDays").val())<0) {
+                 $.notify("PaymentDays should not be 0", "error");
+                return;
             }
             else {
                 let cont = 1;
@@ -2262,7 +2275,41 @@
         //     //     }
         //     // }
         // });
+           function DueDateCalculation() {
+            var VouchDateVal = $('#VouchDate').val();
 
+            if (!VouchDateVal) {
+                console.warn("PurchaseBillDate is empty, skipping DueDateCalculation");
+                return;
+            }
+
+            // If value is like "31/08/2025" → no need to split
+            var [day, month, year] = VouchDateVal.split('/').map(Number);
+            var VouchDate = new Date(year, month - 1, day);
+
+            var creditDays = $('#PaymentDays').val() == "" ? 0 : parseInt($('#PaymentDays').val(), 10);
+
+            // Add credit days
+            VouchDate.setDate(VouchDate.getDate() + creditDays);
+
+            // Format as dd/mm/yy
+            var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', VouchDate);
+
+            // Set in AdjDueDate
+            $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
+
+            // Restrict min date to SaleBillDate
+            $('#AdjDueDate').datepicker("option", "minDate", VouchDateVal);
+        }
+
+        $('#PaymentDays').change(function () {
+            $('#divAdjItemList').empty();
+            var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+            $('#divAdjItemList').html(NoData);
+            CalculateAdjAmt('NetTotal');
+            DueDateCalculation();
+            AddAdjstmntDetail1();
+        });
         $('.ItemBtn').click(function () {
              
             let IsError = 0;
@@ -2512,7 +2559,7 @@
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
-                    // AddAdjstmntDetail1();
+                    AddAdjstmntDetail1();
                 }).fail(function () {
                     alert("error");
                 }).always(function () {
