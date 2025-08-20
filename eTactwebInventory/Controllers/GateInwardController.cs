@@ -287,6 +287,11 @@ namespace eTactWeb.Controllers
                             ViewBag.isSuccess = false;
                             TempData["409"] = "409";
                         }
+                        if(Result.StatusText == "Unapproved")
+                            {
+                            ViewBag.isSuccess = false;
+                            TempData["2627"] = "2627";
+                        }
                         if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                         {
                             var errNum = Result.Result.Message.ToString().Split(":")[1];

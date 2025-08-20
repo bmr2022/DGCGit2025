@@ -28,6 +28,13 @@
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
 </style>
+@if (TempData["422"] != null)
+{
+    <div class="alert alert-danger" role="alert">
+        @TempData["422"]
+    </div>
+}
+
 <div class="card bg-gradient mb-3 border-light shadow-lg">
     <partial name="_GateInwardDisplay" />
     <partial name="_GateEntryConfirmation" />
