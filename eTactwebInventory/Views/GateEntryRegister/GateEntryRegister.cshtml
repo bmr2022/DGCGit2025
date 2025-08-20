@@ -170,15 +170,7 @@
                                         </div>
                                         <center>
                                             <div class="row">
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv">
-                                                    <label class="form-label">Total Qty</label>
-                                                    <input id="totOpenStock" class="form-control" readonly />
-                                                </div>
-                                              
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="stockDiv">
-                                                    <label class="form-label">Total Amount</label>
-                                                    <input id="totAmount" class="form-control" readonly />
-                                                </div>
+                                                
                                             </div>
                                         </center>
                                     </div>
@@ -872,7 +864,7 @@
             });
         }
 
-        function countAllTotal() {
+        /* function countAllTotal() {
              
             var rowCount = $('#divStockRegisterBody tr').length;
             var OpnStk = 0;
@@ -894,6 +886,27 @@
             }
 
             $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2)); 
+            $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
+        } */
+        function countAllTotal() {
+            var OpnStk = 0;
+            var TotStk = 0;
+            var IssQty = 0;
+            var RecQty = 0;
+            var totAmount = 0;
+
+            // Select ALL rows, not only current page
+            $('#divStockRegisterBody tr').each(function () {
+                var rowId = $(this).index() + 1;
+
+                OpnStk += $('#opnStk-' + rowId).text() == '' ? 0 : parseFloat($('#opnStk-' + rowId).text());
+                TotStk += $('#totStk-' + rowId).text() == '' ? 0 : parseFloat($('#totStk-' + rowId).text());
+                IssQty += $('#issQty-' + rowId).text() == '' ? 0 : parseFloat($('#issQty-' + rowId).text());
+                RecQty += $('#recQty-' + rowId).text() == '' ? 0 : parseFloat($('#recQty-' + rowId).text());
+                totAmount += $('#amount-' + rowId).text() == '' ? 0 : parseFloat($('#amount-' + rowId).text());
+            });
+
+            $('#totOpenStock').val(isNaN(OpnStk) ? 0 : OpnStk.toFixed(2));
             $('#totAmount').val(isNaN(totAmount) ? 0 : totAmount.toFixed(2));
         }
 
