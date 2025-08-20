@@ -182,8 +182,9 @@ namespace eTactWeb.Data.DAL
 				sqlParams.Add(new SqlParameter("@DepreciationMethod", model.DepreciationMethod));
 				sqlParams.Add(new SqlParameter("@PurchaseNewUsed", model.PurchaseNewUsed));
 				sqlParams.Add(new SqlParameter("@CountryOfOrigin", model.CountryOfOrigin));
-				sqlParams.Add(new SqlParameter("@FirstAqusitionOn", model.FirstAqusitionOn));
-				sqlParams.Add(new SqlParameter("@OriginalValue", model.OriginalValue));
+                sqlParams.Add(new SqlParameter("@FirstAqusitionOn",
+    string.IsNullOrEmpty(model.FirstAqusitionOn) ? " " : model.FirstAqusitionOn));
+                sqlParams.Add(new SqlParameter("@OriginalValue", model.OriginalValue));
 				sqlParams.Add(new SqlParameter("@CapatalizationDate", model.CapatalizationDate));
 				sqlParams.Add(new SqlParameter("@BarCode", model.BarCode));
 				sqlParams.Add(new SqlParameter("@SerialNo", model.SerialNo));
@@ -208,7 +209,7 @@ namespace eTactWeb.Data.DAL
 				sqlParams.Add(new SqlParameter("@DepriciationAmt", model.DepriciationAmt));
 				sqlParams.Add(new SqlParameter("@UseFullLifeInYear", model.UseFullLifeInYear));
 				
-				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPSalesDiscountCustomerCategoryMaster", sqlParams);
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpAssetsMaster", sqlParams);
 			}
 			catch (Exception ex)
 			{
