@@ -329,6 +329,28 @@ public class DirectPurchaseBillDAL
 
         return _ResponseResult;
     }
+    internal async Task<ResponseResult> CheckEditOrDelete(int ID, int YearCode)
+    {
+        var _ResponseResult = new ResponseResult();
+
+        try
+        {
+            var SqlParams = new List<dynamic>();
+
+            SqlParams.Add(new SqlParameter("@Flag", "CheckEditOrDelete"));
+            SqlParams.Add(new SqlParameter("@EntryID", ID));
+            SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+            _ResponseResult = await _IDataLogic.ExecuteDataTable("SP_DirectPurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+
+        return _ResponseResult;
+    }
     public async Task<ResponseResult> GetExchangeRate(string Currency)
     {
         var _ResponseResult = new ResponseResult();
@@ -822,7 +844,7 @@ public class DirectPurchaseBillDAL
                     MainModel.VehicleNo = oDataSet.Tables[0].Rows[0]["Vehicleno"].ToString();
                     MainModel.ExchangeRate = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ExchangeRate"].ToString()) ? 0 : Convert.ToSingle(oDataSet.Tables[0].Rows[0]["ExchangeRate"]);
                     MainModel.ItemNetAmount = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["NetAmt"].ToString()) ? 0 : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["NetAmt"]);
-                    MainModel.NetTotal = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["BillAmt"].ToString()) ? 0 : (oDataSet.Tables[0].Rows[0]["RoundoffType"].ToString().ToLower() == "y") ? Convert.ToDecimal(Math.Round(Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["BillAmt"]))) : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["BillAmt"]);
+                    MainModel.NetTotal = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["NetAmt"].ToString()) ? 0 : (oDataSet.Tables[0].Rows[0]["RoundoffType"].ToString().ToLower() == "y") ? Convert.ToDecimal(Math.Round(Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["NetAmt"]))) : Convert.ToDecimal(oDataSet.Tables[0].Rows[0]["NetAmt"]);
                     MainModel.PaymentDays = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["PaymentDays"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["PaymentDays"]);
                     MainModel.PreparedBy = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["ActualEntryBy"].ToString()) ? 0 : Convert.ToInt32(oDataSet.Tables[0].Rows[0]["ActualEntryBy"]);
                     MainModel.PreparedByName = string.IsNullOrEmpty(oDataSet.Tables[0].Rows[0]["EntryByMachine"].ToString()) ? string.Empty : oDataSet.Tables[0].Rows[0]["EntryByMachine"].ToString();
@@ -1094,14 +1116,14 @@ public class DirectPurchaseBillDAL
             SqlParams.Add(new SqlParameter("@CurrencyId", Convert.ToInt32(model.Currency)));
             SqlParams.Add(new SqlParameter("@ExchangeRate", model.ExchangeRate));
             SqlParams.Add(new SqlParameter("@ConversionFactor", model.ExchangeRate));
-            SqlParams.Add(new SqlParameter("@BillAmt", (float)Math.Round(model.NetTotal, 2)));
+            SqlParams.Add(new SqlParameter("@BillAmt", (float)Math.Round(model.ItemNetAmount, 2)));
             SqlParams.Add(new SqlParameter("@RoundOffAmt", (float)Math.Round(model.TotalRoundOffAmt, 2)));
             SqlParams.Add(new SqlParameter("@RoundoffType", model.TotalRoundOff));
             SqlParams.Add(new SqlParameter("@GSTAmount", 0));
             SqlParams.Add(new SqlParameter("@Taxableamt", (float)Math.Round(model.TxAmount, 2)));
             SqlParams.Add(new SqlParameter("@ToatlDiscountPercent", (float)Math.Round(model.TotalDiscountPercentage, 2)));
             SqlParams.Add(new SqlParameter("@TotalDiscountAmount", (float)Math.Round(model.TotalAmtAftrDiscount, 2)));
-            SqlParams.Add(new SqlParameter("@NetAmt", (float)model.ItemNetAmount));
+            SqlParams.Add(new SqlParameter("@NetAmt", (float)model.NetTotal));
             SqlParams.Add(new SqlParameter("@Remark", model.Remark));
             SqlParams.Add(new SqlParameter("@CC", model.Branch));
             SqlParams.Add(new SqlParameter("@Uid", model.CreatedBy));
