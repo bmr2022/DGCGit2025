@@ -339,7 +339,12 @@ namespace eTactWeb.Data.DAL
                             {
                                 StatusCode = HttpStatusCode.OK,
                                 StatusText = "Success",
-                                Result = oDataTable.Rows[0]["Address"]
+                                Result = new
+                                {
+                                    Address = oDataTable.Rows[0]["Address"]?.ToString(),
+                                    Gstregistered = oDataTable.Rows[0]["Gstregistered"]?.ToString()
+                                }
+
                             };
                         }
                     }
