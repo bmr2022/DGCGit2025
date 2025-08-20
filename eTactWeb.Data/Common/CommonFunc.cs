@@ -1600,6 +1600,8 @@ public static class CommonFunc
                         && typeProperty.PropertyInfo.Name != "SaleQuoteNoBack" && typeProperty.PropertyInfo.Name != "SaleBillDataDashboard"
                         && typeProperty.PropertyInfo.Name != "DomesticExportNEPZBack"
                         && typeProperty.PropertyInfo.Name != "SearchBoxBack" && typeProperty.PropertyInfo.Name != "SummaryDetailBack"
+                        && typeProperty.PropertyInfo.Name != "MaxSaleInvoiceEntryDate" && typeProperty.PropertyInfo.Name != "MaxSaleInvoiceEntryDate"
+                        && typeProperty.PropertyInfo.Name != "AllowBackDateSALEBILL" && typeProperty.PropertyInfo.Name != "AllowBackDateSALEBILL"
 
                        && typeProperty.PropertyInfo.Name != "TotalTaxAmt" && typeProperty.PropertyInfo.Name != "Active"
                         && typeProperty.PropertyInfo.Name != "TxAccountCode" && typeProperty.PropertyInfo.Name != "DPBItemDetails"
