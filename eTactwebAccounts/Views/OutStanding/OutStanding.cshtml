@@ -213,22 +213,16 @@
                                                     <input id="totPenAmt" class="form-control" readonly />
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-
-
 </div>
 
 @section Scripts
@@ -376,6 +370,12 @@
             selectedPartyValues = [];
             $('#PartyNameSingle').val(0);
         });
+
+        function GetDetailDataForPartyWise(cell) {
+            var accountId = $(cell).data("id");   // AccountCode
+            var accountName = $(cell).text();     // AccountName
+            console.log("ID:", accountId, "Name:", accountName);
+        }
 
         function FillPartyName() {
             var OutStandingType = $('#ReportType').val();

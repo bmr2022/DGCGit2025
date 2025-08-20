@@ -164,7 +164,6 @@ namespace eTactWeb.Data.DAL
 
             return resultList;
         }
-
 		public async Task<TransactionLedgerModel> GetTransactionLedgerGroupSummaryDetailsData(string FromDate, string ToDate, string ReportType, int LedgerGroup,int AccountCode, string VoucherType)
 		{
 			var resultList = new TransactionLedgerModel();
