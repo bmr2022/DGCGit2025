@@ -61,8 +61,11 @@ namespace eTactWeb.Controllers
 
 			var modelList = model?.GateEntryRegisterDetail ?? new List<GateEntryRegisterDetail>();
 
-
-			if (string.IsNullOrWhiteSpace(SearchBox))
+            model.TotalOpenStock = modelList.Sum(x => x.OpnStk);
+            model.TotalAmount = modelList.Sum(x => x.Amout);
+            model.TotalIssQty = modelList.Sum(x => x.Qty);
+            model.TotalRecQty = modelList.Sum(x => x.RecQty);
+            if (string.IsNullOrWhiteSpace(SearchBox))
 			{
 				model.TotalRecords = modelList.Count();
 				model.PageNumber = pageNumber;

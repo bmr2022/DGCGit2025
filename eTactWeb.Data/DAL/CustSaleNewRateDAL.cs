@@ -4,30 +4,46 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.DAL
 {
     public class CustSaleNewRateDAL
     {
-        private readonly IDataLogic _dataLogic;
+        private readonly IDataLogic _IDataLogic;
 
         public CustSaleNewRateDAL(IDataLogic dataLogic)
         {
-            _dataLogic = dataLogic;
+            _IDataLogic = dataLogic;
         }
 
 
-        public async Task<DataSet> GetPartCodeListAsync(bool showAll)
+        public async Task<ResponseResult> AutoFillitem(string Flag,  string SearchItemCode, string SearchPartCode)
         {
-            var sqlParams = new List<dynamic>
-               {
-                   new SqlParameter("@flag", "FillPartCode"),
-                   new SqlParameter("@ShowAllItem", showAll ? "Y" : "N"),
-               };
-             
-            var result = await _dataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
-            return result?.Result ?? new DataSet();
+            var Result = new ResponseResult();
+
+            try
+            {
+                var SqlParams = new List<dynamic>();
+
+                SqlParams.Add(new SqlParameter("@Flag", Flag));
+                
+                SqlParams.Add(new SqlParameter("@SearchItemCode", SearchItemCode ?? ""));
+                SqlParams.Add(new SqlParameter("@SearchPartCode", SearchPartCode ?? ""));
+
+
+                Result = await _IDataLogic.ExecuteDataTable("SPCustSaleNewRateMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return Result;
         }
+
 
         public async Task<DataSet> GetPreviousRateDetailsAsync(long accountCode, long itemCode)
         {
@@ -38,7 +54,7 @@ namespace eTactWeb.Data.DAL
                 new SqlParameter("@itemCode", itemCode),
             };
 
-            var result = await _dataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
+            var result = await _IDataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
             return result?.Result ?? new DataSet();
         }
         public async Task<DataSet> GetNewEntryIdAsync(long yearCode, DateTime entryDate)
@@ -50,7 +66,7 @@ namespace eTactWeb.Data.DAL
                   new SqlParameter("@CNRMEntryDate", entryDate),
               };
 
-            var result = await _dataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
+            var result = await _IDataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
             return result?.Result ?? new DataSet();
         }
         public async Task<DataSet> InsertOrUpdateRateAsync(DataTable rateData, long yearCode, long entryId, string slipNo, DateTime entryDate)
@@ -69,7 +85,7 @@ namespace eTactWeb.Data.DAL
                     }
                 };
 
-            var result = await _dataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
+            var result = await _IDataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
             return result?.Result ?? new DataSet();
         }
         public async Task<DataSet> GetCustomerListAsync()
@@ -80,7 +96,7 @@ namespace eTactWeb.Data.DAL
                  new SqlParameter("@ShowAllCust", "Y") // or "Y" if needed
              };
 
-            var result = await _dataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
+            var result = await _IDataLogic.ExecuteDataSet("SPCustSaleNewRateMaster", sqlParams);
             return result?.Result ?? new DataSet();
         }
 

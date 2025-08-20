@@ -234,6 +234,7 @@ namespace eTactWeb.DOM.Models
         public string? ProdInMachineName3 { get; set; }
         public string? ProdInMachineName4 { get; set; }
         public string? usedinMachorVehicle { get; set; }
+        public string? Barcode { get; set; }
     }
     public class ImportItemViewModel
     {

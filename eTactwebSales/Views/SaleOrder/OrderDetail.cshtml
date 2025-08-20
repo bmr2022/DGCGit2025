@@ -75,6 +75,7 @@
     <form asp-action="OrderDetail" autocomplete="off" class="form-horizontal" id="SOForm">
         <input type="hidden" asp-for="ExRate" />
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+        <input type="hidden" id="Gstregistered" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 @if (Model.Mode != "SOA" && Model.Mode != "SAU")
@@ -2796,9 +2797,13 @@
             $('.divSOItemListPartCode').each(function (i, data) {
                 var partcode = $(data).text();
                 var taxes = $("td[data-txPartCode='" + partcode + "']");
-                if (!taxes || taxes.length == 0) {
-                    errorPartCode.push(partcode)
-                }
+                var Gstregistered=$('#Gstregistered').val();
+                if (Gstregistered == 'Y') {
+                    if (!taxes || taxes.length == 0) {
+                        errorPartCode.push(partcode)
+                    }
+                } 
+               
             });
             if (errorPartCode.length > 0) {
                 $.notify("No tax available for " + errorPartCode.join(", ") + " part code(s).", "error");
@@ -3477,7 +3482,8 @@
                     url: "@Url.Action("GetAddress")",
                     data: { Code: $('#AccountCode').val() },
                     success: function (result, status, xhr) {
-                        $('#Address').val(result.result);
+                        $('#Address').val(result.result.address);
+                        $('#Gstregistered').val(result.result.gstregistered);
                         if ($('#Address').val()) {
                             $('#DeliveryAddress').val($('#Address').val());
                         }
