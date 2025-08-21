@@ -22,9 +22,9 @@ namespace eTactWeb.Data.BLL
             _SalepersonWiseRateMasterDAL = new SalepersonWiseRateMasterDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode, string entrydate)
         {
-            return await _SalepersonWiseRateMasterDAL.NewEntryId(YearCode);
+            return await _SalepersonWiseRateMasterDAL.NewEntryId(YearCode, entrydate);
         }
         public async Task<ResponseResult> FillSalePerson()
         {
@@ -34,9 +34,26 @@ namespace eTactWeb.Data.BLL
         {
             return await _SalepersonWiseRateMasterDAL.GetItemData(ItemGroupId);
         }
+
+        public async Task<SalepersonWiseRateMasterModel> DashBoard()
+        {
+            return await _SalepersonWiseRateMasterDAL.DashBoard();
+        }
         public async Task<ResponseResult> SaveSalePersonWiseRate(DataTable DTItemGrid, SalepersonWiseRateMasterModel model)
         {
             return await _SalepersonWiseRateMasterDAL.SaveSalePersonWiseRate(DTItemGrid, model);
+        }
+        public async Task<SalepersonWiseRateMasterModel> GetViewByID(int ID, int YearCode)
+        {
+            return await _SalepersonWiseRateMasterDAL.GetViewByID(ID, YearCode);
+        }
+        public async Task<ResponseResult> DeleteByID(int entryid, int yearcode, string machinename, string CC, int actualentryby, int salespersonid)
+        {
+            return await _SalepersonWiseRateMasterDAL.DeleteByID(entryid, yearcode, machinename, CC, actualentryby, salespersonid);
+        }
+        public async Task<ResponseResult> GetExcelData(string Code)
+        {
+            return await _SalepersonWiseRateMasterDAL.GetExcelData(Code);
         }
     }
 }

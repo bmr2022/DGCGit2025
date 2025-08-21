@@ -39,32 +39,38 @@ namespace eTactwebInventory.Controllers
         }
         [Route("{controller}/Index")]
         [HttpGet]
-        public async Task<ActionResult> SalepersonWiseRateMaster(int ID, string Mode, string CC)
+        public async Task<ActionResult> SalepersonWiseRateMaster(int ID, string Mode, string CC, int YC)
         {
             _logger.LogInformation("\n \n ********** Page Gate Inward ********** \n \n " + _IWebHostEnvironment.EnvironmentName.ToString() + "\n \n");
             TempData.Clear();
             var MainModel = new SalepersonWiseRateMasterModel();
            
             MainModel.CC = HttpContext.Session.GetString("Branch");
-            MainModel.EntryDate = HttpContext.Session.GetString("EntryDate");
-            MainModel.YearCode =Convert.ToInt32( HttpContext.Session.GetString("YearCode"));
-            //if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
-            //{
-            //    MainModel = await _ISalepersonWiseRateMaster.GetViewByID(ID).ConfigureAwait(false);
-            //    MainModel.Mode = Mode; // Set Mode to Update
-            //    MainModel.StoreId = ID;
-            //    MainModel.Store_Name = Store_Name;
-            //    MainModel.StoreType = StoreType;
-            //    MainModel.CC = CC;
-            //    MainModel.EntryDate = EntryDate;
+            
+            MainModel.MachineName = Environment.MachineName;
 
-            //    MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-            //    {
-            //        AbsoluteExpiration = DateTime.Now.AddMinutes(60),
-            //        SlidingExpiration = TimeSpan.FromMinutes(55),
-            //        Size = 1024
-            //    };
-            //}
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+            {
+                MainModel = await _ISalepersonWiseRateMaster.GetViewByID(ID, YC).ConfigureAwait(false);
+                MainModel.Mode = Mode; // Set Mode to Update
+                //MainModel.ActualEntryBy= Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+               
+
+                MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+                {
+                    AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                    SlidingExpiration = TimeSpan.FromMinutes(55),
+                    Size = 1024
+                };
+            }
+            else
+            {
+                MainModel.EntryDate = HttpContext.Session.GetString("EntryDate");
+                MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+                MainModel.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                MainModel.ActualEntryByName = HttpContext.Session.GetString("EmpName");
+
+            }
 
             return View(MainModel);
         }
@@ -156,6 +162,7 @@ namespace eTactwebInventory.Controllers
                             model.UpdatedBy = 0;
                             model.UpdationDate = "";
                             model.CreatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                            model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                             model.MachineName=Environment.MachineName;
                             model.CC= HttpContext.Session.GetString("Branch");
                         }
@@ -172,7 +179,7 @@ namespace eTactwebInventory.Controllers
                         model.CreatedBy = Constants.UserID;
                         Result = await _ISalepersonWiseRateMaster.SaveSalePersonWiseRate(Table, model);
                     }
-                    _logger.LogInformation("Save SaleOrder Data done", DateTime.UtcNow);
+                    _logger.LogInformation("Save salepersonrate Data done", DateTime.UtcNow);
                     if (Result != null)
                     {
                         var stringResponse = JsonConvert.SerializeObject(Result);
@@ -286,9 +293,9 @@ namespace eTactwebInventory.Controllers
         }
 
 
-        public async Task<JsonResult> NewEntryId(int YearCode)
+        public async Task<JsonResult> NewEntryId(int YearCode, string entrydate)
         {
-            var JSON = await _ISalepersonWiseRateMaster.NewEntryId(YearCode);
+            var JSON = await _ISalepersonWiseRateMaster.NewEntryId(YearCode, entrydate);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
@@ -308,5 +315,180 @@ namespace eTactwebInventory.Controllers
             return PartialView("_SalePersonWiseRateGrid", model);
 
         }
+
+        public async Task<IActionResult> SalePersonRateMasterDashBoard()
+        {
+            var model = new SalepersonWiseRateMasterModel();
+            //model = await _ISalepersonWiseRateMaster.DashBoard();
+
+
+            //return View("SalePersonRateMasterDashBoard", model);
+            return View(model);
+
+        }
+        public async Task<IActionResult> DashBoardData()
+        {
+            var model = new SalepersonWiseRateMasterModel();
+            model = await _ISalepersonWiseRateMaster.DashBoard();
+
+
+            return PartialView("_SalePersonDashBoardGrid", model);
+
+        }
+
+        public async Task<IActionResult> DeleteByID(int entryid, int yearcode, string machinename, string CC, int actualentryby, int salespersonid)
+        {
+            machinename=Environment.MachineName;
+            CC = HttpContext.Session.GetString("Branch");
+            actualentryby = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+            var Result = await _ISalepersonWiseRateMaster.DeleteByID( entryid,  yearcode,  machinename,  CC,  actualentryby,  salespersonid);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Locked)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction(nameof(SalePersonRateMasterDashBoard));
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UploadExcel()
+        {
+            try
+            {
+                IFormFile ExcelFile = Request.Form.Files.FirstOrDefault();
+                if (ExcelFile == null || ExcelFile.Length == 0)
+                {
+                    return BadRequest("Invalid file. Please upload a valid Excel file.");
+                }
+
+                string path = Path.Combine(this._IWebHostEnvironment.WebRootPath, "Uploads");
+                if (!Directory.Exists(path))
+                {
+                    Directory.CreateDirectory(path);
+                }
+
+                string fileName = Path.GetFileName(ExcelFile.FileName);
+                string filePath = Path.Combine(path, fileName);
+                using (FileStream stream = new FileStream(filePath, FileMode.Create))
+                {
+                    await ExcelFile.CopyToAsync(stream);
+                }
+
+                ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+                var SaleGridList = new List<SalepersonWiseRateDetail>();
+                var MainModel = new SalepersonWiseRateMasterModel();
+                var errors = new List<string>(); // List to collect validation errors
+
+                using (var package = new ExcelPackage(new FileInfo(filePath)))
+                {
+                    ExcelWorksheet worksheet = package.Workbook.Worksheets.FirstOrDefault();
+                    if (worksheet == null)
+                    {
+                        return BadRequest("Uploaded file does not contain any worksheet.");
+                    }
+
+                    var rowCount = worksheet.Dimension.Rows;
+                    var itemList = new List<SalepersonWiseRateDetail>();
+                    for (int row = 2; row <= rowCount; row++)
+                    {
+                        bool isRowEmpty = true;
+                        for (int col = 1; col <= worksheet.Dimension.Columns; col++)
+                        {
+                            if (!string.IsNullOrEmpty((worksheet.Cells[row, col].Value ?? string.Empty).ToString().Trim()))
+                            {
+                                isRowEmpty = false;
+                                break;
+                            }
+                        }
+                        if (isRowEmpty) continue;
+
+                        var partCode = (worksheet.Cells[row, 1].Value ?? string.Empty).ToString().Trim();
+                        
+
+                       
+
+                        // **Fetch Item Details from Database**
+                        var response = await _ISalepersonWiseRateMaster.GetExcelData(partCode);
+
+                        if (response?.Result is not DataTable itemData || itemData.Rows.Count == 0)
+                        {
+                            errors.Add($"No data found for PartCode '{partCode}' at row {row}.");
+                            continue;
+                        }
+
+                        
+                        string itemName = itemData.Rows[0]["Item_Name"].ToString();
+                        int itemCode = Convert.ToInt32(itemData.Rows[0]["Item_Code"]);
+                        var SalePrice= Convert.ToDecimal(itemData.Rows[0]["SalePrice"]);
+
+
+                       
+
+                        
+
+                        
+
+                        
+
+                      
+                        // **Delivery Date Validation**
+                       
+                        
+                        // **Add to SaleGridList**
+                        SaleGridList.Add(new SalepersonWiseRateDetail
+                        {
+                           
+                            PartCode = partCode,                          
+                            ItemCode = itemCode,
+                            ItemName = itemName,
+                            OriginalRate= SalePrice,
+                            NewRate = decimal.TryParse(worksheet.Cells[row, 2].Value?.ToString(), out decimal tempStockqty) ? tempStockqty : 0,
+                            
+
+                        });
+                    }
+
+                    var duplicateItems = SaleGridList
+         .GroupBy(x => new { x.ItemCode })
+         .Where(g => g.Count() > 1)
+         .Select(g => $"[PartCode: {g.Key.ItemCode}]")
+         .ToList();
+
+                    if (duplicateItems.Any())
+                    {
+                        var duplicateErrorMsg = "Duplicate PartCode found:\n" + string.Join("\n", duplicateItems);
+                        return BadRequest(string.Join("\n", duplicateErrorMsg));
+                    }
+
+                    if (errors.Count > 0)
+                    {
+                        return BadRequest(string.Join("\n", errors));
+                    }
+                }
+
+                MainModel.ItemDetailGrid = SaleGridList;
+               
+                return PartialView("_SalePersonWiseRateGrid", MainModel);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Error occurred while processing the Excel file.");
+                return StatusCode(500, "An internal server error occurred. Please check the file format.");
+            }
+        }
+
+
     }
 }
