@@ -809,7 +809,16 @@ namespace eTactWeb.Controllers
             //return Json(rslt);
             //return RedirectToAction(nameof(DashBoard));
         }
+        public async Task<JsonResult> CheckEditOrDelete(int EntryId, int YearCode)
+        {
+           
+            var Result = await IDirectPurchaseBill.CheckEditOrDelete(EntryId, YearCode);
+             var rslt = string.Empty;
+            return Json(new { success = rslt, message = Result.StatusText });
 
+            //return Json(rslt);
+            //return RedirectToAction(nameof(DashBoard));
+        }
         public IActionResult DeleteItemRow(string SeqNo)
         {
             bool exists = false;
@@ -1483,14 +1492,14 @@ namespace eTactWeb.Controllers
 
             if (TaxDetailList != null && TaxDetailList.Count > 0)
             {
+                
                 var groupedTaxDetails = TaxDetailList
-                    .GroupBy(item => item.TxItemCode)
-                    .Select(group => new
-                    {
-                        FirstItem = group.First(),
-                        TotalAmount = group.Sum(item => item.TxAmount)
-                    });
-
+            .GroupBy(item => new { item.TxItemCode, item.TxTaxType, item.TxAccountCode })
+            .Select(group => new
+            {
+                FirstItem = group.First(),
+                TotalAmount = group.Sum(item => item.TxAmount)
+            });
                 foreach (var group in groupedTaxDetails)
                 {
                     var Item = group.FirstItem;

@@ -392,6 +392,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@SubVoucherName", "Purchase-Rejection"));
+                SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", DateTime.Now));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
             }
             catch (Exception ex)

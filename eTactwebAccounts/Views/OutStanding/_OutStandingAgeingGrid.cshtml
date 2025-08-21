@@ -24,7 +24,17 @@
                         <tr>
                             @foreach (var colName in row.DynamicColumns.Keys)
                             {
-                                <td>@row.DynamicColumns[colName]</td>
+                                if (colName == "AccountName")
+                                {
+                                    <td style="cursor:pointer;" data-id="@row.DynamicColumns["AccountCode"]"
+                                        onclick="GetDetailDataForPartyWise(this)">
+                                        @row.DynamicColumns["AccountName"]
+                                    </td>
+                                }
+                                else
+                                {
+                                    <td>@row.DynamicColumns[colName]</td>
+                                }
                             }
                         </tr>
                     }

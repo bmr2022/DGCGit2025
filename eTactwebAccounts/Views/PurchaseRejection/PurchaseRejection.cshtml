@@ -1079,10 +1079,10 @@
                         if (obj.Result != null) {
                             $('#PurchaseRejEntryId').val("");
                             $('#PurchaseRejEntryId').val(obj.Result.Table[0].EntryId);
-                            $('#PurchaseRejectionVoucherNo').val("");
-                            $('#PurchaseRejectionVoucherNo').val(obj.Result.Table[0].creditNoteNo);
+                            $('#PurchaseRejectionInvoiceNo').val("");
+                            $('#PurchaseRejectionInvoiceNo').val(obj.Result.Table[0].InvoiceNo);
                             $('#VoucherNo').val("");
-                            $('#VoucherNo').val(obj.Result.Table[0].creditNoteNo);
+                            $('#VoucherNo').val(obj.Result.Table[0].VoucherNo);
                             $('#AdjDescription').val($('#PurchaseRejectionInvoiceNo').val());
                             $('#AdjNewRefNo').val($('#PurchaseRejectionInvoiceNo').val());
                         }

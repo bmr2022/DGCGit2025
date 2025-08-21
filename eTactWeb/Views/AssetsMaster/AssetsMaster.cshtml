@@ -467,7 +467,7 @@
 				setFormattedDate();
 				FillEntryID();
 				TotalNoOfRows();
-				FillSlipNo();
+				
 			}
 			FillItemName();
 			FillCostCenterName();
@@ -547,12 +547,19 @@
 			});
 
 			$('.submitBTN').click(function (e) {
+				e.preventDefault(); 
 
-				console.log("SubmitButton Click");
-				e.preventDefault();
-				//$(this).off('click');
-				$('form').submit();
+				var vendorAccountCode = $('#VendorAccountCode').val(); 
+
+				if (!vendorAccountCode) { 
+					$.notify("Account type is mandatory", "error"); 
+					return false; 
+				}
+
+				console.log("SubmitButton Click - Validation passed");
+				$('form').submit(); 
 			});
+
 
 
 		})

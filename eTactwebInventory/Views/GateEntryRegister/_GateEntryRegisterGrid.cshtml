@@ -149,9 +149,21 @@ else
 
             </tbody>
         </table>
+
     </div>
 }
-
+<div class="row mt-2">
+    <div class="col-md-6" >
+        <label>Total Qty</label>
+        <input id="totOpenStockk" class="form-control"
+               value="@(Model.TotalIssQty?.ToString("N2") ?? "0.00")" readonly style="width:100px;" />
+    </div>
+    <div class="col-md-6" style="margin-left:-450px;">
+        <label>Total Amount</label>
+        <input id="totAmountt" class="form-control"
+               value="@(Model.TotalAmount.ToString("N2"))" readonly style="width:100px;" />
+    </div>
+</div>
 @{
 
 

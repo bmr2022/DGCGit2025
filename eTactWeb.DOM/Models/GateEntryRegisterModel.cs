@@ -24,6 +24,11 @@ namespace eTactWeb.DOM.Models
 		public int TotalRecords { get; set; }
 		public int PageNumber { get; set; }
 		public int PageSize { get; set; }
+		public decimal TotalOpenStock { get; set; }
+		public decimal TotalAmount { get; set; }
+		public decimal ?TotalIssQty { get; set; }
+		public decimal TotalRecQty { get; set; }
+	
 		public IList<GateEntryRegisterDetail>? GateEntryRegisterDetail { get; set; }
     }
     public class GateEntryRegisterDetail
@@ -91,9 +96,11 @@ namespace eTactWeb.DOM.Models
         //public string? ActualEntryByEMp {  get; set; }
         public string? UpdatedByEMp { get; set; }
         public string? AltUnit { get; set; }
-        public decimal? Amout { get; set; }
-
-		public int TotalRecords { get; set; }
+        public decimal Amout { get; set; }
+        public decimal IssQty { get; set; }
+        public decimal RecQty { get; set; }
+        public decimal OpnStk { get; set; }
+        public int TotalRecords { get; set; }
 		public int PageNumber { get; set; }
 		public int PageSize { get; set; }
 	}

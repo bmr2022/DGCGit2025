@@ -4,22 +4,22 @@
 <div class="accordion-body">
     <div class="row g-2 gx-3">
 
-        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12" style="width:80px;">
             <input type="hidden" asp-for="FinFromDate" />
             <input type="hidden" asp-for="FinToDate" />
             <label asp-for="PurchaseRejEntryId" class="form-label">Entry Id</label>
             <input asp-for="PurchaseRejEntryId" class="form-control" readonly tabindex="-1" />
         </div>
-        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-1 col-md-1 col-sm-12 col-xs-12" style="width:80px">
             <label asp-for="PurchaseRejYearCode" class="form-label">Year Code</label>
             <input asp-for="PurchaseRejYearCode" class="form-control" readonly tabindex="-1" />
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:100px">
             <label asp-for="PurchaseRejEntryDate" class="form-label" style="color: red;">Entry Date*</label>
             <input asp-for="PurchaseRejEntryDate" class="form-control" readonly tabindex="-1" />
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:150px">
             <label asp-for="DebitNotePurchaseRejection" class="form-label" style="color: red;">Type</label>
             <select asp-for="DebitNotePurchaseRejection" class="form-control">
                 <option value="">-Select-</option>
@@ -28,13 +28,13 @@
             </select>
         </div>
 
-        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:170px">
             <label asp-for="SubVoucherName" class="form-label" style="color: red;">Sub Voucher Name</label>
             <select asp-for="SubVoucherName" class="form-control">
                 <option value="0">-Select-</option>
             </select>
         </div>
-        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12" >
             <div class="form-check form-switch mx-3 w-auto position-absolute d-inline" style="padding-left: 150px;">
                 <input asp-for="SA" class="form-check-input mt-2" type="checkbox" role="switch" />
                 <label class="form-check-label ms-2">Show All</label>
@@ -45,17 +45,17 @@
             </select>
         </div>
 
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:160px">
             <label asp-for="PurchaseRejectionInvoiceNo" class="form-label" style="color: red;">Invoice No*</label>
-            <input asp-for="PurchaseRejectionInvoiceNo" class="form-control" />
+            <input asp-for="PurchaseRejectionInvoiceNo" class="form-control" readonly/>
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:100px;">
             <label asp-for="PurchaseRejectionInvoiceDate" class="form-label" style="color: red;">Date*</label>
             <input asp-for="PurchaseRejectionInvoiceDate" class="form-control" readonly tabindex="-1" />
         </div>
-        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12">
+        <div class="col-xl-1 col-lg-2 col-md-1 col-sm-12 col-xs-12" style="width:160px;">
             <label asp-for="VoucherNo" class="form-label" style="color: red;">Voucher No*</label>
-            <input asp-for="VoucherNo" value="@Model.VoucherNo" class="form-control" />
+            <input asp-for="VoucherNo" value="@Model.VoucherNo" class="form-control" readonly/>
         </div>
         <div class="col-xl-2 col-lg-2 col-md-1 col-sm-12 col-xs-12">
             <label asp-for="PurchaseRejectionVoucherNo" class="form-label" style="color: red;">Rejection Voucher No*</label>

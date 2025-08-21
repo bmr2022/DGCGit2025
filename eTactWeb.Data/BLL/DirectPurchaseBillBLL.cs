@@ -83,6 +83,10 @@ namespace eTactWeb.Data.BLL
         public async Task<ResponseResult> CheckLockYear(int YearCode)
         {
             return await _DirectPurchaseBillDAL.CheckLockYear(YearCode);
+        } 
+        public async Task<ResponseResult> CheckEditOrDelete(int ID, int YearCode)
+        {
+            return await _DirectPurchaseBillDAL.CheckEditOrDelete(ID, YearCode);
         }
         public async Task<ResponseResult> FillCurrency(string Ctrl)
         {

@@ -106,6 +106,8 @@ namespace eTactWeb.Controllers
 
                 if (!filteredResults.Any())
                     filteredResults = modelList;
+
+              
             }
 
         
@@ -740,12 +742,14 @@ namespace eTactWeb.Controllers
         [HttpGet]
         public IActionResult GetMRNRegisterData()
         {
-            string modelJson = HttpContext.Session.GetString("KeyMRNList");
+            // string modelJson = HttpContext.Session.GetString("KeyMRNList");
+            var cachedList = _MemoryCache.Get<List<MRNRegisterDetail>>("KeyMRNList");
             List<MRNRegisterDetail> stockRegisterList = new List<MRNRegisterDetail>();
-            if (!string.IsNullOrEmpty(modelJson))
-            {
-                stockRegisterList = JsonConvert.DeserializeObject<List<MRNRegisterDetail>>(modelJson);
-            }
+            stockRegisterList = cachedList;
+            //if (!string.IsNullOrEmpty(modelJson))
+            //{
+            //    stockRegisterList = JsonConvert.DeserializeObject<List<MRNRegisterDetail>>(modelJson);
+            //}
 
             return Json(stockRegisterList);
         }

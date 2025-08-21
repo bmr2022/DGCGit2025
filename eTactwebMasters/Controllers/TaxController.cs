@@ -947,14 +947,6 @@ public class TaxController : Controller
                 TotalTaxAmt = TotalTaxAmt + (MainModel.ItemNetAmount == null ? 0 : MainModel.ItemNetAmount);
                 MainModel.TotalTaxAmt = TotalTaxAmt;
 
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(55),
-                //    SlidingExpiration = TimeSpan.FromMinutes(60),
-                //    Size = 1024,
-                //};
-
-                //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
                 var pagename = TxModel.TxPageName;
                 ClearTax(pagename);
                 StoreInCache("KeyTaxGrid", TaxGrid);
