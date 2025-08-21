@@ -83,7 +83,7 @@
                                         <label asp-for="YearCode" class="form-label">Yearcode</label>
                                         <input asp-for="YearCode" class="form-control" readonly />
                                     </div>
-                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:160px">
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" >
                                         <label asp-for="SalesPersonId" class="form-label" style="color:red;">Sales Man*</label>
                                         <select class="form-control" asp-for="SalesPersonId" required>
                                             <option value="@Model.SalesPersonId">-Select-</option>
@@ -103,22 +103,28 @@
                                             }
                                         </select>
                                     </div>
-                                    <div class="col-xl-4 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex align-items-center gap-2" style="margin-left:4px; margin-top:25px">
-                                        Add All Rate with <input asp-for="AllRatePer" onkeyup="ApplyALlRatePer()" style="width:60px" class="form-control" placeholder="%" /><input asp-for="AllRateAmount" style="width:60px" placeholder="Amount" class="form-control" /> of Original Rate
+                                    <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 d-flex align-items-center gap-2" style="margin-left:4px; margin-top:25px">
+                                        Add All Rate<input asp-for="AllRatePer" onkeyup="ApplyALlRatePer()" style="width:60px" class="form-control" placeholder="%" /><input asp-for="AllRateAmount" onkeyup="ApplyALlRateAmount()" style="width:60px" placeholder="Amount" class="form-control" /> of Original Rate
                                     </div>
-                                    <div class="col-md-2 d-flex align-items-end">
+                                    <div class="col-md-2 d-flex align-items-end" style="width:50px">
                                         <button type="button" class="btn btn-success " onclick="GetItemData()">
-                                            <i class="fa fa-eye"></i> Show
+                                            <i class="fa fa-eye"></i> 
                                         </button>
                                     </div>
-                                    <div class="col-auto  me-3">
+                                    <div class="col-md-2" style="margin-left:50px; width:180px">
+                                        <input type="text" class="form-control" id="search-box1" placeholder="Search..." style="background-color:#FFFACD;">
+                                    </div>
+                                    <div class="row justify-content-end mb-2">
+                                    <div class="col-2">
                                         <input class="form-control" type="file" id="ExcelFile" />
                                     </div>
                                     <div class="col-auto  me-3">
                                         <button type="button" class="Importbtn btn btn-sm btn-outline-success" onclick="UploadExcel()">
-                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import From Excel
+                                            <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Import
                                         </button>
                                     </div>
+                                    </div>
+                                   
 
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 </div>
@@ -268,6 +274,11 @@
 
         $('.submitBTN').click(function (e) {
             e.preventDefault();
+            if ($('#SalesPersonId').val()=='0')
+            {
+                $.notify("Please select Sales Person", "error");
+                return false;
+            }
             $('form').submit();
         });
 
@@ -318,7 +329,7 @@
                 contentType: false,
                 success: function (result) {
 
-                    $('#divSaleItemGrid').html(result);
+                    $('#MultiItemBody').html(result);
                    
 
                 },
@@ -341,7 +352,23 @@
             $(".original-rate").each(function (index) {
                 var originalRate = parseFloat($(this).val()) || 0;
                 var newRate = originalRate + (originalRate * allRatePer / 100);
+                if (newRate < 0) {
+                    newRate = 0;
+                }
+                // update corresponding new-rate input in same row
+                $(this).closest("tr").find(".new-rate").val(newRate.toFixed(2));
+            });
+        }
 
+        function ApplyALlRateAmount() {
+            var allRatePer = parseFloat($("#AllRateAmount").val()) || 0;
+
+            $(".original-rate").each(function (index) {
+                var originalRate = parseFloat($(this).val()) || 0;
+                var newRate = originalRate + allRatePer;
+                if (newRate < 0) {
+                    newRate = 0;
+                }
                 // update corresponding new-rate input in same row
                 $(this).closest("tr").find(".new-rate").val(newRate.toFixed(2));
             });
@@ -460,7 +487,100 @@
             });
         }
 
-     
+        $("#search-box1").on("keyup", function () {
+
+            var value = $(this).val().toLowerCase();
+            $("#MultiItemBody tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    // var columnText = $(this).find('input').eq(currentSearchColumn).text().toLowerCase();
+                    var columnValue = $(this)
+                        .find('td')
+                        .eq(currentSearchColumn)
+                        .find('input')
+                        .val()
+                        .toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    // $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                    var rowText = $(this)
+                        .find('input')
+                        .map(function () {
+                            return $(this).val();
+                        })
+                        .get()
+                        .join(" ")
+                        .toLowerCase();
+
+                    $(this).toggle(rowText.indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup');
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow');
+                //$(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger');
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+
+            var table = $('#ItemTable');
+            var rows = table.find('#divSaleItemGrid > tr').toArray();
+
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text().trim();
+                var bValue = $(b).find('td').eq(columnIndex).text().trim();
+
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d+$/.test(aValue) && /^\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+
+            $.each(rows, function (index, row) {
+                table.children('#divSaleItemGrid').append(row);
+            });
+        }
 
         
         function PressBack() {
