@@ -17,6 +17,7 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetParentGroupDetail(string iD);
 
         Task<ResponseResult> GetTDSPartyList();
+        Task<ResponseResult> GetSalePersonName();
 
         Task<ResponseResult> SaveAccountMaster(AccountMasterModel model);
         Task<ResponseResult> GetFormRights(int uId);
