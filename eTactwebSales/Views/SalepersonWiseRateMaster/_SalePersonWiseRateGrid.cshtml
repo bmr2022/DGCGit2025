@@ -1,0 +1,42 @@
+﻿@model eTactWeb.DOM.Models.SalepersonWiseRateMasterModel
+
+@{
+    if (Model.ItemDetailGrid == null || !Model.ItemDetailGrid.Any())
+    {
+        <tr class="text-center">
+            <td colspan="26" class="text-black-50">
+                <strong>NO DATA FOUND</strong>
+            </td>
+        </tr>
+    }
+    else
+    {
+        for (int i = 0; i < Model.ItemDetailGrid.Count; i++)
+        {
+            <tr>
+                <td>@(i + 1)</td>
+
+                <td style="background-color: #e09ef0;">
+                    <input type="hidden" name="ItemDetailGrid[@i].ItemCode" value="@Model.ItemDetailGrid[i].ItemCode" />
+                    <input type="text" class="form-control form-control-sm text-center bg-light"
+                           name="ItemDetailGrid[@i].PartCode" value="@Model.ItemDetailGrid[i].PartCode" readonly />
+                </td>
+
+                <td>
+                    <input type="text" class="form-control form-control-sm text-center bg-light"
+                           name="ItemDetailGrid[@i].ItemName" value="@Model.ItemDetailGrid[i].ItemName" readonly />
+                </td>
+
+                <td style="width:120px">
+                    <input type="number" class="form-control form-control-sm text-center bg-light" style="width:70px"
+                           name="ItemDetailGrid[@i].OriginalRate" value="@Model.ItemDetailGrid[i].OriginalRate" readonly />
+                </td>
+
+                <td style="width:120px">
+                    <input type="number" class="form-control form-control-sm text-center"
+                           name="ItemDetailGrid[@i].NewRate" style="width:70px" value="@Model.ItemDetailGrid[i].NewRate" />
+                </td>
+            </tr>
+        }
+    }
+}

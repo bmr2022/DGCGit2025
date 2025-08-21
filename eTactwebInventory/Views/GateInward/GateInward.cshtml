@@ -1550,7 +1550,8 @@
                     url: "@Url.Action("GetAddress", "SaleOrder")",
                     data: { Code: $('#AccountCode').val() },
                     success: function (result, status, xhr) {
-                        $('#Address').val(result.result);
+                        /* $('#Address').val(result.result); */
+                        $('#Address').val(result.result.address);
                     }
                 });
                 fillPONumber();
