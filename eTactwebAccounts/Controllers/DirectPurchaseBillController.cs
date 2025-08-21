@@ -930,6 +930,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> ClearItemGrid(int YearCode, string VODate)
+        {
+            HttpContext.Session.Remove("DirectPurchaseBill");
+            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillPONumber(int YearCode, string OrderType, string PODate)
         {
             var JSON = await IDirectPurchaseBill.FillPONumber(YearCode, OrderType, PODate);
@@ -991,7 +998,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             model = await IDirectPurchaseBill.GetSummaryData(model);
