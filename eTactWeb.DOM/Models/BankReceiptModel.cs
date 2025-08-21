@@ -159,5 +159,6 @@ namespace eTactWeb.DOM.Models
         public string? Bank { get; set; }
         public string? FromDate1 { get; set; }
         public string? ToDate1 { get; set; }
+        public decimal NetAmount {  get; set; }
     }
 }

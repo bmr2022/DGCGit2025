@@ -29,9 +29,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _purchRejDAL.GetViewByID(ID, YearCode, mode);
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode,string SubVoucherName)
         {
-            return await _purchRejDAL.NewEntryId(YearCode);
+            return await _purchRejDAL.NewEntryId(YearCode, SubVoucherName);
         }
         public async Task<ResponseResult> FillDocument(string ShowAllDoc)
         {
