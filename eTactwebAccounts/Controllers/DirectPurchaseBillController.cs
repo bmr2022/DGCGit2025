@@ -142,6 +142,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(MainModel));
             MainModel.adjustmentModel = (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null) ? MainModel.adjustmentModel : new AdjustmentModel();
             return View(MainModel);
+
         }
 
         [HttpPost]
@@ -236,6 +237,7 @@ namespace eTactWeb.Controllers
 
                 if (gridData != null && gridData.Count > 0)
                 {
+
                     AdjDetailDT = CommonController.GetAdjDetailTable(gridData, MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
                     //AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.EntryID, model.YearCode, model.AccountCode);
                 }
@@ -738,6 +740,11 @@ namespace eTactWeb.Controllers
             MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
 
             return View(MainModel);
+        }
+        public IActionResult ClearDRCRGrid()
+        {
+            HttpContext.Session.Remove("KeyDrCrGrid");
+            return Json("Ok");
         }
 
         public async Task<IActionResult> DeleteByIDOld(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)

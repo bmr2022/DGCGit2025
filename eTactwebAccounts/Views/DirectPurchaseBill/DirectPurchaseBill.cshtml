@@ -850,14 +850,14 @@
          function ClearDRCRGrid() {
             $.ajax({
                 type: "POST",
-                url: "@Url.Action("ClearDRCRGrid", "SaleInvoice")",
+                url: "@Url.Action("ClearDRCRGrid")",
                 dataType: "json",
                 success: function (result, status, error) {
 
                     $('#divdbCrItemList').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divdbCrItemList').html(NoData);
-                    BasicTotal();
+                
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -866,7 +866,7 @@
         }
         $('#DPBTypeServItem').change(function () {
             ClearItemGrid();
-             btnClearTax();
+          
             ClearDRCRGrid();
            ClearAdjustmentGrid();
             if ($(this).val() == 'Asset' || $(this).val() == 'Service') {
@@ -2712,12 +2712,11 @@
                     $('#divPOItemList').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divPOItemList').html(NoData);
+                       btnClearTax();
                     btnClearTDS();
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
-                      GetDbCrDetail();
-                      ClearAdjustmentGrid();
-                      AddAdjstmntDetail1();
+                      
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -2737,7 +2736,6 @@
                     btnClearTDS();
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
-
                       GetDbCrDetail();
                       ClearAdjustmentGrid();
                       AddAdjstmntDetail1();
