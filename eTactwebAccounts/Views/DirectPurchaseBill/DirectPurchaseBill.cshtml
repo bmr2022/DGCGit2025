@@ -467,7 +467,7 @@
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", EntryDate);
 
                 var InvDate = $('#InvDate').val().split("-").join("/");
-                InvDate = parseDateToFormat(InvDate.split(" ")[0]);
+                InvDate = (InvDate.split(" ")[0]);
                 $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", InvDate);
 
                 var PODt = $('#PODate').val().split("-").join("/");
@@ -847,8 +847,28 @@
                 }
             });
         }
+         function ClearDRCRGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearDRCRGrid", "SaleInvoice")",
+                dataType: "json",
+                success: function (result, status, error) {
 
+                    $('#divdbCrItemList').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divdbCrItemList').html(NoData);
+                    BasicTotal();
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
         $('#DPBTypeServItem').change(function () {
+            ClearItemGrid();
+             btnClearTax();
+            ClearDRCRGrid();
+           ClearAdjustmentGrid();
             if ($(this).val() == 'Asset' || $(this).val() == 'Service') {
                 $('#IN1').prop("checked", false);
                 $('#IN1').hide();
@@ -2125,7 +2145,7 @@
             else if ($('#AccountCode').val() == '0') {
                 $.notify("Vendor Name is required", "error");
             }
-             else if (parseInt($("#PaymentDays").val())<0) {
+             else if (parseInt($("#PaymentDays").val())<=0) {
                  $.notify("PaymentDays should not be 0", "error");
                 return;
             }
@@ -2308,6 +2328,10 @@
             $('#divAdjItemList').html(NoData);
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
+             var taxGrid = $('#divTaxGrid tr td').length;
+              if (taxGrid >= 1 ) {
+                ClearAdjustmentGrid();
+            }
             AddAdjstmntDetail1();
         });
         $('.ItemBtn').click(function () {
@@ -2559,6 +2583,7 @@
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
+                     ClearAdjustmentGrid();
                     AddAdjstmntDetail1();
                 }).fail(function () {
                     alert("error");
@@ -2677,6 +2702,28 @@
         $('.btnClearTax').click(function () {
             btnClearTax();
         });
+          function ClearItemGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearItemGrid")",
+                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    $('#divPOItemList').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divPOItemList').html(NoData);
+                    btnClearTDS();
+                    var txAmt = $('#lblItemNetAmount').text();
+                    $('#NetTotal').val(txAmt);
+                      GetDbCrDetail();
+                      ClearAdjustmentGrid();
+                      AddAdjstmntDetail1();
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
         function btnClearTax() {
             $.ajax({
                 type: "POST",
@@ -2687,8 +2734,13 @@
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTaxGrid').html(NoData);
+                    btnClearTDS();
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
+
+                      GetDbCrDetail();
+                      ClearAdjustmentGrid();
+                      AddAdjstmntDetail1();
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -2711,6 +2763,10 @@
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTDSGrid').html(NoData);
                     var txAmt = $('#lblItemNetAmount').text();
+                    $('#NetTotal').val(txAmt);
+                      GetDbCrDetail();
+                      ClearAdjustmentGrid();
+                      AddAdjstmntDetail1();
                     //$('#TDSAmount').val(txAmt);
                 },
                 error: function (req, status, error) {
