@@ -615,8 +615,13 @@
                 }
                 else {
                     fillEntryandPONO();
-                    btnClearTax();
-                    btnClearTDS();
+                 if($('#divTaxGrid tr td').length>1){
+               btnClearTax();
+            }
+            if($('#divTDSGrid tr td').length>1){
+            btnClearTDS();
+
+            }
                     $('#lblItemNetAmount').text(0.00);
                     $('#lblItemCount').text(0);
                 }
@@ -868,7 +873,10 @@
             ClearItemGrid();
           
             ClearDRCRGrid();
+             var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
            ClearAdjustmentGrid();
+              }
             if ($(this).val() == 'Asset' || $(this).val() == 'Service') {
                 $('#IN1').prop("checked", false);
                 $('#IN1').hide();
@@ -1580,8 +1588,14 @@
 
         $('#AccountCode').change(function () {
             copyToClipboardForDropdown(this);
-            btnClearTax();
+            if($('#divTaxGrid tr td').length>1){
+               btnClearTax();
+            }
+            if($('#divTDSGrid tr td').length>1){
             btnClearTDS();
+
+            }
+
             if ($('#TxTaxType').val() != '-Select-') {
                 GetTaxAccountName("TAX");
             }
@@ -2329,16 +2343,18 @@
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
              var taxGrid = $('#divTaxGrid tr td').length;
-              if (taxGrid >= 1 ) {
+              if (taxGrid >1 ) {
                 ClearAdjustmentGrid();
             }
             AddAdjstmntDetail1();
         });
+             
+
         $('.ItemBtn').click(function () {
              
             let IsError = 0;
 
-            $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
+         //   $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
 
             if ($('#AccountCode').prop('selectedIndex') <= 0) {
                 $.notify("Vendor Name is required", "error");
@@ -2516,6 +2532,7 @@
                     url: '@Url.Action("AddItem2Grid")',
                     type: "POST",
                     data: ItemData,
+                     async: false,
                     beforeSend: function (xhr) {
                         //xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
                     },
@@ -2577,13 +2594,17 @@
                         alert(response.responseText);
                     },
                     complete: function () {
-                        //$('.Schedule').fadeIn();
+                        $('.Schedule').fadeIn();
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                     }
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
-                     ClearAdjustmentGrid();
+                     var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
+           ClearAdjustmentGrid();
+              }
+                  //   ClearAdjustmentGrid();
                     AddAdjstmntDetail1();
                 }).fail(function () {
                     alert("error");
@@ -2712,8 +2733,13 @@
                     $('#divPOItemList').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divPOItemList').html(NoData);
-                       btnClearTax();
-                    btnClearTDS();
+                       if($('#divTaxGrid tr td').length>1){
+                           btnClearTax();
+                        }
+                        if($('#divTDSGrid tr td').length>1){
+                        btnClearTDS();
+
+                        }
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
                       
@@ -2733,12 +2759,21 @@
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTaxGrid').html(NoData);
-                    btnClearTDS();
+              
+            if($('#divTDSGrid tr td').length>1){
+            btnClearTDS();
+
+            }
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
                       GetDbCrDetail();
-                      ClearAdjustmentGrid();
-                      AddAdjstmntDetail1();
+                       var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
+           ClearAdjustmentGrid();
+            AddAdjstmntDetail1();
+              }
+                     // ClearAdjustmentGrid();
+                     
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -2763,7 +2798,11 @@
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
                       GetDbCrDetail();
-                      ClearAdjustmentGrid();
+                       var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
+           ClearAdjustmentGrid();
+              }
+                  //    ClearAdjustmentGrid();
                       AddAdjstmntDetail1();
                     //$('#TDSAmount').val(txAmt);
                 },
@@ -2838,7 +2877,11 @@
                         $('#NetTotal').val(txTotal.toFixed(2));
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
-                        btnClearTDS();
+                   
+            if($('#divTDSGrid tr td').length>1){
+            btnClearTDS();
+
+            }
                         $.notify('Item Deleted From Grid.', "success");
                         isEditAllowed = "true";
                     }

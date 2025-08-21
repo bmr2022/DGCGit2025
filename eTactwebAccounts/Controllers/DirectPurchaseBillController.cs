@@ -616,16 +616,16 @@ namespace eTactWeb.Controllers
                 : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
 
             // 2. Get Tax Details
-            string taxDetailJson = HttpContext.Session.GetString("KeyTaxGrid");
-            IList<TaxModel> DPBTaxdetail = string.IsNullOrEmpty(taxDetailJson)
-                ? new List<TaxModel>()
-                : JsonConvert.DeserializeObject<IList<TaxModel>>(taxDetailJson);
+            //string taxDetailJson = HttpContext.Session.GetString("KeyTaxGrid");
+            //IList<TaxModel> DPBTaxdetail = string.IsNullOrEmpty(taxDetailJson)
+            //    ? new List<TaxModel>()
+            //    : JsonConvert.DeserializeObject<IList<TaxModel>>(taxDetailJson);
 
-            // 3. Get TDS Details
-            string tdsDetailJson = HttpContext.Session.GetString("KeyTDSGrid");
-            IList<TDSModel> DPBTDSdetail = string.IsNullOrEmpty(tdsDetailJson)
-                ? new List<TDSModel>()
-                : JsonConvert.DeserializeObject<IList<TDSModel>>(tdsDetailJson);
+            //// 3. Get TDS Details
+            //string tdsDetailJson = HttpContext.Session.GetString("KeyTDSGrid");
+            //IList<TDSModel> DPBTDSdetail = string.IsNullOrEmpty(tdsDetailJson)
+            //    ? new List<TDSModel>()
+            //    : JsonConvert.DeserializeObject<IList<TDSModel>>(tdsDetailJson);
 
             if (MainModel != null && MainModel.ItemDetailGrid != null)
             {
