@@ -52,6 +52,7 @@ namespace eTactWeb.DOM.Models
         public string TechnicialcontactNo { get; set; }
         public string TechEmployeeName { get; set; }
         public int CustoidianEmpId { get; set; }
+        public string CustoidianEmpName { get; set; }
         public string ConsiderInInvetory { get; set; }
         public string InsuranceCompany { get; set; }
         public decimal InsuredAmount { get; set; }

@@ -22,6 +22,7 @@ using System.Globalization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Drawing.Drawing2D;
 using System.Runtime.Caching;
+using DocumentFormat.OpenXml.Vml.Office;
 
 namespace eTactWeb.Controllers
 {
@@ -509,7 +510,12 @@ namespace eTactWeb.Controllers
             return View("DirectPurchaseBill", model);
 
         }
-
+        public async Task<JsonResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int EntryId)
+        {
+            var JSON = await IDirectPurchaseBill.CheckDuplicateEntry(YearCode, AccountCode, InvNo, EntryId);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
             string my_connection_string;
@@ -1062,7 +1068,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyDirectPurchaseBillList_Summary", modelList, cacheEntryOptions);
             return PartialView("_DashBoardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             var type = model.DashboardType;
