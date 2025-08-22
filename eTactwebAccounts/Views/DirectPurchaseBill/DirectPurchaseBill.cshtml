@@ -467,7 +467,7 @@
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", EntryDate);
 
                 var InvDate = $('#InvDate').val().split("-").join("/");
-                InvDate = parseDateToFormat(InvDate.split(" ")[0]);
+                InvDate = (InvDate.split(" ")[0]);
                 $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", InvDate);
 
                 var PODt = $('#PODate').val().split("-").join("/");
@@ -615,8 +615,13 @@
                 }
                 else {
                     fillEntryandPONO();
-                    btnClearTax();
-                    btnClearTDS();
+                 if($('#divTaxGrid tr td').length>1){
+               btnClearTax();
+            }
+            if($('#divTDSGrid tr td').length>1){
+            btnClearTDS();
+
+            }
                     $('#lblItemNetAmount').text(0.00);
                     $('#lblItemCount').text(0);
                 }
@@ -847,8 +852,31 @@
                 }
             });
         }
+         function ClearDRCRGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearDRCRGrid")",
+                dataType: "json",
+                success: function (result, status, error) {
 
+                    $('#divdbCrItemList').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divdbCrItemList').html(NoData);
+                
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
         $('#DPBTypeServItem').change(function () {
+            ClearItemGrid();
+          
+            ClearDRCRGrid();
+             var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
+           ClearAdjustmentGrid();
+              }
             if ($(this).val() == 'Asset' || $(this).val() == 'Service') {
                 $('#IN1').prop("checked", false);
                 $('#IN1').hide();
@@ -1560,8 +1588,14 @@
 
         $('#AccountCode').change(function () {
             copyToClipboardForDropdown(this);
-            btnClearTax();
+            if($('#divTaxGrid tr td').length>1){
+               btnClearTax();
+            }
+            if($('#divTDSGrid tr td').length>1){
             btnClearTDS();
+
+            }
+
             if ($('#TxTaxType').val() != '-Select-') {
                 GetTaxAccountName("TAX");
             }
@@ -2125,7 +2159,7 @@
             else if ($('#AccountCode').val() == '0') {
                 $.notify("Vendor Name is required", "error");
             }
-             else if (parseInt($("#PaymentDays").val())<0) {
+             else if (parseInt($("#PaymentDays").val())<=0) {
                  $.notify("PaymentDays should not be 0", "error");
                 return;
             }
@@ -2308,13 +2342,19 @@
             $('#divAdjItemList').html(NoData);
             CalculateAdjAmt('NetTotal');
             DueDateCalculation();
+             var taxGrid = $('#divTaxGrid tr td').length;
+              if (taxGrid >1 ) {
+                ClearAdjustmentGrid();
+            }
             AddAdjstmntDetail1();
         });
+             
+
         $('.ItemBtn').click(function () {
              
             let IsError = 0;
 
-            $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
+         //   $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
 
             if ($('#AccountCode').prop('selectedIndex') <= 0) {
                 $.notify("Vendor Name is required", "error");
@@ -2492,6 +2532,7 @@
                     url: '@Url.Action("AddItem2Grid")',
                     type: "POST",
                     data: ItemData,
+                     async: false,
                     beforeSend: function (xhr) {
                         //xhr.overrideMimeType( "text/plain; charset=x-user-defined" );
                     },
@@ -2553,12 +2594,17 @@
                         alert(response.responseText);
                     },
                     complete: function () {
-                        //$('.Schedule').fadeIn();
+                        $('.Schedule').fadeIn();
                         $('.ItemBtn').html('<span role="status"><i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID</span>').prop("disabled", false);
                     }
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
+                     var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
+           ClearAdjustmentGrid();
+              }
+                  //   ClearAdjustmentGrid();
                     AddAdjstmntDetail1();
                 }).fail(function () {
                     alert("error");
@@ -2677,6 +2723,32 @@
         $('.btnClearTax').click(function () {
             btnClearTax();
         });
+          function ClearItemGrid() {
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("ClearItemGrid")",
+                data: { YearCode: $('#YearCode').val(), "VODate": $('#VouchDate').val() },
+                dataType: "json",
+                success: function (result, status, error) {
+                    $('#divPOItemList').empty();
+                    var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+                    $('#divPOItemList').html(NoData);
+                       if($('#divTaxGrid tr td').length>1){
+                           btnClearTax();
+                        }
+                        if($('#divTDSGrid tr td').length>1){
+                        btnClearTDS();
+
+                        }
+                    var txAmt = $('#lblItemNetAmount').text();
+                    $('#NetTotal').val(txAmt);
+                      
+                },
+                error: function (req, status, error) {
+                    alert(error);
+                }
+            });
+        }
         function btnClearTax() {
             $.ajax({
                 type: "POST",
@@ -2687,8 +2759,21 @@
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTaxGrid').html(NoData);
+              
+            if($('#divTDSGrid tr td').length>1){
+            btnClearTDS();
+
+            }
                     var txAmt = $('#lblItemNetAmount').text();
                     $('#NetTotal').val(txAmt);
+                      GetDbCrDetail();
+                       var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
+           ClearAdjustmentGrid();
+            AddAdjstmntDetail1();
+              }
+                     // ClearAdjustmentGrid();
+                     
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -2711,6 +2796,14 @@
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTDSGrid').html(NoData);
                     var txAmt = $('#lblItemNetAmount').text();
+                    $('#NetTotal').val(txAmt);
+                      GetDbCrDetail();
+                       var AdjGrid = $('#divAdjItemList tr td').length;
+              if (AdjGrid >= 1 ) {
+           ClearAdjustmentGrid();
+              }
+                  //    ClearAdjustmentGrid();
+                      AddAdjstmntDetail1();
                     //$('#TDSAmount').val(txAmt);
                 },
                 error: function (req, status, error) {
@@ -2784,7 +2877,11 @@
                         $('#NetTotal').val(txTotal.toFixed(2));
                         $('#TotalDiscountPercentage').val(0);
                         $('#TotalAmtAftrDiscount').val(0);
-                        btnClearTDS();
+                   
+            if($('#divTDSGrid tr td').length>1){
+            btnClearTDS();
+
+            }
                         $.notify('Item Deleted From Grid.', "success");
                         isEditAllowed = "true";
                     }

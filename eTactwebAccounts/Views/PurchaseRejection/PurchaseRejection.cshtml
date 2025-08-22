@@ -49,9 +49,9 @@
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
                        asp-controller="PurchaseRejection" asp-route-EntryId="@Model.PurchaseRejEntryId" asp-route-YearCode="@Model.PurchaseRejYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-                        PRINT 
+                        PRINT
                     </a>
-                   
+
 
                     @if (Model.Mode == "U" && Model.Mode != "V")
                     {
@@ -370,7 +370,7 @@
                                                 @* <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SONO</th>
                                                 <th data-columnno="18" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CustOrderNo</th>
                                                 <th data-columnno="19" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SO Date</th>
-                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO NO</th> 
+                                                <th data-columnno="20" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO NO</th>
                                                 <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Date</th>
                                                 <th data-columnno="16" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO EntryId</th>
                                                 <th data-columnno="17" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PO Yearcode</th>*@
@@ -404,18 +404,18 @@
                             <div class="row g-2 gx-3 justify-content-around">
                                 @*<div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
-                                    <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList" onchange="onNetTotalChange()">
-                                    <option value="">-Select-</option>
+                                <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList" onchange="onNetTotalChange()">
+                                <option value="">-Select-</option>
                                 </select>
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
-                                    <input asp-for="TotalDiscountPercentage" class="form-control" onchange="onNetTotalChange()" min="0" max="100" />
-                            </div>
-                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                                <input asp-for="TotalDiscountPercentage" class="form-control" onchange="onNetTotalChange()" min="0" max="100" />
+                                </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                 <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
                                 <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                            </div>*@
+                                </div>*@
                                 <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
                                     <label asp-for="NetTotal" class="form-label">Net Total</label>
                                     <input asp-for="NetTotal" class="form-control" onchange="onNetTotalChange()" readonly />
@@ -425,25 +425,25 @@
                                 <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             @*    <div class="row g-2 gx-3 justify-content-around">
-                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
-                        <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
-                        <option value="">-Select-</option>
-                        </select>
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
-                        <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
-                        <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
-                        </div>
-                        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-                        <label asp-for="NetTotal" class="form-label">Net Total</label>
-                        <input asp-for="NetTotal" class="form-control" readonly />
-                        </div>
-                        </div> *@
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <label asp-for="TotalRoundOff" class="form-label">RoundOff</label>
+                            <select class="form-select" asp-for="TotalRoundOff" asp-items="Model.YesNoList">
+                            <option value="">-Select-</option>
+                            </select>
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <label asp-for="TotalDiscountPercentage" class="form-label">Discount %</label>
+                            <input asp-for="TotalDiscountPercentage" class="form-control" min="0" max="100" />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <label asp-for="TotalAmtAftrDiscount" class="form-label">Amt Aftr Discount</label>
+                            <input asp-for="TotalAmtAftrDiscount" class="form-control" readonly />
+                            </div>
+                            <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+                            <label asp-for="NetTotal" class="form-label">Net Total</label>
+                            <input asp-for="NetTotal" class="form-control" readonly />
+                            </div>
+                            </div> *@
                         </div>
                     </div>
                 </div>
@@ -621,213 +621,213 @@
 @section Scripts
 {
     <script>
-         let generateEway = null;
+        let generateEway = null;
         const mode = $('#Mode').val(); // Get current mode: U = Update, V = View
-          $('#btngenrateEinvoice').click(function () {
-                          $('#EinvoicePopup').modal("hide");
-                          $('#PasswordAllowPopup').modal("show");
+        $('#btngenrateEinvoice').click(function () {
+            $('#EinvoicePopup').modal("hide");
+            $('#PasswordAllowPopup').modal("show");
 
-                    // setTimeout(() => {
-                    //     submitForm(true, printWindow); // Send true and window object
-                    // }, 300);
-                });
-                   $('#btnClose').click(function () {
-                                        $('#btngenrateEinvoice').val('false'); // set flag for no printing
-                                        $('#EinvoicePopup').modal("hide");
-                                      setTimeout(() => {
-                                             submitForm(false, null);
-                                        }, 300);
-                                    });
+            // setTimeout(() => {
+            //     submitForm(true, printWindow); // Send true and window object
+            // }, 300);
+        });
+        $('#btnClose').click(function () {
+            $('#btngenrateEinvoice').val('false'); // set flag for no printing
+            $('#EinvoicePopup').modal("hide");
+            setTimeout(() => {
+                submitForm(false, null);
+            }, 300);
+        });
         $('#btnEinvoiceOnly').click(function () {
-                       generateEway = 'EInvoice';
-                                        if ( mode === "V") {
-                       sendInvoiceRequest();
-                                }
-                       else {
-                                      setTimeout(() => {
-                                           submitForm(true, null); // no print
-                               }, 300);
-                       }
-                   });
-
-                   // Handle "E-Invoice + E-Way Bill" click
-                   $('#btnEwaybill').click(function () {
-                       generateEway = 'EwayAndEInvoice';
-                                               if ( mode === "V") {
-                               sendInvoiceRequest();
-                                       }
-                               else {
-                                              setTimeout(() => {
-                                           submitForm(true, null); // no print
-                                       }, 300);
-                               }
-                   });
-        function submitForm(ShouldEinvoice, printWindow) {
-               $('#ShouldEinvoice').val(ShouldEinvoice);
-
-               const formData = $('form').serialize();
-
-               $.ajax({
-                   type: "POST",
-                   url: $('form').attr('action'),
-                   data: formData,
-                   dataType: 'json', // Expect JSON response
-                   success: function (res) {
-                       if (res && res.status === "Success") {
-                           if (ShouldEinvoice) {
-                               const payload = {
-                                   EntryId: res.entryId,
-                                   InvoiceNo: res.invoiceNo,
-                                   YearCode: res.yearCode,
-                                   saleBillType:'',
-                                   customerPartCode: res.customerPartCode,
-                                   transporterName: res.transporterName,
-                                   vehicleNo: res.vehicleNo,
-                                   distanceKM: res.distanceKM.toString(),
-                                   EntrybyId: res.entrybyId,
-                                   MachineName: res.machineName,
-                                   generateEway: generateEway
-                               };
-
-                                    fetch('@Url.Action("GenerateInvoice", "PurchaseRejection")', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-        })
-        .then(response => {
-            if (!response.ok) throw new Error("Failed to generate invoice");
-            return response.json();
-        })
-        .then(data => {
-            $('#PasswordAllowPopup').modal("hide");
-
-            // Show eInvoice response
-            if (data.rawEInvoice) {
-                $('#einvoiceResponseBox').val(data.rawEInvoice);
+            generateEway = 'EInvoice';
+            if (mode === "V") {
+                sendInvoiceRequest();
             }
-
-            // Show eWayBill response
-            if (data.rawEWayBill) {
-                $('#ewayResponseBox').val(data.rawEWayBill);
+            else {
+                setTimeout(() => {
+                    submitForm(true, null); // no print
+                }, 300);
             }
-
-            // Open PDF if available
-            if (data.ewbPdfUrl && data.ewbPdfUrl.trim() !== "") {
-                window.open(data.ewbPdfUrl, '_blank');
-            }
-            // Open QR code image if available
-            else if (data.qrCodeUrl && data.qrCodeUrl.trim() !== "") {
-                window.open(data.qrCodeUrl, '_blank');
-            }
-
-            // Fallback: no data at all
-            if (
-                !data.rawEInvoice &&
-                !data.rawEWayBill &&
-                !data.qrCodeUrl &&
-                !data.ewbPdfUrl
-            ) {
-                $.notify("Invoice generated, but no detailed response or QR/PDF available.", "warn");
-            }
-        })
-        .catch(error => {
-            console.log(JSON.stringify(payload));
-            console.error("Invoice error:", error);
-            alert("Failed to generate invoice.");
         });
 
+        // Handle "E-Invoice + E-Way Bill" click
+        $('#btnEwaybill').click(function () {
+            generateEway = 'EwayAndEInvoice';
+            if (mode === "V") {
+                sendInvoiceRequest();
+            }
+            else {
+                setTimeout(() => {
+                    submitForm(true, null); // no print
+                }, 300);
+            }
+        });
+        function submitForm(ShouldEinvoice, printWindow) {
+            $('#ShouldEinvoice').val(ShouldEinvoice);
 
-                           } else {
-                               window.location.href = '/PurchaseRejection/Index?ID=0';
-                           }
-                       } else {
-                           alert(res.message || "Something went wrong.");
-                       }
-                   },
-                   error: function (xhr) {
-                       console.error("Error occurred:", xhr.responseText);
-                       alert("Save failed.");
-                   }
-               });
-           }
+            const formData = $('form').serialize();
+
+            $.ajax({
+                type: "POST",
+                url: $('form').attr('action'),
+                data: formData,
+                dataType: 'json', // Expect JSON response
+                success: function (res) {
+                    if (res && res.status === "Success") {
+                        if (ShouldEinvoice) {
+                            const payload = {
+                                EntryId: res.entryId,
+                                InvoiceNo: res.invoiceNo,
+                                YearCode: res.yearCode,
+                                saleBillType: '',
+                                customerPartCode: res.customerPartCode,
+                                transporterName: res.transporterName,
+                                vehicleNo: res.vehicleNo,
+                                distanceKM: res.distanceKM.toString(),
+                                EntrybyId: res.entrybyId,
+                                MachineName: res.machineName,
+                                generateEway: generateEway
+                            };
+
+                            fetch('@Url.Action("GenerateInvoice", "PurchaseRejection")', {
+                                method: 'POST',
+                                headers: {
+                                    'Content-Type': 'application/json'
+                                },
+                                body: JSON.stringify(payload)
+                            })
+                                .then(response => {
+                                    if (!response.ok) throw new Error("Failed to generate invoice");
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    $('#PasswordAllowPopup').modal("hide");
+
+                                    // Show eInvoice response
+                                    if (data.rawEInvoice) {
+                                        $('#einvoiceResponseBox').val(data.rawEInvoice);
+                                    }
+
+                                    // Show eWayBill response
+                                    if (data.rawEWayBill) {
+                                        $('#ewayResponseBox').val(data.rawEWayBill);
+                                    }
+
+                                    // Open PDF if available
+                                    if (data.ewbPdfUrl && data.ewbPdfUrl.trim() !== "") {
+                                        window.open(data.ewbPdfUrl, '_blank');
+                                    }
+                                    // Open QR code image if available
+                                    else if (data.qrCodeUrl && data.qrCodeUrl.trim() !== "") {
+                                        window.open(data.qrCodeUrl, '_blank');
+                                    }
+
+                                    // Fallback: no data at all
+                                    if (
+                                        !data.rawEInvoice &&
+                                        !data.rawEWayBill &&
+                                        !data.qrCodeUrl &&
+                                        !data.ewbPdfUrl
+                                    ) {
+                                        $.notify("Invoice generated, but no detailed response or QR/PDF available.", "warn");
+                                    }
+                                })
+                                .catch(error => {
+                                    console.log(JSON.stringify(payload));
+                                    console.error("Invoice error:", error);
+                                    alert("Failed to generate invoice.");
+                                });
+
+
+                        } else {
+                            window.location.href = '/PurchaseRejection/Index?ID=0';
+                        }
+                    } else {
+                        alert(res.message || "Something went wrong.");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error occurred:", xhr.responseText);
+                    alert("Save failed.");
+                }
+            });
+        }
 
         $('#btnGenerateEinvoiceview').click(function (e) {
-                      e.preventDefault();
-                      $('#PasswordAllowPopup').modal("show");
-                  });
-                  
+            e.preventDefault();
+            $('#PasswordAllowPopup').modal("show");
+        });
+
         function sendInvoiceRequest() {
 
-                     const model = {
-                         EntryId: '@Model.PurchaseRejEntryId',
-                         InvoiceNo: '@Model.PurchaseRejectionVoucherNo',
-                         YearCode: '@Model.PurchaseRejYearCode',
-                         saleBillType: ' ',
-                         customerPartCode: '@Model.PartCode',
-                         transporterName: '@Model.Transporter',
-                         vehicleNo: '@Model.Vehicleno',
-                         distanceKM: '@Model.Distance',
-                         EntrybyId: '@Model.EntryByempId',
-                         MachineName: '@Model.MachineName',
-                         generateEway: generateEway
-                     };
+            const model = {
+                EntryId: '@Model.PurchaseRejEntryId',
+                InvoiceNo: '@Model.PurchaseRejectionVoucherNo',
+                YearCode: '@Model.PurchaseRejYearCode',
+                saleBillType: ' ',
+                customerPartCode: '@Model.PartCode',
+                transporterName: '@Model.Transporter',
+                vehicleNo: '@Model.Vehicleno',
+                distanceKM: '@Model.Distance',
+                EntrybyId: '@Model.EntryByempId',
+                MachineName: '@Model.MachineName',
+                generateEway: generateEway
+            };
 
-                     $.ajax({
-                         url: '@Url.Action("GenerateInvoice")',
-                         method: 'POST',
-                         contentType: 'application/json',
-                         data: JSON.stringify(model),
-                         success: function (res) {
-                        /*      if (res.redirectUrl) {
-                                 window.location.href = res.redirectUrl;
-                             }
-                               /* if (res.rawResponse) {
-                                         try {
-                                             const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
-                                             $('#ewayResponseBox').val(formattedJson);
-                                         } catch (e) {
-                                             $('#ewayResponseBox').val(res.rawResponse);
-                                         }
-                                     } */
-                                  /*        if (res.rawEInvoice) {
-            $('#einvoiceResponseBox').val(res.rawEInvoice);
+            $.ajax({
+                url: '@Url.Action("GenerateInvoice")',
+                method: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(model),
+                success: function (res) {
+                    /*      if (res.redirectUrl) {
+                             window.location.href = res.redirectUrl;
+                         }
+                           /* if (res.rawResponse) {
+                                     try {
+                                         const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                         $('#ewayResponseBox').val(formattedJson);
+                                     } catch (e) {
+                                         $('#ewayResponseBox').val(res.rawResponse);
+                                     }
+                                 } */
+                    /*        if (res.rawEInvoice) {
+        $('#einvoiceResponseBox').val(res.rawEInvoice);
         }
 
         // EWAY BILL RESPONSE
         if (res.rawEWayBill) {
-            $('#ewayResponseBox').val(res.rawEWayBill);
+        $('#ewayResponseBox').val(res.rawEWayBill);
         }
-                             else {
-                                 alert('E-Invoice generation failed.');
-                             } */ 
-                              if (res.rawEInvoice)
-                $('#einvoiceResponseBox').val(res.rawEInvoice);
-            if (res.rawEWayBill)
-                $('#ewayResponseBox').val(res.rawEWayBill);
+               else {
+                   alert('E-Invoice generation failed.');
+               } */
+                    if (res.rawEInvoice)
+                        $('#einvoiceResponseBox').val(res.rawEInvoice);
+                    if (res.rawEWayBill)
+                        $('#ewayResponseBox').val(res.rawEWayBill);
 
-            // Handle PDF or QR
-            if (res.ewbPdfUrl && res.ewbPdfUrl.trim() !== "") {
-                window.open(res.ewbPdfUrl, '_blank');
-            }  
-            else if (res.qrCodeUrl) {
-               window.open(res.qrCodeUrl, '_blank');
-            } else {
-                alert("No QR code or PDF found.");
-            }
+                    // Handle PDF or QR
+                    if (res.ewbPdfUrl && res.ewbPdfUrl.trim() !== "") {
+                        window.open(res.ewbPdfUrl, '_blank');
+                    }
+                    else if (res.qrCodeUrl) {
+                        window.open(res.qrCodeUrl, '_blank');
+                    } else {
+                        alert("No QR code or PDF found.");
+                    }
 
-            $('#PasswordAllowPopup').modal('hide');
-                         },
-                         error: function () {
-                             alert('An error occurred while generating the E-Invoice.');
-                             $('#PasswordAllowPopup').modal('hide');
-                         }
-                     });
-                 }
+                    $('#PasswordAllowPopup').modal('hide');
+                },
+                error: function () {
+                    alert('An error occurred while generating the E-Invoice.');
+                    $('#PasswordAllowPopup').modal('hide');
+                }
+            });
+        }
     </script>
     <script>
-            function FillPopUpGridDetails(modeId) {
+        function FillPopUpGridDetails(modeId) {
             html = '';
             if (modeId === 'U' || modeId === 'V') {
                 var data = @Html.Raw(Json.Serialize(Model.AccPurchaseRejectionAgainstBillDetails));
@@ -835,25 +835,25 @@
                 if (data && data.length > 0) {
                     data.forEach((item, index) => {
                         html += `<tr id="PRPopUpDataRow-j" style="font-size: 12px;">
-                        <td> ` + j + `</td>
-                        <td id="partCode-` + j + `">${item.partCode || ''}<input type="hidden" id="popupItemCode-` + j + `" value="${item.itemCode || ''}" /><input type="hidden" id="popupPurchBillItemCode-` + j + `" value="${item.purchBillItemCode || ''}" /><input type="hidden" id="popUpBatchNo-` + j + `" value="${item.batchNo || ''}" /><input type="hidden" id="popUpUniqueBatchNo-` + j + `" value="${item.uniqueBatchNo || ''}" /></td>
-                        <td id="popUpItemCodeName-` + j + `">${item.itemName || ''}</td>
-                        <td id="popUpPurchBillEntryId-` + j + `">${item.againstPurchaseBillEntryId || ''}</td>
-                        <td id="popUpPurchBillYearCode-` + j + `">${item.againstPurchaseBillYearCode || ''}</td>
-                        <td id="popUpInvoiceNo-` + j + `">${item.invoiceNo || ''}</td>
-                        <td id="popUpInvoiceDate-` + j + `">${item.againstPurchaseBillDate || ''}</td>
-                        <td id="popUpItemName-` + j + `">${item.itemName || ''}</td>
-                        <td id="popUpPartCode-` + j + `">${item.partCode || ''}</td>
-                        <td id="popUpINVNetAmt-` + j + `">${item.billAmount || 0}</td>
-                        <td id="popUpDueDate-` + j + `">${item.poDate || ''}</td>
-                        <td id="popUpPaidAmt-` + j + `">${item.paidAmt || 0}</td>
-                        <td id="popUpRemainingAmt-` + j + `">${item.remainingAmt || 0}</td>
-                        <td id="popUpBillQty-` + j + `">${item.billQty || 0}</td>
-                        <td id="popUpBillRate-` + j + `">${item.billRate || 0}</td>
-                        <td id="popUpItemAmount-` + j + `">${item.amount || 0}</td>
-                        <td id="popUpdisPer-` + j + `">${item.discountPer || 0}</td>
-                        <td id="popUpDisAmt-` + j + `">${item.discountAmt || 0}</td>
-                    </tr>`;
+                                <td> ` + j + `</td>
+                                <td id="partCode-` + j + `">${item.partCode || ''}<input type="hidden" id="popupItemCode-` + j + `" value="${item.itemCode || ''}" /><input type="hidden" id="popupPurchBillItemCode-` + j + `" value="${item.purchBillItemCode || ''}" /><input type="hidden" id="popUpBatchNo-` + j + `" value="${item.batchNo || ''}" /><input type="hidden" id="popUpUniqueBatchNo-` + j + `" value="${item.uniqueBatchNo || ''}" /></td>
+                                <td id="popUpItemCodeName-` + j + `">${item.itemName || ''}</td>
+                                <td id="popUpPurchBillEntryId-` + j + `">${item.againstPurchaseBillEntryId || ''}</td>
+                                <td id="popUpPurchBillYearCode-` + j + `">${item.againstPurchaseBillYearCode || ''}</td>
+                                <td id="popUpInvoiceNo-` + j + `">${item.invoiceNo || ''}</td>
+                                <td id="popUpInvoiceDate-` + j + `">${item.againstPurchaseBillDate || ''}</td>
+                                <td id="popUpItemName-` + j + `">${item.itemName || ''}</td>
+                                <td id="popUpPartCode-` + j + `">${item.partCode || ''}</td>
+                                <td id="popUpINVNetAmt-` + j + `">${item.billAmount || 0}</td>
+                                <td id="popUpDueDate-` + j + `">${item.poDate || ''}</td>
+                                <td id="popUpPaidAmt-` + j + `">${item.paidAmt || 0}</td>
+                                <td id="popUpRemainingAmt-` + j + `">${item.remainingAmt || 0}</td>
+                                <td id="popUpBillQty-` + j + `">${item.billQty || 0}</td>
+                                <td id="popUpBillRate-` + j + `">${item.billRate || 0}</td>
+                                <td id="popUpItemAmount-` + j + `">${item.amount || 0}</td>
+                                <td id="popUpdisPer-` + j + `">${item.discountPer || 0}</td>
+                                <td id="popUpDisAmt-` + j + `">${item.discountAmt || 0}</td>
+                            </tr>`;
                         billQty += parseFloat(item.BillQty) || 0;
                         billRate += parseFloat(item.BillRate) || 0;
                         j++
@@ -876,7 +876,7 @@
                 NewEntryId();
                 $('#divAddPurchaseRejectionPopupDataGrid').empty();
             }
-             $("input, select, textarea").each(function () {
+            $("input, select, textarea").each(function () {
                 var $field = $(this);
                 var rules = $field.rules();
                 if (rules && rules.required) {
@@ -950,20 +950,19 @@
                 onInvoiceChange('PurchaseRejectionInvoiceNo');
                 setInterval(checkNetTotalChange, 500);
             }
-            if ($('#Mode').val() == "V" || $('#Mode').val() == "U")
-            {
+            if ($('#Mode').val() == "V" || $('#Mode').val() == "U") {
                 GetTaxPartItem();
                 GetDbCrDetail();
             }
         });
 
-         document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function () {
             setTimeout(function () {
                 setUniqueKeysFromRenderedPopup();
             }, 500);
         });
 
-         function setUniqueKeysFromRenderedPopup() {
+        function setUniqueKeysFromRenderedPopup() {
             $('#divAddPurchaseRejectionPopupDataGrid tr').each(function (index) {
                 const j = index + 1;
                 const itemCode = $(`#popupItemCode-${j}`).val() || "";
@@ -981,8 +980,7 @@
                     const gridUniqueBatchNo = $(`#GridUniqueBatchNo-${count}`).text().trim();
                     if (gridItemCode === itemCode &&
                         gridBatchNo === batchNo &&
-                        gridUniqueBatchNo === uniqueBatchNo)
-                        {
+                        gridUniqueBatchNo === uniqueBatchNo) {
                         const uniqueKey = `${entryId}_${yearCode}_${invoiceNo}_${purchBillItemCode}_${itemCode}`;
                         const $hdn = $(`#hdnuniquekey-${count}`);
                         if ($hdn.length && !$hdn.val()) {
@@ -1066,9 +1064,10 @@
 
         function NewEntryId() {
             var YearCode = $('#PurchaseRejYearCode').val();
+            var SubVoucherName = $('#SubVoucherName').find(':selected').text();
             $.ajax({
                 type: "POST",
-                data: { "YearCode": YearCode },
+                data: { "YearCode": YearCode, "SubVoucherName": SubVoucherName },
                 url: "@Url.Action("NewEntryId")",
                 dataType: "json",
                 async: false,
@@ -1090,6 +1089,10 @@
                 }
             });
         }
+
+        $('#SubVoucherName').change(function () {
+            NewEntryId();
+        })
 
         function PopUpDataGrid() {
             $.ajax({
@@ -1176,10 +1179,10 @@
                             $('#DiscountPer').val(obj[0].DiscountPer);
                             $('#StoreId').val(obj[0].StoreId);
                             FillCurrentBatchINStore();
-                           // $('#Batchno').val(obj[0].Batchno);
-                           if (obj[0].Batchno != '0' && obj[0].Batchno != null && obj[0].Batchno != 0) {
-                               $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
-                           }
+                            // $('#Batchno').val(obj[0].Batchno);
+                            if (obj[0].Batchno != '0' && obj[0].Batchno != null && obj[0].Batchno != 0) {
+                                $('#Batchno').append('<option value="' + obj[0].Batchno + '" selected>' + obj[0].Batchno + '</option>');
+                            }
                             $('#LotStock').val(obj[0].LotStock);
                             $('#TotalStock').val(obj[0].TotalStock);
                             $('#Remark').val(obj[0].Remark);
@@ -1193,8 +1196,8 @@
                             $('#InprocessDate').val(obj[0].InprocessDate);
                             FillUniqueBatchNo();
                             //$('#Uniquebatchno').val(obj[0].Uniquebatchno);
-                             if (obj[0].Uniquebatchno != '0' && obj[0].Uniquebatchno != null && obj[0].Uniquebatchno != 0) {
-                               $('#Uniquebatchno').append('<option value="' + obj[0].Uniquebatchno + '" selected>' + obj[0].Uniquebatchno + '</option>');
+                            if (obj[0].Uniquebatchno != '0' && obj[0].Uniquebatchno != null && obj[0].Uniquebatchno != 0) {
+                                $('#Uniquebatchno').append('<option value="' + obj[0].Uniquebatchno + '" selected>' + obj[0].Uniquebatchno + '</option>');
                             }
                             FillLotStock();
                             var rowCount = $('#divStockGrid tr').length;
@@ -1236,30 +1239,30 @@
         }
 
         function ClearPopupItemGrid() {
-           const existingItemKeys = [];
-           $('#divAddPurchaseRejectionList').find('tr').each(function (index) {
+            const existingItemKeys = [];
+            $('#divAddPurchaseRejectionList').find('tr').each(function (index) {
                 const row = $(this);
                 const key = index + 1;
                 const uniqueKey = $('#hdnuniquekey-' + key).val();
                 if (!existingItemKeys.includes(uniqueKey)) {
-                        existingItemKeys.push(uniqueKey);
+                    existingItemKeys.push(uniqueKey);
                 }
             });
             $('#divAddPurchaseRejectionPopupDataGrid').find('tr').each(function (index) {
-                 const i = index + 1;
-                 const $row = $(this);
-                 const entryId   = ($row.find('#popUpPurchBillEntryId-' + i).text() || '').trim();
-                 const yearCode  = ($row.find('#popUpPurchBillYearCode-' + i).text() || '').trim();
-                 const invoiceNo = ($row.find('#popUpInvoiceNo-' + i).text() || '').trim();
-                 const pbitemCode  = ($row.find('#popupPurchBillItemCode-' + i).val() || '').trim();
-                 const itemCode  = ($row.find('#popupItemCode-' + i).val() || '').trim();
-                 if (entryId && yearCode && invoiceNo && pbitemCode && itemCode) {
-                     const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
-                     if (!existingItemKeys.includes(uniqueKey)) {
+                const i = index + 1;
+                const $row = $(this);
+                const entryId = ($row.find('#popUpPurchBillEntryId-' + i).text() || '').trim();
+                const yearCode = ($row.find('#popUpPurchBillYearCode-' + i).text() || '').trim();
+                const invoiceNo = ($row.find('#popUpInvoiceNo-' + i).text() || '').trim();
+                const pbitemCode = ($row.find('#popupPurchBillItemCode-' + i).val() || '').trim();
+                const itemCode = ($row.find('#popupItemCode-' + i).val() || '').trim();
+                if (entryId && yearCode && invoiceNo && pbitemCode && itemCode) {
+                    const uniqueKey = entryId + '_' + yearCode + '_' + invoiceNo + '_' + pbitemCode + '_' + itemCode;
+                    if (!existingItemKeys.includes(uniqueKey)) {
                         $row.remove(); // Remove only if not found in main grid
                     }
-                 }
-             });
+                }
+            });
 
             if ($('#divAddPurchaseRejectionPopupDataGrid tr').length === 0) {
                 const NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
@@ -1274,7 +1277,7 @@
                 url: '@Url.Action("DeleteItemRow")',
                 type: "POST",
                 async: false,
-                       data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq":  seq, "uniquekeyid": $('#hdnuniquekey-' + seq).val(), "IsDeleteAll": IsDeleteAll},
+                data: { "itemCode": itemCode, "Mode": $('#Mode').val(), "Seq": seq, "uniquekeyid": $('#hdnuniquekey-' + seq).val(), "IsDeleteAll": IsDeleteAll },
                 success: function (data, status, xhr) {
                     $('#divAddPurchaseRejectionList').html(data);
 
@@ -1319,7 +1322,7 @@
             $.ajax({
                 type: "POST",
                 url: "@Url.Action("ClearTaxGrid")",
-                data: { },
+                data: {},
                 dataType: "json",
                 success: function (result, status, error) {
                     $('#divTaxGrid').empty();
@@ -1350,8 +1353,8 @@
                                 $.each(obj.Result.Table, function (index, val) {
                                     $('#DocAccountCode').append("<option value=" + val.Account_Code + ">" + val.Account_Name + "</option>");
                                 });
-                                if($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                                    var hdnDocAccountCode= $('#hdnDocAccountCode').val();
+                                if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                                    var hdnDocAccountCode = $('#hdnDocAccountCode').val();
                                 }
                             }
                         }
@@ -1435,7 +1438,7 @@
             saveagainstbillgrid();
             const result = await ValidateSubmit();
             if (result === true) {
-                  $('#EinvoicePopup').modal('show');
+                $('#EinvoicePopup').modal('show');
             }
         });
 
@@ -1525,14 +1528,14 @@
                                     '<td id="ItemName-' + i + '">' + val.item_Name + '</td>' +
                                     '<td id="PartCode-' + i + '">' + val.PartCode + '</td>' +
                                     '<td id="INVNetAmt-' + i + '">' + val.INVNetAmt + '</td>' +
-                                    '<td id="DueDate-' + i + '">' +dueDate + '</td>' +
+                                    '<td id="DueDate-' + i + '">' + dueDate + '</td>' +
                                     '<td id="PaidAmt-' + i + '">' + val.PaidAmt + '</td>' +
                                     '<td id="RemainingAmt-' + i + '">' + val.RemainingAmt + '</td>' +
-                                     '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
-                                     '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
-                                     '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
-                                     '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
-                                     '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
+                                    '<td id="BillQty-' + i + '">' + val.BillQty + '</td>' +
+                                    '<td id="BillRate-' + i + '">' + val.BillRate + '</td>' +
+                                    '<td id="ItemAmount-' + i + '">' + val.ItemAmount + '</td>' +
+                                    '<td id="disPer-' + i + '">' + val.disPer + '</td>' +
+                                    '<td id="DisAmt-' + i + '">' + val.DisAmt + '</td>' +
                                     '</tr>';
                                 i++;
                             });
@@ -1643,7 +1646,7 @@
                         "ItemSize": $('#ItemSize').val() || "",
                         "Amount": $('#ItemAmount-' + i).text() || "",
                         "PONO": row.find('#pono-' + i).text() || "",
-                        "PODate": row.find('#poDate-' + i).text() || (row.find('#DueDate-' + i).text()|| ""),
+                        "PODate": row.find('#poDate-' + i).text() || (row.find('#DueDate-' + i).text() || ""),
                         "POEntryId": row.find('#poEntryId-' + i).text() || "",
                         "POYearCode": row.find('#poYearCode-' + i).text() || "",
                         "PoRate": 0,
@@ -1683,10 +1686,10 @@
                             var j = existingRowCount > 0 ? existingRowCount : 0;
                             var checkedRowsCount = $('#divPurchaseRejectionDataGrid tr').length;
                             /* if(html == null) { */
-                                popUpItems = [];
+                            popUpItems = [];
                             /* } */
                             if (html != null) {
-                                 $('#divAddPurchaseRejectionList ').find('tr').each(function (index) {
+                                $('#divAddPurchaseRejectionList ').find('tr').each(function (index) {
                                     const i = index + 1;
                                     const uniqueKey = ($('#hdnuniquekey-' + i).val() || '').trim();
                                     /* const key = ($('#DocAccountCode-' + i).val() || '').trim() + '_' + ($('#GridIC-' + i).val() || '').trim(); */
@@ -1701,9 +1704,9 @@
                             }
                             popuphtml = "";
                             for (var i = 1; i <= checkedRowsCount; i++) {/*  && popUpItems.indexOf($('#itemCode-' + j).val()) == -1 */
-                                if ($('#chkPurchaseRejection-' + i).is(':checked'))   {
-                                    let entryId   = ($('#PurchBillEntryId-' + i).text() || '').trim();
-                                    let yearCode  = ($('#PurchBillYearCode-' + i).text() || '').trim();
+                                if ($('#chkPurchaseRejection-' + i).is(':checked')) {
+                                    let entryId = ($('#PurchBillEntryId-' + i).text() || '').trim();
+                                    let yearCode = ($('#PurchBillYearCode-' + i).text() || '').trim();
                                     let invoiceNo = ($('#InvoiceNo-' + i).text() || '').trim();
                                     let pbitemCode = $('#itemCode-' + i).val();
                                     let itemCode = $('#ItemCode').val();
@@ -1715,7 +1718,7 @@
                                         if (!exists) {
                                             j++;
                                             /* popUpItems.push({key: $('#DocAccountCode').val() + '_' + $('#ItemCode').val(), value: uniqueKey}); */
-                                            popUpItems.push({key: $('#ItemCode').val(), value: uniqueKey});
+                                            popUpItems.push({ key: $('#ItemCode').val(), value: uniqueKey });
                                             popuphtml += '<tr id="PRPopUpDataRow-' + j + '" style="font-size: 12px;">' +
                                                 '<td>' + j + '</td>' +
                                                 '<td id="partCode-' + j + '">' + $('#PartCode').find(':selected').text() + '<input type="hidden" id="popupItemCode-' + j + '" value="' + $('#ItemCode').val() + '"/><input type="hidden" id="popupPurchBillItemCode-' + j + '" value="' + $('#itemCode-' + i).val() + '"/><input type="hidden" id="popUpBatchNo-' + j + '" value="" /><input type="hidden" id="popUpUniqueBatchNo-' + j + '" value="" /></td>' +
@@ -1869,8 +1872,8 @@
                 RemoveErrorCls('TotalStock');
             }
             if (Type.toLowerCase() != 'debit-note' && $('#BillQty').val() != null && $('#RejectedQty').val() != null && $('#LotStock').val() != null && $('#TotalStock').val() != null && ((parseFloat($('#BillQty').val()) < parseFloat($('#RejectedQty').val()))
-            || (parseFloat($('#LotStock').val()) < parseFloat($('#RejectedQty').val()))
-            || (parseFloat($('#TotalStock').val()) < parseFloat($('#RejectedQty').val())))) {
+                || (parseFloat($('#LotStock').val()) < parseFloat($('#RejectedQty').val()))
+                || (parseFloat($('#TotalStock').val()) < parseFloat($('#RejectedQty').val())))) {
                 AddErrorCls('RejectedQty');
                 $.notify('Rej Qty can not greter then billQty or LotStock or TotalStock...!', "error");
                 Err = 1;
@@ -1883,21 +1886,21 @@
             else {
                 RemoveErrorCls('RejectedQty');
             }
-             var error = false;
-             var rowcount = $('#divaddpurchaserejectionpopupdatagrid tr').length;
-             //var rowcount = popupitems.length;
-             for (var i = 0; i < rowcount; i++) {
-                 if ($('#itemcode').val() != popupitems[i]) {
-                     error = true;
-                     err = 1;
-                     break;
-                 } else {
-                     error = false;
-                 }
-             }
-             if (error) {
-                 $.notify('cannot add item which is not in popup data grid...!', "error");
-             }
+            var error = false;
+            var rowcount = $('#divaddpurchaserejectionpopupdatagrid tr').length;
+            //var rowcount = popupitems.length;
+            for (var i = 0; i < rowcount; i++) {
+                if ($('#itemcode').val() != popupitems[i]) {
+                    error = true;
+                    err = 1;
+                    break;
+                } else {
+                    error = false;
+                }
+            }
+            if (error) {
+                $.notify('cannot add item which is not in popup data grid...!', "error");
+            }
             Err == 1 ? ShowErrorFld('H_Panel2') : HideErrorFld('H_Panel2');
             if (Err == 1) { return false; }
             else {
@@ -1930,150 +1933,150 @@
                 let matchingItems = popUpItems.filter(x => x.key === matchKey);
                 let lastMatch = '';
                 if (matchingItems.length > 0) {
-                lastMatch = matchingItems[matchingItems.length - 1];
-            }
+                    lastMatch = matchingItems[matchingItems.length - 1];
+                }
                 var purchaseRejectionData = {
-                "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
-                "ItemName": $('#ItemCode').find(':selected').text() == "-Select-" ? "" : $('#ItemCode').find(':selected').text(),
-                "DocAccountName": $('#DocAccountCode').find(':selected').text() == "-Select-" ? "" : $('#DocAccountCode').find(':selected').text(),
-                "DocAccountCode": $('#DocAccountCode').val(),
-                "HSNNo": $('#HSNNo').val(),
-                "ItemCode": $('#ItemCode').val(),
-                "hdnuniquekey": lastMatch.value,
-                "BillQty": $('#BillQty').val(),
-                "RejectedQty": $('#RejectedQty').val(),
-                "Unit": $('#Unit').val(),
-                "AltQty": $('#AltQty').val(),
-                "AltUnit": $('#AltUnit').val(),
-                "PRRate": $('#PRRate').val(),
-                "BillRate": $('#BillRate').val(),
-                "UnitRate": $('#UnitRate').val(),
-                "AltRate": $('#AltRate').val(),
-                "NoOfCase": $('#NoOfCase').val(),
-                "CostCenterId": $('#CostCenterId').val(),
-                "ItemAmount": $('#ItemAmount').val(),
-                "Amount": $('#ItemAmount').val(),
-                "DiscountPer": $('#DiscountPer').val(),
-                "DiscountAmt": $('#DiscountAmt').val(),
-                "StoreId": $('#StoreId').val(),
-                "StoreName": $('#StoreId').find(':selected').text() == "-Select-" ? "" : $('#StoreId').find(':selected').text(),
-                /* "Batchno": $('#Batchno').val(),
-                "Uniquebatchno": $('#Uniquebatchno').val(), */
+                    "PartCode": $('#PartCode').find(':selected').text() == "-Select-" ? "" : $('#PartCode').find(':selected').text(),
+                    "ItemName": $('#ItemCode').find(':selected').text() == "-Select-" ? "" : $('#ItemCode').find(':selected').text(),
+                    "DocAccountName": $('#DocAccountCode').find(':selected').text() == "-Select-" ? "" : $('#DocAccountCode').find(':selected').text(),
+                    "DocAccountCode": $('#DocAccountCode').val(),
+                    "HSNNo": $('#HSNNo').val(),
+                    "ItemCode": $('#ItemCode').val(),
+                    "hdnuniquekey": lastMatch.value,
+                    "BillQty": $('#BillQty').val(),
+                    "RejectedQty": $('#RejectedQty').val(),
+                    "Unit": $('#Unit').val(),
+                    "AltQty": $('#AltQty').val(),
+                    "AltUnit": $('#AltUnit').val(),
+                    "PRRate": $('#PRRate').val(),
+                    "BillRate": $('#BillRate').val(),
+                    "UnitRate": $('#UnitRate').val(),
+                    "AltRate": $('#AltRate').val(),
+                    "NoOfCase": $('#NoOfCase').val(),
+                    "CostCenterId": $('#CostCenterId').val(),
+                    "ItemAmount": $('#ItemAmount').val(),
+                    "Amount": $('#ItemAmount').val(),
+                    "DiscountPer": $('#DiscountPer').val(),
+                    "DiscountAmt": $('#DiscountAmt').val(),
+                    "StoreId": $('#StoreId').val(),
+                    "StoreName": $('#StoreId').find(':selected').text() == "-Select-" ? "" : $('#StoreId').find(':selected').text(),
+                    /* "Batchno": $('#Batchno').val(),
+                    "Uniquebatchno": $('#Uniquebatchno').val(), */
                     "Batchno": $('#Batchno').find(':selected').text().trim(),
                     "Uniquebatchno": $('#Uniquebatchno').find(':selected').text().trim(),
-                "LotStock": $('#LotStock').val(),
-                "TotalStock": $('#TotalStock').val(),
-                "ItemSize": $('#ItemSize').val(),
-                "ItemDescription": $('#ItemDescription').val(),
-                "Remark": $('#Remark').val(),
-                "MIRNo": $('#MIRNo').val(),
-                "MIREntryID": $('#MIREntryID').val(),
-                "MIRYearCode": $('#MIRYearCode').val(),
-                "MIRDate": $('#MIRDate').val(),
-                "InprocessNo": $('#InprocessNo').val(),
-                "InprocessEntryID": $('#InprocessEntryID').val(),
-                "InprocessYearCode": $('#InprocessYearCode').val(),
-                "InprocessDate": $('#InprocessDate').val()
-            }
+                    "LotStock": $('#LotStock').val(),
+                    "TotalStock": $('#TotalStock').val(),
+                    "ItemSize": $('#ItemSize').val(),
+                    "ItemDescription": $('#ItemDescription').val(),
+                    "Remark": $('#Remark').val(),
+                    "MIRNo": $('#MIRNo').val(),
+                    "MIREntryID": $('#MIREntryID').val(),
+                    "MIRYearCode": $('#MIRYearCode').val(),
+                    "MIRDate": $('#MIRDate').val(),
+                    "InprocessNo": $('#InprocessNo').val(),
+                    "InprocessEntryID": $('#InprocessEntryID').val(),
+                    "InprocessYearCode": $('#InprocessYearCode').val(),
+                    "InprocessDate": $('#InprocessDate').val()
+                }
 
                 $.ajax({
-                type: "POST",
-                url: '@Url.Action("AddPurchaseRejectionDetail")',
-                data: purchaseRejectionData,
-                async: false,
-                statusCode: {
-                    207: function () {
-                        $.notify('Duplicate Item...!', "info");
-                    }
-                },
-                success: function (result, status, xhr) {
-                    if (xhr.status == 200 && xhr.responseText == result) {
-                        isAddItem = true;
-                        $('#divAddPurchaseRejectionList').html(result);
-                        $('#PartCode,#ItemCode').val(0).trigger("change");
-                        $('#Uniquebatchno,#Batchno,#Qty').val(0);
-                        $('#LotStock,#TotalStock').val("");
-                        $('#HSNNo').val("");
-                        $('#Unit,#AltUnit').val("");
-                        $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount').val(0);
-                        BasicItemGridTotal();
-
-                        //$('#Storeid,#Wcid').prop("disabled", false);
-
-                        if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '' && $('#DiscountPer').val() != undefined) {
-                            $('#DiscountPer').prop("readonly", "true");
+                    type: "POST",
+                    url: '@Url.Action("AddPurchaseRejectionDetail")',
+                    data: purchaseRejectionData,
+                    async: false,
+                    statusCode: {
+                        207: function () {
+                            $.notify('Duplicate Item...!', "info");
                         }
+                    },
+                    success: function (result, status, xhr) {
+                        if (xhr.status == 200 && xhr.responseText == result) {
+                            isAddItem = true;
+                            $('#divAddPurchaseRejectionList').html(result);
+                            $('#PartCode,#ItemCode').val(0).trigger("change");
+                            $('#Uniquebatchno,#Batchno,#Qty').val(0);
+                            $('#LotStock,#TotalStock').val("");
+                            $('#HSNNo').val("");
+                            $('#Unit,#AltUnit').val("");
+                            $('#TotalStock,#LotStock,#AltQty,#ActualStockQty,#AdjQty,#Rate,#Amount').val(0);
+                            BasicItemGridTotal();
 
-                        if ($('#DiscountAmt').val() != 0 && $('#DiscountAmt').val() != '0' && $('#DiscountAmt').val() != '' && $('#DiscountAmt').val() != undefined) {
-                            $('#DiscountAmt').prop("readonly", "true");
-                        }
+                            //$('#Storeid,#Wcid').prop("disabled", false);
 
-                        $('#SONO').focus();
-                        ClearAdjustmentGrid();
-                        var rowCount = $('#divAddPurchaseRejectionList tr').length;
-                        sum = 0;
-                        for (var i = 1; i <= rowCount; i++) {
-
-                            sum += parseFloat($('#gridAmount-' + i).text() == '.00' ? 0 : $('#gridAmount-' + i).text());
-                        }
-
-                        $('#ItemNetAmount').val(sum);
-
-                        // $('#lblItemNetAmount').text(sum.toFixed(2));
-
-                        var txSum = 0;
-                        var taxRowCount = $('#divTaxGrid tr').length;
-                        if ($('#divTaxGrid tr td').length > 1) {
-                            for (var i = 1; i <= taxRowCount; i++) {
-                                txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                            if ($('#DiscountPer').val() != 0 && $('#DiscountPer').val() != '0' && $('#DiscountPer').val() != '' && $('#DiscountPer').val() != undefined) {
+                                $('#DiscountPer').prop("readonly", "true");
                             }
-                        }
 
-                        var txTotal = sum + txSum;
-
-                        $('#NetTotal').val(txTotal.toFixed(2));
-                        $('#AdjPendAmt').val($('#NetTotal').val());
-
-                        $('#divAddPurchaseRejectionList tr').each(function (index) {
-                            i = index + 1;
-                            let gridBatchNo = $("#GridBatchNo-" + i).text().trim();
-                            let gridUniqueBatchNo = $("#GridUniqueBatchNo-" + i).text().trim();
-                            let gridDocAccountCode = $("#DocAccountCode-" + i).val();
-                            if (gridBatchNo || gridUniqueBatchNo || gridDocAccountCode) {
-                                batchDataList.push({
-                                    GridDocAccountCode: gridDocAccountCode,
-                                    GridBatchNo: gridBatchNo,
-                                    GridUniqueBatchNo: gridUniqueBatchNo
-                                });
+                            if ($('#DiscountAmt').val() != 0 && $('#DiscountAmt').val() != '0' && $('#DiscountAmt').val() != '' && $('#DiscountAmt').val() != undefined) {
+                                $('#DiscountAmt').prop("readonly", "true");
                             }
-                        });
-                        FillStore();
-                        FillCurrentBatchINStore();
-                        FillUniqueBatchNo();
-                        DueDateCalculation();
-                        ClearAdjustmentGrid();
-                        // $('#TotalDiscountPercentage').val(0);
-                        // $('#TotalAmtAftrDiscount').val(0);
 
-                        //var rowCount = $('#divAddPurchaseRejectionList tr').length;
-                         //for (var i = 1; i <= rowCount; i++) {
-                        //    var itemCodee = parseInt($('#GridIC-' + i).val());
-                        //    var batchNoo = $('#GridBatchNo-' + i).text();
-                        //    var uniquebatchnoo = $('#GridUniqueBatchNo-' + i).text();
-                        //    var Seqno = $('#SeqNo-' + i).val();
-                        //    itemBatchArray.push({
-                        //        "SeqNo": parseInt(Seqno),
-                        //        "itemcode": itemCodee,
-                         //         "batchno": batchNoo,
-                         //         "uniquebatchno": uniquebatchnoo
-                        //    });
-                        //}
+                            $('#SONO').focus();
+                            ClearAdjustmentGrid();
+                            var rowCount = $('#divAddPurchaseRejectionList tr').length;
+                            sum = 0;
+                            for (var i = 1; i <= rowCount; i++) {
+
+                                sum += parseFloat($('#gridAmount-' + i).text() == '.00' ? 0 : $('#gridAmount-' + i).text());
+                            }
+
+                            $('#ItemNetAmount').val(sum);
+
+                            // $('#lblItemNetAmount').text(sum.toFixed(2));
+
+                            var txSum = 0;
+                            var taxRowCount = $('#divTaxGrid tr').length;
+                            if ($('#divTaxGrid tr td').length > 1) {
+                                for (var i = 1; i <= taxRowCount; i++) {
+                                    txSum += parseFloat($('#txGridAmount-' + i).text() == '.00' ? 0 : $('#txGridAmount-' + i).text());
+                                }
+                            }
+
+                            var txTotal = sum + txSum;
+
+                            $('#NetTotal').val(txTotal.toFixed(2));
+                            $('#AdjPendAmt').val($('#NetTotal').val());
+
+                            $('#divAddPurchaseRejectionList tr').each(function (index) {
+                                i = index + 1;
+                                let gridBatchNo = $("#GridBatchNo-" + i).text().trim();
+                                let gridUniqueBatchNo = $("#GridUniqueBatchNo-" + i).text().trim();
+                                let gridDocAccountCode = $("#DocAccountCode-" + i).val();
+                                if (gridBatchNo || gridUniqueBatchNo || gridDocAccountCode) {
+                                    batchDataList.push({
+                                        GridDocAccountCode: gridDocAccountCode,
+                                        GridBatchNo: gridBatchNo,
+                                        GridUniqueBatchNo: gridUniqueBatchNo
+                                    });
+                                }
+                            });
+                            FillStore();
+                            FillCurrentBatchINStore();
+                            FillUniqueBatchNo();
+                            DueDateCalculation();
+                            ClearAdjustmentGrid();
+                            // $('#TotalDiscountPercentage').val(0);
+                            // $('#TotalAmtAftrDiscount').val(0);
+
+                            //var rowCount = $('#divAddPurchaseRejectionList tr').length;
+                            //for (var i = 1; i <= rowCount; i++) {
+                            //    var itemCodee = parseInt($('#GridIC-' + i).val());
+                            //    var batchNoo = $('#GridBatchNo-' + i).text();
+                            //    var uniquebatchnoo = $('#GridUniqueBatchNo-' + i).text();
+                            //    var Seqno = $('#SeqNo-' + i).val();
+                            //    itemBatchArray.push({
+                            //        "SeqNo": parseInt(Seqno),
+                            //        "itemcode": itemCodee,
+                            //         "batchno": batchNoo,
+                            //         "uniquebatchno": uniquebatchnoo
+                            //    });
+                            //}
+                        }
+                    },
+                    error: function (result, status, xhr) {
+                        $.notify('Something Went Wrong, Please Try Again.', "error");
                     }
-                },
-                error: function (result, status, xhr) {
-                    $.notify('Something Went Wrong, Please Try Again.', "error");
-                }
-            }).done(function () {
+                }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
                 }).fail(function () {
@@ -2111,22 +2114,22 @@
         function saveagainstbillgrid() {
             let itemList = [];
             $('#divAddPurchaseRejectionPopupDataGrid tr').each(function (index) {
-                 const i = index + 1;
-                 let entryId = $('#popUpPurchBillEntryId-' + i).text().trim();
-                 let yearCode = $('#popUpPurchBillYearCode-' + i).text().trim();
-                 let invoiceNo = $('#popUpInvoiceNo-' + i).text().trim();
-                 let pbitemCode = $('#popupPurchBillItemCode-' + i).val();
-                 let itemCode = $('#popupItemCode-' + i).val();
-                 let uniqueKey = `${entryId}_${yearCode}_${invoiceNo}_${pbitemCode}_${itemCode}`;
-                 let matchingInput = $(`#divAddPurchaseRejectionList input[id^='hdnuniquekey-']`).filter(function () {
-                     return $(this).val().trim() === uniqueKey;
-                 });
-                 let rowNo = '';
-                 if (matchingInput.length > 0) {
-                     let idParts = matchingInput.attr("id").split('-');
-                     rowNo = idParts[idParts.length - 1];
-                 }
-                 itemList.push({
+                const i = index + 1;
+                let entryId = $('#popUpPurchBillEntryId-' + i).text().trim();
+                let yearCode = $('#popUpPurchBillYearCode-' + i).text().trim();
+                let invoiceNo = $('#popUpInvoiceNo-' + i).text().trim();
+                let pbitemCode = $('#popupPurchBillItemCode-' + i).val();
+                let itemCode = $('#popupItemCode-' + i).val();
+                let uniqueKey = `${entryId}_${yearCode}_${invoiceNo}_${pbitemCode}_${itemCode}`;
+                let matchingInput = $(`#divAddPurchaseRejectionList input[id^='hdnuniquekey-']`).filter(function () {
+                    return $(this).val().trim() === uniqueKey;
+                });
+                let rowNo = '';
+                if (matchingInput.length > 0) {
+                    let idParts = matchingInput.attr("id").split('-');
+                    rowNo = idParts[idParts.length - 1];
+                }
+                itemList.push({
                     PurchaseRejEntryId: $('#PurchaseRejEntryId').val() || "",
                     PurchaseRejYearCode: $('#PurchaseRejYearCode').val() || "",
                     PurchaseRejectionInvoiceNo: $('#PurchaseRejectionInvoiceNo').val() || '',
@@ -2209,13 +2212,13 @@
             $('#lblItemNetAmount').text(sum.toFixed(2));
         }
 
-        function onDiscountChange(){
-              const DP = $('#DiscountPer') === "0" || $('#DiscountPer').val() === "" ? 0 : parseFloat($('#DiscountPer').val());
-              var PRRate = $('#PRRate').val() === "0" || $('#PRRate').val() === "" ? 0 : parseFloat($('#PRRate').val());
-              var Amount = $('#ItemAmount').val() === "0" || $('#ItemAmount').val() === "" ? 0 : parseFloat($('#ItemAmount').val());
-              const RejectedQty = $('#RejectedQty').val() == "0" || $('#RejectedQty').val() === "" ? 0 : parseInt($('#RejectedQty').val());
+        function onDiscountChange() {
+            const DP = $('#DiscountPer') === "0" || $('#DiscountPer').val() === "" ? 0 : parseFloat($('#DiscountPer').val());
+            var PRRate = $('#PRRate').val() === "0" || $('#PRRate').val() === "" ? 0 : parseFloat($('#PRRate').val());
+            var Amount = $('#ItemAmount').val() === "0" || $('#ItemAmount').val() === "" ? 0 : parseFloat($('#ItemAmount').val());
+            const RejectedQty = $('#RejectedQty').val() == "0" || $('#RejectedQty').val() === "" ? 0 : parseInt($('#RejectedQty').val());
 
-               if (RejectedQty > 0 && PRRate > 0) {
+            if (RejectedQty > 0 && PRRate > 0) {
                 Amount = RejectedQty * PRRate;
             }
             else {
@@ -2293,7 +2296,7 @@
         $('#DebitNotePurchaseRejection').change(function () {
             FillCustomerName();
             FillSubvoucher();
-            if(this.value.toLowerCase()  == 'debit-note') {
+            if (this.value.toLowerCase() == 'debit-note') {
                 DeleteItemRow('', 0, true);
                 ClearTax();
                 btnClearTax();
@@ -2327,11 +2330,11 @@
             }
         });
 
-        $('#DiscountAmt' ).change(function () {
+        $('#DiscountAmt').change(function () {
             onDiscountChange();
         });
 
-        $('#DiscountPer' ).change(function () {
+        $('#DiscountPer').change(function () {
             onDiscountChange();
         });
 
@@ -2360,7 +2363,7 @@
                                 });
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                               $('#AccountCode').val('@Model.AccountCode');
+                                $('#AccountCode').val('@Model.AccountCode');
                             }
                         }
                     }
@@ -2387,7 +2390,7 @@
                                 });
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-                               $('#SubVoucherName').val('@Model.SubVoucherName');
+                                $('#SubVoucherName').val('@Model.SubVoucherName');
                             }
                         }
                     }
@@ -2519,29 +2522,29 @@
                             //GetBatchInventory();
 
                             var selectListLength = $('#Batchno option').length - 1;
-                           //var itemArrayLength = itemBatchArray.length;
-                           //if (itemArrayLength > 0) {
-                          //     var itemsWithCode16 = itemBatchArray.filter(function (item) {
-                          //         return item.itemcode === parseInt(ItemCode);
-                          //     });
-                          //     var selectList = $('#Batchno');
-                          //     selectList.find('option').each(function () {
-                          //         var optionValue = $(this).val();
-                          //         var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
-                          //             return item.batchno === optionValue;
-                          //         });
-                          //
-                          //         if (existsInItemsWithCode16) {
-                          //             $(this).remove();
-                          //         }
-                          //     });
-                          //
-                          //     //}
-                          //     //if (itemBatchArray.length > 0) {
-                          //     //    $('#BatchNo option[value="' + itemBatchArray[0].batchno + '"]').remove();
-                          //     //    $('#uniquebatchno option[value="' + itemBatchArray[0].uniquebatchno + '"]').remove();
-                          //     //}
-                          //}
+                            //var itemArrayLength = itemBatchArray.length;
+                            //if (itemArrayLength > 0) {
+                            //     var itemsWithCode16 = itemBatchArray.filter(function (item) {
+                            //         return item.itemcode === parseInt(ItemCode);
+                            //     });
+                            //     var selectList = $('#Batchno');
+                            //     selectList.find('option').each(function () {
+                            //         var optionValue = $(this).val();
+                            //         var existsInItemsWithCode16 = itemsWithCode16.some(function (item) {
+                            //             return item.batchno === optionValue;
+                            //         });
+                            //
+                            //         if (existsInItemsWithCode16) {
+                            //             $(this).remove();
+                            //         }
+                            //     });
+                            //
+                            //     //}
+                            //     //if (itemBatchArray.length > 0) {
+                            //     //    $('#BatchNo option[value="' + itemBatchArray[0].batchno + '"]').remove();
+                            //     //    $('#uniquebatchno option[value="' + itemBatchArray[0].uniquebatchno + '"]').remove();
+                            //     //}
+                            //}
                         } else {
                             $('#Batchno').empty();
                             $('#Batchno').append('<option value="0" disabled selected>-Select-</option>');
@@ -2627,7 +2630,7 @@
                 }
             });
         }
-         $('#RejectedQty').change(function () {
+        $('#RejectedQty').change(function () {
             CalculateAmount();
             FillAltQty();
         });
@@ -2792,7 +2795,7 @@
             const entryDateRaw = $("#PurchaseRejEntryDate").val();
             if (!entryDateRaw) return;
 
-            const entryDate = parseDateToFormat(entryDateRaw); 
+            const entryDate = parseDateToFormat(entryDateRaw);
             const [day, month, year] = entryDate.split("/").map(Number);
             const entryDateObj = new Date(year, month - 1, day);
 
@@ -2858,80 +2861,80 @@
                     $('#fromBillDate').datepicker("option", "minDate", formattedYear);
                     $('#toBillDate').datepicker("option", "minDate", formattedYear);
                     $('#fromBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finFromDate);
-                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);                    
-                   
-                    if($('#Mode').val() == "U" || $('#Mode').val() == "V"){
-                            var vouchDate = $('#PurchaseRejectionVoucherDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionVoucherDate').val()) : result;
-                            $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate);
-                            $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
+                    $('#toBillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", finToDate);
 
-                            var invoiceDate = $('#PurchaseRejectionInvoiceDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionInvoiceDate').val()) : result;
-                            $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate);
-                            $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                        var vouchDate = $('#PurchaseRejectionVoucherDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionVoucherDate').val()) : result;
+                        $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", vouchDate);
+                        $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
 
-                            var entryDate = $('#PurchaseRejEntryDate').val() != "" ? parseDateToFormat($('#PurchaseRejEntryDate').val()) : result;
-                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate);
-                            $('#PurchaseRejEntryDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
+                        var invoiceDate = $('#PurchaseRejectionInvoiceDate').val() != "" ? parseDateToFormat($('#PurchaseRejectionInvoiceDate').val()) : result;
+                        $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", invoiceDate);
+                        $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
 
-                            var mirDate = $('#MIRDate').val() != "" ? parseDateToFormat($('#MIRDate').val()) : result;
-                            $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", mirDate).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", mirDate);
-                            $('#MIRDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#MIRDate').datepicker("option", "maxDate", finToDate);
+                        var entryDate = $('#PurchaseRejEntryDate').val() != "" ? parseDateToFormat($('#PurchaseRejEntryDate').val()) : result;
+                        $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", entryDate);
+                        $('#PurchaseRejEntryDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
 
-                            var ActualEntryDate = $('#ActualEntryDate').val() != "" ? parseDateToFormat($('#ActualEntryDate').val()) : result;
-                            $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate);
-                            $('#ActualEntryDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#ActualEntryDate').datepicker("option", "maxDate", finToDate);
+                        var mirDate = $('#MIRDate').val() != "" ? parseDateToFormat($('#MIRDate').val()) : result;
+                        $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", mirDate).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", mirDate);
+                        $('#MIRDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#MIRDate').datepicker("option", "maxDate", finToDate);
 
-                            var LastUpdationDate = $('#LastUpdationDate').val() != "" ? parseDateToFormat($('#LastUpdationDate').val()) : result;
-                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", LastUpdationDate).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", LastUpdationDate);
-                            $('#LastUpdationDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#LastUpdationDate').datepicker("option", "maxDate", finToDate);
+                        var ActualEntryDate = $('#ActualEntryDate').val() != "" ? parseDateToFormat($('#ActualEntryDate').val()) : result;
+                        $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate);
+                        $('#ActualEntryDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#ActualEntryDate').datepicker("option", "maxDate", finToDate);
+
+                        var LastUpdationDate = $('#LastUpdationDate').val() != "" ? parseDateToFormat($('#LastUpdationDate').val()) : result;
+                        $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", LastUpdationDate).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", LastUpdationDate);
+                        $('#LastUpdationDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#LastUpdationDate').datepicker("option", "maxDate", finToDate);
                     }
                     else {
-                           $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                           $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                           $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
-                           $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
-                           
-                           $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                           $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                           $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
-                           $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
+                        $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#PurchaseRejectionVoucherDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#PurchaseRejectionVoucherDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#PurchaseRejectionVoucherDate').datepicker("option", "maxDate", finToDate);
 
-                           $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                           $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                           $('#PurchaseRejEntryDate').datepicker("option", "minDate", formattedPastDate);
-                           $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
+                        $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#PurchaseRejectionInvoiceDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#PurchaseRejectionInvoiceDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#PurchaseRejectionInvoiceDate').datepicker("option", "maxDate", finToDate);
 
-                           $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                           $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                           $('#MIRDate').datepicker("option", "minDate", formattedPastDate);
-                           $('#MIRDate').datepicker("option", "maxDate", finToDate);
+                        $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#PurchaseRejEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#PurchaseRejEntryDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#PurchaseRejEntryDate').datepicker("option", "maxDate", finToDate);
 
-                           $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                           $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                           $('#InprocessDate').datepicker("option", "minDate", formattedPastDate);
-                           $('#InprocessDate').datepicker("option", "maxDate", finToDate);
+                        $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#MIRDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#MIRDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#MIRDate').datepicker("option", "maxDate", finToDate);
 
-                           $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate",result);
-                            $('#ActualEntryDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#ActualEntryDate').datepicker("option", "maxDate", finToDate);
+                        $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#InprocessDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#InprocessDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#InprocessDate').datepicker("option", "maxDate", finToDate);
 
-                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
-                            $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
-                            $('#LastUpdationDate').datepicker("option", "minDate", formattedPastDate);
-                            $('#LastUpdationDate').datepicker("option", "maxDate", finToDate);
+                        $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#ActualEntryDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#ActualEntryDate').datepicker("option", "maxDate", finToDate);
+
+                        $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result).datepicker("option", { changeMonth: true, changeYear: true });
+                        $('#LastUpdationDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", result);
+                        $('#LastUpdationDate').datepicker("option", "minDate", formattedPastDate);
+                        $('#LastUpdationDate').datepicker("option", "maxDate", finToDate);
                     }
                 }
             });

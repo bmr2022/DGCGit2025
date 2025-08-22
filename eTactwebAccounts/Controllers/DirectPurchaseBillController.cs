@@ -142,6 +142,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(MainModel));
             MainModel.adjustmentModel = (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null) ? MainModel.adjustmentModel : new AdjustmentModel();
             return View(MainModel);
+
         }
 
         [HttpPost]
@@ -236,6 +237,7 @@ namespace eTactWeb.Controllers
 
                 if (gridData != null && gridData.Count > 0)
                 {
+
                     AdjDetailDT = CommonController.GetAdjDetailTable(gridData, MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
                     //AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.EntryID, model.YearCode, model.AccountCode);
                 }
@@ -614,16 +616,16 @@ namespace eTactWeb.Controllers
                 : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
 
             // 2. Get Tax Details
-            string taxDetailJson = HttpContext.Session.GetString("KeyTaxGrid");
-            IList<TaxModel> DPBTaxdetail = string.IsNullOrEmpty(taxDetailJson)
-                ? new List<TaxModel>()
-                : JsonConvert.DeserializeObject<IList<TaxModel>>(taxDetailJson);
+            //string taxDetailJson = HttpContext.Session.GetString("KeyTaxGrid");
+            //IList<TaxModel> DPBTaxdetail = string.IsNullOrEmpty(taxDetailJson)
+            //    ? new List<TaxModel>()
+            //    : JsonConvert.DeserializeObject<IList<TaxModel>>(taxDetailJson);
 
-            // 3. Get TDS Details
-            string tdsDetailJson = HttpContext.Session.GetString("KeyTDSGrid");
-            IList<TDSModel> DPBTDSdetail = string.IsNullOrEmpty(tdsDetailJson)
-                ? new List<TDSModel>()
-                : JsonConvert.DeserializeObject<IList<TDSModel>>(tdsDetailJson);
+            //// 3. Get TDS Details
+            //string tdsDetailJson = HttpContext.Session.GetString("KeyTDSGrid");
+            //IList<TDSModel> DPBTDSdetail = string.IsNullOrEmpty(tdsDetailJson)
+            //    ? new List<TDSModel>()
+            //    : JsonConvert.DeserializeObject<IList<TDSModel>>(tdsDetailJson);
 
             if (MainModel != null && MainModel.ItemDetailGrid != null)
             {
@@ -738,6 +740,11 @@ namespace eTactWeb.Controllers
             MainModel.ToDate = new DateTime(DateTime.Today.Year + 1, 3, 31).ToString("dd/MM/yyyy").Replace("-", "/");// Last day in January next year
 
             return View(MainModel);
+        }
+        public IActionResult ClearDRCRGrid()
+        {
+            HttpContext.Session.Remove("KeyDrCrGrid");
+            return Json("Ok");
         }
 
         public async Task<IActionResult> DeleteByIDOld(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
@@ -930,6 +937,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> ClearItemGrid(int YearCode, string VODate)
+        {
+            HttpContext.Session.Remove("DirectPurchaseBill");
+            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillPONumber(int YearCode, string OrderType, string PODate)
         {
             var JSON = await IDirectPurchaseBill.FillPONumber(YearCode, OrderType, PODate);
@@ -991,7 +1005,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             model = await IDirectPurchaseBill.GetSummaryData(model);

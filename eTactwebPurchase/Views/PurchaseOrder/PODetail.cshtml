@@ -2624,7 +2624,7 @@ formData.append("Mode", $('#Mode').val());
 					url: '@Url.Action("GetAddress", "SaleOrder")',
 					data: { Code: $('#AccountCode').val() },
 					success: function (result, status, xhr) {
-						$('#VendorAddress').val(result.result);
+						$('#VendorAddress').val(result.result.address);
 					}
 				});
 			}

@@ -6,7 +6,7 @@ namespace eTactWeb.Services.Interface
     public interface IPurchaseRejection
     {
         Task<AccPurchaseRejectionModel> GetViewByID(int ID, int YearCode, string mode);
-        Task<ResponseResult> NewEntryId(int YearCode);
+        Task<ResponseResult> NewEntryId(int YearCode, string SubVoucherName);
         Task<ResponseResult> FillDocument(string ShowAllDoc);
         Task<ResponseResult> FillCustomerName(string ShowAllParty, int? PurchaseRejYearCode, string DebitNotePurchaseRejection);
         Task<ResponseResult> GetStateGST(int Code);

@@ -30,7 +30,7 @@ namespace eTactWeb.DOM.Models
         public string? ActualEntryDate { get; set; }
         public string? GroupName { get; set; }
         public string? SalePersonName { get; set; }
-        //public string? SalePersonName { get; set; }
+        public string? ActualEntryByName { get; set; }
         public IList<SalepersonWiseRateDetail>? ItemDetailGrid { get; set; }
         public IList<SalepersonWiseRateMasterModel>? DashboardDetail { get; set; }
     }

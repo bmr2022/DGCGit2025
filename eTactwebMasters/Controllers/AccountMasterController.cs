@@ -223,6 +223,12 @@ namespace eTactWeb.Controllers
             return Json(JsonConvert.SerializeObject(Result));
         }
 
+        public async Task<IActionResult> GetSalePersonName()
+        {
+            var Result = await _IAccountMaster.GetSalePersonName().ConfigureAwait(true);
+            return Json(JsonConvert.SerializeObject(Result));
+        }
+
         public ResponseResult isDuplicate(string ColVal, string ColName)
         {
             var Result = _IDataLogic.isDuplicate(ColVal, ColName, "Account_Head_Master");
