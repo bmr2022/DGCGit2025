@@ -72,6 +72,28 @@ public class DirectPurchaseBillDAL
             Error.Source = ex.Source;
         }
         return _ResponseResult;
+    } 
+    public async Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int EntryId)
+    {
+        var _ResponseResult = new ResponseResult();
+        try
+        {
+            var SqlParams = new List<dynamic>();
+            SqlParams.Add(new SqlParameter("@Flag", "CheckDuplicate"));
+            SqlParams.Add(new SqlParameter("@YearCode", YearCode));
+            SqlParams.Add(new SqlParameter("@accountcode", AccountCode));
+            SqlParams.Add(new SqlParameter("@InvNo", InvNo));
+            SqlParams.Add(new SqlParameter("@entryid", EntryId));
+
+            _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_DirectPurchaseBillMainDetail", SqlParams);
+        }
+        catch (Exception ex)
+        {
+            dynamic Error = new ExpandoObject();
+            Error.Message = ex.Message;
+            Error.Source = ex.Source;
+        }
+        return _ResponseResult;
     }
     public async Task<ResponseResult> FillEntryandVouchNoNumber(int YearCode, string VODate)
     {
@@ -600,6 +622,8 @@ public class DirectPurchaseBillDAL
                                                   CreatedOn = string.IsNullOrEmpty(dr["ActualEntryDate"].ToString()) ? new DateTime() : Convert.ToDateTime(dr["ActualEntryDate"]),
                                                   BasicAmount = !string.IsNullOrEmpty(dr["BillAmt"].ToString()) ? Convert.ToSingle(dr["BillAmt"]) : 0,
                                                   NetAmount = !string.IsNullOrEmpty(dr["NetAmt"].ToString()) ? Convert.ToSingle(dr["NetAmt"]) : 0,
+                                                  AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
+                                                  AgainstInvNo = dr["AgainstInvNo"].ToString()
                                               }).OrderBy(a => a.EntryID).ToList();
             }
         }
