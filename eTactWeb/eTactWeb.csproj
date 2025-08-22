@@ -156,17 +156,6 @@
 	  </Content>
 	<Content Update="Views\**\*.cshtml">
 	<CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
-	</Content>
-	
-	 
+	</Content> 
 	</ItemGroup>
-
-	
-
-	<ItemGroup>
-	  <None Update="license.lic">
-		  <CopyToPublishDirectory>Always</CopyToPublishDirectory>
-	  </None>
-	</ItemGroup>
-
 </Project>

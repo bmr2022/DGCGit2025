@@ -36,7 +36,7 @@ namespace eTactWeb.Services.Interface
 
         Task<DirectPurchaseBillModel> GetViewByID(int ID, int YearCode, string Flag);
         Task<ResponseResult> GetFormRights(int uId);
-         
+        Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int EntryId);
         Task<ResponseResult> SaveDirectPurchaseBILL(DataTable itemDetailDt, DataTable taxDetailDt, DataTable TDSDetailDT, DirectPurchaseBillModel model, DataTable DrCrDetailDT, DataTable AdjDetailDT);
     }
 }

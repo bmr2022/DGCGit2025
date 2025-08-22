@@ -303,6 +303,7 @@
                                                 <th>Project NO</th>
                                                 <th>Project year code</th>
                                                 <th>Issued Alternate Item</th>
+                                                <th>TransactionDate</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divIssueThrBOMGrid">
@@ -857,6 +858,43 @@ function submitForm(shouldPrint, printWindow) {
 
 
         });
+
+
+
+        function parseDDMMYYYY(dateStr) {
+            if (!dateStr) return null;
+            var parts = dateStr.split("/");
+            return new Date(parts[2], parts[1] - 1, parts[0]); // yyyy, mm-1, dd
+        }
+
+        function validateIssueDateBeforeAddToGrid() {
+            var issueDateStr = $("#IssueDate").val();
+            var issueDate = parseDDMMYYYY(issueDateStr);
+
+            if (!issueDate) return true; // no IssueDate entered yet
+
+            var isValid = true;
+
+            $("[id^=MainGridTransactionDate-]").each(function () {
+                var transDateStr = $(this).val();
+                var transDate = parseDDMMYYYY(transDateStr);
+
+                if (transDate && issueDate < transDate) {
+                    alert("❌ Not allowed: Issue Date (" + issueDateStr +
+                        ") is earlier than Transaction Date (" + transDateStr + ")");
+                    $(".GridButton").prop("disabled", true);
+                    isValid = false;
+                    return false; // break loop
+                }
+            });
+
+            if (isValid) {
+                $(".GridButton").prop("disabled", false);
+            }
+
+            return isValid;
+        }
+
 
         $('.BtnPassword').click(function () {
             // if(isAllowTaxPass == "Y"){
@@ -1466,7 +1504,10 @@ function submitForm(shouldPrint, printWindow) {
 
         $('.GridButton').click(function () {
             var rowCount = $('#divIssueThrBOMGrid tr').length;
-
+            if (!validateIssueDateBeforeAddToGrid()) {
+                Alert("❌ Not allowed: Issue Date is earlier than Transaction Date");
+                return false; // stop everything if invalid
+            }
             for (let i = 1; i <= rowCount; i++) {
                 if (!validateInsert(i)) return;
             }
@@ -1955,6 +1996,7 @@ function submitForm(shouldPrint, printWindow) {
                                                                     <td><input style="width:100px;" id="MainGridProjectNo-${i}" value="${obj[0].ProjectNo || ''}"></td>
                                                                     <td><input style="width:100px;" id="MainGridProjectYearCode-${i}" value="${obj[0].ProjectYearCode || ''}" readonly></td>
                                                                                     <td><input id="MainGridIssuedAltItem-${i}" type="text" value="${obj[0].IssuedAlternateItem || ''}" /></td>
+                                                                                    <td><input id="MainGridIssuedAltItem-${i}" type="text" value="${obj[0].TransactionDate || ''}" /></td>
                                                                     <td><input style="width:100px;" type="hidden" id="MainGridItemCode-${i}" value="${obj[0].ItemCode}" readonly></td>
                                                                     <td><input type="hidden" id="MainGridStoreId-${i}" value="${obj[0].StoreId}"></td>
                                                                     <td><input type="hidden" id="MainGridWCId-${i}" value="${obj[0].WCId}"></td>

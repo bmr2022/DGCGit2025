@@ -480,9 +480,9 @@ public class DirectPurchaseBillModel : DPBItemDetail
 
     public IList<SelectListItem> DPBTypeServList = new List<SelectListItem>()
     {
-        new() { Value = "Service", Text = "Service" },
-        new() { Value = "Item", Text = "Item" },
-        new() { Value = "Asset", Text = "Asset" },
+        new() { Value = "S", Text = "Service" },
+        new() { Value = "I", Text = "Item" },
+        new() { Value = "A", Text = "Asset" },
     };
     public string? DPBType { get; set; }
     public IList<SelectListItem> DPBTypeList
