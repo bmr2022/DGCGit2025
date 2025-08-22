@@ -68,6 +68,7 @@ namespace eTactWeb.DOM.Models
         public string?  ItemName { get; set; }
         public string? DeptName { get; set; }
         public string? PartCode { get; set; }
+        public string? TransactionDate { get; set; }
         public decimal ReqQty { get; set; }
         public int StoreId { get; set; }
         public string? StoreName { get; set; }

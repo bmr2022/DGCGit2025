@@ -226,6 +226,7 @@
                                                 <th>Project NO</th>
                                                 <th>Project year code</th>
                                                 <th>Issued Alternate Item</th>
+                                                <th>TransactionDate</th>
                                             </tr>
                                         </thead>
                                         <tbody id="divIssueWOBOMGrid">
@@ -893,13 +894,14 @@ function submitForm(shouldPrint, printWindow) {
                         var obj = $.parseJSON(data);
 
                         if (obj.StatusCode == 200 && obj.StatusText == 'Success') {
+                            console.log(obj.Result.Table[0].AllowbackdateIssueWOBOM)
                             if (obj.Result.Table[0].AllowbackdateIssueWOBOM == "Y") {
-                                $('#IssueDate').datepicker("enable");
-                                //$('#EntryDate').datepicker("enable");
+                                $('#IssueDate').datepicker("option", "disabled", false);
+                                $('#EntryDate').datepicker("option", "disabled", false);
                             }
                             else {
-                                $('#IssueDate').datepicker("disable");
-                                //$('#EntryDate').datepicker("disable");
+                                $('#IssueDate').datepicker("option", "disabled", true);
+                                $('#EntryDate').datepicker("option", "disabled", true);
                             }
                         }
                     }
@@ -1196,11 +1198,14 @@ function submitForm(shouldPrint, printWindow) {
                     GetAlternateItemCodes(i);
                 }
                 GetIssueScanFeature();
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
 
                 // $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#IssueDate').datepicker("option", "maxDate", 'now');
                 $('#EntryDate').datepicker("option", "maxDate", 'now');
+
+                $('#IssueDate').datepicker("option", "minDate", 'now');
+                $('#EntryDate').datepicker("option", "minDate", 'now');
 
             }
             fillCC();
@@ -1302,6 +1307,42 @@ function submitForm(shouldPrint, printWindow) {
             var FormattedDate = $('#ReqDate').val().split("T")[0].split("-").reverse().join("/");
             $('#ReqDate').val(FormattedDate);
         });
+
+
+
+        function parseDDMMYYYY(dateStr) {
+            if (!dateStr) return null;
+            var parts = dateStr.split("/");
+            return new Date(parts[2], parts[1] - 1, parts[0]); // yyyy, mm-1, dd
+        }
+
+        function validateIssueDateBeforeAddToGrid() {
+            var issueDateStr = $("#IssueDate").val();
+            var issueDate = parseDDMMYYYY(issueDateStr);
+
+            if (!issueDate) return true; // no IssueDate entered yet
+
+            var isValid = true;
+
+            $("[id^=MainGridTransactionDate-]").each(function () {
+                var transDateStr = $(this).val();
+                var transDate = parseDDMMYYYY(transDateStr);
+
+                if (transDate && issueDate < transDate) {
+                    alert("❌ Not allowed: Issue Date (" + issueDateStr +
+                        ") is earlier than Transaction Date (" + transDateStr + ")");
+                    $(".GridButton").prop("disabled", true);
+                    isValid = false;
+                    return false; // break loop
+                }
+            });
+
+            if (isValid) {
+                $(".GridButton").prop("disabled", false);
+            }
+
+            return isValid;
+        }
 
         function IssueQtyValidation(i) {
             var Qty = parseFloat($("#MainGridIssueQty-" + i).val());
@@ -1702,6 +1743,12 @@ function submitForm(shouldPrint, printWindow) {
         $('.GridButton').click(function () {
             var rowCount = $('#divIssueWOBOMGrid tr').length;
 
+            if (!validateIssueDateBeforeAddToGrid()) {
+                Alert("❌ Not allowed: Issue Date is earlier than Transaction Date");
+                return false; // stop everything if invalid
+            }
+
+
             for (let i = 1; i <= rowCount; i++) {
                 if (!validateInsert(i)) return;
             }
@@ -1922,8 +1969,8 @@ function submitForm(shouldPrint, printWindow) {
                         //$('#IssueDate').val($('#IssuedDateMemory').val());
                         //$('#MachineCode').val($('#MachineCodeMemory').val());
                         // $('#IssueDate').datepicker("option", "maxDate", 'now');
-                        $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
+                        $('#IssueDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
+                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', minDate: 0 }).datepicker("setDate", 'now');
 
                         fillBatchNO();
 
