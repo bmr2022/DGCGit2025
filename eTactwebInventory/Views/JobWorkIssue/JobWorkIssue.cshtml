@@ -1409,9 +1409,9 @@ $('#btnClose').click(function () {
 
                 sum += parseFloat($('#GridAmount-' + i).text());
             }
-            $('#lblItemNetAmount').text(sum.toFixed(2));
+            $('#lblItemNetAmount').text(sum.toFixed(6));
             $('#ItemNetAmount').val(sum);
-            $('#AmtAftrDiscount').val(sum.toFixed(2));
+            $('#AmtAftrDiscount').val(sum.toFixed(6));
 
             var rowCountTax = $('#divTaxGrid tr').length;
             var sumTax = 0;
@@ -1431,7 +1431,7 @@ $('#btnClose').click(function () {
 
             // Calculate and set the final total
             var netTotal = sumTax + itemnetamount;
-            $('#NetTotal').val(netTotal.toFixed(2));
+            $('#NetTotal').val(netTotal.toFixed(6));
 
 
 
@@ -2068,7 +2068,7 @@ $('#btnClose').click(function () {
             if ($('#IssQty').val() == '') {
                 qty = 0;
             }
-            $('#Amount').val(parseFloat(qty * rate).toFixed(2));
+            $('#Amount').val(parseFloat(qty * rate).toFixed(6));
         });
 
         $('#Rate').keyup(function () {
@@ -2088,7 +2088,7 @@ $('#btnClose').click(function () {
             if ($('#IssQty').val() == '') {
                 qty = 0;
             }
-            $('#Amount').val(parseFloat(qty * rate).toFixed(2));
+            $('#Amount').val(parseFloat(qty * rate).toFixed(6));
         });
 
         $('#BomStatus').change(function () {
@@ -2333,7 +2333,7 @@ $('#btnClose').click(function () {
                                                 async: false,
                                                 success: function (result, status, error) {
                                                     $('#divTaxGrid').empty();
-                                                    $('#NetTotall').val(parseFloat($('#lblItemNetAmount').text()).toFixed(2));
+                                                    $('#NetTotall').val(parseFloat($('#lblItemNetAmount').text()).toFixed(6));
                                                 },
                                                 error: function (req, status, error) {
                                                     alert(error);
@@ -3067,9 +3067,9 @@ $('#btnClose').click(function () {
                         sum += parseFloat($('#GridAmount-' + i).text());
                         TotApproxVal += parseFloat($('#PurchasePrice-' + i).text()) * parseFloat($('#IssQty-' + i).text());
                     }
-                    $('#TolApprVal').val(TotApproxVal.toFixed(2));
-                    $('#lblItemNetAmount').text(sum.toFixed(2));
-                    $('#ItemNetAmount').val(sum.toFixed(2));
+                    $('#TolApprVal').val(TotApproxVal.toFixed(6));
+                    $('#lblItemNetAmount').text(sum.toFixed(6));
+                    $('#ItemNetAmount').val(sum.toFixed(6));
                     var rowCountTax = $('#divTaxGrid tr').length;
                     var sumTax = 0;
 
@@ -3077,12 +3077,12 @@ $('#btnClose').click(function () {
 
                         sumTax = parseFloat($('#txGridAmount-' + i).text()) + parseFloat($('#lblItemNetAmount').text());
                     }
-                    $('#NetTotall').val(sumTax.toFixed(2));
+                    $('#NetTotall').val(sumTax.toFixed(6));
 
                     if (sumTax == 0) {
 
-                        $('#NetTotall').val(sum.toFixed(2));
-                        $('#AmtAftrDiscount').val(sum.toFixed(2));
+                        $('#NetTotall').val(sum.toFixed(6));
+                        $('#AmtAftrDiscount').val(sum.toFixed(6));
                     }
                     $('#PartCode').focus();
                     $('#PartCode').val("").trigger('change');
@@ -3121,18 +3121,18 @@ $('#btnClose').click(function () {
                 var AmtAfterDis = $('#AmtAftrDiscount').val();
                 const DA = ((Amount * DP) / 100);
                 Amount = Amount - DA;
-                $('#AmtAftrDiscount').val((AmtAfterDis - DA).toFixed(2));
+                $('#AmtAftrDiscount').val((AmtAfterDis - DA).toFixed(6));
             }
             else {
                 Amount = parseFloat($('#NetTotall').val());
                 //$('#AmtAftrDiscount').val('0.00'), $('#DiscountPercentage').val('0');
             }
 
-            $('#NetTotall').val(Amount.toFixed(2));
+            $('#NetTotall').val(Amount.toFixed(6));
 
             if ($('#RoundOff').val() == "Y") {
-                $('#AmtAftrDiscount').val(Math.round(parseFloat($('#AmtAftrDiscount').val())).toFixed(2));
-                $('#NetTotall').val(Math.round(parseFloat($('#NetTotall').val())).toFixed(2));
+                $('#AmtAftrDiscount').val(Math.round(parseFloat($('#AmtAftrDiscount').val())).toFixed(6));
+                $('#NetTotall').val(Math.round(parseFloat($('#NetTotall').val())).toFixed(6));
             }
             else {
 
@@ -3207,8 +3207,8 @@ $('#btnClose').click(function () {
             GetAmtAfterDiscount();
             $('#DiscountPercentage').val(0);
             if ($(this).val() == "Y") {
-                $('#AmtAftrDiscount').val(Math.round(parseFloat($('#AmtAftrDiscount').val())).toFixed(2));
-                $('#NetTotall').val(Math.round(parseFloat($('#NetTotall').val())).toFixed(2));
+                $('#AmtAftrDiscount').val(Math.round(parseFloat($('#AmtAftrDiscount').val())).toFixed(6));
+                $('#NetTotall').val(Math.round(parseFloat($('#NetTotall').val())).toFixed(6));
             }
             else {
 
@@ -3222,11 +3222,11 @@ $('#btnClose').click(function () {
             if ($(this).val() == "Y") {
                 let Amt = $('#NetTotall').val().trim() == "" ? 0 : parseFloat($('#NetTotall').val().trim());
                 Amt = Math.round(Amt);
-                $('#NetTotall').val(Amt.toFixed(2));
+                $('#NetTotall').val(Amt.toFixed(6));
             }
             else {
                 var NetTotall = $('#NetTotall').val();
-                $('#NetTotall').val(netTotal.toFixed(2));
+                $('#NetTotall').val(netTotal.toFixed(6));
             }
         });
 
@@ -3239,12 +3239,12 @@ $('#btnClose').click(function () {
                 success: function (result, status, error) {
 
                     if ($('#RoundOff').val() == "Y") {
-                        $('#AmtAftrDiscount').val(Math.round(parseFloat(result)).toFixed(2));
-                        //$('#NetTotall').val(Math.round(parseFloat($('#NetTotall').val())).toFixed(2));
+                        $('#AmtAftrDiscount').val(Math.round(parseFloat(result)).toFixed(6));
+                        //$('#NetTotall').val(Math.round(parseFloat($('#NetTotall').val())).toFixed(6));
                     }
                     else {
 
-                        $('#AmtAftrDiscount').val(parseFloat(result).toFixed(2));
+                        $('#AmtAftrDiscount').val(parseFloat(result).toFixed(6));
                         //GetAmtAfterDiscount();
                     }
                 },
@@ -3277,13 +3277,13 @@ $('#btnClose').click(function () {
 
 
                     if ($('#RoundOff').val() == "Y") {
-                        //  $('#AmtAftrDiscount').val(Math.round(parseFloat(result)).toFixed(2));
-                        $('#NetTotall').val(Math.round(parseFloat(netTotal)).toFixed(2));
+                        //  $('#AmtAftrDiscount').val(Math.round(parseFloat(result)).toFixed(6));
+                        $('#NetTotall').val(Math.round(parseFloat(netTotal)).toFixed(6));
                     }
                     else {
 
-                        //$('#AmtAftrDiscount').val(parseFloat(result).toFixed(2));
-                        $('#NetTotall').val(netTotal.toFixed(2));
+                        //$('#AmtAftrDiscount').val(parseFloat(result).toFixed(6));
+                        $('#NetTotall').val(netTotal.toFixed(6));
                         //GetAmtAfterDiscount();
                     }
                 },
@@ -3566,7 +3566,7 @@ $('#btnClose').click(function () {
                 async: false,
                 success: function (result, status, error) {
                     $('#divTaxGrid').empty();
-                    $('#NetTotall').val(parseFloat($('#lblItemNetAmount').text()).toFixed(2));
+                    $('#NetTotall').val(parseFloat($('#lblItemNetAmount').text()).toFixed(6));
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -3741,7 +3741,7 @@ $('#btnClose').click(function () {
 
                                 sum += parseFloat($('#GridAmount-' + i).text());
                             }
-                            $('#lblItemNetAmount').text(sum.toFixed(2));
+                            $('#lblItemNetAmount').text(sum.toFixed(6));
                             var rowCountTax = $('#divTaxGrid tr').length;
                             var sumTax = 0;
 
@@ -3904,7 +3904,7 @@ $('#btnClose').click(function () {
 
                             sum += parseFloat($('#GridAmount-' + i).text());
                         }
-                        $('#lblItemNetAmount').text(sum.toFixed(2));
+                        $('#lblItemNetAmount').text(sum.toFixed(6));
                         var rowCountTax = $('#divTaxGrid tr').length;
                         var sumTax = 0;
 
@@ -3979,12 +3979,12 @@ $('#btnClose').click(function () {
                     var INA = parseFloat($('#ItemNetAmount').val());
                     var TTA = parseFloat($('#TotalTaxAmt').val());
                     var NT = INA + TTA;
-                    $('#NetTotal').val(NT.toFixed(2));
+                    $('#NetTotal').val(NT.toFixed(6));
 
                     if ($('#divTaxGrid').children().length == 0) {
                         var NoData = '<tr class="text-center"><td colspan="14" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                         $('#divTaxGrid').html(NoData);
-                        $('#NetTotal').val(INA.toFixed(2));
+                        $('#NetTotal').val(INA.toFixed(6));
                     }
 
                     $.notify('Item Deleted From Grid.', "info");

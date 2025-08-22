@@ -72,7 +72,7 @@ else
             {
                 <td>NO</td>
             }
-            <td id="txGridAmount-@item.TxSeqNo">@item.TxAmount.ToString("#.#0")</td>
+            <td id="txGridAmount-@item.TxSeqNo">@item.TxAmount.ToString("F6")</td>
             @if (@item.TxRefundable == "Y")
             {
                 <td>YES</td>
