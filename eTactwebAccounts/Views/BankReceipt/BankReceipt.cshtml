@@ -1675,28 +1675,35 @@
         }
 
         function ChangeAdjustAmt(i) {
-            debugger
+            debugger;
             let adjustAmtInput = $('#AdjustAmt-' + i);
             let balanceAmtLabel = $('#BalanceAmt-' + i);
+            let originalBalance = parseFloat(balanceAmtLabel.data("original")); // <-- original balance
+            if (isNaN(originalBalance)) {
+                originalBalance = parseFloat(balanceAmtLabel.text()) || 0;
+                balanceAmtLabel.data("original", originalBalance); // store first time
+            }
+
             let adjustAmt = parseFloat(adjustAmtInput.val()) || 0;
-            let balanceAmt = parseFloat(balanceAmtLabel.text()) || 0;
+            let balanceAmt = originalBalance; // always start from original
             let errorSpan = $('#AdjustAmtError-' + i);
 
             if (adjustAmt > balanceAmt) {
                 balanceAmtLabel.text(balanceAmt.toFixed(2));
                 adjustAmtInput.val(0);
                 errorSpan.text('Adjustment amount cannot be greater than Actual Balance.').show();
-                return; // Stop further processing
+                return;
             } else {
-                errorSpan.hide(); // Clear any previous error
+                errorSpan.hide();
             }
 
             if (adjustAmt > 0) {
                 let newBalance = balanceAmt - adjustAmt;
-                balanceAmtLabel.text((Math.round(newBalance * 100) / 100).toFixed(2));
+                balanceAmtLabel.text(newBalance.toFixed(2));
                 $('#CheckUnCheck-' + i).prop('checked', true);
                 $('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
             } else {
+                // Reset to original balance
                 balanceAmtLabel.text(balanceAmt.toFixed(2));
                 $('#CheckUnCheck-' + i).prop('checked', false);
                 $('#AdjustData-' + i).css("background-color", "");
