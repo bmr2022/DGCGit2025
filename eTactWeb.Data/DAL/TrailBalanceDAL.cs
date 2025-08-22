@@ -24,7 +24,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, string EntryByMachine, string ReportType)
+        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int TrailBalanceGroupCode, string ReportType)
         {
             var resultList = new TrailBalanceModel();
             DataSet oDataSet = new DataSet();
@@ -43,7 +43,7 @@ namespace eTactWeb.Data.DAL
                     //command.Parameters.AddWithValue("@flag", "PRIMARYGROUPSUMMARY");
                     command.Parameters.AddWithValue("@FromDate", fromDt);
                     command.Parameters.AddWithValue("@ToDate", toDt);
-                    //command.Parameters.AddWithValue("@EntryByMachine", EntryByMachine);
+                    command.Parameters.AddWithValue("@GroupCode", TrailBalanceGroupCode);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "TRAIL");
 
@@ -73,7 +73,6 @@ namespace eTactWeb.Data.DAL
                                                            CurrCrTotal = row["CurrCrTotal"] == DBNull.Value ? 0 : Convert.ToDecimal(row["CurrCrTotal"]),
                                                            TBSeq = row["TBSeq"] == DBNull.Value ? 0 : Convert.ToInt32(row["TBSeq"]),
                                                            TrailBalanceGroupCode = row["TrailBalanceGroupCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["TrailBalanceGroupCode"]),
-                                                          
 
                                                        }).ToList();
                     }

@@ -21,9 +21,9 @@ namespace eTactWeb.Data.BLL
             _TrailBalanceDAL = new TrailBalanceDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, string EntryByMachine,string ReportType)
+        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int TrailBalanceGroupCode, string ReportType)
         {
-            return await _TrailBalanceDAL.GetTrailBalanceDetailsData(FromDate, ToDate, EntryByMachine, ReportType);
+            return await _TrailBalanceDAL.GetTrailBalanceDetailsData(FromDate, ToDate, TrailBalanceGroupCode, ReportType);
         }
     }
 }
