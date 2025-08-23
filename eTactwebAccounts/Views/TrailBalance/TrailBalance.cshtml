@@ -64,7 +64,7 @@
                               
                                     
                                     <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" class="form-control" />
-                               
+                                <input type="hidden" asp-for="TrailBalanceGroupCode" class="form-control" />
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">ReportType</label>
                                     <select asp-for="ReportType" class="form-select">
@@ -435,6 +435,7 @@
             var ToDate = $('#ToDate').val();
             var EntryByMachine = $('#EntryByMachine').val();
             var ReportType = $('#ReportType').val();
+            var TrailBalanceGroupCode = $('#TrailBalanceGroupCode').val();
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetTrailBalanceDetailsData", "TrailBalance")",
@@ -442,7 +443,8 @@
                     FromDate: FromDate,
                     ToDate: ToDate,
                     EntryByMachine: EntryByMachine,
-                    ReportType: ReportType
+                    ReportType: ReportType,
+                    TrailBalanceGroupCode: TrailBalanceGroupCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -630,8 +632,14 @@
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
 
-
-
+        function GetDetailByGroupName(Id) {
+            let accountCode = $(td).find(".hdnAccountCode").val();
+            let ledgerDescription = $(td).data("id");
+            $('#TrailBalanceGroupCode').val(accountCode);
+            $('#ReportType').val("TRAILDETAIL");
+            $('#BackButton').show();
+            GetTrailBalanceDetailsData();
+        }
 
         function DeleteRow(i) {
 
