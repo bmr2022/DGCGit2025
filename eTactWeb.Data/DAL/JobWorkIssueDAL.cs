@@ -63,7 +63,7 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@EmpId", userId));
                 SqlParams.Add(new SqlParameter("@MainMenu", "Job Work Issue"));
 
-                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_JobworkIssue", SqlParams);
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("SP_ItemGroup", SqlParams);
             }
             catch (Exception ex)
             {

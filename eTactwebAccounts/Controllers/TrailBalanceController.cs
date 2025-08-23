@@ -35,11 +35,11 @@ namespace eTactwebAccounts.Controllers
 
             return View(MainModel); // Pass the model with old data to the view
         }
-        public async Task<IActionResult> GetTrailBalanceDetailsData(string FromDate, string ToDate, string EntryByMachine,string ReportType)
+        public async Task<IActionResult> GetTrailBalanceDetailsData(string FromDate, string ToDate, int TrailBalanceGroupCode, string ReportType)
         {
             var model = new TrailBalanceModel();
             model.EntryByMachine = Environment.MachineName;
-            model = await _ITrailBalance.GetTrailBalanceDetailsData(FromDate, ToDate, EntryByMachine, ReportType);
+            model = await _ITrailBalance.GetTrailBalanceDetailsData(FromDate, ToDate, TrailBalanceGroupCode, ReportType);
             if(ReportType== "TRAILSUMMARY")
             {
                 return PartialView("_TrailBalanceSummaryGrid", model);

@@ -9,6 +9,6 @@ namespace eTactWeb.Services.Interface
 {
     public interface ITrailBalance
     {
-        public Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, string EntryByMachine,string ReportType);
+        public Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int TrailBalanceGroupCode, string ReportType);
     }
 }

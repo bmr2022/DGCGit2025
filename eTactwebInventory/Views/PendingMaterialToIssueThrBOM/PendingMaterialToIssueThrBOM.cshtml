@@ -180,6 +180,7 @@
                                 <th data-columnno="23" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Size</th>
                                 <th data-columnno="24" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Item Color</th>
                                 <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Work Center</th>
+                                <th data-columnno="25" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransactionDate</th>
 
                             </tr>
                         </thead>
@@ -900,6 +901,9 @@ function renderPage(page) {
                             + '<input class="styled-input" readonly id="WCId' + (start + i) + '" value=' + item.WCId + ' >'
                         + '<input class="styled-input" readonly id="WIPStock' + (start + i) + '" value=' + item.WIPStock + ' >'
                             + '</td>'
+                        + '<td class="styled-cell">'
+                        + '<input class="styled-input" readonly id="TransactionDate' + (start + i) + '" value=' + item.TransactionDate + ' >'
+                        + '</td>'
                             + '</tr>';
                     }
 
@@ -1173,6 +1177,7 @@ function renderPage(page) {
                                         <input readonly class="styled-input" id="WCId${i}" value="${row.WCId}">
                                         <input readonly class="styled-input" id="WIPStock${i}" value="${row.WIPStock}">
                                     </td>
+                                                                         <td class="styled-cell"><input readonly class="styled-input" id="TransactionDate${i}" value="${row.TransactionDate}"></td>
                                 </tr>`;
                             }
 
@@ -1345,7 +1350,11 @@ function renderPage(page) {
                                         + '<input class="styled-input" readonly id="WorkCenter' + i + '" value="' + obj.Result.Table[i].WorkCenter + '">'
                                         + '<input type="hidden" class="styled-input" readonly id="WCId' + i + '" value="' + obj.Result.Table[i].WCId + '">'
                                         + '<input type="hidden" class="styled-input" readonly id="WIPStock' + i + '" value="' + obj.Result.Table[i].WIPStock + '">'
-                                        + '</td>' + '</tr>';
+                                        + '</td>'
+                                        + '<td class="styled-cell"><input class="styled-input" readonly id="TransactionDate' + i + '" value=' + obj.Result.Table[i].TransactionDate + ' ></td>'
+
+                                        
+                                        + '</tr>';
                             }
                             $('#divPendIssueGrid').append(html1);
                             if ($('#ReqNo').prop("selectedIndex") == 0 || $('#ReqYearCode').prop("selectedIndex") == 0) {
@@ -1412,6 +1421,7 @@ function renderPage(page) {
                     "ItemSize": $('#ItemSize' + i).val(),
                     "ItemColor": $('#ItemColor' + i).val(),
                     "IssuedDate": $('#IssueDate').val(),
+                        "TransactionDate": $('#TransactionDate' + i).val(),
                     "MachineCodee": $('#MachineCode').val(),
                     "StdPacking": $('#StdPacking' + i).val(),
                     "WONO": $('#WONo').val(),
@@ -1567,6 +1577,7 @@ function renderPage(page) {
                         "WorkCenter": $('#WorkCenter').find(':selected').text(),
                         "WCId": $('#WorkCenter').val(),
                             "WipStock": $('#WIPStock' + i).val(),
+                            "TransactionDate": $('#TransactionDate' + i).val(),
                         "AltItemCode": $('#AltItemCode' + i).val(),
                         "CostCenterId": $('#CostCenterId' + i).val(),
                         "ItemSize": $('#ItemSize' + i).val(),

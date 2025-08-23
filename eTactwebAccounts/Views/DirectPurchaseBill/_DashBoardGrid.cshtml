@@ -58,7 +58,12 @@ else
                         foreach (var item in Model.DPBDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="approvedRow-@Cntr">
+                            <tr id="approvedRow-@Cntr"
+                                style="@( !string.IsNullOrWhiteSpace(item.AgainstVoucherNo)
+        ? "color: rgb(13, 202, 240);"
+        : "" )">
+
+
                                 <td class="FWB">
                                     @srNo
                                     <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
@@ -246,7 +251,7 @@ else
 
         #container > div {
             flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+            /* margin-right: 10px; /* Adjust margin as needed */ */
         }
 
     #DPBDashboardGrid {

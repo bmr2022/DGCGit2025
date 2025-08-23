@@ -1647,28 +1647,43 @@
 		}
 
 		function ChangeAdjustAmt(i) {
-					 
-					if ($('#AdjustAmt-' + i).val() > parseFloat($('#BalanceAmt-' + i).text())) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
-						$('#AdjustAmt-' + i).val(0);
-						$.notify('Adjustment amount cannot be greater than Actual Balance.', "error");
-					}
+			debugger;
+			let adjustAmtInput = $('#AdjustAmt-' + i);
+			let balanceAmtLabel = $('#BalanceAmt-' + i);
+			let originalBalance = parseFloat(balanceAmtLabel.data("original")); // <-- original balance
+			if (isNaN(originalBalance)) {
+				originalBalance = parseFloat(balanceAmtLabel.text()) || 0;
+				balanceAmtLabel.data("original", originalBalance); // store first time
+			}
 
-					if ($('#AdjustAmt-' + i).val() > 0) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()) - parseFloat($('#AdjustAmt-' + i).val()));
-						$('#BalanceAmt-' + i).text(Math.round(parseFloat($('#BalanceAmt-' + i).text()) * 100) / 100);
-						$('#CheckUnCheck-' + i).prop('checked', true);
-						$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
-					}
-					if ($('#AdjustAmt-' + i).val() == 0) {
-						$('#BalanceAmt-' + i).text(parseFloat($('#BalanceAmt-' + i).text()));
-						$('#CheckUnCheck-' + i).prop('checked', false);
-						$('#AdjustData-' + i).css("background-color", "");
-					}
+			let adjustAmt = parseFloat(adjustAmtInput.val()) || 0;
+			let balanceAmt = originalBalance; // always start from original
+			let errorSpan = $('#AdjustAmtError-' + i);
 
-					AdjustAmount();
-					CheckUnCheckCheck(i);
-				}
+			if (adjustAmt > balanceAmt) {
+				balanceAmtLabel.text(balanceAmt.toFixed(2));
+				adjustAmtInput.val(0);
+				errorSpan.text('Adjustment amount cannot be greater than Actual Balance.').show();
+				return;
+			} else {
+				errorSpan.hide();
+			}
+
+			if (adjustAmt > 0) {
+				let newBalance = balanceAmt - adjustAmt;
+				balanceAmtLabel.text(newBalance.toFixed(2));
+				$('#CheckUnCheck-' + i).prop('checked', true);
+				$('#AdjustData-' + i).css("background-color", "rgb(161 184 161)");
+			} else {
+				// Reset to original balance
+				balanceAmtLabel.text(balanceAmt.toFixed(2));
+				$('#CheckUnCheck-' + i).prop('checked', false);
+				$('#AdjustData-' + i).css("background-color", "");
+			}
+
+			AdjustAmount();
+			CheckUnCheckCheck(i);
+		}
 
 		function Validate_AdjustButton() {
 
