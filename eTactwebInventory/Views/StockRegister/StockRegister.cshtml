@@ -297,14 +297,14 @@
           const resp = await fetch('/StockRegister/GetStockDataForPDF');
           const rows = await resp.json();
           const body = rows.map((r,i) => ([
-            i+1, r.storeName, r.partCode, r.itemName, r.opnStk, r.recQty,
+                i + 1, r.transDate, r.storeName, r.partCode, r.itemName, r.opnStk, r.recQty,
             r.issQty, r.totStk, r.stdPacking, r.unit, r.avgRate,
             r.amount, r.minLevel, r.altUnit, r.altStock,
             r.groupName, r.binNo, r.maximumLevel, r.reorderLevel
           ]));
 
           const headers = [
-            "Sr#", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty",
+            "Sr#","Date", "Store Name", "Part Code", "Item Name", "Opn Stk", "Rec Qty",
             "Iss Qty", "Tot Stk", "Std Packing", "Unit", "Avg Rate", "Amount",
             "Min Level", "Alt Unit", "Alt Stock", "Group Name", "Bin No",
             "Max Level", "Reorder Level"
