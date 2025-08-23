@@ -41,7 +41,8 @@ namespace eTactWeb.Controllers
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
-            HttpContext.Session.Remove("KeyAssetsMasterGrid");
+			MainModel.LastUpdatedbyEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+			HttpContext.Session.Remove("KeyAssetsMasterGrid");
             if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IAssetsMaster.GetViewByID(ID, YC).ConfigureAwait(false);
@@ -247,10 +248,10 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType,string AssetsName)
         {
             var model = new AssetsMasterModel();
-            model = await _IAssetsMaster.GetDashboardDetailData(FromDate, ToDate);
+            model = await _IAssetsMaster.GetDashboardDetailData(FromDate, ToDate, AssetsName);
 
             return PartialView("_AssetsMasterDashBoardGrid", model);
         }

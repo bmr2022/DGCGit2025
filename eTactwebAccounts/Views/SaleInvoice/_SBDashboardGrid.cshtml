@@ -137,8 +137,12 @@
                         foreach (var item in Model.SaleBillDataDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #fff5d5;" : "background-color:#fde5fc;")">
-                                <th>@srNo</th>
+                            // <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #fff5d5;" : "background-color:#fde5fc;")">
+                            <tr id="SbRow-@Cntr" class="sbDashboardRow"        style="background-color:@( !string.IsNullOrWhiteSpace(item.AgainstVoucherNo)   ? "rgb(13, 202, 240)"  : (item.SaleBillJobwork == "S" ? "#fff5d5" : "#fde5fc"));">
+                          
+                                <th>@srNo
+                                    <input type="hidden" id="AgainstVoucherNo-@Cntr" value="@item.AgainstVoucherNo" />
+                                </th>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
                                         @*<div id="printData-@Cntr">
@@ -159,7 +163,7 @@
                                         </div>
                                         <div id="editCursorDiv-@Cntr">
 
-                                            <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="BackButtonData(event)">
+                                            <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="EditButtonData(event,@item.AgainstVoucherNo)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -403,8 +407,16 @@ else
                     foreach (var item in Model.SaleBillDataDashboard)
                     {
                         Cntr = Cntr + 1;
-                            <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #fff5d5;" : "background-color:#fde5fc;")">
-                            <th>@srNo</th>
+                            // <tr id="SbRow-@Cntr" class="sbDashboardRow" style="@(item.SaleBillJobwork == "S" ? "background-color: #fff5d5;" : "background-color:#fde5fc;")">
+                            <tr id="SbRow-@Cntr" class="sbDashboardRow"
+    style="background-color:@(
+        !string.IsNullOrWhiteSpace(item.AgainstVoucherNo) 
+            ? "rgb(13, 202, 240)" 
+            : (item.SaleBillJobwork == "S" ? "#fff5d5" : "#fde5fc")
+    );">
+                            <th>@srNo
+                                    <input type="hidden" id="AgainstVoucherNo-@Cntr" value="@item.AgainstVoucherNo" />
+                                </th>
                             <td style="text-align:center;white-space: nowrap;">
                                 <div id="container">
                                     @*<div id="printData-@Cntr">
@@ -425,7 +437,8 @@ else
                                     </div>
                                     <div id="editCursorDiv-@Cntr">
 
-                                        <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="BackButtonData(event)">
+                                            <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="EditButtonData(event,'(@item.AgainstVoucherNo)')">
+                                         
                                             <span class="fa-stack">
                                                 <i class="fa fa-square fa-stack-2x"></i>
                                                 <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>

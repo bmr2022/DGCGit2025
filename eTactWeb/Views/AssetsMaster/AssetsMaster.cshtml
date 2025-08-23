@@ -96,7 +96,7 @@
 										<label asp-for="AssetsCode" class="form-label">Assets Code</label>
 										<input asp-for="AssetsCode" class="form-control"  />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"style="width:220px;">
 										<label asp-for="AssetsName" class="form-label" style="color:red;">Assets Name</label>
 										<input asp-for="AssetsName" class="form-control"  />
 									</div>
@@ -201,7 +201,7 @@
 												
 												<select class="form-select" asp-for="PurchaseNewUsed" style="width:170px;">
 													<option value="">-Select-</option>
-													<option value="New">New</option>
+													<option value="New"selected>New</option>
 													<option value="Used">Used</option>
 												</select>
 											</div>
@@ -248,10 +248,10 @@
 									<div class="accordion-body">
 										<div class="row g-2">
 											
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 												<label asp-for="DepreciationMethod" class="form-label" style="color:red;">Depreciation Method</label>
 
-												<select class="form-select" asp-for="DepreciationMethod">
+												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
 													<option value="">-Select-</option>
 													<option value="Weighted Method" >Weighted Method</option>
 													<option value="Straight-line Method" selected>Straight-line Method</option>
@@ -489,8 +489,13 @@
 			FillParentAccountName();
 			FillCategoryName();
 			FillCustoidianEmpName();
-
-		
+			var currentYear = new Date().getFullYear();
+			$('#POYear,#InvoiceYearCode').each(function () {
+				var val = $(this).val();
+				if (!val || val == "0") {  
+					$(this).val(currentYear);
+				}
+			});
 			$('#DiscountCustCatEntryId').rules("remove", "required");
 			$('#AssetsEntryId').rules("remove", "required");
 			$('#EntryDate').rules("remove", "required");
@@ -570,7 +575,12 @@
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
-
+			$(document).on("keydown", function (e) {
+				if (e.key === "Enter") {
+					e.preventDefault();
+					return false;
+				}
+			});
 			$('.submitBTN').click(function (e) {
 				e.preventDefault();
 				if ($('#Mode').val() == "U") {
@@ -683,31 +693,7 @@
 				}
 			});
 
-			$('#PODate').on('change', function () {
-				var val = $(this).val();
-				if (val) {
-					var parts = val.split('/');
-					if (parts.length === 3) {
-						var day = parseInt(parts[0], 10);
-						var monthStr = parts[1];
-						var year = parseInt(parts[2], 10);
-
-						var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-						var month = monthNames.indexOf(monthStr);
-
-						if (month >= 0) {
-							var inputDate = new Date(year, month, day);
-							var today = new Date();
-							today.setHours(0, 0, 0, 0);
-
-							if (inputDate > today) {
-								$(this).val('');
-								$.notify("PO Date cannot be in the future", "error");
-							}
-						}
-					}
-				}
-			});
+			
 
 		$('#POYear,#InvoiceYearCode').on('blur', function () {
 			var val = $(this).val();
@@ -762,10 +748,6 @@
 				return;
 			}
 
-			if (invDate > today) {
-				$(this).val('');
-				$.notify("Invoice Date cannot be in the future", "error");
-			}
 		});
 		function toggleUsedFields() {
 			var purchaseType = $('#PurchaseNewUsed').val(); 
@@ -785,8 +767,15 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#LastupDationDate,#ActualEntryDate,#EntryDate,#PODate,#InvoiceDate,#CapatalizationDate,#FirstAqusitionOn')
+			$('#LastupDationDate,#ActualEntryDate,#EntryDate,#CapatalizationDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
+				.val(formattedDate);
+
+			$('#FirstAqusitionOn,#InvoiceDate,#PODate')
+				.datepicker({
+					dateFormat: 'dd/M/yy',
+					maxDate: 0  
+				})
 				.val(formattedDate);
 		}
 
@@ -1700,12 +1689,14 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
-<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+
+
+@* <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script> *@
 
 
 

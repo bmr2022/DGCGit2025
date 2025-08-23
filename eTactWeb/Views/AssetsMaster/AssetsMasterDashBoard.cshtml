@@ -36,8 +36,12 @@
                                         <input asp-for="ToDate" class="form-control" readonly />
                                     </div>
                                 </div>
+                                
                             </div>
-
+                            <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+                                <label asp-for="AssetsName" class="form-label">Assets Name</label>
+                                <input asp-for="AssetsName" class="form-control" />
+                            </div>
 
 
                             <div class="col-sm-3 col-md-6 col-lg-4 col-xl-2">
@@ -228,10 +232,11 @@
 
             var fromDate = $('#FromDate').val();
             var toDate = $('#ToDate').val();
+            var AssetsName = $('#AssetsName').val();
             $.ajax({
                 url: '@Url.Action("GetDetailData")',
                 type: "POST",
-                data: { FromDate: fromDate, ToDate: toDate },
+                data: { FromDate: fromDate, ToDate: toDate, AssetsName: AssetsName },
                 async: false,
                 data: $('#SParam').serializeArray(),
                 success: function (data) {
@@ -300,16 +305,25 @@
             }
         });
 
-        function confirmdelete(event, element) {
-            event.preventDefault();
+        // function confirmdelete(event, element) {
+        //     event.preventDefault();
 
-            var urlHref = $(event.currentTarget).attr("href");
+        //     var urlHref = $(event.currentTarget).attr("href");
+        //     if (confirm("Are you sure you want to delete this entry?")) {
+        //         CheckIssuedTransStock(event, element, urlHref);
+        //         //var linkurl = $(event.currentTarget).attr("href");
+        //         //linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&BatchNo=" + $('#Batchno').val() + "&SummaryDetail=" + $('#SummaryDetail').val();
+
+        //         //window.location.replace(linkurl);
+        //     }
+        // }
+        function confirmdelete(entryId, yearCode) {
             if (confirm("Are you sure you want to delete this entry?")) {
-                CheckIssuedTransStock(event, element, urlHref);
-                //var linkurl = $(event.currentTarget).attr("href");
-                //linkurl = linkurl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&SlipNo=" + $('#SlipNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&BatchNo=" + $('#Batchno').val() + "&SummaryDetail=" + $('#SummaryDetail').val();
+                var url = '/AssetsMaster/DeleteByID?EntryId=' + entryId + '&YearCode=' + yearCode;
 
-                //window.location.replace(linkurl);
+         
+                window.location.href = url;
+
             }
         }
 

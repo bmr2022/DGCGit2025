@@ -1161,6 +1161,12 @@
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
+                          var taxGrid = $('#divTaxGrid tr td').length;
+                         CalculateAdjAmt('NetTotal');
+                           if (taxGrid >1 ) {
+                   ClearAdjustmentGrid();
+               }
+               AddAdjstmntDetail1();
                 }).fail(function () {
                     alert("error");
                 }).always(function () {

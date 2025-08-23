@@ -135,6 +135,7 @@ public class PBDashBoard : TimeStamp
     public string? AgainstImportAccountCode { get; set; }
     public string? AgainstImportInvoiceNo { get; set; }
     public string? AgainstImportYearCode { get; set; }
+    public string? AgainstVoucherNo { get; set; }
     public string? AgainstImportInvDate { get; set; }
     public string? PurchBillEntryId { get; set; }
     public int? PurchBillYearCode { get; set; }

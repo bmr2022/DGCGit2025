@@ -152,6 +152,7 @@ namespace eTactWeb.DOM.Models
         public string? SaleBillEntryDate { get; set; }
         public string? InvPrefix { get; set; }
         public string? SaleBillJobwork { get; set; }
+        public string? AgainstVoucherNo { get; set; }
         public string? SaleBillNo { get; set; }
         public string? SaleBillDate { get; set; }
         public string? InvoiceTime { get; set; }
