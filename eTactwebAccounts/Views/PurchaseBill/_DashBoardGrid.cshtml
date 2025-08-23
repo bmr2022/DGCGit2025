@@ -65,12 +65,14 @@ else
                         foreach (var item in Model.PBDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="approvedRow-@Cntr">
+                            <tr id="approvedRow-@Cntr" style="@( !string.IsNullOrWhiteSpace(item.AgainstVoucherNo) ? "background: rgb(13, 202, 240);!important" : "" )">
+                          
                                 <td class="FWB">
                                     @srNo
                                     <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
                                     <input type="hidden" id="fLevelApproved-@Cntr" value="@item.ApprovedBy" />
                                     <input type="hidden" id="AmmApproved-@Cntr" value="@item.ApprovedDate" />
+                                    <input type="hidden" id="AgainstVoucherNo-@Cntr" value="@item.AgainstVoucherNo" />
                                 </td>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
@@ -90,7 +92,7 @@ else
                                                 </span>
                                             </a>
                                         </div>
-                                        @if (item.Approved == "Y" ||/*  item.Approval1Levelapproved == "Y" || item.ApproveAmm=="Y" ||*/  item.PurchBillYearCode.ToString() != yearCode.ToString())
+                                        @if (item.Approved == "Y" || /*  item.Approval1Levelapproved == "Y" || item.ApproveAmm=="Y" ||*/  item.PurchBillYearCode.ToString() != yearCode.ToString())
                                         {
                                             <div>
                                                 <a class="table-link link-primary noCursor">
@@ -104,7 +106,8 @@ else
                                         else
                                         {
                                             <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" asp-action="PurchaseBill" asp-route-Mode="U" asp-route-ID="@item.PurchBillEntryId" asp-route-YearCode="@item.PurchBillYearCode" onclick="BackButtonData(event,'@item.PurchBillEntryId','@item.PurchBillYearCode');">
+                                                <a class="table-link link-primary" asp-action="PurchaseBill" asp-route-Mode="U" asp-route-ID="@item.PurchBillEntryId" asp-route-YearCode="@item.PurchBillYearCode"
+                                                   onclick="EditButtonData(event,'@item.PurchBillEntryId','@item.PurchBillYearCode','(@item.AgainstVoucherNo)')">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -112,7 +115,7 @@ else
                                                 </a>
                                             </div>
                                         }
-                                        @if (@item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.PurchBillYearCode.ToString() != yearCode.ToString())
+                                        @if (@item.Approved == "Y" ||/* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.PurchBillYearCode.ToString() != yearCode.ToString())
                                         {
                                             <div>
                                                 <a class="table-link link-danger noCursor">
@@ -136,7 +139,7 @@ else
                                             <div id="deleteCursorDiv-@Cntr"
                                                  class="table-link link-danger"
                                                  style="cursor: pointer;"
-                                                 onclick="confirmDelete(event,'@item.EntryID', '@item.PurchBillYearCode', '@item.VoucherNo','@item.EnteredBy', '@item.InvoiceNo', false, '@Cntr')">
+                                                 onclick="confirmDelete(event,'@item.EntryID', '@item.PurchBillYearCode', '@item.VoucherNo','@item.EnteredBy', '@item.InvoiceNo', false, '@Cntr',@item.AgainstVoucherNo)">
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -267,7 +270,7 @@ else
 
         #container > div {
             flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+            /* margin-right: 10px; /* Adjust margin as needed */ */
         }
 
     #PBDashboardGrid {
@@ -346,5 +349,22 @@ else
 
     .page - link: hover: not(.disabled): not(.active) {
         background - color: #ddd;
+    }
+
+    .highlight {
+        /* background-color: rgb(13, 202, 240); */
+        color: rgb(13, 202, 240);
+        ; /* optional */
+    }
+
+   
+
+    .fa-stack {
+        display: inline-block;
+        height: 1.5em;
+        line-height: 2em;
+        position: relative;
+        vertical-align: middle;
+        width: 1.9em;
     }
 </style>

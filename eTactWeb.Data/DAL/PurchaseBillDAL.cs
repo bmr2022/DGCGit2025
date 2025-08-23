@@ -702,6 +702,7 @@ public class PurchaseBillDAL
                                                  PartCode = dr["PartCode"].ToString(),
                                                  ItemName = dr["ItemName"].ToString(),
                                                  HSNNO = dr["HSNNO"].ToString(),
+                                                 AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                              }).OrderBy(a => a.EntryID).ToList();
             }
         }
