@@ -371,10 +371,10 @@
             // ReportType mapping
             let reportType = $('#ReportType').val();
             if (reportType === "Receive Outstanding Ageing") {
-                $('#ReportType').val("Receive Outstanding");
+                $('#ReportType').val("Receive Outstanding").trigger("change");
             }
             else if (reportType === "Payable Outstanding Ageing") {
-                $('#ReportType').val("Payable Outstanding");
+                $('#ReportType').val("Payable Outstanding").trigger("change");
             }
 
             // Call FillPartyName with callback

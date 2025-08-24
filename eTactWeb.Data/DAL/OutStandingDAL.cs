@@ -129,7 +129,8 @@ namespace eTactWeb.Data.DAL
 															  TotBalanceAmt = row["TotBalanceAmt"] == DBNull.Value ? string.Empty : row["TotBalanceAmt"].ToString(),
 															  AccEntryId = row["AccEntryId"] == DBNull.Value ? string.Empty : row["AccEntryId"].ToString(),
 															  AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
-															  SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
+                                                              DocEntryId = row["DocEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["DocEntryId"]),
+                                                              SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
 														  }).ToList();
 						}
 						else

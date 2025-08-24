@@ -4,6 +4,7 @@ using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
+using Newtonsoft.Json;
 
 namespace eTactwebAccounts.Controllers
 {
@@ -35,7 +36,7 @@ namespace eTactwebAccounts.Controllers
 
             return View(MainModel); // Pass the model with old data to the view
         }
-        public async Task<IActionResult> GetTrailBalanceDetailsData(string FromDate, string ToDate, int TrailBalanceGroupCode, string ReportType)
+        public async Task<IActionResult> GetTrailBalanceDetailsData(string FromDate, string ToDate, int? TrailBalanceGroupCode, string ReportType)
         {
             var model = new TrailBalanceModel();
             model.EntryByMachine = Environment.MachineName;
@@ -49,6 +50,24 @@ namespace eTactwebAccounts.Controllers
                 return PartialView("_TrailBalanceDetailGrid", model);
             }
             return null;
+        }
+        public async Task<JsonResult> FillGroupList(string FromDate, string ToDate)
+        {
+            var JSON = await _ITrailBalance.FillGroupList(FromDate, ToDate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillParentGroupList(string FromDate, string ToDate,int? GroupCode)
+        {
+            var JSON = await _ITrailBalance.FillParentGroupList(FromDate, ToDate,GroupCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
+        public async Task<JsonResult> FillAccountList(string FromDate, string ToDate, int? GroupCode,int? ParentGroupCode)
+        {
+            var JSON = await _ITrailBalance.FillAccountList(FromDate, ToDate, GroupCode,ParentGroupCode);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
         }
     }
 }
