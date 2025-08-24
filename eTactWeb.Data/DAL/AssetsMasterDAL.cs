@@ -366,6 +366,7 @@ namespace eTactWeb.Data.DAL
                                                                     LastUpdatedDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedDate"]) : "",
                                                                     EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
                                                                     LastUpdatedbyEmpName = dr["UpdatedByEmployee"] != DBNull.Value ? Convert.ToString(dr["UpdatedByEmployee"]) : string.Empty,
+                                                                    AssetsCateogryName = dr["CategoryName"] != DBNull.Value ? Convert.ToString(dr["CategoryName"]) : string.Empty,
 
                                                                 }).ToList();
 
@@ -385,7 +386,7 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
-        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode)
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int ActualEntryBy)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -395,6 +396,8 @@ namespace eTactWeb.Data.DAL
                 SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
                 SqlParams.Add(new SqlParameter("@AssetsEntryId", EntryId));
                 SqlParams.Add(new SqlParameter("@Fiscalyear", YearCode));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
                 _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpAssetsMaster", SqlParams);
             }
             catch (Exception ex)
@@ -491,6 +494,8 @@ namespace eTactWeb.Data.DAL
                 model.LastupdatedBy = Convert.ToInt32(row["LastupdatedBy"]);
                 model.LastUpdatedDate = row["LastUpdatedDate"].ToString();
                 model.EntryByMachine = row["EntryByMachine"].ToString();
+                model.ActualEntryByEmpName = row["ActualEntryByEmployee"].ToString();
+                model.LastUpdatedbyEmpName = row["UpdatedByEmployee"].ToString();
                 model.DepreciationRate = Convert.ToDecimal(row["DepreciationRate"]);
                 model.DepriciationAmt = Convert.ToDecimal(row["DepriciationAmt"]);
                 model.UseFullLifeInYear = Convert.ToInt32(row["UseFullLifeInYear"]);

@@ -255,9 +255,16 @@ namespace eTactWeb.Controllers
 
             return PartialView("_AssetsMasterDashBoardGrid", model);
         }
-        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode)
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int ActualEntryBy)
         {
-            var Result = await _IAssetsMaster.DeleteByID(EntryId, YearCode);
+            DateTime parsedDate;
+
+            if (DateTime.TryParse(EntryDate, out parsedDate))
+            {
+                // Convert to dd/MMM/yyyy format → "24/Aug/2025"
+                EntryDate = parsedDate.ToString("dd/MMM/yyyy");
+            }
+            var Result = await _IAssetsMaster.DeleteByID(EntryId, YearCode,  EntryDate,  ActualEntryBy);
 
             if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
             {

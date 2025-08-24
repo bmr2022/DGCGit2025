@@ -1,25 +1,25 @@
-﻿	@model eTactWeb.DOM.Models.AssetsMasterModel;
+﻿	@model eTactWeb.DOM.Models.ToolMoldMasterModel;
 @{
-	ViewData["Title"] = "Assets Master";
+	ViewData["Title"] = "ToolMoldMaster";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 <style>
 	.disabled-link {
-		pointer-events: none; 
-		color: gray; 
+		pointer-events: none;
+		color: gray;
 		text-decoration: none;
-		cursor: not-allowed; 
+		cursor: not-allowed;
 	}
 </style>
 
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-	<form asp-action="AssetsMaster" asp-controller="AssetsMaster" method="post" autocomplete="on" class="form-horizontal">
+	<form asp-action="ToolMoldMaster" asp-controller="ToolMoldMaster" method="post" autocomplete="on" class="form-horizontal">
 		<div class="card-header card-headerBG text-light bg-gradient">
 			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
 				<h5>
-					<strong>Assets Master </strong>
+					<strong>Tool Mold Master </strong>
 					<span class="d-flex float-end" style="margin-top:-2px;">
-						<a asp-controller="AssetsMaster" asp-action="AssetsMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+						<a asp-controller="ToolMoldMaster" asp-action="ToolMoldMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
 							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
 							Dashboard
 						</a>
@@ -69,7 +69,7 @@
 						<h2 class="accordion-header" id="H_ItemCategoryDetail">
 							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
 									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
-								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Assets Master</strong>
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Tool Mold Master</strong>
 								<small class="p-3"></small>
 							</button>
 						</h2>
@@ -80,8 +80,8 @@
 									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="AssetsEntryId" class="form-label">Entry Id</label>
-										<input asp-for="AssetsEntryId" class="form-control" readonly />
+										<label asp-for="ToolEntryId" class="form-label">Entry Id</label>
+										<input asp-for="ToolEntryId" class="form-control" readonly />
 									</div>
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -93,19 +93,22 @@
 										<input asp-for="YearCode" class="form-control" readonly />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="AssetsCode" class="form-label">Assets Code</label>
-										<input asp-for="AssetsCode" class="form-control"  />
+										<label asp-for="ToolCode" class="form-label">Tool Code</label>
+										<input asp-for="ToolCode" class="form-control" />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"style="width:220px;">
-										<label asp-for="AssetsName" class="form-label" style="color:red;">Assets Name*</label>
-										<input asp-for="AssetsName" class="form-control"  />
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
+										<label asp-for="ToolName" class="form-label" style="color:red;">Tool Name*</label>
+										<input asp-for="ToolName" class="form-control" />
 									</div>
-									
+
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="AssetsCateogryName" class="form-label" style="color:red;">Category Name*</label>
-										<input type="hidden" asp-for="AssetsCateogryId" />
-										<select class="form-select" asp-for="AssetsCateogryName">
+										<label asp-for="ToolOrMold" class="form-label" style="color:red;">Tool/Mold*</label>
+										
+										<select class="form-select" asp-for="ToolOrMold">
 											<option value="">-Select-</option>
+											<option value="ToolMold">ToolMold</option>
+											<option value="Equipment">Equipment</option>
+											<option value="Instrument">Instrument</option>
 										</select>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
@@ -123,28 +126,28 @@
 										</select>
 									</div>
 
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="MainGroup" class="form-label" style="color:red;">Main Group*</label>
-										<input asp-for="MainGroup" class="form-control" readonly/>
+										<input asp-for="MainGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SubGroup" class="form-label" style="color:red;">Sub Group*</label>
 										<input asp-for="SubGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="UnderGroup" class="form-label" style="color:red;">Under Group*</label>
-										<input asp-for="UnderGroup" class="form-control" readonly/>
+										<input asp-for="UnderGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="SubSubGroup" class="form-label" style="color:red;">Sub Sub Group*</label>
 										<input asp-for="SubSubGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 										<label asp-for="VendoreAccountCode" class="form-label">Account Type</label>
-										<input asp-for="VendoreAccountCode" class="form-control" readonly/>
+										<input asp-for="VendoreAccountCode" class="form-control" readonly />
 									</div>
 
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+									@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 										<label asp-for="CostCenterName" class="form-label" style="color:red;">Cost Center Name*</label>
 										<input type="hidden" asp-for="CostCenterId" />
 										<select class="form-select" asp-for="CostCenterName">
@@ -165,21 +168,21 @@
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
 										<label asp-for="LocationOfInsallation" class="form-label">Location Of Insallation</label>
 										<input asp-for="LocationOfInsallation" class="form-control" />
-									</div>
+									</div> *@
 								</div>
 							</div>
-							@* purchase *@
+							@* vendore *@
 							<div class="accordion-item">
 								<h2 class="accordion-header" id="H_SAGrid">
 									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Purchase Detail</strong>
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Vendore Detail</strong>
 									</button>
 								</h2>
 
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="row g-2 gx-3" id="_ItemGrid">
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 												<label asp-for="PONO" class="form-label">PONO</label>
 												<input asp-for="PONO" class="form-control" />
 											</div>
@@ -195,13 +198,13 @@
 												<label asp-for="PurchaseValue" class="form-label">Purchase Value</label>
 												<input asp-for="PurchaseValue" class="form-control" />
 											</div>
-											
+
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:190px;">
-												<label asp-for="PurchaseNewUsed" class="form-label" >New/ Used</label>
-												
+												<label asp-for="PurchaseNewUsed" class="form-label">New/ Used</label>
+
 												<select class="form-select" asp-for="PurchaseNewUsed" style="width:170px;">
 													<option value="">-Select-</option>
-													<option value="New"selected>New</option>
+													<option value="New" selected>New</option>
 													<option value="Used">Used</option>
 												</select>
 											</div>
@@ -221,15 +224,15 @@
 												<label asp-for="TechEmployeeName" class="form-label">Technicial Employee Name</label>
 												<input asp-for="TechEmployeeName" class="form-control" />
 											</div>
-											
-											
+
+
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 												<label asp-for="CustoidianEmpName" class="form-label">Custoidian EmpName</label>
-												<input type="hidden" asp-for="CustoidianEmpId"/>
+												<input type="hidden" asp-for="CustoidianEmpId" />
 												<select class="form-select" asp-for="CustoidianEmpName" style="width:230px;">
 													<option value="">-Select-</option>
 												</select>
-											</div>
+											</div> *@
 										</div>
 									</div>
 
@@ -247,13 +250,13 @@
 								<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
 									<div class="accordion-body">
 										<div class="row g-2">
-											
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+
+											@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 												<label asp-for="DepreciationMethod" class="form-label" style="color:red;">Depreciation Method</label>
 
 												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
 													<option value="">-Select-</option>
-													<option value="Weighted Method" >Weighted Method</option>
+													<option value="Weighted Method">Weighted Method</option>
 													<option value="Straight-line Method" selected>Straight-line Method</option>
 												</select>
 											</div>
@@ -265,24 +268,24 @@
 												<label asp-for="DepriciationAmt" class="form-label">Depreciation Amt</label>
 												<input asp-for="DepriciationAmt" class="form-control" />
 											</div>
-											
+ *@
 
 										</div>
 									</div>
 								</div>
 
-								@* invoice *@
+								@* identiiation *@
 								<div class="accordion-item">
 									<h2 class="accordion-header" id="H_SAGrid">
 										<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-											<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Invoice Detail</strong>
+											<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Identiication Detail</strong>
 										</button>
 									</h2>
 
 									<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 										<div class="accordion-body">
 											<div class="row g-2 gx-3" id="_ItemGrid">
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 													<label asp-for="InvoiceNo" class="form-label">Invoice No</label>
 													<input asp-for="InvoiceNo" class="form-control" />
 												</div>
@@ -334,140 +337,249 @@
 													<label asp-for="InsuranceDetail" class="form-label">Insurance Detail </label>
 													<input asp-for="InsuranceDetail" class="form-control" />
 												</div>
-												
+
 												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 													<label asp-for="ConsiderInInvetory" class="form-label">Consider In Invetory</label>
 
 													<select class="form-select" asp-for="ConsiderInInvetory">
 														<option value="">-Select-</option>
 														<option value="Yes">Yes</option>
-														<option value="No" >No</option>
+														<option value="No">No</option>
 													</select>
-												</div>
+												</div> *@
 											</div>
 										</div>
 
 									</div>
 								</div>
-							<div class="accordion-item">
-								<h2 class="accordion-header" id="OtherGrid">
-									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
-										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
-									</button>
-								</h2>
-								<div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
-									<div class="accordion-body">
+								@*  usage & Life  *@
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="H_ItemCategoryDetail">
+										<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+												aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+											<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Usage & Life  Detail</strong>
+											<small class="p-3"></small>
+										</button>
+									</h2>
+									<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+										<div class="accordion-body">
+											<div class="row g-2">
 
-										<div class="row g-2 gx-3" id="_ItemGrid">
+												@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+												<label asp-for="DepreciationMethod" class="form-label" style="color:red;">Depreciation Method</label>
 
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="LastUpdatedbyEmpId" class="form-label">UID</label>
-												<input asp-for="LastUpdatedbyEmpId" class="form-control" readonly />
+												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
+												<option value="">-Select-</option>
+												<option value="Weighted Method">Weighted Method</option>
+												<option value="Straight-line Method" selected>Straight-line Method</option>
+												</select>
+												</div>
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="DepreciationRate" class="form-label">Depreciation Rate</label>
+												<input asp-for="DepreciationRate" class="form-control" />
+												</div>
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="DepriciationAmt" class="form-label">Depreciation Amt</label>
+												<input asp-for="DepriciationAmt" class="form-control" />
+												</div>
+												*@
+
 											</div>
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ApprovedByEmpId" class="form-label">ApprovedBy</label>
-												<input type="hidden" asp-for="ApprovedByEmpId" />
-												<input asp-for="ApprovedByEmpName" class="form-control" readonly />
-											</div>
+										</div>
+									</div>
+									 
+									@* Calibration Detail *@
+									<div class="accordion-item">
+										<h2 class="accordion-header" id="H_SAGrid">
+											<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+												<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Calibration Detail</strong>
+											</button>
+										</h2>
 
+										<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+											<div class="accordion-body">
+												<div class="row g-2 gx-3" id="_ItemGrid">
+													@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+													<input asp-for="InvoiceNo" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+													<label asp-for="InvoiceYearCode" class="form-label">Invoice YearCode</label>
+													<input asp-for="InvoiceYearCode" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="InvoiceDate" class="form-label">Invoice Date</label>
+													<input asp-for="InvoiceDate" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="NetBookValue" class="form-label">Net Book Value</label>
+													<input asp-for="NetBookValue" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="ResidualValue" class="form-label">Residual Value</label>
+													<input asp-for="ResidualValue" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+													<label asp-for="FirstAqusitionOn" class="form-label">First Aqusition On</label>
+													<input asp-for="FirstAqusitionOn" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="OriginalValue" class="form-label">Original Value</label>
+													<input asp-for="OriginalValue" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+													<label asp-for="CapatalizationDate" class="form-label">Capatalization Date</label>
+													<input asp-for="CapatalizationDate" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="BarCode" class="form-label">BarCode</label>
+													<input asp-for="BarCode" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="SerialNo" class="form-label">Serial No</label>
+													<input asp-for="SerialNo" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+													<label asp-for="InsuranceCompany" class="form-label">Insurance Company </label>
+													<input asp-for="InsuranceCompany" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+													<label asp-for="InsuredAmount" class="form-label">Insured Amount </label>
+													<input asp-for="InsuredAmount" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+													<label asp-for="InsuranceDetail" class="form-label">Insurance Detail </label>
+													<input asp-for="InsuranceDetail" class="form-control" />
+													</div>
 
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+													<label asp-for="ConsiderInInvetory" class="form-label">Consider In Invetory</label>
 
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="CC" class="form-label">CC</label>
-												<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
-											</div>
-
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ActualEntryByEmpId" class="form-label">ActualEntryByEmpid</label>
-												<input asp-for="ActualEntryByEmpName " class="form-control" readonly />
-											</div>
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
-												<input asp-for="ActualEntryDate " class="form-control" readonly />
-											</div>
-
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="LastUpdatedbyEmpId" class="form-label">Updated By</label>
-												<input asp-for="LastUpdatedbyEmpName" class="form-control" readonly />
-											</div>
-
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="LastupDationDate" class="form-label">UpdationDate</label>
-												<input asp-for="LastupDationDate" class="form-control" readonly />
-											</div>
-											<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-												<label asp-for="EntryByMachine" class="form-label">Machine Name</label>
-												<input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+													<select class="form-select" asp-for="ConsiderInInvetory">
+													<option value="">-Select-</option>
+													<option value="Yes">Yes</option>
+													<option value="No">No</option>
+													</select>
+													</div> *@
+												</div>
 											</div>
 
 										</div>
 									</div>
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="OtherGrid">
+										<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+											<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+										</button>
+									</h2>
+									<div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+										<div class="accordion-body">
 
+											<div class="row g-2 gx-3" id="_ItemGrid">
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="LastupdatedBy" class="form-label">UID</label>
+														<input asp-for="LastupdatedBy" class="form-control" readonly />
+												</div>
+											
+
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="CC" class="form-label">CC</label>
+													<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
+												</div>
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
+														<input asp-for="ActualEntryBy " class="form-control" readonly />
+												</div>
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
+													<input asp-for="ActualEntryDate " class="form-control" readonly />
+												</div>
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="LastupdatedBy" class="form-label">Updated By</label>
+													<input asp-for="LastUpdatedbyEmpName" class="form-control" readonly />
+												</div>
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="LastUpdatedDate" class="form-label">UpdationDate</label>
+														<input asp-for="LastUpdatedDate" class="form-control" readonly />
+												</div>
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="EntryByMachine" class="form-label">Machine Name</label>
+													<input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+												</div>
+
+											</div>
+										</div>
+
+									</div>
 								</div>
 							</div>
 						</div>
-				</div>
-					
-							
-				</div>
-				<div class="card-footer p-3">
-					<div class="row justify-content-between g-2">
-						<div class="card-header card-headerBG text-light bg-gradient">
-							<h5>
-								<strong>Assets Master</strong>
-								<span class="d-flex float-end" style="margin-top:-2px;">
 
-									@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
-									<a asp-controller="AssetsMaster" asp-action="AssetsMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
-										<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
-										Dashboard
-									</a>
-									<div class="row justify-content-between g-2">
-										<div class="col-auto">
 
-											<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
-												<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
-												BACK
-											</a>
-										</div>
-										@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
-										{
+					</div>
+					<div class="card-footer p-3">
+						<div class="row justify-content-between g-2">
+							<div class="card-header card-headerBG text-light bg-gradient">
+								<h5>
+									<strong>Tool Mold Master</strong>
+									<span class="d-flex float-end" style="margin-top:-2px;">
+
+										@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+											<a asp-controller="ToolMoldMaster" asp-action="ToolMoldMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+											<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+											Dashboard
+										</a>
+										<div class="row justify-content-between g-2">
 											<div class="col-auto">
-												@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
-												<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
-													@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
-													<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
-													REFRESH
+
+												<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+													<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+													BACK
 												</a>
 											</div>
-											@if (Model.Mode == "U")
-											{
-												@*Model.Mode = "U";*@
-												<div class="col-auto">
-													@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
-													<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
-														<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
-														UPDATE
-													</button>
-												</div>
-											}
-											else
+											@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
 											{
 												<div class="col-auto">
-													<button type="submit" class="btn btn-primary btn-sm submitBTN">
-														<i class="fa-solid fa-chevron-circle-right"></i>
-														SUBMIT
-													</button>
+													@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+													<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+														@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+														<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+														REFRESH
+													</a>
 												</div>
+												@if (Model.Mode == "U")
+												{
+													@*Model.Mode = "U";*@
+													<div class="col-auto">
+														@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+														<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+															<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+															UPDATE
+														</button>
+													</div>
+												}
+												else
+												{
+													<div class="col-auto">
+														<button type="submit" class="btn btn-primary btn-sm submitBTN">
+															<i class="fa-solid fa-chevron-circle-right"></i>
+															SUBMIT
+														</button>
+													</div>
+												}
 											}
-										}
-									</div>
-								</span>
-							</h5>
+										</div>
+									</span>
+								</h5>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
 	</form>
 </div>
 
@@ -481,7 +593,7 @@
 				setFormattedDate();
 				FillEntryID();
 				TotalNoOfRows();
-				
+
 			}
 			FillItemName();
 			FillCostCenterName();
@@ -492,7 +604,7 @@
 			var currentYear = new Date().getFullYear();
 			$('#POYear,#InvoiceYearCode').each(function () {
 				var val = $(this).val();
-				if (!val || val == "0") {  
+				if (!val || val == "0") {
 					$(this).val(currentYear);
 				}
 			});
@@ -583,9 +695,9 @@
 			});
 			$('.submitBTN').click(function (e) {
 				e.preventDefault();
-				
+
 				console.log("SubmitButton Click - Validation passed");
-				$('form').submit(); 
+				$('form').submit();
 			});
 
 
@@ -700,28 +812,28 @@
 		});
 		$('#CustoidianEmpName').change(function () {
 			$('#CustoidianEmpId').val($('#CustoidianEmpName').val());
-		}); 
+		});
 
 		$('#ParentAccountName').change(function () {
 			FillParentGoupDetail();
 		});
-		
-			$('#DepreciationRate').on('input', function () {
-				var rate = parseFloat($(this).val()) || 0;
 
-				if (rate > 100) {
-					$(this).val('');
-					$.notify("Depreciation Rate cannot be more than 100%", "error");
-				}
-				else if (rate < 0) {
-					$(this).val('');
-					$.notify("Depreciation Rate cannot be negative", "error");
-				}
-			});
+		$('#DepreciationRate').on('input', function () {
+			var rate = parseFloat($(this).val()) || 0;
 
-			
+			if (rate > 100) {
+				$(this).val('');
+				$.notify("Depreciation Rate cannot be more than 100%", "error");
+			}
+			else if (rate < 0) {
+				$(this).val('');
+				$.notify("Depreciation Rate cannot be negative", "error");
+			}
+		});
 
-		
+
+
+
 
 		function parseCustomDate(val) {
 			if (!val) return null;
@@ -761,7 +873,7 @@
 
 		// });
 		function toggleUsedFields() {
-			var purchaseType = $('#PurchaseNewUsed').val(); 
+			var purchaseType = $('#PurchaseNewUsed').val();
 
 			if (purchaseType === "Used") {
 				$('#OriginalValue').prop('disabled', false);
@@ -789,7 +901,7 @@
 			$('#FirstAqusitionOn,#CapatalizationDate')
 				.datepicker({
 					dateFormat: 'dd/M/yy',
-					maxDate: 0  
+					maxDate: 0
 				})
 				.val(formattedDate);
 			$('#PODate').datepicker({
@@ -798,27 +910,27 @@
 				onSelect: updateInvoiceMinDate
 			}).datepicker('setDate', today);
 
-			
+
 			$('#InvoiceDate').datepicker({
 				dateFormat: 'dd/M/yy',
 				maxDate: 0
 			}).datepicker('setDate', today);
 
-			
+
 			updateInvoiceMinDate();
 
 			function updateInvoiceMinDate() {
 				var poDate = $('#PODate').datepicker('getDate');
 				$('#InvoiceDate').datepicker('option', 'minDate', poDate || null);
 
-				
+
 				var invDate = $('#InvoiceDate').datepicker('getDate');
 				if (poDate && invDate && invDate < poDate) {
 					$('#InvoiceDate').datepicker('setDate', poDate);
 				}
 			}
 
-			
+
 			$('#PODate').on('change', updateInvoiceMinDate);
 		}
 
@@ -839,8 +951,8 @@
 					});
 
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
-						var AssetsCateogryName = '@Model.AssetsCateogryId';
-							$('#AssetsCateogryName').val(AssetsCateogryName);
+						
+						$('#AssetsCateogryName').val(AssetsCateogryName);
 					}
 				},
 				error: function (xhr, status, error) {
@@ -1006,7 +1118,7 @@
 			});
 		}
 		function FillEntryID() {
-					var YearCode = $('#YearCode').val();
+			var YearCode = $('#YearCode').val();
 			var EntryDate = $('#EntryDate').val();
 			$.ajax({
 				url: '@Url.Action("FillEntryId", "AssetsMaster")',
@@ -1021,7 +1133,7 @@
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
 						$('#AssetsEntryId').val(obj.Result[0].EntryId || 0);
 						$('#AssetsCode').val(obj.Result[0].AssetsCode || 0);
-						
+
 					}
 				},
 				error: function (xhr, status, error) {
@@ -1447,8 +1559,8 @@
 		}
 
 
-		
-		
+
+
 		function ClearItems() {
 
 			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,#Remark,#OriginalPartCodeText,#OriginalItemNameText,,#AltPartCodeText,#AltItemNameText').val('');

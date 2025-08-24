@@ -67,9 +67,9 @@ namespace eTactWeb.Data.BLL
         {
             return await _AssetsMasterDAL.GetDashboardDetailData(FromDate, ToDate, AssetsName);
         }
-        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode)
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int ActualEntryBy)
         {
-            return await _AssetsMasterDAL.DeleteByID(EntryId, YearCode);
+            return await _AssetsMasterDAL.DeleteByID(EntryId, YearCode, EntryDate, ActualEntryBy);
         }
         public async Task<AssetsMasterModel> GetViewByID(int ID, int YC)
         {
