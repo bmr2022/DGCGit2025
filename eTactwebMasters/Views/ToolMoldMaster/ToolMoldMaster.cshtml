@@ -92,7 +92,7 @@
 										<label asp-for="YearCode" class="form-label">YearCode</label>
 										<input asp-for="YearCode" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
 										<label asp-for="ToolCode" class="form-label">Tool Code</label>
 										<input asp-for="ToolCode" class="form-control" />
 									</div>
@@ -111,64 +111,68 @@
 											<option value="Instrument">Instrument</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
 										<label asp-for="ItemName" class="form-label" style="color:red;">Item Name*</label>
 										<input type="hidden" asp-for="ItemCode" />
-										<select class="form-select" asp-for="ItemName" style="width:230px;">
+										<select class="form-select" asp-for="ItemName" style="width:200px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="ConsiderAsFixedAssets" class="form-label" style="color:red;">Consider In Invetory</label>
+										<select class="form-select" asp-for="ConsiderAsFixedAssets">
+											<option value="">-Select-</option>
+											<option value="Yes">Yes</option>
+											<option value="No" selected>No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields" style="width:200px;">
 										<label asp-for="ParentAccountName" class="form-label" style="color:red;">Parent Group*</label>
 										<input type="hidden" asp-for="ParentAccountCode" />
-										<select class="form-select" asp-for="ParentAccountName" style="width:230px;">
+										<select class="form-select" asp-for="ParentAccountName" style="width:190px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
 
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
 										<label asp-for="MainGroup" class="form-label" style="color:red;">Main Group*</label>
 										<input asp-for="MainGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
 										<label asp-for="SubGroup" class="form-label" style="color:red;">Sub Group*</label>
 										<input asp-for="SubGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
 										<label asp-for="UnderGroup" class="form-label" style="color:red;">Under Group*</label>
 										<input asp-for="UnderGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
 										<label asp-for="SubSubGroup" class="form-label" style="color:red;">Sub Sub Group*</label>
 										<input asp-for="SubSubGroup" class="form-control" readonly />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="VendoreAccountCode" class="form-label">Account Type</label>
-										<input asp-for="VendoreAccountCode" class="form-control" readonly />
-									</div>
-
-									@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="CostCenterName" class="form-label" style="color:red;">Cost Center Name*</label>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="CostCenterName" class="form-label" style="color:red;width:220px;">Cost Center Name*</label>
 										<input type="hidden" asp-for="CostCenterId" />
 										<select class="form-select" asp-for="CostCenterName">
 											<option value="">-Select-</option>
 										</select>
 									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="Fiscalyear" class="form-label">Fiscal year</label>
+										<input asp-for="Fiscalyear" class="form-control"  />
+									</div>
+									
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="DepartmentName" class="form-label" style="color:red;">Department Name*</label>
-										<input type="hidden" asp-for="ForDepartmentId" />
-										<select class="form-select" asp-for="DepartmentName">
+										<label asp-for="ConsiderInInvetory" class="form-label" style="color:red;">Consider In Invetory</label>
+										
+										<select class="form-select" asp-for="ConsiderInInvetory">
 											<option value="">-Select-</option>
+											<option value="Yes">Yes</option>
+											<option value="No"selected>No</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="UseFullLifeInYear" class="form-label" style="color:red;">Use Full Life In Year*</label>
-										<input asp-for="UseFullLifeInYear" class="form-control" />
-									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
-										<label asp-for="LocationOfInsallation" class="form-label">Location Of Insallation</label>
-										<input asp-for="LocationOfInsallation" class="form-control" />
-									</div> *@
+									
+
 								</div>
 							</div>
 							@* vendore *@
@@ -182,7 +186,11 @@
 								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 									<div class="accordion-body">
 										<div class="row g-2 gx-3" id="_ItemGrid">
-											@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="VendoreAccountCode" class="form-label">Account Type</label>
+												<input asp-for="VendoreAccountCode" class="form-control" readonly />
+											</div>
+											 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 												<label asp-for="PONO" class="form-label">PONO</label>
 												<input asp-for="PONO" class="form-control" />
 											</div>
@@ -195,44 +203,31 @@
 												<input asp-for="PODate" class="form-control" />
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+												<input asp-for="InvoiceNo" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="InvoiceYearCode" class="form-label">Invoice YearCode</label>
+												<input asp-for="InvoiceYearCode" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="InvoiceDate" class="form-label">Invoice Date</label>
+												<input asp-for="InvoiceDate" class="form-control" />
+											</div>
+
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 												<label asp-for="PurchaseValue" class="form-label">Purchase Value</label>
 												<input asp-for="PurchaseValue" class="form-control" />
 											</div>
-
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:190px;">
-												<label asp-for="PurchaseNewUsed" class="form-label">New/ Used</label>
-
-												<select class="form-select" asp-for="PurchaseNewUsed" style="width:170px;">
-													<option value="">-Select-</option>
-													<option value="New" selected>New</option>
-													<option value="Used">Used</option>
-												</select>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="NetBookValue" class="form-label">Net Book Value</label>
+												<input asp-for="NetBookValue" class="form-control" />
 											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="CountryOfOrigin" class="form-label">Country Of Origin</label>
-												<input asp-for="CountryOfOrigin" class="form-control" />
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="ResidualValue" class="form-label">Residual Value</label>
+												<input asp-for="ResidualValue" class="form-control" />
 											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
-												<label asp-for="Technician" class="form-label">Technician</label>
-												<input asp-for="Technician" class="form-control" />
-											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
-												<label asp-for="TechnicialcontactNo" class="form-label">Technicial contact No</label>
-												<input asp-for="TechnicialcontactNo" class="form-control" />
-											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
-												<label asp-for="TechEmployeeName" class="form-label">Technicial Employee Name</label>
-												<input asp-for="TechEmployeeName" class="form-control" />
-											</div>
-
-
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
-												<label asp-for="CustoidianEmpName" class="form-label">Custoidian EmpName</label>
-												<input type="hidden" asp-for="CustoidianEmpId" />
-												<select class="form-select" asp-for="CustoidianEmpName" style="width:230px;">
-													<option value="">-Select-</option>
-												</select>
-											</div> *@
+											
 										</div>
 									</div>
 
@@ -251,7 +246,7 @@
 									<div class="accordion-body">
 										<div class="row g-2">
 
-											@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
 												<label asp-for="DepreciationMethod" class="form-label" style="color:red;">Depreciation Method</label>
 
 												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
@@ -261,6 +256,10 @@
 												</select>
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="CountryOfOrigin" class="form-label">Country Of Origin</label>
+												<input asp-for="CountryOfOrigin" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 												<label asp-for="DepreciationRate" class="form-label">Depreciation Rate</label>
 												<input asp-for="DepreciationRate" class="form-control" />
 											</div>
@@ -268,7 +267,18 @@
 												<label asp-for="DepriciationAmt" class="form-label">Depreciation Amt</label>
 												<input asp-for="DepriciationAmt" class="form-control" />
 											</div>
- *@
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="FirstAqusitionOn" class="form-label">First Aqusition On</label>
+												<input asp-for="FirstAqusitionOn" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="OriginalValue" class="form-label">Original Value</label>
+												<input asp-for="OriginalValue" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="CapatalizationDate" class="form-label">Capatalization Date</label>
+												<input asp-for="CapatalizationDate" class="form-control" />
+											</div>
 
 										</div>
 									</div>
@@ -285,38 +295,6 @@
 									<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 										<div class="accordion-body">
 											<div class="row g-2 gx-3" id="_ItemGrid">
-												@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="InvoiceNo" class="form-label">Invoice No</label>
-													<input asp-for="InvoiceNo" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InvoiceYearCode" class="form-label">Invoice YearCode</label>
-													<input asp-for="InvoiceYearCode" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="InvoiceDate" class="form-label">Invoice Date</label>
-													<input asp-for="InvoiceDate" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="NetBookValue" class="form-label">Net Book Value</label>
-													<input asp-for="NetBookValue" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="ResidualValue" class="form-label">Residual Value</label>
-													<input asp-for="ResidualValue" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="FirstAqusitionOn" class="form-label">First Aqusition On</label>
-													<input asp-for="FirstAqusitionOn" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="OriginalValue" class="form-label">Original Value</label>
-													<input asp-for="OriginalValue" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="CapatalizationDate" class="form-label">Capatalization Date</label>
-													<input asp-for="CapatalizationDate" class="form-control" />
-												</div>
 												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
 													<label asp-for="BarCode" class="form-label">BarCode</label>
 													<input asp-for="BarCode" class="form-control" />
@@ -325,28 +303,6 @@
 													<label asp-for="SerialNo" class="form-label">Serial No</label>
 													<input asp-for="SerialNo" class="form-control" />
 												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InsuranceCompany" class="form-label">Insurance Company </label>
-													<input asp-for="InsuranceCompany" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InsuredAmount" class="form-label">Insured Amount </label>
-													<input asp-for="InsuredAmount" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InsuranceDetail" class="form-label">Insurance Detail </label>
-													<input asp-for="InsuranceDetail" class="form-control" />
-												</div>
-
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="ConsiderInInvetory" class="form-label">Consider In Invetory</label>
-
-													<select class="form-select" asp-for="ConsiderInInvetory">
-														<option value="">-Select-</option>
-														<option value="Yes">Yes</option>
-														<option value="No">No</option>
-													</select>
-												</div> *@
 											</div>
 										</div>
 
@@ -364,26 +320,24 @@
 									<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
 										<div class="accordion-body">
 											<div class="row g-2">
-
-												@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
-												<label asp-for="DepreciationMethod" class="form-label" style="color:red;">Depreciation Method</label>
-
-												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
-												<option value="">-Select-</option>
-												<option value="Weighted Method">Weighted Method</option>
-												<option value="Straight-line Method" selected>Straight-line Method</option>
-												</select>
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
+													<label asp-for="LocationOfInsallation" class="form-label">Location Of Insallation</label>
+													<input asp-for="LocationOfInsallation" class="form-control" />
 												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="DepreciationRate" class="form-label">Depreciation Rate</label>
-												<input asp-for="DepreciationRate" class="form-control" />
-												</div>
-												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="DepriciationAmt" class="form-label">Depreciation Amt</label>
-												<input asp-for="DepriciationAmt" class="form-control" />
-												</div>
-												*@
+												
 
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+													<label asp-for="DepartmentName" class="form-label" style="color:red;">Department Name*</label>
+													<input type="hidden" asp-for="ForDepartmentId" />
+													<select class="form-select" asp-for="DepartmentName" style="width:220px;">
+														<option value="">-Select-</option>
+													</select>
+												</div>
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
+													<label asp-for="ExpectedLife" class="form-label">Expected Life</label>
+													<input asp-for="ExpectedLife" class="form-control" />
+												</div>
+												
 											</div>
 										</div>
 									</div>
@@ -399,70 +353,78 @@
 										<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
 											<div class="accordion-body">
 												<div class="row g-2 gx-3" id="_ItemGrid">
-													@* <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="InvoiceNo" class="form-label">Invoice No</label>
-													<input asp-for="InvoiceNo" class="form-control" />
-													</div>
 													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InvoiceYearCode" class="form-label">Invoice YearCode</label>
-													<input asp-for="InvoiceYearCode" class="form-control" />
+														<label asp-for="CalibrationRequired" class="form-label">Calibration Required</label>
+
+														<select class="form-select" asp-for="CalibrationRequired">
+															<option value="">-Select-</option>
+															<option value="Yes">Yes</option>
+															<option value="No">No</option>
+														</select>
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="InvoiceDate" class="form-label">Invoice Date</label>
-													<input asp-for="InvoiceDate" class="form-control" />
+										    
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:250px;">
+														<label asp-for="CalibrationFrequencyInMonth" class="form-label">Calibration Frequency In Month</label>
+														<input asp-for="CalibrationFrequencyInMonth" class="form-control" />
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="NetBookValue" class="form-label">Net Book Value</label>
-													<input asp-for="NetBookValue" class="form-control" />
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+                                                        <label asp-for="LastCalibrationDate" class="form-label">Last Calibration Date</label>
+                                                        <input asp-for="LastCalibrationDate" class="form-control" />
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="ResidualValue" class="form-label">Residual Value</label>
-													<input asp-for="ResidualValue" class="form-control" />
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+                                                        <label asp-for="NextCalibrationDate" class="form-label">Next Calibration Date</label>
+                                                        <input asp-for="NextCalibrationDate" class="form-control" />
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="FirstAqusitionOn" class="form-label">First Aqusition On</label>
-													<input asp-for="FirstAqusitionOn" class="form-control" />
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="CalibrationAgencyId" class="form-label">Calibration Agency Id</label>
+														<input asp-for="CalibrationAgencyId" class="form-control" />
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="OriginalValue" class="form-label">Original Value</label>
-													<input asp-for="OriginalValue" class="form-control" />
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:210px;">
+														<label asp-for="LastCalibrationCertificateNo" class="form-label">Last Calibration Certificate No</label>
+														<input asp-for="LastCalibrationCertificateNo" class="form-control" />
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="CapatalizationDate" class="form-label">Capatalization Date</label>
-													<input asp-for="CapatalizationDate" class="form-control" />
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+														<label asp-for="CalibrationResultPassFail" class="form-label">Calibration Result </label>
+
+														<select class="form-select" asp-for="CalibrationResultPassFail" style="width:130px;">
+															<option value="">-Select-</option>
+															<option value="Pass">Pass</option>
+															<option value="Fail">Fail</option>
+														</select>
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="BarCode" class="form-label">BarCode</label>
-													<input asp-for="BarCode" class="form-control" />
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+														<label asp-for="TolrenceRange" class="form-label">Tolrence Range</label>
+														<input asp-for="TolrenceRange" class="form-control" />
 													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-													<label asp-for="SerialNo" class="form-label">Serial No</label>
-													<input asp-for="SerialNo" class="form-control" />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InsuranceCompany" class="form-label">Insurance Company </label>
-													<input asp-for="InsuranceCompany" class="form-control" />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InsuredAmount" class="form-label">Insured Amount </label>
-													<input asp-for="InsuredAmount" class="form-control" />
-													</div>
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="InsuranceDetail" class="form-label">Insurance Detail </label>
-													<input asp-for="InsuranceDetail" class="form-control" />
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+														<label asp-for="CalibrationRemark" class="form-label">Calibration Remark</label>
+														<input asp-for="CalibrationRemark" class="form-control" />
 													</div>
 
-													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="ConsiderInInvetory" class="form-label">Consider In Invetory</label>
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="Technician" class="form-label">Technician</label>
+														<input asp-for="Technician" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="TechnicialcontactNo" class="form-label">Technicial contact No</label>
+														<input asp-for="TechnicialcontactNo" class="form-control" />
+													</div>
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="TechEmployeeName" class="form-label">Technicial Employee Name</label>
+														<input asp-for="TechEmployeeName" class="form-control" />
+													</div>
 
-													<select class="form-select" asp-for="ConsiderInInvetory">
-													<option value="">-Select-</option>
-													<option value="Yes">Yes</option>
-													<option value="No">No</option>
-													</select>
-													</div> *@
+
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:240px;">
+														<label asp-for="CustoidianEmpName" class="form-label">Custoidian EmpName</label>
+														<input type="hidden" asp-for="CustoidianEmpId" />
+														<select class="form-select" asp-for="CustoidianEmpName" style="width:230px;">
+															<option value="">-Select-</option>
+														</select>
+													</div>
+												</<div>
 												</div>
-											</div>
+											
 
 										</div>
 									</div>
@@ -476,18 +438,31 @@
 										<div class="accordion-body">
 
 											<div class="row g-2 gx-3" id="_ItemGrid">
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+														<label asp-for="InsuranceCompany" class="form-label">Insurance Company </label>
+														<input asp-for="InsuranceCompany" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+														<label asp-for="InsuredAmount" class="form-label">Insured Amount </label>
+														<input asp-for="InsuredAmount" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+														<label asp-for="InsuranceDetail" class="form-label">Insurance Detail </label>
+														<input asp-for="InsuranceDetail" class="form-control" />
+													</div>
+													<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+														<label asp-for="CC" class="form-label">CC</label>
+														<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
+													</div>
 
-												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-													<label asp-for="LastupdatedBy" class="form-label">UID</label>
-														<input asp-for="LastupdatedBy" class="form-control" readonly />
-												</div>
+													<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+														<label asp-for="LastupdatedBy" class="form-label">UID</label>
+															<input asp-for="LastupdatedBy" class="form-control" readonly />
+													</div>
 											
 
 
-												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
-													<label asp-for="CC" class="form-label">CC</label>
-													<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
-												</div>
+												
 
 												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
 													<label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
@@ -653,7 +628,39 @@
 			$('#InsuredAmount').rules("remove", "required");
 			$('#InsuranceDetail').rules("remove", "required");
 			$('#ConsiderInInvetory').rules("remove", "required");
-
+			$('#DepreciationMethod').rules("remove", "required");
+			$('#CountryOfOrigin').rules("remove", "required");
+			$('#DepreciationRate').rules("remove", "required");
+			$('#DepriciationAmt').rules("remove", "required");
+			$('#FirstAqusitionOn').rules("remove", "required");
+			$('#OriginalValue').rules("remove", "required");
+			$('#CapatalizationDate').rules("remove", "required");
+			$('#VendoreAccountCode').rules("remove", "required");
+			$('#PONO').rules("remove", "required");
+			$('#POYear').rules("remove", "required");
+			$('#PODate').rules("remove", "required");
+			$('#InvoiceNo').rules("remove", "required");
+			$('#InvoiceYearCode').rules("remove", "required");
+			$('#InvoiceDate').rules("remove", "required");
+			$('#PurchaseValue').rules("remove", "required");
+			$('#NetBookValue').rules("remove", "required");
+			$('#ResidualValue').rules("remove", "required");
+			$('#ToolEntryId').rules("remove", "required");
+			$('#EntryDate').rules("remove", "required");
+			$('#YearCode').rules("remove", "required");
+			$('#ToolCode').rules("remove", "required");
+			$('#ToolName').rules("remove", "required");0
+			$('#ToolOrMold').rules("remove", "required");
+			$('#ItemName').rules("remove", "required");
+			$('#ConsiderAsFixedAssets').rules("remove", "required");
+			$('#ParentAccountName').rules("remove", "required");
+			$('#MainGroup').rules("remove", "required");
+			$('#SubGroup').rules("remove", "required");
+			$('#UnderGroup').rules("remove", "required");
+			$('#SubSubGroup').rules("remove", "required");
+			$('#CostCenterName').rules("remove", "required");
+			$('#Fiscalyear').rules("remove", "required");
+			$('#ConsiderInInvetory').rules("remove", "required");
 			$('#Uid').rules("remove", "required");
 			$('#ApprovedByEmpId').rules("remove", "required");
 			$('#ApprovedByEmpName').rules("remove", "required");
@@ -666,8 +673,34 @@
 			$('#LastupDationDate').rules("remove", "required");
 			$('#EntryByMachine').rules("remove", "required");
 			$('#CustoidianEmpName').rules("remove", "required");
-
-
+			$('#CalibrationRequired').rules("remove", "required");
+			$('#CalibrationFrequencyInMonth').rules("remove", "required");
+			$('#LastCalibrationDate').rules("remove", "required");
+			$('#NextCalibrationDate').rules("remove", "required");
+			$('#CalibrationAgencyId').rules("remove", "required");
+			$('#LastCalibrationCertificateNo').rules("remove", "required");
+			$('#CalibrationResultPassFail').rules("remove", "required");
+			$('#TolrenceRange').rules("remove", "required");
+			$('#CalibrationRemark').rules("remove", "required");
+			$('#Technician').rules("remove", "required");
+			$('#TechnicialcontactNo').rules("remove", "required");
+			$('#TechEmployeeName').rules("remove", "required");
+			$('#CustoidianEmpName').rules("remove", "required");
+			$('#InsuranceCompany').rules("remove", "required");
+			$('#InsuredAmount').rules("remove", "required");
+			$('#InsuranceDetail').rules("remove", "required");
+			$('#CC').rules("remove", "required");
+			$('#LastupdatedBy').rules("remove", "required");
+			$('#ActualEntryBy').rules("remove", "required");
+			$('#ActualEntryDate').rules("remove", "required");
+			$('#LastUpdatedbyEmpName').rules("remove", "required");
+			$('#LastUpdatedDate').rules("remove", "required");
+			$('#EntryByMachine').rules("remove", "required");
+			$('#LocationOfInsallation').rules("remove", "required");
+			$('#DepartmentName').rules("remove", "required");
+			$('#ExpectedLife').rules("remove", "required");
+			$('#BarCode').rules("remove", "required");
+			$('#SerialNo').rules("remove", "required");
 			$('#DepartmentName').select2();
 			$('#CostCenterName').select2();
 			$('#ItemName').select2();
@@ -677,12 +710,24 @@
 			$('#PurchaseNewUsed').select2();
 			$('#CustoidianEmpName').select2();
 			$('#ConsiderInInvetory').select2();
+			$('#ToolOrMold').select2();
+			$('#CalibrationRequired').select2();
+			$('#CalibrationResultPassFail').select2();
+			$('#ConsiderAsFixedAssets').select2();
 			$('#totalRows').text($('#divStockGrid tr').length);
 
 
 			toggleUsedFields();
 			$('#PurchaseNewUsed').on('change', function () {
 				toggleUsedFields();
+			});
+			toggleCalibrationFields(); 
+			$("#CalibrationRequired").change(function () {
+				toggleCalibrationFields();
+			});
+			toggleFixedAssetFields(); 
+			$("#ConsiderAsFixedAssets").change(function () {
+				toggleFixedAssetFields();
 			});
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
@@ -718,7 +763,20 @@
 			$('#OriginalValue').val(purchaseVal);
 			$('#NetBookValue').val(purchaseVal);
 		});
-
+		function toggleFixedAssetFields() {
+			if ($("#ConsiderAsFixedAssets").val() === "Yes") {
+				$(".fixedAssetFields").find("input, select, textarea").prop("disabled", false);
+			} else {
+				$(".fixedAssetFields").find("input, select, textarea").prop("disabled", true);
+			}
+		}
+		function toggleCalibrationFields() {
+			if ($("#CalibrationRequired").val() === "No") {
+				$(".calibrationFields").find("input, select, textarea").prop("disabled", true);
+			} else {
+				$(".calibrationFields").find("input, select, textarea").prop("disabled", false);
+			}
+		}
 		$(function () {
 			var countries = [
 				"India", "United States", "United Kingdom", "Canada", "Australia",
@@ -750,7 +808,7 @@
 				return;
 			}
 		});
-		$('#POYear,#InvoiceYearCode').on('input', function () {
+		$('#POYear,#InvoiceYearCode,#ExpectedLife').on('input', function () {
 			let val = $(this).val();
 
 			// Remove minus immediately
@@ -936,7 +994,7 @@
 
 		function FillCategoryName() {
 			$.ajax({
-				url: '@Url.Action("FillCategoryName", "AssetsMaster")',
+				url: '@Url.Action("FillCategoryName", "ToolMoldMaster")',
 				type: 'POST',
 				async: false,
 				success: function (response, status, error) {
@@ -962,7 +1020,7 @@
 		}
 		function FillCustoidianEmpName() {
 			$.ajax({
-				url: '@Url.Action("FillCustoidianEmpName", "AssetsMaster")',
+				url: '@Url.Action("FillCustoidianEmpName", "ToolMoldMaster")',
 				type: 'POST',
 				async: false,
 				success: function (response, status, error) {
@@ -988,7 +1046,7 @@
 		}
 		function FillItemName() {
 			$.ajax({
-				url: '@Url.Action("FillItemName", "AssetsMaster")',
+				url: '@Url.Action("FillItemName", "ToolMoldMaster")',
 				type: 'POST',
 				async: false,
 				success: function (response, status, error) {
@@ -1015,7 +1073,7 @@
 
 		function FillCostCenterName() {
 			$.ajax({
-				url: '@Url.Action("FillCostCenterName", "AssetsMaster")',
+				url: '@Url.Action("FillCostCenterName", "ToolMoldMaster")',
 				type: 'POST',
 				async: false,
 				success: function (response, status, error) {
@@ -1042,7 +1100,7 @@
 
 		function FillDepartmentName() {
 			$.ajax({
-				url: '@Url.Action("FillDepartmentName", "AssetsMaster")',
+				url: '@Url.Action("FillDepartmentName", "ToolMoldMaster")',
 				type: 'POST',
 				async: false,
 				success: function (response, status, error) {
@@ -1069,7 +1127,7 @@
 
 		function FillParentAccountName() {
 			$.ajax({
-				url: '@Url.Action("FillParentAccountName", "AssetsMaster")',
+				url: '@Url.Action("FillParentAccountName", "ToolMoldMaster")',
 				type: 'POST',
 				async: false,
 				success: function (response, status, error) {
@@ -1096,7 +1154,7 @@
 		function FillParentGoupDetail() {
 			var ParentAccountCode = $('#ParentAccountCode').val();
 			$.ajax({
-				url: '@Url.Action("FillParentGoupDetail", "AssetsMaster")',
+				url: '@Url.Action("FillParentGoupDetail", "ToolMoldMaster")',
 				type: 'POST',
 				data: {
 					ParentAccountCode: ParentAccountCode
@@ -1121,7 +1179,7 @@
 			var YearCode = $('#YearCode').val();
 			var EntryDate = $('#EntryDate').val();
 			$.ajax({
-				url: '@Url.Action("FillEntryId", "AssetsMaster")',
+				url: '@Url.Action("FillEntryId", "ToolMoldMaster")',
 				type: 'POST',
 				data: {
 					EntryDate: EntryDate,
@@ -1131,8 +1189,8 @@
 				success: function (data, status, xhr) {
 					var obj = $.parseJSON(data);
 					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
-						$('#AssetsEntryId').val(obj.Result[0].EntryId || 0);
-						$('#AssetsCode').val(obj.Result[0].AssetsCode || 0);
+						$('#ToolEntryId').val(obj.Result[0].EntryId || 0);
+						$('#ToolCode').val(obj.Result[0].ToolCode || 0);
 
 					}
 				},
