@@ -54,4 +54,8 @@
     <ProjectReference Include="..\eTactWeb.Services\eTactWeb.Services.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Views\ACCAssetsNdToolcategoryMaster\" />
+  </ItemGroup>
+
 </Project>

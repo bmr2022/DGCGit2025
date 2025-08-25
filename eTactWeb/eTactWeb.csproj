@@ -25,21 +25,17 @@
 
 	<ItemGroup>
 		<Compile Remove="Logs\**" />
-		<Compile Remove="Views\NewFolder\**" />
 		
 		<Compile Remove="wwwroot\NewFolder\**" />
 		<Compile Remove="wwwroot\UploadedImages\**" />
 		<Content Remove="Logs\**" />
-		<Content Remove="Views\NewFolder\**" />
 		
 		<Content Remove="wwwroot\NewFolder\**" />
 		<Content Remove="wwwroot\UploadedImages\**" />
 		<EmbeddedResource Remove="Logs\**" />
-		<EmbeddedResource Remove="Views\NewFolder\**" />
 				<EmbeddedResource Remove="wwwroot\NewFolder\**" />
 		<EmbeddedResource Remove="wwwroot\UploadedImages\**" />
 		<None Remove="Logs\**" />
-		<None Remove="Views\NewFolder\**" />
 		<None Remove="wwwroot\NewFolder\**" />
 		<None Remove="wwwroot\UploadedImages\**" />
 	</ItemGroup>
