@@ -25,7 +25,7 @@ namespace eTactWeb.Data.DAL
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
         }
-        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int? TrailBalanceGroupCode, string ReportType)
+        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int? TrailBalanceGroupCode, int? ParentAccountCode, string ReportType)
         {
             var resultList = new TrailBalanceModel();
             DataSet oDataSet = new DataSet();
@@ -44,7 +44,8 @@ namespace eTactWeb.Data.DAL
                     //command.Parameters.AddWithValue("@flag", "PRIMARYGROUPSUMMARY");
                     command.Parameters.AddWithValue("@FromDate", fromDt);
                     command.Parameters.AddWithValue("@ToDate", toDt);
-                    command.Parameters.AddWithValue("@GroupCode", TrailBalanceGroupCode);
+                    command.Parameters.AddWithValue("@GroupCode", TrailBalanceGroupCode.HasValue ? (object)TrailBalanceGroupCode.Value : DBNull.Value);
+                    command.Parameters.AddWithValue("@ParentAccountCode", ParentAccountCode.HasValue ? (object)ParentAccountCode.Value : DBNull.Value);
                     command.Parameters.AddWithValue("@ReportTypeSummDetail", ReportType);
                     command.Parameters.AddWithValue("@FromFormName", "TRAIL");
 

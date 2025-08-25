@@ -153,7 +153,7 @@
             var hiddenCols = {};
             console.log("Ready");
             $('#BackButton').hide();
-            FillLedgerName();
+            FillGroupList();
             FillParentGroupList();
             FillAccountList();
             $('.toggle-col').on('click', function () {
@@ -323,99 +323,6 @@
                 $("#dynamicText").text(newTitle);
             }
 
-            function FillLedgerName() {
-
-                var FromDate = $('#FromDate').val();
-                var ToDate = $('#ToDate').val();
-                $.ajax({
-                    url: '@Url.Action("FillGroupList", "TrailBalance")',
-                    type: 'GET',
-                    async: false,
-                    data: { "FromDate": FromDate, "ToDate": ToDate },
-                    success: function (response, status, error) {
-
-                        var TrailBalanceGroupName = $('#TrailBalanceGroupName');
-                        var obj = $.parseJSON(response);
-                        TrailBalanceGroupName.empty();
-                        TrailBalanceGroupName.append('<option value="">--Select--</option>');
-
-                        $.each(obj.Result, function (index, ledger) {
-                            TrailBalanceGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.account_name + '</option>');
-                        });
-
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Failed to load groups.');
-                    }
-                });
-            }
-
-            function FillParentGroupList() {
-
-                var FromDate = $('#FromDate').val();
-                var ToDate = $('#ToDate').val();
-                var GroupCode = $('#TrailBalanceGroupName').val();
-                if (GroupCode == "") {
-                    GroupCode = null;
-                }
-                $.ajax({
-                    url: '@Url.Action("FillParentGroupList", "TrailBalance")',
-                    type: 'GET',
-                    async: false,
-                    data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode },
-                    success: function (response, status, error) {
-
-                        var ParentGroupName = $('#ParentGroupName');
-                        var obj = $.parseJSON(response);
-                        ParentGroupName.empty();
-                        ParentGroupName.append('<option value="">--Select--</option>');
-
-                        $.each(obj.Result, function (index, ledger) {
-                            ParentGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.ParentGroupName + '</option>');
-                        });
-
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Failed to load groups.');
-                    }
-                });
-            }
-
-            function FillAccountList() {
-
-                var FromDate = $('#FromDate').val();
-                var ToDate = $('#ToDate').val();
-                var GroupCode = $('#TrailBalanceGroupName').val();
-                var ParentGroupCode = $('#ParentGroupName').val();
-                 if (GroupCode == "") {
-                    GroupCode = null;
-                }
-                if (ParentGroupCode == "") {
-                    ParentGroupCode = null;
-                }
-                $.ajax({
-                    url: '@Url.Action("FillAccountList", "TrailBalance")',
-                    type: 'GET',
-                    async: false,
-                    data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode, "ParentGroupCode": ParentGroupCode },
-                    success: function (response, status, error) {
-
-                        var AccountName = $('#AccountName');
-                        var obj = $.parseJSON(response);
-                        AccountName.empty();
-                        AccountName.append('<option value="">--Select--</option>');
-
-                        $.each(obj.Result, function (index, ledger) {
-                            AccountName.append('<option value="' + ledger.Account_Code + '">' + ledger.AccountName + '</option>');
-                        });
-
-                    },
-                    error: function (xhr, status, error) {
-                        alert('Failed to load groups.');
-                    }
-                });
-            }
-
             // Update title on page load
             updateButtonTitle();
 
@@ -435,7 +342,118 @@
 
         });
 
+        function FillGroupList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                url: '@Url.Action("FillGroupList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (response, status, error) {
+
+                    var TrailBalanceGroupName = $('#TrailBalanceGroupName');
+                    var obj = $.parseJSON(response);
+                    TrailBalanceGroupName.empty();
+                    TrailBalanceGroupName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        TrailBalanceGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.GroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillParentGroupList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var GroupCode = $('#TrailBalanceGroupName').val();
+            if (GroupCode == "") {
+                GroupCode = null;
+            }
+            $.ajax({
+                url: '@Url.Action("FillParentGroupList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode },
+                success: function (response, status, error) {
+
+                    var ParentGroupName = $('#ParentGroupName');
+                    var obj = $.parseJSON(response);
+                    ParentGroupName.empty();
+                    ParentGroupName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        ParentGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.ParentGroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillAccountList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var GroupCode = $('#TrailBalanceGroupName').val();
+            var ParentGroupCode = $('#ParentGroupName').val();
+            if (GroupCode == "") {
+                GroupCode = null;
+            }
+            if (ParentGroupCode == "") {
+                ParentGroupCode = null;
+            }
+            $.ajax({
+                url: '@Url.Action("FillAccountList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode, "ParentGroupCode": ParentGroupCode },
+                success: function (response, status, error) {
+
+                    var AccountName = $('#AccountName');
+                    var obj = $.parseJSON(response);
+                    AccountName.empty();
+                    AccountName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        AccountName.append('<option value="' + ledger.Account_Code + '">' + ledger.AccountName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        $("#TrailBalanceGroupName").change(function () {
+            FillParentGroupList();
+        });
+
+        $("#ParentGroupName").change(function () {
+            FillAccountList();
+        });
+
+        function GetDetailByGroupName(cntr) {
+             ;
+            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
+            $('#BackButton').show();
+            $("#TrailBalanceGroupCode").val(groupCode);
+            $("#TrailBalanceGroupName").val(groupCode).trigger('change');
+            $('#ReportType').val("TRAILDETAIL").trigger('change');
+        }
+
         function GetDataByParentGroupName(cntr) {
+             
             let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
             let parentCode = $("#ParentAccountCode-" + cntr).val();
             let accountName = $("#AccountName-" + cntr).val();
@@ -443,14 +461,29 @@
             $('#BackButton').show();
 
             let reportType = $('#ReportType').val();
-                $('#ReportType').val("Payable Outstanding").trigger("change");
+            $('#TrailBalanceGroupName').val(groupCode).trigger("change");
+            $('#ParentGroupName').val(parentCode).trigger("change");
+            $('#ReportType').val("TRAILDETAIL").trigger("change");
+        }
+
+        function GetDataByAccountName(cntr) {
+            let parentCode = $("#ParentAccountCode-" + cntr).val();
+            let accountName = $("#AccountName-" + cntr).val();
+            let reportType = "MonthlySummary";
+
+            // Store in sessionStorage
+            sessionStorage.setItem('ParentCode', parentCode);
+            sessionStorage.setItem('AccountName', accountName);
+            sessionStorage.setItem('ReportType', reportType);
+
+            // Redirect using relative path
+            window.location.href = '/TransactionLedger/Index';
         }
 
         function PressBack() {
             $('#ReportType').val('TRAILSUMMARY').trigger('change');
             $('#BackButton').hide(); // Hide back button
             $('#TrailBalanceGroupCode').val(null);
-            GetTrailBalanceDetailsData();
         }
 
         function selection(CurrentRow) {
@@ -501,13 +534,13 @@
         }
 
         function GetTrailBalanceDetailsData() {
-
-            //var reportType = $('#ReportType').val();
+             
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var EntryByMachine = $('#EntryByMachine').val();
             var ReportType = $('#ReportType').val();
-            var TrailBalanceGroupCode = $('#TrailBalanceGroupCode').val();
+            var TrailBalanceGroupCode = $('#TrailBalanceGroupName option:selected').val();
+            var ParentAccountCode = $('#ParentGroupName option:selected').val();
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetTrailBalanceDetailsData", "TrailBalance")",
@@ -516,7 +549,8 @@
                     ToDate: ToDate,
                     EntryByMachine: EntryByMachine,
                     ReportType: ReportType,
-                    TrailBalanceGroupCode: TrailBalanceGroupCode
+                    TrailBalanceGroupCode: TrailBalanceGroupCode,
+                    ParentAccountCode: ParentAccountCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -703,17 +737,6 @@
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
-
-        function GetDetailByGroupName(td) {
-            // find hidden input inside the clicked td
-            let accountCode = $(td).find("input[type=hidden]").val();
-            let ledgerDescription = $(td).text().trim();
-
-            $('#TrailBalanceGroupCode').val(accountCode);
-            $('#ReportType').val("TRAILDETAIL").trigger('change');
-            $('#BackButton').show();
-            GetTrailBalanceDetailsData();
-        }
 
         function DeleteRow(i) {
 
