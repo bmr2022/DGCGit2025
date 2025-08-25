@@ -305,6 +305,10 @@
                                     <label asp-for="AltTransferQty" class="form-label" style="color:blue">Alt Transfer Qty</label>
                                     <input asp-for="AltTransferQty" class="form-control" />
                                 </div>
+                                <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:90px">
+                                    <label class="form-label" style="color:blue">IssueToStock</label>
+                                    <input type="text" id="IssueToStock" class="form-control" readonly />
+                                </div>
                                 <div class="AF col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:100px" id="ProdSlipNoDiv">
                                     <label asp-for="ProdSlipNo" class="form-label">Prod SlipNo</label>
                                     <input asp-for="ProdSlipNo" class="form-control" />
@@ -1953,6 +1957,17 @@
         $('#UniqueBatchNo').change(function () {
             GetBatchWorkCenterQty();
             GetWorkCenterTotalQty();
+            var storewc = $('#IssueToStoreWC').val();
+            if (storewc == "S") {
+                GetIssueToTotalStockQty();
+            }
+
+            else {
+                GetIssueToWorkCenterTotalQty();
+            }
+
+            
+            
         });
 
         var BatchStock = 0;
@@ -2044,6 +2059,52 @@
                     if (result != null) {
                         var obj = $.parseJSON(result);
                         $('#TotalStock').val($.parseJSON(result).Result[0].STOCK);
+                    }
+                }
+            });
+        }
+
+        function GetIssueToTotalStockQty() {
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetStoreTotalStock", "NRGP")",
+                data: { ItemCode: $('#ItemName').val(), StoreId: $('#IssueToStoreId').val(), TillDate: formattedDate },
+                dataType: "json",
+                success: function (result, status, error) {
+
+                    if (result && result.length > 0) {
+                        /*         alert(JSON.stringify(result)); */
+                        /* if (result != null) { */
+                        /* var obj = $.parseJSON(result); */
+                        $('#IssueToStock').val($.parseJSON(result).Result[0].STOCK);
+                        /*     $('#TotalStock').val(result[0].STOCK); */
+                    }
+                    // SetminQty();
+                }
+            });
+        }
+
+        function GetIssueToWorkCenterTotalQty() {
+            var dateValue = $('#TransferMatEntrydate').val();
+            var [day, month, year] = dateValue.split('/');
+            day = day.padStart(2, '0'); // Ensure day has two digits
+            month = month.padStart(2, '0'); // Ensure month has two digits
+            var formattedDate = `${day}/${month}/${year}`;
+            $.ajax({
+                type: "POST",
+                url: "@Url.Action("GetWorkCenterTotalStock")",
+                data: { ItemCode: $('#ItemName').val(), WcId: $('#IssueTOWCid').val(), TillDate: formattedDate },
+                dataType: "json",
+                async: false,
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+                        $('#IssueToStock').val($.parseJSON(result).Result[0].STOCK);
                     }
                 }
             });

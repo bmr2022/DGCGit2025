@@ -21,7 +21,9 @@ namespace eTactWeb.Services.Interface
         Task<ResponseResult> GetPartCode(int ParentCode, int ItemType);
         Task<ResponseResult> GetItemCategory(string ItemServAssets);
         Task<ResponseResult> GetItemGroup(string ItemServAssets);
-		Task<ResponseResult> GetUnitList();
+        Task<ResponseResult> GetItemCode(string PartCode, string ItemName);
+
+        Task<ResponseResult> GetUnitList();
 		Task<ResponseResult> GetStoreCode( string StoreName);
 		Task<ResponseResult> ProdInMachineGroupId( string ProdInMachineGroup);
 		Task<ResponseResult> ProdInMachineNameId( string ProdInMachineName);

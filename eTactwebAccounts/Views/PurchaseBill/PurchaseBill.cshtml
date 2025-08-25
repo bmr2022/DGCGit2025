@@ -510,7 +510,32 @@
                 }
             }
         });
+                function DueDateCalculation() {
+                     var VouchDateVal = $('#VouchDate').val();
 
+                  if (!VouchDateVal) {
+                               $.notify("VouchDate is empty, skipping DueDateCalculation", "error");
+                   return;
+               }
+
+               // If value is like "31/08/2025" → no need to split
+                  var [day, month, year] = VouchDateVal.split('/').map(Number);
+               var VouchDate = new Date(year, month - 1, day);
+
+                     var creditDays = $('#PaymentDays').val() == "" ? 0 : parseInt($('#PaymentDays').val(), 10);
+
+               // Add credit days
+                     VouchDate.setDate(VouchDate.getDate() + creditDays);
+
+               // Format as dd/mm/yy
+                     var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', VouchDate);
+
+               // Set in AdjDueDate
+               $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
+
+               // Restrict min date to SaleBillDate
+                  $('#AdjDueDate').datepicker("option", "minDate", VouchDateVal);
+           }
         var tabIndx = 0;
         $(":focusable").each(function () {
             $(this).attr("tabindex", ++tabIndx);
@@ -546,7 +571,7 @@
             for (var i = 1; i <= rowCounter; i++) {
                 BillRateChange(i);
             }
-
+          
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
 
@@ -578,7 +603,7 @@
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "PBI") {
                 var InvDate = $('#InvDate').val()?.split("-").join("/");
-                InvDate = ValidateNull(InvDate) ? parseDateToFormat(InvDate.split(" ")[0]) : 'now';
+                InvDate = ValidateNull(InvDate) ? (InvDate.split(" ")[0]) : 'now';
                 $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", InvDate);
 
                 // var StrMRNEntryDate = $('#StrMRNEntryDate').val();//?.split("-").join("/");
@@ -586,17 +611,17 @@
                 // $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: new (Date) }).datepicker("setDate", StrMRNEntryDate);
 
                 var StrMRNEntryDate = $('#StrMRNEntryDate').val()?.split("-").join("/");
-                StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
+                StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? (StrMRNEntryDate.split(" ")[0]) : 'now';
                 $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrMRNEntryDate);
 
                 var StrGateDate = $('#StrGateDate').val()?.split("-").join("/");
-                StrGateDate = ValidateNull(StrGateDate) ? parseDateToFormat(StrGateDate.split(" ")[0]) : 'now';
+                StrGateDate = ValidateNull(StrGateDate) ? (StrGateDate.split(" ")[0]) : 'now';
                 $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrGateDate);
 
                 var StrVouchDate = $('#VouchDate').val()?.split("-").join("/");
                 StrVouchDate = ValidateNull(StrVouchDate) ? (StrVouchDate.split(" ")[0]) : 'now';
                 $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrVouchDate);
-
+                  DueDateCalculation();
                 var AdjDueDate = $('#AdjDueDate').val()?.split("-").join("/");
                 AdjDueDate = ValidateNull(AdjDueDate) ? parseDateToFormat(AdjDueDate.split(" ")[0]) : 'now';
                 $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjDueDate);
@@ -2180,7 +2205,7 @@
                           var minDateObj = formatDateToDDMMYY(minDate);
                              var vouchDateObj = new Date(vouchDate);
 
-                    if (minDateObj > vouchDateObj) {
+                       if (minDateObj > vouchDate) {
                         $.notify("Vouch Date should be grater than MRN/MIR Date", "error");
                         isError = true;
                         return;

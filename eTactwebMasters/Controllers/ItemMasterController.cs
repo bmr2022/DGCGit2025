@@ -187,7 +187,7 @@ public class ItemMasterController : Controller
 
         // Common headers
         worksheet.Cell(row, col++).Value = "Sr";
-        worksheet.Cell(row, col++).Value = "Item_Code";
+      //  worksheet.Cell(row, col++).Value = "Item_Code";
         worksheet.Cell(row, col++).Value = "PartCode";
         worksheet.Cell(row, col++).Value = "Item_Name";
 
@@ -254,7 +254,7 @@ public class ItemMasterController : Controller
             int c = 1;
 
             worksheet.Cell(r, c++).Value = i + 1;
-            worksheet.Cell(r, c++).Value = modelList[i].Item_Code;
+            //worksheet.Cell(r, c++).Value = modelList[i].Item_Code;
             worksheet.Cell(r, c++).Value = modelList[i].PartCode;
             worksheet.Cell(r, c++).Value = modelList[i].Item_Name;
 
@@ -1433,10 +1433,26 @@ public class ItemMasterController : Controller
                             //   return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
                         }
                     }
-
+                    //var ItemCodeId = _IItemMaster.GetItemCode(partCode, worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim());
+                    //int itemcode = 0;
+                    //if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Rows.Count > 0)
+                    //{
+                    //    itemcode = (int)ItemCodeId.Result.Result.Rows[0].ItemArray[0];
+                    //}
+                    var ItemCodeId = _IItemMaster.GetItemCode(partCode, ItemName);
+                    int itemcode = 0;
+                    if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Tables.Count > 0)
+                    {
+                        var table = ItemCodeId.Result.Result.Tables[0];
+                        if (table.Rows.Count > 0)
+                        {
+                            itemcode = Convert.ToInt32(table.Rows[0].ItemArray[0]);
+                        }
+                        // itemcode = (int)ItemCodeId.Result.Result.Rows[0].ItemArray[0];
+                    }
                     data.Add(new ImportItemViewModel
                     {
-                        Item_Code = Convert.ToInt32(worksheet.Cells[row, headersMap["Item_Code"]].Value ?? 0),
+                        Item_Code = itemcode,
                         PartCode = partCode,
                         Item_Name = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim(),
                         ItemGroup = itemGroup,
@@ -1552,25 +1568,45 @@ public class ItemMasterController : Controller
         using (var package = new ExcelPackage(stream))
         {
             var worksheet = package.Workbook.Worksheets[0];
-
+            var totalColumns = worksheet.Dimension.Columns;
+            var headersMap = new Dictionary<string, int>();
+            for (int col = 1; col <= totalColumns; col++)
+            {
+                var header = worksheet.Cells[1, col].Text?.Trim();
+                if (!string.IsNullOrEmpty(header) && !headersMap.ContainsKey(header))
+                    headersMap[header] = col;
+            }
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var cellValue = worksheet.Cells[row, 2].Value;
+                var partCode = worksheet.Cells[row, headersMap["PartCode"]].Text?.Trim();
+                //worksheet.Cells[row, 3].Value?.ToString().Trim();
+                var ItemName = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim();
                 if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
                     break;
-
+                var ItemCodeId = _IItemMaster.GetItemCode(partCode, ItemName);
+                int itemcode = 0;
+                if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Tables.Count > 0)
+                {
+                    var table = ItemCodeId.Result.Result.Tables[0];
+                    if (table.Rows.Count > 0)
+                    {
+                        itemcode = Convert.ToInt32(table.Rows[0].ItemArray[0]);
+                    }
+                   // itemcode = (int)ItemCodeId.Result.Result.Rows[0].ItemArray[0];
+                }
                 var model = new ImportItemViewModel
                 {
-                    Item_Code = Convert.ToInt32(worksheet.Cells[row, 2].Value),
-                    PartCode = worksheet.Cells[row, 3].Value?.ToString().Trim(),
-                    Item_Name = worksheet.Cells[row, 4].Value?.ToString().Trim()
+                    Item_Code = itemcode,
+                    PartCode = partCode,
+                    Item_Name = ItemName
                 };
-                var partCode = worksheet.Cells[row, 3].Value?.ToString().Trim();
-                var ItemName = worksheet.Cells[row, 4].Value?.ToString().Trim();
+
                 switch (flag?.ToLower())
                 {
                    case "hsncode":
-                    string hsnString = worksheet.Cells[row, 5].Value?.ToString().Trim() ?? string.Empty;
+                    string hsnString = worksheet.Cells[row, headersMap["HSNCODE"]].Text?.Trim() ?? string.Empty; 
+                       // worksheet.Cells[row, 5].Value?.ToString().Trim() ?? string.Empty;
 
                     if (!string.IsNullOrEmpty(hsnString))
                     {
@@ -1588,7 +1624,8 @@ public class ItemMasterController : Controller
 
 
                     case "store":
-                        var Store = worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
+                        var Store = worksheet.Cells[row, headersMap["StoreName"]].Text?.Trim() ?? "";
+                            //worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
                         bool StoreExists = false;
                         if (string.IsNullOrWhiteSpace(Store))
                         {
@@ -1626,7 +1663,8 @@ public class ItemMasterController : Controller
                         break;
 
                     case "workcenter":
-                        var WorkCenter = worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
+                        var WorkCenter = worksheet.Cells[row, headersMap["WorkCenter"]].Text?.Trim()??"";
+                        //worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
                         var WorkCenterList = _IItemMaster.GetWorkCenterList();
                         bool WorkcenterExists = false;
 
@@ -1660,17 +1698,26 @@ public class ItemMasterController : Controller
                         break;
 
                     case "price":
-                        model.SalePrice = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
-                        model.PurchasePrice = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
-                        model.CostPrice = Convert.ToDecimal(worksheet.Cells[row, 7].Value ?? 0);
+                        model.SalePrice = Convert.ToDecimal(worksheet.Cells[row, headersMap["SalePrice"]].Text?.Trim() ?? "0");
+
+                        //Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        model.PurchasePrice = Convert.ToDecimal(worksheet.Cells[row, headersMap["PurchasePrice"]].Text?.Trim() ?? "0");
+                        //Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        model.CostPrice = Convert.ToDecimal(worksheet.Cells[row, headersMap["CostPrice"]].Text?.Trim() ?? "0");
+                        //Convert.ToDecimal(worksheet.Cells[row, 7].Value ?? 0);
                         break;
                     case "productiondetail":
 
-                        var ProdInMachineGroup = worksheet.Cells[row, 7].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine1 = worksheet.Cells[row, 8].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine2 = worksheet.Cells[row, 9].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine3 = worksheet.Cells[row, 10].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine4 = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachineGroup = worksheet.Cells[row, 7].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine1 = worksheet.Cells[row, 8].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine2 = worksheet.Cells[row, 9].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine3 = worksheet.Cells[row, 10].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine4 = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
+                        var ProdInMachineGroup = worksheet.Cells[row, headersMap["ProdInMachineGroup"]].Text?.Trim() ?? "";
+                        var ProdInMachine1 = worksheet.Cells[row, headersMap["ProdInMachine1"]].Text?.Trim() ?? "";
+                        var ProdInMachine2 = worksheet.Cells[row, headersMap["ProdInMachine2"]].Text?.Trim() ?? "";
+                        var ProdInMachine3 = worksheet.Cells[row, headersMap["ProdInMachine3"]].Text?.Trim() ?? "";
+                        var ProdInMachine4 = worksheet.Cells[row, headersMap["ProdInMachine4"]].Text?.Trim() ?? "";
                      
                         var ProdInMachineGroupId = _IItemMaster.ProdInMachineGroupId(ProdInMachineGroup);
                         var ProdInMachineNameId1 = _IItemMaster.ProdInMachineNameId(ProdInMachine1);
@@ -1843,8 +1890,10 @@ public class ItemMasterController : Controller
                             errors.Add($"Machine names must be unique in row {row}. Duplicates: {string.Join(", ", duplicateMachines)} (PartCode: {partCode}, ItemName: {ItemName})");
                             continue;
                         }
-                        model.NoOfCavity = Convert.ToInt32(worksheet.Cells[row, 5].Value ?? 0);
-                        model.NoOfshotsHours = Convert.ToInt32(worksheet.Cells[row, 6].Value ?? 0);
+                        //model.NoOfCavity = Convert.ToInt32(worksheet.Cells[row, 5].Value ?? 0);
+                        //model.NoOfshotsHours = Convert.ToInt32(worksheet.Cells[row, 6].Value ?? 0);   
+                        model.NoOfCavity = Convert.ToInt32(worksheet.Cells[row, headersMap["NoOfCavity"]].Value??0);
+                        model.NoOfshotsHours = Convert.ToInt32(worksheet.Cells[row, headersMap["NoOfshotsHours"]].Value??0);
                         model.ProdInMachineGroupId = itemProdInmachineGroup;
                         model.ProdInMachineGroupName = ProdInMachineGroup;
                         model.ProdInMachineName1 = ProdInMachine1;
@@ -1858,10 +1907,14 @@ public class ItemMasterController : Controller
                        
                         break;
                     case "minmaxlevel":
-                        model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
-                        model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
-                        decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
-                        decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        //model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        //model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        //decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        //decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0); 
+                        model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
+                        model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0);
+                        decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0);
+                        decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
 
                         if (maxLevel != 0)
                         {
