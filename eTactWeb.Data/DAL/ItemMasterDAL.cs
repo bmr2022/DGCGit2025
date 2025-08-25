@@ -107,6 +107,26 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
+        }    
+        public async Task<ResponseResult> GetItemCode(string PartCode,string ItemName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemCode"));
+                SqlParams.Add(new SqlParameter("@PartCode", PartCode));
+                SqlParams.Add(new SqlParameter("@Item_Name", ItemName));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
         public async Task<ResponseResult> GetStoreList()
         {
