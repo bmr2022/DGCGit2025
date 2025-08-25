@@ -9,6 +9,7 @@ namespace eTactWeb.Services.Interface
         Task<string> GetItemServiceFORPO(string ItemService);
         Task<ResponseResult> DeleteByID(int ID, int YearCode, string Flag, string PurchVoucherNo, string InvNo, int EntryBy, string EntryByMachineName, DateTime EntryDate);
         Task<ResponseResult> CheckLockYear(int YearCode);
+        Task<ResponseResult> CheckEditOrDelete(int ID,int YearCode);
         Task<ResponseResult> GetExchangeRate(string Currency);
         Task<ResponseResult> FillCurrency(string Ctrl);
         Task<ResponseResult> NewAmmEntryId();
@@ -35,7 +36,7 @@ namespace eTactWeb.Services.Interface
 
         Task<DirectPurchaseBillModel> GetViewByID(int ID, int YearCode, string Flag);
         Task<ResponseResult> GetFormRights(int uId);
-         
+        Task<ResponseResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int EntryId);
         Task<ResponseResult> SaveDirectPurchaseBILL(DataTable itemDetailDt, DataTable taxDetailDt, DataTable TDSDetailDT, DirectPurchaseBillModel model, DataTable DrCrDetailDT, DataTable AdjDetailDT);
     }
 }

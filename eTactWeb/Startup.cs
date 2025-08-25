@@ -42,7 +42,7 @@ namespace eTactWeb
             loggerFactory.AddFile("Logs/eTactWeb-.log");
             app.UseRequestLocalization();
             // --- Middleware Pipeline ---
-            app.UseHttpsRedirection();       // Redirect HTTP → HTTPS (early)
+            //app.UseHttpsRedirection();       // Redirect HTTP → HTTPS (early)
             app.UseHttpLogging();            // Log HTTP requests (after HTTPS redirection)
             app.UseStaticFiles();            // Serve static files (before dynamic middleware)
             app.UseCookiePolicy();           // Apply cookie policies (before auth)
@@ -207,6 +207,8 @@ namespace eTactWeb
             services.TryAddScoped<IPartyItemGroupDiscount,PartyItemGroupDiscountBLL>();
             services.TryAddScoped<IMachineGroupMaster,MachineGroupMasterBLL>();
             services.TryAddScoped<IAssetsMaster,AssetsMasterBLL>();
+            services.TryAddScoped<ISalepersonWiseRateMaster,SalepersonWiseRateMasterBLL>();
+            services.TryAddScoped<IToolMoldMaster,ToolMoldMasterBLL>();
 
 
 

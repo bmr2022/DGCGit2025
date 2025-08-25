@@ -12,6 +12,8 @@ namespace eTactWeb.Services.Interface
     {
 
 		Task<ResponseResult> FillItemName();
+		Task<ResponseResult> FillCategoryName();
+		Task<ResponseResult> FillCustoidianEmpName();
 		Task<ResponseResult> FillCostCenterName();
 		Task<ResponseResult> FillDepartmentName();
 		Task<ResponseResult> FillParentAccountName();
@@ -19,6 +21,8 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillParentGoupDetail(int ParentAccountCode);
 		Task<ResponseResult> SaveAssetsMaster(AssetsMasterModel model);
         Task<ResponseResult> GetDashboardData(AssetsMasterModel model);
-        Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate);
+        Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate,string AssetsName);
+        Task<ResponseResult> DeleteByID(int EntryId, int YearCode,string EntryDate,int ActualEntryBy);
+        Task<AssetsMasterModel> GetViewByID(int ID, int YC);
     }
 }

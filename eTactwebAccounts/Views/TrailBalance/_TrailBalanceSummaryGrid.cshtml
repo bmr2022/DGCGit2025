@@ -163,7 +163,7 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td>@item.TrailBalanceGroupName</td>
+                            <td style="color:blue;cursor:pointer;" onclick="GetDetailByGroupName(this)"><input type="hidden" id="AccountCode-@Cntr" value="@item.TrailBalanceGroupCode" />@item.TrailBalanceGroupName</td>
                             <td id="totDrG-@Cntr" style="background-color:antiquewhite">@item.OpnDr</td>
                             <td id="totCrG-@Cntr" style="background-color:antiquewhite">@item.OpnCr</td>
                             <td id="totOpeningG-@Cntr"  >@item.TotalOpening</td>

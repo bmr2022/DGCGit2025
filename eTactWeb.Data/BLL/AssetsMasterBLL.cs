@@ -42,6 +42,15 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _AssetsMasterDAL.FillParentAccountName();
 		}
+        public async Task<ResponseResult> FillCategoryName()
+		{
+			return await _AssetsMasterDAL.FillCategoryName();
+		}
+		public async Task<ResponseResult> FillCustoidianEmpName()
+		{
+			return await _AssetsMasterDAL.FillCustoidianEmpName();
+		}
+
 		public async Task<ResponseResult> FillParentGoupDetail(int ParentAccountCode)
 		{
 			return await _AssetsMasterDAL.FillParentGoupDetail(ParentAccountCode);
@@ -54,9 +63,17 @@ namespace eTactWeb.Data.BLL
         {
             return await _AssetsMasterDAL.GetDashboardData(model);
         }
-        public async Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
+        public async Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate,string AssetsName)
         {
-            return await _AssetsMasterDAL.GetDashboardDetailData(FromDate, ToDate);
+            return await _AssetsMasterDAL.GetDashboardDetailData(FromDate, ToDate, AssetsName);
+        }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int ActualEntryBy)
+        {
+            return await _AssetsMasterDAL.DeleteByID(EntryId, YearCode, EntryDate, ActualEntryBy);
+        }
+        public async Task<AssetsMasterModel> GetViewByID(int ID, int YC)
+        {
+            return await _AssetsMasterDAL.GetViewByID(ID, YC);
         }
     }
 }

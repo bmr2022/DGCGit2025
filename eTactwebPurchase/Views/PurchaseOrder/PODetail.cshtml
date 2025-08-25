@@ -635,6 +635,7 @@
 				$('#IN1').prop("checked", "true");
 				$('#IN1').trigger("change");
 
+				GetTaxPartItem();
 
 				// var EntryDate = $('#EntryDate').val().split("-").join("/");
 				// EntryDate = parseDateToFormat(EntryDate.split(" ")[0]);
@@ -2624,7 +2625,7 @@ formData.append("Mode", $('#Mode').val());
 					url: '@Url.Action("GetAddress", "SaleOrder")',
 					data: { Code: $('#AccountCode').val() },
 					success: function (result, status, xhr) {
-						$('#VendorAddress').val(result.result);
+						$('#VendorAddress').val(result.result.address);
 					}
 				});
 			}

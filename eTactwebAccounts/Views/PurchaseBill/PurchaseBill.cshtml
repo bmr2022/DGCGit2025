@@ -332,6 +332,7 @@
              mrnoptView: false,
              mrnoptUpdate: false
            };
+
             function GetGateNoFormRights() {
                    $.ajax({
                                url: "@Url.Action("GetFormRights", "GateInward")",
@@ -510,7 +511,32 @@
                 }
             }
         });
+                function DueDateCalculation() {
+                     var VouchDateVal = $('#VouchDate').val();
 
+                  if (!VouchDateVal) {
+                               $.notify("VouchDate is empty, skipping DueDateCalculation", "error");
+                   return;
+               }
+
+               // If value is like "31/08/2025" → no need to split
+                  var [day, month, year] = VouchDateVal.split('/').map(Number);
+               var VouchDate = new Date(year, month - 1, day);
+
+                     var creditDays = $('#PaymentDays').val() == "" ? 0 : parseInt($('#PaymentDays').val(), 10);
+
+               // Add credit days
+                     VouchDate.setDate(VouchDate.getDate() + creditDays);
+
+               // Format as dd/mm/yy
+                     var formattedDueDate = $.datepicker.formatDate('dd/mm/yy', VouchDate);
+
+               // Set in AdjDueDate
+               $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formattedDueDate);
+
+               // Restrict min date to SaleBillDate
+                  $('#AdjDueDate').datepicker("option", "minDate", VouchDateVal);
+           }
         var tabIndx = 0;
         $(":focusable").each(function () {
             $(this).attr("tabindex", ++tabIndx);
@@ -546,7 +572,7 @@
             for (var i = 1; i <= rowCounter; i++) {
                 BillRateChange(i);
             }
-
+          
             var finFromDate = $('#FinFromDate').val();
             var finToDate = $('#FinToDate').val();
 
@@ -578,7 +604,7 @@
             var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "PBI") {
                 var InvDate = $('#InvDate').val()?.split("-").join("/");
-                InvDate = ValidateNull(InvDate) ? parseDateToFormat(InvDate.split(" ")[0]) : 'now';
+                InvDate = ValidateNull(InvDate) ? (InvDate.split(" ")[0]) : 'now';
                 $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", InvDate);
 
                 // var StrMRNEntryDate = $('#StrMRNEntryDate').val();//?.split("-").join("/");
@@ -586,17 +612,17 @@
                 // $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: new (Date) }).datepicker("setDate", StrMRNEntryDate);
 
                 var StrMRNEntryDate = $('#StrMRNEntryDate').val()?.split("-").join("/");
-                StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
+                StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? (StrMRNEntryDate.split(" ")[0]) : 'now';
                 $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrMRNEntryDate);
 
                 var StrGateDate = $('#StrGateDate').val()?.split("-").join("/");
-                StrGateDate = ValidateNull(StrGateDate) ? parseDateToFormat(StrGateDate.split(" ")[0]) : 'now';
+                StrGateDate = ValidateNull(StrGateDate) ? (StrGateDate.split(" ")[0]) : 'now';
                 $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrGateDate);
 
                 var StrVouchDate = $('#VouchDate').val()?.split("-").join("/");
                 StrVouchDate = ValidateNull(StrVouchDate) ? (StrVouchDate.split(" ")[0]) : 'now';
                 $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrVouchDate);
-
+                  DueDateCalculation();
                 var AdjDueDate = $('#AdjDueDate').val()?.split("-").join("/");
                 AdjDueDate = ValidateNull(AdjDueDate) ? parseDateToFormat(AdjDueDate.split(" ")[0]) : 'now';
                 $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjDueDate);
@@ -1161,6 +1187,12 @@
                 }).done(function () {
                     GetTaxPartItem();
                     GetDbCrDetail();
+                          var taxGrid = $('#divTaxGrid tr td').length;
+                         CalculateAdjAmt('NetTotal');
+                           if (taxGrid >1 ) {
+                   ClearAdjustmentGrid();
+               }
+               AddAdjstmntDetail1();
                 }).fail(function () {
                     alert("error");
                 }).always(function () {
@@ -2109,11 +2141,8 @@
             const maxDateFormatted = formatDateToDDMMYY(currentDate);
 
             var resultforadj = CheckAndValidateAdjAmtAtTimeofAdd('NetTotal', AdjPendAmt);
-            if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                isError = true;
-                return false;
-            }
-            else if (resultforadj.toString().toLowerCase() == "true") {
+           
+             if (resultforadj.toString().toLowerCase() == "true") {
                 $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
                 isError = true;
                 return false;
@@ -2155,13 +2184,92 @@
             }
         } */
 
-             else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-                $.notify("Tax Grid should at least have one item", "error");
-                return;
-            }
+             
             else if ($('#AccountCode').val() == '0') {
                 $.notify("Vendor Name is required", "error");
             }
+                    if ($('#GSTRegistered').val() == 'Y') {
+                            if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                   isError = true;
+                   return false;
+               }
+            // GST registered → Tax Grid required
+            if (taxGrid <= 1) {
+                $.notify("Tax Grid should at least have one item", "error");
+                return;
+            }
+
+            const year = $('#YearCode').val();
+            if (vouchDate && year) {
+                if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
+                    $.notify("vouchDate must be in logged in financial year", "error");
+                    isError = true;
+                }
+            }
+
+            if (minDate && vouchDate) {
+                var minDateObj = formatDateToDDMMYY(minDate);
+                var vouchDateObj = new Date(vouchDate);
+
+                if (minDateObj > vouchDate) {
+                    $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+                    isError = true;
+                    return;
+                }
+            }
+
+            let cont = 1;
+            for (var i = 1; i <= txRowCount; i++) {
+                var txType = $('#txGridType-' + i).text();
+                var txname = $('#txGridName-' + i).text();
+                if ((txType == '' || txname == '')) {
+                    $.notify("TaxType Or TaxName cannot be null", "error");
+                    isError = true;
+                    return;
+                }
+                else {
+                    if (cont == txRowCount && !isError && (txType != '' || txname != '')) {
+                        $("form").submit();
+                    }
+                }
+                cont++;
+            }
+
+            if (txRowCount == 0 && !isError) {
+                $("form").submit();
+            }
+        }
+        else {
+            // Not GST registered → skip Tax Grid check
+            const year = $('#YearCode').val();
+            if (vouchDate && year) {
+                if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
+                    $.notify("vouchDate must be in logged in financial year", "error");
+                    isError = true;
+                }
+            }
+
+            if (minDate && vouchDate) {
+                var minDateObj = formatDateToDDMMYY(minDate);
+                var vouchDateObj = new Date(vouchDate);
+
+                if (minDateObj > vouchDate) {
+                    $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+                    isError = true;
+                    return;
+                }
+            }
+
+            // No tax grid requirement → directly allow submit
+            if (!isError) {
+                $("form").submit();
+            }
+        }
+
+            /*    else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+                   $.notify("Tax Grid should at least have one item", "error");
+                   return;
+               }
             else {
                 const year = $('#YearCode').val();
                 if (vouchDate && year) {
@@ -2174,7 +2282,7 @@
                           var minDateObj = formatDateToDDMMYY(minDate);
                              var vouchDateObj = new Date(vouchDate);
 
-                    if (minDateObj > vouchDateObj) {
+                       if (minDateObj > vouchDate) {
                         $.notify("Vouch Date should be grater than MRN/MIR Date", "error");
                         isError = true;
                         return;
@@ -2201,7 +2309,7 @@
                     $("form").submit();
                 }
 
-            }
+            } */
             // }
             // else {
             //     if (poGrid <= 1) {
@@ -2500,8 +2608,18 @@
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTaxGrid').html(NoData);
-                    var txAmt = $('#lblItemNetAmount').text();
-                    $('#NetTotal').val(txAmt);
+                         if($('#divTDSGrid tr td').length>1){
+                           btnClearTDS();
+                             }
+                       var txAmt = $('#lblItemNetAmount').text();
+                       $('#NetTotal').val(txAmt);
+                         GetDbCrDetail();
+                          var AdjGrid = $('#divAdjItemList tr td').length;
+                 if (AdjGrid >= 1 ) {
+              ClearAdjustmentGrid();
+               AddAdjstmntDetail1();
+                 }
+               
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -2525,6 +2643,15 @@
                     $('#divTDSGrid').html(NoData);
                     var txAmt = $('#lblItemNetAmount').text();
                     //$('#TDSAmount').val(txAmt);
+                         
+                       $('#NetTotal').val(txAmt);
+                        GetDbCrDetail();
+                          var AdjGrid = $('#divAdjItemList tr td').length;
+                 if (AdjGrid >= 1 ) {
+              ClearAdjustmentGrid();
+                 }
+                     //    ClearAdjustmentGrid();
+                         AddAdjstmntDetail1();
                 },
                 error: function (req, status, error) {
                     alert(error);

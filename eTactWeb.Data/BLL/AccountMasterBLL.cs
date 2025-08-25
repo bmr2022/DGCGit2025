@@ -22,6 +22,7 @@ public class AccountMasterBLL : IAccountMaster
     {
         return await _AccountMasterDAL.DeleteByID(ID);
     }
+   
     public async Task<ResponseResult> GetFormRights(int ID)
     {
         return await _AccountMasterDAL.GetFormRights(ID);
@@ -55,7 +56,10 @@ public class AccountMasterBLL : IAccountMaster
     {
         return await _AccountMasterDAL.GetTDSPartyList();
     }
-
+    public async Task<ResponseResult> GetSalePersonName()
+    {
+        return await _AccountMasterDAL.GetSalePersonName();
+    }
     public async Task<ResponseResult> SaveAccountMaster(AccountMasterModel model)
     {
         return await _AccountMasterDAL.SaveAccountMaster(model);

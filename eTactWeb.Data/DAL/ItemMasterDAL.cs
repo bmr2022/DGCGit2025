@@ -107,6 +107,26 @@ namespace eTactWeb.Data.DAL
                 Error.Source = ex.Source;
             }
             return _ResponseResult;
+        }    
+        public async Task<ResponseResult> GetItemCode(string PartCode,string ItemName)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "GetItemCode"));
+                SqlParams.Add(new SqlParameter("@PartCode", PartCode));
+                SqlParams.Add(new SqlParameter("@Item_Name", ItemName));
+
+                _ResponseResult = await _DataLogicDAL.ExecuteDataSet("SP_ItemMasterData", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
         }
         public async Task<ResponseResult> GetStoreList()
         {
@@ -808,6 +828,7 @@ namespace eTactWeb.Data.DAL
                         model.OldPartCode = dr["OldPartCode"].ToString();
                         model.SerialNo = dr["SerialNo"].ToString();
                         model.usedinMachorVehicle = dr["usedinMachorVehicle"].ToString();
+                        model.Barcode = dr["Barcode"].ToString();
 
                         model.Branch = branchCsv.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
                         model.ProdInMachineGroup = dr["ProdInMachineGroup"].ToString() == "" ? 0 : Convert.ToInt32(dr["ProdInMachineGroup"].ToString());
@@ -948,6 +969,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@ProdInMachine4", model.ProdInMachine4);
                     oCmd.Parameters.AddWithValue("@NoOfshotsHours", model.NoOfshotsHours);
                     oCmd.Parameters.AddWithValue("@usedinMachorVehicle", model.usedinMachorVehicle);
+                    oCmd.Parameters.AddWithValue("@Barcode", model.Barcode);
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     if (model.Mode == "Update")
                     {

@@ -384,7 +384,7 @@ namespace eTactWeb.Data.DAL
             #endregion
             return model;
         }
-        public async Task<ResponseResult> NewEntryId(int YearCode)
+        public async Task<ResponseResult> NewEntryId(int YearCode,string SubVoucherName)
         {
             var _ResponseResult = new ResponseResult();
             try
@@ -392,6 +392,8 @@ namespace eTactWeb.Data.DAL
                 var SqlParams = new List<dynamic>();
                 SqlParams.Add(new SqlParameter("@Flag", "NewEntryId"));
                 SqlParams.Add(new SqlParameter("@PurchaseRejYearCode", YearCode));
+                SqlParams.Add(new SqlParameter("@SubVoucherName", SubVoucherName));
+                SqlParams.Add(new SqlParameter("@PurchaseRejEntryDate", DateTime.Now));
                 _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSPPurchaseRejectionMainDetail", SqlParams);
             }
             catch (Exception ex)

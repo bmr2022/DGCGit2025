@@ -1,6 +1,6 @@
 ﻿@model eTactWeb.DOM.Models.Features_OptionsModel;
 @{
-    ViewData["Title"] = "Features_Options";
+    ViewData["Title"] = "Features Options";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
@@ -9,7 +9,7 @@
         <div class="card-header card-headerBG text-light bg-gradient">
             <div class="card-header card-headerBG text-light justify-content-center bg-gradient">
                 <h5>
-                    <strong>Features_Options</strong>
+                    <strong>Features Options</strong>
                     <span class="d-flex float-end" style="margin-top:-2px;">
                         <a asp-controller="Features_Options" asp-action="Features_OptionsDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">
                             <i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
@@ -1173,6 +1173,14 @@
                                             <option value="N">No</option>
                                         </select>
                                     </div>
+                                    <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12" style="width:350px;">
+                                        <label asp-for="AccBackdateVoucherEntryPassword" class="form-label">Allow to change Documnet</label>
+                                        <select class="form-control" asp-for="AccBackdateVoucherEntryPassword" style="width:150px;">
+                                            <option value="Y">Yes</option>
+                                            <option value="N">No</option>
+                                        </select>
+                                    </div>
+
                                     <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                                 </div>
                             </div>

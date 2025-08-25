@@ -20,7 +20,6 @@ namespace eTactWeb.Data.DAL
 
         public UserRightReportDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _IDataLogic = iDataLogic;
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
@@ -221,6 +220,5 @@ namespace eTactWeb.Data.DAL
 
             return resultList;
         }
-
     }
 }

@@ -11,7 +11,7 @@ namespace eTactWeb.DOM.Models
     public class TrailBalanceModel: TimeStamp
     {
         public long TBSeq { get; set; }
-        public int TrailBalanceGroupCode { get; set; }
+        public int? TrailBalanceGroupCode { get; set; }
         public string TrailBalanceGroupName { get; set; }
         public string ParentGroupName { get; set; }
         public int ParentAccountCode { get; set; }

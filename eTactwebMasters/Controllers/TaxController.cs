@@ -781,9 +781,9 @@ public class TaxController : Controller
                     {
                         ExpTaxAmt = TaxGrid.Where(m => m.TxType == "EXPENSES" && m.TxAdInTxable == "Y").Sum(x => x.TxAmount);
                         //TaxOnExp = ((ItemAmount / BasicTotal) * ExpTaxAmt);
-                        TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : Math.Round((ExpTaxAmt / BasicTotal) * ItemAmount, 2, MidpointRounding.AwayFromZero);
+                        TaxOnExp = ItemAmount == 0 && BasicTotal == 0 ? 0 : Math.Round((ExpTaxAmt / BasicTotal) * ItemAmount, 6, MidpointRounding.AwayFromZero);
 
-                        ItemAmount = Math.Round(ItemAmount + TaxOnExp, 2, MidpointRounding.AwayFromZero);
+                        ItemAmount = Math.Round(ItemAmount + TaxOnExp, 6, MidpointRounding.AwayFromZero);
                     }
 
                     TaxAmount = ItemAmount * TxModel.TxPercentg / 100;
@@ -829,7 +829,7 @@ public class TaxController : Controller
                         TxRoundOff = TxModel.TxRoundOff,
                         TxAmount = TxModel.TxRoundOff == "Y"
     ? Math.Round(TaxAmount, MidpointRounding.AwayFromZero)
-    : Math.Round(TaxAmount, 2),
+    : Math.Round(TaxAmount, 6),
                         TxRefundable = TxModel.TxRefundable,
                         TxOnExp = TaxOnExp,
                         TxRemark = TxModel.TxRemark,
@@ -858,7 +858,7 @@ public class TaxController : Controller
                             TxPercentg = TxModel.TxPercentg,
                             TxAdInTxable = TxModel.TxAdInTxable,
                             TxRoundOff = TxModel.TxRoundOff,
-                            TxAmount = TxModel.TxRoundOff == "Y" ? Math.Floor(TaxAmount) : Math.Round(TaxAmount, 2),
+                            TxAmount = TxModel.TxRoundOff == "Y" ? Math.Floor(TaxAmount) : Math.Round(TaxAmount, 6),
                             TxRefundable = TxModel.TxRefundable,
                             TxOnExp = TaxOnExp,
                             TxRemark = TxModel.TxRemark,
@@ -947,14 +947,6 @@ public class TaxController : Controller
                 TotalTaxAmt = TotalTaxAmt + (MainModel.ItemNetAmount == null ? 0 : MainModel.ItemNetAmount);
                 MainModel.TotalTaxAmt = TotalTaxAmt;
 
-                //MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
-                //{
-                //    AbsoluteExpiration = DateTime.Now.AddMinutes(55),
-                //    SlidingExpiration = TimeSpan.FromMinutes(60),
-                //    Size = 1024,
-                //};
-
-                //_MemoryCache.Set("KeyTaxGrid", TaxGrid, cacheEntryOptions);
                 var pagename = TxModel.TxPageName;
                 ClearTax(pagename);
                 StoreInCache("KeyTaxGrid", TaxGrid);

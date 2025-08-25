@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
@@ -21,9 +22,21 @@ namespace eTactWeb.Data.BLL
             _TrailBalanceDAL = new TrailBalanceDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
-        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, string EntryByMachine,string ReportType)
+        public async Task<TrailBalanceModel> GetTrailBalanceDetailsData(string FromDate, string ToDate, int? TrailBalanceGroupCode, string ReportType)
         {
-            return await _TrailBalanceDAL.GetTrailBalanceDetailsData(FromDate, ToDate, EntryByMachine, ReportType);
+            return await _TrailBalanceDAL.GetTrailBalanceDetailsData(FromDate, ToDate, TrailBalanceGroupCode, ReportType);
+        }
+        public async Task<ResponseResult> FillGroupList(string FromDate, string ToDate)
+        {
+            return await _TrailBalanceDAL.FillGroupList(FromDate, ToDate);
+        }
+        public async Task<ResponseResult> FillParentGroupList(string FromDate, string ToDate, int? GroupCode)
+        {
+            return await _TrailBalanceDAL.FillParentGroupList(FromDate,ToDate,GroupCode);
+        }
+        public async Task<ResponseResult> FillAccountList(string FromDate, string ToDate, int? GroupCode, int? ParentAccountCode)
+        {
+            return await _TrailBalanceDAL.FillAccountList(FromDate, ToDate,GroupCode,ParentAccountCode);
         }
     }
 }

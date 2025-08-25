@@ -80,7 +80,6 @@
 									<label asp-for="ParentLedgerName" class="form-label">Parent Ledger List</label>
 									<input asp-for="ParentAccountCode" class="form-control" type="hidden" value="@Model.AccountCode" />
 									<select asp-for="ParentLedgerName" class="form-control">
-										@* <option value="@Model.AccountCode">-Select-</option> *@
 										<option value="@Model.ParentAccountCode">-Select-</option>
 										@if (Model.Mode == "U" || Model.Mode == "V")
 										{
@@ -92,7 +91,6 @@
 									<label asp-for="LedgerName" class="form-label" id="LedgerNameMain">Ledger List*</label>
 									<input asp-for="AccountCode" class="form-control" type="hidden" value="@Model.AccountCode" />
 									<select asp-for="LedgerName" class="form-control">
-										@* <option value="@Model.AccountCode">-Select-</option> *@
 										<option value="@Model.AccountCode">-Select-</option>
 										@if (Model.Mode == "U" || Model.Mode == "V")
 										{
@@ -375,7 +373,7 @@
 			FillLedgerName();
 		})
 
-				function FillVoucherName() {
+		function FillVoucherName() {
 			var FromDate = $('#FromDate').val();
 			var ToDate = $('#ToDate').val();
 			$.ajax({
@@ -466,7 +464,7 @@
 			 $("#divStockRegisterBody tr").not(CurrentRow).css({ 'background-color': 'blanchedalmond' });
 		 }
 
-		 function FillLedgerName() {
+		function FillLedgerName() {
 
 			 //var FromDate = $('#FromDate').val();
 			 //var ToDate = $('#ToDate').val();

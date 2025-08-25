@@ -597,7 +597,7 @@ public class PurchaseBillController : Controller
         string JsonString = JsonConvert.SerializeObject(JSON);
         return Json(JsonString);
     }
-    public async Task<IActionResult> GetSearchData(PBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+    public async Task<IActionResult> GetSearchData(PBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
     {
         model = await IPurchaseBill.GetSummaryData(model);
         model.DashboardType = "Summary";

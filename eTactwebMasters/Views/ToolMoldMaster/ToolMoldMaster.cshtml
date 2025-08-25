@@ -1,0 +1,1916 @@
+﻿	@model eTactWeb.DOM.Models.ToolMoldMasterModel;
+@{
+	ViewData["Title"] = "ToolMoldMaster";
+	Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+<style>
+	.disabled-link {
+		pointer-events: none;
+		color: gray;
+		text-decoration: none;
+		cursor: not-allowed;
+	}
+</style>
+
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+	<form asp-action="ToolMoldMaster" asp-controller="ToolMoldMaster" method="post" autocomplete="on" class="form-horizontal">
+		<div class="card-header card-headerBG text-light bg-gradient">
+			<div class="card-header card-headerBG text-light justify-content-center bg-gradient">
+				<h5>
+					<strong>Tool Mold Master </strong>
+					<span class="d-flex float-end" style="margin-top:-2px;">
+						<a asp-controller="ToolMoldMaster" asp-action="ToolMoldMasterDashBoard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient DashBoard">
+							<i class="fa-solid fa-grip fa-fw fa-lg fa-beat" aria-hidden="true"></i>
+							Dashboard
+						</a>
+						<div class="row justify-content-between g-2">
+							<div class="col-auto">
+								<a href="#" class="btn btn-primary btn-sm" onclick="PressBack();">
+									<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+									BACK
+								</a>
+							</div>
+							@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+							{
+								<div class="col-auto">
+									<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+										<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+										REFRESH
+									</a>
+								</div>
+								@if (Model.Mode == "U")
+								{
+									Model.Mode = "U";
+									<div class="col-auto">
+										<button type="submit" class="submitBTN btn btn-sm btn-outline-light bg-gradient submitBTN">
+											<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+											UPDATE
+										</button>
+									</div>
+								}
+
+								else
+								{
+									<div class="col-auto">
+										<button type="submit" class="btn btn-primary btn-sm submitBTN">
+											<i class="fa-solid fa-chevron-circle-right"></i>
+											SUBMIT
+										</button>
+									</div>
+								}
+							}
+						</div>
+					</span>
+				</h5>
+			</div>
+			<div class="card-body bg-light">
+				<div class="accordion shadow-lg" id="accordionItemCategory">
+					<div class="accordion-item">
+						<h2 class="accordion-header" id="H_ItemCategoryDetail">
+							<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+									aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+								<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Tool Mold Master</strong>
+								<small class="p-3"></small>
+							</button>
+						</h2>
+						<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+							<div class="accordion-body">
+								<div class="row g-2">
+									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
+									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="ToolEntryId" class="form-label">Entry Id</label>
+										<input asp-for="ToolEntryId" class="form-control" readonly />
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="EntryDate" class="form-label">EntryDate</label>
+										<input asp-for="EntryDate" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="YearCode" class="form-label">YearCode</label>
+										<input asp-for="YearCode" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:120px;">
+										<label asp-for="ToolCode" class="form-label">Tool Code</label>
+										<input asp-for="ToolCode" class="form-control" />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
+										<label asp-for="ToolName" class="form-label" style="color:red;">Tool Name*</label>
+										<input asp-for="ToolName" class="form-control" />
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="ToolOrMold" class="form-label" style="color:red;">Tool/Mold*</label>
+										
+										<select class="form-select" asp-for="ToolOrMold">
+											<option value="">-Select-</option>
+											<option value="ToolMold">ToolMold</option>
+											<option value="Equipment">Equipment</option>
+											<option value="Instrument">Instrument</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:220px;">
+										<label asp-for="ItemName" class="form-label" style="color:red;">Item Name*</label>
+										<input type="hidden" asp-for="ItemCode" />
+										<select class="form-select" asp-for="ItemName" style="width:200px;">
+											<option value="">-Select-</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="ConsiderAsFixedAssets" class="form-label" style="color:red;">Consider In Invetory</label>
+										<select class="form-select" asp-for="ConsiderAsFixedAssets">
+											<option value="">-Select-</option>
+											<option value="Yes">Yes</option>
+											<option value="No" selected>No</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields" style="width:200px;">
+										<label asp-for="ParentAccountName" class="form-label" style="color:red;">Parent Group*</label>
+										<input type="hidden" asp-for="ParentAccountCode" />
+										<select class="form-select" asp-for="ParentAccountName" style="width:190px;">
+											<option value="">-Select-</option>
+										</select>
+									</div>
+
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
+										<label asp-for="MainGroup" class="form-label" style="color:red;">Main Group*</label>
+										<input asp-for="MainGroup" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
+										<label asp-for="SubGroup" class="form-label" style="color:red;">Sub Group*</label>
+										<input asp-for="SubGroup" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
+										<label asp-for="UnderGroup" class="form-label" style="color:red;">Under Group*</label>
+										<input asp-for="UnderGroup" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 fixedAssetFields">
+										<label asp-for="SubSubGroup" class="form-label" style="color:red;">Sub Sub Group*</label>
+										<input asp-for="SubSubGroup" class="form-control" readonly />
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="CostCenterName" class="form-label" style="color:red;width:220px;">Cost Center Name*</label>
+										<input type="hidden" asp-for="CostCenterId" />
+										<select class="form-select" asp-for="CostCenterName">
+											<option value="">-Select-</option>
+										</select>
+									</div>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+										<label asp-for="Fiscalyear" class="form-label">Fiscal year</label>
+										<input asp-for="Fiscalyear" class="form-control"  />
+									</div>
+									
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+										<label asp-for="ConsiderInInvetory" class="form-label" style="color:red;">Consider In Invetory</label>
+										
+										<select class="form-select" asp-for="ConsiderInInvetory">
+											<option value="">-Select-</option>
+											<option value="Yes">Yes</option>
+											<option value="No"selected>No</option>
+										</select>
+									</div>
+									
+
+								</div>
+							</div>
+							@* vendore *@
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="H_SAGrid">
+									<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+										<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Vendore Detail</strong>
+									</button>
+								</h2>
+
+								<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+									<div class="accordion-body">
+										<div class="row g-2 gx-3" id="_ItemGrid">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="VendoreAccountCode" class="form-label">Account Type</label>
+												<input asp-for="VendoreAccountCode" class="form-control" readonly />
+											</div>
+											 <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="PONO" class="form-label">PONO</label>
+												<input asp-for="PONO" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="POYear" class="form-label">PO Year</label>
+												<input asp-for="POYear" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="PODate" class="form-label">PO Date</label>
+												<input asp-for="PODate" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="InvoiceNo" class="form-label">Invoice No</label>
+												<input asp-for="InvoiceNo" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="InvoiceYearCode" class="form-label">Invoice YearCode</label>
+												<input asp-for="InvoiceYearCode" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="InvoiceDate" class="form-label">Invoice Date</label>
+												<input asp-for="InvoiceDate" class="form-control" />
+											</div>
+
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="PurchaseValue" class="form-label">Purchase Value</label>
+												<input asp-for="PurchaseValue" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="NetBookValue" class="form-label">Net Book Value</label>
+												<input asp-for="NetBookValue" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="ResidualValue" class="form-label">Residual Value</label>
+												<input asp-for="ResidualValue" class="form-control" />
+											</div>
+											
+										</div>
+									</div>
+
+								</div>
+							</div>
+							@* Deprecation *@
+							<div class="accordion-item">
+								<h2 class="accordion-header" id="H_ItemCategoryDetail">
+									<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+											aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+										<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Depreciation Detail</strong>
+										<small class="p-3"></small>
+									</button>
+								</h2>
+								<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+									<div class="accordion-body">
+										<div class="row g-2">
+
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+												<label asp-for="DepreciationMethod" class="form-label" style="color:red;">Depreciation Method</label>
+
+												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
+													<option value="">-Select-</option>
+													<option value="Weighted Method">Weighted Method</option>
+													<option value="Straight-line Method" selected>Straight-line Method</option>
+												</select>
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="CountryOfOrigin" class="form-label">Country Of Origin</label>
+												<input asp-for="CountryOfOrigin" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="DepreciationRate" class="form-label">Depreciation Rate</label>
+												<input asp-for="DepreciationRate" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="DepriciationAmt" class="form-label">Depreciation Amt</label>
+												<input asp-for="DepriciationAmt" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="FirstAqusitionOn" class="form-label">First Aqusition On</label>
+												<input asp-for="FirstAqusitionOn" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+												<label asp-for="OriginalValue" class="form-label">Original Value</label>
+												<input asp-for="OriginalValue" class="form-control" />
+											</div>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+												<label asp-for="CapatalizationDate" class="form-label">Capatalization Date</label>
+												<input asp-for="CapatalizationDate" class="form-control" />
+											</div>
+
+										</div>
+									</div>
+								</div>
+
+								@* identiiation *@
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="H_SAGrid">
+										<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+											<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Identiication Detail</strong>
+										</button>
+									</h2>
+
+									<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+										<div class="accordion-body">
+											<div class="row g-2 gx-3" id="_ItemGrid">
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="BarCode" class="form-label">BarCode</label>
+													<input asp-for="BarCode" class="form-control" />
+												</div>
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+													<label asp-for="SerialNo" class="form-label">Serial No</label>
+													<input asp-for="SerialNo" class="form-control" />
+												</div>
+											</div>
+										</div>
+
+									</div>
+								</div>
+								@*  usage & Life  *@
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="H_ItemCategoryDetail">
+										<button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ItemCategoryDetail"
+												aria-expanded="true" aria-controls="B_ItemCategoryDetail">
+											<strong><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i> Usage & Life  Detail</strong>
+											<small class="p-3"></small>
+										</button>
+									</h2>
+									<div id="B_ItemCategoryDetail" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_ItemCategoryDetail">
+										<div class="accordion-body">
+											<div class="row g-2">
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
+													<label asp-for="LocationOfInsallation" class="form-label">Location Of Insallation</label>
+													<input asp-for="LocationOfInsallation" class="form-control" />
+												</div>
+												
+
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+													<label asp-for="DepartmentName" class="form-label" style="color:red;">Department Name*</label>
+													<input type="hidden" asp-for="ForDepartmentId" />
+													<select class="form-select" asp-for="DepartmentName" style="width:220px;">
+														<option value="">-Select-</option>
+													</select>
+												</div>
+												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
+													<label asp-for="ExpectedLife" class="form-label">Expected Life</label>
+													<input asp-for="ExpectedLife" class="form-control" />
+												</div>
+												
+											</div>
+										</div>
+									</div>
+									 
+									@* Calibration Detail *@
+									<div class="accordion-item">
+										<h2 class="accordion-header" id="H_SAGrid">
+											<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
+												<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Calibration Detail</strong>
+											</button>
+										</h2>
+
+										<div id="B_SAGrid" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="H_SAGrid">
+											<div class="accordion-body">
+												<div class="row g-2 gx-3" id="_ItemGrid">
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+														<label asp-for="CalibrationRequired" class="form-label">Calibration Required</label>
+
+														<select class="form-select" asp-for="CalibrationRequired">
+															<option value="">-Select-</option>
+															<option value="Yes">Yes</option>
+															<option value="No">No</option>
+														</select>
+													</div>
+										    
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:250px;">
+														<label asp-for="CalibrationFrequencyInMonth" class="form-label">Calibration Frequency In Month</label>
+														<input asp-for="CalibrationFrequencyInMonth" class="form-control" />
+													</div>
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+                                                        <label asp-for="LastCalibrationDate" class="form-label">Last Calibration Date</label>
+                                                        <input asp-for="LastCalibrationDate" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+                                                        <label asp-for="NextCalibrationDate" class="form-label">Next Calibration Date</label>
+                                                        <input asp-for="NextCalibrationDate" class="form-control" />
+													</div>
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="CalibrationAgencyId" class="form-label">Calibration Agency Id</label>
+														<input asp-for="CalibrationAgencyId" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:210px;">
+														<label asp-for="LastCalibrationCertificateNo" class="form-label">Last Calibration Certificate No</label>
+														<input asp-for="LastCalibrationCertificateNo" class="form-control" />
+													</div>
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+														<label asp-for="CalibrationResultPassFail" class="form-label">Calibration Result </label>
+
+														<select class="form-select" asp-for="CalibrationResultPassFail" style="width:130px;">
+															<option value="">-Select-</option>
+															<option value="Pass">Pass</option>
+															<option value="Fail">Fail</option>
+														</select>
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+														<label asp-for="TolrenceRange" class="form-label">Tolrence Range</label>
+														<input asp-for="TolrenceRange" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:140px;">
+														<label asp-for="CalibrationRemark" class="form-label">Calibration Remark</label>
+														<input asp-for="CalibrationRemark" class="form-control" />
+													</div>
+
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="Technician" class="form-label">Technician</label>
+														<input asp-for="Technician" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="TechnicialcontactNo" class="form-label">Technicial contact No</label>
+														<input asp-for="TechnicialcontactNo" class="form-control" />
+													</div>
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:180px;">
+														<label asp-for="TechEmployeeName" class="form-label">Technicial Employee Name</label>
+														<input asp-for="TechEmployeeName" class="form-control" />
+													</div>
+
+
+														<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12 calibrationFields" style="width:240px;">
+														<label asp-for="CustoidianEmpName" class="form-label">Custoidian EmpName</label>
+														<input type="hidden" asp-for="CustoidianEmpId" />
+														<select class="form-select" asp-for="CustoidianEmpName" style="width:230px;">
+															<option value="">-Select-</option>
+														</select>
+													</div>
+												</<div>
+												</div>
+											
+
+										</div>
+									</div>
+								<div class="accordion-item">
+									<h2 class="accordion-header" id="OtherGrid">
+										<button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#OtherGridDetail" aria-expanded="true" aria-controls="OtherGridDetail">
+											<strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Other Detail</strong>
+										</button>
+									</h2>
+									<div id="OtherGridDetail" class="accordion-collapse collapse pnl4 bg-gradient" aria-labelledby="OtherGrid">
+										<div class="accordion-body">
+
+											<div class="row g-2 gx-3" id="_ItemGrid">
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+														<label asp-for="InsuranceCompany" class="form-label">Insurance Company </label>
+														<input asp-for="InsuranceCompany" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+														<label asp-for="InsuredAmount" class="form-label">Insured Amount </label>
+														<input asp-for="InsuredAmount" class="form-control" />
+													</div>
+													<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
+														<label asp-for="InsuranceDetail" class="form-label">Insurance Detail </label>
+														<input asp-for="InsuranceDetail" class="form-control" />
+													</div>
+													<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+														<label asp-for="CC" class="form-label">CC</label>
+														<input asp-for="CC " class="form-control" value="@Model.CC" readonly />
+													</div>
+
+													<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+														<label asp-for="LastupdatedBy" class="form-label">UID</label>
+															<input asp-for="LastupdatedBy" class="form-control" readonly />
+													</div>
+											
+
+
+												
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="ActualEntryBy" class="form-label">ActualEntryBy</label>
+														<input asp-for="ActualEntryBy " class="form-control" readonly />
+												</div>
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="ActualEntryDate" class="form-label">ActualEntryDate</label>
+													<input asp-for="ActualEntryDate " class="form-control" readonly />
+												</div>
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="LastupdatedBy" class="form-label">Updated By</label>
+													<input asp-for="LastUpdatedbyEmpName" class="form-control" readonly />
+												</div>
+
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="LastUpdatedDate" class="form-label">UpdationDate</label>
+														<input asp-for="LastUpdatedDate" class="form-control" readonly />
+												</div>
+												<div class="col-xl-2  col-lg-6 col-md-6 col-sm-6 col-xs-12">
+													<label asp-for="EntryByMachine" class="form-label">Machine Name</label>
+													<input asp-for="EntryByMachine" class="form-control" value="@Environment.MachineName" readonly />
+												</div>
+
+											</div>
+										</div>
+
+									</div>
+								</div>
+							</div>
+						</div>
+
+
+					</div>
+					<div class="card-footer p-3">
+						<div class="row justify-content-between g-2">
+							<div class="card-header card-headerBG text-light bg-gradient">
+								<h5>
+									<strong>Tool Mold Master</strong>
+									<span class="d-flex float-end" style="margin-top:-2px;">
+
+										@*<a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient">*@
+											<a asp-controller="ToolMoldMaster" asp-action="ToolMoldMasterDashBoard" tabindex="-1" asp-route-ID="0" class="btn btn-secondary btn-sm DashBoard">
+											<i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+											Dashboard
+										</a>
+										<div class="row justify-content-between g-2">
+											<div class="col-auto">
+
+												<a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+													<i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+													BACK
+												</a>
+											</div>
+											@if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+											{
+												<div class="col-auto">
+													@*  <a class="btn btn-sm btn-outline-danger" onclick="location.href=$('form')[0].action">*@
+													<a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+														@* <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>*@
+														<i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+														REFRESH
+													</a>
+												</div>
+												@if (Model.Mode == "U")
+												{
+													@*Model.Mode = "U";*@
+													<div class="col-auto">
+														@* <button type="submit" class="btn btn-sm btn-outline-warning">*@
+														<button type="submit" class="UpdateButton btn btn-sm btn-outline-light bg-gradient submitBTN">
+															<i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+															UPDATE
+														</button>
+													</div>
+												}
+												else
+												{
+													<div class="col-auto">
+														<button type="submit" class="btn btn-primary btn-sm submitBTN">
+															<i class="fa-solid fa-chevron-circle-right"></i>
+															SUBMIT
+														</button>
+													</div>
+												}
+											}
+										</div>
+									</span>
+								</h5>
+							</div>
+						</div>
+					</div>
+				</div>
+	</form>
+</div>
+
+
+
+@section Scripts {
+	<script>
+		$(document).ready(function () {
+			//GetFormRights();
+			if ($('#Mode').val() !== "U" && $('#Mode').val() !== "V") {
+				setFormattedDate();
+				FillEntryID();
+				TotalNoOfRows();
+
+			}
+			FillItemName();
+			FillCostCenterName();
+			FillDepartmentName();
+			FillParentAccountName();
+			FillCategoryName();
+			FillCustoidianEmpName();
+			var currentYear = new Date().getFullYear();
+			$('#POYear,#InvoiceYearCode').each(function () {
+				var val = $(this).val();
+				if (!val || val == "0") {
+					$(this).val(currentYear);
+				}
+			});
+			$('#DiscountCustCatEntryId').rules("remove", "required");
+			$('#AssetsEntryId').rules("remove", "required");
+			$('#EntryDate').rules("remove", "required");
+			$('#YearCode').rules("remove", "required");
+			$('#AssetsCode').rules("remove", "required");
+			$('#AssetsName').rules("remove", "required");
+			$('#AssetsCateogryName').rules("remove", "required");
+			$('#ItemName').rules("remove", "required");
+			$('#ParentAccountName').rules("remove", "required");
+			$('#MainGroup').rules("remove", "required");
+			$('#SubGroup').rules("remove", "required");
+			$('#UnderGroup').rules("remove", "required");
+			$('#SubSubGroup').rules("remove", "required");
+			$('#VendoreAccountCode').rules("remove", "required");
+			$('#CostCenterName').rules("remove", "required");
+			$('#DepartmentName').rules("remove", "required");
+			$('#UseFullLifeInYear').rules("remove", "required");
+			$('#LocationOfInsallation').rules("remove", "required");
+			$('#PONO').rules("remove", "required");
+			$('#POYear').rules("remove", "required");
+			$('#PODate').rules("remove", "required");
+			$('#PurchaseValue').rules("remove", "required");
+			$('#PurchaseNewUsed').rules("remove", "required");
+			$('#CountryOfOrigin').rules("remove", "required");
+			$('#Technician').rules("remove", "required");
+			$('#TechnicialcontactNo').rules("remove", "required");
+			$('#TechEmployeeName').rules("remove", "required");
+			$('#CustoidianEmpId').rules("remove", "required");
+			$('#DepreciationMethod').rules("remove", "required");
+			$('#DepreciationRate').rules("remove", "required");
+			$('#DepriciationAmt').rules("remove", "required");
+			$('#InvoiceNo').rules("remove", "required");
+			$('#InvoiceYearCode').rules("remove", "required");
+			$('#InvoiceDate').rules("remove", "required");
+			$('#NetBookValue').rules("remove", "required");
+			$('#ResidualValue').rules("remove", "required");
+			$('#FirstAqusitionOn').rules("remove", "required");
+			$('#OriginalValue').rules("remove", "required");
+			$('#CapatalizationDate').rules("remove", "required");
+			$('#BarCode').rules("remove", "required");
+			$('#SerialNo').rules("remove", "required");
+			$('#InsuranceCompany').rules("remove", "required");
+			$('#InsuredAmount').rules("remove", "required");
+			$('#InsuranceDetail').rules("remove", "required");
+			$('#ConsiderInInvetory').rules("remove", "required");
+			$('#DepreciationMethod').rules("remove", "required");
+			$('#CountryOfOrigin').rules("remove", "required");
+			$('#DepreciationRate').rules("remove", "required");
+			$('#DepriciationAmt').rules("remove", "required");
+			$('#FirstAqusitionOn').rules("remove", "required");
+			$('#OriginalValue').rules("remove", "required");
+			$('#CapatalizationDate').rules("remove", "required");
+			$('#VendoreAccountCode').rules("remove", "required");
+			$('#PONO').rules("remove", "required");
+			$('#POYear').rules("remove", "required");
+			$('#PODate').rules("remove", "required");
+			$('#InvoiceNo').rules("remove", "required");
+			$('#InvoiceYearCode').rules("remove", "required");
+			$('#InvoiceDate').rules("remove", "required");
+			$('#PurchaseValue').rules("remove", "required");
+			$('#NetBookValue').rules("remove", "required");
+			$('#ResidualValue').rules("remove", "required");
+			$('#ToolEntryId').rules("remove", "required");
+			$('#EntryDate').rules("remove", "required");
+			$('#YearCode').rules("remove", "required");
+			$('#ToolCode').rules("remove", "required");
+			$('#ToolName').rules("remove", "required");0
+			$('#ToolOrMold').rules("remove", "required");
+			$('#ItemName').rules("remove", "required");
+			$('#ConsiderAsFixedAssets').rules("remove", "required");
+			$('#ParentAccountName').rules("remove", "required");
+			$('#MainGroup').rules("remove", "required");
+			$('#SubGroup').rules("remove", "required");
+			$('#UnderGroup').rules("remove", "required");
+			$('#SubSubGroup').rules("remove", "required");
+			$('#CostCenterName').rules("remove", "required");
+			$('#Fiscalyear').rules("remove", "required");
+			$('#ConsiderInInvetory').rules("remove", "required");
+			$('#Uid').rules("remove", "required");
+			$('#ApprovedByEmpId').rules("remove", "required");
+			$('#ApprovedByEmpName').rules("remove", "required");
+			$('#CC').rules("remove", "required");
+			$('#ActualEntryByEmpId').rules("remove", "required");
+			$('#ActualEntryByEmpName').rules("remove", "required");
+			$('#ActualEntryDate').rules("remove", "required");
+			$('#LastUpdatedbyEmpId').rules("remove", "required");
+			$('#LastUpdatedbyEmpName').rules("remove", "required");
+			$('#LastupDationDate').rules("remove", "required");
+			$('#EntryByMachine').rules("remove", "required");
+			$('#CustoidianEmpName').rules("remove", "required");
+			$('#CalibrationRequired').rules("remove", "required");
+			$('#CalibrationFrequencyInMonth').rules("remove", "required");
+			$('#LastCalibrationDate').rules("remove", "required");
+			$('#NextCalibrationDate').rules("remove", "required");
+			$('#CalibrationAgencyId').rules("remove", "required");
+			$('#LastCalibrationCertificateNo').rules("remove", "required");
+			$('#CalibrationResultPassFail').rules("remove", "required");
+			$('#TolrenceRange').rules("remove", "required");
+			$('#CalibrationRemark').rules("remove", "required");
+			$('#Technician').rules("remove", "required");
+			$('#TechnicialcontactNo').rules("remove", "required");
+			$('#TechEmployeeName').rules("remove", "required");
+			$('#CustoidianEmpName').rules("remove", "required");
+			$('#InsuranceCompany').rules("remove", "required");
+			$('#InsuredAmount').rules("remove", "required");
+			$('#InsuranceDetail').rules("remove", "required");
+			$('#CC').rules("remove", "required");
+			$('#LastupdatedBy').rules("remove", "required");
+			$('#ActualEntryBy').rules("remove", "required");
+			$('#ActualEntryDate').rules("remove", "required");
+			$('#LastUpdatedbyEmpName').rules("remove", "required");
+			$('#LastUpdatedDate').rules("remove", "required");
+			$('#EntryByMachine').rules("remove", "required");
+			$('#LocationOfInsallation').rules("remove", "required");
+			$('#DepartmentName').rules("remove", "required");
+			$('#ExpectedLife').rules("remove", "required");
+			$('#BarCode').rules("remove", "required");
+			$('#SerialNo').rules("remove", "required");
+			$('#DepartmentName').select2();
+			$('#CostCenterName').select2();
+			$('#ItemName').select2();
+			$('#DepreciationMethod').select2();
+			$('#ParentAccountName').select2();
+			$('#AssetsCateogryName').select2();
+			$('#PurchaseNewUsed').select2();
+			$('#CustoidianEmpName').select2();
+			$('#ConsiderInInvetory').select2();
+			$('#ToolOrMold').select2();
+			$('#CalibrationRequired').select2();
+			$('#CalibrationResultPassFail').select2();
+			$('#ConsiderAsFixedAssets').select2();
+			$('#totalRows').text($('#divStockGrid tr').length);
+
+
+			toggleUsedFields();
+			$('#PurchaseNewUsed').on('change', function () {
+				toggleUsedFields();
+			});
+			toggleCalibrationFields(); 
+			$("#CalibrationRequired").change(function () {
+				toggleCalibrationFields();
+			});
+			toggleFixedAssetFields(); 
+			$("#ConsiderAsFixedAssets").change(function () {
+				toggleFixedAssetFields();
+			});
+			$('#GridButton').click(function (e) {
+				setFormattedDate();
+			});
+			$(document).on("keydown", function (e) {
+				if (e.key === "Enter") {
+					e.preventDefault();
+					return false;
+				}
+			});
+			$('.submitBTN').click(function (e) {
+				e.preventDefault();
+
+				console.log("SubmitButton Click - Validation passed");
+				$('form').submit();
+			});
+
+
+
+		})
+		$('#InsuredAmount').on('input', function () {
+			var purchaseVal = parseFloat($('#PurchaseValue').val()) || 0;
+			var insuredVal = parseFloat($(this).val()) || 0;
+
+			if (insuredVal > purchaseVal) {
+				$(this).val('');
+				$.notify("Insured Amount cannot be greater than Purchase Value", "error");
+			}
+		});
+
+		$('#PurchaseValue').on('input', function () {
+			var purchaseVal = $(this).val();
+			$('#OriginalValue').val(purchaseVal);
+			$('#NetBookValue').val(purchaseVal);
+		});
+		function toggleFixedAssetFields() {
+			if ($("#ConsiderAsFixedAssets").val() === "Yes") {
+				$(".fixedAssetFields").find("input, select, textarea").prop("disabled", false);
+			} else {
+				$(".fixedAssetFields").find("input, select, textarea").prop("disabled", true);
+			}
+		}
+		function toggleCalibrationFields() {
+			if ($("#CalibrationRequired").val() === "No") {
+				$(".calibrationFields").find("input, select, textarea").prop("disabled", true);
+			} else {
+				$(".calibrationFields").find("input, select, textarea").prop("disabled", false);
+			}
+		}
+		$(function () {
+			var countries = [
+				"India", "United States", "United Kingdom", "Canada", "Australia",
+				"Germany", "France", "Japan", "China", "Brazil", "South Africa", "Italy"
+			];
+
+			$("#CountryOfOrigin").autocomplete({
+				source: countries,
+				minLength: 1 // start suggesting after typing 1 char
+			});
+		});
+		$('#UseFullLifeInYear').on('input', function () {
+			var val = $(this).val();
+
+			if (isNaN(val)) {
+				$(this).val('');
+				$.notify("Only numeric values are allowed", "error");
+				return;
+			}
+
+			if (val < 0) {
+				$(this).val('');
+				$.notify("Minus values and 0 are not allowed", "error");
+				return;
+			}
+			if (val > 500) {
+				$(this).val('');
+				$.notify("Value cannot be more than 500", "error");
+				return;
+			}
+		});
+		$('#POYear,#InvoiceYearCode,#ExpectedLife').on('input', function () {
+			let val = $(this).val();
+
+			// Remove minus immediately
+			if (val.includes('-')) {
+				$(this).val(val.replace(/-/g, ''));
+				$.notify("Minus values are not allowed", "error");
+				return;
+			}
+
+			// Remove non-numeric immediately
+			if (val && isNaN(val)) {
+				$(this).val('');
+				$.notify("Only numeric values allowed", "error");
+				return;
+			}
+
+			// Block 0 immediately
+			if (val === '0') {
+				$(this).val('');
+				$.notify("0 is not allowed", "error");
+				return;
+			}
+		});
+
+		// Extra check after typing is complete
+		$('#POYear,#InvoiceYearCode').on('blur', function () {
+			let val = $(this).val();
+			if (val && parseInt(val, 10) < 2000) {
+				$(this).val('');
+				$.notify("Year cannot be less than 2000", "error");
+			}
+		});
+
+
+		$('#DepriciationAmt').on('input', function () {
+			var purchaseVal = parseFloat($('#PurchaseValue').val()) || 0;
+			var depVal = parseFloat($(this).val()) || 0;
+
+			if (depVal > purchaseVal) {
+				$(this).val('');
+				$.notify("Depreciation Amount cannot be greater than Purchase Value", "error");
+			}
+		});
+
+		$('#ItemName').change(function () {
+			$('#ItemCode').val($('#ItemName').val());
+		});
+		$('#DepartmentName').change(function () {
+			$('#ForDepartmentId').val($('#DepartmentName').val());
+		});
+		$('#CostCenterName').change(function () {
+			$('#CostCenterId').val($('#CostCenterName').val());
+		});
+		$('#ParentAccountName').change(function () {
+			$('#ParentAccountCode').val($('#ParentAccountName').val());
+		});
+		$('#AssetsCateogryName').change(function () {
+			$('#AssetsCateogryId').val($('#AssetsCateogryName').val());
+		});
+		$('#CustoidianEmpName').change(function () {
+			$('#CustoidianEmpId').val($('#CustoidianEmpName').val());
+		});
+
+		$('#ParentAccountName').change(function () {
+			FillParentGoupDetail();
+		});
+
+		$('#DepreciationRate').on('input', function () {
+			var rate = parseFloat($(this).val()) || 0;
+
+			if (rate > 100) {
+				$(this).val('');
+				$.notify("Depreciation Rate cannot be more than 100%", "error");
+			}
+			else if (rate < 0) {
+				$(this).val('');
+				$.notify("Depreciation Rate cannot be negative", "error");
+			}
+		});
+
+
+
+
+
+		function parseCustomDate(val) {
+			if (!val) return null;
+			var parts = val.split('/');
+			if (parts.length !== 3) return null;
+
+			var day = parseInt(parts[0], 10);
+			var monthStr = parts[1];
+			var year = parseInt(parts[2], 10);
+
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames.indexOf(monthStr);
+
+			if (month < 0) return null;
+			return new Date(year, month, day);
+		}
+
+
+		// $('#InvoiceDate').on('change', function () {
+		// 	var invVal = $(this).val();
+		// 	var poVal = $('#PODate').val();
+
+		// 	if (!invVal || !poVal) return;
+
+		// 	var invDate = parseCustomDate(invVal);
+		// 	var poDate = parseCustomDate(poVal);
+		// 	var today = new Date();
+		// 	today.setHours(0, 0, 0, 0);
+
+		// 	if (!invDate || !poDate) return;
+
+		// 	if (invDate < poDate) {
+		// 		$(this).val('');
+		// 		$.notify("Invoice Date cannot be earlier than PO Date", "error");
+		// 		return;
+		// 	}
+
+		// });
+		function toggleUsedFields() {
+			var purchaseType = $('#PurchaseNewUsed').val();
+
+			if (purchaseType === "Used") {
+				$('#OriginalValue').prop('disabled', false);
+			} else {
+				$('#OriginalValue').prop('disabled', true);
+				var invDate = $('#InvoiceDate').val();
+				if (invDate) {
+					$('#FirstAqusitionOn').val(invDate);
+				}
+			}
+		}
+		function setFormattedDate() {
+			var today = new Date();
+			var day = ('0' + today.getDate()).slice(-2);
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames[today.getMonth()];
+			var year = today.getFullYear();
+
+			var formattedDate = day + '/' + month + '/' + year;
+
+			$('#LastupDationDate,#ActualEntryDate,#EntryDate')
+				.datepicker({ dateFormat: 'dd/M/yy' })
+				.val(formattedDate);
+
+			$('#FirstAqusitionOn,#CapatalizationDate')
+				.datepicker({
+					dateFormat: 'dd/M/yy',
+					maxDate: 0
+				})
+				.val(formattedDate);
+			$('#PODate').datepicker({
+				dateFormat: 'dd/M/yy',
+				maxDate: 0,
+				onSelect: updateInvoiceMinDate
+			}).datepicker('setDate', today);
+
+
+			$('#InvoiceDate').datepicker({
+				dateFormat: 'dd/M/yy',
+				maxDate: 0
+			}).datepicker('setDate', today);
+
+
+			updateInvoiceMinDate();
+
+			function updateInvoiceMinDate() {
+				var poDate = $('#PODate').datepicker('getDate');
+				$('#InvoiceDate').datepicker('option', 'minDate', poDate || null);
+
+
+				var invDate = $('#InvoiceDate').datepicker('getDate');
+				if (poDate && invDate && invDate < poDate) {
+					$('#InvoiceDate').datepicker('setDate', poDate);
+				}
+			}
+
+
+			$('#PODate').on('change', updateInvoiceMinDate);
+		}
+
+		function FillCategoryName() {
+			$.ajax({
+				url: '@Url.Action("FillCategoryName", "ToolMoldMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#AssetsCateogryName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.Category_Code + '">' + Val.Category_Name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						
+						$('#AssetsCateogryName').val(AssetsCateogryName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+		function FillCustoidianEmpName() {
+			$.ajax({
+				url: '@Url.Action("FillCustoidianEmpName", "ToolMoldMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#CustoidianEmpName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.Emp_Code + '">' + Val.Emp_Name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var CustoidianEmpId = '@Model.CustoidianEmpId';
+						$('#CustoidianEmpName').val(CustoidianEmpId);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+		function FillItemName() {
+			$.ajax({
+				url: '@Url.Action("FillItemName", "ToolMoldMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#ItemName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.ItemCode + '">' + Val.ItemName + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var ItemCode = '@Model.ItemCode';
+						$('#ItemName').val(ItemCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+
+		function FillCostCenterName() {
+			$.ajax({
+				url: '@Url.Action("FillCostCenterName", "ToolMoldMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#CostCenterName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.CostcenterId + '">' + Val.CostCenterName + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var ItemCode = '@Model.CostCenterId';
+						$('#CostCenterName').val(ItemCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+
+		function FillDepartmentName() {
+			$.ajax({
+				url: '@Url.Action("FillDepartmentName", "ToolMoldMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#DepartmentName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.DeptId + '">' + Val.DeptName + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var ItemCode = '@Model.ForDepartmentId';
+						$('#DepartmentName').val(ItemCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+
+		function FillParentAccountName() {
+			$.ajax({
+				url: '@Url.Action("FillParentAccountName", "ToolMoldMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#ParentAccountName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.account_code + '">' + Val.Account_Name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var ParentAccountCode = '@Model.ParentAccountCode';
+						$('#ParentAccountName').val(ParentAccountCode);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+		function FillParentGoupDetail() {
+			var ParentAccountCode = $('#ParentAccountCode').val();
+			$.ajax({
+				url: '@Url.Action("FillParentGoupDetail", "ToolMoldMaster")',
+				type: 'POST',
+				data: {
+					ParentAccountCode: ParentAccountCode
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#MainGroup').val(obj.Result[0].MainGroup || 0);
+						$('#SubGroup').val(obj.Result[0].SubGroup || 0);
+						$('#UnderGroup').val(obj.Result[0].UnderGroup || 0);
+						$('#SubSubGroup').val(obj.Result[0].SubSubGroup || 0);
+						$('#VendoreAccountCode').val(obj.Result[0].VendoreAccountCode || 0);
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+		function FillEntryID() {
+			var YearCode = $('#YearCode').val();
+			var EntryDate = $('#EntryDate').val();
+			$.ajax({
+				url: '@Url.Action("FillEntryId", "ToolMoldMaster")',
+				type: 'POST',
+				data: {
+					EntryDate: EntryDate,
+					YearCode: YearCode,
+				},
+				async: false,
+				success: function (data, status, xhr) {
+					var obj = $.parseJSON(data);
+					if (obj.StatusCode == 200 && obj.StatusText === 'Success') {
+						$('#ToolEntryId').val(obj.Result[0].EntryId || 0);
+						$('#ToolCode').val(obj.Result[0].ToolCode || 0);
+
+					}
+				},
+				error: function (xhr, status, error) {
+					console.log('Failed to load Entry Id.');
+				}
+			});
+		}
+
+		function GetFormRights() {
+			$.ajax({
+				url: "@Url.Action("GetFormRights")",
+				type: "POST",
+				success: function (data) {
+					if (data != null) {
+						var obj = $.parseJSON(data);
+						if (obj.Result.Table.length == 0) {
+							$(".submitBTN").prop("disabled", true);
+							$('.card-footer .submitBTN').prop("disabled", true);
+							$(".DashBoard")
+								.addClass("disabled-link")
+								.on("click", function (e) {
+									e.preventDefault(); // Prevents clicking the link
+								});
+						}
+						else {
+							// console.log(obj);
+							var optAll = obj.Result.Table[0].OptAll;
+							var optSave = obj.Result.Table[0].OptSave;
+							var optUpdate = obj.Result.Table[0].OptUpdate;
+							var optDelete = obj.Result.Table[0].OptDelete;
+							var optView = obj.Result.Table[0].OptView;
+							if (!optAll) {
+								if (!optSave) {
+									$("#submitBTN").prop("disabled", true);
+									$('.card-footer #submitBTN').prop("disabled", true);
+								}
+								if (!(optUpdate || optDelete || optView)) {
+									$(".DashBoard")
+										.addClass("disabled-link")
+										.on("click", function (e) {
+											e.preventDefault(); // Prevents clicking the link
+										});
+								}
+							}
+						}
+					}
+				},
+				error: function (errMsg) {
+					$.notify(errMsg, { position: "top center", className: "error" });
+				}
+			});
+		}
+
+		function AutoFillItems() {
+
+
+			// Source for PartCodeText
+			const partCodeSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("AutoFillPartCode")',
+					type: 'POST',
+					data: {
+
+
+						SearchItemCode: '',
+						SearchPartCode: request.term
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+						console.log("obj" + obj);
+						console.log("result" + typeof result === "string" ? JSON.parse(result) : result);
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+
+							let filtered = obj.Result.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.PartCode.toLowerCase().includes(term);
+							});
+							console.log(filtered);
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.PartCode,
+									value: item.PartCode,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code,
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+			};
+
+			// Source for ItemNameText
+			const itemNameSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("AutoFillItemName")',
+					type: 'POST',
+					data: {
+
+						SearchItemCode: request.term,
+						SearchPartCode: ''
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+							let filtered = obj.Result.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.ItemName.toLowerCase().includes(term);
+							});
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.ItemName,
+									value: item.Item_Code,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code,
+									partCode: item.PartCode
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+
+			};
+
+			// Autocomplete for PartCodeText
+			$("#OriginalPartCodeText").autocomplete({
+				source: partCodeSource,
+				select: function (event, ui) {
+					$("#OriginalPartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+					$("#OriginalItemNameText").val(ui.item.itemName);
+					$('#OriginalItemCode').val(ui.item.itemCode);
+					$('#OriginalPartCode').val(ui.item.itemCode);
+					FillTotalStock();
+					FillAltStock();
+					GetUnitAltUnit($('#OriginalItemCode').val());
+
+					setFormattedDate();
+					if ($('#IssueToStoreWC').val() == 'W') {
+						FillCurrentWIPBatchINStore();
+					}
+					else {
+						FillStockBatchNo();
+					}
+					AutoFillAltItems();
+					// GetItemPartCode("PartCode");
+					// GetItemRate();
+					// FillCurrentBatchINStore();
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#OriginalPartCodeText").val(ui.item.value);
+					return false;
+				},
+				minLength: 2
+			});
+
+			// Autocomplete for ItemNameText
+			$("#OriginalItemNameText").autocomplete({
+				source: itemNameSource,
+				select: function (event, ui) {
+					$("#OriginalItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+					$("#OriginalPartCodeText").val(ui.item.partCode);
+					$('#OriginalItemCode').val(ui.item.itemCode);
+					$('#OriginalPartCode').val(ui.item.itemCode);
+					FillTotalStock();
+					FillAltStock();
+					GetUnitAltUnit($('#OriginalItemCode').val());
+
+					setFormattedDate();
+					if ($('#IssueToStoreWC').val() == 'W') {
+						FillCurrentWIPBatchINStore();
+					}
+					else {
+						FillStockBatchNo();
+					}
+					// GetItemPartCode("ItemCode");
+					// GetItemRate();
+					// FillCurrentBatchINStore();
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#OriginalItemNameText").val(ui.item.itemName);
+					return false;
+				},
+				minLength: 2
+			});
+
+		}
+
+		function AutoFillAltItems() {
+
+
+			// Source for PartCodeText
+			const partCodeSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("AutoFillAlternatePartCode")',
+					type: 'POST',
+					data: {
+
+						origItemcode: $('#OriginalItemCode').val(),
+						SearchItemCode: '',
+						SearchPartCode: request.term
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+						console.log("obj" + obj);
+						console.log("result" + typeof result === "string" ? JSON.parse(result) : result);
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+
+							let filtered = obj.Result.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.PartCode.toLowerCase().includes(term);
+							});
+							console.log(filtered);
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.PartCode,
+									value: item.PartCode,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code,
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+			};
+
+			// Source for ItemNameText
+			const itemNameSource = function (request, response) {
+				$.ajax({
+					url: '@Url.Action("AutoFillAlternateItemName")',
+					type: 'POST',
+					data: {
+						origItemcode: $('#OriginalItemCode').val(),
+						SearchItemCode: request.term,
+						SearchPartCode: ''
+					},
+					success: function (result) {
+						let obj = typeof result === "string" ? JSON.parse(result) : result;
+
+						if (obj.StatusCode === 200 && obj.StatusText === 'Success' && Array.isArray(obj.Result)) {
+							let filtered = obj.Result.filter(function (item) {
+								let term = request.term.toLowerCase();
+								return item.ItemName.toLowerCase().includes(term);
+							});
+
+							response($.map(filtered, function (item) {
+								return {
+									label: item.ItemName,
+									value: item.Item_Code,
+									itemName: item.ItemName,
+									itemCode: item.Item_Code,
+									partCode: item.PartCode
+								};
+							}));
+						} else {
+							response([]);
+						}
+					}
+				});
+
+			};
+
+			// Autocomplete for PartCodeText
+			$("#AltPartCodeText").autocomplete({
+				source: partCodeSource,
+				select: function (event, ui) {
+					$("#AltPartCodeText").val(ui.item.value).data("itemcode", ui.item.itemCode);
+					$("#AltItemNameText").val(ui.item.itemName);
+					$('#AltItemCode').val(ui.item.itemCode);
+					$('#AltPartCode').val(ui.item.itemCode);
+					// FillTotalStock();
+					// FillAltStock();
+					// GetUnitAltUnit($('#OriginalItemCode').val());
+
+					// setFormattedDate();
+					// if ($('#IssueToStoreWC').val() == 'W') {
+					// 	FillCurrentWIPBatchINStore();
+					// }
+					// else {
+					// 	FillStockBatchNo();
+					// }
+					// GetItemPartCode("PartCode");
+					// GetItemRate();
+					// FillCurrentBatchINStore();
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#AltPartCodeText").val(ui.item.value);
+					return false;
+				},
+				minLength: 2
+			});
+
+			// Autocomplete for ItemNameText
+			$("#AltItemNameText").autocomplete({
+				source: itemNameSource,
+				select: function (event, ui) {
+					$("#AltItemNameText").val(ui.item.itemName).data("itemcode", ui.item.itemCode);
+					$("#AltPartCodeText").val(ui.item.partCode);
+					$('#AltItemCode').val(ui.item.itemCode);
+					$('#AltPartCode').val(ui.item.itemCode);
+					// FillTotalStock();
+					// FillAltStock();
+					// GetUnitAltUnit($('#OriginalItemCode').val());
+
+					// setFormattedDate();
+					// if ($('#IssueToStoreWC').val() == 'W') {
+					// 	FillCurrentWIPBatchINStore();
+					// }
+					// else {
+					// 	FillStockBatchNo();
+					// }
+					// GetItemPartCode("ItemCode");
+					// GetItemRate();
+					// FillCurrentBatchINStore();
+					return false;
+				},
+				focus: function (event, ui) {
+					$("#OriginalItemNameText").val(ui.item.itemName);
+					return false;
+				},
+				minLength: 2
+			});
+
+		}
+
+
+
+		$(document).on('select2:select', '#OriginalItemName,#OriginalPartCode', function (e) {
+
+			var cntId = e.target.id;
+			if (cntId == 'OriginalItemName') {
+				ItemNameChange(cntId);
+			}
+			else {
+				PartCodeChange(cntId);
+			}
+		});
+
+		function ItemNameChange(ID) {
+			SetPartCodeItemName(ID);
+		}
+
+		function PartCodeChange(ID) {
+
+			$.when(SetPartCodeItemName(ID)).done(function () {
+			});
+		}
+
+		function SetPartCodeItemName(ID) {
+			if (!ID) return;
+			else {
+
+				var v = $('#' + ID).select2('val');
+				if (ID == "OriginalPartCode") {
+					$("#OriginalItemName").val(v).trigger("change");
+				}
+
+				if (ID == "OriginalItemName") {
+					$("#OriginalPartCode").val(v).trigger("change");
+				}
+			}
+		}
+
+
+
+		$('#OriginalQty').on('input', function () {
+			var originalQty = parseFloat($(this).val()) || 0;
+			var batchStock = parseFloat($('#BatchStock').val()) || 0;
+			var totalStock = parseFloat($('#TotalStock').val()) || 0;
+
+
+
+			if (originalQty > batchStock || originalQty > totalStock) {
+				$.notify("Original Quantity cannot be greater than Batch Stock or Total Stock!", "error");
+				$(this).val('');
+			}
+		});
+
+
+		$(document).on('select2:select', '#AltItemName,#AltPartCode', function (e) {
+
+			var cntId = e.target.id;
+			if (cntId == 'AltItemName') {
+				AltItemNameChange(cntId);
+			}
+			else {
+				AltPartCodeChange(cntId);
+			}
+		});
+
+		function AltItemNameChange(ID) {
+			SetAltPartCodeItemName(ID);
+		}
+
+		function AltPartCodeChange(ID) {
+			$.when(SetAltPartCodeItemName(ID)).done(function () {
+			});
+		}
+
+		function SetAltPartCodeItemName(ID) {
+			if (!ID) return;
+			else {
+				var v = $('#' + ID).select2('val');
+				if (ID == "AltPartCode") {
+					$("#AltItemName").val(v).trigger("change");
+				}
+
+				if (ID == "AltItemName") {
+					$("#AltPartCode").val(v).trigger("change");
+				}
+			}
+		}
+
+
+
+
+		function ClearItems() {
+
+			$('#Unit, #OriginalQty, #AltUnit, #AltOriginalQty, #OriginalStoreId,  #OrginalWCID,  #BatchNo, #UniqueBatchNo, #PlanNo, #PlanYearCode, #PlanDate, #ProdSchNo, #ProdSchYearCode, #ProdSchDatetime,#Remark,#OriginalPartCodeText,#OriginalItemNameText,,#AltPartCodeText,#AltItemNameText').val('');
+			$('#OriginalPartCode,#AltStoreName,#OriginalItemName,#OriginalItemCode,#StoreName,#WorkCenterName,#AltItemName, #AltPartCode, #AltItemCode').val("").trigger("change");
+
+			$('#BatchStock, #TotalStock, #AltStock, #OrigItemRate, #OriginalItemCode, #OriginalQty, #AltOriginalQty,#AltStoreName,#AltWorkCenterName').val(0);
+
+
+			// $('select').prop('selectedIndex', 0);
+		}
+
+
+		$('#GridButton').click(function (e) {
+			e.preventDefault();
+
+			var missingFields = [];
+
+			var issueToStoreWC = $('#IssueToStoreWC').val();
+			var originalPartCode = $('#OriginalPartCode').val();
+			// var originalItemName = $('#OriginalItemName').val();
+			var originalItemCode = $('#OriginalItemCode').val();
+			// var altItemName = $('#AltItemName').val();
+			var altPartCode = $('#AltPartCode').val();
+			var AltItemCode = $('#AltItemCode').val();
+			var StoreName = $('#StoreName').val();
+			var AltStoreName = $('#AltStoreName').val();
+			//var altUnit = $('#AltUnit').val().trim();
+			var unit = $('#Unit').val();
+			var originalQty = $('#OriginalQty').val();
+
+			if (!originalPartCode) missingFields.push("Original Part Code");
+			// if (!originalItemName) missingFields.push("Original Item Name");
+			if (!originalItemCode) missingFields.push("Original Item Code");
+			// if (!altItemName) missingFields.push("Alt Item Name");
+			if (!altPartCode) missingFields.push("Alt Part Code");
+			if (!AltItemCode) missingFields.push("Alt Item Code");
+			//if (!altUnit) missingFields.push("Alt Unit");
+			if (!unit) missingFields.push("Unit");
+			if (!originalQty) missingFields.push("Original Quantity");
+			//if (!StoreName) missingFields.push("StoreName");
+			//if (!AltStoreName) missingFields.push("AltStoreName");
+
+			if (!issueToStoreWC) {
+				$.notify("Please select Store/WC before adding to the grid!", "error");
+				return;
+			}
+			// if (!originalPartCode || !originalItemName || !originalItemCode ||
+			//     !altItemName || !altPartCode || !altUnit || !unit || !originalQty || !AltItemCode) {
+			//     $.notify("All fields are required to add data to the grid!", "error");
+			//     return;
+			// }
+			if (missingFields.length > 0) {
+				var message = "The following fields are required:\n" + missingFields.join(", ");
+				$.notify(message, "error");
+				return;
+			}
+			var SchData = {
+				OriginalPartCode: $('#OriginalPartCodeText').val(),
+				OriginalItemName: $('#OriginalItemNameText').val(),
+				OriginalItemCode: $('#OriginalItemCode').val(),
+				StoreName: $('#StoreName').val() || '',
+				StoreId: $('#StoreId').val(),
+				WorkCenterName: $('#WorkCenterName').val() || '',
+				WcId: $('#WcId').val(),
+				Unit: $('#Unit').val(),
+				OriginalQty: $('#OriginalQty').val(),
+				// AltItemName: $('#AltItemName').val(),
+				// AltPartCode: $('#AltPartCode').val(),
+				// AltItemCode: $('#AltItemCode').val(),
+				AltPartCode: $('#AltPartCodeText').val(),
+				AltItemName: $('#AltItemNameText').val(),
+				AltItemCode: $('#AltItemCode').val(),
+				AltUnit: $('#AltUnit').val(),
+				AltOriginalQty: $('#AltOriginalQty').val(),
+				OriginalStoreId: $('#OriginalStoreId').val(),
+
+				AltStoreId: $('#AltStoreId').val(),
+				AltStoreName: $('#AltStoreName').val(),
+				// OrginalWCID: $('#OrginalWCID').val(),
+				AltWCID: $('#AltWCID').val(),
+				AltWorkCenterName: $('#AltWorkCenterName').val(),
+				// BatchNo: $('#BatchNo').val(),
+				// UniqueBatchNo: $('#UniqueBatchNo').val(),
+				BatchNo: $('#BatchNo').find(':selected').text().trim(),
+				UniqueBatchNo: $('#UniqueBatchNo').find(':selected').text().trim(),
+				BatchStock: $('#BatchStock').val(),
+				TotalStock: $('#TotalStock').val(),
+				AltStock: $('#AltStock').val(),
+				PlanNo: $('#PlanNo').val(),
+				PlanYearCode: $('#PlanYearCode').val(),
+				PlanDate: $('#PlanDate').val(),
+				ProdSchNo: $('#ProdSchNo').val(),
+				ProdSchYearCode: $('#ProdSchYearCode').val(),
+				ProdSchDatetime: $('#ProdSchDatetime').val(),
+				OrigItemRate: $('#OrigItemRate').val(),
+				Remark: $('#Remark').val(),
+				// OriginalPartCode: $('#OriginalPartCode').find(":selected").text(),
+				// OriginalItemName: $('#OriginalItemName').find(":selected").text(),
+				// AltItemName: $('#AltItemName').find(":selected").text(),
+				// AltPartCode: $('#AltPartCode').find(":selected").text(),
+				WorkCenterName: $('#WorkCenterName').find(":selected").text(),
+				StoreName: $('#StoreName').find(":selected").text(),
+				AltStoreName: $('#AltStoreName').find(":selected").text(),
+				AltWorkCenterName: $('#AltWorkCenterName').find(":selected").text(),
+				//OriginalItemCode: $('#OriginalItemCode').find(":selected").text(),
+			};
+			console.log(SchData);
+			$.ajax({
+				type: "POST",
+				url: '@Url.Action("AddToGridData", "MaterialConversion")',
+				data: { model: SchData },
+				success: function (result, status, xhr) {
+					if (xhr.status == 200 && xhr.responseText == result) {
+
+						$('#divStockGrid').html(result);
+						TotalNoOfRows();
+						ClearItems();
+					} else if (xhr.status == 207) {
+						$.notify('Duplicate Item...!', "info");
+					}
+				},
+				error: function () {
+					$.notify('Something Went Wrong, Please Try Again.', "error");
+				}
+			});
+		});
+
+
+		function TotalNoOfRows() {
+			var Row = $('#divStockGrid tr').length;
+			var tdCount = $('#divStockGrid tr td').length;
+			$('#lblItemCount').text(tdCount >= 1 ? Row : 0);
+		}
+		function ClearGrid() {
+			$.ajax({
+				type: "POST",
+				url: "@Url.Action("ClearGrid")",
+				success: function (result, status, error) {
+					$('#divStockGrid').empty();
+					var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+					$('#divStockGrid').html(NoData);
+					// BasicTotal();
+				},
+				error: function (req, status, error) {
+					alert(error);
+				}
+			});
+		}
+		function CheckBeforeUpdate() {
+			$.ajax({
+				url: '@Url.Action("CheckBeforeUpdate")',
+				type: "POST",
+				data: { Type: $('#Entry_id').val() },
+				success: function (data) {
+					var obj = $.parseJSON(data);
+					if (obj.Result?.Table[0]?.Column1 > 0) {
+						$.notify("You cannot update this Category as Item with this category already exists", "error");
+					} else {
+						$('form').submit();
+					}
+				},
+				error: function (response) {
+					alert(response.responseText);
+				}
+			});
+		}
+
+		var EditEachItem = false;
+
+		function EditItemRow(SrNO) {
+
+			if (EditEachItem) {
+				$.notify('Cannot edit item while another item is being added to the grid!', "error");
+				return;
+			}
+
+			$.ajax({
+				url: '@Url.Action("EditItemRow")',
+				type: "POST",
+				data: { SrNO: SrNO, Mode: "U" },
+				success: function (data) {
+
+					var obj = $.parseJSON(data);
+					if (obj != null) {
+
+						EditEachItem = true;
+
+						// $('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
+						// $('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
+						// $('#OriginalItemCode').val(obj[0].OriginalItemCode);
+						$('#OriginalItemCode').val(obj[0].OriginalItemCode).trigger("change");
+						$('#OriginalPartCode').val(obj[0].OriginalPartCode).trigger("change");
+						/* $('#ItemName').val(obj[0].ItemName); */
+						$('#OriginalPartCodeText').val(obj[0].OriginalPartCode);
+						$('#OriginalItemNameText').val(obj[0].OriginalItemName);
+						$('#Unit').val(obj[0].Unit);
+						$('#OriginalQty').val(obj[0].OriginalQty);
+						$('#AltItemCode').val(obj[0].AltItemCode).trigger("change");
+						$('#AltPartCode').val(obj[0].AltPartCode).trigger("change");
+						/* $('#ItemName').val(obj[0].ItemName); */
+						$('#AltPartCodeText').val(obj[0].AltPartCode);
+						$('#AltItemNameText').val(obj[0].AltItemName);
+						$('#AltUnit').val(obj[0].AltUnit);
+						$('#AltOriginalQty').val(obj[0].AltOriginalQty);
+						$('#OriginalStoreId').val(obj[0].OriginalStoreId).trigger("change");
+						$('#StoreName').val(obj[0].StoreId).trigger("change");
+						$('#AltStoreName').val(obj[0].AltStoreId).trigger("change");
+						$('#WorkCenterName').val(obj[0].WcId).trigger("change");
+						$('#AltWorkCenterName').val(obj[0].AltWCID).trigger("change");
+						$('#BatchNo').val(obj[0].BatchNo).trigger("change");
+						$('#UniqueBatchNo').val(obj[0].UniqueBatchNo).trigger("change");
+						$('#BatchStock').val(obj[0].BatchStock).trigger("change");
+						$('#TotalStock').val(obj[0].TotalStock).trigger("change");
+						$('#AltStock').val(obj[0].AltStock).trigger("change");
+						$('#PlanNo').val(obj[0].PlanNo).trigger("change");
+						$('#PlanYearCode').val(obj[0].PlanYearCode).trigger("change");
+						$('#PlanDate').val(obj[0].PlanDate).trigger("change");
+						$('#ProdSchNo').val(obj[0].ProdSchNo).trigger("change");
+						$('#ProdSchYearCode').val(obj[0].ProdSchYearCode).trigger("change");
+						$('#ProdSchDatetime').val(obj[0].ProdSchDatetime).trigger("change");
+						$('#OrigItemRate').val(obj[0].OrigItemRate).trigger("change");
+						$('#Remark').val(obj[0].Remark).trigger("change");
+
+						// var newSrNo = obj[0].SrNO;
+						// if (currentSrNo !== newSrNo) {
+						//     $('#SrNO').val(newSrNo).trigger("change");
+						// }
+						var rowCount = $('#divStockGrid tr').length;
+						for (var i = 1; i <= rowCount + 1; i++) {
+							$('#editItemGrid-' + i).css("pointer-events", "none");
+							$('#editItemGrid-' + i).css("cursor", "not-allowed");
+						}
+
+						DeleteItemRow(SrNO);
+					}
+				},
+				error: function (response) {
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
+		function DeleteItemRow(SrNO) {
+
+			$.ajax({
+				url: '@Url.Action("DeleteItemRow")',
+				type: "POST",
+				data: { SrNO: SrNO, Mode: "U" },
+				success: function (data, status, xhr) {
+					$('#divStockGrid').html(data);
+					$.notify("Process deleted from Grid", "info");
+					EditEachItem = false;
+
+				},
+				error: function (response, status, xhr) {
+
+					$.notify("Cannot delete item that exists in Other Grid!!!", "error");
+				},
+				failure: function (response, status, xhr) {
+					alert(response.responseText);
+					$.notify(response.responseText, "error");
+				}
+			});
+		}
+
+
+		function PressBack() {
+			sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+			sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+			sessionStorage.setItem('GroupNameBack', $('#GroupNameBack').val());
+			sessionStorage.setItem('LedgerNameBack', $('#LedgerNameBack').val());
+			sessionStorage.setItem('OpeningYearCodeBack', $('#OpeningYearCodeBack').val());
+			sessionStorage.setItem('PreviousAmountBack', $('#PreviousAmountBack').val());
+			sessionStorage.setItem('DrCrBack', $('#DrCrBack').val());
+			sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+			window.history.back();
+		}
+	</script>
+}
+
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+@* <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script> *@
+
+
+
+

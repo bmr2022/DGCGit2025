@@ -156,7 +156,21 @@
             sessionStorage.removeItem('HSNNoBack');
             sessionStorage.removeItem('GlobalSearchBack');
         });
-
+          function  EditButtonData(event,EntryId,YearCode,AgainstVoucherNo) {
+                  event.preventDefault();
+                   var urlHref = $(event.currentTarget).attr("href");
+                   if (AgainstVoucherNo && AgainstVoucherNo.trim() !== "" && AgainstVoucherNo!=="()") {
+            $.notify("This bill is linked with Against Voucher No: " + AgainstVoucherNo, "error");
+            return; // stop further execution
+        }
+                  else{
+             
+            var linkUrl = urlHref;
+            linkUrl = linkUrl + "&FromDate=" + $('#FromDate').val() + "&ToDate=" + $('#ToDate').val() + "&DashboardType=" + $('#DashboardType').val() + "&MRNType=" + $('#MRNType').val() + "&DocumentName=" + $('#DocumentName').val() + "&VendorName=" + $('#VendorName').val() + "&VoucherNo=" + $('#VoucherNo').val() + "&InvoiceNo=" + $('#InvoiceNo').val() + "&MRNNo=" + $('#MRNNo').val() + "&GateNo=" + $('#GateNo').val() + "&PartCode=" + $('#PartCode').val() + "&ItemName=" + $('#ItemName').val() + "&HSNNo=" + $('#HSNNo').val() + "&Searchbox=" + $('#search-box').val();
+            window.location.href = linkUrl;
+            }
+        }
+          
         function BackButtonData(event) {
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
@@ -566,7 +580,7 @@
         function confirmDelete(event, entryID, yearCode, purchVouchNo, EnteredBy, invNo, isDetail, cnt) {
             event.preventDefault();
             var urlHref = $(event.currentTarget).attr("href");
-
+              
             if (confirm("Are you sure you want to delete this entry?")) {
                 deleteItem(entryID, yearCode, purchVouchNo, EnteredBy, invNo, isDetail, cnt);
             }

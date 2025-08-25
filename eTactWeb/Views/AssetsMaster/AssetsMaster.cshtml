@@ -1,4 +1,4 @@
-﻿@model eTactWeb.DOM.Models.AssetsMasterModel;
+﻿	@model eTactWeb.DOM.Models.AssetsMasterModel;
 @{
 	ViewData["Title"] = "Assets Master";
 	Layout = "~/Views/Shared/_LayoutMain.cshtml";
@@ -96,70 +96,70 @@
 										<label asp-for="AssetsCode" class="form-label">Assets Code</label>
 										<input asp-for="AssetsCode" class="form-control"  />
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-										<label asp-for="AssetsName" class="form-label">Assets Name</label>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"style="width:220px;">
+										<label asp-for="AssetsName" class="form-label" style="color:red;">Assets Name*</label>
 										<input asp-for="AssetsName" class="form-control"  />
 									</div>
 									
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="AssetsCateogryName" class="form-label">Category Name</label>
+										<label asp-for="AssetsCateogryName" class="form-label" style="color:red;">Category Name*</label>
 										<input type="hidden" asp-for="AssetsCateogryId" />
 										<select class="form-select" asp-for="AssetsCateogryName">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="ItemName" class="form-label">Item Name</label>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="ItemName" class="form-label" style="color:red;">Item Name*</label>
 										<input type="hidden" asp-for="ItemCode" />
-										<select class="form-select" asp-for="ItemName">
+										<select class="form-select" asp-for="ItemName" style="width:230px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
-									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="ParentAccountName" class="form-label">Parent Group</label>
+									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+										<label asp-for="ParentAccountName" class="form-label" style="color:red;">Parent Group*</label>
 										<input type="hidden" asp-for="ParentAccountCode" />
-										<select class="form-select" asp-for="ParentAccountName">
+										<select class="form-select" asp-for="ParentAccountName" style="width:230px;">
 											<option value="">-Select-</option>
 										</select>
 									</div>
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="MainGroup" class="form-label">Main Group</label>
-										<input asp-for="MainGroup" class="form-control" />
+										<label asp-for="MainGroup" class="form-label" style="color:red;">Main Group*</label>
+										<input asp-for="MainGroup" class="form-control" readonly/>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="SubGroup" class="form-label">Sub Group</label>
-										<input asp-for="SubGroup" class="form-control" />
+										<label asp-for="SubGroup" class="form-label" style="color:red;">Sub Group*</label>
+										<input asp-for="SubGroup" class="form-control" readonly />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="UnderGroup" class="form-label">Under Group</label>
-										<input asp-for="UnderGroup" class="form-control" />
+										<label asp-for="UnderGroup" class="form-label" style="color:red;">Under Group*</label>
+										<input asp-for="UnderGroup" class="form-control" readonly/>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="SubSubGroup" class="form-label">Sub Sub Group</label>
-										<input asp-for="SubSubGroup" class="form-control" />
+										<label asp-for="SubSubGroup" class="form-label" style="color:red;">Sub Sub Group*</label>
+										<input asp-for="SubSubGroup" class="form-control" readonly />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
 										<label asp-for="VendoreAccountCode" class="form-label">Account Type</label>
-										<input asp-for="VendoreAccountCode" class="form-control" />
+										<input asp-for="VendoreAccountCode" class="form-control" readonly/>
 									</div>
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="CostCenterName" class="form-label">Cost Center Name</label>
+										<label asp-for="CostCenterName" class="form-label" style="color:red;">Cost Center Name*</label>
 										<input type="hidden" asp-for="CostCenterId" />
 										<select class="form-select" asp-for="CostCenterName">
 											<option value="">-Select-</option>
 										</select>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="DepartmentName" class="form-label">Department Name</label>
+										<label asp-for="DepartmentName" class="form-label" style="color:red;">Department Name*</label>
 										<input type="hidden" asp-for="ForDepartmentId" />
 										<select class="form-select" asp-for="DepartmentName">
 											<option value="">-Select-</option>
 										</select>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="UseFullLifeInYear" class="form-label">Use Full Life In Year</label>
+										<label asp-for="UseFullLifeInYear" class="form-label" style="color:red;">Use Full Life In Year*</label>
 										<input asp-for="UseFullLifeInYear" class="form-control" />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
@@ -195,19 +195,25 @@
 												<label asp-for="PurchaseValue" class="form-label">Purchase Value</label>
 												<input asp-for="PurchaseValue" class="form-control" />
 											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="PurchaseNewUsed" class="form-label">Purchase New Used</label>
-												<input asp-for="PurchaseNewUsed" class="form-control" />
+											
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:190px;">
+												<label asp-for="PurchaseNewUsed" class="form-label" >New/ Used</label>
+												
+												<select class="form-select" asp-for="PurchaseNewUsed" style="width:170px;">
+													<option value="">-Select-</option>
+													<option value="New"selected>New</option>
+													<option value="Used">Used</option>
+												</select>
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
 												<label asp-for="CountryOfOrigin" class="form-label">Country Of Origin</label>
 												<input asp-for="CountryOfOrigin" class="form-control" />
 											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
 												<label asp-for="Technician" class="form-label">Technician</label>
 												<input asp-for="Technician" class="form-control" />
 											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:160px;">
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
 												<label asp-for="TechnicialcontactNo" class="form-label">Technicial contact No</label>
 												<input asp-for="TechnicialcontactNo" class="form-control" />
 											</div>
@@ -215,15 +221,15 @@
 												<label asp-for="TechEmployeeName" class="form-label">Technicial Employee Name</label>
 												<input asp-for="TechEmployeeName" class="form-control" />
 											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:180px;">
-												<label asp-for="TechEmployeeName" class="form-label">Technicial Employee Name</label>
-												<input asp-for="TechEmployeeName" class="form-control" />
-											</div>
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="CustoidianEmpId" class="form-label">Custoidian EmpId </label>
-												<input asp-for="CustoidianEmpId" class="form-control" />
-											</div>
 											
+											
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+												<label asp-for="CustoidianEmpName" class="form-label">Custoidian EmpName</label>
+												<input type="hidden" asp-for="CustoidianEmpId"/>
+												<select class="form-select" asp-for="CustoidianEmpName" style="width:230px;">
+													<option value="">-Select-</option>
+												</select>
+											</div>
 										</div>
 									</div>
 
@@ -242,11 +248,13 @@
 									<div class="accordion-body">
 										<div class="row g-2">
 											
-											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-												<label asp-for="DepreciationMethod" class="form-label">Depreciation Method</label>
+											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:240px;">
+												<label asp-for="DepreciationMethod" class="form-label" style="color:red;">Depreciation Method</label>
 
-												<select class="form-select" asp-for="DepreciationMethod">
+												<select class="form-select" asp-for="DepreciationMethod" style="width:220px;">
 													<option value="">-Select-</option>
+													<option value="Weighted Method" >Weighted Method</option>
+													<option value="Straight-line Method" selected>Straight-line Method</option>
 												</select>
 											</div>
 											<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
@@ -326,9 +334,15 @@
 													<label asp-for="InsuranceDetail" class="form-label">Insurance Detail </label>
 													<input asp-for="InsuranceDetail" class="form-control" />
 												</div>
+												
 												<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-													<label asp-for="ConsiderInInvetory" class="form-label">Consider In Invetory </label>
-													<input asp-for="ConsiderInInvetory" class="form-control" />
+													<label asp-for="ConsiderInInvetory" class="form-label">Consider In Invetory</label>
+
+													<select class="form-select" asp-for="ConsiderInInvetory">
+														<option value="">-Select-</option>
+														<option value="Yes">Yes</option>
+														<option value="No" >No</option>
+													</select>
 												</div>
 											</div>
 										</div>
@@ -463,17 +477,25 @@
 	<script>
 		$(document).ready(function () {
 			//GetFormRights();
-			if ($('#Mode').val() !== "U") {
+			if ($('#Mode').val() !== "U" && $('#Mode').val() !== "V") {
 				setFormattedDate();
 				FillEntryID();
 				TotalNoOfRows();
-				FillSlipNo();
+				
 			}
 			FillItemName();
 			FillCostCenterName();
 			FillDepartmentName();
 			FillParentAccountName();
-		
+			FillCategoryName();
+			FillCustoidianEmpName();
+			var currentYear = new Date().getFullYear();
+			$('#POYear,#InvoiceYearCode').each(function () {
+				var val = $(this).val();
+				if (!val || val == "0") {  
+					$(this).val(currentYear);
+				}
+			});
 			$('#DiscountCustCatEntryId').rules("remove", "required");
 			$('#AssetsEntryId').rules("remove", "required");
 			$('#EntryDate').rules("remove", "required");
@@ -531,6 +553,7 @@
 			$('#LastUpdatedbyEmpName').rules("remove", "required");
 			$('#LastupDationDate').rules("remove", "required");
 			$('#EntryByMachine').rules("remove", "required");
+			$('#CustoidianEmpName').rules("remove", "required");
 
 
 			$('#DepartmentName').select2();
@@ -538,24 +561,128 @@
 			$('#ItemName').select2();
 			$('#DepreciationMethod').select2();
 			$('#ParentAccountName').select2();
+			$('#AssetsCateogryName').select2();
+			$('#PurchaseNewUsed').select2();
+			$('#CustoidianEmpName').select2();
+			$('#ConsiderInInvetory').select2();
 			$('#totalRows').text($('#divStockGrid tr').length);
 
 
-
+			toggleUsedFields();
+			$('#PurchaseNewUsed').on('change', function () {
+				toggleUsedFields();
+			});
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
-
+			$(document).on("keydown", function (e) {
+				if (e.key === "Enter") {
+					e.preventDefault();
+					return false;
+				}
+			});
 			$('.submitBTN').click(function (e) {
-
-				console.log("SubmitButton Click");
 				e.preventDefault();
-				//$(this).off('click');
-				$('form').submit();
+				
+				console.log("SubmitButton Click - Validation passed");
+				$('form').submit(); 
 			});
 
 
+
 		})
+		$('#InsuredAmount').on('input', function () {
+			var purchaseVal = parseFloat($('#PurchaseValue').val()) || 0;
+			var insuredVal = parseFloat($(this).val()) || 0;
+
+			if (insuredVal > purchaseVal) {
+				$(this).val('');
+				$.notify("Insured Amount cannot be greater than Purchase Value", "error");
+			}
+		});
+
+		$('#PurchaseValue').on('input', function () {
+			var purchaseVal = $(this).val();
+			$('#OriginalValue').val(purchaseVal);
+			$('#NetBookValue').val(purchaseVal);
+		});
+
+		$(function () {
+			var countries = [
+				"India", "United States", "United Kingdom", "Canada", "Australia",
+				"Germany", "France", "Japan", "China", "Brazil", "South Africa", "Italy"
+			];
+
+			$("#CountryOfOrigin").autocomplete({
+				source: countries,
+				minLength: 1 // start suggesting after typing 1 char
+			});
+		});
+		$('#UseFullLifeInYear').on('input', function () {
+			var val = $(this).val();
+
+			if (isNaN(val)) {
+				$(this).val('');
+				$.notify("Only numeric values are allowed", "error");
+				return;
+			}
+
+			if (val < 0) {
+				$(this).val('');
+				$.notify("Minus values and 0 are not allowed", "error");
+				return;
+			}
+			if (val > 500) {
+				$(this).val('');
+				$.notify("Value cannot be more than 500", "error");
+				return;
+			}
+		});
+		$('#POYear,#InvoiceYearCode').on('input', function () {
+			let val = $(this).val();
+
+			// Remove minus immediately
+			if (val.includes('-')) {
+				$(this).val(val.replace(/-/g, ''));
+				$.notify("Minus values are not allowed", "error");
+				return;
+			}
+
+			// Remove non-numeric immediately
+			if (val && isNaN(val)) {
+				$(this).val('');
+				$.notify("Only numeric values allowed", "error");
+				return;
+			}
+
+			// Block 0 immediately
+			if (val === '0') {
+				$(this).val('');
+				$.notify("0 is not allowed", "error");
+				return;
+			}
+		});
+
+		// Extra check after typing is complete
+		$('#POYear,#InvoiceYearCode').on('blur', function () {
+			let val = $(this).val();
+			if (val && parseInt(val, 10) < 2000) {
+				$(this).val('');
+				$.notify("Year cannot be less than 2000", "error");
+			}
+		});
+
+
+		$('#DepriciationAmt').on('input', function () {
+			var purchaseVal = parseFloat($('#PurchaseValue').val()) || 0;
+			var depVal = parseFloat($(this).val()) || 0;
+
+			if (depVal > purchaseVal) {
+				$(this).val('');
+				$.notify("Depreciation Amount cannot be greater than Purchase Value", "error");
+			}
+		});
+
 		$('#ItemName').change(function () {
 			$('#ItemCode').val($('#ItemName').val());
 		});
@@ -568,10 +695,84 @@
 		$('#ParentAccountName').change(function () {
 			$('#ParentAccountCode').val($('#ParentAccountName').val());
 		});
+		$('#AssetsCateogryName').change(function () {
+			$('#AssetsCateogryId').val($('#AssetsCateogryName').val());
+		});
+		$('#CustoidianEmpName').change(function () {
+			$('#CustoidianEmpId').val($('#CustoidianEmpName').val());
+		}); 
+
 		$('#ParentAccountName').change(function () {
 			FillParentGoupDetail();
 		});
+		
+			$('#DepreciationRate').on('input', function () {
+				var rate = parseFloat($(this).val()) || 0;
 
+				if (rate > 100) {
+					$(this).val('');
+					$.notify("Depreciation Rate cannot be more than 100%", "error");
+				}
+				else if (rate < 0) {
+					$(this).val('');
+					$.notify("Depreciation Rate cannot be negative", "error");
+				}
+			});
+
+			
+
+		
+
+		function parseCustomDate(val) {
+			if (!val) return null;
+			var parts = val.split('/');
+			if (parts.length !== 3) return null;
+
+			var day = parseInt(parts[0], 10);
+			var monthStr = parts[1];
+			var year = parseInt(parts[2], 10);
+
+			var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+			var month = monthNames.indexOf(monthStr);
+
+			if (month < 0) return null;
+			return new Date(year, month, day);
+		}
+
+
+		// $('#InvoiceDate').on('change', function () {
+		// 	var invVal = $(this).val();
+		// 	var poVal = $('#PODate').val();
+
+		// 	if (!invVal || !poVal) return;
+
+		// 	var invDate = parseCustomDate(invVal);
+		// 	var poDate = parseCustomDate(poVal);
+		// 	var today = new Date();
+		// 	today.setHours(0, 0, 0, 0);
+
+		// 	if (!invDate || !poDate) return;
+
+		// 	if (invDate < poDate) {
+		// 		$(this).val('');
+		// 		$.notify("Invoice Date cannot be earlier than PO Date", "error");
+		// 		return;
+		// 	}
+
+		// });
+		function toggleUsedFields() {
+			var purchaseType = $('#PurchaseNewUsed').val(); 
+
+			if (purchaseType === "Used") {
+				$('#OriginalValue').prop('disabled', false);
+			} else {
+				$('#OriginalValue').prop('disabled', true);
+				var invDate = $('#InvoiceDate').val();
+				if (invDate) {
+					$('#FirstAqusitionOn').val(invDate);
+				}
+			}
+		}
 		function setFormattedDate() {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
@@ -581,11 +782,98 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#LastupDationDate,#ActualEntryDate,#EntryDate,#PODate,#InvoiceDate,#CapatalizationDate')
+			$('#LastupDationDate,#ActualEntryDate,#EntryDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
+
+			$('#FirstAqusitionOn,#CapatalizationDate')
+				.datepicker({
+					dateFormat: 'dd/M/yy',
+					maxDate: 0  
+				})
+				.val(formattedDate);
+			$('#PODate').datepicker({
+				dateFormat: 'dd/M/yy',
+				maxDate: 0,
+				onSelect: updateInvoiceMinDate
+			}).datepicker('setDate', today);
+
+			
+			$('#InvoiceDate').datepicker({
+				dateFormat: 'dd/M/yy',
+				maxDate: 0
+			}).datepicker('setDate', today);
+
+			
+			updateInvoiceMinDate();
+
+			function updateInvoiceMinDate() {
+				var poDate = $('#PODate').datepicker('getDate');
+				$('#InvoiceDate').datepicker('option', 'minDate', poDate || null);
+
+				
+				var invDate = $('#InvoiceDate').datepicker('getDate');
+				if (poDate && invDate && invDate < poDate) {
+					$('#InvoiceDate').datepicker('setDate', poDate);
+				}
+			}
+
+			
+			$('#PODate').on('change', updateInvoiceMinDate);
 		}
 
+		function FillCategoryName() {
+			$.ajax({
+				url: '@Url.Action("FillCategoryName", "AssetsMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#AssetsCateogryName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.Category_Code + '">' + Val.Category_Name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var AssetsCateogryName = '@Model.AssetsCateogryId';
+							$('#AssetsCateogryName').val(AssetsCateogryName);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
+		function FillCustoidianEmpName() {
+			$.ajax({
+				url: '@Url.Action("FillCustoidianEmpName", "AssetsMaster")',
+				type: 'POST',
+				async: false,
+				success: function (response, status, error) {
+					var Dropdown = $('#CustoidianEmpName');
+					var obj = $.parseJSON(response);
+					Dropdown.empty();
+					Dropdown.append('<option value="">--Select--</option>');
+
+
+					$.each(obj.Result, function (index, Val) {
+						Dropdown.append('<option value="' + Val.Emp_Code + '">' + Val.Emp_Name + '</option>');
+					});
+
+					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+						var CustoidianEmpId = '@Model.CustoidianEmpId';
+						$('#CustoidianEmpName').val(CustoidianEmpId);
+					}
+				},
+				error: function (xhr, status, error) {
+					alert('Failed to load groups.');
+				}
+			});
+		}
 		function FillItemName() {
 			$.ajax({
 				url: '@Url.Action("FillItemName", "AssetsMaster")',
@@ -726,7 +1014,7 @@
 				data: {
 					EntryDate: EntryDate,
 					YearCode: YearCode,
-				},@Model.AssetsCode
+				},
 				async: false,
 				success: function (data, status, xhr) {
 					var obj = $.parseJSON(data);
@@ -1444,10 +1732,14 @@
 
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
 <script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css" />
-<script src="https://cdnjs.cloudflare.com/ajax/libs/notify/0.4.2/notify.min.js"></script>
+
+
+@* <link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script> *@
 
 
 

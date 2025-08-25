@@ -251,7 +251,7 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBAtchEditable = dr["AllowBAtchEditable"] != DBNull.Value ? dr["AllowBAtchEditable"].ToString() : string.Empty,
                                                                 AllowBAtchEditablePAssword = dr["AllowBAtchEditablePAssword"] != DBNull.Value ? dr["AllowBAtchEditablePAssword"].ToString() : string.Empty,
                                                                // FIFOBasedBatchInventory = dr["FIFOBasedBatchInventory"] != DBNull.Value ? dr["FIFOBasedBatchInventory"].ToString() : string.Empty,
-                                                                FIFOBasedBatchInventoryInJobWorkIss = dr["FIFOBasedBatchInventoryInJobWorkIss"] != DBNull.Value ? dr["FIFOBasedBatchInventoryInJobWorkIss"].ToString() : string.Empty,
+                                                                //FIFOBasedBatchInventoryInJobWorkIss = dr["FIFOBasedBatchInventoryInJobWorkIss"] != DBNull.Value ? dr["FIFOBasedBatchInventoryInJobWorkIss"].ToString() : string.Empty,
 
 
                                                             }).ToList();
@@ -278,7 +278,7 @@ namespace eTactWeb.Data.DAL
                                                                 AllowBackDateJOBWorkIssue = dr["AllowBackDateJOBWorkIssue"] != DBNull.Value ? dr["AllowBackDateJOBWorkIssue"].ToString() : string.Empty,
                                                                 ALLOWBACKDATEJobworkRec = dr["ALLOWBACKDATEJobworkRec"] != DBNull.Value ? dr["ALLOWBACKDATEJobworkRec"].ToString() : string.Empty,
                                                                 VendorJWAdjustAutoOrManual = dr["vendorJWAdjustAutoOrManual"] != DBNull.Value ? dr["vendorJWAdjustAutoOrManual"].ToString() : string.Empty,
-                                                                FIFOBasedBatchInventoryInJobWorkIss = dr["FIFOBasedBatchInventoryInJobWorkIss"] != DBNull.Value ? dr["FIFOBasedBatchInventoryInJobWorkIss"].ToString() : string.Empty,
+                                                               // FIFOBasedBatchInventoryInJobWorkIss = dr["FIFOBasedBatchInventoryInJobWorkIss"] != DBNull.Value ? dr["FIFOBasedBatchInventoryInJobWorkIss"].ToString() : string.Empty,
 
                                                             }).ToList();
                        }
@@ -368,7 +368,7 @@ namespace eTactWeb.Data.DAL
                                                                 BatchWiseProduction = dr["BatchWiseProduction"] != DBNull.Value ? dr["BatchWiseProduction"].ToString() : string.Empty,
                                                                 ProdEntryAllowBackDate = dr["ProdEntryAllowBackDate"] != DBNull.Value ? dr["ProdEntryAllowBackDate"].ToString() : string.Empty,
                                                                 AllowBackDateDAILYPRODUCTION = dr["AllowBackDateDAILYPRODUCTION"] != DBNull.Value ? dr["AllowBackDateDAILYPRODUCTION"].ToString() : string.Empty,
-                                                                ProdAllowMultiplePlanInProdSchOrNot = dr["ProdAllowMultiplePlanInProdSchOrNot"] != DBNull.Value ? dr["ProdAllowMultiplePlanInProdSchOrNot"].ToString() : string.Empty,
+                                                                //ProdAllowMultiplePlanInProdSchOrNot = dr["ProdAllowMultiplePlanInProdSchOrNot"] != DBNull.Value ? dr["ProdAllowMultiplePlanInProdSchOrNot"].ToString() : string.Empty,
 
                                                             }).ToList();
                         }
@@ -401,8 +401,8 @@ namespace eTactWeb.Data.DAL
                                                             {
                                                                 AllowBackDateSALEBILL = dr["AllowBackDateSALEBILL"] != DBNull.Value ? dr["AllowBackDateSALEBILL"].ToString() : string.Empty,
                                                                 VoucherRotationDailyMonthYearly = dr["VoucherRotationDailyMonthYearly"] != DBNull.Value ? dr["VoucherRotationDailyMonthYearly"].ToString() : string.Empty,
-                                                                AccSaleBillManualTaxAlloweed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
-                                                                AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
+                                                                //AccSaleBillManualTaxAlloweed = dr["AccSaleBillManualTaxAlloweed"] != DBNull.Value ? dr["AccSaleBillManualTaxAlloweed"].ToString() : string.Empty,
+                                                                //AccPasswordToAllowManualTax = dr["AccPasswordToAllowManualTax"] != DBNull.Value ? dr["AccPasswordToAllowManualTax"].ToString() : string.Empty,
                                                                 salebillShowItemBatchFIFOBased = dr["salebillShowItemBatchFIFOBased"] != DBNull.Value ? dr["salebillShowItemBatchFIFOBased"].ToString() : string.Empty,
                                                                
                                                             }).ToList();

@@ -287,7 +287,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="H_SalePersonDetail">
                             <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SalePersonDetail" aria-expanded="false" aria-controls="B_SalePersonDetail">
-                                <strong><i class="fa-solid fa-user-helmet-safety fa-fw pr35 fa-lg"></i>SALE PERSON DETAIL</strong>
+                                <strong><i class="fa-solid fa-user-helmet-safety fa-fw pr35 fa-lg"></i>SALE PERSON DETAIL(For Our Organization)</strong>
                                 <small class="p-3"></small>
                             </button>
                         </h2>
@@ -342,7 +342,7 @@
                     <div class="accordion-item">
                         <h2 class="accordion-header" id="H_ContactDetail">
                             <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_ContactDetail" aria-expanded="false" aria-controls="B_ContactDetail">
-                                <strong><i class="fa-solid fa-address-card pr35 fa-fw fa-lg" aria-hidden="true"></i>CONTACT DETAIL</strong>
+                                <strong><i class="fa-solid fa-address-card pr35 fa-fw fa-lg" aria-hidden="true"></i>CONTACT DETAIL(FOR Vender/Customer)</strong>
                                 <small class="p-3"></small>
                             </button>
                         </h2>
@@ -350,8 +350,10 @@
                             <div class="accordion-body">
                                 <div class="row g-2 gx-3">
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
-                                        <label asp-for="SalesPersonName" class="form-label">Sale Person Name</label>
-                                        <input asp-for="SalesPersonName" class="form-control" />
+                                        <select asp-for="SalePersonEmpId" class="form-select editable-select" style="width:200px;">
+                                                
+                                            <option value="">-Select-</option>
+                                        </select>
                                     </div>
                                     <div class="col-xl-2 col-lg-3 col-md-4 col-sm-6 col-xs-12">
                                         <label asp-for="SalesPersonEmailId" class="form-label">Email Id</label>
@@ -629,6 +631,7 @@
             allowClear: true,
             width: 'resolve'            // Adjusts to 200px as set
         });
+            GetSalePersonName();
             GetFormRights();
             RemoveOptionsfromPAC();
             $("#Entry_Date").datepicker({ minDate: 0 });
@@ -841,6 +844,35 @@
                 RemoveErrorCls('GSTTAXTYPE');
             }
         });
+
+        function GetSalePersonName(){
+            $.ajax({
+                type: "POST",
+                url: '@Url.Action("GetSalePersonName", "AccountMaster")',
+                dataType: "json",
+                success: function (data, status, error) {
+                    if (data) {
+                        var objResult = $.parseJSON(data);
+
+                        if (objResult.StatusCode == 200 && objResult.StatusText == 'Success') {
+                            $('#SalePersonEmpId').empty();
+                            $('#SalePersonEmpId').append('<option>-Select-</option>');
+                            $.each(objResult.Result, function (key, val) {
+                                $('#SalePersonEmpId').append('<option value="' + val.Emp_id + '">' + val.Emp_Name + '</option>');
+                            });
+                        }
+                        if (objResult.StatusCode == 404 && objResult.StatusText == 'Error') {
+                            $('#SalePersonEmpId').empty();
+                            $('#SalePersonEmpId').append('<option>-Select-</option>');
+                        }
+                    }
+                }
+            }).done(function () {
+                if ("@Model.Mode=='U'") {
+                    $('#SalePersonEmpId').val('@Model.SalePersonEmpId');
+                }
+            });
+        }
 
         $('#TDS').change(function () {
             if ($(this).val() == "Y") {

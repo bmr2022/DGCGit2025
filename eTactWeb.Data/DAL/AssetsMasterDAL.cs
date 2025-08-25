@@ -115,6 +115,43 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
+        public async Task<ResponseResult> FillCategoryName()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FillCategoryName"));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpAssetsMaster", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+        public async Task<ResponseResult> FillCustoidianEmpName()
+		{
+			var _ResponseResult = new ResponseResult();
+			try
+			{
+				var SqlParams = new List<dynamic>();
+				SqlParams.Add(new SqlParameter("@Flag", "FillCustoidianEmpName"));
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpAssetsMaster", SqlParams);
+			}
+			catch (Exception ex)
+			{
+				dynamic Error = new ExpandoObject();
+				Error.Message = ex.Message;
+				Error.Source = ex.Source;
+			}
+
+			return _ResponseResult;
+		}
+
 		public async Task<ResponseResult> FillParentGoupDetail(int ParentAccountCode)
 		{
 			var _ResponseResult = new ResponseResult();
@@ -143,13 +180,18 @@ namespace eTactWeb.Data.DAL
 				var sqlParams = new List<dynamic>();
 				var actualentDate = CommonFunc.ParseFormattedDate(model.ActualEntryDate);
 				var updationDate = CommonFunc.ParseFormattedDate(model.LastupDationDate);
+				var cptDate = CommonFunc.ParseFormattedDate(model.CapatalizationDate);
+				var fsteqDate = CommonFunc.ParseFormattedDate(model.FirstAqusitionOn);
+				var invDate = CommonFunc.ParseFormattedDate(model.InvoiceDate);
+				var PODate = CommonFunc.ParseFormattedDate(model.PODate);
+				var entDate = CommonFunc.ParseFormattedDate(model.EntryDate);
 				if (model.Mode == "U" || model.Mode == "V")
-				{ 
-					//sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
-					//sqlParams.Add(new SqlParameter("@DiscountCustCatEntryId", model.AssetsEntryId));
-					//sqlParams.Add(new SqlParameter("@LastUpdatedbyEmpId", model.LastUpdatedbyEmpId));
-					//sqlParams.Add(new SqlParameter("@LastupDationDate", updationDate));
-				}
+				{
+                    sqlParams.Add(new SqlParameter("@Flag", "UPDATE"));
+                    sqlParams.Add(new SqlParameter("@AssetsEntryId", model.AssetsEntryId));
+                    sqlParams.Add(new SqlParameter("@LastupdatedBy", model.LastUpdatedbyEmpId));
+                    sqlParams.Add(new SqlParameter("@LastUpdatedDate", updationDate));
+                }
 				else
 				{
 					sqlParams.Add(new SqlParameter("@Flag", "INSERT"));
@@ -157,7 +199,7 @@ namespace eTactWeb.Data.DAL
 				}
 
 				sqlParams.Add(new SqlParameter("@AccountCode", model.AccountCode));
-				sqlParams.Add(new SqlParameter("@EntryDate", model.EntryDate));
+				sqlParams.Add(new SqlParameter("@EntryDate",entDate));
 				sqlParams.Add(new SqlParameter("@AssetsCode", model.AssetsCode));
 				sqlParams.Add(new SqlParameter("@AssetsName", model.AssetsName));
 				sqlParams.Add(new SqlParameter("@ItemCode", model.ItemCode));
@@ -171,10 +213,10 @@ namespace eTactWeb.Data.DAL
 				sqlParams.Add(new SqlParameter("@Fiscalyear", model.YearCode));
 				sqlParams.Add(new SqlParameter("@VendoreAccountCode", model.VendoreAccountCode));
 				sqlParams.Add(new SqlParameter("@PONO", model.PONO));
-				sqlParams.Add(new SqlParameter("@PODate", model.PODate));
+				sqlParams.Add(new SqlParameter("@PODate", PODate));
 				sqlParams.Add(new SqlParameter("@POYear", model.POYear));
 				sqlParams.Add(new SqlParameter("@InvoiceNo", model.InvoiceNo));
-				sqlParams.Add(new SqlParameter("@InvoiceDate", model.InvoiceDate));
+				sqlParams.Add(new SqlParameter("@InvoiceDate",invDate));
 				sqlParams.Add(new SqlParameter("@InvoiceYearCode", model.InvoiceYearCode));
 				sqlParams.Add(new SqlParameter("@NetBookValue", model.NetBookValue));
 				sqlParams.Add(new SqlParameter("@PurchaseValue", model.PurchaseValue));
@@ -182,9 +224,10 @@ namespace eTactWeb.Data.DAL
 				sqlParams.Add(new SqlParameter("@DepreciationMethod", model.DepreciationMethod));
 				sqlParams.Add(new SqlParameter("@PurchaseNewUsed", model.PurchaseNewUsed));
 				sqlParams.Add(new SqlParameter("@CountryOfOrigin", model.CountryOfOrigin));
-				sqlParams.Add(new SqlParameter("@FirstAqusitionOn", model.FirstAqusitionOn));
-				sqlParams.Add(new SqlParameter("@OriginalValue", model.OriginalValue));
-				sqlParams.Add(new SqlParameter("@CapatalizationDate", model.CapatalizationDate));
+                sqlParams.Add(new SqlParameter("@FirstAqusitionOn",
+    string.IsNullOrEmpty(fsteqDate) ? " " :fsteqDate));
+                sqlParams.Add(new SqlParameter("@OriginalValue", model.OriginalValue));
+				sqlParams.Add(new SqlParameter("@CapatalizationDate",cptDate));
 				sqlParams.Add(new SqlParameter("@BarCode", model.BarCode));
 				sqlParams.Add(new SqlParameter("@SerialNo", model.SerialNo));
 				sqlParams.Add(new SqlParameter("@LocationOfInsallation", model.LocationOfInsallation));
@@ -200,15 +243,13 @@ namespace eTactWeb.Data.DAL
 				sqlParams.Add(new SqlParameter("@CC", model.CC));
 				sqlParams.Add(new SqlParameter("@UID", model.UID));
 				sqlParams.Add(new SqlParameter("@ActualEntryBy", model.ActualEntryByEmpId));
-				sqlParams.Add(new SqlParameter("@ActualEntryDate", model.ActualEntryDate));
-				sqlParams.Add(new SqlParameter("@LastupdatedBy", model.LastUpdatedbyEmpId));
-				sqlParams.Add(new SqlParameter("@LastUpdatedDate", model.LastupDationDate));
+				sqlParams.Add(new SqlParameter("@ActualEntryDate", actualentDate));
 				sqlParams.Add(new SqlParameter("@EntryByMachine", model.EntryByMachine));
 				sqlParams.Add(new SqlParameter("@DepreciationRate", model.DepreciationRate));
 				sqlParams.Add(new SqlParameter("@DepriciationAmt", model.DepriciationAmt));
 				sqlParams.Add(new SqlParameter("@UseFullLifeInYear", model.UseFullLifeInYear));
 				
-				_ResponseResult = await _IDataLogic.ExecuteDataTable("SPSalesDiscountCustomerCategoryMaster", sqlParams);
+				_ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpAssetsMaster", sqlParams);
 			}
 			catch (Exception ex)
 			{
@@ -219,6 +260,7 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
+
         public async Task<ResponseResult> GetDashboardData(AssetsMasterModel model)
         {
             var _ResponseResult = new ResponseResult();
@@ -239,7 +281,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
-        public async Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate)
+        public async Task<AssetsMasterModel> GetDashboardDetailData(string FromDate, string ToDate,string AssetsName)
         {
             DataSet? oDataSet = new DataSet();
             var model = new AssetsMasterModel();
@@ -254,6 +296,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
                     oCmd.Parameters.AddWithValue("@fromDate", FromDate);
                     oCmd.Parameters.AddWithValue("@toDate", ToDate);
+                    oCmd.Parameters.AddWithValue("@AssetsName", AssetsName);
 
                     await myConnection.OpenAsync();
                     using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
@@ -279,6 +322,7 @@ namespace eTactWeb.Data.DAL
                                                                     MainGroup = dr["MainGroup"] != DBNull.Value ? Convert.ToString(dr["MainGroup"]) : string.Empty,
                                                                     SubGroup = dr["SubGroup"] != DBNull.Value ? Convert.ToString(dr["SubGroup"]) : string.Empty,
                                                                     UnderGroup = dr["UnderGroup"] != DBNull.Value ? Convert.ToString(dr["UnderGroup"]) : string.Empty,
+                                                                    CostCenterName = dr["CostCenterName"] != DBNull.Value ? Convert.ToString(dr["CostCenterName"]) : string.Empty,
                                                                     SubSubGroup = dr["SubSubGroup"] != DBNull.Value ? Convert.ToInt32(dr["SubSubGroup"]) : 0,
                                                                     CostCenterId = dr["CostCenterId"] != DBNull.Value ? Convert.ToInt32(dr["CostCenterId"]) : 0,
                                                                     FiscalYear = dr["Fiscalyear"] != DBNull.Value ? Convert.ToInt32(dr["Fiscalyear"]) : 0,
@@ -294,6 +338,7 @@ namespace eTactWeb.Data.DAL
                                                                     PurchaseValue = dr["PurchaseValue"] != DBNull.Value ? Convert.ToDecimal(dr["PurchaseValue"]) : 0,
                                                                     ResidualValue = dr["ResidualValue"] != DBNull.Value ? Convert.ToDecimal(dr["ResidualValue"]) : 0,
                                                                     DepreciationMethod = dr["DepreciationMethod"] != DBNull.Value ? Convert.ToString(dr["DepreciationMethod"]) : string.Empty,
+                                                                    DepartmentName = dr["DeptName"] != DBNull.Value ? Convert.ToString(dr["DeptName"]) : string.Empty,
                                                                     PurchaseNewUsed = dr["PurchaseNewUsed"] != DBNull.Value ? Convert.ToString(dr["PurchaseNewUsed"]) : string.Empty,
                                                                     CountryOfOrigin = dr["CountryOfOrigin"] != DBNull.Value ? Convert.ToString(dr["CountryOfOrigin"]) : string.Empty,
                                                                     FirstAqusitionOn = dr["FirstAqusitionOn"] != DBNull.Value ? Convert.ToString(dr["FirstAqusitionOn"]) : "",
@@ -321,6 +366,7 @@ namespace eTactWeb.Data.DAL
                                                                     LastUpdatedDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedDate"]) : "",
                                                                     EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : string.Empty,
                                                                     LastUpdatedbyEmpName = dr["UpdatedByEmployee"] != DBNull.Value ? Convert.ToString(dr["UpdatedByEmployee"]) : string.Empty,
+                                                                    AssetsCateogryName = dr["CategoryName"] != DBNull.Value ? Convert.ToString(dr["CategoryName"]) : string.Empty,
 
                                                                 }).ToList();
 
@@ -340,5 +386,127 @@ namespace eTactWeb.Data.DAL
             }
             return model;
         }
+        public async Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int ActualEntryBy)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DELETE"));
+                SqlParams.Add(new SqlParameter("@AssetsEntryId", EntryId));
+                SqlParams.Add(new SqlParameter("@Fiscalyear", YearCode));
+                SqlParams.Add(new SqlParameter("@ActualEntryDate", EntryDate));
+                SqlParams.Add(new SqlParameter("@ActualEntryBy", ActualEntryBy));
+                _ResponseResult = await _IDataLogic.ExecuteDataTable("AccSpAssetsMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return _ResponseResult;
+        }
+        public async Task<AssetsMasterModel> GetViewByID(int AssetsEntryId, int Fiscalyear)
+        {
+            var model = new AssetsMasterModel();
+            try
+            {
+                var SqlParams = new List<dynamic>
+        {
+            new SqlParameter("@flag", "VIEWBYID"),
+            new SqlParameter("@AssetsEntryId", AssetsEntryId),
+            new SqlParameter("@Fiscalyear", Fiscalyear)
+        };
+
+                var _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpAssetsMaster", SqlParams);
+
+                if (_ResponseResult.Result != null && _ResponseResult.StatusCode == HttpStatusCode.OK && _ResponseResult.StatusText == "Success")
+                {
+                    PrepareView(_ResponseResult.Result, ref model);
+                }
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+
+            return model;
+        }
+
+        private static AssetsMasterModel PrepareView(DataSet DS, ref AssetsMasterModel? model)
+        {
+            try
+            {
+                DS.Tables[0].TableName = "AssetsMaster";
+                var row = DS.Tables[0].Rows[0];
+
+                model.AssetsEntryId = Convert.ToInt32(row["AssetsEntryId"]);
+                model.AccountCode = Convert.ToInt32(row["AccountCode"]);
+                model.EntryDate = row["EntryDate"].ToString();
+                model.AssetsCode = row["AssetsCode"].ToString();
+                model.AssetsName = row["AssetsName"].ToString();
+                model.ItemCode = Convert.ToInt32(row["ItemCode"]);
+                model.AssetsCateogryId = Convert.ToInt32(row["AssetsCateogryId"]);
+                model.ParentAccountCode = Convert.ToInt32(row["ParentAccountCode"]);
+                model.MainGroup = row["MainGroup"].ToString();
+                model.SubGroup = row["SubGroup"].ToString();
+                model.UnderGroup = row["UnderGroup"].ToString();
+                model.SubSubGroup = Convert.ToInt32(row["SubSubGroup"].ToString());
+                model.CostCenterId = Convert.ToInt32(row["CostCenterId"]);
+                model.FiscalYear = Convert.ToInt32(row["Fiscalyear"]);
+                model.VendoreAccountCode = Convert.ToInt32(row["VendoreAccountCode"]);
+                model.PONO = row["PONO"].ToString();
+                model.PODate = row["PODate"].ToString();
+                model.POYear = Convert.ToInt32(row["POYear"]);
+                model.InvoiceNo = row["InvoiceNo"].ToString();
+                model.InvoiceDate = row["InvoiceDate"].ToString();
+                model.InvoiceYearCode = Convert.ToInt32(row["InvoiceYearCode"]);
+                model.NetBookValue = Convert.ToDecimal(row["NetBookValue"]);
+                model.PurchaseValue = Convert.ToDecimal(row["PurchaseValue"]);
+                model.ResidualValue = Convert.ToDecimal(row["ResidualValue"]);
+                model.DepreciationMethod = row["DepreciationMethod"].ToString();
+                model.PurchaseNewUsed = row["PurchaseNewUsed"].ToString();
+                model.CountryOfOrigin = row["CountryOfOrigin"].ToString();
+                model.FirstAqusitionOn = row["FirstAqusitionOn"].ToString();
+                model.OriginalValue = Convert.ToDecimal(row["OriginalValue"]);
+                model.CapatalizationDate = row["CapatalizationDate"].ToString();
+                model.BarCode = row["BarCode"].ToString();
+                model.SerialNo = row["SerialNo"].ToString();
+                model.LocationOfInsallation = row["LocationOfInsallation"].ToString();
+                model.ForDepartmentId = Convert.ToInt32(row["ForDepartmentId"]);
+                model.Technician = row["Technician"].ToString();
+                model.TechnicialcontactNo = row["TechnicialcontactNo"].ToString();
+                model.TechEmployeeName = row["TechEmployeeName"].ToString();
+                model.CustoidianEmpId = Convert.ToInt32(row["CustoidianEmpId"]);
+                model.ConsiderInInvetory = row["ConsiderInInvetory"].ToString();
+                model.InsuranceCompany = row["InsuranceCompany"].ToString();
+                model.InsuredAmount = Convert.ToDecimal(row["InsuredAmount"]);
+                model.InsuranceDetail = row["InsuranceDetail"].ToString();
+                model.CC = row["CC"].ToString();
+                model.UID = Convert.ToInt32(row["UID"]);
+                model.ActualEntryBy = Convert.ToInt32(row["ActualEntryBy"]);
+                model.ActualEntryDate = row["ActualEntryDate"].ToString();
+                model.LastupdatedBy = Convert.ToInt32(row["LastupdatedBy"]);
+                model.LastUpdatedDate = row["LastUpdatedDate"].ToString();
+                model.EntryByMachine = row["EntryByMachine"].ToString();
+                model.ActualEntryByEmpName = row["ActualEntryByEmployee"].ToString();
+                model.LastUpdatedbyEmpName = row["UpdatedByEmployee"].ToString();
+                model.DepreciationRate = Convert.ToDecimal(row["DepreciationRate"]);
+                model.DepriciationAmt = Convert.ToDecimal(row["DepriciationAmt"]);
+                model.UseFullLifeInYear = Convert.ToInt32(row["UseFullLifeInYear"]);
+
+                return model;
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
     }
 }

@@ -22,6 +22,7 @@ using System.Globalization;
 using static System.Runtime.InteropServices.JavaScript.JSType;
 using System.Drawing.Drawing2D;
 using System.Runtime.Caching;
+using DocumentFormat.OpenXml.Vml.Office;
 
 namespace eTactWeb.Controllers
 {
@@ -142,6 +143,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("DirectPurchaseBill", JsonConvert.SerializeObject(MainModel));
             MainModel.adjustmentModel = (MainModel.adjustmentModel != null && MainModel.adjustmentModel.AdjAdjustmentDetailGrid != null) ? MainModel.adjustmentModel : new AdjustmentModel();
             return View(MainModel);
+
         }
 
         [HttpPost]
@@ -236,6 +238,7 @@ namespace eTactWeb.Controllers
 
                 if (gridData != null && gridData.Count > 0)
                 {
+
                     AdjDetailDT = CommonController.GetAdjDetailTable(gridData, MainModel.EntryID, MainModel.YearCode, MainModel.AccountCode);
                     //AdjDetailDT = CommonController.GetAdjDetailTable(MainModel.adjustmentModel.AdjAdjustmentDetailGrid.ToList(), model.EntryID, model.YearCode, model.AccountCode);
                 }
@@ -507,7 +510,12 @@ namespace eTactWeb.Controllers
             return View("DirectPurchaseBill", model);
 
         }
-
+        public async Task<JsonResult> CheckDuplicateEntry(int YearCode, int AccountCode, string InvNo, int EntryId)
+        {
+            var JSON = await IDirectPurchaseBill.CheckDuplicateEntry(YearCode, AccountCode, InvNo, EntryId);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
             string my_connection_string;
@@ -614,16 +622,16 @@ namespace eTactWeb.Controllers
                 : JsonConvert.DeserializeObject<DirectPurchaseBillModel>(mainModelJson);
 
             // 2. Get Tax Details
-            string taxDetailJson = HttpContext.Session.GetString("KeyTaxGrid");
-            IList<TaxModel> DPBTaxdetail = string.IsNullOrEmpty(taxDetailJson)
-                ? new List<TaxModel>()
-                : JsonConvert.DeserializeObject<IList<TaxModel>>(taxDetailJson);
+            //string taxDetailJson = HttpContext.Session.GetString("KeyTaxGrid");
+            //IList<TaxModel> DPBTaxdetail = string.IsNullOrEmpty(taxDetailJson)
+            //    ? new List<TaxModel>()
+            //    : JsonConvert.DeserializeObject<IList<TaxModel>>(taxDetailJson);
 
-            // 3. Get TDS Details
-            string tdsDetailJson = HttpContext.Session.GetString("KeyTDSGrid");
-            IList<TDSModel> DPBTDSdetail = string.IsNullOrEmpty(tdsDetailJson)
-                ? new List<TDSModel>()
-                : JsonConvert.DeserializeObject<IList<TDSModel>>(tdsDetailJson);
+            //// 3. Get TDS Details
+            //string tdsDetailJson = HttpContext.Session.GetString("KeyTDSGrid");
+            //IList<TDSModel> DPBTDSdetail = string.IsNullOrEmpty(tdsDetailJson)
+            //    ? new List<TDSModel>()
+            //    : JsonConvert.DeserializeObject<IList<TDSModel>>(tdsDetailJson);
 
             if (MainModel != null && MainModel.ItemDetailGrid != null)
             {
@@ -739,6 +747,11 @@ namespace eTactWeb.Controllers
 
             return View(MainModel);
         }
+        public IActionResult ClearDRCRGrid()
+        {
+            HttpContext.Session.Remove("KeyDrCrGrid");
+            return Json("Ok");
+        }
 
         public async Task<IActionResult> DeleteByIDOld(int ID, int YC, string PurchVoucherNo, string InvNo = "", bool? IsDetail = false)
         {
@@ -809,7 +822,16 @@ namespace eTactWeb.Controllers
             //return Json(rslt);
             //return RedirectToAction(nameof(DashBoard));
         }
+        public async Task<JsonResult> CheckEditOrDelete(int EntryId, int YearCode)
+        {
+           
+            var Result = await IDirectPurchaseBill.CheckEditOrDelete(EntryId, YearCode);
+             var rslt = string.Empty;
+            return Json(new { success = rslt, message = Result.StatusText });
 
+            //return Json(rslt);
+            //return RedirectToAction(nameof(DashBoard));
+        }
         public IActionResult DeleteItemRow(string SeqNo)
         {
             bool exists = false;
@@ -921,6 +943,13 @@ namespace eTactWeb.Controllers
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }
+        public async Task<JsonResult> ClearItemGrid(int YearCode, string VODate)
+        {
+            HttpContext.Session.Remove("DirectPurchaseBill");
+            var JSON = await IDirectPurchaseBill.FillEntryandVouchNoNumber(YearCode, VODate);
+            string JsonString = JsonConvert.SerializeObject(JSON);
+            return Json(JsonString);
+        }
         public async Task<JsonResult> FillPONumber(int YearCode, string OrderType, string PODate)
         {
             var JSON = await IDirectPurchaseBill.FillPONumber(YearCode, OrderType, PODate);
@@ -982,7 +1011,7 @@ namespace eTactWeb.Controllers
             return Json(JsonString);
         }
 
-        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        public async Task<IActionResult> GetSearchData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             model = await IDirectPurchaseBill.GetSummaryData(model);
@@ -1039,7 +1068,7 @@ namespace eTactWeb.Controllers
             _MemoryCache.Set("KeyDirectPurchaseBillList_Summary", modelList, cacheEntryOptions);
             return PartialView("_DashBoardGrid", model);
         }
-        public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 5, string SearchBox = "")
+        public async Task<IActionResult> GetDetailData(DPBDashBoard model, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             model.Mode = "SEARCH";
             var type = model.DashboardType;
@@ -1483,14 +1512,14 @@ namespace eTactWeb.Controllers
 
             if (TaxDetailList != null && TaxDetailList.Count > 0)
             {
+                
                 var groupedTaxDetails = TaxDetailList
-                    .GroupBy(item => item.TxItemCode)
-                    .Select(group => new
-                    {
-                        FirstItem = group.First(),
-                        TotalAmount = group.Sum(item => item.TxAmount)
-                    });
-
+            .GroupBy(item => new { item.TxItemCode, item.TxTaxType, item.TxAccountCode })
+            .Select(group => new
+            {
+                FirstItem = group.First(),
+                TotalAmount = group.Sum(item => item.TxAmount)
+            });
                 foreach (var group in groupedTaxDetails)
                 {
                     var Item = group.FirstItem;

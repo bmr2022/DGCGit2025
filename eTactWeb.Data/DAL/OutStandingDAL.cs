@@ -20,7 +20,6 @@ namespace eTactWeb.Data.DAL
         private readonly ConnectionStringService _connectionStringService;
         public OutStandingDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
-            //DBConnectionString = configuration.GetConnectionString("eTactDB");
             _connectionStringService = connectionStringService;
             DBConnectionString = _connectionStringService.GetConnectionString();
             _IDataLogic = iDataLogic;
@@ -75,7 +74,6 @@ namespace eTactWeb.Data.DAL
 
         }
 
-
         public async Task<OutStandingModel> GetDetailsData(string outstandingType, string TillDate, string GroupName, string[] AccountNameList, int AccountCode, string ShowOnlyApprovedBill, bool ShowZeroBal)
         {
             var resultList = new OutStandingModel();
@@ -109,54 +107,78 @@ namespace eTactWeb.Data.DAL
                     }
                 }
 
-                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
-                {
-                    if (outstandingType == "Receive Outstanding" || outstandingType == "Payable Outstanding")
-                    {
-                        resultList.OutStandingGrid = (from DataRow row in oDataSet.Tables[0].Rows
-                                                      select new OutStandingModel
-                                                      {
-                                                          LedgerDescription = row["LedgerDescription"] == DBNull.Value ? string.Empty : row["LedgerDescription"].ToString(),
-                                                          VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
+				if (oDataSet.Tables.Count > 0)
+				{
+					if (outstandingType == "Receive Outstanding" || outstandingType == "Payable Outstanding")
+					{
+						if (oDataSet.Tables[0].Rows.Count > 0)
+						{
+							resultList.OutStandingGrid = (from DataRow row in oDataSet.Tables[0].Rows
+														  select new OutStandingModel
+														  {
+															  LedgerDescription = row["LedgerDescription"] == DBNull.Value ? string.Empty : row["LedgerDescription"].ToString(),
+															  VoucherNo = row["VoucherNo"] == DBNull.Value ? string.Empty : row["VoucherNo"].ToString(),
+															  VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
+															  VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
+															  DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
+															  CrAmt = row["CrAmt"] == DBNull.Value ? string.Empty : row["CrAmt"].ToString(),
+															  BillAmt = row["BillAmt"] == DBNull.Value ? string.Empty : row["BillAmt"].ToString(),
+															  PendingAmt = row["PendingAmt"] == DBNull.Value ? string.Empty : row["PendingAmt"].ToString(),
+															  DueDate = row["DueDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["DueDate"]).ToString("dd-MM-yyyy"),
+															  OverDueDays = row["OverDueDays"] == DBNull.Value ? string.Empty : row["OverDueDays"].ToString(),
+															  TotBalanceAmt = row["TotBalanceAmt"] == DBNull.Value ? string.Empty : row["TotBalanceAmt"].ToString(),
+															  AccEntryId = row["AccEntryId"] == DBNull.Value ? string.Empty : row["AccEntryId"].ToString(),
+															  AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
+                                                              DocEntryId = row["DocEntryId"] == DBNull.Value ? 0 : Convert.ToInt32(row["DocEntryId"]),
+                                                              SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
+														  }).ToList();
+						}
+						else
+						{
+							// If no rows, return empty list instead of null
+							resultList.OutStandingGrid = new List<OutStandingModel>();
+						}
+					}
+					else
+					{
+						var table = oDataSet.Tables[0];
+						resultList.OutStandingRow = new List<OutStandingRow>();
 
-                                                          VoucherDate = row["VoucherDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["VoucherDate"]).ToString("dd-MM-yyyy"),
-                                                          VoucherType = row["VoucherType"] == DBNull.Value ? string.Empty : row["VoucherType"].ToString(),
-                                                          DrAmt = row["DrAmt"] == DBNull.Value ? string.Empty : row["DrAmt"].ToString(),
-                                                          CrAmt = row["CrAmt"] == DBNull.Value ? string.Empty : row["CrAmt"].ToString(),
-                                                          BillAmt = row["BillAmt"] == DBNull.Value ? string.Empty : row["BillAmt"].ToString(),
-                                                          PendingAmt = row["PendingAmt"] == DBNull.Value ? string.Empty : row["PendingAmt"].ToString(),
-                                                          DueDate = row["DueDate"] == DBNull.Value ? string.Empty : Convert.ToDateTime(row["DueDate"]).ToString("dd-MM-yyyy"),
+						if (table.Rows.Count > 0)
+						{
+							// Normal case: fill with data rows
+							foreach (DataRow dr in table.Rows)
+							{
+								var rowData = new OutStandingRow();
 
-                                                          OverDueDays = row["OverDueDays"] == DBNull.Value ? string.Empty : row["OverDueDays"].ToString(),
-                                                          TotBalanceAmt = row["TotBalanceAmt"] == DBNull.Value ? string.Empty : row["TotBalanceAmt"].ToString(),
-                                                          AccEntryId = row["AccEntryId"] == DBNull.Value ? string.Empty : row["AccEntryId"].ToString(),
-                                                          AccYearCode = row["AccYearCode"] == DBNull.Value ? string.Empty : row["AccYearCode"].ToString(),
-                                                          SalesPersonName = row["SalesPersonName"] == DBNull.Value ? string.Empty : row["SalesPersonName"].ToString(),
+								foreach (DataColumn col in table.Columns)
+								{
+									rowData.DynamicColumns[col.ColumnName] = dr[col] == DBNull.Value ? null : dr[col];
+								}
 
-
-                                                      }).ToList();
-                    }
-                    else
-                    {
-                        var table = oDataSet.Tables[0];
-                        resultList.OutStandingRow = new List<OutStandingRow>();
-
-                        foreach (DataRow dr in table.Rows)
-                        {
-                            var rowData = new OutStandingRow();
-
-                            foreach (DataColumn col in table.Columns)
-                            {
-                                rowData.DynamicColumns[col.ColumnName] = dr[col] == DBNull.Value ? null : dr[col];
-                            }
-
-                            resultList.OutStandingRow.Add(rowData);
-                        }
-                    }
-                }
-
-            }
-            catch (Exception ex)
+								resultList.OutStandingRow.Add(rowData);
+							}
+						}
+						else
+						{
+							// No rows: still return headers as empty values
+							var emptyRow = new OutStandingRow();
+							foreach (DataColumn col in table.Columns)
+							{
+								emptyRow.DynamicColumns[col.ColumnName] = null; // or "" if you prefer
+							}
+							resultList.OutStandingRow.Add(emptyRow);
+						}
+					}
+				}
+				else
+				{
+					// If dataset has no tables at all
+					resultList.OutStandingGrid = new List<OutStandingModel>();
+					resultList.OutStandingRow = new List<OutStandingRow>();
+				}
+			}
+			catch (Exception ex)
             {
                 // Handle exception (log it or rethrow)
                 throw new Exception("Error fetching BOM tree data.", ex);

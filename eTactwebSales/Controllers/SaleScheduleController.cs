@@ -1033,7 +1033,7 @@ public class SaleScheduleController : Controller
                                     Unit = ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.Unit).FirstOrDefault(),
                                     AltUnit = ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.AltUnit).FirstOrDefault(),
                                     Rate = Convert.ToDecimal(ItemList.Result.Where(c => c.PartCode == ExlPC).Select(x => x.Rate).FirstOrDefault()),
-                                    DeliveryDate = ParseDate(ExlDelDate).ToString(),
+                                    DeliveryDate = ParseFormattedDate(ExlDelDate).ToString(),
                                     AltSchQty = (worksheet.Cells[row, 5].Value ?? string.Empty).ToString().Trim() == "" ? 0 : Convert.ToDecimal((worksheet.Cells[row, 5].Value ?? string.Empty).ToString().Trim()),
                                     ItemSize = (worksheet.Cells[row, 6].Value ?? string.Empty).ToString().Trim(),
                                     ItemColor = (worksheet.Cells[row, 7].Value ?? string.Empty).ToString().Trim(),
@@ -1326,7 +1326,7 @@ public class SaleScheduleController : Controller
         DTSSGrid.Columns.Add("OtherDetail", typeof(string));
         DTSSGrid.Columns.Add("Remarks", typeof(string));
 
-        var DelDate = "";
+        //var DelDate = "";
         //DateTime DeliveryDt = new DateTime();
         foreach (var Item in DetailList)
         {
@@ -1335,31 +1335,31 @@ public class SaleScheduleController : Controller
                 return default;
             }
             // String deliveryDt;
-            if (DateTime.TryParseExact(Item.DeliveryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deliveryDt))
-            {
-                //  deliveryDt = ConvertToDesiredFormat(Item.DeliveryDate);
-                deliveryDt = DateTime.ParseExact(Item.DeliveryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
-                DelDate = deliveryDt.ToString("dd/MMM/yyyy");
-                //  DelDate = deliveryDt;
-            }
-            else
-            {
-                deliveryDt = DateTime.Parse(Item.DeliveryDate);
-                DelDate = deliveryDt.ToString("dd/MMM/yyyy");
-            }
+            //if (DateTime.TryParseExact(Item.DeliveryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture, DateTimeStyles.None, out DateTime deliveryDt))
+            //{
+            //    //  deliveryDt = ConvertToDesiredFormat(Item.DeliveryDate);
+            //    deliveryDt = DateTime.ParseExact(Item.DeliveryDate, "dd/MM/yyyy", CultureInfo.InvariantCulture);
+            //    DelDate = deliveryDt.ToString("dd/MMM/yyyy");
+            //    //  DelDate = deliveryDt;
+            //}
+            //else
+            //{
+            //    deliveryDt = DateTime.Parse(Item.DeliveryDate);
+            //    DelDate = deliveryDt.ToString("dd/MMM/yyyy");
+            //}
             DTSSGrid.Rows.Add(
                 new object[]
                 {
                     Item.ItemCode,
                     Item.Unit,
-                    Item.SchQty,
-                    Item.PendQty,
+                    Math.Round(Item.SchQty,6),
+                    Math.Round(Item.PendQty,6),
                     Item.AltUnit,
-                    Item.AltSchQty,
-                    Item.AltPendQty,
-                    Item.Rate,
-                    Item.RateInOthCurr,
-                    DelDate == default ? string.Empty : DelDate,
+                     Math.Round(Item.AltSchQty,6),
+                     Math.Round(Item.AltPendQty,6),
+                     Math.Round(Item.Rate,6),
+                     Math.Round(Item.RateInOthCurr,6),
+                    ParseFormattedDate( Item.DeliveryDate) == default ? string.Empty :ParseFormattedDate( Item.DeliveryDate),
                     Item.ItemSize,
                     Item.ItemColor,
                     Item.OtherDetail,

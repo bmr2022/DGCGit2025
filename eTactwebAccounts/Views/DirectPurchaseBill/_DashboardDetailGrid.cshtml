@@ -185,10 +185,15 @@
                         foreach (var item in Model.DPBDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="approvedRow-@Cntr">
+                            <tr id="approvedRow-@Cntr"
+                                class="@( !string.IsNullOrEmpty(@item.AgainstVoucherNo) ? "highlight-row" : "" )">
+
+
                                 <td class="FWB">
                                     @srNo
                                     <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
+                                    <input type="hidden" id="AgainstVoucherNo-@Cntr" value="@item.AgainstInvNo" />
+
                                 </td>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
@@ -315,7 +320,7 @@
 
         #container > div {
             flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+         /*    margin-right: 10px; /* Adjust margin as needed */ */
         }
 
     #DPBDashboardGrid {
@@ -329,6 +334,14 @@
         top: 0;
         z-index: 1;
     }
+
+    .highlight-row {
+        background-color: #0dcaf0 !important; /* Aqua green */
+        color: #000; /* Keep text readable */
+    }
+
+   
+
 
     tbody td {
         /* Table cell styles */

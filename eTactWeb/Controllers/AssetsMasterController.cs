@@ -1,4 +1,5 @@
-﻿using eTactWeb.Data.Common;
+﻿using DocumentFormat.OpenXml.Bibliography;
+using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
 using Microsoft.AspNetCore.Mvc;
@@ -25,7 +26,11 @@ namespace eTactWeb.Controllers
             this.iconfiguration = iconfiguration;
         }
         [Route("{controller}/Index")]
-        public async Task<ActionResult> AssetsMaster(int ID, int YC, string Mode)
+        public async Task<ActionResult> AssetsMaster(int ID, int YC, string Mode,
+            int AssetsEntryId, int AccountCode, string AssetsCode, int ItemCode, int AssetsCateogryId, int CostCenterId, int VendoreAccountCode, string PONO, int POYear, int InvoiceYearCode, int CustoidianEmpId, int ActualEntryBy, int LastupdatedBy, int ForDepartmentId, string CC, int UID,
+        string EntryDate, string AssetsName, string ParentAccountName, int ParentAccountCode, string MainGroup, string SubGroup, string UnderGroup, int SubSubGroup, string VendorName, string PODate, string InvoiceNo, string InvoiceDate, string DepreciationMethod, string PurchaseNewUsed, string CountryOfOrigin, string FirstAqusitionOn, decimal OriginalValue, string CapatalizationDate, string BarCode, string SerialNo, string LocationOfInsallation, string Technician, string TechnicialcontactNo, string TechEmployeeName, string CustodiaEmployee, string ActualEntryByEmployee, string InsuranceCompany, string InsuranceDetail,
+        decimal NetBookValue, decimal PurchaseValue, decimal ResidualValue, decimal InsuredAmount,
+        string ActualEntryDate, string LastUpdatedDate, string EntryByMachine)
         {
             var MainModel = new AssetsMasterModel();
 
@@ -36,14 +41,69 @@ namespace eTactWeb.Controllers
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.ActualEntryByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.CC = HttpContext.Session.GetString("Branch");
-            HttpContext.Session.Remove("KeyAssetsMasterGrid");
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+			MainModel.LastUpdatedbyEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
+			HttpContext.Session.Remove("KeyAssetsMasterGrid");
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
-                //MainModel = await _IDiscountCustomerCategoryMaster.GetViewByID(ID, YC).ConfigureAwait(false);
-                //MainModel.Mode = Mode; // Set Mode to Update
-                //MainModel.DiscountCustCatEntryId = ID;
-                //MainModel.DiscountCustCatYearCode = YC;
-               
+                MainModel = await _IAssetsMaster.GetViewByID(ID, YC).ConfigureAwait(false);
+                MainModel.Mode = Mode; // Set Mode to Update
+                MainModel.AssetsEntryId = AssetsEntryId;
+                MainModel.YearCode = YC;
+                MainModel.AccountCode = AccountCode;
+                MainModel.AssetsCode = AssetsCode;
+                MainModel.ItemCode = ItemCode;
+                MainModel.AssetsCateogryId = AssetsCateogryId;
+                MainModel.CostCenterId = CostCenterId;
+                MainModel.VendoreAccountCode = VendoreAccountCode;
+                MainModel.PONO = PONO;
+                MainModel.POYear = POYear;
+                MainModel.InvoiceYearCode = InvoiceYearCode;
+                MainModel.CustoidianEmpId = CustoidianEmpId;
+                MainModel.ActualEntryBy = ActualEntryBy;
+                MainModel.LastupdatedBy = LastupdatedBy;
+                MainModel.ForDepartmentId = ForDepartmentId;
+                MainModel.CC = CC;
+                MainModel.UID = UID;
+
+                MainModel.EntryDate = EntryDate;
+                MainModel.AssetsName = AssetsName;
+                MainModel.ParentAccountName = ParentAccountName;
+                MainModel.ParentAccountCode = ParentAccountCode;
+                MainModel.MainGroup = MainGroup;
+                MainModel.SubGroup = SubGroup;
+                MainModel.UnderGroup = UnderGroup;
+                MainModel.SubSubGroup = SubSubGroup;
+                //MainModel.ParentAccountName = VendorName;
+                MainModel.PODate = PODate;
+                MainModel.InvoiceNo = InvoiceNo;
+                MainModel.InvoiceDate = InvoiceDate;
+                MainModel.DepreciationMethod = DepreciationMethod;
+                MainModel.PurchaseNewUsed = PurchaseNewUsed;
+                MainModel.CountryOfOrigin = CountryOfOrigin;
+                MainModel.FirstAqusitionOn = FirstAqusitionOn;
+                MainModel.OriginalValue = OriginalValue;
+                MainModel.CapatalizationDate = CapatalizationDate;
+                MainModel.BarCode = BarCode;
+                MainModel.SerialNo = SerialNo;
+                MainModel.LocationOfInsallation = LocationOfInsallation;
+                MainModel.Technician = Technician;
+                MainModel.TechnicialcontactNo = TechnicialcontactNo;
+                MainModel.TechEmployeeName = TechEmployeeName;
+                //MainModel.CustodiaEmployee = CustodiaEmployee;
+                MainModel.ActualEntryByEmpName = ActualEntryByEmployee;
+                MainModel.InsuranceCompany = InsuranceCompany;
+                MainModel.InsuranceDetail = InsuranceDetail;
+
+                MainModel.NetBookValue = NetBookValue;
+                MainModel.PurchaseValue = PurchaseValue;
+                MainModel.ResidualValue = ResidualValue;
+                MainModel.InsuredAmount = InsuredAmount;
+
+                MainModel.ActualEntryDate = ActualEntryDate;
+                MainModel.LastUpdatedDate = LastUpdatedDate;
+                MainModel.EntryByMachine = EntryByMachine;
+
+
                 if (Mode == "U")
                 {
                     MainModel.LastUpdatedbyEmpId = Convert.ToInt32(HttpContext.Session.GetString("UID"));
@@ -67,7 +127,8 @@ namespace eTactWeb.Controllers
 		{
 			try
 			{
-				var Result = await _IAssetsMaster.SaveAssetsMaster(model);
+                 model.ActualEntryByEmpId = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+                var Result = await _IAssetsMaster.SaveAssetsMaster(model);
 				if (Result != null)
 				{
 					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.OK)
@@ -123,6 +184,19 @@ namespace eTactWeb.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
+        public async Task<JsonResult> FillCategoryName()
+		{
+			var JSON = await _IAssetsMaster.FillCategoryName();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+         public async Task<JsonResult> FillCustoidianEmpName()
+		{
+			var JSON = await _IAssetsMaster.FillCustoidianEmpName();
+			string JsonString = JsonConvert.SerializeObject(JSON);
+			return Json(JsonString);
+		}
+
         public async Task<JsonResult> FillDepartmentName()
 		{
 			var JSON = await _IAssetsMaster.FillDepartmentName();
@@ -174,12 +248,42 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType)
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType,string AssetsName)
         {
             var model = new AssetsMasterModel();
-            model = await _IAssetsMaster.GetDashboardDetailData(FromDate, ToDate);
+            model = await _IAssetsMaster.GetDashboardDetailData(FromDate, ToDate, AssetsName);
 
             return PartialView("_AssetsMasterDashBoardGrid", model);
+        }
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode, string EntryDate, int ActualEntryBy)
+        {
+            DateTime parsedDate;
+
+            if (DateTime.TryParse(EntryDate, out parsedDate))
+            {
+                // Convert to dd/MMM/yyyy format → "24/Aug/2025"
+                EntryDate = parsedDate.ToString("dd/MMM/yyyy");
+            }
+            var Result = await _IAssetsMaster.DeleteByID(EntryId, YearCode,  EntryDate,  ActualEntryBy);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("AssetsMasterDashBoard");
+
         }
     }
 }

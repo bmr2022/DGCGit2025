@@ -172,6 +172,10 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="OutStanding" asp-action="OutStanding">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack();" id="BackButton">
+                                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                        BACK
+                                    </a>
                                 </div>
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             </div>
@@ -213,22 +217,16 @@
                                                     <input id="totPenAmt" class="form-control" readonly />
                                                 </div>
                                             </div>
-
-
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-
-
 </div>
 
 @section Scripts
@@ -237,17 +235,14 @@
 
         $(document).ready(function () {
             console.log("Ready");
-            // GetServerDate();
-
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
-            // $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#TillDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             $('#GroupName').select2();
             $('#PartyNameSingle').select2();
-
             $('#ReportType').select2();
+            $('#BackButton').hide();
 
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -258,27 +253,17 @@
                 var year = date.getFullYear();
                 return day + "/" + month + "/" + year;
             }
-            //$('#FromDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", firstDayOfMonth); // Pass the Date object directly
-            //$('#ToDate').datepicker({ dateFormat: 'dd/M/yy' }).datepicker("setDate", currentDate);
-
             FillGroupName();
             FillPartyName();
             GetDetailsData();
-            // handleReportTypeChange();
-
-            // When ReportType changes, automatically set Group_Ledger to 'Ledger' if required
             $("#ReportType").change(function () {
-
                 handleReportTypeChange();
             });
 
-            // Function to handle the logic for setting 'Ledger' based on ReportType
             function handleReportTypeChange() {
 
                 var reportType = $("#ReportType").val().trim();
                 var reportTypesToCheck = ["Summary", "Detail", "IndentWithPODetail"];
-
-                // If the ReportType matches one of the required values, select 'Ledger'
                 if (reportTypesToCheck.includes(reportType)) {
                     $("#Group_Ledger").val("Ledger");
                 }
@@ -377,7 +362,37 @@
             $('#PartyNameSingle').val(0);
         });
 
-        function FillPartyName() {
+        function GetDetailDataForPartyWise(td) {
+            debugger;
+            let accountCode = $(td).find(".hdnAccountCode").val();
+            let ledgerDescription = $(td).data("id");
+            $('#BackButton').show();
+
+            // ReportType mapping
+            let reportType = $('#ReportType').val();
+            if (reportType === "Receive Outstanding Ageing") {
+                $('#ReportType').val("Receive Outstanding").trigger("change");
+            }
+            else if (reportType === "Payable Outstanding Ageing") {
+                $('#ReportType').val("Payable Outstanding").trigger("change");
+            }
+
+            // Call FillPartyName with callback
+            FillPartyName(function () {
+                let isMulti = $('#multiPartySwitch').is(':checked');
+                if (!isMulti) {
+                    $('#PartyNameSingle').val(accountCode).trigger('change');
+                } else {
+                    $('#PartyNameMulti').val(accountCode).trigger('change');
+                    $('#PartyNameMulti').multiselect('refresh');
+                }
+
+                // only after dropdown ready & party set
+                GetDetailsData();
+            });
+        }
+
+        function FillPartyName(callback) {
             var OutStandingType = $('#ReportType').val();
             var TillDate = $('#TillDate').val();
             var isMulti = $('#multiPartySwitch').is(':checked');
@@ -409,6 +424,11 @@
                         });
 
                         PartynameMultiDropdown.multiselect('rebuild');
+                    }
+
+                    // ✅ callback call after dropdown filled
+                    if (typeof callback === "function") {
+                        callback();
                     }
                 },
                 error: function () {
@@ -448,8 +468,9 @@
                 }
             });
         }
-        function GetDetailsData() {
 
+        function GetDetailsData() {
+            debugger
             var OutStandingType = $('#ReportType').val();
             var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();
@@ -472,7 +493,6 @@
                 url: '@Url.Action("GetDetailsData", "OutStanding")',
                 data: {
                     "OutStandingType": OutStandingType,
-
                     "TillDate": TillDate,
                     "GroupName": GroupName,
                     "AccountNameList": AccountNameList,
@@ -515,6 +535,7 @@
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
+
         function GetServerDate() {
             $.ajax({
                 type: "GET",
@@ -534,6 +555,19 @@
                     }
                 }
             });
+        }
+
+        function PressBack() {
+            debugger
+            let ReportType = $('#ReportType').val();
+            if (ReportType === "Receive Outstanding") {
+                $('#ReportType').val("Receive Outstanding Ageing").trigger("change");
+            }
+            else if (reportType === "Payable Outstanding") {
+                $('#ReportType').val("Payable Outstanding Ageing").trigger("change");
+            }
+            GetDetailsData();
+            $('#BackButton').hide(); // Hide back button
         }
 
         function getFirstDayOfMonth(dateString) {
@@ -561,6 +595,7 @@
                 }
             });
         });
+
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -628,6 +663,7 @@
                 table.children('#divStockRegisterBody').append(row);
             });
         }
+
         function countAllTotal() {
 
             var rowCount = $('#divStockRegisterBody tr').length;
@@ -651,6 +687,7 @@
             $('#totBillAmt').val(isNaN(TotBill) ? 0 : TotBill.toFixed(2));
             $('#totPenAmt').val(isNaN(TotPen) ? 0 : TotPen.toFixed(2));
         }
+
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {
@@ -669,9 +706,6 @@
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
-
-
-
 
         function DeleteRow(i) {
 
@@ -694,7 +728,6 @@
             countAllTotal();
             $('#totalRows').text($('#divStockMainRegister tr').length - 1);
         }
-
 
     </script>
 

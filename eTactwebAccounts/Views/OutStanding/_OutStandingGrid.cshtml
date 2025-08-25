@@ -6,28 +6,37 @@
             <tr>
                 <th>Action</th>
                 <th>Sr#</th>
-
-                <th data-columnno="1" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>LedgerDescription</th>
-                <th data-columnno="2" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VoucherNo</th>
-                <th data-columnno="3" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VoucherDate</th>
-
-                <th data-columnno="5" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>VoucherType</th>
-                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DrAmt</th>
-                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>CrAmt</th>
-                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>BillAmt</th>
-                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>PendingAmt</th>
-                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>DueDate</th>
-                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>OverDueDays</th>
-                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TotBalanceAmt</th>
-                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccEntryId</th>
-                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>AccYearCode</th>
-                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>SalesPersonName</th>
-
+                <th data-columnno="1" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                    LedgerDescription
+                </th>
+                <th data-columnno="2" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                    VoucherNo
+                </th>
+                <th data-columnno="3" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                    VoucherDate
+                </th>
+                <th data-columnno="5" data-sortorder="asc" class="sortCol">
+                    <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>
+                    VoucherType
+                </th>
+                <th data-columnno="6" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>DrAmt</th>
+                <th data-columnno="7" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>CrAmt</th>
+                <th data-columnno="8" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>BillAmt</th>
+                <th data-columnno="9" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>PendingAmt</th>
+                <th data-columnno="10" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>DueDate</th>
+                <th data-columnno="11" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>OverDueDays</th>
+                <th data-columnno="12" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>TotBalanceAmt</th>
+                <th data-columnno="13" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>AccEntryId</th>
+                <th data-columnno="14" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>AccYearCode</th>
+                <th data-columnno="15" data-sortorder="asc" class="sortCol"><span class="sort-icon"><i class="fa"></i></span>SalesPersonName</th>
             </tr>
         </thead>
         <tbody id="divStockRegisterBody">
             @{
-                var @Cntr = 0;
+                var Cntr = 0;
                 if (Model.OutStandingGrid == null)
                 {
                     <tr class="text-center"><td colspan="26" class="text-black-50"><strong>NO DATA FOUND</strong></td></tr>
@@ -37,6 +46,51 @@
                     foreach (var item in Model.OutStandingGrid)
                     {
                         Cntr = Cntr + 1;
+                        string controller = "";
+                        string action = "";
+
+                        switch (item.VoucherType)
+                        {
+                            case "CREDIT-NOTE":
+                                controller = "CreditNote";
+                                action = "CreditNote";
+                                break;
+
+                            case "SALE-BILL":
+                                controller = "SaleInvoice";
+                                action = "SaleInvoice";
+                                break;
+
+                            case "PURCHASE-DIRECT":
+                                controller = "DirectPurchaseBill";
+                                action = "DirectPurchaseBill";
+                                break;
+
+                            case "PURCHASE-BILL":
+                                controller = "PurchaseBill";
+                                action = "PurchaseBill";
+                                break;
+
+                            case "Bank-Payment":
+                                controller = "BankPayment";
+                                action = "BankPayment";
+                                break;
+
+                            case "Cash-Payment":
+                                controller = "CashPayment";
+                                action = "CashPayment";
+                                break;
+
+                            case "Bank-Receipt":
+                                controller = "BankReceipt";
+                                action = "BankReceipt";
+                                break;
+
+                            case "Cash-Receipt":
+                                controller = "CashReceipt";
+                                action = "CashReceipt";
+                                break;
+                        }
 
                         <tr id="@Cntr" onclick="selection(this)">
                             <td>
@@ -48,9 +102,17 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-
                             <td>@item.LedgerDescription</td>
-                            <td>@item.VoucherNo</td>
+                            <td>
+                                <a
+                                   asp-controller="@controller"
+                                   asp-action="@action"
+                                   asp-route-Mode="U"
+                                   asp-route-ID="@item.DocEntryId"
+                                   asp-route-YearCode="@item.AccYearCode">
+                                    @item.VoucherNo
+                                </a>
+                            </td>
                             <td>@item.VoucherDate</td>
                             <td>@item.VoucherType</td>
                             <td id="totDrG-@Cntr">@item.DrAmt</td>
@@ -60,14 +122,16 @@
                             <td>@item.DueDate</td>
                             <td>@item.OverDueDays</td>
                             <td>@item.TotBalanceAmt</td>
-                            <td>@item.AccEntryId</td>
-                            <td>@item.AccYearCode</td>
+                            <td id="AccEntryId-@Cntr">
+                                <input type="hidden" id="DocEntryId-@Cntr" value="@item.DocEntryId" />
+                                @item.AccEntryId
+                            </td>
+                            <td id="AccYearCode-@Cntr">@item.AccYearCode</td>
                             <td>@item.SalesPersonName</td>
                         </tr>
                     }
                 }
             }
-
         </tbody>
     </table>
 </div>
@@ -75,7 +139,6 @@
 <center><strong>TOTAL ROWS : <span id="totalRows"></span></strong></center>
 
 <style>
-
     .sort-icon {
         padding: 5px;
         margin: 5px;

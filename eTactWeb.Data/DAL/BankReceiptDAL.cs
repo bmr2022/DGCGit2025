@@ -536,6 +536,7 @@ namespace eTactWeb.Data.DAL
                                             VoucherDate = dr["VoucherDate"].ToString() ?? "",
                                             DueDate = dr["DueDate"].ToString() ?? "",
                                             Balance = string.IsNullOrEmpty(dr["BalanceAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["BalanceAmt"].ToString()),
+                                            NetAmount = string.IsNullOrEmpty(dr["TotalAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["TotalAmt"].ToString()),
                                             DRCR = dr["DrCrType"].ToString() ?? "",
                                             AdjustmentAmt = string.IsNullOrEmpty(dr["AdjAmt"].ToString()) ? 0 : Convert.ToDecimal(dr["AdjAmt"].ToString()),
                                             Adjusted = dr["Adjusted"].ToString() ?? "",

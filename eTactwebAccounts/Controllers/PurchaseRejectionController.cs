@@ -818,9 +818,9 @@ namespace eTactWeb.Controllers
             MainModel.PartCodeList = await _IDataLogic.GetDropDownListWithCustomeVar("AccSPPurchaseRejectionMainDetail", partcodeparams, false, true);
             return MainModel;
         }
-        public async Task<JsonResult> NewEntryId(int YearCode)
+        public async Task<JsonResult> NewEntryId(int YearCode,string SubVoucherName)
         {
-            var JSON = await _purchRej.NewEntryId(YearCode);
+            var JSON = await _purchRej.NewEntryId(YearCode, SubVoucherName);
             string JsonString = JsonConvert.SerializeObject(JSON);
             return Json(JsonString);
         }

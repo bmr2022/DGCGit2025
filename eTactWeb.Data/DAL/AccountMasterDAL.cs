@@ -98,6 +98,7 @@ namespace eTactWeb.Data.DAL
             }
             return _ResponseResult;
         }
+        
 
         public async Task<AccountMasterModel> GetByID(int ID)
         {
@@ -191,6 +192,7 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.BlackListed = dr["BlackListed"].ToString();
                         _AccountMasterModel.BlackListed_By = dr["BlackListed_By"].ToString();
                         _AccountMasterModel.YearCode = Convert.ToInt32(dr["YearCode"].ToString());
+                        _AccountMasterModel.SalePersonEmpId = Convert.ToInt32(dr["SalePersonEmpId"].ToString());
                         _AccountMasterModel.Uid = dr["Uid"].ToString();
                         _AccountMasterModel.CC = dr["CC"].ToString();
                         _AccountMasterModel.CreatedBy = Convert.ToInt32(dr["CreatedBy"]);
@@ -201,6 +203,7 @@ namespace eTactWeb.Data.DAL
                         _AccountMasterModel.DiscountCategory = dr["DiscountCategory"].ToString();
                         _AccountMasterModel.GroupDiscountCategory = Convert.ToInt32(dr["GroupDiscountCategory"].ToString());
                         _AccountMasterModel.Region = dr["Region"].ToString();
+                     
                     }
                 }
             }
@@ -606,6 +609,7 @@ namespace eTactWeb.Data.DAL
                     oCmd.Parameters.AddWithValue("@Region", model.Region);
                     oCmd.Parameters.AddWithValue("@DiscountCategory", model.DiscountCategory);
                     oCmd.Parameters.AddWithValue("@GroupDiscountCategory", model.GroupDiscountCategory);
+                    oCmd.Parameters.AddWithValue("@SalePersonEmpId", model.SalePersonEmpId);
 
                     oCmd.Parameters.AddWithValue("@CreatedBy", model.CreatedBy);
                     if (model.Mode == "Update")
@@ -646,6 +650,47 @@ namespace eTactWeb.Data.DAL
             return _ResponseResult;
         }
 
+        internal async Task<ResponseResult> GetSalePersonName()
+        {
+            ResponseResult? _ResponseResult = new ResponseResult();
+
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    DataTable? oDataTable = new DataTable();
+                    SqlCommand oCmd = new SqlCommand("SP_AccountMaster", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "GetSalePersonName");
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataTable);
+                    }
+                    if (oDataTable.Rows.Count != 0)
+                    {
+                        _ResponseResult.StatusCode = HttpStatusCode.OK;
+                        _ResponseResult.StatusText = "Success";
+                        _ResponseResult.Result = oDataTable;
+                    }
+                    else
+                    {
+                        _ResponseResult.StatusCode = HttpStatusCode.NotFound;
+                        _ResponseResult.StatusText = "Error";
+                        _ResponseResult.Result = null;
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                _ResponseResult.StatusCode = (HttpStatusCode)ex.HResult;
+                _ResponseResult.StatusText = "Error";
+                _ResponseResult.Result = ex.StackTrace;
+            }
+            return _ResponseResult;
+        }
         internal async Task<ResponseResult> GetTDSPartyList()
         {
             ResponseResult? _ResponseResult = new ResponseResult();

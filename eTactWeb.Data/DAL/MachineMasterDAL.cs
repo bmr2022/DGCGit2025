@@ -118,7 +118,7 @@ namespace eTactWeb.Data.DAL
                     SqlParams.Add(new SqlParameter("@TechSpecification", string.IsNullOrEmpty(model.TechSpecification) ? (object)DBNull.Value : model.TechSpecification));
                     SqlParams.Add(new SqlParameter("@LastCalibraDate", model.LastCalibraDate ?? (object)DBNull.Value));
                     SqlParams.Add(new SqlParameter("@CalibraDur", model.CalibraDur > 0 ? model.CalibraDur : (object)DBNull.Value));
-                    SqlParams.Add(new SqlParameter("@WorkCenterId", model.WorkCenterId > 0 ? model.WorkCenterId : (object)DBNull.Value));
+                  
                     SqlParams.Add(new SqlParameter("@CC", string.IsNullOrEmpty(model.CC) ? (object)DBNull.Value : model.CC));
                     SqlParams.Add(new SqlParameter("@UId", string.IsNullOrEmpty(model.UId) ? (object)DBNull.Value : model.UId));
                

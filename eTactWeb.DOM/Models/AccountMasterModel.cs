@@ -57,6 +57,7 @@ namespace eTactWeb.DOM.Models
         public string? MobileNo { get; set; }
         public string? PANNO { get; set; }
         public int ParentAccountCode { get; set; }
+        public int SalePersonEmpId { get; set; }
         public string? ParentAccountName { get; set; }
         public IList<TextValue>? ParentGroupList { get; set; }
         public IList<TextValue>? DiscountCategoryList { get; set; }

@@ -71,6 +71,7 @@ namespace eTactWeb.DOM.Models
         public int FGItemCode { get; set; }
         public int ItemCode { get; set; } //RMItemCode
         public string? IssuedDate { get; set; }
+        public string? TransactionDate { get; set; }
         public string ItemName { get; set; } //RMItemName
         public string PartCode { get; set; } //RMPartCode
         public decimal ReqQty { get; set; }

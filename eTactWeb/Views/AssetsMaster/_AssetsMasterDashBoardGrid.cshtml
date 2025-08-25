@@ -3,7 +3,7 @@
 @using System.Reflection.PortableExecutable
 @inject IHttpContextAccessor HttpContextAccessor
 @{
-    var ActualEntryByEmpid = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("EmpID"));
+    var YearCode = Convert.ToInt32(HttpContextAccessor.HttpContext.Session.GetString("YearCode"));
 }
 
 <table class="table table-hover table-bordered table-striped TbCss text-nowrap mb-0" id="ISTDashboard">
@@ -11,12 +11,7 @@
         <tr>
             <th>Sr#</th>
             <th>Action</th>
-            <th data-columnno="1" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry ID
-            </th>
-            <th data-columnno="2" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Account Code
-            </th>
+           
             <th data-columnno="3" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry Date
             </th>
@@ -26,58 +21,28 @@
             <th data-columnno="5" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Assets Name
             </th>
-            <th data-columnno="6" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Item Code
-            </th>
-            <th data-columnno="7" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Assets Category ID
-            </th>
-            <th data-columnno="8" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Parent Account Name
-            </th>
-            <th data-columnno="9" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Parent Account Code
-            </th>
-            <th data-columnno="10" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Main Group
-            </th>
-            <th data-columnno="11" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sub Group
-            </th>
-            <th data-columnno="12" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Under Group
-            </th>
-            <th data-columnno="13" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sub Sub Group
-            </th>
+           
+            
             <th data-columnno="14" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Cost Center ID
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> CostCenter Name
             </th>
-            <th data-columnno="15" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Fiscal Year
-            </th>
+            
           
-            <th data-columnno="17" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Vendor Account Code
-            </th>
+           
             <th data-columnno="18" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PO No
             </th>
             <th data-columnno="19" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PO Date
             </th>
-            <th data-columnno="20" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> PO Year
-            </th>
+       
             <th data-columnno="21" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Invoice No
             </th>
             <th data-columnno="22" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Invoice Date
             </th>
-            <th data-columnno="23" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Invoice Year Code
-            </th>
+          
             <th data-columnno="24" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Net Book Value
             </th>
@@ -115,7 +80,7 @@
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Location of Installation
             </th>
             <th data-columnno="36" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> For Department ID
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Department Name
             </th>
             <th data-columnno="37" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Technician
@@ -127,9 +92,7 @@
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Technician Employee Name
             </th>
           
-            <th data-columnno="41" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Custodian Employee ID
-            </th>
+         
             <th data-columnno="42" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Consider in Inventory
             </th>
@@ -148,18 +111,14 @@
             <th data-columnno="47" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> UID
             </th>
-            <th data-columnno="48" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry By
-            </th>
+          
             <th data-columnno="49" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry By Employee
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry By
             </th>
             <th data-columnno="50" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Actual Entry Date
             </th>
-            <th data-columnno="51" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Updated By
-            </th>
+           
             <th data-columnno="52" data-sortorder="asc" class="sortCol">
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Last Updated Date
             </th>
@@ -167,9 +126,27 @@
                 <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Entry By Machine
             </th>
             <th data-columnno="54" data-sortorder="asc" class="sortCol">
-                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By Employee
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Updated By 
+            </th>
+            <th data-columnno="7" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Category Name
+            </th>
+            <th data-columnno="8" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Parent Account Name
             </th>
 
+            <th data-columnno="10" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Main Group
+            </th>
+            <th data-columnno="11" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sub Group
+            </th>
+            <th data-columnno="12" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Under Group
+            </th>
+            <th data-columnno="13" data-sortorder="asc" class="sortCol">
+                <span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span> Sub Sub Group
+            </th>
 
         </tr>
     </thead>
@@ -191,8 +168,10 @@
                             <div id="container">
 
                                 <div id="viewCursorDiv-@Cntr">
-                                    <a class="table-link link-success" asp-action="DiscountCustomerCategoryMaster" asp-route-Mode="V" asp-route-ID="@item.AssetsEntryId" asp-route-YC="@item.YearCode" onclick="BackButtonData(event,'@item.AssetsEntryId','@item.YearCode');"
-                                       >
+                                    <a class="table-link link-success" asp-action="AssetsMaster" asp-route-Mode="V" asp-route-ID="@item.AssetsEntryId" asp-route-YC="@YearCode" onclick="BackButtonData(event,'@item.AssetsEntryId','@item.YearCode');"
+                                       asp-route-AssetsEntryId="@item.AssetsEntryId" asp-route-AccountCode="@item.AccountCode" asp-route-EntryDate="@item.EntryDate" asp-route-AssetsCode="@item.AssetsCode" asp-route-AssetsName="@item.AssetsName" asp-route-ItemCode="@item.ItemCode" asp-route-AssetsCateogryId="@item.AssetsCateogryId" asp-route-ParentAccountName="@item.ParentAccountName" asp-route-ParentAccountCode="@item.ParentAccountCode" asp-route-MainGroup="@item.MainGroup" asp-route-SubGroup="@item.SubGroup" asp-route-UnderGroup="@item.UnderGroup" asp-route-SubSubGroup="@item.SubSubGroup" asp-route-CostCenterId="@item.CostCenterId" asp-route-Fiscalyear="@item.FiscalYear" asp-route-VendoreAccountCode="@item.VendoreAccountCode" asp-route-PONO="@item.PONO" asp-route-PODate="@item.PODate" asp-route-POYear="@item.POYear" asp-route-InvoiceNo="@item.InvoiceNo"
+                                       asp-route-InvoiceDate="@item.InvoiceDate" asp-route-InvoiceYearCode="@item.InvoiceYearCode" asp-route-NetBookValue="@item.NetBookValue" asp-route-PurchaseValue="@item.PurchaseValue" asp-route-ResidualValue="@item.ResidualValue" asp-route-DepreciationMethod="@item.DepreciationMethod" asp-route-PurchaseNewUsed="@item.PurchaseNewUsed" asp-route-CountryOfOrigin="@item.CountryOfOrigin" asp-route-FirstAqusitionOn="@item.FirstAqusitionOn" asp-route-OriginalValue="@item.OriginalValue" asp-route-CapatalizationDate="@item.CapatalizationDate" asp-route-BarCode="@item.BarCode" asp-route-SerialNo="@item.SerialNo" asp-route-LocationOfInsallation="@item.LocationOfInsallation" asp-route-ForDepartmentId="@item.ForDepartmentId" asp-route-Technician="@item.Technician" asp-route-TechnicialcontactNo="@item.TechnicialcontactNo" asp-route-TechEmployeeName="@item.TechEmployeeName" asp-route-CustoidianEmpId="@item.CustoidianEmpId" asp-route-ConsiderInInvetory="@item.ConsiderInInvetory" asp-route-InsuranceCompany="@item.InsuranceCompany" asp-route-InsuredAmount="@item.InsuredAmount"
+                                       asp-route-InsuranceDetail="@item.InsuranceDetail" asp-route-CC="@item.CC" asp-route-UID="@item.UID" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-ActualEntryByEmployee="@item.ActualEntryByEmpName" asp-route-ActualEntryDate="@item.ActualEntryDate" asp-route-LastupdatedBy="@item.LastupdatedBy" asp-route-LastUpdatedDate="@item.LastUpdatedDate" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-UpdatedByEmployee="@item.LastUpdatedbyEmpName">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-magnifying-glass fa-stack-1x fa-inverse"></i>
@@ -201,19 +180,22 @@
                                 </div>
                                 <div id="editCursorDiv-@Cntr">
 
-                                    <a class="table-link link-primary" asp-action="DiscountCustomerCategoryMaster" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.DiscountCustCatEntryId" asp-route-YC="@item.DiscountCustCatYearCode" asp-route-FromDate="@item.FromDate"
+                                    <a class="table-link link-primary" asp-action="AssetsMaster" onclick="confirmEdit(event)" asp-route-Mode="U" asp-route-ID="@item.AssetsEntryId" asp-route-YC="@YearCode" asp-route-FromDate="@item.FromDate"
                                        asp-route-ToDate="@item.ToDate"
-                                       asp-route-ID="@item.AssetsEntryId"
-                                       asp-route-YC="@item.YearCode"
-                                      >
+                                       asp-route-AssetsEntryId="@item.AssetsEntryId" asp-route-AccountCode="@item.AccountCode" asp-route-EntryDate="@item.EntryDate" asp-route-AssetsCode="@item.AssetsCode" asp-route-AssetsName="@item.AssetsName" asp-route-ItemCode="@item.ItemCode" asp-route-AssetsCateogryId="@item.AssetsCateogryId" asp-route-ParentAccountName="@item.ParentAccountName" asp-route-ParentAccountCode="@item.ParentAccountCode" asp-route-MainGroup="@item.MainGroup" asp-route-SubGroup="@item.SubGroup" asp-route-UnderGroup="@item.UnderGroup" asp-route-SubSubGroup="@item.SubSubGroup" asp-route-CostCenterId="@item.CostCenterId" asp-route-Fiscalyear="@item.FiscalYear"  asp-route-VendoreAccountCode="@item.VendoreAccountCode" asp-route-PONO="@item.PONO" asp-route-PODate="@item.PODate" asp-route-POYear="@item.POYear" asp-route-InvoiceNo="@item.InvoiceNo"
+                                       asp-route-InvoiceDate="@item.InvoiceDate" asp-route-InvoiceYearCode="@item.InvoiceYearCode" asp-route-NetBookValue="@item.NetBookValue" asp-route-PurchaseValue="@item.PurchaseValue" asp-route-ResidualValue="@item.ResidualValue" asp-route-DepreciationMethod="@item.DepreciationMethod" asp-route-PurchaseNewUsed="@item.PurchaseNewUsed" asp-route-CountryOfOrigin="@item.CountryOfOrigin" asp-route-FirstAqusitionOn="@item.FirstAqusitionOn" asp-route-OriginalValue="@item.OriginalValue" asp-route-CapatalizationDate="@item.CapatalizationDate" asp-route-BarCode="@item.BarCode" asp-route-SerialNo="@item.SerialNo" asp-route-LocationOfInsallation="@item.LocationOfInsallation" asp-route-ForDepartmentId="@item.ForDepartmentId" asp-route-Technician="@item.Technician" asp-route-TechnicialcontactNo="@item.TechnicialcontactNo" asp-route-TechEmployeeName="@item.TechEmployeeName"  asp-route-CustoidianEmpId="@item.CustoidianEmpId" asp-route-ConsiderInInvetory="@item.ConsiderInInvetory" asp-route-InsuranceCompany="@item.InsuranceCompany" asp-route-InsuredAmount="@item.InsuredAmount"
+                                       asp-route-InsuranceDetail="@item.InsuranceDetail" asp-route-CC="@item.CC" asp-route-UID="@item.UID" asp-route-ActualEntryBy="@item.ActualEntryBy" asp-route-ActualEntryByEmployee="@item.ActualEntryByEmpName" asp-route-ActualEntryDate="@item.ActualEntryDate" asp-route-LastupdatedBy="@item.LastupdatedBy" asp-route-LastUpdatedDate="@item.LastUpdatedDate" asp-route-EntryByMachine="@item.EntryByMachine" asp-route-UpdatedByEmployee="@item.LastUpdatedbyEmpName">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
                                         </span>
                                     </a>
                                 </div>
+
                                 <div id="deleteCursorDiv-@Cntr">
-                                    <a class="table-link link-danger" asp-action="DeleteByID" asp-route-EntryId="@item.DiscountCustCatEntryId" asp-route-YearCode="@item.DiscountCustCatYearCode" asp-route-EntryDate="@item.ActualEntryDate" asp-route-EntryByempId="@ActualEntryByEmpid">
+                                    <a class="table-link link-danger"
+                                       href="javascript:void(0);"
+                                       onclick="confirmdelete('@item.AssetsEntryId', '@YearCode', '@item.EntryDate', '@item.ActualEntryBy')">
                                         <span class="fa-stack">
                                             <i class="fa fa-square fa-stack-2x"></i>
                                             <i class="fa-solid fa-trash fa-stack-1x fa-inverse"></i>
@@ -225,28 +207,18 @@
                             </div>
                         </td>
 
-                        <td>@item.AssetsEntryId</td>
-                        <td>@item.AccountCode</td>
                         <td>@item.EntryDate?.ToString().Split(' ')[0]</td>
                         <td>@item.AssetsCode</td>
                         <td>@item.AssetsName</td>
-                        <td>@item.ItemCode</td>
-                        <td>@item.AssetsCateogryId</td>
-                        <td>@item.ParentAccountName</td>
-                        <td>@item.ParentAccountCode</td>
-                        <td>@item.MainGroup</td>
-                        <td>@item.SubGroup</td>
-                        <td>@item.UnderGroup</td>
-                        <td>@item.SubSubGroup</td>
-                        <td>@item.CostCenterId</td>
-                        <td>@item.FiscalYear</td>
-                        <td>@item.VendoreAccountCode</td>
+                     
+                        <td>@item.CostCenterName</td>
+                       
                         <td>@item.PONO</td>
                         <td>@item.PODate?.ToString().Split(' ')[0]</td>
-                        <td>@item.POYear</td>
+                        
                         <td>@item.InvoiceNo</td>
                         <td>@item.InvoiceDate?.ToString().Split(' ')[0]</td>
-                        <td>@item.InvoiceYearCode</td>
+                        
                         <td>@item.NetBookValue</td>
                         <td>@item.PurchaseValue</td>
                         <td>@item.ResidualValue</td>
@@ -259,24 +231,30 @@
                         <td>@item.BarCode</td>
                         <td>@item.SerialNo</td>
                         <td>@item.LocationOfInsallation</td>
-                        <td>@item.ForDepartmentId</td>
+                        <td>@item.DepartmentName</td>
                         <td>@item.Technician</td>
                         <td>@item.TechnicialcontactNo</td>
                         <td>@item.TechEmployeeName</td>
-                        <td>@item.CustoidianEmpId</td>
                         <td>@item.ConsiderInInvetory</td>
                         <td>@item.InsuranceCompany</td>
                         <td>@item.InsuredAmount</td>
                         <td>@item.InsuranceDetail</td>
                         <td>@item.CC</td>
                         <td>@item.UID</td>
-                        <td>@item.ActualEntryBy</td>
+                       
                         <td>@item.ActualEntryByEmpName</td>
                         <td>@item.ActualEntryDate?.ToString().Split(' ')[0]</td>
-                        <td>@item.LastupdatedBy</td>
+                   
                         <td>@item.LastUpdatedDate?.ToString().Split(' ')[0]</td>
                         <td>@item.EntryByMachine</td>
                         <td>@item.LastUpdatedbyEmpName</td>
+                        <td>@item.AssetsCateogryName</td>
+                        <td>@item.ParentAccountName</td>
+                        <td>@item.MainGroup</td>
+                        <td>@item.SubGroup</td>
+                        <td>@item.UnderGroup</td>
+                        <td>@item.SubSubGroup</td>
+
 
                     </tr>
                 }
