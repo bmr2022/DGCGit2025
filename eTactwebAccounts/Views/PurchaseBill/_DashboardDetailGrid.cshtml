@@ -92,7 +92,9 @@
                         foreach (var item in Model.PBDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="approvedRow-@Cntr">
+                              <tr id="approvedRow-@Cntr" style="@( !string.IsNullOrWhiteSpace(item.AgainstVoucherNo) ? "background: rgb(13, 202, 240);!important" : "" )">
+                          
+                            @* <tr id="approvedRow-@Cntr">*@
                                 <td class="FWB">
                                     @srNo
                                     <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
@@ -188,7 +190,8 @@
                         foreach (var item in Model.PBDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="approvedRow-@Cntr">
+                                        <tr id="approvedRow-@Cntr" style="@( !string.IsNullOrWhiteSpace(item.AgainstVoucherNo) ? "background: rgb(13, 202, 240);!important" : "" )">
+                           @* <tr id="approvedRow-@Cntr">*@
                                 <td class="FWB">
                                     @srNo
                                     <input type="hidden" id="approvedOrNot-@Cntr" value="@item.Approved" />
@@ -225,7 +228,7 @@
                                         else
                                         {
                                             <div id="editCursorDiv-@Cntr">
-                                                <a class="table-link link-primary" asp-action="PurchaseBill" asp-route-Mode="U" asp-route-ID="@item.PurchBillEntryId" asp-route-YearCode="@item.PurchBillYearCode" onclick="BackButtonData(event,'@item.PurchBillEntryId','@item.PurchBillYearCode');">
+                                                <a class="table-link link-primary" asp-action="PurchaseBill" asp-route-Mode="U" asp-route-ID="@item.PurchBillEntryId" asp-route-YearCode="@item.PurchBillYearCode" onclick="EditButtonData(event,'@item.PurchBillEntryId','@item.PurchBillYearCode','(@item.AgainstVoucherNo)')">
                                                     <span class="fa-stack">
                                                         <i class="fa fa-square fa-stack-2x"></i>
                                                         <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -330,7 +333,7 @@
 
         #container > div {
             flex: 1;
-            margin-right: 10px; /* Adjust margin as needed */
+            /* margin-right: 10px; /* Adjust margin as needed */ */
         }
 
     #PBDashboardGrid {
@@ -363,5 +366,14 @@
     .descCol {
         font-size: 15px;
         vertical-align: super;
+    }
+
+    .fa-stack {
+        display: inline-block;
+        height: 1.5em;
+        line-height: 2em;
+        position: relative;
+        vertical-align: middle;
+        width: 1.9em;
     }
 </style>

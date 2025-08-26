@@ -332,7 +332,25 @@
              mrnoptView: false,
              mrnoptUpdate: false
            };
+                 $("#VouchDate").on("change", function () {
+                  var invoiceDate = $("#InvDate").datepicker("getDate");
+               var voucherDate = $(this).datepicker("getDate");
 
+               if (invoiceDate && voucherDate && voucherDate < invoiceDate) {
+                   $.notify("Voucher Date should be greater than or equal to Invoice Date", "error");
+                   $(this).val(""); // optional: clear invalid date
+               }
+                 $('#divAdjItemList').empty();
+               var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
+               $('#divAdjItemList').html(NoData);
+               CalculateAdjAmt('NetTotal');
+               DueDateCalculation();
+                var taxGrid = $('#divTaxGrid tr td').length;
+                 if (taxGrid >1 ) {
+                   ClearAdjustmentGrid();
+               }
+               AddAdjstmntDetail1();
+           });
             function GetGateNoFormRights() {
                    $.ajax({
                                url: "@Url.Action("GetFormRights", "GateInward")",
@@ -563,9 +581,10 @@
             // $('#AccountCode').select2();
             GetFormRights();
             LockedFinancialYear();
-            GetExchnageRate();
+          
             FillTDSTaxType();
             FillCurrency();
+                     GetExchnageRate();
             GetGateNoFormRights();
             MRNNoFormRights();
             var rowCounter = $('#PBPendingItemDetail tr').length;
@@ -605,7 +624,7 @@
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "PBI") {
                 var InvDate = $('#InvDate').val()?.split("-").join("/");
                 InvDate = ValidateNull(InvDate) ? (InvDate.split(" ")[0]) : 'now';
-                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", InvDate);
+                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", InvDate);
 
                 // var StrMRNEntryDate = $('#StrMRNEntryDate').val();//?.split("-").join("/");
                 // StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? parseDateToFormat(StrMRNEntryDate.split(" ")[0]) : 'now';
@@ -613,33 +632,33 @@
 
                 var StrMRNEntryDate = $('#StrMRNEntryDate').val()?.split("-").join("/");
                 StrMRNEntryDate = ValidateNull(StrMRNEntryDate) ? (StrMRNEntryDate.split(" ")[0]) : 'now';
-                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrMRNEntryDate);
+                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", StrMRNEntryDate);
 
                 var StrGateDate = $('#StrGateDate').val()?.split("-").join("/");
                 StrGateDate = ValidateNull(StrGateDate) ? (StrGateDate.split(" ")[0]) : 'now';
-                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrGateDate);
+                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", StrGateDate);
 
                 var StrVouchDate = $('#VouchDate').val()?.split("-").join("/");
                 StrVouchDate = ValidateNull(StrVouchDate) ? (StrVouchDate.split(" ")[0]) : 'now';
-                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", StrVouchDate);
+                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", StrVouchDate);
                   DueDateCalculation();
                 var AdjDueDate = $('#AdjDueDate').val()?.split("-").join("/");
                 AdjDueDate = ValidateNull(AdjDueDate) ? parseDateToFormat(AdjDueDate.split(" ")[0]) : 'now';
-                $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjDueDate);
+                $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjDueDate);
 
                 var AdjAgnstVouchDate = ($('#AdjAgnstVouchDate').val() != null && $('#AdjAgnstVouchDate').val() != undefined) ? $('#AdjAgnstVouchDate').val().split("-").join("/") : 'now';
                 AdjAgnstVouchDate = ValidateNull(AdjAgnstVouchDate) ? parseDateToFormat(AdjAgnstVouchDate.split(" ")[0]) : 'now';
-                $('#AdjAgnstVouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjAgnstVouchDate);
+                $('#AdjAgnstVouchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjAgnstVouchDate);
 
                 var AdjPODate = $('#AdjPODate').val()?.split("-").join("/");
                 AdjPODate = ValidateNull(AdjPODate) ? parseDateToFormat(AdjPODate.split(" ")[0]) : 'now';
-                $('#AdjPODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjPODate);
+                $('#AdjPODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjPODate);
             }
             else {
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
-                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
-                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
+                $('#StrMRNEntryDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", 'now');
+                $('#StrGateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
                 $('#PODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
                 $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
@@ -840,11 +859,63 @@
                         $.each(obj.Result.Table, function (index, val) {
                             $('#Currency').val(val.Currency);
                             $('#CurrencyId').val(val.entry_id);
+
                         });
                     }
                 }
             });
         }
+
+/* 
+              function FillCurrency() {
+            $.ajax({
+                type: "GET",
+                url: "@Url.Action("FillCurrency")",
+                async: false,
+                dataType: "json",
+                data: { AccountCode: $('#AccountCode').val() },
+                success: function (result, status, error) {
+                    if (result != null) {
+                        var obj = $.parseJSON(result);
+
+                        // Reset Currency dropdown
+                        $('#Currency').empty();
+                        $('#Currency').append("<option value='' disabled selected>-Select-</option>");
+
+                        $.each(obj.Result.Table, function (index, val) {
+                            // ⚠️ important: use entry_id as value, not Currency text
+                                   $('#Currency').append("<option value='" + val.Currency + "'>" + val.Currency + "</option>");
+                        });
+
+                        // ✅ After filling dropdown, set selected value if mode is U or V
+                        if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+                            var currencyId = $('#CurrencyId').val(); // e.g. 16
+                            $('#Currency').val(currencyId);          // select option with value=16
+                        } else {
+                            // if default flag exists, select that
+                            let defaultCurrency = obj.Result.Table.find(x => x.IsDefault === "Y");
+                            if (defaultCurrency) {
+                                $('#Currency').val(defaultCurrency.entry_id);
+                                $('#CurrencyId').val(defaultCurrency.entry_id);
+                            }
+                        }
+
+                        // ✅ Enable/disable logic after selection
+                        let selectedId = $('#Currency').val();
+                        let selected = obj.Result.Table.find(x => x.entry_id == selectedId);
+
+                        if (selected && selected.IsDefault === "Y") {
+                                   $('#Currency').prop("disabled", true);
+                            $('#ExchangeRate').prop("disabled", true);
+                        } else {
+                                   $('#Currency').prop("disabled", false);
+                            $('#ExchangeRate').prop("disabled", false);
+                        }
+                    }
+                }
+            });
+        }
+ */
 
         // Function to format Date object to dd/mm/yy
         function formatDateToDDMMYY(date) {

@@ -163,7 +163,8 @@
                                         </div>
                                         <div id="editCursorDiv-@Cntr">
 
-                                            <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="EditButtonData(event,@item.AgainstVoucherNo)">
+                                            <a class="table-link link-primary btnEditData" asp-action="SaleInvoice" asp-route-Mode="U" asp-route-ID="@item.SaleBillEntryId" asp-route-YearCode="@item.SaleBillYearCode" onclick="EditButtonData(event,'(@item.AgainstVoucherNo)')">
+
                                                 <span class="fa-stack">
                                                     <i class="fa fa-square fa-stack-2x"></i>
                                                     <i class="fa fa-pencil fa-stack-1x fa-inverse"></i>
@@ -179,6 +180,7 @@
                                                 </span>
                                             </a>
                                         </div>
+                                        
                                     </div>
                                 </td>
 

@@ -105,7 +105,7 @@ else
                                                 </a>
                                             </div>
                                         }
-                                        @if ((!string.IsNullOrEmpty(item.AgainstInvNo) || !string.IsNullOrEmpty(item.AgainstVoucherNo) || item.AgainstVoucherDate != null) || (item.BalanceSheetClosed == "Y" || item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.YearCode != yearCode))
+                                        @if ((item.BalanceSheetClosed == "Y" || item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.YearCode != yearCode))
                                         {
                                             <div>
                                                 <a class="table-link link-danger noCursor">

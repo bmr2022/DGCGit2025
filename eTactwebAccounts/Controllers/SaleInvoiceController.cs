@@ -805,7 +805,7 @@ namespace eTactWeb.Controllers
                         else
                         {
                             var DT = DS.Tables[0].DefaultView.ToTable(true, "SaleBillNo", "SaleBillDate", "CustomerName", "GSTNO", "SupplyType", "CustAddress", "StateNameofSupply"
-                                    , "CityofSupply", "DocumentHead", "ConsigneeName", "ConsigneeAddress", "ProdSchEntryId", "ProdSchDate", "SchdeliveryDate"
+                                    , "CityofSupply", "DocumentHead", "ConsigneeName", "AgainstVoucherNo","ConsigneeAddress", "ProdSchEntryId", "ProdSchDate", "SchdeliveryDate"
                                     , "PaymentTerm", "currency", "BillAmt", "SONO", "CustOrderNo", "SODate", "SchNo", "Schdate", "SOAmendNo", "SchAmendNo", "SchAmendDate", "PartCode", "ItemName", "CustomerPartCode", "HSNNO"
                                     , "Unit", "NoofCase", "Qty", "Rate", "ItemAmount", "StoreId", "StoreName", "batchno", "uniquebatchno"
                                     , "LotStock", "TotalStock", "RateInOtherCurr", "AltUnit", "AltQty", "SOPendQty", "AltSOPendQty", "AccountName"
