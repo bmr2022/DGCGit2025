@@ -1,0 +1,75 @@
+﻿@model eTactWeb.DOM.Models.HRGateAttendanceModel
+
+<style>
+    .select2-container--default .select2-selection--single {
+        background-color: #e0f2f1;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #e0f2f1; /* Dropdown background color */
+        color: #000;
+</style>
+<div class="accordion-body">
+    <div class="row g-2 gx-3">
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <input type="hidden" asp-for="FinFromDate" />
+            <input type="hidden" asp-for="FinToDate" />
+            <label asp-for="GateAttEntryId" class="form-label">Entry ID</label>
+            <input asp-for="GateAttEntryId" class="form-control" readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GateAttYearCode" class="form-label">Year</label>
+            <input asp-for="GateAttYearCode" class="form-control" value="@Model.GateAttYearCode" readonly />
+        </div>
+        @* <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="Branch" class="form-label">Branch</label>
+            <input class="form-control" asp-for="Branch" readonly />
+        </div> *@
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AttendanceType" class="form-label"> Manual / Import</label>
+            <select class="form-select" asp-for="AttendanceType" tabindex="3" asp-items="@(new SelectList(Model.AttendanceTypeList,"Value","Text"))"></select>
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="AttendanceEntryMethodType" class="form-label">Attendance Entry Method</label>
+            <select asp-for="AttendanceEntryMethodType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.AttendanceEntryMethodTypeList,"Value","Text"))">
+                <option value="0" selected>-Select-</option>
+            </select>
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="DayOrMonthType" class="form-label">Day or Month</label>
+            <select asp-for="DayOrMonthType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.DayOrMonthTypeList,"Value","Text"))">
+                <option value="0" selected>-Select-</option>
+            </select>
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GateAttEntryDate" class="form-label">Entry Date</label>
+            <input asp-for="GateAttEntryDate" class="form-control " readonly />
+        </div>
+        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="EmployeeCode" class="form-label">Employee Code</label>
+            <input asp-for="EmployeeCode" value="@Model.EmployeeCode"
+                   class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
+
+        </div>
+        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="EmployeeName" class="form-label">Employee Name</label>
+            <input asp-for="EmployeeName" tabindex="7" class="form-control" />
+        </div>
+        <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 col-sm-auto">
+            <div class="row g-3 justify-content-around">
+                <div class="col-auto">
+                    <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="clearfix"></div>
+    </div>
+</div>
+

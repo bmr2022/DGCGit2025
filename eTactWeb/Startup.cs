@@ -138,6 +138,7 @@ namespace eTactWeb
             services.TryAddScoped<IDataLogic, DataLogicBLL>();
             services.TryAddScoped<IItemMaster, ItemMasterBLL>();
             services.TryAddScoped<IHRSalaryHeadMaster, HRSalaryHeadMasterBLL>();
+            services.TryAddScoped<IHRGateAttendance, HRGateAttendanceBLL>();
             services.TryAddScoped<IHRWeekOffMaster, HRWeekOffMasterBLL>();
             services.TryAddScoped<IHRLeaveApplicationMaster, HRLeaveApplicationMasterBLL>();
             services.TryAddScoped<IHRLeaveOpeningMaster, HRLeaveOpeningMasterBLL>();
@@ -209,7 +210,6 @@ namespace eTactWeb
             services.TryAddScoped<IAssetsMaster,AssetsMasterBLL>();
             services.TryAddScoped<ISalepersonWiseRateMaster,SalepersonWiseRateMasterBLL>();
             services.TryAddScoped<IToolMoldMaster,ToolMoldMasterBLL>();
-
 
 
             services.TryAddTransient<ISaleSchedule, SaleScheduleBLL>();
