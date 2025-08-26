@@ -51,6 +51,7 @@ namespace eTactWeb.Controllers
             HttpContext.Session.SetString("KeyIssWOBomGrid", serializedGrid);
             return View(MainModel);
         }
+      
         public async Task<JsonResult> GetFormRights()
         {
             var userID = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
@@ -407,6 +408,64 @@ namespace eTactWeb.Controllers
             }
             return PartialView("_IssueWithoutBomGrid", MainModel);
         }
+        [HttpPost]
+        public IActionResult DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)
+        {
+            var MainModel = new IssueWithoutBom();
+            string modelJson = HttpContext.Session.GetString("KeyIssWOBom");
+            List<IssueWithoutBomDetail> IssueWithoutBomGrid = new List<IssueWithoutBomDetail>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueWithoutBomGrid = JsonConvert.DeserializeObject<List<IssueWithoutBomDetail>>(modelJson);
+            }
+
+            if (deleteZeroStockOnly)
+            {
+                var deletedPartCodes = new List<string>();
+                IssueWithoutBomGrid.RemoveAll(x =>
+                {
+                    bool toDelete = (x.BatchNo == "" || x.BatchNo == null);
+
+                    if (toDelete)
+                        deletedPartCodes.Add(x.PartCode);
+                    return toDelete;
+                });
+
+                ViewBag.DeletedPartCodes = string.Join(", ", deletedPartCodes);
+            }
+            else if (seqNo != null)
+            {
+                var itemToRemove = IssueWithoutBomGrid.FirstOrDefault(x => x.seqno == seqNo);
+                if (itemToRemove != null)
+                {
+                    IssueWithoutBomGrid.Remove(itemToRemove);
+                }
+            }
+
+            int newSeq = 1;
+            foreach (var item in IssueWithoutBomGrid)
+            {
+                item.seqno = newSeq++;
+            }
+
+
+            MainModel.ItemDetailGrid = IssueWithoutBomGrid;
+
+
+            if (IssueWithoutBomGrid.Count == 0)
+            {
+                HttpContext.Session.Remove("KeyIssWOBom");
+            }
+            else
+            {
+                string updatedJson = JsonConvert.SerializeObject(IssueWithoutBomGrid);
+                HttpContext.Session.SetString("KeyIssWOBom", updatedJson);
+            }
+
+            return PartialView("_IssueWOMainBomGrid", MainModel);
+        }
+
         public IActionResult DeleteFromMemoryGrid(int SeqNo)
         {
             var MainModel = new IssueWithoutBom();
