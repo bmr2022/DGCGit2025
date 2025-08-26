@@ -236,6 +236,7 @@
                                                     <th>Item Size</th>
                                                     <th>Item Color</th>
                                                     <th>Remaining Stock</th>
+                                                    <th>Transaction Date</th>
                                                 </tr>
                                             </thead>
                                             <tbody id="divIssueAgainstProduction">
@@ -481,6 +482,7 @@
 
         });
 
+
         $(document).ready(function () {
             FillIssueByEmp();
             FillRecByEmp();
@@ -543,6 +545,42 @@
         //    $.notify("Deleted PartCodes: " + deletedParts, "info");
         }
         })
+
+
+        function parseDDMMYYYY(dateStr) {
+            if (!dateStr) return null;
+            var parts = dateStr.split("/");
+            return new Date(parts[2], parts[1] - 1, parts[0]); // yyyy, mm-1, dd
+        }
+
+        function validateIssueDateBeforeAddToGrid() {
+            var issueDateStr = $("#IssAgtProdSchSlipDate").val();
+            var issueDate = parseDDMMYYYY(issueDateStr);
+
+            if (!issueDate) return true; // no IssueDate entered yet
+
+            var isValid = true;
+
+            $("[id^=MainGridTransactionDate-]").each(function () {
+                var transDateStr = $(this).val();
+                var transDate = parseDDMMYYYY(transDateStr);
+
+                if (transDate && issueDate < transDate) {
+                    alert("❌ Not allowed: Issue Date (" + issueDateStr +
+                        ") is earlier than Transaction Date (" + transDateStr + ")");
+                    $(".GridButton").prop("disabled", true);
+                    isValid = false;
+                    return false; // break loop
+                }
+            });
+
+            if (isValid) {
+                $(".GridButton").prop("disabled", false);
+            }
+
+            return isValid;
+        }
+
 
         function Validate_IssueAgainstSubmit() {
 
@@ -1299,6 +1337,10 @@
         function GridButton() {
              
             var rowCount = $('#divIssueAgainstProduction tr').length;
+            if (!validateIssueDateBeforeAddToGrid()) {
+                Alert("❌ Not allowed: Issue Date is earlier than Transaction Date");
+                return false; // stop everything if invalid
+            }
 
             for (let i = 1; i <= rowCount; i++) {
                 if (!validateGridInsert(i)) return;
