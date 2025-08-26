@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using static eTactWeb.Data.Common.CommonFunc;
 using static eTactWeb.DOM.Models.Common;
 using System.Net;
+using System.Data;
 
 namespace eTactwebMasters.Controllers
 {
@@ -152,5 +153,45 @@ namespace eTactwebMasters.Controllers
 			string JsonString = JsonConvert.SerializeObject(JSON);
 			return Json(JsonString);
 		}
-	}
+        public async Task<IActionResult> ToolMoldMasterDashBoard(string FromDate, string ToDate)
+        {
+            var model = new ToolMoldMasterModel();
+            var yearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
+            DateTime now = DateTime.Now;
+            DateTime firstDayOfMonth = new DateTime(yearCode, now.Month, 1);
+            Dictionary<int, string> monthNames = new Dictionary<int, string>
+            {
+                {1, "Jan"}, {2, "Feb"}, {3, "Mar"}, {4, "Apr"}, {5, "May"}, {6, "Jun"},
+                {7, "Jul"}, {8, "Aug"}, {9, "Sep"}, {10, "Oct"}, {11, "Nov"}, {12, "Dec"}
+            };
+
+            model.FromDate = $"{firstDayOfMonth.Day}/{monthNames[firstDayOfMonth.Month]}/{firstDayOfMonth.Year}";
+            model.ToDate = $"{now.Day}/{monthNames[now.Month]}/{now.Year}";
+
+            model.ActualEntryBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
+
+            var Result = await _IToolMoldMaster.GetDashboardData(model);
+
+            if (Result.Result != null)
+            {
+                var _List = new List<TextValue>();
+                DataSet DS = Result.Result;
+                if (DS != null && DS.Tables.Count > 0)
+                {
+                    var dt = DS.Tables[0];
+                    model.ToolMoldGrid = CommonFunc.DataTableToList<ToolMoldMasterModel>(dt, "ToolMoldMasterDashBoard");
+                }
+
+            }
+
+            return View(model);
+        }
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType, string ToolName)
+        {
+            var model = new ToolMoldMasterModel();
+            model = await _IToolMoldMaster.GetDashboardDetailData(FromDate, ToDate, ToolName);
+
+            return PartialView("_ToolMoldMasterDashBoardGrid", model);
+        }
+    }
 }

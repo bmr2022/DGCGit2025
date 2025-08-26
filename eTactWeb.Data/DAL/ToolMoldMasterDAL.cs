@@ -272,5 +272,142 @@ namespace eTactWeb.Data.DAL
 
 			return _ResponseResult;
 		}
-	}
+        public async Task<ResponseResult> GetDashboardData(ToolMoldMasterModel model)
+        {
+            var _ResponseResult = new ResponseResult();
+            try
+            {
+                var SqlParams = new List<dynamic>();
+                SqlParams.Add(new SqlParameter("@Flag", "DASHBOARD"));
+                SqlParams.Add(new SqlParameter("@fromDate", model.FromDate));
+                SqlParams.Add(new SqlParameter("@toDate", model.ToDate));
+
+                _ResponseResult = await _IDataLogic.ExecuteDataSet("AccSpPPCToolsMaster", SqlParams);
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            return _ResponseResult;
+        }
+        public async Task<ToolMoldMasterModel> GetDashboardDetailData(string FromDate, string ToDate, string ToolName)
+        {
+            DataSet? oDataSet = new DataSet();
+            var model = new ToolMoldMasterModel();
+            try
+            {
+                using (SqlConnection myConnection = new SqlConnection(DBConnectionString))
+                {
+                    SqlCommand oCmd = new SqlCommand("AccSpPPCToolsMaster", myConnection)
+                    {
+                        CommandType = CommandType.StoredProcedure
+                    };
+                    oCmd.Parameters.AddWithValue("@Flag", "DASHBOARD");
+                    oCmd.Parameters.AddWithValue("@fromDate", FromDate);
+                    oCmd.Parameters.AddWithValue("@toDate", ToDate);
+                    oCmd.Parameters.AddWithValue("@ToolName", ToolName);
+
+                    await myConnection.OpenAsync();
+                    using (SqlDataAdapter oDataAdapter = new SqlDataAdapter(oCmd))
+                    {
+                        oDataAdapter.Fill(oDataSet);
+                    }
+                }
+                if (oDataSet.Tables.Count > 0 && oDataSet.Tables[0].Rows.Count > 0)
+                {
+
+                    model.ToolMoldGrid = (from DataRow dr in oDataSet.Tables[0].Rows
+                                              select new ToolMoldMasterModel
+                                              {
+                                                  ToolEntryId = dr["ToolEntryId"] != DBNull.Value ? Convert.ToInt32(dr["ToolEntryId"]) : 0,
+                                                  AccountCode = dr["AccountCode"] != DBNull.Value ? Convert.ToInt32(dr["AccountCode"]) : 0,
+                                                  EntryDate = dr["EntryDate"] != DBNull.Value ? Convert.ToString(dr["EntryDate"]) : "",
+                                                  ToolOrMold = dr["ToolOrMold"] != DBNull.Value ? Convert.ToString(dr["ToolOrMold"]) : "",
+                                                  ToolCode = dr["ToolCode"] != DBNull.Value ? Convert.ToString(dr["ToolCode"]) : "",
+                                                  ToolName = dr["ToolName"] != DBNull.Value ? Convert.ToString(dr["ToolName"]) : "",
+                                                  ItemCode = dr["ItemCode"] != DBNull.Value ? Convert.ToInt32(dr["ItemCode"]) : 0,
+                                                  ItemName = dr["Item_Name"] != DBNull.Value ? Convert.ToString(dr["Item_Name"]) : "",
+                                                  ToolCateogryId = dr["ToolCateogryId"] != DBNull.Value ? Convert.ToInt32(dr["ToolCateogryId"]) : 0,
+                                                  ConsiderAsFixedAssets = dr["ConsiderAsFixedAssets"] != DBNull.Value ? Convert.ToString(dr["ConsiderAsFixedAssets"]) : "",
+                                                  ConsiderInInvetory = dr["ConsiderInInvetory"] != DBNull.Value ? Convert.ToString(dr["ConsiderInInvetory"]) : "",
+                                                  ParentAccountCode = dr["ParentAccountCode"] != DBNull.Value ? Convert.ToInt32(dr["ParentAccountCode"]) : 0,
+                                                  ParentAccountName = dr["ParentAccountName"] != DBNull.Value ? Convert.ToString(dr["ParentAccountName"]) : "",
+                                                  MainGroup = dr["MainGroup"] != DBNull.Value ? Convert.ToString(dr["MainGroup"]) : "",
+                                                  SubGroup = dr["SubGroup"] != DBNull.Value ? Convert.ToString(dr["SubGroup"]) : "",
+                                                  UnderGroup = dr["UnderGroup"] != DBNull.Value ? Convert.ToString(dr["UnderGroup"]) : "",
+                                                  SubSubGroup = dr["SubSubGroup"] != DBNull.Value ? Convert.ToInt32(dr["SubSubGroup"]) : 0,
+                                                  CostCenterId = dr["CostCenterId"] != DBNull.Value ? Convert.ToInt32(dr["CostCenterId"]) : 0,
+                                                  Fiscalyear = dr["ToolYear"] != DBNull.Value ? Convert.ToInt32(dr["ToolYear"]) : 0,
+                                                  VendoreAccountCode = dr["VendoreAccountCode"] != DBNull.Value ? Convert.ToInt32(dr["VendoreAccountCode"]) : 0,
+                                                  VendoreAccountName = dr["VendorName"] != DBNull.Value ? Convert.ToString(dr["VendorName"]) : "",
+                                                  CostCenterName = dr["CostCenterName"] != DBNull.Value ? Convert.ToString(dr["CostCenterName"]) : "",
+                                                  PONO = dr["PONO"] != DBNull.Value ? Convert.ToString(dr["PONO"]) : "",
+                                                  PODate = dr["PODate"] != DBNull.Value ? Convert.ToString(dr["PODate"]) : "",
+                                                  POYear = dr["POYear"] != DBNull.Value ? Convert.ToInt32(dr["POYear"]) : 0,
+                                                  InvoiceNo = dr["InvoiceNo"] != DBNull.Value ? Convert.ToString(dr["InvoiceNo"]) : "",
+                                                  InvoiceDate = dr["InvoiceDate"] != DBNull.Value ? Convert.ToString(dr["InvoiceDate"]) : "",
+                                                  InvoiceYearCode = dr["InvoiceYearCode"] != DBNull.Value ? Convert.ToInt32(dr["InvoiceYearCode"]) : 0,
+                                                  NetBookValue = dr["NetBookValue"] != DBNull.Value ? Convert.ToDecimal(dr["NetBookValue"]) : 0,
+                                                  PurchaseValue = dr["PurchaseValue"] != DBNull.Value ? Convert.ToDecimal(dr["PurchaseValue"]) : 0,
+                                                  ResidualValue = dr["ResidualValue"] != DBNull.Value ? Convert.ToDecimal(dr["ResidualValue"]) : 0,
+                                                  DepreciationMethod = dr["DepreciationMethod"] != DBNull.Value ? Convert.ToString(dr["DepreciationMethod"]) : "",
+                                                  DepreciationRate = dr["DepreciationRate"] != DBNull.Value ? Convert.ToDecimal(dr["DepreciationRate"]) : 0,
+                                                  DepriciationAmt = dr["DepriciationAmt"] != DBNull.Value ? Convert.ToDecimal(dr["DepriciationAmt"]) : 0,
+                                                  CountryOfOrigin = dr["CountryOfOrigin"] != DBNull.Value ? Convert.ToString(dr["CountryOfOrigin"]) : "",
+                                                  FirstAqusitionOn = dr["FirstAqusitionOn"] != DBNull.Value ? Convert.ToString(dr["FirstAqusitionOn"]) : "",
+                                                  OriginalValue = dr["OriginalValue"] != DBNull.Value ? Convert.ToDecimal(dr["OriginalValue"]) : 0,
+                                                  CapatalizationDate = dr["CapatalizationDate"] != DBNull.Value ? Convert.ToString(dr["CapatalizationDate"]) : "",
+                                                  BarCode = dr["BarCode"] != DBNull.Value ? Convert.ToString(dr["BarCode"]) : "",
+                                                  SerialNo = dr["SerialNo"] != DBNull.Value ? Convert.ToString(dr["SerialNo"]) : "",
+                                                  LocationOfInsallation = dr["LocationOfInsallation"] != DBNull.Value ? Convert.ToString(dr["LocationOfInsallation"]) : "",
+                                                  ForDepartmentId = dr["ForDepartmentId"] != DBNull.Value ? Convert.ToInt32(dr["ForDepartmentId"]) : 0,
+                                                  ExpectedLife = dr["ExpectedLife"] != DBNull.Value ? Convert.ToInt32(dr["ExpectedLife"]) : 0,
+                                                  CalibrationRequired = dr["CalibrationRequired"] != DBNull.Value ? Convert.ToString(dr["CalibrationRequired"]) : "",
+                                                  CalibrationFrequencyInMonth = dr["CalibrationFrequencyInMonth"] != DBNull.Value ? Convert.ToInt32(dr["CalibrationFrequencyInMonth"]) : 0,
+                                                  LastCalibrationDate = dr["LastCalibrationDate"] != DBNull.Value ? Convert.ToString(dr["LastCalibrationDate"]) : "",
+                                                  NextCalibrationDate = dr["NextCalibrationDate"] != DBNull.Value ? Convert.ToString(dr["NextCalibrationDate"]) : "",
+                                                  CalibrationAgencyId = dr["CalibrationAgencyId"] != DBNull.Value ? Convert.ToInt32(dr["CalibrationAgencyId"]) : 0,
+                                                  LastCalibrationCertificateNo = dr["LastCalibrationCertificateNo"] != DBNull.Value ? Convert.ToString(dr["LastCalibrationCertificateNo"]) : "",
+                                                  CalibrationResultPassFail = dr["CalibrationResultPassFail"] != DBNull.Value ? Convert.ToString(dr["CalibrationResultPassFail"]) : "",
+                                                  TolrenceRange = dr["TolrenceRange"] != DBNull.Value ? Convert.ToString(dr["TolrenceRange"]) : "",
+                                                  CalibrationRemark = dr["CalibrationRemark"] != DBNull.Value ? Convert.ToString(dr["CalibrationRemark"]) : "",
+                                                  Technician = dr["Technician"] != DBNull.Value ? Convert.ToString(dr["Technician"]) : "",
+                                                  TechnicialcontactNo = dr["TechnicialcontactNo"] != DBNull.Value ? Convert.ToString(dr["TechnicialcontactNo"]) : "",
+                                                  TechEmployeeName = dr["TechEmployeeName"] != DBNull.Value ? Convert.ToString(dr["TechEmployeeName"]) : "",
+                                                  CustoidianEmpId = dr["CustoidianEmpId"] != DBNull.Value ? Convert.ToInt32(dr["CustoidianEmpId"]) : 0,
+                                                  InsuranceCompany = dr["InsuranceCompany"] != DBNull.Value ? Convert.ToString(dr["InsuranceCompany"]) : "",
+                                                  InsuredAmount = dr["InsuredAmount"] != DBNull.Value ? Convert.ToDecimal(dr["InsuredAmount"]) : 0,
+                                                  InsuranceDetail = dr["InsuranceDetail"] != DBNull.Value ? Convert.ToString(dr["InsuranceDetail"]) : "",
+                                                  CC = dr["CC"] != DBNull.Value ? Convert.ToString(dr["CC"]) : "",
+                                                  UID = dr["UID"] != DBNull.Value ? Convert.ToString(dr["UID"]) : "",
+                                                  ActualEntryBy = dr["ActualEntryBy"] != DBNull.Value ? Convert.ToInt32(dr["ActualEntryBy"]) : 0,
+                                                  ActualEntryDate = dr["ActualEntryDate"] != DBNull.Value ? Convert.ToString(dr["ActualEntryDate"]) : "",
+                                                  LastupdatedBy = dr["LastUpdatedBy"] != DBNull.Value ? Convert.ToInt32(dr["LastUpdatedBy"]) : 0,
+                                                  LastUpdatedDate = dr["LastUpdatedDate"] != DBNull.Value ? Convert.ToString(dr["LastUpdatedDate"]) : "",
+                                                  LastUpdatedbyEmpName = dr["UpdatedByEmployee"] != DBNull.Value ? Convert.ToString(dr["UpdatedByEmployee"]) : "",
+                                                  EntryByMachine = dr["EntryByMachine"] != DBNull.Value ? Convert.ToString(dr["EntryByMachine"]) : "",
+                                                  CustoidianEmpName = dr["CustodiaEmployee"] != DBNull.Value ? Convert.ToString(dr["CustodiaEmployee"]) : "",
+                                                  ActualEntryByEmpName = dr["ActualEntryByEmployee"] != DBNull.Value ? Convert.ToString(dr["ActualEntryByEmployee"]) : "",
+
+                                              }).ToList();
+
+
+                }
+
+            }
+            catch (Exception ex)
+            {
+                dynamic Error = new ExpandoObject();
+                Error.Message = ex.Message;
+                Error.Source = ex.Source;
+            }
+            finally
+            {
+                oDataSet.Dispose();
+            }
+            return model;
+        }
+    }
 }

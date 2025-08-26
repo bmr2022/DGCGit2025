@@ -59,5 +59,13 @@ namespace eTactWeb.Data.BLL
 		{
 			return await _ToolMoldMasterDAL.SaveToolMoldMaster(model);
 		}
-	}
+        public async Task<ResponseResult> GetDashboardData(ToolMoldMasterModel model)
+        {
+            return await _ToolMoldMasterDAL.GetDashboardData(model);
+        }
+        public async Task<ToolMoldMasterModel> GetDashboardDetailData(string FromDate, string ToDate, string ToolName)
+        {
+            return await _ToolMoldMasterDAL.GetDashboardDetailData(FromDate, ToDate, ToolName);
+        }
+    }
 }

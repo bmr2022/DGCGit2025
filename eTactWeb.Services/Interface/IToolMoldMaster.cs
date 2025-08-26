@@ -19,5 +19,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> FillEntryId(int YearCode, string EntryDate);
 		Task<ResponseResult> FillParentGoupDetail(int ParentAccountCode);
 		Task<ResponseResult> SaveToolMoldMaster(ToolMoldMasterModel model);
-	}
+        Task<ResponseResult> GetDashboardData(ToolMoldMasterModel model);
+        Task<ToolMoldMasterModel> GetDashboardDetailData(string FromDate, string ToDate, string ToolName);
+    }
 }
