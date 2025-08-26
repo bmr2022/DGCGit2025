@@ -39,7 +39,7 @@ namespace eTactwebMasters.Controllers
 			HttpContext.Session.Remove("KeyToolMoldGrid");
 			if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
 			{
-				//MainModel = await _IAssetsMaster.GetViewByID(ID, YC).ConfigureAwait(false);
+				MainModel = await _IToolMoldMaster.GetViewByID(ID, YC).ConfigureAwait(false);
 				MainModel.Mode = Mode; // Set Mode to Update
 				
 				if (Mode == "U")
@@ -192,6 +192,35 @@ namespace eTactwebMasters.Controllers
             model = await _IToolMoldMaster.GetDashboardDetailData(FromDate, ToDate, ToolName);
 
             return PartialView("_ToolMoldMasterDashBoardGrid", model);
+        }
+        public async Task<IActionResult> DeleteByID(int EntryId, int YearCode, string EntryDate, string MachineName)
+        {
+            DateTime parsedDate;
+
+            if (DateTime.TryParse(EntryDate, out parsedDate))
+            {
+                EntryDate = parsedDate.ToString("dd/MMM/yyyy");
+            }
+            var Result = await _IToolMoldMaster.DeleteByID(EntryId, YearCode, EntryDate, MachineName);
+
+            if (Result.StatusText == "Success" || Result.StatusCode == HttpStatusCode.Gone)
+            {
+                ViewBag.isSuccess = true;
+                TempData["410"] = "410";
+            }
+            else if (Result.StatusText == "Error" || Result.StatusCode == HttpStatusCode.Accepted)
+            {
+                ViewBag.isSuccess = true;
+                TempData["423"] = "423";
+            }
+            else
+            {
+                ViewBag.isSuccess = false;
+                TempData["500"] = "500";
+            }
+
+            return RedirectToAction("ToolMoldMasterDashBoard");
+
         }
     }
 }

@@ -34,7 +34,7 @@ public class SaleOrderController : Controller
     public WebReport webReport;
 
 
-    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
+    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo, IConfiguration configuration)
 	{
 		_logger = logger;
 		_IDataLogic = iDataLogic;
@@ -45,7 +45,8 @@ public class SaleOrderController : Controller
 		this.itemMaster = itemMaster;
 		_EncryptDecrypt = encryptDecrypt;
 		LoggerInfo = loggerInfo;
-	}
+        _iconfiguration = configuration;
+    }
 
 	private EncryptDecrypt _EncryptDecrypt { get; }
 	private IWebHostEnvironment _IWebHostEnvironment { get; }
@@ -72,13 +73,14 @@ public class SaleOrderController : Controller
             webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
 
         
-        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
-        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
-        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        
         webReport.Report.SetParameterValue("entryparam", EntryId);
         webReport.Report.SetParameterValue("yearparam", YearCode);
         webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
         webReport.Report.SetParameterValue("AmmNo", AmmNo);
+        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
         webReport.Report.Refresh();
         return View(webReport);

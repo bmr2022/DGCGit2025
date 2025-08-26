@@ -21,5 +21,7 @@ namespace eTactWeb.Services.Interface
 		Task<ResponseResult> SaveToolMoldMaster(ToolMoldMasterModel model);
         Task<ResponseResult> GetDashboardData(ToolMoldMasterModel model);
         Task<ToolMoldMasterModel> GetDashboardDetailData(string FromDate, string ToDate, string ToolName);
+        Task<ResponseResult> DeleteByID(int EntryId, int YearCode, string EntryDate, string  MachineName);
+        Task<ToolMoldMasterModel> GetViewByID(int ID, int YC);
     }
 }
