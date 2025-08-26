@@ -363,7 +363,7 @@
         });
 
         function GetDetailDataForPartyWise(td) {
-            debugger;
+             ;
             let accountCode = $(td).find(".hdnAccountCode").val();
             let ledgerDescription = $(td).data("id");
             $('#BackButton').show();
@@ -470,7 +470,7 @@
         }
 
         function GetDetailsData() {
-            debugger
+             
             var OutStandingType = $('#ReportType').val();
             var ShowZeroBal = $('#ShowZeroBal').is(':checked');
             var TillDate = $('#TillDate').val();
@@ -558,7 +558,7 @@
         }
 
         function PressBack() {
-            debugger
+             
             let ReportType = $('#ReportType').val();
             if (ReportType === "Receive Outstanding") {
                 $('#ReportType').val("Receive Outstanding Ageing").trigger("change");

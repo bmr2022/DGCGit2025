@@ -28,6 +28,7 @@ namespace eTactWeb.DOM.Models
 		public string UnderGroup { get; set; }
 		public int SubSubGroup { get; set; }
 		public int CostCenterId { get; set; }
+		public string CostCenterName { get; set; }
 		public int Fiscalyear { get; set; }
 
 		// Vendor detail
@@ -59,6 +60,7 @@ namespace eTactWeb.DOM.Models
 		// Usage & Life
 		public string LocationOfInsallation { get; set; }
 		public int ForDepartmentId { get; set; }
+		public int DepartmentName { get; set; }
 		public int ExpectedLife { get; set; }
 
 		// Calibration Detail
@@ -75,6 +77,7 @@ namespace eTactWeb.DOM.Models
 		public string Technician { get; set; }
 		public string TechnicialcontactNo { get; set; }
 		public string TechEmployeeName { get; set; }
+		public string CustoidianEmpName { get; set; }
 		public int CustoidianEmpId { get; set; }
 
 		// Other detail

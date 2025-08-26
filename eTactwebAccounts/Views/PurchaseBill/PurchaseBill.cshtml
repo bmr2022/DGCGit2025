@@ -332,6 +332,7 @@
              mrnoptView: false,
              mrnoptUpdate: false
            };
+
             function GetGateNoFormRights() {
                    $.ajax({
                                url: "@Url.Action("GetFormRights", "GateInward")",
@@ -2140,11 +2141,8 @@
             const maxDateFormatted = formatDateToDDMMYY(currentDate);
 
             var resultforadj = CheckAndValidateAdjAmtAtTimeofAdd('NetTotal', AdjPendAmt);
-            if (!checkPartCodeMusthaveAtLeastOneTax()) {
-                isError = true;
-                return false;
-            }
-            else if (resultforadj.toString().toLowerCase() == "true") {
+           
+             if (resultforadj.toString().toLowerCase() == "true") {
                 $.notify("Please add Adjust amount properly, And total should be less then or equal to Net Total.", "error");
                 isError = true;
                 return false;
@@ -2186,13 +2184,92 @@
             }
         } */
 
-             else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
-                $.notify("Tax Grid should at least have one item", "error");
-                return;
-            }
+             
             else if ($('#AccountCode').val() == '0') {
                 $.notify("Vendor Name is required", "error");
             }
+                    if ($('#GSTRegistered').val() == 'Y') {
+                            if (!checkPartCodeMusthaveAtLeastOneTax()) {
+                   isError = true;
+                   return false;
+               }
+            // GST registered → Tax Grid required
+            if (taxGrid <= 1) {
+                $.notify("Tax Grid should at least have one item", "error");
+                return;
+            }
+
+            const year = $('#YearCode').val();
+            if (vouchDate && year) {
+                if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
+                    $.notify("vouchDate must be in logged in financial year", "error");
+                    isError = true;
+                }
+            }
+
+            if (minDate && vouchDate) {
+                var minDateObj = formatDateToDDMMYY(minDate);
+                var vouchDateObj = new Date(vouchDate);
+
+                if (minDateObj > vouchDate) {
+                    $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+                    isError = true;
+                    return;
+                }
+            }
+
+            let cont = 1;
+            for (var i = 1; i <= txRowCount; i++) {
+                var txType = $('#txGridType-' + i).text();
+                var txname = $('#txGridName-' + i).text();
+                if ((txType == '' || txname == '')) {
+                    $.notify("TaxType Or TaxName cannot be null", "error");
+                    isError = true;
+                    return;
+                }
+                else {
+                    if (cont == txRowCount && !isError && (txType != '' || txname != '')) {
+                        $("form").submit();
+                    }
+                }
+                cont++;
+            }
+
+            if (txRowCount == 0 && !isError) {
+                $("form").submit();
+            }
+        }
+        else {
+            // Not GST registered → skip Tax Grid check
+            const year = $('#YearCode').val();
+            if (vouchDate && year) {
+                if (vouchDate > getFinancialYearRange(year).lastDate || vouchDate < getFinancialYearRange(year).firstDate) {
+                    $.notify("vouchDate must be in logged in financial year", "error");
+                    isError = true;
+                }
+            }
+
+            if (minDate && vouchDate) {
+                var minDateObj = formatDateToDDMMYY(minDate);
+                var vouchDateObj = new Date(vouchDate);
+
+                if (minDateObj > vouchDate) {
+                    $.notify("Vouch Date should be greater than MRN/MIR Date", "error");
+                    isError = true;
+                    return;
+                }
+            }
+
+            // No tax grid requirement → directly allow submit
+            if (!isError) {
+                $("form").submit();
+            }
+        }
+
+            /*    else if (taxGrid <= 1 && ($('#GstType').val() != undefined && $('#GstType').val() != null && $('#GstType').val() != '')) {
+                   $.notify("Tax Grid should at least have one item", "error");
+                   return;
+               }
             else {
                 const year = $('#YearCode').val();
                 if (vouchDate && year) {
@@ -2232,7 +2309,7 @@
                     $("form").submit();
                 }
 
-            }
+            } */
             // }
             // else {
             //     if (poGrid <= 1) {
@@ -2531,8 +2608,18 @@
                     $('#divTaxGrid').empty();
                     var NoData = '<tr class="text-center"><td colspan="32" class="text-black-50"><strong>NO DATA ADDED</strong></td></tr>';
                     $('#divTaxGrid').html(NoData);
-                    var txAmt = $('#lblItemNetAmount').text();
-                    $('#NetTotal').val(txAmt);
+                         if($('#divTDSGrid tr td').length>1){
+                           btnClearTDS();
+                             }
+                       var txAmt = $('#lblItemNetAmount').text();
+                       $('#NetTotal').val(txAmt);
+                         GetDbCrDetail();
+                          var AdjGrid = $('#divAdjItemList tr td').length;
+                 if (AdjGrid >= 1 ) {
+              ClearAdjustmentGrid();
+               AddAdjstmntDetail1();
+                 }
+               
                 },
                 error: function (req, status, error) {
                     alert(error);
@@ -2556,6 +2643,15 @@
                     $('#divTDSGrid').html(NoData);
                     var txAmt = $('#lblItemNetAmount').text();
                     //$('#TDSAmount').val(txAmt);
+                         
+                       $('#NetTotal').val(txAmt);
+                        GetDbCrDetail();
+                          var AdjGrid = $('#divAdjItemList tr td').length;
+                 if (AdjGrid >= 1 ) {
+              ClearAdjustmentGrid();
+                 }
+                     //    ClearAdjustmentGrid();
+                         AddAdjstmntDetail1();
                 },
                 error: function (req, status, error) {
                     alert(error);
