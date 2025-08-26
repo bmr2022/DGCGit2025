@@ -156,6 +156,23 @@
             FillGroupList();
             FillParentGroupList();
             FillAccountList();
+
+            let trialParentCode = sessionStorage.getItem('TrialParentCode');
+            let trialAccountName = sessionStorage.getItem('TrailAccountName');
+            let trialReportType = sessionStorage.getItem('TrailReportType');
+
+            if (trialReportType) $('#ReportType').val(TrailReportType).trigger('change');
+            if (trialParentCode) $('#ParentGroupName ').val(trialParentCode).trigger('change');
+            if (trialAccountName) $('#AccountName').val(trialAccountName).trigger('change');
+
+            if (trialReportType || trialParentCode || trialAccountName) $('#BackButton').show();
+            else $('#BackButton').hide();
+
+            // Optional: clear the storage if no longer needed
+            sessionStorage.removeItem('TrialParentCode');
+            sessionStorage.removeItem('TrailAccountName');
+            sessionStorage.removeItem('TrailReportType');
+
             $('.toggle-col').on('click', function () {
                 var $th = $(this).closest('th');
                 var colIndex = $th.index() + 1; // correct nth-child
@@ -453,7 +470,8 @@
         }
 
         function GetDataByParentGroupName(cntr) {
-             
+            debugger
+            saveCurrentState(); // <-- save before drill down
             let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
             let parentCode = $("#ParentAccountCode-" + cntr).val();
             let accountName = $("#AccountName-" + cntr).val();
@@ -480,10 +498,41 @@
             window.location.href = '/TransactionLedger/Index';
         }
 
+        function saveCurrentState() {
+            let state = {
+                groupCode: $('#TrailBalanceGroupName').val(),
+                parentCode: $('#ParentGroupName').val(),
+                reportType: $('#ReportType').val(),
+                accountName: $('#AccountName').val()
+            };
+
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            history.push(state);
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+        }
+
         function PressBack() {
-            $('#ReportType').val('TRAILSUMMARY').trigger('change');
-            $('#BackButton').hide(); // Hide back button
-            $('#TrailBalanceGroupCode').val(null);
+            debugger
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            if (history.length === 0) {
+                $('#BackButton').hide();
+                return;
+            }
+
+            let prevState = history.pop();
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+
+            $('#TrailBalanceGroupName').val(prevState.groupCode).trigger("change");
+            $('#ParentGroupName').val(prevState.parentCode).trigger("change");
+            $('#ReportType').val(prevState.reportType).trigger("change");
+
+            if (prevState.accountName) {
+                $('#AccountName').val(prevState.accountName).trigger("change");
+            }
+
+            if (history.length === 0) {
+                $('#BackButton').hide();
+            }
         }
 
         function selection(CurrentRow) {

@@ -149,9 +149,10 @@ namespace eTactWeb.Data.DAL
                                                                 ClosingAmt = row["ClosingAmt"] == DBNull.Value ? 0 : Convert.ToDecimal(row["ClosingAmt"]),
                                                                 Dr_CR = row["Dr/CR"] == DBNull.Value ? string.Empty : row["Dr/CR"].ToString(),
                                                                 YearCode = row["YearCode"] == DBNull.Value ? 0 : Convert.ToInt32(row["YearCode"]),
-                                                                SeqNo = row["SeqNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["SeqNo"])
+                                                                SeqNo = row["SeqNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["SeqNo"]),
+                                                                MonthNo = row["MonthNo"] == DBNull.Value ? 0 : Convert.ToInt32(row["MonthNo"])
 
-                                                            }).ToList();
+															}).ToList();
                     }
                 }
 
