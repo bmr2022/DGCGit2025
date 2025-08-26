@@ -1,0 +1,489 @@
+﻿@model eTactWeb.DOM.Models.HRGateAttendanceModel
+@{
+    ViewData["Title"] = "HR Gate Attendance";
+    Layout = "~/Views/Shared/_LayoutMain.cshtml";
+}
+
+@if (!string.IsNullOrEmpty(ViewBag.Message))
+{
+    <div class="alert alert-success">@ViewBag.Message</div>
+}
+<div class="card bg-gradient mb-3 border-light shadow-lg">
+    <form asp-action="HRGateAttendance" autocomplete="off" class="form-horizontal" method="post" enctype="multipart/form-data">
+        <input type="hidden" asp-for="Mode" value="@Model.Mode" />
+        <input type="hidden" asp-for="EID" />
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>@ViewData["Title"] - @Model.GateAttYearCode</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
+                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT VOUCHER
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
+                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-GateAttYearCode="@Model.GateAttYearCode">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT INVOICE
+                    </a>
+                    @if (Model.Mode == "U" && Model.Mode != "POC" && Model.Mode != "V")
+                    {
+                    }
+
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+
+                    @* <partial name="_FormsButton" /> *@
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            @* <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="TypeITEMSERVASSETSBack" type="hidden" value="@Model.TypeITEMSERVASSETSBack" />
+                            <input asp-for="DocumentTypeBack" type="hidden" value="@Model.DocumentTypeBack" />
+                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            <input asp-for="PurchVouchNoBack" type="hidden" value="@Model.PurchVouchNoBack" />
+                            <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                    </div>
+                </span>
+            </h5>
+        </div>
+
+        <div class="card-body bg-light pt-0">
+            <div class="accordion shadow-lg">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel1">
+                        <button class="accordion-button text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel1" aria-expanded="true" aria-controls="BPanel1">
+                            <i class="fa-brands fa-wpforms fa-lg fa-fw pr35"></i>
+                            Required Parameter
+                            <small class="p-3"></small>
+                        </button>
+                    </h2>
+                    <div id="BPanel1" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="HPanel1">
+                        <partial name="_HRGateAttMain" />
+                        <input type="hidden" asp-for="TypeOfSave" value="" />
+                        <input type="hidden" asp-for="EntryByMachineName" value="" />
+                    </div>
+                </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="HPanel2">
+                        <button class="accordion-button collapsed text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#BPanel2" aria-expanded="true" aria-controls="BPanel2">
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Item Detail Grid</strong>
+                        </button>
+                    </h2>
+                    <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
+                        <div class="accordion-body">
+                            
+                            <div class="progress my-2 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="card">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
+                                    <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
+                                </div>
+
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="table-responsive" style="max-height:150px;">
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="progress my-3 mb-3" style="height: 4px;">
+                                <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                            </div>
+                            <div class="row g-2 gx-3">
+                                <div class="col-12 text-center">
+                                    <strong>BASIC TOTAL : <i class="fa-solid fa-indian-rupee-sign fa-fw fa-1x"></i><span id="lblItemNetAmount"></span></strong>
+                                    <strong>, TOTAL NO OF ITEMS : <span id="lblItemCount"></span></strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                @* <div class="accordion-item">
+                    <partial name="_DrCrTable" />
+                </div>
+                <div class="accordion-item">
+                    @await Html.PartialAsync("_AdjustmentGrid", Model.adjustmentModel)
+                </div> *@
+            </div>
+        </div>
+        <div class="card-header card-headerBG text-light bg-gradient">
+            <h5>
+                <strong>@ViewData["Title"] - @Model.GateAttYearCode</strong>
+                <span class="d-flex float-end" style="margin-top:-2px;">
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
+                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT VOUCHER
+                    </a>
+                    <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
+                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
+                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                        PRINT INVOICE
+                    </a>
+                    @if (Model.Mode == "U" && Model.Mode != "POC" && Model.Mode != "V")
+                    {
+                    }
+
+                    <a asp-action="Dashboard" asp-route-ID="0" class="btn btn-sm btn-outline-light bg-gradient" style="margin-right:5px;">
+                        <i class="fa-solid fa-grip fa-lg fa-fw fa-beat" style="--fa-animation-duration: 2s;"></i>
+                        Dashboard
+                    </a>
+
+                    @* <partial name="_FormsButton" /> *@
+                    <div class="row justify-content-between g-2">
+                        <div class="col-auto">
+                            @* <input asp-for="FromDateBack" type="hidden" value="@Model.FromDateBack" />
+                            <input asp-for="ToDateBack" type="hidden" value="@Model.ToDateBack" />
+                            <input asp-for="DashboardTypeBack" type="hidden" value="@Model.DashboardTypeBack" />
+                            <input asp-for="TypeITEMSERVASSETSBack" type="hidden" value="@Model.TypeITEMSERVASSETSBack" />
+                            <input asp-for="DocumentTypeBack" type="hidden" value="@Model.DocumentTypeBack" />
+                            <input asp-for="VendorNameBack" type="hidden" value="@Model.VendorNameBack" />
+                            <input asp-for="PurchVouchNoBack" type="hidden" value="@Model.PurchVouchNoBack" />
+                            <input asp-for="InvoiceNoBack" type="hidden" value="@Model.InvoiceNoBack" />
+                            <input asp-for="PartCodeBack" type="hidden" value="@Model.PartCodeBack" />
+                            <input asp-for="ItemNameBack" type="hidden" value="@Model.ItemNameBack" />
+                            <input asp-for="HSNNoBack" type="hidden" value="@Model.HSNNoBack" />
+                            <input asp-for="GlobalSearchBack" type="hidden" value="@Model.GlobalSearchBack" /> *@
+
+                            <a href="#" class=" btn btn-primary btn-sm" onclick="PressBack();">
+                                <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                BACK
+                            </a>
+                        </div>
+                        @if (Model.Mode != "V" && Model.Mode != "SOC" && Model.Mode != "POC")
+                        {
+                            <div class="col-auto">
+                                <a class="btn btn-secondary btn-sm" onclick="location.href=$('form')[0].action">
+                                    <i class="fa fa-refresh fa-fw fa-lg" aria-hidden="true"></i>
+                                    REFRESH
+                                </a>
+                            </div>
+                            @if (Model.Mode == "U")
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-sm btn-outline-light bg-gradient" id="UpdateButton">
+                                        <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
+                                        UPDATE
+                                    </button>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="col-auto">
+                                    <button type="submit" class="btn btn-primary btn-sm" id="submitBTN">
+                                        <i class="fa-solid fa-chevron-circle-right"></i>
+                                        SUBMIT
+                                    </button>
+                                </div>
+                            }
+                        }
+                </span>
+            </h5>
+        </div>
+    </form>
+</div>
+
+
+@section Scripts
+{
+    <script>
+        function PressBack() {
+            // sessionStorage.setItem('FromDateBack', $('#FromDateBack').val());
+            // sessionStorage.setItem('ToDateBack', $('#ToDateBack').val());
+            // sessionStorage.setItem('DashboardTypeBack', $('#DashboardTypeBack').val());
+            // sessionStorage.setItem('TypeITEMSERVASSETSBack', $('#TypeITEMSERVASSETSBack').val());
+            // sessionStorage.setItem('DocumentTypeBack', $('#DocumentTypeBack').val());
+            // sessionStorage.setItem('VendorNameBack', $('#VendorNameBack').val());
+            // sessionStorage.setItem('PurchVouchNoBack', $('#PurchVouchNoBack').val());
+            // sessionStorage.setItem('InvoiceNoBack', $('#InvoiceNoBack').val());
+            // sessionStorage.setItem('PartCodeBack', $('#PartCodeBack').val());
+            // sessionStorage.setItem('ItemNameBack', $('#ItemNameBack').val());
+            // sessionStorage.setItem('HSNNoBack', $('#HSNNoBack').val());
+            // sessionStorage.setItem('GlobalSearchBack', $('#GlobalSearchBack').val());
+
+            window.history.back();
+        }
+        var actualRate = 0;
+
+        $(function () {
+            $('#EntryByMachineName').val($('#machineName').text());
+            $('.DH').fadeOut();
+            if ('@Model.Mode' != '' && parseInt('@Model.ID') != 0) {
+                GetTaxPartItem();
+                $('#lblItemNetAmount').text($('#ItemNetAmount').val());
+                if ($('#POType').val() == "OPEN") {
+                    $('#Qty,#AltQty').val('0').prop('disabled', true).attr('readonly', 'readonly');
+                }
+            }
+            else {
+                window.setInterval(function () {
+                    Dat = new Date();
+                    let am_pm = (Dat.getHours() >= 12) ? "PM" : "AM";
+                    var time = Dat.getHours() + ":" + Dat.getMinutes() + ":" + Dat.getSeconds() + " - " + am_pm;
+                    //console.log(time);
+                    $('#EntryTime').val(time);
+                }, 1000);
+            }
+            // AutoComplete('VDirectPurchaseBillMain', 'ModeOFTransport', 'ModeOFTransport', null);
+            // AutoComplete('VDirectPurchaseBillMain', 'DeliverySch', 'DeliverySch', null);
+            // AutoComplete('VDirectPurchaseBillMain', 'PackingChg', 'PackingChg', null);
+            // AutoComplete('VDirectPurchaseBillMain', 'DeliveryTerms', 'DeliveryTerms', null);
+            // AutoComplete('VDirectPurchaseBillMain', 'PackingTYpe', 'PackingTYpe', null);
+            // AutoComplete('VDirectPurchaseBillMain', 'PaymentTerms', 'PaymentTerms', null);
+
+        });
+
+        $(document).on('keyup', '.form-control', function (e) {
+            var keyCode = e.keyCode || e.which;
+            if (keyCode == 9) {
+                if ($(this).parent("#BPanel1").length > 0) {
+                    if ($(this).is(":focus")) {
+                        var fControl = $(this).parent().next().find('.datePickerControl');
+                        if (fControl.length > 0 && fControl.is(":focus")) {
+                            $(this).parent().next().find('.datePickerControl').focus();
+                        }
+                        else {
+                            $(this).parent().next().find(":focusable").focus();
+                        }
+                    }
+                }
+            }
+        });
+
+
+        var tabIndx = 0;
+        $(":focusable").each(function () {
+            $(this).attr("tabindex", ++tabIndx);
+        });
+
+        var currentSearchColumn = null;
+        $("#search-box").on("keyup", function () {
+            var value = $(this).val().toLowerCase();
+            $("#divPOItemList tr").filter(function () {
+                if (currentSearchColumn !== null) {
+                    var columnText = $(this).find('td').eq(currentSearchColumn).text().toLowerCase();
+                    $(this).toggle(columnText.indexOf(value) > -1);
+                } else {
+                    $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1);
+                }
+            });
+        });
+
+        $(document).on("click", "th[data-columnno]", function () {
+            currentSearchColumn = $(this).data('columnno');
+            $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
+        });
+
+        $(document).on("click", ".sortCol", function () {
+            var $column = $(this).parent().closest("th");
+            var colno = $(this).data('columnno');
+            var currentOrder = $(this).data('sortorder');
+
+            $('.sortCol').css('color', 'white');
+            if (currentOrder === 'asc') {
+                sortTable(colno, false);
+                $(this).data('sortorder', 'desc');
+                $(this).css('color', 'yellow'); // Visual indication of descending order
+                //$(this).css('font-size', 'larger'); // Visual indication of descending order
+                $(this).find('i:first').removeClass('fa-arrow-up');
+                $(this).find('i:first').addClass('fa-arrow-down');
+            } else {
+                sortTable(colno, true);
+                $(this).data('sortorder', 'asc');
+                $(this).css('color', 'yellow');
+                // $(this).css('font-size', 'larger'); // Visual indication of ascending order
+                $(this).find('i:first').removeClass('fa-arrow-down');
+                $(this).find('i:first').addClass('fa-arrow-up');
+            }
+        });
+
+        function sortTable(columnIndex, ascending) {
+            var table = $('#poTable');
+            var rows = table.find('#divPOItemList > tr').toArray();
+            rows.sort(function (a, b) {
+                var aValue = $(a).find('td').eq(columnIndex).text();
+                var bValue = $(b).find('td').eq(columnIndex).text();
+                var aIntValue = 0;
+                var bIntValue = 0;
+                if (/^\d*\.?\d+$/.test(aValue) && /^\d*\.?\d+$/.test(bValue)) {
+                    aIntValue = parseInt(aValue, 10);
+                    bIntValue = parseInt(bValue, 10);
+                }
+                if (aIntValue > 0) {
+                    if (ascending) {
+                        return aValue - bValue;
+                    } else {
+                        return bValue - aValue;
+                    }
+                } else {
+                    if (ascending) {
+                        return aValue.localeCompare(bValue);
+                    } else {
+                        return bValue.localeCompare(aValue);
+                    }
+                }
+            });
+            $.each(rows, function (index, row) {
+                table.children('#divPOItemList').append(row);
+            });
+        }
+
+        $(document).on('select2:open', () => {
+            document.querySelector('.select2-search__field').focus();
+        });
+
+        function ValidateForm(){
+        
+        }
+
+        $('form').submit(function (event) {
+            $('.btn-outline-primary').prop('disabled', true).html('Validating Form... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>');
+            if (!ValidateForm()) {
+                event.preventDefault(); // Prevent the form from submitting via the browser
+                $('.btn-outline-primary').prop('disabled', false).html('<i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i> SUBMIT');
+            }
+            else {
+                //event.stopPropagation(); // Prevent calling function inside this function.
+                var form = $(this);
+                var url = form.attr('action'); //get submit url [replace url here if desired]
+                $("form :input").prop("disabled", false);
+            }
+        });
+
+        $('#PODate').on('keydown', function (e) {
+            e.preventDefault();
+            return false;
+        });
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+
+        function GetFormRights() {
+            $.ajax({
+                url: "@Url.Action("GetFormRights")",
+                type: "POST",
+                success: function (data) {
+                    if (data != null) {
+                        var obj = $.parseJSON(data);
+                        if (obj.Result.Table.length == 0) {
+                            if ($('#Mode').val() == "POA") {
+                                $('.AmendButton').prop("disabled", true);
+                            }
+                            $('#submitBTN').prop("disabled", true);
+                            $('.card-footer #submitBTN').prop("disabled", true);
+                        } else {
+                            var optAll = obj.Result.Table[0].OptAll;
+                            var optSave = obj.Result.Table[0].OptSave;
+                            var optUpdate = obj.Result.Table[0].OptUpdate;
+                            var optDelete = obj.Result.Table[0].OptDelete;
+                            var optView = obj.Result.Table[0].OptView;
+                            if (!optAll) {
+                                if (!optSave) {
+                                    if ($('#Mode').val() == "POA") {
+                                        $('.AmendButton').prop("disabled", true);
+                                    }
+                                    $('#submitBTN').prop("disabled", true);
+                                    $('.card-footer #submitBTN').prop("disabled", true);
+                                    $('#UpdateButton').prop("disabled", true);
+                                    $('.card-footer #UpdateButton').prop("disabled", true);
+                                    $('.PartialSave').prop("disabled", true);
+                                }
+                            }
+                        }
+                    }
+                },
+                error: function (errMsg) {
+                    $.notify(errMsg, { position: "top center", className: "error" });
+                }
+            });
+        }
+
+        function copyToClipboardForDropdown(element) {
+            var $temp = $("<input>");
+            $("body").append($temp);
+            ;
+            $temp.val($(element).find(":selected").text()).select();
+            document.execCommand("copy");
+            $temp.remove();
+        }
+    </script>
+
+    <script type="text/javascript">
+        $(document).on('keypress', ':input:not(textarea):not([type=button])', function (e) {
+            if (e.which == 13) e.preventDefault();
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
+}
+
+<style>
+    #poTable {
+        width: 100%;
+        border-collapse: collapse;
+    }
+
+    #poThead th {
+        background-color: #127387;
+        position: sticky;
+        top: 0;
+        z-index: 1;
+    }
+
+    tbody td {
+        /* Table cell styles */
+    }
+
+    .select2-search__field {
+        z-index: 10000 !important; /* Adjust the value as needed */
+    }
+</style>
+
+
