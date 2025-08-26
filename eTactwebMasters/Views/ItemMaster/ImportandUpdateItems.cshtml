@@ -49,7 +49,7 @@
 
                                 <div class="col-auto">
                                     @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                    <button class="btn btn-primary btn-sm" id="BtnSubmit" onclick="SubmitData(event);">
+                                    <button class="btn btn-primary btn-sm BtnSubmit" id="BtnSubmit">
                                         <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                         SUBMIT
                                     </button>
@@ -275,6 +275,27 @@
                         </div>
                     </div>
                 </div>
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="H_BasicParameter">
+                        <button class="accordion-button text-light pnl1BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_BasicParameter" aria-expanded="true" aria-controls="B_UpdateMultiItem">
+                            <strong style="text-transform:uppercase"><i class="fa fa-fw pr35 fa-book fa-lg" aria-hidden="true"></i>Update From Excel Parameter</strong>
+                        </button>
+                    </h2>
+                    <div id="B_BasicParameter" class="accordion-collapse collapse pnl1 bg-gradient show" aria-labelledby="H_BasicParameter">
+                        <div class="accordion-body">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <input type="file" id="MultiexcelFile" class="form-control w-auto mb-3" />
+                                    <div class="table-responsive" style="max-height:350px;">
+                                        <div id="MultiexcelTable"></div>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
             <div class="card-footer p-3">
                 <div class="row justify-content-between g-2">
@@ -316,7 +337,7 @@
 
                                             <div class="col-auto">
                                                 @*   <button type="submit" class="btn btn-sm btn-outline-primary">*@
-                                                <button class="btn btn-primary btn-sm" id="BtnSubmit" onclick="SubmitData(event);">
+                                                <button class="btn btn-primary btn-sm BtnSubmit" id="BtnSubmit" >
                                                     <i class="fa-solid fa-chevron-circle-right fa-fw fa-lg"></i>
                                                     SUBMIT
                                                 </button>
@@ -329,6 +350,13 @@
                     </div>
                 </div>
             </div>
+
+
+
+
+
+
+          
         </div>
     </form>
 </div>
@@ -340,6 +368,147 @@
     </div>
 </div>
 
+
+
+
+<div class="modal fade" style="display:none" id="ColumnNameModel" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="staticBackdropLabel">Column Selection Model</h5>
+               
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+
+                            <div class="card-body text-center overflow-auto pb-0   ">
+                               
+                                <div class="table-responsive" style="max-height:350px;">
+                                    <div style="width:500px">
+                                        <table class="table table-bordered table-striped text-center" id="MappingTable">
+                                        <thead class="bg-gradient card-headerBG text-light small" style="white-space:nowrap">
+                                            <tr>
+                                               
+                                                <th>Table Column</th>
+                                                <th>Excel Mapping</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody id="ColumnNameBody">
+                                          
+                                            <tr><td>PartCode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Item_Name</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ParentCode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>EntryDate</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>LastUpdatedDate</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>LeadTime</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>CC</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Unit</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>SalePrice</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>PurchasePrice</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>CostPrice</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>WastagePercent</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>WtSingleItem</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>NoOfPcs</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>QcReq</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ItemType</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>UploadItemImage</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>UploadImage</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>UID</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>DrawingNo</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>MinimumLevel</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>MaximumLevel</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ReorderLevel</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>YearCode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>AlternateUnit</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>RackID</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>BinNo</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ItemSize</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Colour</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>NeedPO</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>StdPacking</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>PackingType</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ModelNo</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>YearlyConsumedQty</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>DispItemName</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>PurchaseAccountcode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>SaleAccountcode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>MinLevelDays</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>MaxLevelDays</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>EmpName</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>DailyRequirment</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Stockable</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>WipStockable</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Store</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProductLifeInus</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ItemDesc</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>MaxWipStock</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>NeedSo</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>BomRequired</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>JobWorkItem</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>HsnNo</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>CreatedBy</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>CreatedOn</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>UpdatedBy</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>UpdatedOn</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Active</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ItemServAssets</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>VendorBatchcodeMand</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>EntryByMachineName</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>UniversalPartCode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>UniversalDescription</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProdInWorkcenter</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProdInhouseJW</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>BatchNO</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>itemCode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>VoltageValue</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>SerialNo</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>OldPartCode</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>package</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>IsCustJWAdjMandatory</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Branch</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>NoOfCavity</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProdInMachineGroup</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProdInMachine1</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProdInMachine2</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProdInMachine3</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>NoOfshotsHours</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ProdInMachine4</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>ChildBom</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>usedinMachorVehicle</td><td><select class="multicolumns"></select></td></tr>
+                                            <tr><td>Barcode</td><td><select class="multicolumns"></select></td></tr>
+                                        </tbody>
+                                    </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                    <div class="row g-2 gx-3">
+                        <div class="col-12 text-center">
+                            <strong>Total No Of Items : <span id="lblTotalNoOfItems1"></span></strong>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class=" btn btn-sm btn-outline-success me-2" id="BtnUpdate">
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> UPDATE
+                    </button>
+
+                    <button type="button" class="btn btn-sm btn-danger" data-bs-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <!-- In HTML -->
 <div class="spinner"></div>
 
@@ -349,6 +518,330 @@
          $(document).ready(function () {
             GetFormRights();
          });
+        let excelHeaders = [];
+        document.getElementById('MultiexcelFile').addEventListener('change', function (e) {
+            let file = e.target.files[0];
+            if (!file) return;
+
+            let reader = new FileReader();
+            reader.onload = function (event) {
+                let data = new Uint8Array(event.target.result);
+                let workbook = XLSX.read(data, { type: 'array' });
+
+                // Read first sheet
+                let sheetName = workbook.SheetNames[0];
+                let worksheet = workbook.Sheets[sheetName];
+
+                // Convert to JSON (header row automatically used)
+                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                let table = "<table class='table table-bordered table-striped'>";
+                table += "<thead><tr>";
+                jsonData[0].forEach(cell => {
+                    table += `<th style="background-color:#4CAF50; color:white;">${cell}</th>`;
+                });
+                table += "</tr></thead>";
+
+                table += "<tbody>";
+                // Start from index 1 to skip header row
+                for (let i = 1; i < jsonData.length; i++) {
+                    let row = jsonData[i];
+                    table += "<tr>";
+                    row.forEach(cell => {
+                        table += `<td>${cell ?? ""}</td>`;
+                    });
+                    table += "</tr>";
+                }
+                table += "</tbody></table>";
+
+                document.getElementById('MultiexcelTable').innerHTML = table;
+            };
+            reader.readAsArrayBuffer(file);
+        });
+
+        document.getElementById("MultiexcelFile").addEventListener("change", function (e) {
+            let file = e.target.files[0];
+            let reader = new FileReader();
+
+            reader.onload = function (event) {
+                let data = new Uint8Array(event.target.result);
+                let workbook = XLSX.read(data, { type: "array" });
+
+                // Get first sheet
+                let sheetName = workbook.SheetNames[0];
+                let worksheet = workbook.Sheets[sheetName];
+
+                // Convert to JSON with header
+                let jsonData = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+                // First row = headers
+                excelHeaders = jsonData[0];
+
+                console.log("Excel Headers:", excelHeaders);
+
+                // Now fill all dropdowns
+                populateDropdowns();
+            };
+
+            reader.readAsArrayBuffer(file);
+        });
+
+
+
+        $('#BtnUpdate').click(function () {
+            // 1. Build mapping object (DB column -> Excel column name)
+            let mapping = {};
+            $('#MappingTable tr').each(function () {
+                let dbColumn = $(this).find('td:first').text().trim();
+                let selectedExcelColumn = $(this).find('select.multicolumns').val();
+                if (selectedExcelColumn) {
+                    mapping[dbColumn] = selectedExcelColumn;
+                }
+            });
+
+            // 2. Extract Excel Table Headers
+            let excelHeaders = [];
+            $('#MultiexcelTable table thead th').each(function () {
+                excelHeaders.push($(this).text().trim());
+            });
+
+            // 3. Extract Excel Table Data
+            let excelData = [];
+            $('#MultiexcelTable table tbody tr').each(function () {
+                let row = {};
+                $(this).find('td').each(function (i) {
+                    row[excelHeaders[i]] = $(this).text().trim();
+                });
+                excelData.push(row);
+            });
+
+            // 🟢 Debug: check mapping and extracted data
+            console.log("Mapping object:", mapping);
+            console.log("Excel data array:", excelData);
+
+            // 4. Send AJAX to Controller
+            $.ajax({
+                url: '/ItemMaster/UpdateFromExcel',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify({ Mapping: mapping, ExcelData: excelData }),
+                success: function (res) {
+                    alert(res.message);
+                },
+                error: function (err) {
+                    alert("Error updating data");
+                }
+            });
+        });
+
+
+
+        // Function to populate all dropdowns
+        function populateDropdowns() {
+            // Get all selects with class multicolumns
+            document.querySelectorAll("select.multicolumns").forEach(function (select) {
+                // Clear existing options
+                select.innerHTML = "";
+
+                // Add default option
+                var defaultOpt = document.createElement("option");
+                defaultOpt.value = "";
+                defaultOpt.text = "-- Select Column --";
+                select.appendChild(defaultOpt);
+
+                // Append Excel headers as options
+                excelHeaders.forEach(function (header) {
+                    var opt = document.createElement("option");
+                    opt.value = header;
+                    opt.text = header;
+                    select.appendChild(opt);
+                });
+            });
+        }
+
+
+        $('.BtnSubmit').click(function (e) {
+            e.preventDefault();
+            // check if excel table has rows (excluding header)
+            if ($('#MultiexcelTable table tr').length > 1) {
+                // Bootstrap 5 way to open modal
+                let myModal = new bootstrap.Modal(document.getElementById('ColumnNameModel'));
+                myModal.show();
+            } else {
+                SubmitData(e);
+            }
+        });
+
+        function SubmitData(e) {
+            e.preventDefault();
+            var flag = $('#columnSelector').val(); // Get selected flag
+            var RowCount = $('#divItemList tr').length;
+            var RowCount2 = $('#divItemList1 tr').length;
+
+            var ItemData = [];
+            var divSelector = '';
+            var url = '';
+            var i = 0;
+            var fileInput1 = $('#ExcelFile1');
+            var fileInput2 = $('#ExcelFile');
+
+            var file1 = fileInput1.length ? fileInput1.prop("files")[0] : null;
+            var file2 = fileInput2.length ? fileInput2.prop("files")[0] : null;
+
+            if (RowCount > 1) {
+                RowCount = RowCount;
+                divSelector = '#divItemList';
+                url = "/ItemMaster/UpdateItemListdata";
+
+                for (i = 1; i <= RowCount; i++) {
+                    ItemData.push({
+                        Item_Code: parseInt($(divSelector).find('#Item_Code-' + i).text()) || 0,
+                        PartCode: $(divSelector).find('#PartCode-' + i).text(),
+                        Item_Name: $(divSelector).find('#Item_Name-' + i).text(),
+                        ItemGroup: $(divSelector).find('#ItemGroup-' + i).text(),
+                        ItemGroupCode: parseInt($(divSelector).find('#ItemGroupCode-' + i).text()) || 0,
+                        ItemType: $(divSelector).find('#TypeName-' + i).val(),
+                        ItemCategoryCode: parseInt($(divSelector).find('#ItemCategoryCode-' + i).text()) || 0,
+                        Unit: $(divSelector).find('#Unit-' + i).text(),
+                        AlternateUnit: $(divSelector).find('#AlternateUnit-' + i).text(),
+                        HSNNO: parseInt($(divSelector).find('#HSNNO-' + i).text()) || 0,
+                        MinimumLevel: parseFloat($(divSelector).find('#MinimumLevel-' + i).text()) || 0,
+                        MaximumLevel: parseFloat($(divSelector).find('#MaximumLevel-' + i).text()) || 0,
+                        StdPacking: parseInt($(divSelector).find('#StdPacking-' + i).text()) || 0,
+                        WorkCenter: $(divSelector).find('#WorkCenter-' + i).text(),
+                        ProdInWorkcenter: $(divSelector).find('#ProdInWorkcenter-' + i).text(),
+                        ProdInhouseJW: $(divSelector).find('#ProdInhouseJW-' + i).text(),
+                        BatchNO: $(divSelector).find('#BatchNO-' + i).text(),
+                        OldPartCode: $(divSelector).find('#OldPartCode-' + i).text(),
+                        VoltageVlue: $(divSelector).find('#VoltageVlue-' + i).text(),
+                        SerialNo: $(divSelector).find('#SerialNo-' + i).text(),
+                        Package: $(divSelector).find('#Package-' + i).text(),
+                        ParentCode: $(divSelector).find('#ParentCode-' + i).text(),
+                        EntryDate: $(divSelector).find('#EntryDate-' + i).text(),
+                        LastUpdatedDate: $(divSelector).find('#LastUpdatedDate-' + i).text(),
+                        LeadTime: $(divSelector).find('#LeadTime-' + i).text(),
+                        CC: $(divSelector).find('#CC-' + i).text(),
+                        SalePrice: parseFloat($(divSelector).find('#SalePrice-' + i).text()) || 0,
+                        PurchasePrice: parseFloat($(divSelector).find('#PurchasePrice-' + i).text()) || 0,
+                        CostPrice: parseFloat($(divSelector).find('#CostPrice-' + i).text()) || 0,
+                        WastagePercent: parseFloat($(divSelector).find('#WastagePercent-' + i).text()) || 0,
+                        WtSingleItem: parseFloat($(divSelector).find('#WtSingleItem-' + i).text()) || 0,
+                        NoOfPcs: parseInt($(divSelector).find('#NoOfPcs-' + i).text()) || 0,
+                        QcReq: $(divSelector).find('#QcReq-' + i).text(),
+                        ImageURL: $(divSelector).find('#ImageURL-' + i).text(),
+                        UID: $(divSelector).find('#UID-' + i).text(),
+                        DrawingNo: $(divSelector).find('#DrawingNo-' + i).text(),
+                        ReorderLevel: parseFloat($(divSelector).find('#ReorderLevel-' + i).text()) || 0,
+                        YearCode: $(divSelector).find('#YearCode-' + i).text(),
+                        RackID: $(divSelector).find('#RackID-' + i).text(),
+                        BinNo: $(divSelector).find('#BinNo-' + i).text(),
+                        ItemSize: $(divSelector).find('#ItemSize-' + i).text(),
+                        Colour: $(divSelector).find('#Colour-' + i).text(),
+                        NeedPO: $(divSelector).find('#NeedPO-' + i).text(),
+                        PackingType: $(divSelector).find('#PackingType-' + i).text(),
+                        ModelNo: $(divSelector).find('#ModelNo-' + i).text(),
+                        YearlyConsumedQty: parseInt($(divSelector).find('#YearlyConsumedQty-' + i).text()) || 0,
+                        DispItemName: $(divSelector).find('#DispItemName-' + i).text(),
+                        PurchaseAccountcode: $(divSelector).find('#PurchaseAccountcode-' + i).text(),
+                        SaleAccountcode: $(divSelector).find('#SaleAccountcode-' + i).text(),
+                        MinLevelDays: parseInt($(divSelector).find('#MinLevelDays-' + i).text()) || 0,
+                        MaxLevelDays: parseInt($(divSelector).find('#MaxLevelDays-' + i).text()) || 0,
+                        EmpName: $(divSelector).find('#EmpName-' + i).text(),
+                        DailyRequirment: parseInt($(divSelector).find('#DailyRequirment-' + i).text()) || 0,
+                        Stockable: $(divSelector).find('#Stockable-' + i).text(),
+                        WipStockable: $(divSelector).find('#WipStockable-' + i).text(),
+                        Store: $(divSelector).find('#StoreId-' + i).text(),
+                        ProductLifeInus: $(divSelector).find('#ProductLifeInus-' + i).text(),
+                        ItemDesc: $(divSelector).find('#ItemDesc-' + i).text(),
+                        MaxWipStock: parseInt($(divSelector).find('#MaxWipStock-' + i).text()) || 0,
+                        NeedSo: $(divSelector).find('#NeedSo-' + i).text(),
+                        BomRequired: $(divSelector).find('#BomRequired-' + i).text(),
+                        UniversalPartCode: $(divSelector).find('#UniversalPartCode-' + i).text(),
+                        UniversalDescription: $(divSelector).find('#UniversalDescription-' + i).text(),
+                        IsCustJWAdjMandatory: $(divSelector).find('#IsCustJWAdjMandatory-' + i).text(),
+                        Active: $(divSelector).find('#Active-' + i).text(),
+                        JobWorkItem: $(divSelector).find('#JobWorkItem-' + i).text(),
+                        ItemServAssets: $(divSelector).find('#ItemServAssets-' + i).text(),
+                        NoOfCavity: $(divSelector).find('#NoOfCavity-' + i).text(),
+                        NoOfshotsHours: $(divSelector).find('#NoOfshotsHours-' + i).text(),
+                        ChildBom: $(divSelector).find('#ChildBom-' + i).text(),
+                        ProdInMachineGroupId: $(divSelector).find('#ProdInMachineGroupId-' + i).text(),
+                        ProdInMachine1: $(divSelector).find('#ProdInMachine1-' + i).text(),
+                        ProdInMachine2: $(divSelector).find('#ProdInMachine2-' + i).text(),
+                        ProdInMachine3: $(divSelector).find('#ProdInMachine3-' + i).text(),
+                        ProdInMachine4: $(divSelector).find('#ProdInMachine4-' + i).text(),
+                        Branch: $(divSelector).find('#Branch-' + i).text(),
+                    });
+                }
+            } else {
+                RowCount = RowCount2;
+                divSelector = '#divItemList1';
+                url = "/ItemMaster/UpdateSelectedItemListdata";
+
+                for (i = 1; i <= RowCount; i++) {
+                    ItemData.push({
+                        Item_Code: parseInt($(divSelector).find('#Item_Code-' + i).text()) || 0,
+                        PartCode: $(divSelector).find('#PartCode-' + i).text(),
+                        Item_Name: $(divSelector).find('#Item_Name-' + i).text(),
+                        HSNNO: parseInt($(divSelector).find('#HSNNO-' + i).text()) || 0,
+                        MinimumLevel: parseFloat($(divSelector).find('#MinimumLevel-' + i).text()) || 0,
+                        MaximumLevel: parseFloat($(divSelector).find('#MaximumLevel-' + i).text()) || 0,
+                        ProdInWorkcenter: $(divSelector).find('#ProdInWorkcenter-' + i).text(),
+                        SalePrice: parseFloat($(divSelector).find('#SalePrice-' + i).text()) || 0,
+                        PurchasePrice: parseFloat($(divSelector).find('#PurchasePrice-' + i).text()) || 0,
+                        CostPrice: parseFloat($(divSelector).find('#CostPrice-' + i).text()) || 0,
+                        Store: $(divSelector).find('#StoreId-' + i).text(),
+                        NoOfCavity: $(divSelector).find('#NoOfCavity-' + i).text(),
+                        NoOfshotsHours: $(divSelector).find('#NoOfshotsHours-' + i).text(),
+                        ProdInMachineGroupId: $(divSelector).find('#ProdInMachineGroupId-' + i).text(),
+                        ProdInMachine1: $(divSelector).find('#ProdInMachine1-' + i).text(),
+                        ProdInMachine2: $(divSelector).find('#ProdInMachine2-' + i).text(),
+                        ProdInMachine3: $(divSelector).find('#ProdInMachine3-' + i).text(),
+                        ProdInMachine4: $(divSelector).find('#ProdInMachine4-' + i).text(),
+                    });
+                }
+            }
+
+
+            // Set data payload conditionally
+            var dataToSend = { model: ItemData };
+            if (url === "/ItemMaster/UpdateSelectedItemListdata") {
+                dataToSend.flag = flag;
+            }
+
+            $.ajax({
+                url: url,
+                type: "POST",
+                data: dataToSend,
+                beforeSend: function () {
+                    $('#ajaxLoader').show(); // ✅ Show loader
+                },
+                success: function (data, status, xhr) {
+                    $('#ajaxLoader').hide();
+                    $.notify("Data Update Successfully!!", "info");
+                    if (data && (data.statusCode === 200 || data.statusCode === 202)) {
+                        window.location.href = data.RedirectUrl;
+                    } else {
+                        //    console.log(data);
+                        //  alert(data.statusText);
+                        // Show notify message if error-like StatusText is returned
+                        $.notify(data.statusText, "error");
+                    }
+                    //    console.log("success");
+                },
+                error: function (result, status, xhr) {
+                    $('#ajaxLoader').hide();
+                    $.notify(result.responseText, "error");
+                }
+            });
+        }
+
+
+
+        function DeleteItemRow(seqNo) {
+            $('.' + seqNo).remove();
+        }
+
             function toggleColumn() {
             var selected = document.getElementById("columnSelector").value;
             if (!selected) {
@@ -531,173 +1024,7 @@
             //});
         }
 
-        function DeleteItemRow(seqNo) {
-            $('.' + seqNo).remove();
-        }
-
-               function SubmitData(e) {
-                   e.preventDefault();
-            var flag = $('#columnSelector').val(); // Get selected flag
-            var RowCount = $('#divItemList tr').length;
-            var RowCount2 = $('#divItemList1 tr').length;
-
-            var ItemData = [];
-            var divSelector = '';
-            var url = '';
-            var i = 0;
-            var fileInput1 = $('#ExcelFile1');
-            var fileInput2 = $('#ExcelFile');
-
-            var file1 = fileInput1.length ? fileInput1.prop("files")[0] : null;
-            var file2 = fileInput2.length ? fileInput2.prop("files")[0] : null;
-
-           if (RowCount > 1) {
-            RowCount = RowCount;
-            divSelector = '#divItemList';
-            url = "/ItemMaster/UpdateItemListdata";
-
-            for (i = 1; i <= RowCount; i++) {
-                ItemData.push({
-                    Item_Code: parseInt($(divSelector).find('#Item_Code-' + i).text()) || 0,
-                    PartCode: $(divSelector).find('#PartCode-' + i).text(),
-                    Item_Name: $(divSelector).find('#Item_Name-' + i).text(),
-                    ItemGroup: $(divSelector).find('#ItemGroup-' + i).text(),
-                    ItemGroupCode: parseInt($(divSelector).find('#ItemGroupCode-' + i).text()) || 0,
-                    ItemType: $(divSelector).find('#TypeName-' + i).val(),
-                    ItemCategoryCode: parseInt($(divSelector).find('#ItemCategoryCode-' + i).text()) || 0,
-                    Unit: $(divSelector).find('#Unit-' + i).text(),
-                    AlternateUnit: $(divSelector).find('#AlternateUnit-' + i).text(),
-                    HSNNO: parseInt($(divSelector).find('#HSNNO-' + i).text()) || 0,
-                    MinimumLevel: parseFloat($(divSelector).find('#MinimumLevel-' + i).text()) || 0,
-                    MaximumLevel: parseFloat($(divSelector).find('#MaximumLevel-' + i).text()) || 0,
-                    StdPacking: parseInt($(divSelector).find('#StdPacking-' + i).text()) || 0,
-                    WorkCenter: $(divSelector).find('#WorkCenter-' + i).text(),
-                    ProdInWorkcenter: $(divSelector).find('#ProdInWorkcenter-' + i).text(),
-                    ProdInhouseJW: $(divSelector).find('#ProdInhouseJW-' + i).text(),
-                    BatchNO: $(divSelector).find('#BatchNO-' + i).text(),
-                    OldPartCode: $(divSelector).find('#OldPartCode-' + i).text(),
-                    VoltageVlue: $(divSelector).find('#VoltageVlue-' + i).text(),
-                    SerialNo: $(divSelector).find('#SerialNo-' + i).text(),
-                    Package: $(divSelector).find('#Package-' + i).text(),
-                    ParentCode: $(divSelector).find('#ParentCode-' + i).text(),
-                    EntryDate: $(divSelector).find('#EntryDate-' + i).text(),
-                    LastUpdatedDate: $(divSelector).find('#LastUpdatedDate-' + i).text(),
-                    LeadTime: $(divSelector).find('#LeadTime-' + i).text(),
-                    CC: $(divSelector).find('#CC-' + i).text(),
-                    SalePrice: parseFloat($(divSelector).find('#SalePrice-' + i).text()) || 0,
-                    PurchasePrice: parseFloat($(divSelector).find('#PurchasePrice-' + i).text()) || 0,
-                    CostPrice: parseFloat($(divSelector).find('#CostPrice-' + i).text()) || 0,
-                    WastagePercent: parseFloat($(divSelector).find('#WastagePercent-' + i).text()) || 0,
-                    WtSingleItem: parseFloat($(divSelector).find('#WtSingleItem-' + i).text()) || 0,
-                    NoOfPcs: parseInt($(divSelector).find('#NoOfPcs-' + i).text()) || 0,
-                    QcReq: $(divSelector).find('#QcReq-' + i).text(),
-                    ImageURL: $(divSelector).find('#ImageURL-' + i).text(),
-                    UID: $(divSelector).find('#UID-' + i).text(),
-                    DrawingNo: $(divSelector).find('#DrawingNo-' + i).text(),
-                    ReorderLevel: parseFloat($(divSelector).find('#ReorderLevel-' + i).text()) || 0,
-                    YearCode: $(divSelector).find('#YearCode-' + i).text(),
-                    RackID: $(divSelector).find('#RackID-' + i).text(),
-                    BinNo: $(divSelector).find('#BinNo-' + i).text(),
-                    ItemSize: $(divSelector).find('#ItemSize-' + i).text(),
-                    Colour: $(divSelector).find('#Colour-' + i).text(),
-                    NeedPO: $(divSelector).find('#NeedPO-' + i).text(),
-                    PackingType: $(divSelector).find('#PackingType-' + i).text(),
-                    ModelNo: $(divSelector).find('#ModelNo-' + i).text(),
-                    YearlyConsumedQty: parseInt($(divSelector).find('#YearlyConsumedQty-' + i).text()) || 0,
-                    DispItemName: $(divSelector).find('#DispItemName-' + i).text(),
-                    PurchaseAccountcode: $(divSelector).find('#PurchaseAccountcode-' + i).text(),
-                    SaleAccountcode: $(divSelector).find('#SaleAccountcode-' + i).text(),
-                    MinLevelDays: parseInt($(divSelector).find('#MinLevelDays-' + i).text()) || 0,
-                    MaxLevelDays: parseInt($(divSelector).find('#MaxLevelDays-' + i).text()) || 0,
-                    EmpName: $(divSelector).find('#EmpName-' + i).text(),
-                    DailyRequirment: parseInt($(divSelector).find('#DailyRequirment-' + i).text()) || 0,
-                    Stockable: $(divSelector).find('#Stockable-' + i).text(),
-                    WipStockable: $(divSelector).find('#WipStockable-' + i).text(),
-                    Store: $(divSelector).find('#StoreId-' + i).text(),
-                    ProductLifeInus: $(divSelector).find('#ProductLifeInus-' + i).text(),
-                    ItemDesc: $(divSelector).find('#ItemDesc-' + i).text(),
-                    MaxWipStock: parseInt($(divSelector).find('#MaxWipStock-' + i).text()) || 0,
-                    NeedSo: $(divSelector).find('#NeedSo-' + i).text(),
-                    BomRequired: $(divSelector).find('#BomRequired-' + i).text(),
-                    UniversalPartCode: $(divSelector).find('#UniversalPartCode-' + i).text(),
-                    UniversalDescription: $(divSelector).find('#UniversalDescription-' + i).text(),
-                    IsCustJWAdjMandatory: $(divSelector).find('#IsCustJWAdjMandatory-' + i).text(),
-                    Active: $(divSelector).find('#Active-' + i).text(),
-                    JobWorkItem: $(divSelector).find('#JobWorkItem-' + i).text(),
-                    ItemServAssets: $(divSelector).find('#ItemServAssets-' + i).text(),
-                    NoOfCavity: $(divSelector).find('#NoOfCavity-' + i).text(),
-                    NoOfshotsHours: $(divSelector).find('#NoOfshotsHours-' + i).text(),
-                    ChildBom: $(divSelector).find('#ChildBom-' + i).text(),
-                    ProdInMachineGroupId: $(divSelector).find('#ProdInMachineGroupId-' + i).text(),
-                    ProdInMachine1: $(divSelector).find('#ProdInMachine1-' + i).text(),
-                    ProdInMachine2: $(divSelector).find('#ProdInMachine2-' + i).text(),
-                    ProdInMachine3: $(divSelector).find('#ProdInMachine3-' + i).text(),
-                    ProdInMachine4: $(divSelector).find('#ProdInMachine4-' + i).text(),
-                    Branch: $(divSelector).find('#Branch-' + i).text(),
-                });
-            }
-        } else {
-            RowCount = RowCount2;
-            divSelector = '#divItemList1';
-            url = "/ItemMaster/UpdateSelectedItemListdata";
-
-            for (i = 1; i <= RowCount; i++) {
-                ItemData.push({
-                    Item_Code: parseInt($(divSelector).find('#Item_Code-' + i).text()) || 0,
-                    PartCode: $(divSelector).find('#PartCode-' + i).text(),
-                    Item_Name: $(divSelector).find('#Item_Name-' + i).text(),
-                    HSNNO: parseInt($(divSelector).find('#HSNNO-' + i).text()) || 0,
-                    MinimumLevel: parseFloat($(divSelector).find('#MinimumLevel-' + i).text()) || 0,
-                    MaximumLevel: parseFloat($(divSelector).find('#MaximumLevel-' + i).text()) || 0,
-                    ProdInWorkcenter: $(divSelector).find('#ProdInWorkcenter-' + i).text(),
-                    SalePrice: parseFloat($(divSelector).find('#SalePrice-' + i).text()) || 0,
-                    PurchasePrice: parseFloat($(divSelector).find('#PurchasePrice-' + i).text()) || 0,
-                    CostPrice: parseFloat($(divSelector).find('#CostPrice-' + i).text()) || 0,
-                    Store: $(divSelector).find('#StoreId-' + i).text(),
-                    NoOfCavity: $(divSelector).find('#NoOfCavity-' + i).text(),
-                    NoOfshotsHours: $(divSelector).find('#NoOfshotsHours-' + i).text(),
-                    ProdInMachineGroupId: $(divSelector).find('#ProdInMachineGroupId-' + i).text(),
-                    ProdInMachine1: $(divSelector).find('#ProdInMachine1-' + i).text(),
-                    ProdInMachine2: $(divSelector).find('#ProdInMachine2-' + i).text(),
-                    ProdInMachine3: $(divSelector).find('#ProdInMachine3-' + i).text(),
-                    ProdInMachine4: $(divSelector).find('#ProdInMachine4-' + i).text(),
-                });
-            }
-        }
-
-
-            // Set data payload conditionally
-            var dataToSend = { model: ItemData };
-            if (url === "/ItemMaster/UpdateSelectedItemListdata") {
-                dataToSend.flag = flag;
-            }
-
-            $.ajax({
-                url: url,
-                type: "POST",
-                data: dataToSend,
-                    beforeSend: function () {
-            $('#ajaxLoader').show(); // ✅ Show loader
-        },
-                success: function (data, status, xhr) {
-                     $('#ajaxLoader').hide();
-                     $.notify("Data Update Successfully!!", "info");
-                  if (data && (data.statusCode === 200 || data.statusCode === 202 )) {
-               window.location.href = data.RedirectUrl;
-            } else {
-           //    console.log(data);
-             //  alert(data.statusText);
-                // Show notify message if error-like StatusText is returned
-               $.notify(data.statusText ,"error");
-            }
-                //    console.log("success");
-                },
-                error: function (result, status, xhr) {
-                     $('#ajaxLoader').hide();
-                    $.notify(result.responseText, "error");
-                }
-            });
-        }
+       
 
         //  function SubmitData(e) {
 
@@ -852,5 +1179,5 @@
         }
     </script>
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 }

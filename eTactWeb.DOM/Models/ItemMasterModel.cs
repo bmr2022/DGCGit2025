@@ -12,6 +12,14 @@ namespace eTactWeb.DOM.Models
         public bool DuplicateItemName { get; set; }
      
     }
+    public class ExcelUpdateRequest
+    {
+        // Mapping between DB column and Excel column name
+        public Dictionary<string, string> Mapping { get; set; }
+
+        // Excel rows data (Header -> Value)
+        public List<Dictionary<string, string>> ExcelData { get; set; }
+    }
 
     [Serializable()]
     public class ItemMasterList

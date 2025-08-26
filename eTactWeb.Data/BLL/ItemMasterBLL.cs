@@ -128,6 +128,10 @@ public class ItemMasterBLL : IItemMaster
     {
         return await _ItemMasterDAL.SaveMultipleItemData(ItemDetailGrid);
     }
+    public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+    {
+        return await _ItemMasterDAL.UpdateMultipleItemDataFromExcel(ItemDetailGrid,flag);
+    }
     public async Task<ResponseResult> UpdateMultipleItemData(DataTable ItemDetailGrid)
     {
         return await _ItemMasterDAL.UpdateMultipleItemData(ItemDetailGrid);

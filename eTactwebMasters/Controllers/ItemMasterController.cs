@@ -27,6 +27,8 @@ using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http.HttpResults;
 using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.DAL;
+using System.Data.SqlClient;
 
 namespace eTactWeb.Controllers;
 
@@ -2206,6 +2208,187 @@ public class ItemMasterController : Controller
         model.ExcelDataList = data;
         return PartialView("_DisplayExcelData", model);
     }
+
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
+    {
+        var response = new ResponseResult();
+
+        try
+        {
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("PartCode", typeof(string));
+            dt.Columns.Add("Item_Name", typeof(string));
+            dt.Columns.Add("ParentCode", typeof(string));
+            dt.Columns.Add("EntryDate", typeof(DateTime));
+            dt.Columns.Add("LastUpdatedDate", typeof(DateTime));
+            dt.Columns.Add("LeadTime", typeof(int));
+            dt.Columns.Add("CC", typeof(string));
+            dt.Columns.Add("Unit", typeof(string));
+            dt.Columns.Add("SalePrice", typeof(decimal));
+            dt.Columns.Add("PurchasePrice", typeof(decimal));
+            dt.Columns.Add("CostPrice", typeof(decimal));
+            dt.Columns.Add("WastagePercent", typeof(decimal));
+            dt.Columns.Add("WtSingleItem", typeof(decimal));
+            dt.Columns.Add("NoOfPcs", typeof(int));
+            dt.Columns.Add("QcReq", typeof(bool));
+            dt.Columns.Add("ItemType", typeof(string));
+            dt.Columns.Add("UploadItemImage", typeof(string));
+            dt.Columns.Add("UploadImage", typeof(string));
+            dt.Columns.Add("UID", typeof(string));
+            dt.Columns.Add("DrawingNo", typeof(string));
+            dt.Columns.Add("MinimumLevel", typeof(int));
+            dt.Columns.Add("MaximumLevel", typeof(int));
+            dt.Columns.Add("ReorderLevel", typeof(int));
+            dt.Columns.Add("YearCode", typeof(string));
+            dt.Columns.Add("AlternateUnit", typeof(string));
+            dt.Columns.Add("RackID", typeof(string));
+            dt.Columns.Add("BinNo", typeof(string));
+            dt.Columns.Add("ItemSize", typeof(string));
+            dt.Columns.Add("Colour", typeof(string));
+            dt.Columns.Add("NeedPO", typeof(bool));
+            dt.Columns.Add("StdPacking", typeof(string));
+            dt.Columns.Add("PackingType", typeof(string));
+            dt.Columns.Add("ModelNo", typeof(string));
+            dt.Columns.Add("YearlyConsumedQty", typeof(decimal));
+            dt.Columns.Add("DispItemName", typeof(string));
+            dt.Columns.Add("PurchaseAccountcode", typeof(string));
+            dt.Columns.Add("SaleAccountcode", typeof(string));
+            dt.Columns.Add("MinLevelDays", typeof(int));
+            dt.Columns.Add("MaxLevelDays", typeof(int));
+            dt.Columns.Add("EmpName", typeof(string));
+            dt.Columns.Add("DailyRequirment", typeof(decimal));
+            dt.Columns.Add("Stockable", typeof(bool));
+            dt.Columns.Add("WipStockable", typeof(bool));
+            dt.Columns.Add("Store", typeof(string));
+            dt.Columns.Add("ProductLifeInus", typeof(string));
+            dt.Columns.Add("ItemDesc", typeof(string));
+            dt.Columns.Add("MaxWipStock", typeof(decimal));
+            dt.Columns.Add("NeedSo", typeof(bool));
+            dt.Columns.Add("BomRequired", typeof(bool));
+            dt.Columns.Add("JobWorkItem", typeof(bool));
+            dt.Columns.Add("HsnNo", typeof(string));
+            dt.Columns.Add("CreatedBy", typeof(string));
+            dt.Columns.Add("CreatedOn", typeof(DateTime));
+            dt.Columns.Add("UpdatedBy", typeof(string));
+            dt.Columns.Add("UpdatedOn", typeof(DateTime));
+            dt.Columns.Add("Active", typeof(bool));
+            dt.Columns.Add("ItemServAssets", typeof(string));
+            dt.Columns.Add("VendorBatchcodeMand", typeof(bool));
+            dt.Columns.Add("EntryByMachineName", typeof(string));
+            dt.Columns.Add("UniversalPartCode", typeof(string));
+            dt.Columns.Add("UniversalDescription", typeof(string));
+            dt.Columns.Add("ProdInWorkcenter", typeof(bool));
+            dt.Columns.Add("ProdInhouseJW", typeof(bool));
+            dt.Columns.Add("BatchNO", typeof(string));
+            dt.Columns.Add("VoltageValue", typeof(string));
+            dt.Columns.Add("SerialNo", typeof(string));
+            dt.Columns.Add("OldPartCode", typeof(string));
+            dt.Columns.Add("package", typeof(string));
+            dt.Columns.Add("IsCustJWAdjMandatory", typeof(bool));
+            dt.Columns.Add("Branch", typeof(string));
+            dt.Columns.Add("NoOfCavity", typeof(int));
+            dt.Columns.Add("ProdInMachineGroup", typeof(string));
+            dt.Columns.Add("ProdInMachine1", typeof(string));
+            dt.Columns.Add("ProdInMachine2", typeof(string));
+            dt.Columns.Add("ProdInMachine3", typeof(string));
+            dt.Columns.Add("NoOfshotsHours", typeof(decimal));
+            dt.Columns.Add("ProdInMachine4", typeof(string));
+            dt.Columns.Add("ChildBom", typeof(bool));
+            dt.Columns.Add("usedinMachorVehicle", typeof(string));
+            dt.Columns.Add("Barcode", typeof(string));
+
+            foreach (var excelRow in request.ExcelData)
+            {
+                DataRow row = dt.NewRow();
+
+                foreach (var map in request.Mapping)
+                {
+                    string dbCol = map.Key;          // DB column
+                    string excelCol = map.Value;     // Excel column name
+
+                    object value = DBNull.Value;     // default
+
+                    if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+                    {
+                        value = excelRow[excelCol];
+
+                        // Convert types for numeric/boolean/date columns if needed
+                        Type columnType = dt.Columns[dbCol].DataType;
+
+                        try
+                        {
+                            if (columnType == typeof(int))
+                                value = int.Parse(value.ToString());
+                            else if (columnType == typeof(decimal))
+                                value = decimal.Parse(value.ToString());
+                            else if (columnType == typeof(bool))
+                            {
+                                // Accept 1/0, true/false, Y/N
+                                string s = value.ToString().Trim().ToLower();
+                                value = (s == "1" || s == "true" || s == "y");
+                            }
+                            else if (columnType == typeof(DateTime))
+                                value = DateTime.Parse(value.ToString());
+                            else
+                                value = value.ToString();
+                        }
+                        catch
+                        {
+                            value = DBNull.Value; // fallback if conversion fails
+                        }
+                    }
+                    row[dbCol] = value;
+                }
+
+                dt.Rows.Add(row);
+            }
+
+            response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, "UpdateDataFromExcel");
+
+            if (response != null)
+            {
+                if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
+                     (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+                {
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = "Data imported successfully",
+                        RedirectUrl = Url.Action("ImportandUpdateItems", "ItemMaster", new { Flag = "" })
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+
+                        StatusText = response.StatusText,
+                        statusCode = 201,
+                        redirectUrl = ""
+                    });
+                }
+            }
+
+            return Json(new
+            {
+                StatusCode = 500,
+                StatusText = "Unknown error occurred"
+            });
+
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+
+        
+    }
+
+    
+
     public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
     {
         try
