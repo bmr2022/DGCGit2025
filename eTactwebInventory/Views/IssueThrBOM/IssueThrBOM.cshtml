@@ -250,8 +250,9 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header">
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
-                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Without BOM Grid</strong>
+                            <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Through BOM Grid</strong>
                         </button>
+                        <button type="button" id="deleteZeroStockRows" onclick="RemoveRowsWithZeroStockAndShowPartCodes()" class="btn btn-sm btn-outline-danger">Delete Zer0 Stock</button>
                         <button class="GridButton btn btn-sm btn-outline-danger" style="width:150px;" type="button">
                             <i class="fa-solid fa-angles-down fa-fw fa-lg "></i>ADD TO GRID
                         </button>
@@ -572,8 +573,83 @@
     <script>
         var ICName = [];
         var ICName2 = [];
+                   function RemoveRowsWithZeroStockAndShowPartCodes() {
+                             DeleteFromZeroStockMemoryGrid(true);
+                 }
+                        function DeleteFromZeroStockMemoryGrid(deleteZeroStockOnly, SeqNo = null, PartCode = '') {
 
-        function Validate_IssueInsert() {
+                    $.ajax({
+                                url: '@Url.Action("DeleteFromZeroStockMemoryGrid")',
+                        type: "POST",
+                        data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo },
+                        async: false,
+                        success: function (data, status, xhr) {
+                                     $('#divIssueThrBOMGrid').html(data);
+                            $.notify("Item deleted from Grid", "info");
+                            // var existingText = $('#lblDeletedPartCodes').text();
+                            // var combined = existingText ? existingText + ", " + PartCode : PartCode;
+                            // $('#lblDeletedPartCodes').text(combined);
+                                               fillBatchNO();
+
+
+                            var rowCounter = $('#divIssueThrBOMGrid tr').length;
+                            for (var i = 1; i <= rowCounter; i++) {
+                                fillBatchUnique(i, "unique&batch");
+                            }
+                            for (var i = 1; i <= rowCounter; i++) {
+
+                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                let itemName = $('#MainGridItemname-' + i).val();
+                                let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                                let key = itemName + '|' + uniqueBatchNo;
+
+                                let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+
+                                $('#MainGridIssueQty-' + i).val(restoredIssueQty);
+                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+                            }
+                            for (var i = 1; i <= rowCounter; i++) {
+
+                                FillLotandTotalStock(i);
+
+                                fillProjectNo(i);
+                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNo1-' + i).val());
+                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                let itemName = $('#MainGridItemname-' + i).val();
+                                let uniqueBatchNo = $('#MainGridUniqueBatchNo-' + i).val();
+                                let key = itemName + '|' + uniqueBatchNo;
+
+                                let restoredIssueQty = tempIssueQtyMap[key] || $('#MainGridIssueQty1-' + i).val();
+
+                                $('#MainGridIssueQty-' + i).val(restoredIssueQty);
+                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridBatchNo-' + i).css("background-color", 'rgb(248 255 178)');
+
+                                var batchVal = $('#MainGridBatchNo-' + i).val();
+                                var issueqty = $('#MainGridIssueQty-' + i).val();
+
+                                if (batchVal === '' || batchVal === '0' || batchVal === null || issueqty <= 0) {
+                                    // Change background color of the whole row
+                                    $('#MainGridBatchNo-' + i).closest('tr').css('background-color', '#ee6b6e');
+                                }
+                            }
+                        },
+                        error: function (response, status, xhr) {
+                            alert(response.responseText);
+                            $.notify(response.responseText, "error");
+                        },
+                        failure: function (response, status, xhr) {
+                            alert(response.responseText);
+                            $.notify(response.responseText, "error");
+                        }
+                    });
+                }
+
+                function Validate_IssueInsert() {
              
             var Err = 0;
             if ($('#RecByEmpCodeName').val() == 0) {

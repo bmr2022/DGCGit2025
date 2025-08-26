@@ -1,0 +1,8 @@
+﻿@model FastReport.Web.WebReport
+
+
+@{
+    ViewData["Title"] = "Categories - Report";
+}
+<a asp-controller="SaleOrder" asp-route-EntryId="@ViewBag.EntryId" asp-route-YearCode="@ViewBag.YearCode" asp-route-ShowOnlyAmendItem="@ViewBag.ShowOnlyAmendItem" asp-action="Pdf" style="display: inline-block; width: auto; height: auto; padding: 0; text-decoration: none;">   <i class="fas fa-file-pdf" style="font-size: 16px;"></i> </a>
+@await Model.Render()
