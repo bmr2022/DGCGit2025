@@ -7,6 +7,7 @@
     .hidden-column {
         display: none !important;
     }
+
     .select2-container--default .select2-selection--single {
         background-color: #e0f2f1;
         border: 1.5px solid #0a0a0a !important;
@@ -60,10 +61,7 @@
                                         </div>
                                     </div>
                                 </div>
-                               
-                              
-                                    
-                                    <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" class="form-control" />
+                                <input type="hidden" asp-for="EntryByMachine" value="@Environment.MachineName" class="form-control" />
                                 <input type="hidden" asp-for="TrailBalanceGroupCode" class="form-control" />
                                 <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
                                     <label asp-for="ReportType" class="form-label">ReportType</label>
@@ -72,12 +70,27 @@
                                         <option value="TRAILDETAIL">Trail Balance Detail</option>
                                     </select>
                                 </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="TrailBalanceGroupName" class="form-label">Group List</label>
+                                    <select asp-for="TrailBalanceGroupName" id="TrailBalanceGroupName" class="form-select">
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="ParentGroupName" class="form-label">Parent Group List</label>
+                                    <select asp-for="ParentGroupName" id="ParentGroupName" class="form-select">
+                                    </select>
+                                </div>
+                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12">
+                                    <label asp-for="AccountName" class="form-label">Account List</label>
+                                    <select asp-for="AccountName" id="AccountName" class="form-select">
+                                    </select>
+                                </div>
                                 <div class="col-sm-2 col-md-6 col-lg-4 col-xl-2">
                                     <label class="form-label">Global search</label>
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
 
-                                <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit">
+                                <div class=" d-flex justify-content-center   mt-3 col-sm-5 col-md-8 col-lg-6 col-xl-4" width="inherit" style="width:600px;">
 
                                     <button class="btn btn-sm btn-outline-info" type="button" style="padding:0px;height:30px;width:100px;" onclick="GetTrailBalanceDetailsData();">
                                         <i class="fa-solid fa-magnifying-glass fa-fw fa-lg"></i>SEARCH
@@ -88,9 +101,12 @@
                                     <a class="btn btn-sm btn-outline-danger" style="padding:3px;height:30px;width:100px;margin-left:20px;" asp-controller="TrailBalance" asp-action="TrailBalance">
                                         <i class="fa-solid fa-rotate fa-fw fa-lg"></i>RESET
                                     </a>
+                                    <a href="#" class="btn btn-primary btn-sm ms-3" onclick="PressBack();" id="BackButton">
+                                        <i class="fa fa-chevron-circle-left fa-fw fa-lg" aria-hidden="true"></i>
+                                        BACK
+                                    </a>
                                     <button id="toggle-hidden-cols-btn" class="btn btn-secondary" style="padding:3px;height:30px;width:100px;margin-left:20px;">Unhide Columns</button>
-                                        <div id="hidden-cols-panel" style="display: none; margin-top: 5px;"></div>
-                                   
+                                    <div id="hidden-cols-panel" style="display: none; margin-top: 5px;"></div>
                                 </div>
                                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                             </div>
@@ -99,9 +115,6 @@
                             </div>
                             <div class="accordion-item">
                                 <h2 class="accordion-header" id="H_SAGrid">
-                                    @* <button class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
-                                        <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Trail Balance Details Grid</strong>
-                                    </button> *@
                                     <button id="dynamicButton" class="accordion-button collapsed text-light pnl4BG bg-gradient" type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid">
                                         <strong id="buttonTitle" style="text-transform:uppercase">
                                             <i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade"
@@ -116,87 +129,33 @@
                                         <div class="card-body" id="divPendingMRP">
                                             <div class="row">
                                                 <div class="col-md-12 divStockRegister" id="divStockMainRegister">
-                                                    @* <partial name="_TrailBalanceSummaryGrid" /> *@
                                                 </div>
                                             </div>
                                             <div class="d-flex justify-content-end mt-2 " id="reportFields">
-                                               @*  <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
-                                                    <label class="form-label">Total Dr Amt</label>
-                                                    <input id="totDr" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                    <label class="form-label">Total Cr Amt</label>
-                                                    <input id="totCr" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                    <label class="form-label">Total Opening</label>
-                                                    <input id="totOpening" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                    <label class="form-label">Total CurrDr</label>
-                                                    <input id="totCurrDr" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                    <label class="form-label">Total CurrCr </label>
-                                                    <input id="totCurrCr" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                    <label class="form-label">Total NetCurr Amt</label>
-                                                    <input id="totNetCurrentAmt" class="form-control" readonly />
-                                                </div>
-                                                <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                    <label class="form-label">Total Net Amt</label>
-                                                    <input id="totNetAmt" class="form-control" readonly />
-                                                </div>
-                                              
-                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                            <label class="form-label">Total GroupOpn Dr</label>
-                                                            <input id="totGroupOpnDr" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                            <label class="form-label">Total GroupOpn Cr</label>
-                                                            <input id="totGroupOpnCr" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                            <label class="form-label">Total Group Opening</label>
-                                                            <input id="totGroupOpening" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                            <label class="form-label">Total GroupCurr Dr</label>
-                                                            <input id="totGroupCurrDrAmt" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                            <label class="form-label">Total GroupCurr Cr</label>
-                                                            <input id="totGroupCurrCrAmt" class="form-control" readonly />
-                                                        </div>
-                                                        <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" id="opnStkDiv" style="width:120px;margin-left:10px;">
-                                                            <label class="form-label">Total Group NetAmt</label>
-                                                            <input id="totGroupNetAmt" class="form-control" readonly />
-                                                        </div> *@
                                             </div>
                                         </div>
                                     </div>
-
                                 </div>
                             </div>
                         </form>
                     </div>
                 </div>
             </div>
-
         </div>
     </div>
-
-
 </div>
 
 @section Scripts
 {
     <script>
-        
+
         $(document).ready(function () {
-            const hiddenCols = {};
+            var hiddenCols = {};
             console.log("Ready");
+            $('#BackButton').hide();
+            FillGroupList();
+            FillParentGroupList();
+            FillAccountList();
             $('.toggle-col').on('click', function () {
                 var $th = $(this).closest('th');
                 var colIndex = $th.index() + 1; // correct nth-child
@@ -230,103 +189,103 @@
 
                 if (reportType === "TRAILDETAIL") {
                     html = `
-                              <div class="d-flex flex-wrap">
-                                <!-- First Line (7 Inputs) -->
-                                <div class="col-md-2" style="width:120px;">
-                                    <label class="form-label">Total Dr Amt</label>
-                                    <input id="totDr" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total Cr Amt</label>
-                                    <input id="totCr" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total Opening</label>
-                                    <input id="totOpening" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total CurrDr</label>
-                                    <input id="totCurrDr" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total CurrCr </label>
-                                    <input id="totCurrCr" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total Net Amt</label>
-                                    <input id="totNetAmt" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total GroupOpn Dr</label>
-                                    <input id="totGroupOpnDr" class="form-control" readonly />
-                                </div>
+                                                      <div class="d-flex flex-wrap">
+                                                        <!-- First Line (7 Inputs) -->
+                                                        <div class="col-md-2" style="width:120px;">
+                                                            <label class="form-label">Total Dr Amt</label>
+                                                            <input id="totDr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total Cr Amt</label>
+                                                            <input id="totCr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total Opening</label>
+                                                            <input id="totOpening" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total CurrDr</label>
+                                                            <input id="totCurrDr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total CurrCr </label>
+                                                            <input id="totCurrCr" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total Net Amt</label>
+                                                            <input id="totNetAmt" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total GroupOpn Dr</label>
+                                                            <input id="totGroupOpnDr" class="form-control" readonly />
+                                                        </div>
 
-                                 <div class="col-md-2" style="width:120px;margin-left:10px;">
-                                    <label class="form-label">Total GroupOpn Cr</label>
-                                    <input id="totGroupOpnCr" class="form-control" readonly />
-                                </div>
-                                         <div class="col-md-2" style="width:160px; margin-left:10px;">
-                                            <label class="form-label">Total Group Opening</label>
-                                            <input id="totGroupOpening" class="form-control" readonly />
-                                        </div>
-                                <!-- Second Line (Remaining Inputs) -->
-                                <div class="w-100"></div> <!-- Forces next row -->
+                                                         <div class="col-md-2" style="width:120px;margin-left:10px;">
+                                                            <label class="form-label">Total GroupOpn Cr</label>
+                                                            <input id="totGroupOpnCr" class="form-control" readonly />
+                                                        </div>
+                                                                 <div class="col-md-2" style="width:160px; margin-left:10px;">
+                                                                    <label class="form-label">Total Group Opening</label>
+                                                                    <input id="totGroupOpening" class="form-control" readonly />
+                                                                </div>
+                                                        <!-- Second Line (Remaining Inputs) -->
+                                                        <div class="w-100"></div> <!-- Forces next row -->
 
-                               
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total GroupCurr Dr</label>
-                                    <input id="totGroupCurrDrAmt" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total GroupCurr Cr</label>
-                                    <input id="totGroupCurrCrAmt" class="form-control" readonly />
-                                </div>
-                                <div class="col-md-2" style="width:120px; margin-left:10px;">
-                                    <label class="form-label">Total Group NetAmt</label>
-                                    <input id="totGroupNetAmt" class="form-control" readonly />
-                                </div>
-                            </div>
 
-                        `;
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total GroupCurr Dr</label>
+                                                            <input id="totGroupCurrDrAmt" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total GroupCurr Cr</label>
+                                                            <input id="totGroupCurrCrAmt" class="form-control" readonly />
+                                                        </div>
+                                                        <div class="col-md-2" style="width:120px; margin-left:10px;">
+                                                            <label class="form-label">Total Group NetAmt</label>
+                                                            <input id="totGroupNetAmt" class="form-control" readonly />
+                                                        </div>
+                                                    </div>
+
+                                                `;
                 } else if (reportType === "TRAILSUMMARY") {
                     html = `
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
-                                <label class="form-label">Total Dr Amt</label>
-                                <input id="totDr" class="form-control" readonly />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                <label class="form-label">Total Cr Amt</label>
-                                <input id="totCr" class="form-control" readonly />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                <label class="form-label">Total Opening</label>
-                                <input id="totOpening" class="form-control" readonly />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                <label class="form-label">Total CurrDr</label>
-                                <input id="totCurrDr" class="form-control" readonly />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                <label class="form-label">Total CurrCr </label>
-                                <input id="totCurrCr" class="form-control" readonly />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                <label class="form-label">Total NetCurr Amt</label>
-                                <input id="totNetCurrentAmt" class="form-control" readonly />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                <label class="form-label">Total Net Amt</label>
-                                <input id="totNetAmt" class="form-control" readonly />
-                            </div> 
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                <label class="form-label">Total CurrDRTotal </label>
-                                        <input id="totCurrDRTotal" class="form-control" readonly />
-                            </div>
-                            <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
-                                        <label class="form-label">Total CurrCRTotal</label>
-                                        <input id="totCurrCRTotal" class="form-control" readonly />
-                            </div>
-                        `;
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12 ms-2" id="opnStkDiv" style="width:120px;">
+                                                        <label class="form-label">Total Dr Amt</label>
+                                                        <input id="totDr" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                        <label class="form-label">Total Cr Amt</label>
+                                                        <input id="totCr" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                        <label class="form-label">Total Opening</label>
+                                                        <input id="totOpening" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                        <label class="form-label">Total CurrDr</label>
+                                                        <input id="totCurrDr" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                        <label class="form-label">Total CurrCr </label>
+                                                        <input id="totCurrCr" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                        <label class="form-label">Total NetCurr Amt</label>
+                                                        <input id="totNetCurrentAmt" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                        <label class="form-label">Total Net Amt</label>
+                                                        <input id="totNetAmt" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                        <label class="form-label">Total CurrDRTotal </label>
+                                                                <input id="totCurrDRTotal" class="form-control" readonly />
+                                                    </div>
+                                                    <div class="col-xxl-2 col-xl-3 col-lg-3 col-md-6 col-sm-6 col-xs-12" style="width:120px;margin-left:10px;">
+                                                                <label class="form-label">Total CurrCRTotal</label>
+                                                                <input id="totCurrCRTotal" class="form-control" readonly />
+                                                    </div>
+                                                `;
                 }
 
                 $("#reportFields").html(html);
@@ -342,14 +301,14 @@
             loadReportFields($("#ReportType").val());
 
             // GetServerDate();
-                // $(".bold-row").each(function () {
-                //      
-                //     $(this).css({ "font-weight": "bold", "font-size": "16px" });
-                //     $(this).find("input").css("color", "green");
-                // });
+            // $(".bold-row").each(function () {
+            //
+            //     $(this).css({ "font-weight": "bold", "font-size": "16px" });
+            //     $(this).find("input").css("color", "green");
+            // });
 
             $(".bold-row").each(function () {
-                 ;
+                ;
                 $(this).css({ "font-weight": "bold", "font-size": "16px", "color": "green" });
 
                 // Change text color inside input fields
@@ -357,7 +316,7 @@
             });
 
             function updateButtonTitle() {
-                 
+
                 let reportType = $("#ReportType").val();
                 let newTitle = (reportType === "TRAILSUMMARY") ? "Trail Balance Summary" : "Trail Balance Detail";
 
@@ -375,11 +334,157 @@
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
             $('#ReportType').select2();
-            //$('#VoucherType').select2();
+            $('#TrailBalanceGroupName').select2();
+            $('#ParentGroupName').select2();
+            $('#AccountName').select2();
 
             GetTrailBalanceDetailsData();
-          
+
         });
+
+        function FillGroupList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            $.ajax({
+                url: '@Url.Action("FillGroupList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate },
+                success: function (response, status, error) {
+
+                    var TrailBalanceGroupName = $('#TrailBalanceGroupName');
+                    var obj = $.parseJSON(response);
+                    TrailBalanceGroupName.empty();
+                    TrailBalanceGroupName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        TrailBalanceGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.GroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillParentGroupList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var GroupCode = $('#TrailBalanceGroupName').val();
+            if (GroupCode == "") {
+                GroupCode = null;
+            }
+            $.ajax({
+                url: '@Url.Action("FillParentGroupList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode },
+                success: function (response, status, error) {
+
+                    var ParentGroupName = $('#ParentGroupName');
+                    var obj = $.parseJSON(response);
+                    ParentGroupName.empty();
+                    ParentGroupName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        ParentGroupName.append('<option value="' + ledger.Account_Code + '">' + ledger.ParentGroupName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        function FillAccountList() {
+
+            var FromDate = $('#FromDate').val();
+            var ToDate = $('#ToDate').val();
+            var GroupCode = $('#TrailBalanceGroupName').val();
+            var ParentGroupCode = $('#ParentGroupName').val();
+            if (GroupCode == "") {
+                GroupCode = null;
+            }
+            if (ParentGroupCode == "") {
+                ParentGroupCode = null;
+            }
+            $.ajax({
+                url: '@Url.Action("FillAccountList", "TrailBalance")',
+                type: 'GET',
+                async: false,
+                data: { "FromDate": FromDate, "ToDate": ToDate, "GroupCode": GroupCode, "ParentGroupCode": ParentGroupCode },
+                success: function (response, status, error) {
+
+                    var AccountName = $('#AccountName');
+                    var obj = $.parseJSON(response);
+                    AccountName.empty();
+                    AccountName.append('<option value="">--Select--</option>');
+
+                    $.each(obj.Result, function (index, ledger) {
+                        AccountName.append('<option value="' + ledger.Account_Code + '">' + ledger.AccountName + '</option>');
+                    });
+
+                },
+                error: function (xhr, status, error) {
+                    alert('Failed to load groups.');
+                }
+            });
+        }
+
+        $("#TrailBalanceGroupName").change(function () {
+            FillParentGroupList();
+        });
+
+        $("#ParentGroupName").change(function () {
+            FillAccountList();
+        });
+
+        function GetDetailByGroupName(cntr) {
+             ;
+            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
+            $('#BackButton').show();
+            $("#TrailBalanceGroupCode").val(groupCode);
+            $("#TrailBalanceGroupName").val(groupCode).trigger('change');
+            $('#ReportType').val("TRAILDETAIL").trigger('change');
+        }
+
+        function GetDataByParentGroupName(cntr) {
+             
+            let groupCode = $("#TrailBalanceGroupCode-" + cntr).val();
+            let parentCode = $("#ParentAccountCode-" + cntr).val();
+            let accountName = $("#AccountName-" + cntr).val();
+
+            $('#BackButton').show();
+
+            let reportType = $('#ReportType').val();
+            $('#TrailBalanceGroupName').val(groupCode).trigger("change");
+            $('#ParentGroupName').val(parentCode).trigger("change");
+            $('#ReportType').val("TRAILDETAIL").trigger("change");
+        }
+
+        function GetDataByAccountName(cntr) {
+            let parentCode = $("#ParentAccountCode-" + cntr).val();
+            let accountName = $("#AccountName-" + cntr).val();
+            let reportType = "MonthlySummary";
+
+            // Store in sessionStorage
+            sessionStorage.setItem('ParentCode', parentCode);
+            sessionStorage.setItem('AccountName', accountName);
+            sessionStorage.setItem('ReportType', reportType);
+
+            // Redirect using relative path
+            window.location.href = '/TransactionLedger/Index';
+        }
+
+        function PressBack() {
+            $('#ReportType').val('TRAILSUMMARY').trigger('change');
+            $('#BackButton').hide(); // Hide back button
+            $('#TrailBalanceGroupCode').val(null);
+        }
 
         function selection(CurrentRow) {
 
@@ -429,13 +534,13 @@
         }
 
         function GetTrailBalanceDetailsData() {
-
-            //var reportType = $('#ReportType').val();
+             
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var EntryByMachine = $('#EntryByMachine').val();
             var ReportType = $('#ReportType').val();
-            var TrailBalanceGroupCode = $('#TrailBalanceGroupCode').val();
+            var TrailBalanceGroupCode = $('#TrailBalanceGroupName option:selected').val();
+            var ParentAccountCode = $('#ParentGroupName option:selected').val();
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetTrailBalanceDetailsData", "TrailBalance")",
@@ -444,7 +549,8 @@
                     ToDate: ToDate,
                     EntryByMachine: EntryByMachine,
                     ReportType: ReportType,
-                    TrailBalanceGroupCode: TrailBalanceGroupCode
+                    TrailBalanceGroupCode: TrailBalanceGroupCode,
+                    ParentAccountCode: ParentAccountCode
                 },
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
@@ -460,7 +566,7 @@
         }
 
         function countAllTotal() {
-             
+
             var rowCount = $('#divStockRegisterBody tr').length;
 
             var TotCr = 0;
@@ -612,7 +718,7 @@
                 table.children('#divStockRegisterBody').append(row);
             });
         }
-        
+
         var currentSearchColumn = null;
 
         $("#search-box").on("keyup", function () {
@@ -631,15 +737,6 @@
             currentSearchColumn = $(this).data('columnno');
             $("#search-box").val('').trigger('keyup'); // Reset search box and trigger the search
         });
-
-        function GetDetailByGroupName(Id) {
-            let accountCode = $(td).find(".hdnAccountCode").val();
-            let ledgerDescription = $(td).data("id");
-            $('#TrailBalanceGroupCode').val(accountCode);
-            $('#ReportType').val("TRAILDETAIL");
-            $('#BackButton').show();
-            GetTrailBalanceDetailsData();
-        }
 
         function DeleteRow(i) {
 

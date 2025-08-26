@@ -185,9 +185,11 @@
                         foreach (var item in Model.DPBDashboard)
                         {
                             Cntr = Cntr + 1;
-                            <tr id="approvedRow-@Cntr"
-                                class="@( !string.IsNullOrEmpty(@item.AgainstVoucherNo) ? "highlight-row" : "" )">
-
+                                    <tr id="approvedRow-@Cntr"
+                                style="@( !string.IsNullOrWhiteSpace(item.AgainstVoucherNo)
+        ? "color: rgb(13, 202, 240);"
+        : "" )">
+                           
 
                                 <td class="FWB">
                                     @srNo

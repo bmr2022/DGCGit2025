@@ -197,10 +197,22 @@
                                 </a>
                             </td>
                             <th>@Cntr</th>
-                            <td>@item.TrailBalanceGroupName</td>
-                            <td>@item.ParentGroupName</td>
-                            
-                            <td>@item.AccountName</td>
+                          <td>
+                              <input id="TrailBalanceGroupCode-@Cntr" value="@item.TrailBalanceGroupCode" type="hidden" />
+                              @item.TrailBalanceGroupName
+                            </td>
+                            <td>
+  <a onclick="GetDataByParentGroupName(@Cntr)" class="table-link link-primary">
+    <input type="hidden" value="@item.ParentAccountCode" id="ParentAccountCode-@Cntr"/>
+    @item.ParentGroupName
+  </a>
+</td>
+                            <td>
+                              <a onclick="GetDataByAccountName(@Cntr)" class="table-link link-primary">
+                                <input type="hidden" value="@item.AccountCode" id="AccountName-@Cntr"/>
+                                @item.AccountName
+                              </a>
+                            </td>
                             <td id="totGroupOpnDrG-@Cntr" style="background-color:#D3D3D3">@item.GroupOpnDr</td>
                             <td id="totGroupOpnCrG-@Cntr" style="background-color:#D3D3D3">@item.GroupOpnCr</td>
                             <td id="totDrG-@Cntr" style="background-color:antiquewhite">@item.OpnDr</td>

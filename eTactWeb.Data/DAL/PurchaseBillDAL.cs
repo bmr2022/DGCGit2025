@@ -789,6 +789,7 @@ public class PurchaseBillDAL
                                                      IGSTper = !string.IsNullOrEmpty(dr["IGSTper"].ToString()) ? Convert.ToDecimal(dr["IGSTper"]) : 0,
                                                      IGSTAmt = !string.IsNullOrEmpty(dr["IGSTAmt"].ToString()) ? Convert.ToDecimal(dr["IGSTAmt"]) : 0,
                                                      GSTAmount = !string.IsNullOrEmpty(dr["GSTAmount"].ToString()) ? Convert.ToSingle(dr["GSTAmount"]) : 0,
+                                                     AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                                  }).OrderBy(a => a.EntryID).ToList();
                 }
             }
@@ -894,6 +895,7 @@ public class PurchaseBillDAL
                                                      Amount = !string.IsNullOrEmpty(dr["Amount"].ToString()) ? Convert.ToDecimal(dr["Amount"]) : 0,
                                                      MRNType = dr["PurchaseBillTypeMRNJWChallan"].ToString(),
                                                      DocumentName = dr["DocumentType"].ToString(),
+                                                     AgainstVoucherNo = dr["AgainstVoucherNo"].ToString(),
                                                  }).OrderBy(a => a.EntryID).ToList();
                 }
             }

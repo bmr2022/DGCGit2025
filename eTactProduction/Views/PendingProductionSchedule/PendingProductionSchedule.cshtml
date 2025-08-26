@@ -172,6 +172,7 @@
                                 <th data-columnno="29" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Plan EntryId</th>
                                 <th data-columnno="30" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Plan YearCode</th>
                                 <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>Prod Sch EntryId</th>
+                                <th data-columnno="31" data-sortorder="asc" class="sortCol"><span style="padding:5px;margin:5px" class="sort-icon"><i class="fa" aria-hidden="true"></i></span>TransactionDate</th>
                             </tr>
                         </thead>
                         <tbody id="divPendMRNGrid">
@@ -543,6 +544,7 @@
                                     '<td id="ProdEntryId' + i + '">' + val.ProdPlanEntryId + '</td>' +
                                     '<td>' + val.ProdPlanYearcode + '</td>' +
                                     '<td id="ProdSchEntryId' + i + '">' + val.ProdSchEntryId + '</td>' +
+                                    '<td id="TransactionDate' + i + '">' + val.TransactionDate + '</td>' +
                                     '</tr>'
                                 $('#divPendMRNGrid').append(html);
                                 ColorCodingStockandIssue();
@@ -643,6 +645,7 @@
                                     '<td id="ProdEntryId' + i + '">' + val.ProdPlanEntryId + '</td>' +
                                     '<td id="ProdPlanYearcode' + i + '">' + val.ProdPlanYearcode + '</td>' +
                                     '<td id="ProdSchEntryId' + i + '">' + val.ProdSchEntryId + '</td>' +
+                                    '<td id="TransactionDate' + i + '">' + val.TransactionDate + '</td>' +
                                     '</tr>'
                                 $('#divPendMRNGrid').append(html);
                           
@@ -733,7 +736,9 @@
                     "ProdPlanEntryId": $('#ProdEntryId' + i).text(),
                     "ProdSchEntryId": $('#ProdSchEntryId' + i).text(),
                     "WCId": $('#WcId' + i).val(),
-                    "WorkCenter": $('#WorkCenter' + i).text()
+                    "WorkCenter": $('#WorkCenter' + i).text(),
+                    "TransactionDate": $('#TransactionDate' + i).text(),
+
                 });
             }
             $.ajax({

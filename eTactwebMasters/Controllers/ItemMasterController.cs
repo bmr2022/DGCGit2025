@@ -27,6 +27,8 @@ using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 using Microsoft.AspNetCore.Http.HttpResults;
 using DocumentFormat.OpenXml.EMMA;
+using eTactWeb.Data.DAL;
+using System.Data.SqlClient;
 
 namespace eTactWeb.Controllers;
 
@@ -187,7 +189,7 @@ public class ItemMasterController : Controller
 
         // Common headers
         worksheet.Cell(row, col++).Value = "Sr";
-        worksheet.Cell(row, col++).Value = "Item_Code";
+      //  worksheet.Cell(row, col++).Value = "Item_Code";
         worksheet.Cell(row, col++).Value = "PartCode";
         worksheet.Cell(row, col++).Value = "Item_Name";
 
@@ -254,7 +256,7 @@ public class ItemMasterController : Controller
             int c = 1;
 
             worksheet.Cell(r, c++).Value = i + 1;
-            worksheet.Cell(r, c++).Value = modelList[i].Item_Code;
+            //worksheet.Cell(r, c++).Value = modelList[i].Item_Code;
             worksheet.Cell(r, c++).Value = modelList[i].PartCode;
             worksheet.Cell(r, c++).Value = modelList[i].Item_Name;
 
@@ -1433,10 +1435,26 @@ public class ItemMasterController : Controller
                             //   return StatusCode(207, $"Invalid BatchNO value at row {row}: '{batchNO}'. Valid options are MRNWISE, NOOFCase, ForEachQty.");
                         }
                     }
-
+                    //var ItemCodeId = _IItemMaster.GetItemCode(partCode, worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim());
+                    //int itemcode = 0;
+                    //if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Rows.Count > 0)
+                    //{
+                    //    itemcode = (int)ItemCodeId.Result.Result.Rows[0].ItemArray[0];
+                    //}
+                    var ItemCodeId = _IItemMaster.GetItemCode(partCode, ItemName);
+                    int itemcode = 0;
+                    if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Tables.Count > 0)
+                    {
+                        var table = ItemCodeId.Result.Result.Tables[0];
+                        if (table.Rows.Count > 0)
+                        {
+                            itemcode = Convert.ToInt32(table.Rows[0].ItemArray[0]);
+                        }
+                        // itemcode = (int)ItemCodeId.Result.Result.Rows[0].ItemArray[0];
+                    }
                     data.Add(new ImportItemViewModel
                     {
-                        Item_Code = Convert.ToInt32(worksheet.Cells[row, headersMap["Item_Code"]].Value ?? 0),
+                        Item_Code = itemcode,
                         PartCode = partCode,
                         Item_Name = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim(),
                         ItemGroup = itemGroup,
@@ -1552,25 +1570,45 @@ public class ItemMasterController : Controller
         using (var package = new ExcelPackage(stream))
         {
             var worksheet = package.Workbook.Worksheets[0];
-
+            var totalColumns = worksheet.Dimension.Columns;
+            var headersMap = new Dictionary<string, int>();
+            for (int col = 1; col <= totalColumns; col++)
+            {
+                var header = worksheet.Cells[1, col].Text?.Trim();
+                if (!string.IsNullOrEmpty(header) && !headersMap.ContainsKey(header))
+                    headersMap[header] = col;
+            }
             for (int row = 2; row <= worksheet.Dimension.Rows; row++)
             {
                 var cellValue = worksheet.Cells[row, 2].Value;
+                var partCode = worksheet.Cells[row, headersMap["PartCode"]].Text?.Trim();
+                //worksheet.Cells[row, 3].Value?.ToString().Trim();
+                var ItemName = worksheet.Cells[row, headersMap["Item_Name"]].Text?.Trim();
                 if (cellValue == null || string.IsNullOrWhiteSpace(cellValue.ToString()))
                     break;
-
+                var ItemCodeId = _IItemMaster.GetItemCode(partCode, ItemName);
+                int itemcode = 0;
+                if (ItemCodeId.Result.Result != null && ItemCodeId.Result.Result.Tables.Count > 0)
+                {
+                    var table = ItemCodeId.Result.Result.Tables[0];
+                    if (table.Rows.Count > 0)
+                    {
+                        itemcode = Convert.ToInt32(table.Rows[0].ItemArray[0]);
+                    }
+                   // itemcode = (int)ItemCodeId.Result.Result.Rows[0].ItemArray[0];
+                }
                 var model = new ImportItemViewModel
                 {
-                    Item_Code = Convert.ToInt32(worksheet.Cells[row, 2].Value),
-                    PartCode = worksheet.Cells[row, 3].Value?.ToString().Trim(),
-                    Item_Name = worksheet.Cells[row, 4].Value?.ToString().Trim()
+                    Item_Code = itemcode,
+                    PartCode = partCode,
+                    Item_Name = ItemName
                 };
-                var partCode = worksheet.Cells[row, 3].Value?.ToString().Trim();
-                var ItemName = worksheet.Cells[row, 4].Value?.ToString().Trim();
+
                 switch (flag?.ToLower())
                 {
                    case "hsncode":
-                    string hsnString = worksheet.Cells[row, 5].Value?.ToString().Trim() ?? string.Empty;
+                    string hsnString = worksheet.Cells[row, headersMap["HSNCODE"]].Text?.Trim() ?? string.Empty; 
+                       // worksheet.Cells[row, 5].Value?.ToString().Trim() ?? string.Empty;
 
                     if (!string.IsNullOrEmpty(hsnString))
                     {
@@ -1588,7 +1626,8 @@ public class ItemMasterController : Controller
 
 
                     case "store":
-                        var Store = worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
+                        var Store = worksheet.Cells[row, headersMap["StoreName"]].Text?.Trim() ?? "";
+                            //worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
                         bool StoreExists = false;
                         if (string.IsNullOrWhiteSpace(Store))
                         {
@@ -1626,7 +1665,8 @@ public class ItemMasterController : Controller
                         break;
 
                     case "workcenter":
-                        var WorkCenter = worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
+                        var WorkCenter = worksheet.Cells[row, headersMap["WorkCenter"]].Text?.Trim()??"";
+                        //worksheet.Cells[row, 5].Value?.ToString()?.Trim() ?? "";
                         var WorkCenterList = _IItemMaster.GetWorkCenterList();
                         bool WorkcenterExists = false;
 
@@ -1660,17 +1700,26 @@ public class ItemMasterController : Controller
                         break;
 
                     case "price":
-                        model.SalePrice = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
-                        model.PurchasePrice = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
-                        model.CostPrice = Convert.ToDecimal(worksheet.Cells[row, 7].Value ?? 0);
+                        model.SalePrice = Convert.ToDecimal(worksheet.Cells[row, headersMap["SalePrice"]].Text?.Trim() ?? "0");
+
+                        //Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        model.PurchasePrice = Convert.ToDecimal(worksheet.Cells[row, headersMap["PurchasePrice"]].Text?.Trim() ?? "0");
+                        //Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        model.CostPrice = Convert.ToDecimal(worksheet.Cells[row, headersMap["CostPrice"]].Text?.Trim() ?? "0");
+                        //Convert.ToDecimal(worksheet.Cells[row, 7].Value ?? 0);
                         break;
                     case "productiondetail":
 
-                        var ProdInMachineGroup = worksheet.Cells[row, 7].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine1 = worksheet.Cells[row, 8].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine2 = worksheet.Cells[row, 9].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine3 = worksheet.Cells[row, 10].Value?.ToString()?.Trim() ?? "";
-                        var ProdInMachine4 = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachineGroup = worksheet.Cells[row, 7].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine1 = worksheet.Cells[row, 8].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine2 = worksheet.Cells[row, 9].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine3 = worksheet.Cells[row, 10].Value?.ToString()?.Trim() ?? "";
+                        //var ProdInMachine4 = worksheet.Cells[row, 11].Value?.ToString()?.Trim() ?? "";
+                        var ProdInMachineGroup = worksheet.Cells[row, headersMap["ProdInMachineGroup"]].Text?.Trim() ?? "";
+                        var ProdInMachine1 = worksheet.Cells[row, headersMap["ProdInMachine1"]].Text?.Trim() ?? "";
+                        var ProdInMachine2 = worksheet.Cells[row, headersMap["ProdInMachine2"]].Text?.Trim() ?? "";
+                        var ProdInMachine3 = worksheet.Cells[row, headersMap["ProdInMachine3"]].Text?.Trim() ?? "";
+                        var ProdInMachine4 = worksheet.Cells[row, headersMap["ProdInMachine4"]].Text?.Trim() ?? "";
                      
                         var ProdInMachineGroupId = _IItemMaster.ProdInMachineGroupId(ProdInMachineGroup);
                         var ProdInMachineNameId1 = _IItemMaster.ProdInMachineNameId(ProdInMachine1);
@@ -1843,8 +1892,10 @@ public class ItemMasterController : Controller
                             errors.Add($"Machine names must be unique in row {row}. Duplicates: {string.Join(", ", duplicateMachines)} (PartCode: {partCode}, ItemName: {ItemName})");
                             continue;
                         }
-                        model.NoOfCavity = Convert.ToInt32(worksheet.Cells[row, 5].Value ?? 0);
-                        model.NoOfshotsHours = Convert.ToInt32(worksheet.Cells[row, 6].Value ?? 0);
+                        //model.NoOfCavity = Convert.ToInt32(worksheet.Cells[row, 5].Value ?? 0);
+                        //model.NoOfshotsHours = Convert.ToInt32(worksheet.Cells[row, 6].Value ?? 0);   
+                        model.NoOfCavity = Convert.ToInt32(worksheet.Cells[row, headersMap["NoOfCavity"]].Value??0);
+                        model.NoOfshotsHours = Convert.ToInt32(worksheet.Cells[row, headersMap["NoOfshotsHours"]].Value??0);
                         model.ProdInMachineGroupId = itemProdInmachineGroup;
                         model.ProdInMachineGroupName = ProdInMachineGroup;
                         model.ProdInMachineName1 = ProdInMachine1;
@@ -1858,10 +1909,14 @@ public class ItemMasterController : Controller
                        
                         break;
                     case "minmaxlevel":
-                        model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
-                        model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
-                        decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
-                        decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        //model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        //model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0);
+                        //decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, 5].Value ?? 0);
+                        //decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, 6].Value ?? 0); 
+                        model.MaximumLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
+                        model.MinimumLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0);
+                        decimal minLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MinimumLevel"]].Value ?? 0);
+                        decimal maxLevel = Convert.ToDecimal(worksheet.Cells[row, headersMap["MaximumLevel"]].Value ?? 0);
 
                         if (maxLevel != 0)
                         {
@@ -2153,6 +2208,187 @@ public class ItemMasterController : Controller
         model.ExcelDataList = data;
         return PartialView("_DisplayExcelData", model);
     }
+
+
+    [HttpPost]
+    public async Task<IActionResult> UpdateFromExcel([FromBody] ExcelUpdateRequest request)
+    {
+        var response = new ResponseResult();
+
+        try
+        {
+            DataTable dt = new DataTable();
+
+            dt.Columns.Add("PartCode", typeof(string));
+            dt.Columns.Add("Item_Name", typeof(string));
+            dt.Columns.Add("ParentCode", typeof(string));
+            dt.Columns.Add("EntryDate", typeof(DateTime));
+            dt.Columns.Add("LastUpdatedDate", typeof(DateTime));
+            dt.Columns.Add("LeadTime", typeof(int));
+            dt.Columns.Add("CC", typeof(string));
+            dt.Columns.Add("Unit", typeof(string));
+            dt.Columns.Add("SalePrice", typeof(decimal));
+            dt.Columns.Add("PurchasePrice", typeof(decimal));
+            dt.Columns.Add("CostPrice", typeof(decimal));
+            dt.Columns.Add("WastagePercent", typeof(decimal));
+            dt.Columns.Add("WtSingleItem", typeof(decimal));
+            dt.Columns.Add("NoOfPcs", typeof(int));
+            dt.Columns.Add("QcReq", typeof(bool));
+            dt.Columns.Add("ItemType", typeof(string));
+            dt.Columns.Add("UploadItemImage", typeof(string));
+            dt.Columns.Add("UploadImage", typeof(string));
+            dt.Columns.Add("UID", typeof(string));
+            dt.Columns.Add("DrawingNo", typeof(string));
+            dt.Columns.Add("MinimumLevel", typeof(int));
+            dt.Columns.Add("MaximumLevel", typeof(int));
+            dt.Columns.Add("ReorderLevel", typeof(int));
+            dt.Columns.Add("YearCode", typeof(string));
+            dt.Columns.Add("AlternateUnit", typeof(string));
+            dt.Columns.Add("RackID", typeof(string));
+            dt.Columns.Add("BinNo", typeof(string));
+            dt.Columns.Add("ItemSize", typeof(string));
+            dt.Columns.Add("Colour", typeof(string));
+            dt.Columns.Add("NeedPO", typeof(bool));
+            dt.Columns.Add("StdPacking", typeof(string));
+            dt.Columns.Add("PackingType", typeof(string));
+            dt.Columns.Add("ModelNo", typeof(string));
+            dt.Columns.Add("YearlyConsumedQty", typeof(decimal));
+            dt.Columns.Add("DispItemName", typeof(string));
+            dt.Columns.Add("PurchaseAccountcode", typeof(string));
+            dt.Columns.Add("SaleAccountcode", typeof(string));
+            dt.Columns.Add("MinLevelDays", typeof(int));
+            dt.Columns.Add("MaxLevelDays", typeof(int));
+            dt.Columns.Add("EmpName", typeof(string));
+            dt.Columns.Add("DailyRequirment", typeof(decimal));
+            dt.Columns.Add("Stockable", typeof(bool));
+            dt.Columns.Add("WipStockable", typeof(bool));
+            dt.Columns.Add("Store", typeof(string));
+            dt.Columns.Add("ProductLifeInus", typeof(string));
+            dt.Columns.Add("ItemDesc", typeof(string));
+            dt.Columns.Add("MaxWipStock", typeof(decimal));
+            dt.Columns.Add("NeedSo", typeof(bool));
+            dt.Columns.Add("BomRequired", typeof(bool));
+            dt.Columns.Add("JobWorkItem", typeof(bool));
+            dt.Columns.Add("HsnNo", typeof(string));
+            dt.Columns.Add("CreatedBy", typeof(string));
+            dt.Columns.Add("CreatedOn", typeof(DateTime));
+            dt.Columns.Add("UpdatedBy", typeof(string));
+            dt.Columns.Add("UpdatedOn", typeof(DateTime));
+            dt.Columns.Add("Active", typeof(bool));
+            dt.Columns.Add("ItemServAssets", typeof(string));
+            dt.Columns.Add("VendorBatchcodeMand", typeof(bool));
+            dt.Columns.Add("EntryByMachineName", typeof(string));
+            dt.Columns.Add("UniversalPartCode", typeof(string));
+            dt.Columns.Add("UniversalDescription", typeof(string));
+            dt.Columns.Add("ProdInWorkcenter", typeof(bool));
+            dt.Columns.Add("ProdInhouseJW", typeof(bool));
+            dt.Columns.Add("BatchNO", typeof(string));
+            dt.Columns.Add("VoltageValue", typeof(string));
+            dt.Columns.Add("SerialNo", typeof(string));
+            dt.Columns.Add("OldPartCode", typeof(string));
+            dt.Columns.Add("package", typeof(string));
+            dt.Columns.Add("IsCustJWAdjMandatory", typeof(bool));
+            dt.Columns.Add("Branch", typeof(string));
+            dt.Columns.Add("NoOfCavity", typeof(int));
+            dt.Columns.Add("ProdInMachineGroup", typeof(string));
+            dt.Columns.Add("ProdInMachine1", typeof(string));
+            dt.Columns.Add("ProdInMachine2", typeof(string));
+            dt.Columns.Add("ProdInMachine3", typeof(string));
+            dt.Columns.Add("NoOfshotsHours", typeof(decimal));
+            dt.Columns.Add("ProdInMachine4", typeof(string));
+            dt.Columns.Add("ChildBom", typeof(bool));
+            dt.Columns.Add("usedinMachorVehicle", typeof(string));
+            dt.Columns.Add("Barcode", typeof(string));
+
+            foreach (var excelRow in request.ExcelData)
+            {
+                DataRow row = dt.NewRow();
+
+                foreach (var map in request.Mapping)
+                {
+                    string dbCol = map.Key;          // DB column
+                    string excelCol = map.Value;     // Excel column name
+
+                    object value = DBNull.Value;     // default
+
+                    if (excelRow.ContainsKey(excelCol) && !string.IsNullOrEmpty(excelRow[excelCol]))
+                    {
+                        value = excelRow[excelCol];
+
+                        // Convert types for numeric/boolean/date columns if needed
+                        Type columnType = dt.Columns[dbCol].DataType;
+
+                        try
+                        {
+                            if (columnType == typeof(int))
+                                value = int.Parse(value.ToString());
+                            else if (columnType == typeof(decimal))
+                                value = decimal.Parse(value.ToString());
+                            else if (columnType == typeof(bool))
+                            {
+                                // Accept 1/0, true/false, Y/N
+                                string s = value.ToString().Trim().ToLower();
+                                value = (s == "1" || s == "true" || s == "y");
+                            }
+                            else if (columnType == typeof(DateTime))
+                                value = DateTime.Parse(value.ToString());
+                            else
+                                value = value.ToString();
+                        }
+                        catch
+                        {
+                            value = DBNull.Value; // fallback if conversion fails
+                        }
+                    }
+                    row[dbCol] = value;
+                }
+
+                dt.Rows.Add(row);
+            }
+
+            response = await _IItemMaster.UpdateMultipleItemDataFromExcel(dt, "UpdateDataFromExcel");
+
+            if (response != null)
+            {
+                if ((response.StatusText == "Success" || response.StatusText == "Updated") &&
+                     (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.Accepted))
+                {
+                    return Json(new
+                    {
+                        StatusCode = 200,
+                        StatusText = "Data imported successfully",
+                        RedirectUrl = Url.Action("ImportandUpdateItems", "ItemMaster", new { Flag = "" })
+                    });
+                }
+                else
+                {
+                    return Json(new
+                    {
+
+                        StatusText = response.StatusText,
+                        statusCode = 201,
+                        redirectUrl = ""
+                    });
+                }
+            }
+
+            return Json(new
+            {
+                StatusCode = 500,
+                StatusText = "Unknown error occurred"
+            });
+
+        }
+        catch (Exception ex)
+        {
+            return Json(new { success = false, message = ex.Message });
+        }
+
+        
+    }
+
+    
+
     public async Task<IActionResult> AddItemListdata(List<ItemViewModel> model)
     {
         try

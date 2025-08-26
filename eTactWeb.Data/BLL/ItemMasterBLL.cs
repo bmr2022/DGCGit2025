@@ -43,6 +43,10 @@ public class ItemMasterBLL : IItemMaster
     public async Task<ResponseResult> GetItemGroup(string ItemServAssets)
     {
         return await _ItemMasterDAL.GetItemGroup(ItemServAssets);
+    }  
+    public async Task<ResponseResult> GetItemCode(string PartCode, string ItemName)
+    {
+        return await _ItemMasterDAL.GetItemCode( PartCode,  ItemName);
     }
     public async Task<ResponseResult> GetStoreCode(string StoreName)
     {
@@ -123,6 +127,10 @@ public class ItemMasterBLL : IItemMaster
     public async Task<ResponseResult> SaveMultipleItemData(DataTable ItemDetailGrid)
     {
         return await _ItemMasterDAL.SaveMultipleItemData(ItemDetailGrid);
+    }
+    public async Task<ResponseResult> UpdateMultipleItemDataFromExcel(DataTable ItemDetailGrid, string flag)
+    {
+        return await _ItemMasterDAL.UpdateMultipleItemDataFromExcel(ItemDetailGrid,flag);
     }
     public async Task<ResponseResult> UpdateMultipleItemData(DataTable ItemDetailGrid)
     {

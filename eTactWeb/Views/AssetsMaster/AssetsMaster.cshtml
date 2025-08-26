@@ -97,12 +97,12 @@
 										<input asp-for="AssetsCode" class="form-control"  />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12"style="width:220px;">
-										<label asp-for="AssetsName" class="form-label" style="color:red;">Assets Name</label>
+										<label asp-for="AssetsName" class="form-label" style="color:red;">Assets Name*</label>
 										<input asp-for="AssetsName" class="form-control"  />
 									</div>
 									
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
-										<label asp-for="AssetsCateogryName" class="form-label" style="color:red;">Category Name</label>
+										<label asp-for="AssetsCateogryName" class="form-label" style="color:red;">Category Name*</label>
 										<input type="hidden" asp-for="AssetsCateogryId" />
 										<select class="form-select" asp-for="AssetsCateogryName">
 											<option value="">-Select-</option>
@@ -124,24 +124,24 @@
 									</div>
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="MainGroup" class="form-label">Main Group</label>
+										<label asp-for="MainGroup" class="form-label" style="color:red;">Main Group*</label>
 										<input asp-for="MainGroup" class="form-control" readonly/>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="SubGroup" class="form-label">Sub Group</label>
+										<label asp-for="SubGroup" class="form-label" style="color:red;">Sub Group*</label>
 										<input asp-for="SubGroup" class="form-control" readonly />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="UnderGroup" class="form-label">Under Group</label>
+										<label asp-for="UnderGroup" class="form-label" style="color:red;">Under Group*</label>
 										<input asp-for="UnderGroup" class="form-control" readonly/>
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
-										<label asp-for="SubSubGroup" class="form-label">Sub Sub Group</label>
+										<label asp-for="SubSubGroup" class="form-label" style="color:red;">Sub Sub Group*</label>
 										<input asp-for="SubSubGroup" class="form-control" readonly />
 									</div>
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" >
 										<label asp-for="VendoreAccountCode" class="form-label">Account Type</label>
-										<input asp-for="VendoreAccountCode" class="form-control"  />
+										<input asp-for="VendoreAccountCode" class="form-control" readonly/>
 									</div>
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12" style="width:140px;">
@@ -583,17 +583,7 @@
 			});
 			$('.submitBTN').click(function (e) {
 				e.preventDefault();
-				if ($('#Mode').val() == "U") {
-					var vendorAccountCode = @Model.VendoreAccountCode
-				} else {
-
-				var vendorAccountCode = $('#VendoreAccountCode').val();
-				}
 				
-				if (vendorAccountCode === null || vendorAccountCode === undefined || vendorAccountCode === "" || vendorAccountCode === "0") {
-					$.notify("Account type is mandatory", "error");
-					return false;
-				}
 				console.log("SubmitButton Click - Validation passed");
 				$('form').submit(); 
 			});
@@ -614,6 +604,7 @@
 		$('#PurchaseValue').on('input', function () {
 			var purchaseVal = $(this).val();
 			$('#OriginalValue').val(purchaseVal);
+			$('#NetBookValue').val(purchaseVal);
 		});
 
 		$(function () {
@@ -647,6 +638,41 @@
 				return;
 			}
 		});
+		$('#POYear,#InvoiceYearCode').on('input', function () {
+			let val = $(this).val();
+
+			// Remove minus immediately
+			if (val.includes('-')) {
+				$(this).val(val.replace(/-/g, ''));
+				$.notify("Minus values are not allowed", "error");
+				return;
+			}
+
+			// Remove non-numeric immediately
+			if (val && isNaN(val)) {
+				$(this).val('');
+				$.notify("Only numeric values allowed", "error");
+				return;
+			}
+
+			// Block 0 immediately
+			if (val === '0') {
+				$(this).val('');
+				$.notify("0 is not allowed", "error");
+				return;
+			}
+		});
+
+		// Extra check after typing is complete
+		$('#POYear,#InvoiceYearCode').on('blur', function () {
+			let val = $(this).val();
+			if (val && parseInt(val, 10) < 2000) {
+				$(this).val('');
+				$.notify("Year cannot be less than 2000", "error");
+			}
+		});
+
+
 		$('#DepriciationAmt').on('input', function () {
 			var purchaseVal = parseFloat($('#PurchaseValue').val()) || 0;
 			var depVal = parseFloat($(this).val()) || 0;
@@ -695,22 +721,7 @@
 
 			
 
-		$('#POYear,#InvoiceYearCode').on('blur', function () {
-			var val = $(this).val();
-
-			if (!val) return;
-
-			if (isNaN(val)) {
-				$(this).val('');
-				$.notify("Only numeric values allowed", "error");
-				return;
-			}
-
-			if (parseInt(val, 10) < 2000) {
-				$(this).val('');
-				$.notify("Year cannot be less than 2000", "error");
-			}
-		});
+		
 
 		function parseCustomDate(val) {
 			if (!val) return null;
@@ -729,33 +740,37 @@
 		}
 
 
-		$('#InvoiceDate').on('change', function () {
-			var invVal = $(this).val();
-			var poVal = $('#PODate').val();
+		// $('#InvoiceDate').on('change', function () {
+		// 	var invVal = $(this).val();
+		// 	var poVal = $('#PODate').val();
 
-			if (!invVal || !poVal) return;
+		// 	if (!invVal || !poVal) return;
 
-			var invDate = parseCustomDate(invVal);
-			var poDate = parseCustomDate(poVal);
-			var today = new Date();
-			today.setHours(0, 0, 0, 0);
+		// 	var invDate = parseCustomDate(invVal);
+		// 	var poDate = parseCustomDate(poVal);
+		// 	var today = new Date();
+		// 	today.setHours(0, 0, 0, 0);
 
-			if (!invDate || !poDate) return;
+		// 	if (!invDate || !poDate) return;
 
-			if (invDate < poDate) {
-				$(this).val('');
-				$.notify("Invoice Date cannot be earlier than PO Date", "error");
-				return;
-			}
+		// 	if (invDate < poDate) {
+		// 		$(this).val('');
+		// 		$.notify("Invoice Date cannot be earlier than PO Date", "error");
+		// 		return;
+		// 	}
 
-		});
+		// });
 		function toggleUsedFields() {
 			var purchaseType = $('#PurchaseNewUsed').val(); 
 
 			if (purchaseType === "Used") {
-				$('#OriginalValue, #CapatalizationDate, #BarCode').prop('disabled', false);
+				$('#OriginalValue').prop('disabled', false);
 			} else {
-				$('#OriginalValue, #CapatalizationDate, #BarCode').prop('disabled', true);
+				$('#OriginalValue').prop('disabled', true);
+				var invDate = $('#InvoiceDate').val();
+				if (invDate) {
+					$('#FirstAqusitionOn').val(invDate);
+				}
 			}
 		}
 		function setFormattedDate() {
@@ -767,16 +782,44 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#LastupDationDate,#ActualEntryDate,#EntryDate,#CapatalizationDate')
+			$('#LastupDationDate,#ActualEntryDate,#EntryDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
 
-			$('#FirstAqusitionOn,#InvoiceDate,#PODate')
+			$('#FirstAqusitionOn,#CapatalizationDate')
 				.datepicker({
 					dateFormat: 'dd/M/yy',
 					maxDate: 0  
 				})
 				.val(formattedDate);
+			$('#PODate').datepicker({
+				dateFormat: 'dd/M/yy',
+				maxDate: 0,
+				onSelect: updateInvoiceMinDate
+			}).datepicker('setDate', today);
+
+			
+			$('#InvoiceDate').datepicker({
+				dateFormat: 'dd/M/yy',
+				maxDate: 0
+			}).datepicker('setDate', today);
+
+			
+			updateInvoiceMinDate();
+
+			function updateInvoiceMinDate() {
+				var poDate = $('#PODate').datepicker('getDate');
+				$('#InvoiceDate').datepicker('option', 'minDate', poDate || null);
+
+				
+				var invDate = $('#InvoiceDate').datepicker('getDate');
+				if (poDate && invDate && invDate < poDate) {
+					$('#InvoiceDate').datepicker('setDate', poDate);
+				}
+			}
+
+			
+			$('#PODate').on('change', updateInvoiceMinDate);
 		}
 
 		function FillCategoryName() {
@@ -792,7 +835,7 @@
 
 
 					$.each(obj.Result, function (index, Val) {
-						Dropdown.append('<option value="' + Val.Category_Code + '">' + Val.Main_Category_Type + '</option>');
+						Dropdown.append('<option value="' + Val.Category_Code + '">' + Val.Category_Name + '</option>');
 					});
 
 					if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {

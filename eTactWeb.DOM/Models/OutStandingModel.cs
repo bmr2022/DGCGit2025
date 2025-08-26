@@ -35,6 +35,7 @@ namespace eTactWeb.DOM.Models
         public string TotBalanceAmt { get; set; }
         public string AccEntryId { get; set; }
         public string AccYearCode { get; set; }
+        public int DocEntryId {  get; set; }
         public string SalesPersonName { get; set; }
         public bool IsVisible {  get; set; }
         public bool ShowZeroBal {  get; set; }

@@ -464,35 +464,35 @@
 
                 var EntryDate = $('#EntryDate').val().split("-").join("/");
                 EntryDate = parseDateToFormat(EntryDate.split(" ")[0]);
-                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", EntryDate);
+                $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
 
                 var InvDate = $('#InvDate').val().split("-").join("/");
                 InvDate = (InvDate.split(" ")[0]);
-                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", InvDate);
+                $('#InvDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", InvDate);
 
                 var PODt = $('#PODate').val().split("-").join("/");
                 PODt = parseDateToFormat(PODt.split(" ")[0]);
-                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", PODt);
+                $('#PODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", PODt);
 
                 var ScheduleDt = $('#ScheduleDate').val().split("-").join("/");
                 PODt = parseDateToFormat(ScheduleDt.split(" ")[0]);
-                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", ScheduleDt);
+                $('#ScheduleDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ScheduleDt);
 
                 var VODt = $('#VouchDate').val().split("-").join("/");
                 VODt = (VODt.split(" ")[0]);
-                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", VODt);
+                $('#VouchDate').datepicker({ dateFormat: 'dd/mm/yy'}).datepicker("setDate", VODt);
 
                 var AdjDueDate = $('#AdjDueDate').val().split("-").join("/");
                 AdjDueDate = parseDateToFormat(AdjDueDate.split(" ")[0]);
-                $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjDueDate);
+                $('#AdjDueDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjDueDate);
 
                 var AdjAgnstVouchDate = ($('#AdjAgnstVouchDate').val() != null && $('#AdjAgnstVouchDate').val() != undefined) ? $('#AdjAgnstVouchDate').val().split("-").join("/") : formatDateToDDMMYY(new (Date));
                 AdjAgnstVouchDate = parseDateToFormat(AdjAgnstVouchDate.split(" ")[0]);
-                $('#AdjAgnstVouchDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjAgnstVouchDate);
+                $('#AdjAgnstVouchDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjAgnstVouchDate);
 
                 var AdjPODate = $('#AdjPODate').val().split("-").join("/");
                 AdjPODate = parseDateToFormat(AdjPODate.split(" ")[0]);
-                $('#AdjPODate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", AdjPODate);
+                $('#AdjPODate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", AdjPODate);
             }
             else {
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy', maxDate: formattedDate2, minDate: formattedDate1 }).datepicker("setDate", 'now');
@@ -934,6 +934,13 @@
                         $('#Currency').append("<option value='' disabled>-Select-</option>");
                         $.each(obj.Result.Table, function (index, val) {
                             $('#Currency').append("<option value=" + val.entry_id + " selected>" + val.Currency + "</option>");
+                              if (val.IsDefault === "Y") {
+                              // Disable ExchangeRate field
+                              $('#ExchangeRate').prop("disabled", true);
+                          } else {
+                              // Enable ExchangeRate field if not Y
+                              $('#ExchangeRate').prop("disabled", false);
+                          }
                         });
                     }
                     $('#Currency').trigger('change');

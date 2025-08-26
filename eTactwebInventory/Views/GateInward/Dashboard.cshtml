@@ -306,6 +306,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#gateDashboardtable tr').length;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -327,6 +328,7 @@
                     $('#divDashboardGrid').empty().append(data);
                     var dashGrid = $('#gateDashboardtable tr').length;
                     $('#totalRows').text(dashGrid);
+                    GetFormRights();
                 },
                 error: function (response) {
                     alert(response.responseText);
@@ -373,6 +375,7 @@
                 success: function (result) {
                     $('#divDashboardGrid').empty();
                     $('#divDashboardGrid').html(result);
+                    GetFormRights();
                     $('#totalRows').text($('#gateDashboardtable tr').length );
                     //countAllTotal();
                 }
