@@ -18,6 +18,7 @@ using System.Net;
 using System.Data;
 using System.Globalization;
 using System.Reflection;
+using FastReport.Web;
 
 namespace eTactWeb.Controllers;
 
@@ -30,8 +31,10 @@ public class SaleOrderController : Controller
 	private readonly ILogger _logger;
 	private readonly IMemoryCache _MemoryCache;
 	private readonly IItemMaster itemMaster;
+    public WebReport webReport;
 
-	public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
+
+    public SaleOrderController(ILogger<SaleOrderController> logger, IDataLogic iDataLogic, ISaleOrder iSaleOrder, ITaxModule iTaxModule, IMemoryCache iMemoryCache, IWebHostEnvironment iWebHostEnvironment, IItemMaster itemMaster, EncryptDecrypt encryptDecrypt, LoggerInfo loggerInfo)
 	{
 		_logger = logger;
 		_IDataLogic = iDataLogic;
@@ -47,9 +50,41 @@ public class SaleOrderController : Controller
 	private EncryptDecrypt _EncryptDecrypt { get; }
 	private IWebHostEnvironment _IWebHostEnvironment { get; }
     public IMemoryCache IMemoryCache { get; }
+    private readonly IConfiguration _iconfiguration;
     private LoggerInfo LoggerInfo { get; }
 
-	public PartialViewResult AddSchedule(DeliverySchedule model)
+
+    public IActionResult PrintReport(int EntryId = 0, int YearCode = 0, string SONO = "", string ShowOnlyAmendItem = "", int AmmNo = 0)
+    {
+
+        string my_connection_string;
+        string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+        string webRootPath = _IWebHostEnvironment.WebRootPath;
+        webReport = new WebReport();
+        
+        ViewBag.EntryId = EntryId;
+        ViewBag.YearCode = YearCode;
+        ViewBag.SONO = SONO;
+        ViewBag.ShowOnlyAmendItem = ShowOnlyAmendItem;
+        ViewBag.AmmNo = AmmNo;
+        
+        
+            webReport.Report.Load(webRootPath + "\\SOReport.frx"); // default report
+
+        
+        my_connection_string = _iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+        webReport.Report.SetParameterValue("entryparam", EntryId);
+        webReport.Report.SetParameterValue("yearparam", YearCode);
+        webReport.Report.SetParameterValue("ShowOnlyAmendItemparam", ShowOnlyAmendItem);
+        webReport.Report.SetParameterValue("AmmNo", AmmNo);
+        webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+        webReport.Report.Refresh();
+        return View(webReport);
+    }
+
+    public PartialViewResult AddSchedule(DeliverySchedule model)
 	{
 		var MainModel = new SaleOrderModel();
 		var ScheduleList = new List<DeliverySchedule>();
