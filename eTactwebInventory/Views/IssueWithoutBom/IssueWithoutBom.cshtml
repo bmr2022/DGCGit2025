@@ -172,6 +172,7 @@
                         <button id="H_SAGrid" class="accordion-button collapsed text-light pnl4BG " type="button" data-bs-toggle="collapse" data-bs-target="#B_SAGrid" aria-expanded="true" aria-controls="B_SAGrid" style="width: 90%;">
                             <strong style="text-transform:uppercase"><i class="fa-solid fa-table-list fa-lg fa-fw pr35 fa-fade" style="--fa-animation-duration: 2s; --fa-fade-opacity: 0.6;"></i>Issue Without BOM Grid</strong>
                         </button>
+                        <button type="button" id="deleteZeroStockRows" onclick="RemoveRowsWithZeroStockAndShowPartCodes()" class="btn btn-sm btn-outline-danger">Delete Zer0 Stock</button>
                         <button class=" btn btn-sm btn-outline-primary" style="width:150px;" id="BtnForCloseReqItem" type="button">
                             Click For CloseItem
                         </button>
@@ -589,7 +590,56 @@
 {
     <script>
         var ICName = []; // for checkstockbeforesaving function
-        var ICName2 = []; // for checkrequisitionbeforesaving function
+        var ICName2 = []; // for checkrequisitionbeforesaving
+             function RemoveRowsWithZeroStockAndShowPartCodes() {
+                                     DeleteFromZeroStockMemoryGrid(true);
+                         }
+                                function DeleteFromZeroStockMemoryGrid(deleteZeroStockOnly, SeqNo = null, PartCode = '') {
+
+                            $.ajax({
+                                        url: '@Url.Action("DeleteFromZeroStockMemoryGrid")',
+                                type: "POST",
+                                data: { deleteZeroStockOnly: deleteZeroStockOnly,seqNo: SeqNo },
+                                async: false,
+                                success: function (data, status, xhr) {
+                                                     $('#divIssueWOBOMGrid').html(data);
+                                    $.notify("Item deleted from Grid", "info");
+                                    // var existingText = $('#lblDeletedPartCodes').text();
+                                    // var combined = existingText ? existingText + ", " + PartCode : PartCode;
+                                    // $('#lblDeletedPartCodes').text(combined);
+                                           fillBatchNO();
+
+
+                            var rowCounter = $('#divIssueWOBOMGrid tr').length;
+                            for (var i = 1; i <= rowCounter; i++) {
+                                fillBatchUnique(i, "unique&batch");
+                            }
+                            for (var i = 1; i <= rowCounter; i++) {
+                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
+                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                            }
+                            for (var i = 1; i <= rowCounter; i++) {
+                                FillLotandTotalStock(i);
+                                fillProjectNo(i);
+                                $('#MainGridBatchNo-' + i).val($('#MainGridBatchNoInput-' + i).val());
+                                $('#MainGridUniqueBatchNo-' + i).val($('#MainGridUniqueBatchNo1-' + i).val());
+                                $('#MainGridBatchNo-' + i).css("pointer-events", "none");
+                                $('#MainGridUniqueBatchNo-' + i).css("pointer-events", "none");
+                            }
+                                },
+                                error: function (response, status, xhr) {
+                                    alert(response.responseText);
+                                    $.notify(response.responseText, "error");
+                                },
+                                failure: function (response, status, xhr) {
+                                    alert(response.responseText);
+                                    $.notify(response.responseText, "error");
+                                }
+                            });
+                        }
+
         $('.submitBTN').click(function (e) {
 
             e.preventDefault();

@@ -652,6 +652,63 @@ namespace eTactWeb.Controllers
             }
             return PartialView("_IssueByScanningThrGrid", MainModel);
         }
+        [HttpPost]
+        public IActionResult DeleteFromZeroStockMemoryGrid(bool deleteZeroStockOnly, int? seqNo = null)
+        {
+            var MainModel = new IssueThrBom();
+            string modelJson = HttpContext.Session.GetString("KeyIssThrBom");
+            List<IssueThrBomDetail> IssueThrBomGrid = new List<IssueThrBomDetail>();
+
+            if (!string.IsNullOrEmpty(modelJson))
+            {
+                IssueThrBomGrid = JsonConvert.DeserializeObject<List<IssueThrBomDetail>>(modelJson);
+            }
+
+            if (deleteZeroStockOnly)
+            {
+                var deletedPartCodes = new List<string>();
+                IssueThrBomGrid.RemoveAll(x =>
+                {
+                    bool toDelete = (x.BatchNo =="" || x.BatchNo==null);
+
+                    if (toDelete)
+                        deletedPartCodes.Add(x.PartCode);
+                    return toDelete;
+                });
+
+                ViewBag.DeletedPartCodes = string.Join(", ", deletedPartCodes);
+            }
+            else if (seqNo != null)
+            {
+                var itemToRemove = IssueThrBomGrid.FirstOrDefault(x => x.seqno == seqNo);
+                if (itemToRemove != null)
+                {
+                    IssueThrBomGrid.Remove(itemToRemove);
+                }
+            }
+
+            int newSeq = 1;
+            foreach (var item in IssueThrBomGrid)
+            {
+                item.seqno = newSeq++;
+            }
+
+            
+            MainModel.ItemDetailGrid = IssueThrBomGrid;
+
+
+            if (IssueThrBomGrid.Count == 0)
+            {
+                HttpContext.Session.Remove("KeyIssThrBom");
+            }
+            else
+            {
+                string updatedJson = JsonConvert.SerializeObject(IssueThrBomGrid);
+                HttpContext.Session.SetString("KeyIssThrBom", updatedJson);
+            }
+
+            return PartialView("_IssueThrBOMMemoryGrid", MainModel);
+        }
 
         public IActionResult DeleteFromMemoryGrid(int SeqNo)
         {
