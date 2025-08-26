@@ -624,9 +624,20 @@
                 url: '/ItemMaster/UpdateFromExcel',
                 type: 'POST',
                 contentType: 'application/json',
+                dataType: 'json',
                 data: JSON.stringify({ Mapping: mapping, ExcelData: excelData }),
-                success: function (res) {
-                    alert(res.message);
+                success: function (data, status, xhr) {
+                    $('#ajaxLoader').hide();
+                    $.notify("Data Update Successfully!!", "info");
+                    if (data && (data.statusCode === 200 || data.statusCode === 202)) {
+                        window.location.href = data.RedirectUrl;
+                    } else {
+                        //    console.log(data);
+                        //  alert(data.statusText);
+                        // Show notify message if error-like StatusText is returned
+                        $.notify(data.statusText, "error");
+                    }
+                    //    console.log("success");
                 },
                 error: function (err) {
                     alert("Error updating data");
