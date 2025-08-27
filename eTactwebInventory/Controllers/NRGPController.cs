@@ -136,6 +136,8 @@ namespace eTactWeb.Controllers
                 model.Mode = Mode;
                 model.YearCode = YC;
                 model.EntryTime = model.EntryTime;
+                model.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+                model.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
                 model = await BindModel(model);
 
                 model.ID = ID;

@@ -1275,34 +1275,7 @@
                 $('.AF').fadeOut();
                 IssueChaallanTaxIsMandatory();
 
-
-                // var finFromDate = $('#FinFromDate').val();
-                // var finToDate = $('#FinToDate').val();
-                // var dateParts1 = finFromDate.split("/");
-                var monthNames = {
-                    "Jan": "01",
-                    "Feb": "02",
-                    "Mar": "03",
-                    "Apr": "04",
-                    "May": "05",
-                    "Jun": "06",
-                    "Jul": "07",
-                    "Aug": "08",
-                    "Sep": "09",
-                    "Oct": "10",
-                    "Nov": "11",
-                    "Dec": "12"
-                };
-
-
-                // var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
-                // var dateParts2 = finToDate.split("/");
-
-                // var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
-
-
-                // $('#EntryDate,#ChallanDate').datepicker("option", "minDate", formattedDate1);
-                // $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", formattedDate2);
+          
 
                 if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
@@ -1315,26 +1288,22 @@
                     var selectElement = $("#AccountCode");
                     var desiredValue = parseInt($('#hiddenAccountCode').val());
                     $("#AccountCode").find("option[value='" + desiredValue + "']").prop("selected", true).trigger("change");
-                    //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#EntryDate').val().split(" ")[0]));
-                    //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]));
-
+               
                     $('#RGPNRGP').val($('#hiddenRGPNRGP').val());
-                    var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                     var ChallanDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
-
+                    var EntryDate = $('#EntryDate').val();
+                     var ChallanDt = $('#ChallanDate').val();
 
 
                      /* monika */
-                    $('#EntryDate').datepicker("setDate", EntryDate);
+                   /*  $('#EntryDate').datepicker("setDate", EntryDate);
                     $('#ChallanDate').datepicker("setDate", ChallanDt);
+ */
 
 
-
-                    /* $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
+                    $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                      $('#ChallanDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ChallanDt);
 
-                     --------------------
-     */
+              
 
                     $('#ChallanNo').val($('#hiddenChallanNo').val());
                     var rowCount = $('#divIssueNRGPGrid tr').length;
@@ -1356,19 +1325,35 @@
 
                     var RecEmpCode = "@Model.IssByEmpCode";
                     $('#IssByEmpCodeName').val(RecEmpCode).trigger("change");
-                         var EntryDate = parseDateToFormat($('#EntryDate').val());
-                     /*    console.log("EntryDate" + EntryDate); */
-                        $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-                        alert("entrydate2" + $('#EntryDate').val());
-                        $('#ChallanDate ,#EntryDate').on('focus mouseenter', function () 
-                        {
-                            $(this).datepicker({
-                                dateFormat: 'dd/mm/yy',
-                                changeMonth: true,
-                                changeYear: true
+                         
 
-                            }).datepicker('show');
-                        });
+                var finFromDate = $('#FinFromDate').val();
+                var finToDate = $('#FinToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+
+                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+
+                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                $('#EntryDate,#ChallanDate').datepicker("option", "minDate", formattedDate1);
+                $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", formattedDate2);
+
                 }
                 else
                 {
@@ -1377,6 +1362,36 @@
 
 
                     GetServerDate();
+
+                GetAllowBackDate();
+               
+
+                var finFromDate = $('#FinFromDate').val();
+                var finToDate = $('#FinToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+
+                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+
+                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                $('#EntryDate,#ChallanDate').datepicker("option", "minDate", formattedDate1);
+                $('#EntryDate,#ChallanDate').datepicker("option", "maxDate", formattedDate2);
 
 
                 }
@@ -1390,8 +1405,7 @@
                 GetTxPartItem();
                 AutoFillItems();
 
-                /* FillLoadItems(); */
-
+            
                 BasicTotal();
                 FillChallanType();
 
@@ -1404,11 +1418,7 @@
                 $('#RemovalTime').val(FormattedTime);
 
 
-                //$('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                //$('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-
-                //$('#EntryDate').datepicker("option", "minDate", formattedDate1);
-                //$('#EntryDate').datepicker("option", "maxDate", formattedDate2);
+                
 
                 $('#ChallanType').rules("remove", "required");
                 $('#RemovalTime').rules("remove", "required");
@@ -1450,23 +1460,17 @@
                 $('#PODate').rules("remove", "required");
                 //  GetDefaultBranch();
 
-                GetAllowBackDate();
-                //  alert("after GetAllowBackDate");
+               
+               
                 FillProcessList();
-                // alert("after FillProcessList");
+               
                 FillStoreList();
-              //        alert("after FillStoreList");
+            
                 $('#BatchNo').css('background-color', 'rgb(248 255 178)');
 
-                $('#ChallanDate').css('color', 'rgb(248 255 178)');
-                $('#EntryDate').css('color', 'rgb(248 255 178)');
-                //var now = new Date();
-                //$('#Processdays').val(30);
-                //$('#YearCode').val(new Date().getFullYear());
-                // $('#timeofremoval').val(now.getHours() + ":" + now.getMinutes() + ":" + now.getSeconds());
-                //var today = new (Date);
-                //$('#ChallanDate,#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-                //$("#ChallanDate").datepicker("option", "maxDate", formatDate(today));
+               /*  $('#ChallanDate').css('color', 'rgb(248 255 178)');
+                $('#EntryDate').css('color', 'rgb(248 255 178)'); */
+               
             });
 
 
@@ -2051,8 +2055,7 @@
                             }
                             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
                                 //  $('ChallanType').val($('#hiddenChallanType').val().trim());
-                                var ChallanVal = $('#hiddenChallanType').val().trim();
-                                //$('#ChallanType').val(ChallanVal);
+                               
                             }
                         }
                     }
