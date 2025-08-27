@@ -999,6 +999,12 @@
                     return false;
                 }
 
+                if ($('#ChallanDate').val() != ($('#EntryDate').val() )) {
+                    $.notify('ChallanDate And EntryDate Must Be Same ...!', "error");
+                    return false;
+                }
+               
+
                 if ($('#RGPNRGP').val() == '' || $('#RGPNRGP').val() == null) {
                     $.notify('Please Select RGP/NRGP...!', "error");
                     return false;
@@ -2205,8 +2211,8 @@
                             if (obj.Result[0].AllowBackDateIssueChallan == 'Y') {
                                 $("#EntryDate").prop("disabled", false);
                                 $("#ChallanDate").prop("disabled", false);
-                                $("#EntryDate").prop("readonly", false).css("color", "black");
-                                $("#ChallanDate").prop("readonly", false).css("color", "black");;
+                                $("#EntryDate").prop("readonly", true).css("color", "black");
+                            $("#ChallanDate").prop("readonly", true).css("color", "black");;
                                 $('#ChallanDate').css('background-color', 'rgb(248 255 178)');
                                 $('#EntryDate').css('background-color', 'rgb(248 255 178)');
 
@@ -2215,6 +2221,12 @@
                     }
                 });
             }
+
+        $("#ChallanDate").on("change", function () {
+            let challanVal = $(this).val();
+            $("#EntryDate").val(challanVal);
+        });
+
 
 
             function GetDefaultBranch() {
