@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="08/27/2025 10:29:43" ReportInfo.CreatorVersion="2023.2.0.0">
+<Report ScriptLanguage="CSharp" ReportInfo.Created="09/02/2023 14:19:27" ReportInfo.Modified="08/27/2025 11:39:57" ReportInfo.CreatorVersion="2023.2.0.0">
   <ScriptText>using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -123,7 +123,7 @@ namespace FastReport
     <Style Name="EvenRows" Fill.Color="WhiteSmoke" Font="Arial, 10pt"/>
   </Styles>
   <Dictionary>
-    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndF/piWSHE8YBFuUB9EjCNoWw==" ConnectionStringExpression="[MyParameter]">
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqwYf2D6LPIs5GRi9VfJb9gu9ucqaRfzVvUaVne08cIFURWyyEsxwQsmngwHHahRU5IBf1gWxFxthjvCI+9BjhcR8BjTz2iHCnSBTgRKTkqutDkjIRRL0Lr+gAV5vh4t47BklN+Df+gZ1BDy0zz0wKb8ihM9loU9dXTaRaB3iM7MkRkKOWKZEyucGuTvDipndFKfAZL/tygMRr1zKdIImAnw==" ConnectionStringExpression="[MyParameter]">
       <TableDataSource Name="Table" Alias="SpSaleOrderReportForPrintout" DataType="System.Int32" Enabled="true" SelectCommand="exec SpSaleOrderReportForPrintout @EntryId=@entryparam,@yearCode=@yearparam,@ShowOnlyAmendItem=@ShowOnlyAmendItemparam,@AmendNo=@AmmNo">
         <Column Name="Account_Name" DataType="System.String"/>
         <Column Name="AccountCode" DataType="System.Int64"/>
@@ -340,16 +340,16 @@ namespace FastReport
       <LineObject Name="Line140" Left="774.9" Top="133.06" Height="187.87"/>
       <TextObject Name="Text253" Left="406.35" Top="123.61" Width="359.1" Height="18.9" Text="[SpSaleOrderReportForPrintout.Account_Name]" Font="Arial, 10pt, style=Bold"/>
       <LineObject Name="Line132" Left="1.89" Top="104.71" Height="216.22" Border.Width="0.5"/>
-      <TextObject Name="Text271" Left="406.35" Top="94.5" Width="132.3" Height="18.9" Text="Supplier Code:" Font="Arial, 11pt, style=Bold"/>
+      <TextObject Name="Text271" Left="406.35" Top="94.5" Width="132.3" Height="18.9" Text="Customer Code:" Font="Arial, 11pt, style=Bold"/>
       <TextObject Name="Text273" Left="9.45" Top="113.4" Width="378" Height="47.25" Text="[SpSaleOrderReportForPrintout.CompAdd]" Font="Arial, 10pt"/>
-      <TextObject Name="Text278" Left="9.45" Top="94.5" Width="207.9" Height="18.9" Text="AUTO COMPONENT" Font="Arial, 10pt, style=Bold"/>
+      <TextObject Name="Text278" Left="9.45" Top="94.5" Width="207.9" Height="18.9" Text="DGC INDUSTRIES" Font="Arial, 10pt, style=Bold"/>
       <TextObject Name="Text304" Left="538.65" Top="94.5" Width="226.8" Height="18.9" Text="[SpSaleOrderReportForPrintout.Party_Code]" Font="Arial, 11pt, style=Bold"/>
       <LineObject Name="Line141" Left="774.9" Top="85.05" Height="47.25" Border.Width="0.5"/>
       <LineObject Name="Line81" Left="2.27" Top="85.05" Width="773.01"/>
       <LineObject Name="Line147" Left="1.89" Top="85.05" Height="47.25"/>
       <LineObject Name="Line1" Left="396.9" Top="85.81" Height="236.25"/>
       <TextObject Name="Text324" Left="236.25" Top="37.8" Width="321.3" Height="28.35" BeforePrintEvent="Text324_BeforePrint" HorzAlign="Center" Font="Arial, 16pt, style=Bold"/>
-      <TextObject Name="Text270" Left="200.34" Width="415.8" Height="37.8" Text=" AUTO COMPONENT" HorzAlign="Center" Font="Arial, 22pt, style=Bold" TextFill.Color="OrangeRed"/>
+      <TextObject Name="Text270" Left="200.34" Width="415.8" Height="37.8" Text="DGC INDUSTRIES" HorzAlign="Center" Font="Arial, 22pt, style=Bold" TextFill.Color="OrangeRed"/>
       <LineObject Name="Line188" Left="1.89" Height="85.05"/>
       <LineObject Name="Line189" Left="774.9" Height="85.05"/>
       <LineObject Name="Line190" Width="773.01" Border.Width="0.5"/>
