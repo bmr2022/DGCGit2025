@@ -1078,7 +1078,7 @@ public class SaleOrderController : Controller
 	[HttpPost]
 	//[ValidateAntiForgeryToken]
 	[Route("{controller}/Index")]
-	public async Task<ActionResult> OrderDetail(SaleOrderModel model)
+	public async Task<ActionResult> OrderDetail(SaleOrderModel model,string ShouldPrint)
 	{
 		try
 		{
@@ -1224,7 +1224,17 @@ public class SaleOrderController : Controller
 							}
 							else
 							{
-                                return RedirectToAction("OrderDetail", new { ID = 0, YC = 0, Mode = "" });
+                                if (ShouldPrint == "true")
+                                {
+                                    return Json(new
+                                    {
+                                        status = "Success",
+                                        entryId = model.EntryID,
+                                        yearCode = model.YearCode
+                                    });
+                                }
+                                return Json(new { status = "Success" });
+                                //return RedirectToAction("OrderDetail", new { ID = 0, YC = 0, Mode = "" });
                             }
 
                         }
@@ -1379,12 +1389,14 @@ public class SaleOrderController : Controller
 					{
 						ViewBag.isSuccess = true;
 						TempData["200"] = "200";
-					}
+                       
+                    }
 					if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
 					{
 						ViewBag.isSuccess = true;
 						TempData["202"] = "202";
-					}
+                        
+                    }
 					return RedirectToAction(nameof(SOAmendmentList));
 				}
 				else

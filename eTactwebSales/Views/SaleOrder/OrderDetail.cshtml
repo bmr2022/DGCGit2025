@@ -76,6 +76,7 @@
         <input type="hidden" asp-for="ExRate" />
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" id="Gstregistered" />
+        <input type="hidden" id="ShouldPrint" name="ShouldPrint" />
         <div class="card-header card-headerBG text-light bg-gradient">
             <h5>
                 @if (Model.Mode != "SOA" && Model.Mode != "SAU")
@@ -1354,6 +1355,50 @@
         </div>
     </div>
 </div>
+
+
+<div class="modal fade" id="SubmitionForm" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+     aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog modal-xl">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title" id="staticBackdropLabel">Confirmation </h3>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" onclick="" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="row g-2 gx-3">
+                            <div class="card">
+                                <div class="card-body overflow-auto pb-0">
+                                    <div class="col-xl-8 col-lg-8 col-md-8 col-sm-8 col-xs-12">
+                                        <div class="d-flex align-items-center">
+                                            <h6 class="mb-0 me-2">Do You Want Save&Print or Save & E-way Bill?</h6>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="progress my-2" style="height: 4px;">
+                        <div class="progress-bar progress-bar-striped bg-danger" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="btnClose">Save</button>
+                    <a href="#" class="btn btn-primary" id="btnPrint">
+                        <i class="fa fa-print"></i> Save & Print
+                    </a>
+                    <a href="#" class="btn btn-primary" id="btnPrintEmail">
+                        <i class="fa fa-print"></i> Save & Print & Email
+                    </a>
+                    @* <button type="button" class="btn btn-danger" id="btnEwayBill">Save & EWay Bill</button> *@
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
 
 <style>
     .custom-width-select {
@@ -2723,34 +2768,7 @@
             $("form :input").prop("disabled", false);
         });
 
-        //$('button[type="submit"]').click(function (e) {
-        //    $('#TypeOfSave').val("NPS");
-        //    e.preventDefault();
-        //    var soGrid = $('#divSaleItemGrid tr td').length;
-        //    var taxGrid = $('#divTaxGrid tr td').length;
-        //    //var txRowCount = $('#divTaxGrid tr').length;
-        //    //for (var i = 1; i <= txRowCount; i++) {
-        //    //    var txType = $('#txgridtype-' + i).text();
-        //    //    var txname = $('#txgridname-' + i).text();
-        //    //    if (txType == '' || txname == '') {
-        //    //        $.notify("TaxType Or TaxName cannot be null", "error");
-        //    //        return;
-        //    //    }
-        //    //}
-        //    //if (!checkPartCodeMusthaveAtLeastOneTax()) {
-        //    //    return false;
-        //    //}
-        //    if (soGrid <= 1) {
-        //        $.notify("SO Grid should at least have one item", "error");
-        //        return;
-        //    } else {
-        //        $("form").submit();
-        //    }
-        //    //else if (taxGrid <= 1) {
-        //    //    $.notify("Tax Grid should at least have one item", "error");
-        //    //    return;
-        //    //}
-        //});
+        
 
         $(document).on('click', '#submitBTN,#submitBTNFooter', function (e) {
             ;
@@ -2783,7 +2801,8 @@
                 return;
             }
             else {
-                $("form").submit();
+                $('#SubmitionForm').modal("show");
+                // $("form").submit();
             }
             //else if (taxGrid <= 1) {
             //    $.notify("Tax Grid should at least have one item", "error");
@@ -2792,6 +2811,130 @@
 
 
         });
+
+
+
+        // When user clicks "Print"
+        $('#btnPrint').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+            $('#SubmitionForm').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, false, false, printWindow, null); // Send true and window object
+            }, 300);
+        });
+
+        $('#btnPrintEmail').click(function () {
+            const printWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+            const sendWindow = window.open('', '_blank'); // Open blank tab first (browser-safe)
+
+
+            $('#SubmitionForm').modal("hide");
+
+            setTimeout(() => {
+                submitForm(true, true, false, printWindow, sendWindow); // Send true and window object
+            }, 300);
+        });
+
+
+        $('#btnClose').click(function () {
+            $('#SubmitionForm').modal("hide");
+
+            setTimeout(() => {
+                submitForm(false, false, false, null, null); // no print
+            }, 300);
+        });
+
+        function submitForm(shouldPrint, shouldSend, ShouldEway, printWindow, sendWindow) {
+            $('#ShouldPrint').val(shouldPrint); // Set hidden input
+            $('#ShouldEway').val(ShouldEway); // Set hidden input
+            const formData = $('form').serialize(); // Properly serialize full form
+            var Email = $('#Email').val();
+            var CC1 = $('#CC1').val();
+            var CC2 = $('#CC2').val();
+            var CC3 = $('#CC3').val();
+            var CustOrderNo = $('#CustOrderNo').val();
+
+            $.ajax({
+                type: "POST",
+                url: $('form').attr('action'),
+                data: formData,
+                dataType: 'json', // Expect JSON response
+                success: function (res) {
+                    console.log("Server response:", res);
+
+                    if (res && res.status === "Success") {
+                        if (shouldPrint && res.entryId && res.yearCode && printWindow && !shouldSend) {
+                            const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            printWindow.location.href = printUrl;
+                        }
+                        else if (shouldPrint && shouldSend) {
+                            const printUrl = '/SaleOrder/PrintReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode;
+                            const sendUrl = '/SaleOrder/SendReport?EntryId=' + res.entryId + '&YearCode=' + res.yearCode + '&EmailTo=' + Email + '&CC1=' + CC1 + '&CC2=' + CC2 + '&CC3=' + CC3 + '&Challanno=' + CustOrderNo;
+                            printWindow.location.href = printUrl;
+                            /* sendWindow.location.href = sendUrl; */
+                            $.get(sendUrl);
+
+                        }
+                        else if (ShouldEway) {
+                            const ewayModel = {
+                                EntryId: res.entryId,
+                                InvoiceNo: res.challanNo,
+                                YearCode: res.yearCode,
+                                saleBillType: '', // already correct
+                                customerPartCode: res.partCode,
+                                transporterName: res.transporterName,
+                                vehicleNo: res.vehicleNo,
+                                distanceKM: String(res.distance),
+                                EntrybyId: res.enteredByEmpid,
+                                MachineName: res.enterByMachineName,
+                                generateEway: 'Eway'
+                            };
+                            $.ajax({
+                                url: '/NRGP/GenerateEwayBill',
+                                method: 'POST',
+                                contentType: 'application/json',
+                                data: JSON.stringify(ewayModel),
+                                success: function (res) {
+                                    if (res.redirectUrl) {
+                                        const fullUrl = res.redirectUrl.startsWith("http")
+                                            ? res.redirectUrl
+                                            : "https://" + res.redirectUrl;
+                                        window.open(fullUrl, '_blank');
+                                    }
+
+                                    if (res.rawResponse) {
+                                        try {
+                                            const formattedJson = JSON.stringify(JSON.parse(res.rawResponse), null, 4);
+                                            $('#ewayResponseBox').val(formattedJson);
+                                        } catch (e) {
+                                            $('#ewayResponseBox').val(res.rawResponse);
+                                        }
+                                        $('#PasswordAllowPopup').modal("hide");
+                                    } else {
+                                        $.notify('E-Way Bill generation failed.', 'error');
+                                    }
+                                },
+                                error: function () {
+                                    $.notify('An error occurred while generating the E-Way Bill.', 'error');
+                                }
+                            });
+                        }
+
+
+                        window.location.href = '/SaleOrder/Index';
+                    } else {
+                        alert(res.message || "Something went wrong.");
+                    }
+                },
+                error: function (xhr) {
+                    console.error("Error occurred:", xhr.responseText);
+                    alert("Save failed.");
+                }
+            });
+        }
+
 
         function checkPartCodeMusthaveAtLeastOneTax() {
 
