@@ -1,0 +1,106 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Report ScriptLanguage="CSharp" ReportInfo.Created="08/27/2025 16:24:48" ReportInfo.Modified="08/27/2025 17:09:18" ReportInfo.CreatorVersion="2023.2.0.0">
+  <Dictionary>
+    <MsSqlDataConnection Name="Connection" ConnectionString="rijcmlqoHDugY9G9S3Ury/uevG6dzgKLORh2IFPzyqw4h/hEczrVNd/A6Yc686WPvccudb7IdVrQPioGFcP2SBIaz+pIXhtF3DpQa1wzzZxFYylUFKr8Xr0zNSoRpgPLS0nAx+aqkj2Y2qsn38dNFuYtCHBDBfayO/6NlzmpIDV+oXrNWyQVO8GpAd1C2CzVXze8L++2+yJLQRxOQmFNK3pcUdZtQ==">
+      <TableDataSource Name="Table" Alias="SPReportPringMaterialConversion" DataType="System.Int32" Enabled="true" SelectCommand="exec  SPReportPringMaterialConversion @EntryId=2,@YearCode=2025,@SlipNo=''">
+        <Column Name="MatConvEntryId" DataType="System.Int64"/>
+        <Column Name="MatConvYearCode" DataType="System.Int64"/>
+        <Column Name="MatConvSlipNo" DataType="System.String"/>
+        <Column Name="MatConvSlipDate" DataType="System.DateTime"/>
+        <Column Name="StoreWorkcenter" DataType="System.String"/>
+        <Column Name="Remarks" DataType="System.String"/>
+        <Column Name="ApprovedBy" DataType="System.Int64"/>
+        <Column Name="Uid" DataType="System.Int64"/>
+        <Column Name="CC" DataType="System.String"/>
+        <Column Name="ActualEntryByEmpid" DataType="System.Int64"/>
+        <Column Name="ActualEntryDate" DataType="System.DateTime"/>
+        <Column Name="UpdatedByEmpId" DataType="System.Int64"/>
+        <Column Name="Remark" DataType="System.String"/>
+        <Column Name="UpdationDate" DataType="System.DateTime"/>
+        <Column Name="EntryByMachine" DataType="System.String"/>
+        <Column Name="OriginalItemCode" DataType="System.Int64"/>
+        <Column Name="seqno" DataType="System.Int64"/>
+        <Column Name="OrigPartCode" DataType="System.String"/>
+        <Column Name="OrigItemName" DataType="System.String"/>
+        <Column Name="Unit" DataType="System.String"/>
+        <Column Name="OriginalQty" DataType="System.Double"/>
+        <Column Name="AltItemCode" DataType="System.Int64"/>
+        <Column Name="AltUnit" DataType="System.String"/>
+        <Column Name="AltOriginalQty" DataType="System.Double"/>
+        <Column Name="OriginalStoreId" DataType="System.Int64"/>
+        <Column Name="OrigStoreName" DataType="System.String"/>
+        <Column Name="AltStoreId" DataType="System.Int64"/>
+        <Column Name="AltStoreName" DataType="System.String"/>
+        <Column Name="orginalWCID" DataType="System.Int64"/>
+        <Column Name="origWorkcenetr" DataType="System.String"/>
+        <Column Name="AltWCID" DataType="System.Int64"/>
+        <Column Name="AltWorkcenetr" DataType="System.String"/>
+        <Column Name="BatchNo" DataType="System.String"/>
+        <Column Name="Uniquebatchno" DataType="System.String"/>
+        <Column Name="BatchStock" DataType="System.Double"/>
+        <Column Name="TotalStock" DataType="System.Double"/>
+        <Column Name="AltStock" DataType="System.Double"/>
+        <Column Name="PlanNo" DataType="System.String"/>
+        <Column Name="PlanYearCode" DataType="System.Int64"/>
+        <Column Name="PlanDate" DataType="System.DateTime"/>
+        <Column Name="ProdSchNo" DataType="System.Int64"/>
+        <Column Name="ProdSchYearCode" DataType="System.Int64"/>
+        <Column Name="ProdSchDatetime" DataType="System.DateTime"/>
+        <Column Name="OrigItemRate" DataType="System.Double"/>
+        <Column Name="Itemremark" DataType="System.String"/>
+        <Column Name="AltPartCode" DataType="System.String"/>
+        <Column Name="AltItemName" DataType="System.String"/>
+        <Column Name="ActualEmployee" DataType="System.String"/>
+        <Column Name="UpdatedByEmployee" DataType="System.String"/>
+        <Column Name="CompanyName" DataType="System.String"/>
+      </TableDataSource>
+    </MsSqlDataConnection>
+  </Dictionary>
+  <ReportPage Name="Page2" Landscape="true" PaperWidth="297" PaperHeight="210" RawPaperSize="9" Watermark.Font="Arial, 60pt">
+    <ReportTitleBand Name="ReportTitle2" Width="1047.06" Height="179.55">
+      <LineObject Name="Line4" Left="9.45" Top="9.45" Width="1030.05"/>
+      <LineObject Name="Line5" Left="1039.5" Top="9.45" Height="170.1"/>
+      <LineObject Name="Line6" Left="9.45" Top="9.45" Height="170.1"/>
+      <TextObject Name="Text15" Left="321.3" Top="18.9" Width="349.65" Height="28.35" Text="Material Conversion Report" HorzAlign="Center" Font="Arial, 14pt, style=Bold"/>
+      <TextObject Name="Text16" Left="302.4" Top="56.7" Width="378" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringMaterialConversion.CompanyName]" HorzAlign="Center" Font="Arial, 12pt, style=Bold"/>
+      <TextObject Name="Text17" Left="18.9" Top="94.5" Width="56.7" Height="18.9" Text="Slip No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text18" Left="75.6" Top="94.5" Width="103.95" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringMaterialConversion.MatConvSlipNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text19" Left="359.1" Top="94.5" Width="75.6" Height="18.9" Text="Slip Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text20" Left="434.7" Top="94.5" Width="274.05" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringMaterialConversion.MatConvSlipDate]" Format="Date" Format.Format="d" Font="Arial, 10pt"/>
+      <TextObject Name="Text21" Left="18.9" Top="122.85" Width="132.3" Height="18.9" Text="Store/WorkCenter:" Font="Arial, 10pt"/>
+      <TextObject Name="Text23" Left="359.1" Top="122.85" Width="122.85" Height="18.9" Text="From WorkCenter:" Font="Arial, 10pt"/>
+      <TextObject Name="Text24" Left="481.95" Top="122.85" Width="226.8" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringMaterialConversion.origWorkcenetr]" Font="Arial, 10pt"/>
+      <TextObject Name="Text25" Left="18.9" Top="151.2" Width="66.15" Height="18.9" Text="Plan No:" Font="Arial, 10pt"/>
+      <TextObject Name="Text26" Left="85.05" Top="151.2" Width="264.6" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringMaterialConversion.PlanNo]" Font="Arial, 10pt"/>
+      <TextObject Name="Text27" Left="359.1" Top="151.2" Width="75.6" Height="18.9" Text="Print Date:" Font="Arial, 10pt"/>
+      <TextObject Name="Text28" Left="434.7" Top="151.2" Width="94.5" Height="18.9" Text="[Date]" Font="Arial, 10pt"/>
+      <LineObject Name="Line7" Left="9.45" Top="179.55" Width="1030.05"/>
+      <TextObject Name="Text40" Left="151.2" Top="122.85" Width="207.9" Height="18.9" CanGrow="true" CanBreak="false" Text="[SPReportPringMaterialConversion.StoreWorkcenter]" Font="Arial, 10pt"/>
+    </ReportTitleBand>
+    <PageHeaderBand Name="PageHeader2" Top="182.75" Width="1047.06" Height="75.6">
+      <LineObject Name="Line8" Left="9.45" Height="47.25"/>
+      <LineObject Name="Line9" Left="1039.5" Height="47.25"/>
+      <TextObject Name="Text29" Left="9.45" Width="37.8" Height="28.35" Text="Sr No" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text30" Left="47.25" Width="85.05" Height="18.9" Text="PartCode" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text31" Left="132.3" Width="132.3" Height="18.9" Text="ItemName" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text32" Left="699.3" Width="37.8" Height="18.9" Text="Qty" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text33" Left="784.35" Width="47.25" Height="18.9" Text="Stock" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text34" Left="652.05" Width="47.25" Height="18.9" Text="Unit" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text35" Left="916.65" Width="56.7" Height="28.35" Text="Batch No" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text38" Left="264.6" Width="75.6" Height="28.35" Text="Alt PartCode" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text39" Left="340.2" Width="85.05" Height="28.35" Text="Alt ItemName" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text41" Left="425.25" Width="66.15" Height="28.35" Text="Store Name" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text42" Left="491.4" Width="56.7" Height="47.25" Text="Alt Store Name" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text43" Left="548.1" Width="56.7" Height="28.35" Text="Wc Name" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text44" Left="604.8" Width="47.25" Height="47.25" Text="Alt Wc Name" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text45" Left="737.1" Width="47.25" Height="37.8" Text="Alt Qty" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text36" Left="973.35" Width="66.15" Height="47.25" Text="Unique Batch No" HorzAlign="Center" Font="Arial, 10pt"/>
+      <TextObject Name="Text46" Left="831.6" Width="47.25" Height="37.8" Text="Alt Stock" HorzAlign="Center" Font="Arial, 10pt"/>
+    </PageHeaderBand>
+    <GroupHeaderBand Name="GroupHeader2" Top="261.55" Width="1047.06" Height="37.8" Condition="[SPReportPringMaterialConversion.OrigPartCode]">
+      <DataBand Name="Data2" Top="302.55" Width="1047.06" Height="75.6" DataSource="Table"/>
+      <GroupFooterBand Name="GroupFooter2" Top="381.35" Width="1047.06" Height="37.8"/>
+    </GroupHeaderBand>
+    <ReportSummaryBand Name="ReportSummary2" Top="422.35" Width="1047.06" Height="37.8"/>
+  </ReportPage>
+</Report>

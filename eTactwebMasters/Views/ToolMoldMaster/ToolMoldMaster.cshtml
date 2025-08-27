@@ -168,7 +168,8 @@
 										<select class="form-select" asp-for="ConsiderInInvetory">
 											<option value="">-Select-</option>
 											<option value="Yes">Yes</option>
-											<option value="No"selected>No</option>
+											<option value="No">No</option>
+
 										</select>
 									</div>
 									
@@ -576,6 +577,15 @@
 			FillParentAccountName();
 			FillCategoryName();
 			FillCustoidianEmpName();
+			debugger
+			var mode = "@Model.Mode";                     
+			var consider = "@Model.ConsiderAsFixedAssets";
+
+			if (mode === "U" || mode === "V") {
+				$("#ConsiderAsFixedAssets").val(consider);
+			} else {
+				$("#ConsiderAsFixedAssets").val("No");
+			}
 			var currentYear = new Date().getFullYear();
 			$('#POYear,#InvoiceYearCode').each(function () {
 				var val = $(this).val();
@@ -717,10 +727,7 @@
 			$('#totalRows').text($('#divStockGrid tr').length);
 
 
-			toggleUsedFields();
-			$('#PurchaseNewUsed').on('change', function () {
-				toggleUsedFields();
-			});
+			
 			toggleCalibrationFields(); 
 			$("#CalibrationRequired").change(function () {
 				toggleCalibrationFields();
@@ -930,19 +937,7 @@
 		// 	}
 
 		// });
-		function toggleUsedFields() {
-			var purchaseType = $('#PurchaseNewUsed').val();
-
-			if (purchaseType === "Used") {
-				$('#OriginalValue').prop('disabled', false);
-			} else {
-				$('#OriginalValue').prop('disabled', true);
-				var invDate = $('#InvoiceDate').val();
-				if (invDate) {
-					$('#FirstAqusitionOn').val(invDate);
-				}
-			}
-		}
+		
 		function setFormattedDate() {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
@@ -952,7 +947,7 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#LastupDationDate,#ActualEntryDate,#EntryDate')
+			$('#LastupDationDate,#ActualEntryDate,#EntryDate,#LastCalibrationDate,#NextCalibrationDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
 
