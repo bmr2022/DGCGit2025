@@ -220,27 +220,22 @@
 
         $(document).ready(function () {
             debugger
-            console.log("Ready");
+            console.log("TransactionLedger Ready");
+
             var currentDate = new Date();
             var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
             $('#totalRows').text($('#divStockRegisterBody tr').length);
             $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
             $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", 'now');
-            $('#LedgerName').select2();
-            $('#ParentLedgerName').select2();
-            $('#ReportType').select2();
-            $('#VoucherType').select2();
-            $('#Group_Ledger').select2();
-            $('#totalOpening').hide();
-            $('#netCurrentAmt').hide();
-            $('#netAmount').hide();
-            var currentDate = new Date();
-            var firstDayOfMonth = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+
+            $('#LedgerName, #ParentLedgerName, #ReportType, #VoucherType, #Group_Ledger').select2();
+
             FillLedgerName();
             updateGroupLedger();
             FillVoucherName();
             FillParentLedgerName();
 
+            // Restore single-step from TrialBalance
             let accountName = sessionStorage.getItem('AccountName');
             let reportType = sessionStorage.getItem('ReportType');
             let parentCode = sessionStorage.getItem('ParentCode');
@@ -252,46 +247,24 @@
             if (reportType || parentCode || accountName) $('#BackButton').show();
             else $('#BackButton').hide();
 
-            // Optional: clear the storage if no longer needed
             sessionStorage.removeItem('AccountName');
             sessionStorage.removeItem('ReportType');
             sessionStorage.removeItem('ParentCode');
 
-            var LedgerNameBack = sessionStorage.getItem('LedgerNameBack')
-            if (LedgerNameBack != null && LedgerNameBack != '') {
-                $('#FromDate').val(sessionStorage.getItem('FromDateBack'));
-                $('#ToDate').val(sessionStorage.getItem('ToDateBack'));
-                $('#ReportType').val(sessionStorage.getItem('ReportTypeBack'));
-                $('#Group_Ledger').val(sessionStorage.getItem('GroupLedgerBack'));
-                $('#ParentLedgerName').val(sessionStorage.getItem('ParentLedgerNameBack'));
-                $('#LedgerName').val(sessionStorage.getItem('LedgerNameBack'));
-                $('#VoucherType').val(sessionStorage.getItem('VoucherTypeBack'));
-                $('#VoucherNo').val(sessionStorage.getItem('VoucherNoBack'));
-                $('#INVNo').val(sessionStorage.getItem('INVNoBack'));
-                $('#Narration').val(sessionStorage.getItem('NarrationBack'));
-                $('#Amount').val(sessionStorage.getItem('AmountBack'));
-                $('#Dr').val(sessionStorage.getItem('DrBack'));
-                $('#Cr').val(sessionStorage.getItem('CrBack'));
-                $('#search-box').val(sessionStorage.getItem('GlobalSearchBack'));
+            // Restore full previous TransactionLedger state
+            let ledgerStateBack = JSON.parse(sessionStorage.getItem('LedgerStateBack'));
+            if (ledgerStateBack) {
+                Object.keys(ledgerStateBack).forEach(key => {
+                    $('#' + key).val(ledgerStateBack[key]);
+                });
                 $('#AccountCode').val($('#LedgerName').val());
                 GetDetailsData();
+                $('#BackButton').show();
+                sessionStorage.removeItem('LedgerStateBack');
             }
-            sessionStorage.removeItem('FromDateBack');
-            sessionStorage.removeItem('ToDateBack');
-            sessionStorage.removeItem('ReportTypeBack');
-            sessionStorage.removeItem('GroupLedgerBack');
-            sessionStorage.removeItem('ParentLedgerNameBack');
-            sessionStorage.removeItem('LedgerNameBack');
-            sessionStorage.removeItem('VoucherTypeBack');
-            sessionStorage.removeItem('VoucherNoBack');
-            sessionStorage.removeItem('INVNoBack');
-            sessionStorage.removeItem('NarrationBack');
-            sessionStorage.removeItem('AmountBack');
-            sessionStorage.removeItem('DrBack');
-            sessionStorage.removeItem('CrBack');
-            sessionStorage.removeItem('GlobalSearchBack');
 
-            var dynamicTitle = "Sales Invoice Ledger"; // Example dynamic value
+            // Page title
+            var dynamicTitle = "Sales Invoice Ledger";
             $('#ledgerTitle').text(dynamicTitle);
         });
 
@@ -354,60 +327,90 @@
             return day + "/" + month + "/" + year;
         }
 
+        // Save history for TrialBalance drill-down
+        function saveHistory(action, params = {}) {
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
+            history.push({ action, params });
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
+            $('#BackButton').show();
+        }
+
+        // MonthlySummary → MonthWiseData
         function GetMonthWiseData(monthNo) {
-            monthNo = parseInt(monthNo, 10); // make sure it's number
-            if (isNaN(monthNo) || monthNo < 1 || monthNo > 12) {
-                alert("Invalid month number: " + monthNo);
-                return;
-            }
+            let fromDate = formatDate1(new Date(new Date().getFullYear(), monthNo - 1, 1));
+            let toDate = formatDate1(new Date(new Date().getFullYear(), monthNo, 0));
 
-            var currentYear = new Date().getFullYear();
-            var firstDayOfMonth = new Date(currentYear, monthNo - 1, 1);   // JS months = 0–11
-            var lastDayOfMonth = new Date(currentYear, monthNo, 0);        // next month day 0 = last day
+            $('#FromDate').datepicker("setDate", fromDate);
+            $('#ToDate').datepicker("setDate", toDate);
 
-            $('#FromDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(firstDayOfMonth));
-            $('#ToDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", formatDate1(lastDayOfMonth));
-
-            if ($("#ReportType option[value='TransactionLedgerSummary']").length === 0) {
-                $('#ReportType').append(new Option('Transaction Ledger Summary', 'TransactionLedgerSummary'));
-            }
+            saveHistory('MonthlySummary', {
+                parentCode: $('#ParentLedgerName').val(),
+                accountCode: $('#LedgerName').val(),
+                monthNo,
+                fromDate,
+                toDate
+            });
 
             $('#ReportType').val('TransactionLedgerSummary').trigger('change');
-            GetDetailsData();
-            $('#BackButton').show();
+            GetTransactionLedgerMonthlySummaryDetailsData();
         }
 
         function PressBack() {
             debugger
-            let history = JSON.parse(sessionStorage.getItem('LedgerHistoryStack')) || [];
+            let history = JSON.parse(sessionStorage.getItem('HistoryStack')) || [];
 
             if (history.length === 0) {
-                let trialParentCode = $('#ParentLedgerName option:selected').val();
-                let trialAccountName = $('#LedgerName option:selected').val();
-                let trialReportType = "TRAILDETAIL";
-
-                // Store in sessionStorage
-                sessionStorage.setItem('TrialParentCode', trialParentCode);
-                sessionStorage.setItem('TrailAccountName', trialAccountName);
-                sessionStorage.setItem('TrailReportType', trialReportType);
-
-                let trailUrl = '/TrailBalance/Index';
-                window.location.href = trailUrl;
+                // Back to TrialBalance main page
+                window.location.href = '/TrailBalance/Index';
                 return;
             }
 
-            let prevState = history.pop();
-            sessionStorage.setItem('LedgerHistoryStack', JSON.stringify(history));
+            let lastStep = history.pop();
+            sessionStorage.setItem('HistoryStack', JSON.stringify(history));
 
-            $('#ReportType').val(prevState.reportType).trigger('change');
+            switch (lastStep.action) {
+                case 'TrailDetail':
+                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger('change');
+                    $('#ReportType').val("TRAILDETAIL").trigger('change');
+                    break;
 
-            if (prevState.reportType === 'MonthlySummary') {
-                GetTransactionLedgerMonthlySummaryDetailsData();
-            } else if (prevState.reportType === 'Detail') {
-                GetTransactionLedgerDetailData(prevState.someFilter);
+                case 'TrailParent':
+                    $('#TrailBalanceGroupName').val(lastStep.params.groupCode).trigger('change');
+                    $('#ParentGroupName').val(lastStep.params.parentCode).trigger('change');
+                    $('#ReportType').val("TRAILDETAIL").trigger('change');
+                    break;
+
+                case 'TrailAccount':
+                    $('#ParentLedgerName').val(lastStep.params.parentCode);
+                    $('#LedgerName').val(lastStep.params.accountName);
+                    sessionStorage.setItem('ParentCode', lastStep.params.parentCode);
+                    sessionStorage.setItem('AccountName', lastStep.params.accountName);
+                    sessionStorage.setItem('ReportType', "MonthlySummary");
+                    window.location.href = '/TrailBalance/Index';
+                    break;
+
+                case 'MonthlySummary':
+                    $('#ParentLedgerName').val(lastStep.params.parentCode);
+                    $('#LedgerName').val(lastStep.params.accountCode);
+                    $('#FromDate').datepicker("setDate", lastStep.params.fromDate);
+                    $('#ToDate').datepicker("setDate", lastStep.params.toDate);
+                    $('#ReportType').val('TransactionLedgerSummary').trigger('change');
+                    GetTransactionLedgerMonthlySummaryDetailsData();
+                    break;
+
+                case 'TransactionLedgerSummary':
+                    $('#ParentLedgerName').val(lastStep.params.parentCode);
+                    $('#LedgerName').val(lastStep.params.accountCode);
+                    $('#FromDate').datepicker("setDate", lastStep.params.fromDate);
+                    $('#ToDate').datepicker("setDate", lastStep.params.toDate);
+                    $('#ReportType').val('TransactionLedgerSummary').trigger('change');
+                    GetDetailsData(lastStep.params.someFilter);
+                    break;
+
+                case 'TransactionLedgerDetail':
+                    GetTransactionLedgerDetailData(lastStep.params.someFilter);
+                    break;
             }
-
-            if (history.length === 0) $('#BackButton').hide();
         }
 
         $('#ParentLedgerName').change(function () {
@@ -558,7 +561,7 @@
         }
 
         function GetDetailsData() {
-            debugger
+             
             var ReportType = $('#ReportType').val();
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
