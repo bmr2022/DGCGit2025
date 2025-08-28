@@ -114,16 +114,16 @@
             <label asp-for="VendorAddress" class="form-label" style="color: red;">Vendor Address*</label>
             <input asp-for="VendorAddress" disabled class="form-control" value="@Model.VendorAddress" readonly />
         </div>
-      @*   <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+       <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="Currency" class="form-label" style="color: red;">Currency*</label>
             <input asp-for="CurrencyId" type="hidden" id="CurrencyId" value="@Model.CurrencyId" />
             <select class="form-select" asp-for="Currency" id="Currency" tabindex="4"></select>
-        </div> *@
-       <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+        </div>
+    @*     <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <input asp-for="CurrencyId" type="hidden" class="form-control" />
             <label asp-for="Currency" class="form-label" style="color: red;">Currency*</label>
             <input asp-for="Currency" class="form-control" value="@Model.Currency?.ToString()" readonly />
-        </div> 
+        </div> *@
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="MRNRemark" class="form-label">MRN Remark</label>
             <input asp-for="MRNRemark" class="form-control" value="@Model.MRNRemark" readonly />

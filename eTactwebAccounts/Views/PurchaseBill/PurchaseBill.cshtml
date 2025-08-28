@@ -583,6 +583,7 @@
             LockedFinancialYear();
           
             FillTDSTaxType();
+                
             FillCurrency();
                      GetExchnageRate();
             GetGateNoFormRights();
@@ -829,7 +830,9 @@
 
 
 
-
+           $('#Currency').change(function () {
+                  GetExchnageRate()
+              });
 
         function selectDocNamesForAllRows() {
             var rowCounter = $('#PBPendingItemDetail tr').length;
@@ -846,7 +849,7 @@
             }
         }
 
-        function FillCurrency() {
+       /*  function FillCurrency() {
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillCurrency")",
@@ -864,9 +867,9 @@
                     }
                 }
             });
-        }
+        } */
 
-/* 
+
               function FillCurrency() {
             $.ajax({
                 type: "GET",
@@ -888,24 +891,25 @@
                         });
 
                         // ✅ After filling dropdown, set selected value if mode is U or V
-                        if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
-                            var currencyId = $('#CurrencyId').val(); // e.g. 16
-                            $('#Currency').val(currencyId);          // select option with value=16
-                        } else {
-                            // if default flag exists, select that
-                            let defaultCurrency = obj.Result.Table.find(x => x.IsDefault === "Y");
-                            if (defaultCurrency) {
-                                $('#Currency').val(defaultCurrency.entry_id);
-                                $('#CurrencyId').val(defaultCurrency.entry_id);
-                            }
-                        }
+                             if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
+            var currencyId = $('#CurrencyId').val();
+            $('#Currency').val(currencyId);
+        } else {
+            // Otherwise, pick default currency
+            let defaultCurrency = obj.Result.Table.find(x => x.IsDefault === "Y");
+            if (defaultCurrency) {
+                   $('#Currency').val(defaultCurrency.Currency);
+                         GetExchnageRate();
+            }
+        }
 
-                        // ✅ Enable/disable logic after selection
+                       
                         let selectedId = $('#Currency').val();
                         let selected = obj.Result.Table.find(x => x.entry_id == selectedId);
 
                         if (selected && selected.IsDefault === "Y") {
-                                   $('#Currency').prop("disabled", true);
+                                       $('#Currency').val(val.entry_id);
+                                      $('#Currency').prop("disabled", true);
                             $('#ExchangeRate').prop("disabled", true);
                         } else {
                                    $('#Currency').prop("disabled", false);
@@ -915,7 +919,7 @@
                 }
             });
         }
- */
+
 
         // Function to format Date object to dd/mm/yy
         function formatDateToDDMMYY(date) {
