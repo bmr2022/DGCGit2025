@@ -48,9 +48,8 @@ namespace eTactWeb.Controllers
             TempData.Clear();
             HttpContext.Session.Remove("KeyInterStoreTransferGrid");
             var MainModel = new InterStoreTransferModel();
-
-            MainModel.FinFromDate = ParseDate(HttpContext.Session.GetString("FromDate")).ToString().Replace("-", "/");
-            MainModel.FinToDate = ParseDate(HttpContext.Session.GetString("ToDate")).ToString().Replace("-", "/");
+            MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+            MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
             MainModel.CC = HttpContext.Session.GetString("Branch");
             MainModel.YearCode = Convert.ToInt32(HttpContext.Session.GetString("YearCode"));
 
@@ -59,6 +58,7 @@ namespace eTactWeb.Controllers
                 MainModel = await IInterStore.GetViewByID(ID, Mode, YC);
                 MainModel.Mode = Mode;
                 MainModel.ID = ID;
+
                 //  MainModel = await BindModel(MainModel);
 
             }
@@ -79,6 +79,8 @@ namespace eTactWeb.Controllers
                 MainModel.UpdatedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                 MainModel.LastUpdatedByName = HttpContext.Session.GetString("EmpName");
                 MainModel.LastUpdationDate = DateTime.Now.ToString();
+                MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+                MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
             }
             MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
             {
@@ -341,6 +343,33 @@ namespace eTactWeb.Controllers
                             TempData["500"] = "500";
                             Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
                             return RedirectToAction(nameof(ISTDashboard));
+                        }
+                        if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                        {
+                            ViewBag.isSuccess = false;
+                            var input = "";
+                            if (Result?.Result != null)
+                            {
+                                if (Result.Result is string str)
+                                {
+                                    input = str;
+                                }
+                                else
+                                {
+                                    input = JsonConvert.SerializeObject(Result.Result);
+                                }
+
+                                TempData["ErrorMessage"] = input;
+                            }
+                            else
+                            {
+                                TempData["500"] = "500";
+                            }
+
+
+                            Logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                            //model.IsError = "true";
+                            //return View("Error", Result);
                         }
                     }
                     return RedirectToAction(nameof(ISTDashboard));
