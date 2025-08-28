@@ -44,8 +44,10 @@ namespace eTactWeb.Controllers
             MainModel.ApprovedBy = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
             MainModel.ApprovedByEmpName = HttpContext.Session.GetString("EmpName");
             MainModel.cc = HttpContext.Session.GetString("Branch");
-            HttpContext.Session.Remove("KeyMaterialConversionGrid");
-            if (!string.IsNullOrEmpty(Mode) && ID > 0 && Mode == "U")
+			MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+			MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+			HttpContext.Session.Remove("KeyMaterialConversionGrid");
+            if (!string.IsNullOrEmpty(Mode) && ID > 0 && (Mode == "U" || Mode == "V"))
             {
                 MainModel = await _IMaterialConversion.GetViewByID(ID, YC,FromDate,ToDate).ConfigureAwait(false);
                 MainModel.Mode = Mode; // Set Mode to Update
@@ -97,7 +99,9 @@ namespace eTactWeb.Controllers
                     MainModel.ActualEntryByEmpid = Convert.ToInt32(HttpContext.Session.GetString("EmpID"));
                     MainModel.ActualEntryDate = DateTime.Today.ToString("MM/dd/yyyy").Replace("-", "/");
                     MainModel.cc = HttpContext.Session.GetString("Branch");
-                }
+					MainModel.FinFromDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("FromDate"));
+					MainModel.FinToDate = CommonFunc.ParseFormattedDate(HttpContext.Session.GetString("ToDate"));
+				}
 
                 string serializedGrid = JsonConvert.SerializeObject(MainModel.MaterialConversionGrid);
                 HttpContext.Session.SetString("KeyMaterialConversionGrid", serializedGrid);

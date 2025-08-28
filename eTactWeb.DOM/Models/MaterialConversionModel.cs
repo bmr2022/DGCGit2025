@@ -89,9 +89,12 @@ namespace eTactWeb.DOM.Models
         public decimal OrigItemRate { get; set; }
         public IList<MaterialConversionModel> MaterialConversionGrid { get; set; }
 
-        //DashBoard
-        public string FromDate { get; set; }
-        public string ToDate { get; set; }
+		//DashBoard
+
+		public string FromDate { get; set; }
+		public string ToDate { get; set; }
+		public string? FinFromDate { get; set; }
+        public string? FinToDate { get; set; }
         public string Searchbox { get; set; }
         public string ReportType { get; set; }
 

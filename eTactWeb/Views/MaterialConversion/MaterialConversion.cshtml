@@ -77,6 +77,8 @@
 							<div class="accordion-body">
 								<div class="row g-2">
 									<input type="hidden" value="@Model.Mode" asp-for="Mode" />
+									<input type="hidden" asp-for="FinFromDate" value="@Model.FinFromDate" />
+									<input type="hidden" asp-for="FinToDate" value="@Model.FinToDate" />
 									<input type="hidden" value="@Environment.MachineName" asp-for="EntryByMachine" />
 
 									<div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
@@ -619,11 +621,72 @@
 	<script>
 		$(document).ready(function () {
 			GetFormRights();
-			if ($('#Mode').val() !== "U") {
+			if ($('#Mode').val() != "U") {
 
 				FillEntryID();
 				TotalNoOfRows();
 				FillSlipNo();
+				GetServerDate();
+
+				var finFromDate = $('#FinFromDate').val();
+				var finToDate = $('#FinToDate').val();
+
+				var dateParts1 = finFromDate.split("/");
+				var monthNames = {
+					"Jan": "01",
+					"Feb": "02",
+					"Mar": "03",
+					"Apr": "04",
+					"May": "05",
+					"Jun": "06",
+					"Jul": "07",
+					"Aug": "08",
+					"Sep": "09",
+					"Oct": "10",
+					"Nov": "11",
+					"Dec": "12"
+				};
+
+				var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+				var dateParts2 = finToDate.split("/");
+
+				var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+				$('#SlipDate').datepicker("option", "minDate", formattedDate1);
+				$('#SlipDate').datepicker("option", "maxDate", formattedDate2);
+			}
+			else
+			{
+				var SlipDate = $('#SlipDate').val();
+				
+				$('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SlipDate);
+			
+				var finFromDate = $('#FinFromDate').val();
+				var finToDate = $('#FinToDate').val();
+
+				var dateParts1 = finFromDate.split("/");
+				var monthNames = {
+					"Jan": "01",
+					"Feb": "02",
+					"Mar": "03",
+					"Apr": "04",
+					"May": "05",
+					"Jun": "06",
+					"Jul": "07",
+					"Aug": "08",
+					"Sep": "09",
+					"Oct": "10",
+					"Nov": "11",
+					"Dec": "12"
+				};
+
+				var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+				var dateParts2 = finToDate.split("/");
+
+				var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+				$('#SlipDate').datepicker("option", "minDate", formattedDate1);
+				$('#SlipDate').datepicker("option", "maxDate", formattedDate2);
 			}
 
 
@@ -708,26 +771,7 @@
 			$('#GridButton').click(function (e) {
 				setFormattedDate();
 			});
-			// var today = new Date();
-			// var day = ('0' + today.getDate()).slice(-2);
-			// var monthNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-			// var month = monthNames[today.getMonth()];
-			// var year = today.getFullYear();
-
-			// var formattedDate = day + '/' + month + '/' + year;
-
-			// $('#ProdSchDatetime').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
-			// $('#PlanDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
-			// $('#ActualEntryDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
-			// $('#SlipDate').datepicker({ dateFormat: 'dd/M/yy' }).val(formattedDate);
-			// if ($('#Mode').val() == "U") {
-
-			//     var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-			//     $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
-
-			//     $('#BillDate').datepicker({ dateFormat: 'dd/mm/yy' });
-			// }
-
+			
 			var previousValue = $("#LedgerName").val(); // Store initial value
 
 			$("#OriginalQty, #AltOriginalQty, #AltStock").on("input", function () {
@@ -795,6 +839,22 @@
 				$('#AltWorkCenterName').prop("disabled", false);
 			}
 		});
+
+		function GetServerDate() {
+			$.ajax({
+				type: "GET",
+				url: "@Url.Action("GetServerDate", "GateInward")",
+				async: false,
+				success: function (result, status, error) {
+
+					$('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+					$('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
+				
+				}
+			});
+		}
+
+
 		function setFormattedDate() {
 			var today = new Date();
 			var day = ('0' + today.getDate()).slice(-2);
@@ -804,9 +864,13 @@
 
 			var formattedDate = day + '/' + month + '/' + year;
 
-			$('#ProdSchDatetime, #PlanDate, #ActualEntryDate, #SlipDate,#UpdationDate')
+			$('#ProdSchDatetime, #PlanDate, #ActualEntryDate,#UpdationDate')
 				.datepicker({ dateFormat: 'dd/M/yy' })
 				.val(formattedDate);
+			var finFromDate = $('#FinFromDate').val();
+			var finToDate = $('#FinToDate').val();
+
+			
 		}
 
 		$('#IssueToStoreWC').change(function () {
