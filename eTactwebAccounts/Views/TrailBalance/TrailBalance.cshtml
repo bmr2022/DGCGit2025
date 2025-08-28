@@ -506,13 +506,13 @@
         }
 
         function GetTrailBalanceDetailsData() {
-             
             var FromDate = $('#FromDate').val();
             var ToDate = $('#ToDate').val();
             var EntryByMachine = $('#EntryByMachine').val();
             var ReportType = $('#ReportType').val();
             var TrailBalanceGroupCode = $('#TrailBalanceGroupName option:selected').val();
             var ParentAccountCode = $('#ParentGroupName option:selected').val();
+
             $.ajax({
                 type: 'POST',
                 url: "@Url.Action("GetTrailBalanceDetailsData", "TrailBalance")",
@@ -527,12 +527,24 @@
                 success: function (response) {
                     $('#divStockMainRegister').html(response);
 
+                    // 🔹 Re-apply hidden columns after reload
+                    $.each(hiddenCols, function (colIndex, colName) {
+                        $('#divStockMainRegister table tr').each(function () {
+                            $(this).find('th:nth-child(' + colIndex + '), td:nth-child(' + colIndex + ')')
+                                .addClass('hidden-column');
+                        });
+                        // update icon
+                        $('#divStockMainRegister table tr th:nth-child(' + colIndex + ') .toggle-col i')
+                            .removeClass('fa-eye-slash').addClass('fa-eye');
+                    });
+
+                    // 🔹 Update row count
                     var totalRows = $('#divStockMainRegister tr').length;
                     $('#totalRows').text(totalRows);
                     countAllTotal();
                 },
                 error: function (xhr, status, error) {
-                    console.error("Error fetching BOM tree data:", error);
+                    console.error("Error fetching Trail Balance data:", error);
                 }
             });
         }
