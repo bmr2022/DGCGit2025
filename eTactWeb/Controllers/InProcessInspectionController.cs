@@ -605,7 +605,7 @@ namespace eTactWeb.Controllers
 
             return View(model);
         }
-        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType, string ItemName, string PartCode, string SlipNo, string MachinNo, int pageNumber = 1, int pageSize = 1, string SearchBox = "")
+        public async Task<IActionResult> GetDetailData(string FromDate, string ToDate, string ReportType, string ItemName, string PartCode, string SlipNo, string MachinNo, int pageNumber = 1, int pageSize = 25, string SearchBox = "")
         {
             var model = new InProcessInspectionModel();
             model = await _IInProcessInspection.GetDashboardDetailData(FromDate, ToDate, ReportType,  ItemName,  PartCode,  SlipNo,  MachinNo);
