@@ -386,22 +386,6 @@
                                         </ul>
                                     </li>
                                     <li>
-                                        <a class="dropdown-item" href="#">HR Gate Attendance &raquo; </a>
-                                        <ul class="submenu dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" asp-action="HRGateAttendance" asp-route-ID="0" asp-controller="HRGateAttendance" id="HRGateAttendance">
-                                                    <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> HR  Gate Attendance
-                                                </a>
-                                            </li>
-                                            @* <li>
-                                                <a class="dropdown-item HRGateAttendance" asp-action="DashBoard" asp-controller="HRGateAttendance">
-                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
-                                                </a>
-                                            </li> *@
-                                            <input class="userRightsPermission" type="hidden" value="HR Gate Attendance" />
-                                        </ul>
-                                    </li>
-                                    <li>
                                         <a class="dropdown-item" href="#"> WeekOff Master &raquo; </a>
                                         <ul class="submenu dropdown-menu">
                                             <li>
@@ -978,7 +962,6 @@
 
                         </ul>
                     </li>
-
                     <li>
                         @*//1 *@
                         <a class="dropdown-item" id="ControlPlan" href="#">Qc &raquo;</a>
@@ -1086,7 +1069,6 @@
 
                     </li>
                 </ul>
-                </li>
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link NavText dropdown-toggle" data-bs-toggle="dropdown">Sales & Mkt</a>
                     <ul class="dropdown-menu">
@@ -2408,6 +2390,29 @@
 
 
 
+                    </ul>
+                </li>
+
+                @*start HR Module*@
+                <li class="nav-item dropdown">
+                    <a class="nav-link NavText dropdown-toggle" href="#" data-bs-toggle="dropdown">HR</a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a class="dropdown-item" href="#">Gate Attendance &raquo; </a>
+                            <ul class="submenu dropdown-menu">
+                                <li>
+                                    <a class="dropdown-item" asp-action="GateAttendance" asp-route-ID="0" asp-controller="GateAttendance" id="GateAttendance">
+                                        <i class="fa fa-file-lines fa-fw fa-lg" aria-hidden="true"></i> Gate Attendance
+                                    </a>
+                                </li>
+                                @* <li>
+                                                <a class="dropdown-item GateAttendance" asp-action="DashBoard" asp-controller="GateAttendance">
+                                                    <i class="fa fa-table fa-fw fa-lg" aria-hidden="true"></i> Dashboard
+                                                </a>
+                                            </li> *@
+                                <input class="userRightsPermission" type="hidden" value="HR Gate Attendance" />
+                            </ul>
+                        </li>
                     </ul>
                 </li>
 

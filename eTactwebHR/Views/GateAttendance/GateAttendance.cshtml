@@ -1,6 +1,6 @@
-﻿@model eTactWeb.DOM.Models.HRGateAttendanceModel
+﻿@model eTactWeb.DOM.Models.GateAttendanceModel
 @{
-    ViewData["Title"] = "HR Gate Attendance";
+    ViewData["Title"] = "Gate Attendance";
     Layout = "~/Views/Shared/_LayoutMain.cshtml";
 }
 
@@ -9,7 +9,7 @@
     <div class="alert alert-success">@ViewBag.Message</div>
 }
 <div class="card bg-gradient mb-3 border-light shadow-lg">
-    <form asp-action="HRGateAttendance" autocomplete="off" class="form-horizontal" method="post" enctype="multipart/form-data">
+    <form asp-action="GateAttendance" autocomplete="off" class="form-horizontal" method="post" enctype="multipart/form-data">
         <input type="hidden" asp-for="Mode" value="@Model.Mode" />
         <input type="hidden" asp-for="EID" />
         <div class="card-header card-headerBG text-light bg-gradient">
@@ -17,12 +17,12 @@
                 <strong>@ViewData["Title"] - @Model.GateAttYearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
-                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
+                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT VOUCHER
                     </a>
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-GateAttYearCode="@Model.GateAttYearCode">
+                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-GateAttYearCode="@Model.GateAttYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT INVOICE
                     </a>
@@ -100,7 +100,7 @@
                         </button>
                     </h2>
                     <div id="BPanel1" class="accordion-collapse collapse show pnl4 bg-gradient" aria-labelledby="HPanel1">
-                        <partial name="_HRGateAttMain" />
+                        <partial name="_GateAttMain" />
                         <input type="hidden" asp-for="TypeOfSave" value="" />
                         <input type="hidden" asp-for="EntryByMachineName" value="" />
                     </div>
@@ -113,19 +113,14 @@
                     </h2>
                     <div id="BPanel2" class="accordion-collapse collapse pnl1 bg-gradient" aria-labelledby="HPanel2">
                         <div class="accordion-body">
-                            
                             <div class="progress my-2 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-secondary progress-bar-animated" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="card">
-                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left:1100px">
+                                <div class="col-xl-2 col-lg-6 col-md-6 col-sm-6 col-xs-12" style="margin-top:10px;margin-left: calc(90% - 100px);">
                                     <input type="text" class="form-control" id="search-box" style="background-color:#FFFACD" placeholder="Search...">
                                 </div>
-
-                                <div class="card-body overflow-auto pb-0">
-                                    <div class="table-responsive" style="max-height:150px;">
-                                    </div>
-                                </div>
+                                <partial name="_GateManualAttendance" />
                             </div>
                             <div class="progress my-3 mb-3" style="height: 4px;">
                                 <div class="progress-bar progress-bar-striped bg-warning" role="progressbar" style="width: 100%" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
@@ -152,12 +147,12 @@
                 <strong>@ViewData["Title"] - @Model.GateAttYearCode</strong>
                 <span class="d-flex float-end" style="margin-top:-2px;">
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintVoucher"
-                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
+                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT VOUCHER
                     </a>
                     <a type="button" class="btn btn-sm btn-outline-light bg-gradient" asp-action="PrintReport"
-                       asp-controller="DirectPurchaseBill" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
+                       asp-controller="GateAttendance" asp-route-EntryId="@Model.GateAttEntryId" asp-route-YearCode="@Model.GateAttYearCode">
                         <i class="fa fa-pencil-square fa-fw fa-lg" aria-hidden="true"></i>
                         PRINT INVOICE
                     </a>
@@ -265,12 +260,12 @@
                     $('#EntryTime').val(time);
                 }, 1000);
             }
-            // AutoComplete('VDirectPurchaseBillMain', 'ModeOFTransport', 'ModeOFTransport', null);
-            // AutoComplete('VDirectPurchaseBillMain', 'DeliverySch', 'DeliverySch', null);
-            // AutoComplete('VDirectPurchaseBillMain', 'PackingChg', 'PackingChg', null);
-            // AutoComplete('VDirectPurchaseBillMain', 'DeliveryTerms', 'DeliveryTerms', null);
-            // AutoComplete('VDirectPurchaseBillMain', 'PackingTYpe', 'PackingTYpe', null);
-            // AutoComplete('VDirectPurchaseBillMain', 'PaymentTerms', 'PaymentTerms', null);
+            // AutoComplete('VGateAttendanceMain', 'ModeOFTransport', 'ModeOFTransport', null);
+            // AutoComplete('VGateAttendanceMain', 'DeliverySch', 'DeliverySch', null);
+            // AutoComplete('VGateAttendanceMain', 'PackingChg', 'PackingChg', null);
+            // AutoComplete('VGateAttendanceMain', 'DeliveryTerms', 'DeliveryTerms', null);
+            // AutoComplete('VGateAttendanceMain', 'PackingTYpe', 'PackingTYpe', null);
+            // AutoComplete('VGateAttendanceMain', 'PaymentTerms', 'PaymentTerms', null);
 
         });
 
@@ -460,7 +455,9 @@
             if (e.which == 13) e.preventDefault();
         });
     </script>
-
+            function DayorMonthChange() { 
+                console.log(this);
+            }
     <script src="https://cdn.jsdelivr.net/gh/linways/table-to-excel@v1.0.4/dist/tableToExcel.js"></script>
 }
 

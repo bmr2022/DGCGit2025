@@ -1,0 +1,72 @@
+﻿@model eTactWeb.DOM.Models.GateAttendanceModel
+
+<style>
+    .select2-container--default .select2-selection--single {
+        background-color: #127387;
+        border: 1.5px solid #0a0a0a !important;
+        border-radius: 4px;
+    }
+
+        .select2-container--default .select2-selection--single .select2-selection__rendered {
+            /* border-bottom: 1.5px solid #000 !important; */
+            border-bottom: none !important;
+        }
+
+    .select2-container--default .select2-results > .select2-results__options {
+        background-color: #127387; /* Dropdown background color */
+        color: #000;
+    }
+</style>
+
+<div class="card-body overflow-auto pb-0">
+    <div class="table-responsive" style="max-height:150px;">
+        <table class="table table-bordered table-striped table-hover mb-0">
+            <thead class="bg-gradient card-headerBG text-light small">
+                <tr>
+                    <th style="width: 10%;"> </th>
+                    <th style="width: 5%;">Sr. No.</th>
+                    <th style="width: 25%;">Employee Name</th>
+                    <th style="width: 15%;">Employee Code</th>
+                    <th style="width: 25%;">Shift Name</th>
+                    <th style="width: 15%;">Employee Category</th>
+                    <th style="width: 10%;">In Time</th>
+                    <th style="width: 10%;">Out Time</th>
+                    <th style="width: 15%;">Department</th>
+                    <th style="width: 10%;">Designation</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (Model.GateAttDetailsList != null && Model.GateAttDetailsList.Count > 0)
+                {
+                    for (int i = 0; i < Model.GateAttDetailsList.Count; i++)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" asp-for="GateAttDetailsList[@i].EmpId" onclick="checkUncheckEmp(@Model.GateAttDetailsList[i].EmpId)" />
+                            </td>
+                            <td>@(i + 1)</td>
+                            <td>@Model.GateAttDetailsList[i].EmployeeName</td>
+                            <td>@Model.GateAttDetailsList[i].EmployeeCode</td>
+                            <td>@Model.GateAttDetailsList[i].ActualEmpShiftName</td>
+                            <td>@Model.GateAttDetailsList[i].EmpCategory</td>
+                            <td>@Model.GateAttDetailsList[i].AttInTime</td>
+                            <td>@Model.GateAttDetailsList[i].AttOutTime</td>
+                            <td>@Model.GateAttDetailsList[i].DeptName</td>
+                            <td>@Model.GateAttDetailsList[i].DesignationName</td>
+                            <td style="display:none">@Model.GateAttDetailsList[i].DeptId</td>
+                            <td style="display:none">@Model.GateAttDetailsList[i].EmpId</td>
+                            <td style="display:none">@Model.GateAttDetailsList[i].DesignationEntryId</td>
+                            <td style="display:none">@Model.GateAttDetailsList[i].AttShiftId</td>
+                        </tr>
+                    }
+                }
+                else
+                {
+                    <tr>
+                        <td colspan="8" class="text-center">No records found.</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>

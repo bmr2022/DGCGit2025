@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace eTactWeb.Services.Interface
 {
-    public class IHRGateAttendance
+    public class IGateAttendance
     {
     }
 }

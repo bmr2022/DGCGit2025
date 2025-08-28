@@ -12,14 +12,14 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.Data.BLL
 {
-    public class HRGateAttendanceBLL : IHRGateAttendance
+    public class GateAttendanceBLL : IGateAttendance
     {
-        private HRGateAttendanceDAL _HRGateAttendanceDAL;
+        private GateAttendanceDAL _GateAttendanceDAL;
         private readonly IDataLogic _DataLogicDAL;
 
-        public HRGateAttendanceBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
+        public GateAttendanceBLL(IConfiguration config, IDataLogic dataLogicDAL, ConnectionStringService connectionStringService)
         {
-            _HRGateAttendanceDAL = new HRGateAttendanceDAL(config, dataLogicDAL, connectionStringService);
+            _GateAttendanceDAL = new GateAttendanceDAL(config, dataLogicDAL, connectionStringService);
             _DataLogicDAL = dataLogicDAL;
         }
     }

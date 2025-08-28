@@ -1,4 +1,4 @@
-﻿@model eTactWeb.DOM.Models.HRGateAttendanceModel
+﻿@model eTactWeb.DOM.Models.GateAttendanceModel
 
 <style>
     .select2-container--default .select2-selection--single {
@@ -6,10 +6,12 @@
         border: 1.5px solid #0a0a0a !important;
         border-radius: 4px;
     }
+
         .select2-container--default .select2-selection--single .select2-selection__rendered {
             /* border-bottom: 1.5px solid #000 !important; */
             border-bottom: none !important;
         }
+
     .select2-container--default .select2-results > .select2-results__options {
         background-color: #e0f2f1; /* Dropdown background color */
         color: #000;
@@ -21,6 +23,10 @@
             <input type="hidden" asp-for="FinToDate" />
             <label asp-for="GateAttEntryId" class="form-label">Entry ID</label>
             <input asp-for="GateAttEntryId" class="form-control" readonly />
+        </div>
+        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="GateAttEntryDate" class="form-label">Entry Date</label>
+            <input asp-for="GateAttEntryDate" class="form-control " readonly />
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="GateAttYearCode" class="form-label">Year</label>
@@ -42,29 +48,34 @@
         </div>
         <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
             <label asp-for="DayOrMonthType" class="form-label">Day or Month</label>
-            <select asp-for="DayOrMonthType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.DayOrMonthTypeList,"Value","Text"))">
+            <select asp-for="DayOrMonthType" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.DayOrMonthTypeList,"Value","Text"))" onclick="DayorMonthChange()">
                 <option value="0" selected>-Select-</option>
             </select>
         </div>
-        <div class="col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <label asp-for="GateAttEntryDate" class="form-label">Entry Date</label>
-            <input asp-for="GateAttEntryDate" class="form-control " readonly />
+        <div class="strEmpAttDate col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="strEmpAttDate" class="form-label">Attendance Date</label>
+            <input asp-for="strEmpAttDate" class="form-control" readonly />
         </div>
-        <div class="col-xl-1 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <label asp-for="EmployeeCode" class="form-label">Employee Code</label>
-            <input asp-for="EmployeeCode" value="@Model.EmployeeCode"
-                   class="form-control" onchange="onInvoiceChange('InvoiceNo')" />
-
+        <div class="strEmpAttMonth col-xxl-1 col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
+            <label asp-for="strEmpAttMonth" class="form-label">Attendance Month</label>
+            <select asp-for="strEmpAttMonth" class="form-select" tabindex="6" asp-items="@(new SelectList(Model.strEmpAttMonthList,"Value","Text"))" onclick="DayorMonthChange()">
+                <option value="0" selected>-Select-</option>
+            </select>
         </div>
-        <div class="col-xl-2 col-lg-3 col-md-3 col-sm-6 col-xs-12">
-            <label asp-for="EmployeeName" class="form-label">Employee Name</label>
-            <input asp-for="EmployeeName" tabindex="7" class="form-control" />
+        <div class="col-xl-4 col-lg-6 col-md-6 col-sm-6 col-xs-12">
+            <label asp-for="EmployeeCode" class="form-label">Employee Name*</label>
+            <div class="form-check form-switch mx-3 w-auto position-absolute d-inline">
+                <input asp-for="PN1" class="form-check-input" type="checkbox" role="switch" />Show All
+            </div>
+            <select class="form-select" asp-for="EmployeeCode" tabindex="5" asp-items="@(new SelectList(Model.EmployeeList,"Value","Text"))">
+                <option value="0">-Select-</option>
+            </select>
         </div>
         <div class="col-xl-3 col-lg-3 col-md-3 col-sm-6 col-xs-12 col-sm-auto">
             <div class="row g-3 justify-content-around">
                 <div class="col-auto">
                     <button type="button" class="ItemBtn btn btn-sm btn-outline-danger">
-                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> ADD TO GRID
+                        <i class="fa-solid fa-angles-down fa-fw fa-lg"></i> Show Employee List For Manual Att
                     </button>
                 </div>
             </div>
@@ -72,4 +83,3 @@
         <div class="clearfix"></div>
     </div>
 </div>
-

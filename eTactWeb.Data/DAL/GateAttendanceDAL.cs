@@ -9,14 +9,14 @@ using System.Threading.Tasks;
 
 namespace eTactWeb.Data.DAL
 {
-    public class HRGateAttendanceDAL
+    public class GateAttendanceDAL
     {
         private readonly IDataLogic _IDataLogic;
         private readonly string DBConnectionString = string.Empty;
         private IDataReader? Reader;
         private dynamic? _ResponseResult;
         private readonly ConnectionStringService _connectionStringService;
-        public HRGateAttendanceDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
+        public GateAttendanceDAL(IConfiguration configuration, IDataLogic iDataLogic, ConnectionStringService connectionStringService)
         {
             //configuration = config;
             //DBConnectionString = configuration.GetConnectionString("eTactDB");

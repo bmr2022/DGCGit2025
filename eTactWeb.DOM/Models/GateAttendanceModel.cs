@@ -4,7 +4,7 @@ using static eTactWeb.DOM.Models.Common;
 
 namespace eTactWeb.DOM.Models;
 
-public class HRGateAttendanceModel : TimeStamp
+public class GateAttendanceModel : TimeStamp
 {
     private IList<SelectListItem> _AttendanceTypeList = new List<SelectListItem>()
     {
@@ -15,6 +15,21 @@ public class HRGateAttendanceModel : TimeStamp
     {
         new() { Value = "Daily", Text = "Daily" },
         new() { Value = "Monthly", Text = "Monthly" },
+    };
+    private IList<SelectListItem> _strEmpAttMonthList = new List<SelectListItem>()
+    {
+        new() { Value = "1", Text = "January" },
+        new() { Value = "2", Text = "February" },
+        new() { Value = "3", Text = "March" },
+        new() { Value = "4", Text = "April" },
+        new() { Value = "5", Text = "May" },
+        new() { Value = "6", Text = "June" },
+        new() { Value = "7", Text = "July" },
+        new() { Value = "8", Text = "August" },
+        new() { Value = "9", Text = "September" },
+        new() { Value = "10", Text = "October" },
+        new() { Value = "11", Text = "November" },
+        new() { Value = "12", Text = "December" },
     };
     private IList<SelectListItem> _AttendanceEntryMethodTypeList = new List<SelectListItem>()
     {
@@ -50,12 +65,17 @@ public class HRGateAttendanceModel : TimeStamp
     public int? EmpAttYear { get; set; }
     public DateTime? EmpAttTime { get; set; }
     public int? ActualEmpShift { get; set; }
+    public string ActualEmpShiftName { get; set; }
     public DateTime? ActualShiftInTime { get; set; }
     public DateTime? ActualShiftoutTime { get; set; }
     [Column(TypeName = "decimal(5, 2)")]
     public decimal? OvertTime { get; set; }
     public int? DeptId { get; set; }
-    public int? desigEntryId { get; set; }
+    public string DeptName { get; set; }
+    public int? DesignationEntryId { get; set; }
+    public string DesignationName { get; set; }
+    public string strEmpAttDate { get; set; }
+    public string EmpCategory { get; set; }
     public string? AttendanceEntryMethodType { get; set; }
     public IList<SelectListItem> AttendanceEntryMethodTypeList
     {
@@ -68,15 +88,24 @@ public class HRGateAttendanceModel : TimeStamp
         get => _DayOrMonthTypeList;
         set => _DayOrMonthTypeList = value;
     }
+    public string strEmpAttMonth { get; set; }
+    public IList<SelectListItem> strEmpAttMonthList
+    {
+        get => _strEmpAttMonthList;
+        set => _strEmpAttMonthList = value;
+    }
     public string? AttendanceType { get; set; }
     public IList<SelectListItem> AttendanceTypeList
     {
         get => _AttendanceTypeList;
         set => _AttendanceTypeList = value;
     }
+    public bool PN1 { get; set; } //for show all employee at employee filter
     public string EmployeeCode { get; set; }
     public string EmployeeName { get; set; }
+    public IList<TextValue>? EmployeeList { get; set; }
     public IList<TextValue>? DeptList { get; set; } // for future filter
+    public IList<TextValue>? ShiftList { get; set; } // for future filter
     public IList<TextValue>? DesignationList { get; set; } // for future filter
     public string TotalEmployees { get; set; }
     public string TotalEmployeesOnLeave { get; set; }
@@ -89,5 +118,6 @@ public class HRGateAttendanceModel : TimeStamp
     public string CreatedByName { get; set; }
     public string UpdatedByName { get; set; }
     public string Branch { get; set; }
+    public List<GateAttendanceModel> GateAttDetailsList { get; set; }
 }
 
