@@ -1,6 +1,8 @@
 ﻿using eTactWeb.Data.Common;
 using eTactWeb.DOM.Models;
 using eTactWeb.Services.Interface;
+using FastReport.Web;
+using FastReport;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Caching.Memory;
 using Newtonsoft.Json;
@@ -27,13 +29,36 @@ namespace eTactWeb.Controllers
             _IWebHostEnvironment = iWebHostEnvironment;
             this.iconfiguration = iconfiguration;
         }
+        public IActionResult PrintReport(int EntryId , int YC , string SlipNo )
+        {
+            string my_connection_string;
+            string contentRootPath = _IWebHostEnvironment.ContentRootPath;
+            string webRootPath = _IWebHostEnvironment.WebRootPath;
+            var webReport = new WebReport();
+            webReport.Report.Clear();
+
+            webReport.Report.Dispose();
+            webReport.Report = new Report();
+
+            webReport.Report.Load(webRootPath + "\\MaterialConversionReport.frx"); // default report
+
+            webReport.Report.SetParameterValue("EntryIdparam", EntryId);
+            webReport.Report.SetParameterValue("YearCodeparam", YC);
+            webReport.Report.SetParameterValue("SlipNoparam", SlipNo);
+            my_connection_string =  iconfiguration.GetConnectionString("eTactDB");
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
+            webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+            webReport.Report.Refresh();
+            return View(webReport);
+        }
         [Route("{controller}/Index")]
         public async Task<ActionResult> MaterialConversion(int ID,int YC,string Mode,string SlipNo,
             int StoreId, int  AltStoreId, int OrginalWCID, int AltWCID, int ActualEntryByEmpid, int UpdatedByEmpId, int PlanYearCode, int ProdSchYearCode,
         decimal OriginalQty, decimal AltOriginalQty, decimal AltStock, decimal BatchStock, decimal TotalStock, decimal OrigItemRate,
         string  StoreName, string OriginalItemCode, string OriginalPartCode, string OriginalItemName, string Unit, string WorkCenterName, string AltStoreName, string AltWorkCenterName, string AltPartCode, string AltItemName, string AltUnit, string BatchNo,
         string UniqueBatchNo, string Remark, string EntryByMachine, string PlanNo, string PlanDate,
-        string ProdSchNo, string ProdSchDatetime, string ActualEntryDate, string UpdationDate,string FromDate,string ToDate)
+        int ProdSchNo, string ProdSchDatetime, string ActualEntryDate, string UpdationDate,string FromDate,string ToDate)
         {
             var MainModel = new MaterialConversionModel();
 

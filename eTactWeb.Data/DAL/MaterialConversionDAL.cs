@@ -470,7 +470,7 @@ namespace eTactWeb.Data.DAL
                             PlanNo = row["PlanNo"].ToString(),
                             PlanYearCode = Convert.ToInt32(row["PlanYearCode"].ToString()),
                             PlanDate = row["PlanDate"] != DBNull.Value ? Convert.ToDateTime(row["PlanDate"]).ToString("dd/MMM/yyyy") : string.Empty,
-                            ProdSchNo = row["ProdSchNo"].ToString(),
+                            ProdSchNo = Convert.ToInt32(row["ProdSchNo"].ToString()),
                             ProdSchYearCode = Convert.ToInt32(row["ProdSchYearCode"].ToString()),
                             ProdSchDatetime = row["ProdSchDatetime"] != DBNull.Value ? Convert.ToDateTime(row["ProdSchDatetime"]).ToString("dd/MMM/yyyy") : string.Empty,
 

@@ -832,6 +832,7 @@
 
            $('#Currency').change(function () {
                   GetExchnageRate()
+                   toggleExchangeRate();
               });
 
         function selectDocNamesForAllRows() {
@@ -869,15 +870,14 @@
             });
         } */
 
-
-              function FillCurrency() {
+                function FillCurrency() {
             $.ajax({
                 type: "GET",
                 url: "@Url.Action("FillCurrency")",
                 async: false,
                 dataType: "json",
                 data: { AccountCode: $('#AccountCode').val() },
-                success: function (result, status, error) {
+                success: function (result) {
                     if (result != null) {
                         var obj = $.parseJSON(result);
 
@@ -886,39 +886,49 @@
                         $('#Currency').append("<option value='' disabled selected>-Select-</option>");
 
                         $.each(obj.Result.Table, function (index, val) {
-                            // ⚠️ important: use entry_id as value, not Currency text
-                                   $('#Currency').append("<option value='" + val.Currency + "'>" + val.Currency + "</option>");
+                            // store IsDefault in data attribute
+                            $('#Currency').append(
+                                "<option value='" + val.Currency + "' data-default='" + val.IsDefault + "'>" +
+                                val.Currency + "</option>"
+                            );
                         });
 
                         // ✅ After filling dropdown, set selected value if mode is U or V
-                             if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
-            var currencyId = $('#CurrencyId').val();
-            $('#Currency').val(currencyId);
-        } else {
-            // Otherwise, pick default currency
-            let defaultCurrency = obj.Result.Table.find(x => x.IsDefault === "Y");
-            if (defaultCurrency) {
-                   $('#Currency').val(defaultCurrency.Currency);
-                         GetExchnageRate();
-            }
-        }
+                        if ($('#Mode').val() === "U" || $('#Mode').val() === "V") {
 
-                       
-                        let selectedId = $('#Currency').val();
-                        let selected = obj.Result.Table.find(x => x.entry_id == selectedId);
-
-                        if (selected && selected.IsDefault === "Y") {
-                                       $('#Currency').val(val.entry_id);
-                                      $('#Currency').prop("disabled", true);
-                            $('#ExchangeRate').prop("disabled", true);
+                               var currencyId =parseInt($('#CurrencyId').val(), 10);
+                                        let defaultCurrency = obj.Result.Table.find(x => x.entry_id === currencyId);
+                                  $('#Currency').val(defaultCurrency.Currency);
                         } else {
-                                   $('#Currency').prop("disabled", false);
-                            $('#ExchangeRate').prop("disabled", false);
+                            // Otherwise, pick default currency
+                            let defaultCurrency = obj.Result.Table.find(x => x.IsDefault === "Y");
+                            if (defaultCurrency) {
+                                $('#Currency').val(defaultCurrency.Currency);
+                            }
                         }
+
+                        // ✅ Apply disable logic
+                        toggleExchangeRate();
                     }
                 }
             });
         }
+
+        // Helper to enable/disable ExchangeRate
+        function toggleExchangeRate() {
+            let selected = $('#Currency option:selected').data('default');
+            if (selected === "Y") {
+                $('#ExchangeRate').prop("disabled", true);
+            } else {
+                $('#ExchangeRate').prop("disabled", false);
+            }
+        }
+
+        // Also bind change event, in case user changes currency
+          
+
+        // Also bind change event, in case user changes currency
+     
 
 
         // Function to format Date object to dd/mm/yy
