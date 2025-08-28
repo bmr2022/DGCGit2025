@@ -415,34 +415,77 @@
             }
             if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
 
-               /*  var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                var SlipDate = parseDateToFormat($('#SlipDate').val().split(" ")[0]);
+              
+
+              
+
+
+                var EntryDate = parseDateToFormat($('#EntryDate').val());
+                var SlipDate = parseDateToFormat($('#SlipDate').val());
                 var ActualEntryDate = parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]);
-                //var GateDt = parseDateToFormat($('#ChallanDate').val().split(" ")[0]);
+
                 $('#EntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", EntryDate);
                 $('#SlipDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", SlipDate);
-                $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", ActualEntryDate);
-                //$('#GateDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", GateDt); */
 
-
-                console.log($('#EntryDate').val());
-
-
-
-                var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ")[0]);
-                var SlipDate = parseDateToFormat($('#SlipDate').val().split(" ")[0]);
-                var ActualEntryDate = parseDateToFormat($('#ActualEntryDate').val().split(" ")[0]);
-                console.log(EntryDate);
-                console.log(SlipDate);
-
-                /* var EntryDate = parseDateToFormat($('#EntryDate').val().split(" ").join("/"));
-                var InvoiceDt = parseDateToFormat($('#InvoiceDate').val().split(" ").join("/")); */
-                $('#EntryDate').datepicker("setDate", EntryDate);
-                $('#SlipDate').datepicker("setDate", SlipDate);
                 $('#ActualEntryDate').datepicker("setDate", ActualEntryDate);
+
+
+                var finFromDate = $('#FinFromDate').val();
+                var finToDate = $('#FinToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+
+                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+
+                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                $('#EntryDate,#SlipDate').datepicker("option", "minDate", formattedDate1);
+                $('#EntryDate,#SlipDate').datepicker("option", "maxDate", formattedDate2);
             }
             else {
                 GetServerDate();
+
+                var finFromDate = $('#FinFromDate').val();
+                var finToDate = $('#FinToDate').val();
+
+                var dateParts1 = finFromDate.split("/");
+                var monthNames = {
+                    "Jan": "01",
+                    "Feb": "02",
+                    "Mar": "03",
+                    "Apr": "04",
+                    "May": "05",
+                    "Jun": "06",
+                    "Jul": "07",
+                    "Aug": "08",
+                    "Sep": "09",
+                    "Oct": "10",
+                    "Nov": "11",
+                    "Dec": "12"
+                };
+
+                var formattedDate1 = dateParts1[0] + "/" + monthNames[dateParts1[1]] + "/" + dateParts1[2];
+                var dateParts2 = finToDate.split("/");
+
+                var formattedDate2 = dateParts2[0] + "/" + monthNames[dateParts2[1]] + "/" + dateParts2[2];
+
+                $('#EntryDate,#SlipDate').datepicker("option", "minDate", formattedDate1);
+                $('#EntryDate,#SlipDate').datepicker("option", "maxDate", formattedDate2);
                 FillLoadTOWorkcenter();
                 
                 if ($('#IssueToStoreWC').val() == 'S') {
@@ -507,7 +550,13 @@
             event.preventDefault();
             if ($('#FromStoreId').val() == null) {
                 $.notify('Please select From StoreName.', 'error');
-            } 
+                return false;
+            }
+            else if ($('#SlipDate').val() != ($('#EntryDate').val())) {
+                $.notify('SlipDate And EntryDate Must Be Same ...!', "error");
+                return false;
+            }
+
             else {
                 $("form").submit();
             }
@@ -1812,7 +1861,7 @@
         function GetServerDate() {
             $.ajax({
                 type: "GET",
-                url: "@Url.Action("GetServerDate", "Routing")",
+                url: "@Url.Action("GetServerDate", "GateInward")",
                 async: false,
                 success: function (result, status, error) {
 
@@ -1821,16 +1870,19 @@
                     $('#ActualEntryDate').datepicker({ dateFormat: 'dd/mm/yy' }).datepicker("setDate", parseDateToFormat(result));
 
 
-
-                    $('#EntryDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
-                    $('#SlipDate').datepicker("option", "minDate", parseDateToFormat($('#FinFromDate').val().split(" ")[0]));
+                  
 
 
-                    $('#EntryDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
-                    $('#SlipDate').datepicker("option", "maxDate", parseDateToFormat($('#FinToDate').val().split(" ")[0]));
+
+                   
                 }
             });
         }
+
+        $("#SlipDate").on("change", function () {
+            let SlipDate = $(this).val();
+            $("#EntryDate").val(SlipDate);
+        });
 
         function NewEntryId() {
 
