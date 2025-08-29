@@ -59,9 +59,9 @@ namespace eTactWeb.DOM.Models
         public string? LeaveName { get; set; }
         public string? FromDate { get; set; }
         public string? ToDate { get; set; }
-        public decimal Duration { get; set; }
+        public decimal? Duration { get; set; }
         public decimal? BalanceLeaveMonthly { get; set; }
-        public decimal BalanceLeaveYearly { get; set; }
+        public decimal? BalanceLeaveYearly { get; set; }
         public decimal? MaxLeaveInMonth { get; set; }
         public string? Canceled { get; set; }
         public string? Approved { get; set; }
