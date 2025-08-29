@@ -287,16 +287,16 @@
             return firstDayOfMonth;
         }
 
-        $('#sendToExcel').click(function () {
-            let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
-            });
-        });
+        // $('#sendToExcel').click(function () {
+        //     let table = $("#ReportTable");
+        //     console.log(table);
+        //     TableToExcel.convert(table[0], {
+        //         name: `ReportTable.xlsx`,
+        //         sheet: {
+        //             name: 'ReportTable'
+        //         }
+        //     });
+        // });
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -304,7 +304,10 @@
             var dateString = day + "/" + month + "/" + year;
             return dateString;
         }
-
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportType').val();
+            window.location.href = '/MIRRegister/ExportMIRToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
         function GetRegisterData() {
             var inputValue = $('#gateno').val();
              $.ajax({
@@ -330,7 +333,7 @@
             var searchString = $(this).val().trim();
             globalSearchString = searchString;
             isGlobalSearch = searchString !== "";
-            var dashboardType = $('#ReportMode').val();
+            var dashboardType = $('#ReportType').val();
             $.ajax({
                 url: "/MIRRegister/GlobalSearch?searchString=" + searchString,
                 type: "GET",
@@ -350,7 +353,7 @@
         function loadPage(pageNumber) {
 
             var url = '';
-            var ReportType = $('#ReportMode').val();
+            var ReportType = $('#ReportType').val();
             var formData = $('#SParam').serializeArray();
             if (isGlobalSearch) {
                 url = '/MIRRegister/GlobalSearch';
