@@ -179,7 +179,8 @@ namespace eTactWeb.Data.DAL
                                                                 CheckPOPendFromPOonlyNotFromAmendment = dr["CheckPOPendFromPOonlyNotFromAmendment"] != DBNull.Value ? dr["CheckPOPendFromPOonlyNotFromAmendment"].ToString() : string.Empty,
                                                                 PoallowtoprintWithoutApproval = dr["PoallowtoprintWithoutApproval"] != DBNull.Value ? dr["PoallowtoprintWithoutApproval"].ToString() : string.Empty,
                                                                 POClosePOAlwaysAgainstIndent = dr["POClosePOAlwaysAgainstIndent"] != DBNull.Value ? dr["POClosePOAlwaysAgainstIndent"].ToString() : string.Empty,
-                                                                IndentReportName = dr["IndentReportName"] != DBNull.Value ? dr["IndentReportName"].ToString() : string.Empty
+                                                                IndentReportName = dr["IndentReportName"] != DBNull.Value ? dr["IndentReportName"].ToString() : string.Empty,
+                                                                PONotAllowedWithoutPartCodePartyWiseDefinition = dr["PONotAllowedWithoutPartCodePartyWiseDefinition"] != DBNull.Value ? dr["PONotAllowedWithoutPartCodePartyWiseDefinition"].ToString() : string.Empty
                                                                
                                                             }).ToList();
                     } 
@@ -575,6 +576,7 @@ namespace eTactWeb.Data.DAL
                     model.PoallowtoprintWithoutApproval = DS.Tables[0].Rows[0]["PoallowtoprintWithoutApproval"].ToString();
                     model.POClosePOAlwaysAgainstIndent = DS.Tables[0].Rows[0]["POClosePOAlwaysAgainstIndent"].ToString();
                     model.IndentReportName = DS.Tables[0].Rows[0]["IndentReportName"].ToString();
+                    model.PONotAllowedWithoutPartCodePartyWiseDefinition = DS.Tables[0].Rows[0]["PONotAllowedWithoutPartCodePartyWiseDefinition"].ToString();
                    
                 }
 
@@ -811,6 +813,7 @@ namespace eTactWeb.Data.DAL
                         SqlParams.Add(new SqlParameter("@PoallowtoprintWithoutApproval", model.PoallowtoprintWithoutApproval));
                         SqlParams.Add(new SqlParameter("@POClosePOAlwaysAgainstIndent", model.POClosePOAlwaysAgainstIndent));
                         SqlParams.Add(new SqlParameter("@IndentReportName", model.POClosePOAlwaysAgainstIndent));
+                        SqlParams.Add(new SqlParameter("@PONotAllowedWithoutPartCodePartyWiseDefinition", model.PONotAllowedWithoutPartCodePartyWiseDefinition));
                        
                     }
                     if (model.Type == "SaleOrderDetail")

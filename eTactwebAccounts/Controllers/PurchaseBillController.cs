@@ -65,7 +65,7 @@ public class PurchaseBillController : Controller
         //string frx = Path.Combine(_env.ContentRootPath, "reports", value.file);
         var webReport = new WebReport();
 
-        var ReportName = IPurchaseBill.GetReportName();
+     //   var ReportName = IPurchaseBill.GetReportName();
         webReport.Report.Load(webRootPath + "\\PurchaseBill.frx");
         //if (ReportName.Result.Result.Rows[0].ItemArray[0] != System.DBNull.Value)
         //{
@@ -77,22 +77,29 @@ public class PurchaseBillController : Controller
 
         //}
         //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
+        my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+        webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+        webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
         webReport.Report.SetParameterValue("entryparam", EntryId);
         webReport.Report.SetParameterValue("yearparam", YearCode);
-        //webReport.Report.SetParameterValue("ponoparam", PONO);
-
-
-        my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-
         webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-        // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-        // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-        //ViewBag.WebReport = webReport;
+        webReport.Report.Refresh();
         return View(webReport);
+   
+        ////webReport.Report.SetParameterValue("ponoparam", PONO);
+
+
+        //my_connection_string = iconfiguration.GetConnectionString("eTactDB");
+
+        //webReport.Report.SetParameterValue("MyParameter", my_connection_string);
+
+
+        //// webReport.Report.SetParameterValue("accountparam", 1731);
+
+
+        //// webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
+        ////ViewBag.WebReport = webReport;
+        //return View(webReport);
     }
     public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string PONO = "")
     {

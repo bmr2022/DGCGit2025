@@ -2397,6 +2397,7 @@
         $('.ItemBtn').click(function () {
              
             let IsError = 0;
+              EditEachItem = false;
 
          //   $(this).html('Calculating... <span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>').prop("disabled", true);
 
@@ -2658,7 +2659,14 @@
         });
 
         var isEditAllowed = "false";
+         var EditEachItem = false;
         async function EditItemRow(SeqNo) {
+              var RowCount = $('#divPOItemList tr').length;
+            if (EditEachItem) {
+                $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                $('#editButton-' + RowCount).prop("disabled", true);
+            }
+            else {
             var PartCode = $('#PartCode').val();
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
@@ -2676,6 +2684,7 @@
                         }
                         else {
                             if (obj != null && obj.length == 1) {
+                                  EditEachItem = true;
                                 $('#docTypeId').val(obj[0].docTypeId).change();
                                 $('#HSNNo').val((obj[0].HSNNo != null && parseInt(obj[0].HSNNo) >= 0) ? parseInt(obj[0].HSNNo) : 0);
                                 $('#DPBQty').val(obj[0].DPBQty);
@@ -2706,6 +2715,7 @@
             }).done(function () {
                 GetDbCrDetail();
             });
+            }
         }
         function changePartCode(data) {
             return new Promise((resolve) => {

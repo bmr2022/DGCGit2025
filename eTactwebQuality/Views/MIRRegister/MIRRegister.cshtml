@@ -287,16 +287,16 @@
             return firstDayOfMonth;
         }
 
-        $('#sendToExcel').click(function () {
-            let table = $("#ReportTable");
-            console.log(table);
-            TableToExcel.convert(table[0], {
-                name: `ReportTable.xlsx`,
-                sheet: {
-                    name: 'ReportTable'
-                }
-            });
-        });
+        // $('#sendToExcel').click(function () {
+        //     let table = $("#ReportTable");
+        //     console.log(table);
+        //     TableToExcel.convert(table[0], {
+        //         name: `ReportTable.xlsx`,
+        //         sheet: {
+        //             name: 'ReportTable'
+        //         }
+        //     });
+        // });
         function formatDate1(date) {
             var day = ("0" + date.getDate()).slice(-2);
             var month = ("0" + (date.getMonth() + 1)).slice(-2);
@@ -304,7 +304,10 @@
             var dateString = day + "/" + month + "/" + year;
             return dateString;
         }
-
+        $('#sendToExcel').click(function () {
+            var reportType = $('#ReportType').val();
+            window.location.href = '/MIRRegister/ExportMIRToExcel?ReportType=' + encodeURIComponent(reportType);
+        });
         function GetRegisterData() {
             var inputValue = $('#gateno').val();
              $.ajax({
@@ -322,6 +325,60 @@
                 }
             });
         }
+
+        var isGlobalSearch = false;
+        var globalSearchString = "";
+        $("#search-box").on("input", function () {
+
+            var searchString = $(this).val().trim();
+            globalSearchString = searchString;
+            isGlobalSearch = searchString !== "";
+            var dashboardType = $('#ReportType').val();
+            $.ajax({
+                url: "/MIRRegister/GlobalSearch?searchString=" + searchString,
+                type: "GET",
+                data: { searchString: searchString, dashboardType: dashboardType, pageNumber: 1 },
+                success: function (data) {
+
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(data);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                   
+                },
+                error: function () {
+                    console.log("Error fetching search results.");
+                }
+            });
+        });
+        function loadPage(pageNumber) {
+
+            var url = '';
+            var ReportType = $('#ReportType').val();
+            var formData = $('#SParam').serializeArray();
+            if (isGlobalSearch) {
+                url = '/MIRRegister/GlobalSearch';
+                formData.push({ name: 'searchString', value: globalSearchString });
+                formData.push({ name: 'pageNumber', value: pageNumber });
+            }
+            else {
+                url = '@Url.Action("GetRegisterData", "MIRRegister")';
+            }
+
+            formData.push({ name: 'pageNumber', value: pageNumber });
+            formData.push({ name: 'ReportType', value: ReportType });
+            $.ajax({
+                type: 'GET',
+                url: url,
+                data: formData,
+                success: function (result) {
+                    $('#divStockMainRegister').empty();
+                    $('#divStockMainRegister').html(result);
+                    $('#totalRows').text($('#divStockMainRegister tr').length);
+                  
+                }
+            });
+        }
+
         function FillGateNo() {
             var FromDate = $('#FromDate').val();
             var FromParts = FromDate.split("/");
