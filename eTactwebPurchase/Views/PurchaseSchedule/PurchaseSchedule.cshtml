@@ -547,7 +547,7 @@
                         MRPNoDropdown.append('<option value="' + mrpno.MRPNo + '">' + mrpno.MRPNo + '</option>');
                     });
 
-                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V") {
+                    if ($('#Mode').val() == "U" || $('#Mode').val() == "V" || $('#Mode').val() == "PSA") {
 
                         var MRPNo = '@Model.MRPNO';
                         $('#MRPNO').val(MRPNo).trigger("change");
