@@ -1567,7 +1567,7 @@
         $('.addItemBtn').click(function (e) {
 
             e.preventDefault();
-
+                            EditEachItem = false;
             if (!ValidateSSGrid()) return;
 
             var SchData = {
@@ -1761,8 +1761,14 @@
 
             XLSX.writeFile(wb, "PurchaseSchedule.xlsx");
         });
-
+                    var EditEachItem = false;
         function EditItemRow(SeqNo) {
+                           var RowCount = $('#divPurchaseScheduleGrid tr').length;
+                               if (EditEachItem) {
+                                   $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                                        $('#editButton-' + RowCount).prop("disabled", true);
+                               }
+                               else {
             var PartCode = $('#PartCode').val();
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
@@ -1772,7 +1778,7 @@
                 success: function (data, status, xhr) {
                     var obj = $.parseJSON(data);
                     if (obj != null && obj.length == 1) {
-                         
+                                    EditEachItem = true;
                          $('#PartCode').val(obj[0].ItemCode).trigger("change");
                             $('#ItemCode').val(obj[0].ItemCode).trigger("change");
                         $('#Unit').val(obj[0].Unit);
@@ -1807,6 +1813,7 @@
                     $.notify(response.responseText, "error");
                 }
             });
+            }
         }
 
     </script>

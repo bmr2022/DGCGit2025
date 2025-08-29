@@ -3769,7 +3769,7 @@
         });
 
         $('.ItemBtn').click(function () {
-
+                    EditEachItem = false;
             if ($('#PartCode').prop('selectedIndex') == 0) {
                 AddErrorCls('PartCode');
                 $.notify('PartCode Is Required.', "error");
@@ -4106,9 +4106,14 @@
 
         let DelSeqNo = 0;
         let Dat = "";
-
+        var EditEachItem = false;
         async function EditItemRow(SeqNo) {
-
+              var RowCount = $('#divSaleItemGrid tr').length;
+                        if (EditEachItem) {
+                            $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+                                 $('#editButton-' + RowCount).prop("disabled", true);
+                        }
+                        else {
             var PartCode = $('#PartCode').val();
             $.ajax({
                 url: '@Url.Action("EditItemRow")',
@@ -4125,6 +4130,7 @@
                         // alert('obj'+ JSON.stringify(obj));
 
                         if (obj != null && obj.length == 1) {
+                                  EditEachItem = true;
                             // alert("nusrat111")
                             $('#IN1').prop("checked", true);
                             $('#IN1').trigger("change");
@@ -4186,6 +4192,7 @@
                     $.notify(response.responseText, "error");
                 }
             });
+            }
         }
         $('#MShiptoAccountCode').on('select2:open', function () {
             // Event handler code here

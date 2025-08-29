@@ -2082,7 +2082,7 @@
 
 		$('#GridButton').click(function (e) {
 			e.preventDefault();
-
+			EditItem = false;
 			var missingFields = [];
 
 		   var issueToStoreWC = $('#IssueToStoreWC').val();
@@ -2236,13 +2236,18 @@
 		}
 
 		var EditEachItem = false;
-
+		var EditItem=false;
 		function EditItemRow(SrNO) {
-
-			if (EditEachItem) {
-				$.notify('Cannot edit item while another item is being added to the grid!', "error");
-				return;
-			}
+			  var RowCount = $('#divStockGrid tr').length;
+							   if (EditItem) {
+								   $.notify('Cannot Edit item while AddtoGrid  Existing Item!!!', "error");
+										// $('#editButton-' + RowCount).prop("disabled", true);
+							   }
+							   else {
+			// if (EditEachItem) {
+			// 	$.notify('Cannot edit item while another item is being added to the grid!', "error");
+			// 	return;
+			// }
 
 			$.ajax({
 				url: '@Url.Action("EditItemRow")',
@@ -2253,7 +2258,7 @@
 					var obj = $.parseJSON(data);
 					if (obj != null) {
 
-						EditEachItem = true;
+						EditItem = true;
 
 						// $('#OriginalPartCode').val(obj[0].OriginalItemCode).trigger("change");
 						// $('#OriginalItemName').val(obj[0].OriginalItemCode).trigger("change");
@@ -2308,6 +2313,7 @@
 					$.notify(response.responseText, "error");
 				}
 			});
+			}
 		}
 		 function DeleteItemRow(SrNO) {
 
