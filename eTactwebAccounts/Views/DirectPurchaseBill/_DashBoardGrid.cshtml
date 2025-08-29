@@ -75,6 +75,14 @@ else
                                 </td>
                                 <td style="text-align:center;white-space: nowrap;">
                                     <div id="container">
+                                        <div id="printData-@Cntr">
+                                            <a class="table-link link-dark" target="_blank" asp-action="PrintReport" asp-route-EntryId="@item.EntryID" asp-route-YearCode="@item.YearCode">
+                                                <span class="fa-stack">
+                                                    <i class="fa fa-square fa-stack-2x"></i>
+                                                    <i class="fa-solid fa-print fa-stack-1x fa-inverse"></i>
+                                                </span>
+                                            </a>
+                                        </div>
                                         <div id="viewCursorDiv-@Cntr">
                                             <a class="table-link link-success" asp-action="DirectPurchaseBill" asp-route-Mode="V" asp-route-ID="@item.EntryID" asp-route-YearCode="@item.YearCode" onclick="BackButtonData(event,'@item.EntryID','@item.YearCode');">
                                                 <span class="fa-stack">
@@ -83,7 +91,7 @@ else
                                                 </span>
                                             </a>
                                         </div>
-                                        @if ((!string.IsNullOrEmpty(item.AgainstInvNo) || !string.IsNullOrEmpty(item.AgainstVoucherNo) || item.AgainstVoucherDate != null) || (item.BalanceSheetClosed == "Y" || item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.YearCode != yearCode))
+                                        @if ((item.BalanceSheetClosed == "Y" || item.Approved == "Y" || /* item.Approval1Levelapproved == "Y" || item.ApproveAmm == "Y" || */ item.YearCode != yearCode))
                                         {
                                             <div>
                                                 <a class="table-link link-primary noCursor">
