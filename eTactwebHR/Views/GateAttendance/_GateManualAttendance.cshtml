@@ -1,6 +1,7 @@
 ﻿@model eTactWeb.DOM.Models.GateAttendanceModel
 
 <style>
+
     .select2-container--default .select2-selection--single {
         background-color: #127387;
         border: 1.5px solid #0a0a0a !important;
@@ -42,7 +43,7 @@
                     {
                         <tr>
                             <td>
-                                <input type="checkbox" asp-for="GateAttDetailsList[@i].EmpId" onclick="checkUncheckEmp(@Model.GateAttDetailsList[i].EmpId)" />
+                                <input type="checkbox" asp-for="GateAttDetailsList[i].EmpId" onclick="checkUncheckEmp(@Model.GateAttDetailsList[i].EmpId)" />
                             </td>
                             <td>@(i + 1)</td>
                             <td>@Model.GateAttDetailsList[i].EmployeeName</td>
