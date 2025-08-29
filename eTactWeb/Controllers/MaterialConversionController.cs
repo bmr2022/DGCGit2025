@@ -190,11 +190,14 @@ namespace eTactWeb.Controllers
                         ViewBag.isSuccess = true;
                         TempData["200"] = "200";
                         HttpContext.Session.Remove("KeyMaterialConversionGrid");
+                        return RedirectToAction(nameof(MaterialConversionDashBoard));
                     }
                     else if (Result.StatusText == "Success" && Result.StatusCode == HttpStatusCode.Accepted)
                     {
                         ViewBag.isSuccess = true;
                         TempData["202"] = "202";
+                        HttpContext.Session.Remove("KeyMaterialConversionGrid");
+                        return RedirectToAction(nameof(MaterialConversionDashBoard));
                     }
                     else if (Result.StatusText == "Error" && Result.StatusCode == HttpStatusCode.InternalServerError)
                     {
@@ -202,6 +205,36 @@ namespace eTactWeb.Controllers
                         TempData["500"] = "500";
                         _logger.LogError($"\n \n ********** LogError ********** \n {JsonConvert.SerializeObject(Result)}\n \n");
                         return View("Error", Result);
+
+                    }
+                   else if (Result.StatusText == "TransDate" || Result.StatusCode == HttpStatusCode.InternalServerError)
+                    {
+                        ViewBag.isSuccess = false;
+                        var input = "";
+                        if (Result?.Result != null)
+                        {
+                            if (Result.Result is string str)
+                            {
+                                input = str;
+                            }
+                            else
+                            {
+                                input = JsonConvert.SerializeObject(Result.Result);
+                            }
+
+                            TempData["ErrorMessage"] = input;
+                        }
+                        else
+                        {
+                            TempData["500"] = "500";
+                        }
+
+
+                        _logger.LogError("\n \n ********** LogError ********** \n " + JsonConvert.SerializeObject(Result) + "\n \n");
+                        //model.IsError = "true";
+                        //return View("Error", Result);
+                        HttpContext.Session.Remove("KeyMaterialConversionGrid");
+                        return RedirectToAction(nameof(MaterialConversionDashBoard));
                     }
                 }
 
