@@ -525,15 +525,15 @@ namespace eTactWeb.Controllers
             var webReport = new WebReport();
 
             var ReportName = IDirectPurchaseBill.GetReportName();
-            if (ReportName.Result.Result.Rows[0].ItemArray[0] != System.DBNull.Value)
-            {
-                webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
-            }
-            else
-            {
+            //if (ReportName.Result.Result.Rows[0].ItemArray[0] != System.DBNull.Value)
+            //{
+            //    webReport.Report.Load(webRootPath + "\\" + ReportName.Result.Result.Rows[0].ItemArray[0] + ".frx"); // from database
+            //}
+            //else
+            //{
                 webReport.Report.Load(webRootPath + "\\PO.frx"); // default report
 
-            }
+           // }
             //webReport.Report.SetParameterValue("flagparam", "PURCHASEORDERPRINT");
             webReport.Report.SetParameterValue("entryparam", EntryId);
             webReport.Report.SetParameterValue("yearparam", YearCode);
@@ -541,16 +541,13 @@ namespace eTactWeb.Controllers
 
 
             my_connection_string = iconfiguration.GetConnectionString("eTactDB");
-
+            webReport.Report.Dictionary.Connections[0].ConnectionString = my_connection_string;
+            webReport.Report.Dictionary.Connections[0].ConnectionStringExpression = "";
             webReport.Report.SetParameterValue("MyParameter", my_connection_string);
-
-
-            // webReport.Report.SetParameterValue("accountparam", 1731);
-
-
-            // webReport.Report.Dictionary.Connections[0].ConnectionString = @"Data Source=103.10.234.95;AttachDbFilename=;Initial Catalog=eTactWeb;Integrated Security=False;Persist Security Info=True;User ID=web;Password=bmr2401";
-            //ViewBag.WebReport = webReport;
+            webReport.Report.Refresh();
             return View(webReport);
+
+          
         }
         public ActionResult HtmlSave(int EntryId = 0, int YearCode = 0, string PONO = "")
         {
@@ -734,7 +731,7 @@ namespace eTactWeb.Controllers
 
             return model;
         }
-
+       
         public async Task<IActionResult> DashBoard()
         {
             HttpContext.Session.Remove("DirectPurchaseBill");
