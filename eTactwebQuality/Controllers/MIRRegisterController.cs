@@ -37,7 +37,7 @@ namespace eTactWeb.Controllers
             model.MIRRegisterDetail = new List<MIRRegisterDetail>();
             return View(model);
         }
-        public async Task<IActionResult> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName,string MRNStatus)
+        public async Task<IActionResult> GetRegisterData(string MRNType, string ReportType, string FromDate, string ToDate, string gateno,string MRNno, string docname, string PONo, string Schno, string PartCode, string ItemName, string invoiceNo, string VendorName,string MRNStatus, int pageNumber = 1, int pageSize = 50, string SearchBox = "")
         {
             var model = new MIRRegisterModel();
             if (string.IsNullOrEmpty(gateno)||gateno == "0" )
@@ -61,7 +61,144 @@ namespace eTactWeb.Controllers
        
             model = await _IMIRRegister.GetRegisterData(MRNType,ReportType,  FromDate,  ToDate,  gateno,  MRNno,docname,  PONo,  Schno,  PartCode,  ItemName,  invoiceNo,  VendorName,MRNStatus);
             model.ReportMode= ReportType;
+            var modelList = model?.MIRRegisterDetail ?? new List<MIRRegisterDetail>();
+
+
+            if (string.IsNullOrWhiteSpace(SearchBox))
+            {
+                model.TotalRecords = modelList.Count();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+                model.MIRRegisterDetail = modelList
+                .Skip((pageNumber - 1) * pageSize)
+                   .Take(pageSize)
+                   .ToList();
+            }
+            else
+            {
+                List<MIRRegisterDetail> filteredResults;
+                if (string.IsNullOrWhiteSpace(SearchBox))
+                {
+                    filteredResults = modelList.ToList();
+                }
+                else
+                {
+                    filteredResults = modelList
+                        .Where(i => i.GetType().GetProperties()
+                            .Where(p => p.PropertyType == typeof(string))
+                            .Select(p => p.GetValue(i)?.ToString())
+                            .Any(value => !string.IsNullOrEmpty(value) &&
+                                          value.Contains(SearchBox, StringComparison.OrdinalIgnoreCase)))
+                        .ToList();
+
+
+                    if (filteredResults.Count == 0)
+                    {
+                        filteredResults = modelList.ToList();
+                    }
+                }
+
+                model.TotalRecords = filteredResults.Count;
+                model.MIRRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+                model.PageNumber = pageNumber;
+                model.PageSize = pageSize;
+            }
+            MemoryCacheEntryOptions cacheEntryOptions = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = DateTime.Now.AddMinutes(60),
+                SlidingExpiration = TimeSpan.FromMinutes(55),
+                Size = 1024,
+            };
+
+            _MemoryCache.Set("KeyMIRRegisterList", modelList, cacheEntryOptions);
             return PartialView("_MIRRegisterGrid", model);
+        }
+        [HttpGet]
+        public IActionResult GlobalSearch(string searchString, string dashboardType = "Summary", int pageNumber = 1, int pageSize = 50)
+        {
+            MIRRegisterModel model = new MIRRegisterModel();
+            model.ReportType = dashboardType;
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                return PartialView("_MIRRegisterGrid", new List<MIRRegisterDetail>());
+            }
+            //string cacheKey = $"KeyProdList_{dashboardType}";
+            if (!_MemoryCache.TryGetValue("KeyMIRRegisterList", out IList<MIRRegisterDetail> mIRRegisterDetail) || mIRRegisterDetail == null)
+            {
+                return PartialView("_MIRRegisterGrid", new List<MIRRegisterDetail>());
+            }
+
+            List<MIRRegisterDetail> filteredResults;
+
+            if (string.IsNullOrWhiteSpace(searchString))
+            {
+                filteredResults = mIRRegisterDetail.ToList();
+            }
+            else
+            {
+                filteredResults = mIRRegisterDetail
+                    .Where(i => i.GetType().GetProperties()
+                        .Where(p => p.PropertyType == typeof(string))
+                        .Select(p => p.GetValue(i)?.ToString())
+                        .Any(value => !string.IsNullOrEmpty(value) &&
+                                      value.Contains(searchString, StringComparison.OrdinalIgnoreCase)))
+                    .ToList();
+
+
+                if (filteredResults.Count == 0)
+                {
+                    filteredResults = mIRRegisterDetail.ToList();
+                }
+            }
+
+            model.TotalRecords = filteredResults.Count;
+            model.MIRRegisterDetail = filteredResults.Skip((pageNumber - 1) * pageSize).Take(pageSize).ToList();
+            model.PageNumber = pageNumber;
+            model.PageSize = pageSize;
+            if (model.ReportMode == "vendorItemWiseSummary")
+            {
+                return PartialView("_MIRRegisterVendorItemWiseSummary", model);
+            }
+            else if (model.ReportMode == "POBATCHWISEDETAIL")
+            {
+                return PartialView("_MRNRegisterVendorItemConsolidated", model);
+            }
+            else if (model.ReportMode == "PPMRating")
+            {
+                return PartialView("_MIRRegisterPPM", model);
+            }
+            else if (model.ReportMode == "vendorWiseConsolidated")
+            {
+                return PartialView("_MRNRegisterVendorWiseConsolidated", model);
+            }
+            else if (model.ReportMode == "DAYWISEMIRENTRYLIST")
+            {
+                return PartialView("_MRNRegisterDayWiseList", model);
+            }
+            else if (model.ReportMode == "PENDMRNFORQC(SUMMARY)")
+            {
+                return PartialView("_MIRRegisterPendMRNForQCSummary", model);
+            }
+            else if (model.ReportMode == "PENDMRNFORQC(Detail)")
+            {
+                return PartialView("_MIRRegisterPendMRNForQCDetail", model);
+            }
+            else if (model.ReportMode == "vendorItemRejectionSummary")
+            {
+                return PartialView("_MIRRegisterVendorItemRejectionSummary", model);
+            }
+            else if (model.ReportMode == "ItemWiseSummary")
+            {
+                return PartialView("_MIRRegisterItemWiseSummary", model);
+            }
+            else if (model.ReportMode == "MRNWiseSummary")
+            {
+                return PartialView("_MRNWiseSummary", model);
+            }
+            else
+            {
+                return PartialView("_MIRRegisterGrid", model);
+            }
         }
         public async Task<JsonResult> FillGateNo(string FromDate, string ToDate)
         {
