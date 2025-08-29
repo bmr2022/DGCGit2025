@@ -481,30 +481,21 @@
         //     $("form").submit();
         // });
           
-        // Run after DOM is ready
         $(function () {
 
-          // Helper: close the 'LEAVE Application DETAIL SECTION' accordion item
           function closeDetailAccordion() {
             var $item = $('#accordionItemCategory');
-
-            // Collapse any open .collapse inside this item
             $item.find('.accordion-collapse.show').removeClass('show');
 
-            // Ensure the header button looks collapsed and ARIA is correct
             $item.find('.accordion-button')
                  .addClass('collapsed')
                  .attr('aria-expanded', 'false');
 
-            // If you want to hide the whole accordion item instead, uncomment:
-            // $item.addClass('d-none');
           }
 
-          // 1) Handle clicks on BOTH submit buttons (and Update button)
           $(document).on('click', '#submitBTN, #UpdateButton', function (e) {
             e.preventDefault();
 
-            // Your validation
             if ($('#DivDetailGrid tr td').length <= 1) {
               $.notify(' Grid Should Have Atleast 1 Item...!', "error");
               return;
@@ -512,23 +503,17 @@
 
             closeDetailAccordion();
 
-            // Submit THIS form (avoid picking another form on the page)
             var form = this.closest('form');
             if (form) form.submit(); // native submit to avoid re-triggering click handler
           });
 
-          // 2) Also collapse when the form submits via Enter key or other triggers
           $(document).on('submit', 'form[asp-action="HRLeaveApplicationMaster"]', function () {
             closeDetailAccordion();
-            // allow submit to continue
           });
         });
 
         $('.numbers').on('input', function () {
-            // Remove non-numeric characters except for decimal point
             $(this).val($(this).val().replace(/[^0-9.]/g, ''));
-
-            // Prevent negative values
             if ($(this).val() < 0) {
                 $(this).val('');
             }
